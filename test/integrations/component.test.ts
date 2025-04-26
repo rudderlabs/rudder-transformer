@@ -63,6 +63,8 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'branch',
   'userpilot',
   'loops',
+  'slack',
+  'braze',
 ];
 
 beforeAll(async () => {

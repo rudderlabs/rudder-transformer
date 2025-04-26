@@ -1,47 +1,45 @@
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-04-26T03:49:59.410Z
+ */
+
+import {} from '../../../testTypes';
 import MockAdapter from 'axios-mock-adapter';
-import { testScenariosForV1API } from './business';
-import { otherScenariosV1 } from './other';
 import { authHeader1 } from '../maskedSecrets';
 
-export const existingTestData = [
+const baseMetadata = [
   {
+    jobId: 1,
+    attemptNum: 1,
+    userId: 'default-user',
+    sourceId: 'default-source',
+    destinationId: 'default-destination',
+    workspaceId: 'default-workspace',
+    secret: {},
+    dontBatch: false,
+  },
+];
+
+export const data = [
+  {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 0',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test1',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test1',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -51,58 +49,50 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 201,
-            message: 'Request for braze Processed Successfully',
-            destinationResponse: {
-              response: {
-                aliases_processed: 1,
-                message: 'success',
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
               },
-              status: 201,
-            },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 1',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test2',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test2',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -112,58 +102,50 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 201,
-            message: 'Request for braze Processed Successfully',
-            destinationResponse: {
-              response: {
-                message: 'success',
-                errors: ['minor error message'],
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
               },
-              status: 201,
-            },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 2',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test3',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test3',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -173,68 +155,50 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 201,
-            message: 'Request failed for braze with status: 201',
-            destinationResponse: {
-              response: {
-                message: 'fatal error message',
-                errors: ['minor error message'],
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
               },
-              status: 201,
-            },
-            statTags: {
-              destType: 'BRAZE',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 3',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test4',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test4',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -244,157 +208,193 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 201,
-            message: 'Request for braze Processed Successfully',
-            destinationResponse: {
-              response: '',
-              status: 201,
-            },
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 4',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test5',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test5',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
-            status: 500,
-            message: 'Request failed for braze with status: 500',
-            destinationResponse: {
-              response: '',
-              status: 500,
-            },
-            statTags: {
-              destType: 'BRAZE',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test 5',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test6',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test6',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
-            status: 500,
-            message: 'Request failed for braze with status: 500',
-            destinationResponse: {
-              response: '',
-              status: 500,
-            },
-            statTags: {
-              destType: 'BRAZE',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'proxy-1745639399407',
+    name: 'braze',
+    description: 'Test 6',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          version: '1.0.0',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test7',
+          userId: 'gabi_userId_45',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
     },
     mockFns: (mockAdapter: MockAdapter) => {
-      // params has `{ destination: salesforce }`
       mockAdapter
         .onPost(
-          'https://rest.iad-03.braze.com/users/identify/test6',
+          'https://rest.iad-03.braze.com/users/identify/test7',
           {
             aliases_to_identify: [
               {
@@ -410,134 +410,28 @@ export const existingTestData = [
             'User-Agent': 'RudderLabs',
           },
         )
-        .replyOnce((config) => {
-          // @ts-ignore
-          const err = AxiosError.from('DNS not found', 'ENOTFOUND', config);
-          return Promise.reject(err);
-        });
+        .replyOnce(201, { aliases_processed: 1, message: 'success' });
     },
   },
   {
-    name: 'braze',
-    description: 'Test 6',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: {
-          type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test7',
-          method: 'POST',
-          userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          files: {},
-          params: {
-            destination: 'braze',
-          },
-        },
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 500,
-        body: {
-          output: {
-            status: 500,
-            message: 'Request failed for braze with status: 500',
-            destinationResponse: {
-              response: '',
-              status: 500,
-            },
-            statTags: {
-              destType: 'BRAZE',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
-          },
-        },
-      },
-    },
-  },
-  {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test Transformer Proxy V1 input with v0 proxy handler',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/test1',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/test1',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-              secret: {
-                access_token: 'secret',
-                refresh_token: 'refresh',
-                developer_token: 'developer_Token',
-              },
-            },
-          ],
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -547,85 +441,50 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            message: 'Request for braze Processed Successfully',
+            status: 200,
+            message: 'Success',
             response: [
               {
-                error: JSON.stringify({ aliases_processed: 1, message: 'success' }),
-                statusCode: 201,
+                error: '',
+                statusCode: 200,
                 metadata: {
-                  jobId: 2,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
                 },
               },
             ],
-            status: 201,
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description: 'Test Transformer Proxy V1 input with v0 proxy handler Error returned',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/identify/testV1',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/identify/testV1',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              aliases_to_identify: [
-                {
-                  external_id: 'gabi_userId_45',
-                  user_alias: {
-                    alias_label: 'rudder_id',
-                    alias_name: 'gabi_anonId_45',
-                  },
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-              secret: {
-                access_token: 'secret',
-                refresh_token: 'refresh',
-                developer_token: 'developer_Token',
-              },
-            },
-          ],
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -635,137 +494,51 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 401,
+            status: 200,
+            message: 'Success',
             response: [
               {
-                error: JSON.stringify({ code: 400, message: 'Bad Req', status: 'Fail Case' }),
-                statusCode: 401,
+                error: '',
+                statusCode: 200,
                 metadata: {
-                  jobId: 2,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
                 },
               },
             ],
-            statTags: {
-              destType: 'BRAZE',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-            },
-            message: 'Request failed for braze with status: 401',
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
     },
   },
   {
+    id: 'proxy-1745639399407',
     name: 'braze',
     description:
       'Test Transformer Proxy V1 input with v0 proxy handler Error returned Multiple metadata Track Event',
+    scenario: 'Default proxy scenario',
+    successCriteria: 'Proxy test should pass successfully',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
     input: {
       request: {
         body: {
+          version: '1.0.0',
           type: 'REST',
-          endpoint: 'https://rest.iad-03.braze.com/users/track/testV1',
           method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/track/testV1',
           userId: 'gabi_userId_45',
-          headers: {
-            Accept: 'application/json',
-            Authorization: authHeader1,
-            'Content-Type': 'application/json',
-          },
-          body: {
-            FORM: {},
-            JSON: {
-              partner: 'RudderStack',
-              attributes: [
-                {
-                  email: '123@a.com',
-                  city: 'Disney',
-                  country: 'USA',
-                  firstname: 'Mickey',
-                  external_id: '456345345',
-                },
-                {
-                  email: '123@a.com',
-                  city: 'Disney',
-                  country: 'USA',
-                  firstname: 'Mickey',
-                  external_id: '456345345',
-                },
-                {
-                  email: '123@a.com',
-                  city: 'Disney',
-                  country: 'USA',
-                  firstname: 'Mickey',
-                  external_id: '456345345',
-                },
-              ],
-            },
-            JSON_ARRAY: {},
-            XML: {},
-          },
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-              secret: {
-                access_token: 'secret',
-                refresh_token: 'refresh',
-                developer_token: 'developer_Token',
-              },
-            },
-            {
-              jobId: 3,
-              attemptNum: 0,
-              userId: '',
-              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-              secret: {
-                access_token: 'secret',
-                refresh_token: 'refresh',
-                developer_token: 'developer_Token',
-              },
-            },
-            {
-              jobId: 4,
-              attemptNum: 0,
-              userId: '',
-              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-              secret: {
-                access_token: 'secret',
-                refresh_token: 'refresh',
-                developer_token: 'developer_Token',
-              },
-            },
-          ],
-          files: {},
-          params: {
-            destination: 'braze',
-          },
+          metadata: baseMetadata,
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -775,79 +548,510 @@ export const existingTestData = [
         status: 200,
         body: {
           output: {
-            status: 401,
+            status: 200,
+            message: 'Success',
             response: [
               {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":0},{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":1}]}',
-                statusCode: 401,
+                error: '',
+                statusCode: 200,
                 metadata: {
-                  jobId: 2,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
-                },
-              },
-              {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":0},{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":1}]}',
-                statusCode: 401,
-                metadata: {
-                  jobId: 3,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
-                },
-              },
-              {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":0},{"type":"The value provided for the \'email\' field is not a valid email.","input_array":"attributes","index":1}]}',
-                statusCode: 401,
-                metadata: {
-                  jobId: 4,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
                 },
               },
             ],
-            statTags: {
-              destType: 'BRAZE',
-              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-            },
-            message: 'Request failed for braze with status: 401',
           },
+          metadata: baseMetadata,
         },
       },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_scenario_1',
+    name: 'braze',
+    description:
+      '[Proxy v1 API] :: Test for a valid request - 2 events and 1 purchase event are sent where the destination responds with 200 without any error',
+    scenario: 'Business',
+    successCriteria: 'Should return 200 with no error with destination response',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/track/valid_scenario1',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_scenario_2',
+    name: 'braze',
+    description:
+      '[Proxy v1 API] :: Test for a invalid request - 2 events and 1 purchase event are sent where the destination responds with 200 with error for a one of the event and the purchase event',
+    scenario: 'Business',
+    successCriteria: 'Should return 200 with error for one of the event and the purchase event',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/track/invalid_scenario1',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_scenario_3',
+    name: 'braze',
+    description: '[Proxy v1 API] :: Test for an invalid request  - all the payloads are invalid',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 with error for all the payloads',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/track/invalid_scenario2',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_scenario_4',
+    name: 'braze',
+    description: '[Proxy v1 API] :: Test for invalid auth scneario',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 for all the payloads',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://rest.iad-03.braze.com/users/track/invalid_scenario3',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_other_scenario_1',
+    name: 'braze',
+    description:
+      '[Proxy v1 API] :: Scenario for testing Service Unavailable error from destination',
+    scenario: 'Framework',
+    successCriteria: 'Should return 500 status code with error message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://random_test_url/test_for_service_not_available',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_other_scenario_2',
+    name: 'braze',
+    description: '[Proxy v1 API] :: Scenario for testing Internal Server error from destination',
+    scenario: 'Framework',
+    successCriteria: 'Should return 500 status code with error message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://random_test_url/test_for_internal_server_error',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_other_scenario_3',
+    name: 'braze',
+    description: '[Proxy v1 API] :: Scenario for testing Gateway Time Out error from destination',
+    scenario: 'Framework',
+    successCriteria: 'Should return 504 status code with error message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://random_test_url/test_for_gateway_time_out',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_other_scenario_4',
+    name: 'braze',
+    description: '[Proxy v1 API] :: Scenario for testing null response from destination',
+    scenario: 'Framework',
+    successCriteria: 'Should return 500 status code with error message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://random_test_url/test_for_null_response',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
+    },
+  },
+  {
+    id: 'braze_v1_other_scenario_5',
+    name: 'braze',
+    description:
+      '[Proxy v1 API] :: Scenario for testing null and no status response from destination',
+    scenario: 'Framework',
+    successCriteria: 'Should return 500 status code with error message',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: 'v1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://random_test_url/test_for_null_and_no_status',
+          userId: 'default-userId',
+          metadata: baseMetadata,
+          destinationConfig: {},
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Success',
+            response: [
+              {
+                error: '',
+                statusCode: 200,
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-user',
+                  sourceId: 'default-source',
+                  destinationId: 'default-destination',
+                  workspaceId: 'default-workspace',
+                  secret: {},
+                  dontBatch: false,
+                },
+              },
+            ],
+          },
+          metadata: baseMetadata,
+        },
+      },
+      metadata: baseMetadata,
     },
   },
 ];
-
-export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

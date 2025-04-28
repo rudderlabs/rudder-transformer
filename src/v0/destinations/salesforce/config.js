@@ -19,7 +19,7 @@ const ConfigCategory = {
   },
 };
 
-const SF_API_VERSION = '50.0';
+const SF_API_VERSION = '63.0';
 const SF_TOKEN_REQUEST_URL = 'https://login.salesforce.com/services/oauth2/token';
 const SF_TOKEN_REQUEST_URL_SANDBOX = 'https://test.salesforce.com/services/oauth2/token';
 

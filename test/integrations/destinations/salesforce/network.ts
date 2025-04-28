@@ -16,7 +16,7 @@ const dataValue = {
 const tfProxyMocksData = [
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/1',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -33,7 +33,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/3',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -50,7 +50,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/2',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -66,7 +66,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/4',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -83,7 +83,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/5',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -100,7 +100,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/6',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -117,7 +117,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/7',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -136,7 +136,7 @@ const tfProxyMocksData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
       data: { Planning_Categories__c: 'pc', External_ID__c: 123 },
       params: { destination: 'salesforce' },
       headers: {
@@ -152,7 +152,7 @@ const tfProxyMocksData = [
           {
             attributes: {
               type: 'object_name',
-              url: '/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA',
+              url: '/services/data/v63.0/sobjects/object_name/a0J75100002w97gEAA',
             },
             Id: 'a0J75100002w97gEAA',
             External_ID__c: 'external_id',
@@ -160,7 +160,7 @@ const tfProxyMocksData = [
           {
             attributes: {
               type: 'object_name',
-              url: '/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI',
+              url: '/services/data/v63.0/sobjects/object_name/a0J75200002w9ZsEAI',
             },
             Id: 'a0J75200002w9ZsEAI',
             External_ID__c: 'external_id TEST',
@@ -210,7 +210,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id',
       method: 'GET',
     },
     httpRes: {
@@ -222,7 +222,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
       method: 'GET',
     },
     httpRes: {
@@ -234,7 +234,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
       method: 'GET',
     },
     httpRes: {
@@ -246,7 +246,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72727&sobject=customobject&in=CustomObject__c&customobject.fields=id,CustomObject__c',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=72727&sobject=customobject&in=CustomObject__c&customobject.fields=id,CustomObject__c',
       method: 'GET',
     },
     httpRes: {
@@ -258,7 +258,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons1%40initech.com&sobject=Lead&Lead.fields=id',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=peter.gibbons1%40initech.com&sobject=Lead&Lead.fields=id',
       method: 'GET',
     },
     httpRes: {
@@ -268,7 +268,7 @@ const transformationMocksData = [
           {
             attributes: {
               type: 'Lead',
-              url: '/services/data/v50.0/sobjects/Lead/leadId',
+              url: '/services/data/v63.0/sobjects/Lead/leadId',
             },
             Id: 'leadId',
           },
@@ -278,7 +278,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72728&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=72728&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
       method: 'GET',
     },
     httpRes: {
@@ -288,7 +288,7 @@ const transformationMocksData = [
           {
             attributes: {
               type: 'CustomObject2__c',
-              url: '/services/data/v50.0/CustomObject2__c/id1101',
+              url: '/services/data/v63.0/CustomObject2__c/id1101',
             },
             Id: 'id1101',
             CustomObject2__c: 72728,
@@ -299,7 +299,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=72729&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=72729&sobject=customobject2&in=CustomObject2__c&customobject2.fields=id,CustomObject2__c',
       method: 'GET',
     },
     httpRes: {
@@ -309,7 +309,7 @@ const transformationMocksData = [
           {
             attributes: {
               type: 'CustomObject2__c',
-              url: '/services/data/v50.0/CustomObject2__c/id1102',
+              url: '/services/data/v63.0/CustomObject2__c/id1102',
             },
             Id: 'id1102',
             CustomObject2__c: '72729',
@@ -320,7 +320,7 @@ const transformationMocksData = [
   },
   {
     httpReq: {
-      url: 'https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=ddv_ua%2B%7B%7B1234*245%7D%7D%40bugFix.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
+      url: 'https://ap15.salesforce.com/services/data/v63.0/parameterizedSearch/?q=ddv_ua%2B%7B%7B1234*245%7D%7D%40bugFix.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted',
       method: 'GET',
     },
     httpRes: {
@@ -330,7 +330,7 @@ const transformationMocksData = [
           {
             attributes: {
               type: 'Lead',
-              url: '/services/data/v50.0/sobjects/Lead/leadId',
+              url: '/services/data/v63.0/sobjects/Lead/leadId',
             },
             Id: 'leadId',
           },
@@ -346,7 +346,7 @@ const businessMockData = [
       'Mock response from destination depicting a valid lead request, with no changed data',
     httpReq: {
       method: 'post',
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/existing_unchanged_leadId',
       data: dataValue,
       headers: commonHeaders,
     },
@@ -359,7 +359,7 @@ const businessMockData = [
     description: 'Mock response from destination depicting a invalid session id',
     httpReq: {
       method: 'post',
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/invalid_session_id',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/invalid_session_id',
       data: dataValue,
       headers: commonHeaders,
     },
@@ -370,7 +370,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/2',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -387,7 +387,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/4',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -404,7 +404,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/5',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -421,7 +421,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/6',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -438,7 +438,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/7',
       data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
@@ -458,7 +458,7 @@ const businessMockData = [
   },
   {
     httpReq: {
-      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v63.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
       data: { Planning_Categories__c: 'pc', External_ID__c: 123 },
       params: { destination: 'salesforce' },
       headers: {
@@ -474,7 +474,7 @@ const businessMockData = [
           {
             attributes: {
               type: 'object_name',
-              url: '/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA',
+              url: '/services/data/v63.0/sobjects/object_name/a0J75100002w97gEAA',
             },
             Id: 'a0J75100002w97gEAA',
             External_ID__c: 'external_id',
@@ -482,7 +482,7 @@ const businessMockData = [
           {
             attributes: {
               type: 'object_name',
-              url: '/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI',
+              url: '/services/data/v63.0/sobjects/object_name/a0J75200002w9ZsEAI',
             },
             Id: 'a0J75200002w9ZsEAI',
             External_ID__c: 'external_id TEST',

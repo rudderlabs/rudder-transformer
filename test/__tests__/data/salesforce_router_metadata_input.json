@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead",
+    "endpoint": "https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer 00D2v000002lXbX!ARcA12345.MbUdtmlREscrN_nmytokenAzNkhT1XZIF0yPqyCQSnezWO3osqwerty12O7q41E9.LvedWY"

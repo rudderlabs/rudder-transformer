@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
-
+const { gzipSync } = require('node:zlib');
 const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
@@ -332,21 +332,36 @@ function getFormData(payload = {}) {
   return data;
 }
 
-function extractPayloadForFormat(payload, format) {
-  switch (format) {
-    case 'JSON_ARRAY':
-      return payload?.batch;
-    case 'JSON':
-      return payload;
-    case 'XML':
-      return payload?.payload;
-    case 'FORM':
-      return getFormData(payload);
-    default:
-      logger.debug(`Unknown payload format: ${format}`);
-      return undefined;
+const getZippedPayload = (payload) => {
+  try {
+    return gzipSync(payload);
+  } catch (err) {
+    logger.error(`Failed to parse GZIP payload: ${err}`);
+    return undefined;
   }
-}
+};
+
+const extractPayloadForFormat = (payload, format) => {
+  if (!payload) {
+    return undefined;
+  }
+
+  const extractors = {
+    JSON_ARRAY: () => payload?.batch,
+    JSON: () => payload,
+    XML: () => payload?.payload,
+    FORM: () => getFormData(payload),
+    GZIP: () => getZippedPayload(payload?.payload),
+  };
+
+  const extractor = extractors[format];
+  if (!extractor) {
+    logger.debug(`Unknown payload format: ${format}`);
+    return undefined;
+  }
+
+  return extractor();
+};
 
 /**
  * Prepares the proxy request
@@ -354,8 +369,19 @@ function extractPayloadForFormat(payload, format) {
  * @returns
  */
 const prepareProxyRequest = (request) => {
-  const { body, method, params, endpoint, headers, destinationConfig: config } = request;
+  const {
+    body,
+    method,
+    params,
+    endpoint,
+    headers: incomingHeaders = {},
+    destinationConfig: config,
+  } = request;
+  const headers = { ...incomingHeaders };
   const { payload, payloadFormat } = getPayloadData(body);
+  if (payloadFormat && payloadFormat === 'GZIP') {
+    headers['Content-Encoding'] = 'gzip';
+  }
   const data = extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
@@ -448,4 +474,5 @@ module.exports = {
   handleHttpRequest,
   enhanceRequestOptions,
   fireHTTPStats,
+  getZippedPayload,
 };

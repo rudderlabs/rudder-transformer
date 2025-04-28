@@ -1,34 +1,147 @@
-// Mock dependencies
-jest.mock('sha256', () => jest.fn((input) => `hashed_${input}`));
-
-jest.mock('../../util', () => {
-  const actualUtil = jest.requireActual('../../util');
-  return {
-    ...actualUtil,
-    getFieldValueFromMessage: jest.fn(),
-  };
-});
-
-jest.mock('./util', () => {
-  const original = jest.requireActual('./util');
-  return {
-    ...original,
-    msUnixTimestamp: jest.fn(),
-  };
-});
-
-const moment = require('moment');
-
+const { generateRandomString } = require('@rudderstack/integrations-lib');
 const {
+  msUnixTimestamp,
   getItemIds,
   getPriceSum,
   getDataUseValue,
-  getEventTimestamp,
+  getNormalizedPhoneNumber,
   getHashedValue,
-  msUnixTimestamp,
+  channelMapping,
+  generateBatchedPayloadForArray,
+  getEventTimestamp,
 } = require('./util');
 
-const { getFieldValueFromMessage } = require('../../util');
+const moment = require('moment');
+
+describe('Snapchat Conversion Utils', () => {
+  describe('getNormalizedPhoneNumber', () => {
+    const testCases = [
+      {
+        name: 'should remove non-numeric characters and leading zeros from phone number',
+        input: { traits: { phone: '+1 (234) 567-8900' } },
+        expected: '12345678900',
+      },
+      {
+        name: 'should remove leading zeros from phone number when present',
+        input: { traits: { phone: '00123456789' } },
+        expected: '123456789',
+      },
+      {
+        name: 'should remove non-numeric characters and leading zeros from mixed alphanumeric input',
+        input: { traits: { phone: 'abc0123def0456' } },
+        expected: '1230456',
+      },
+      {
+        name: 'should return null when phone number is not present',
+        input: { traits: {} },
+        expected: null,
+      },
+      {
+        name: 'should return null when message is empty',
+        input: {},
+        expected: null,
+      },
+      {
+        name: 'should return the original hash when phone is already a 64-char hex',
+        input: { traits: { phone: 'a'.repeat(64) } },
+        expected: 'a'.repeat(64),
+      },
+      {
+        name: 'should return null when phone normalizes to empty string',
+        input: { traits: { phone: '000' } },
+        expected: null,
+      },
+      {
+        name: 'should handle integer phone numbers',
+        input: { traits: { phone: 1234567890 } },
+        expected: '1234567890',
+      },
+      {
+        name: 'should handle object in place of phone number',
+        input: { traits: { phone: { test: 'test' } } },
+        expected: null,
+      },
+    ];
+
+    testCases.forEach(({ name, input, expected }) => {
+      it(name, () => {
+        const result = getNormalizedPhoneNumber(input);
+        expect(result).toBe(expected);
+      });
+    });
+  });
+});
+
+describe('msUnixTimestamp', () => {
+  const testCases = [
+    {
+      name: 'should convert timestamp to milliseconds unix timestamp',
+      input: new Date('2024-01-01T00:00:00Z'),
+      expected:
+        new Date('2024-01-01T00:00:00Z').getTime() * 1000 +
+        new Date('2024-01-01T00:00:00Z').getMilliseconds(),
+    },
+    {
+      name: 'should handle different timezone',
+      input: new Date('2024-01-01T12:30:45+05:30'),
+      expected:
+        new Date('2024-01-01T12:30:45+05:30').getTime() * 1000 +
+        new Date('2024-01-01T12:30:45+05:30').getMilliseconds(),
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      expect(msUnixTimestamp(input)).toBe(expected);
+    });
+  });
+});
+
+describe('getHashedValue', () => {
+  const testCases = [
+    {
+      name: 'should return null for null input',
+      input: null,
+      expected: null,
+    },
+    {
+      name: 'should return null for undefined input',
+      input: undefined,
+      expected: null,
+    },
+    {
+      name: 'should return null for empty string',
+      input: '',
+      expected: null,
+    },
+    {
+      name: 'should return original value if already a 64-char hex',
+      input: 'a'.repeat(64),
+      expected: 'a'.repeat(64),
+    },
+    {
+      name: 'should hash non-hex64 values',
+      input: 'test',
+      expectedLength: 64,
+      expectedPattern: /^[a-f0-9]{64}$/i,
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected, expectedLength, expectedPattern }) => {
+    it(name, () => {
+      const result = getHashedValue(input);
+      if (expected !== undefined) {
+        expect(result).toBe(expected);
+      }
+      if (expectedLength) {
+        expect(result).toHaveLength(expectedLength);
+      }
+      if (expectedPattern) {
+        expect(result).toMatch(expectedPattern);
+      }
+    });
+  });
+});
 
 describe('getItemIds', () => {
   const testCases = [
@@ -77,7 +190,7 @@ describe('getItemIds', () => {
 describe('getPriceSum', () => {
   const testCases = [
     {
-      name: 'should return "null" when products is not an array',
+      name: 'should return null when products is not an array',
       input: { properties: {} },
       expected: 'null',
     },
@@ -132,7 +245,7 @@ describe('getDataUseValue', () => {
       expected: null,
     },
     {
-      name: 'should return string ["lmu"] when att is 2',
+      name: 'should return ["lmu"] when att is 2',
       input: {
         context: {
           device: {
@@ -173,6 +286,87 @@ describe('getDataUseValue', () => {
   });
 });
 
+describe('generateBatchedPayloadForArray', () => {
+  const apiKey = generateRandomString();
+  const testCases = [
+    {
+      name: 'should generate batched payload with correct structure',
+      input: {
+        events: [{ body: { JSON: { event: 1 } } }, { body: { JSON: { event: 2 } } }],
+        destination: {
+          Config: {
+            apiKey,
+          },
+        },
+      },
+      expected: {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        endpoint: 'https://tr.snapchat.com/v2/conversion',
+        body: {
+          JSON_ARRAY: {
+            batch: JSON.stringify([{ event: 1 }, { event: 2 }]),
+          },
+        },
+      },
+    },
+    {
+      name: 'should handle empty events array',
+      input: {
+        events: [],
+        destination: {
+          Config: {
+            apiKey,
+          },
+        },
+      },
+      expected: {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        endpoint: 'https://tr.snapchat.com/v2/conversion',
+        body: {
+          JSON_ARRAY: {
+            batch: '[]',
+          },
+        },
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = generateBatchedPayloadForArray(input.events, input.destination);
+      expect(result.headers).toEqual(expected.headers);
+      expect(result.endpoint).toEqual(expected.endpoint);
+      expect(result.body.JSON_ARRAY).toEqual(expected.body.JSON_ARRAY);
+    });
+  });
+});
+
+describe('channelMapping', () => {
+  const testCases = [
+    {
+      name: 'should have correct mapping values',
+      expected: {
+        web: 'WEB',
+        mobile: 'MOBILE_APP',
+        mobile_app: 'MOBILE_APP',
+        offline: 'OFFLINE',
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, expected }) => {
+    it(name, () => {
+      expect(channelMapping).toEqual(expected);
+    });
+  });
+});
+
 describe('getEventTimestamp', () => {
   const fixedNow = moment('2023-01-15T00:00:00Z');
 
@@ -193,105 +387,41 @@ describe('getEventTimestamp', () => {
   const testCases = [
     {
       name: 'should return timestamp if within required days',
-      inputMessage: { timestamp: '2023-01-10T00:00:00Z' },
-      mockFns: () => {
-        getFieldValueFromMessage.mockReturnValue('2023-01-10T00:00:00Z');
-        msUnixTimestamp.mockReturnValue(1673308800000); // Unix timestamp in ms for 2023-01-10
-      },
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 28 days of fixedNow
       expected: '1673308800',
     },
     {
       name: 'should throw error if timestamp is older than required days',
-      inputMessage: { timestamp: '2022-12-01T00:00:00Z' },
-      mockFns: () => {
-        getFieldValueFromMessage.mockReturnValue('2022-12-01T00:00:00Z');
-      },
+      input: { timestamp: '2022-12-01T00:00:00Z' }, // Outside 28 days window
       expectedError: 'Events must be sent within 28 days of their occurrence',
     },
     {
-      name: 'should return eventTime if no timestamp found in message',
-      inputMessage: { other: 'data' },
-      mockFns: () => {
-        getFieldValueFromMessage.mockReturnValue(undefined);
-      },
-      expected: undefined,
+      name: 'should return eventTime if no timestamp found in input',
+      input: { other: 'data' },
+      expected: null,
     },
     {
       name: 'should accept custom required days parameter',
-      inputMessage: { timestamp: '2023-01-10T00:00:00Z' },
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 7 days of fixedNow
       requiredDays: 7,
-      mockFns: () => {
-        getFieldValueFromMessage.mockReturnValue('2023-01-10T00:00:00Z');
-        msUnixTimestamp.mockReturnValue(1673308800000);
-      },
-      expected: '1673308800',
+      expected: '1673308800', // Expected Unix timestamp in seconds
     },
     {
       name: 'should throw error if timestamp is older than custom required days',
-      inputMessage: { timestamp: '2023-01-01T00:00:00Z' },
+      input: { timestamp: '2023-01-01T00:00:00Z' }, // Outside 7 days window
       requiredDays: 7,
-      mockFns: () => {
-        getFieldValueFromMessage.mockReturnValue('2023-01-01T00:00:00Z');
-      },
       expectedError: 'Events must be sent within 7 days of their occurrence',
     },
   ];
 
-  testCases.forEach(({ name, inputMessage, requiredDays, mockFns, expected, expectedError }) => {
+  testCases.forEach(({ name, input, requiredDays, expected, expectedError }) => {
     it(name, () => {
-      mockFns();
       if (expectedError) {
-        expect(() => getEventTimestamp(inputMessage, requiredDays)).toThrow(expectedError);
+        expect(() => getEventTimestamp(input, requiredDays)).toThrow(expectedError);
       } else {
-        const result = getEventTimestamp(inputMessage, requiredDays);
+        const result = getEventTimestamp(input, requiredDays);
         expect(result).toBe(expected);
       }
-    });
-  });
-});
-
-describe('getHashedValue', () => {
-  const testCases = [
-    {
-      name: 'should return the original hash if input is a valid SHA-256',
-      input: 'a'.repeat(64),
-      expected: 'a'.repeat(64),
-    },
-    {
-      name: 'should hash the input if not already a valid SHA-256',
-      input: 'testString',
-      expected: 'hashed_testString',
-    },
-    {
-      name: 'should return null if input is null',
-      input: null,
-      expected: null,
-    },
-    {
-      name: 'should return null if input is undefined',
-      input: undefined,
-      expected: null,
-    },
-    {
-      name: 'should return null if input is empty string',
-      input: '',
-      expected: null,
-    },
-    {
-      name: 'should handle numeric inputs',
-      input: 12345,
-      expected: 'hashed_12345',
-    },
-    {
-      name: 'should handle email addresses',
-      input: 'test@example.com',
-      expected: 'hashed_test@example.com',
-    },
-  ];
-
-  testCases.forEach(({ name, input, expected }) => {
-    it(name, () => {
-      expect(getHashedValue(input)).toBe(expected);
     });
   });
 });

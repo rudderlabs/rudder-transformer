@@ -1,16 +1,16 @@
 import { Context } from 'koa';
 import { castArray } from 'lodash';
 import { UserTransformService } from '../services/userTransform';
-import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
+import { ProcessorTransformationRequest } from '../types/index';
 import {
   extractLibraries,
   setupUserTransformHandler,
   validateCode,
 } from '../util/customTransformer';
-
 import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
+import { transformWithPiscina } from '../services/piscina/wrapper';
 
 export class UserTransformController {
   /**
@@ -37,10 +37,20 @@ export class UserTransformController {
     );
     const requestSize = Number(ctx.request.get('content-length'));
     const events = ctx.request.body as ProcessorTransformationRequest[];
-    const processedRespone: UserTransformationServiceResponse =
-      await UserTransformService.transformRoutine(events, ctx.state.features, requestSize);
-    ctx.body = processedRespone.transformedEvents;
-    ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
+
+    let processedResponse;
+    if (process.env.USE_PISCINA === 'true') {
+      processedResponse = await transformWithPiscina(events, ctx.state.features, requestSize);
+    } else {
+      processedResponse = await UserTransformService.transformRoutine(
+        events,
+        ctx.state.features,
+        requestSize,
+      );
+    }
+
+    ctx.body = processedResponse.transformedEvents;
+    ControllerUtility.postProcess(ctx, processedResponse.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',
       ctx.response.body,

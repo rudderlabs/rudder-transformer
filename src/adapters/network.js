@@ -5,7 +5,7 @@ const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
-const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNull, PlatformError } = require('@rudderstack/integrations-lib');
 const stats = require('../util/stats');
 const {
   removeUndefinedValues,
@@ -336,8 +336,8 @@ const getZippedPayload = (payload) => {
   try {
     return gzipSync(payload);
   } catch (err) {
-    logger.error(`Failed to parse GZIP payload: ${err}`);
-    return undefined;
+    logger.error(`Failed to do GZIP compression: ${err}`);
+    throw new PlatformError(`Failed to do GZIP compression: ${err}`, 400);
   }
 };
 

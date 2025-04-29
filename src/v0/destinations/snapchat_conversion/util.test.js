@@ -387,13 +387,13 @@ describe('getEventTimestamp', () => {
   const testCases = [
     {
       name: 'should return timestamp if within required days',
-      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 28 days of fixedNow
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 37 days of fixedNow
       expected: '1673308800',
     },
     {
       name: 'should throw error if timestamp is older than required days',
-      input: { timestamp: '2022-12-01T00:00:00Z' }, // Outside 28 days window
-      expectedError: 'Events must be sent within 28 days of their occurrence',
+      input: { timestamp: '2022-01-01T00:00:00Z' }, // Outside 37 days window
+      expectedError: 'Events must be sent within 37 days of their occurrence',
     },
     {
       name: 'should return eventTime if no timestamp found in input',

@@ -90,7 +90,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead',
+                  endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,
@@ -236,7 +236,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead/leadId?_HttpMethod=PATCH',
+                    'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/leadId?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,
@@ -381,7 +381,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead',
+                  endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,
@@ -451,7 +451,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead',
+                endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -513,7 +513,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://ap15.salesforce.com/services/data/v63.0/sobjects/Lead',
+                endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -666,7 +666,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://ap15.salesforce.com/services/data/v63.0/sobjects/customobject',
+                  endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,
@@ -824,7 +824,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://ap15.salesforce.com/services/data/v63.0/sobjects/customobject2/id1101?_HttpMethod=PATCH',
+                    'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject2/id1101?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,
@@ -982,7 +982,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://ap15.salesforce.com/services/data/v63.0/sobjects/customobject2/id1102?_HttpMethod=PATCH',
+                    'https://ap15.salesforce.com/services/data/v50.0/sobjects/customobject2/id1102?_HttpMethod=PATCH',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader1,

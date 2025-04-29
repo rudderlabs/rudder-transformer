@@ -100,7 +100,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParametersWithWrongToken,
             endpoint:
-              'https://rudderstack.my.salesforce_oauth.com/services/data/v63.0/sobjects/Lead/20',
+              'https://rudderstack.my.salesforce_oauth.com/services/data/v50.0/sobjects/Lead/20',
           },
           reqMetadataArrayWithWrongSecret,
         ),
@@ -147,7 +147,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParametersWithRightToken,
             endpoint:
-              'https://rudderstack.my.salesforce.com/services/data/v63.0/sobjects/Lead/existing_unchanged_leadId',
+              'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
           },
           reqMetadataArray,
         ),

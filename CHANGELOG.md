@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.98.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.2...v1.98.0) (2025-04-29)
+
+
+### Features
+
+* **mixpanel:** add support for partial batch failure handling ([#4260](https://github.com/rudderlabs/rudder-transformer/issues/4260)) ([efe7f21](https://github.com/rudderlabs/rudder-transformer/commit/efe7f21643dc67e3f32ce6af7fdff5832046c3ea))
+* onboarding new destination loops ([#3976](https://github.com/rudderlabs/rudder-transformer/issues/3976)) ([#4235](https://github.com/rudderlabs/rudder-transformer/issues/4235)) ([b1288be](https://github.com/rudderlabs/rudder-transformer/commit/b1288bee1962fc4c2eb4a59464e18dd6a17d7543))
+* onboarding snapchat v3 ([#4052](https://github.com/rudderlabs/rudder-transformer/issues/4052)) ([19d9371](https://github.com/rudderlabs/rudder-transformer/commit/19d93714e0b02dba0ac99c6cb0217ee427fad845))
+
+
+### Bug Fixes
+
+* **dynamicConfigParser:** fix cloning issue in getdynamicconfig method ([#4278](https://github.com/rudderlabs/rudder-transformer/issues/4278)) ([2c5e6f9](https://github.com/rudderlabs/rudder-transformer/commit/2c5e6f92c3575d17efc86e8386dc8d21a9fcdc64))
+
 ### [1.97.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.1...v1.97.2) (2025-04-22)
 
 

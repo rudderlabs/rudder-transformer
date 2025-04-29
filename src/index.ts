@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { addRequestSizeMiddleware, addStatMiddleware, initPyroscope } from './middleware';
+import { addRequestSizeMiddleware, addStatMiddleware, addProfilingMiddleware } from './middleware';
 import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
 import cluster from './util/cluster';
@@ -18,9 +18,8 @@ const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
-initPyroscope();
-
 const app = new Koa();
+addProfilingMiddleware(app);
 addStatMiddleware(app);
 
 const metricsApp = new Koa();

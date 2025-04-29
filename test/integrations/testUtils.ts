@@ -577,6 +577,7 @@ export const generateProxyV1Payload = (
       JSON_ARRAY: payloadParameters.JSON_ARRAY || {},
       XML: payloadParameters.XML || {},
       FORM: payloadParameters.FORM || {},
+      GZIP: payloadParameters.GZIP || {},
     },
     files: payloadParameters.files || {},
     metadata,

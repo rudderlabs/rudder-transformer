@@ -108,7 +108,7 @@ steps:
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent,
         "external_id": {{{{$.getGenericPaths("userId")}}}},
-        "click_id": .properties.clickId,
+        "click_id": .properties.clickId ? $.convertToString(.properties.clickId) : undefined,
         "partner_id": .traits.partnerId ?? .context.traits.partnerId ? $.convertToString(.traits.partnerId ?? .context.traits.partnerId) : undefined
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
@@ -133,7 +133,7 @@ steps:
                        .properties.total !== undefined ? $.convertToString(.properties.total) :
                        .properties.revenue !== undefined ? $.convertToString(.properties.revenue) : undefined,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
-            "order_id": .properties.order_id,
+            "order_id": .properties.order_id ? $.convertToString(.properties.order_id) : undefined,
             "search_string": .properties.query,
             "opt_out_type": .properties.optOutType,
             "content_name": .properties.contentName ? $.convertToString(.properties.contentName) : undefined,
@@ -150,7 +150,7 @@ steps:
           let products = .message.properties.products;
           {
             "num_items": $.sum(products.quantity.(Number(.))[]) || 0,
-            "content_ids": products.(.product_id ?? .sku ?? .id)[],
+            "content_ids": products.($.convertToString(.product_id ?? .sku ?? .id))[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
               "item_price":  $.convertToString(.price ?? prop.price),
@@ -166,7 +166,7 @@ steps:
             const props = .message.properties;
             const output = {
               "num_items": Number(props.quantity) || 0,
-              "content_ids": (props.product_id ?? props.sku ?? props.id)[],
+              "content_ids": ($.convertToString(props.product_id ?? props.sku ?? props.id))[],
               "contents": {
                 "quantity": Number(props.quantity) || 1,
                 "item_price": props.price ? $.convertToString(props.price),

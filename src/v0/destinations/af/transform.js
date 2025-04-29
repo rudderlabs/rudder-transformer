@@ -27,42 +27,29 @@ const {
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
+function determineEndpoint(os, finalEndPoint, androidAppId, appleAppId) {
+  if (os && os.toLowerCase() === 'android' && androidAppId) {
+    return `${finalEndPoint}${androidAppId}`;
+  }
+  if (os && isAppleFamily(os) && appleAppId) {
+    return `${finalEndPoint}id${appleAppId}`;
+  }
+  throw new ConfigurationError(
+    'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
+  );
+}
+
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId, sharingFilter, devKey, s2sKey, authVersion } =
     destination.Config;
-  let endpoint;
   const os = get(message, 'context.os.name');
-  // if ((os && os.toLowerCase() === "android") || (os && isAppleFamily(os))){
-  //   if()
-  // }
 
   const finalEndPoint =
     isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? ENDPOINT_V2 : ENDPOINT;
 
-  if (os && os.toLowerCase() === 'android' && androidAppId) {
-    endpoint = `${finalEndPoint}${androidAppId}`;
-  } else if (os && isAppleFamily(os) && appleAppId) {
-    endpoint = `${finalEndPoint}id${appleAppId}`;
-  } else {
-    throw new ConfigurationError(
-      'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
-    );
-  }
-  // if (androidAppId) {
-  //   endpoint = `${ENDPOINT}${androidAppId}`;
-  // } else if (appleAppId) {
-  //   endpoint = `${ENDPOINT}id${appleAppId}`;
-  // }
-  // else if (message.context.app.namespace) {
-  //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
-  // } else {
-  //   throw new InstrumentationError("Invalid app endpoint");
-  // }
-  // const afId = message.integrations
-  //   ? message.integrations.AF
-  //     ? message.integrations.AF.af_uid
-  //     : undefined
-  //   : undefined;
+  // Extract endpoint determination to reduce complexity
+  const endpoint = determineEndpoint(os, finalEndPoint, androidAppId, appleAppId);
+
   const appsflyerId = getDestinationExternalID(message, 'appsflyerExternalId');
   if (!appsflyerId) {
     throw new InstrumentationError('Appsflyer id is not set. Rejecting the event');
@@ -99,7 +86,6 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  // const { sharingFilter, devKey } = destination.Config;
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
@@ -148,7 +134,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, c
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
   });
-  if (isMultiSupport && clonedProp && clonedProp.products && clonedProp.products.length > 0) {
+  if (isMultiSupport && clonedProp?.products?.length > 0) {
     const contentIds = [];
     const quantities = [];
     const prices = [];

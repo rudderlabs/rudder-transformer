@@ -190,7 +190,7 @@ const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, app
   }
 };
 
-const getEventTimestamp = (message, requiredDays = 28) => {
+const getEventTimestamp = (message, requiredDays = 37) => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {
     const start = moment.unix(moment(eventTime).format('X'));

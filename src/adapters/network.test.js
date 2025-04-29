@@ -919,31 +919,6 @@ describe('prepareProxyRequest tests', () => {
       },
     },
     {
-      name: 'should prepare proxy request when gzip payload is not correct',
-      input: {
-        body: {
-          GZIP: {
-            payload: { key: 'value' },
-          },
-        },
-        method: 'POST',
-        endpoint: 'https://api.example.com/gzip',
-        headers: { 'Content-Type': 'application/json' },
-        destinationConfig: { apiKey: 'test-key' },
-      },
-      expected: {
-        endpoint: 'https://api.example.com/gzip',
-        data: undefined,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Encoding': 'gzip',
-          'User-Agent': 'RudderLabs',
-        },
-        config: { apiKey: 'test-key' },
-      },
-    },
-    {
       name: 'should prepare proxy request when body is empty',
       input: {
         body: {},
@@ -1007,6 +982,19 @@ describe('prepareProxyRequest tests', () => {
 
     expect(formData).toContain('field1=value1');
     expect(formData).toContain('field2=value2');
+  });
+
+  test('should throw an platform error when gzip payload is not correct', () => {
+    const request = {
+      body: {
+        GZIP: {
+          payload: { key: 'value' },
+        },
+      },
+      method: 'POST',
+      endpoint: 'https://api.example.com/gzip',
+    };
+    expect(() => prepareProxyRequest(request)).toThrow('Failed to do GZIP compression');
   });
 });
 

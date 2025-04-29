@@ -455,4 +455,74 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       });
     },
   },
+  {
+    id: 'mp_v1_scenario_7',
+    name: 'mp',
+    description:
+      '[Proxy v1 API] :: Mixpanel Import API unsuccessful batch with invalid GZIP payload',
+    successCriteria: 'Should return 200 with successful response for all events',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            endpoint: 'https://api.mixpanel.com/import',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {
+              project_id: secret1,
+            },
+            GZIP: {
+              payload: { hello: 'world' },
+            },
+          },
+          metadata,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message:
+              'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+            response: [
+              {
+                statusCode: 400,
+                metadata: expect.objectContaining({
+                  jobId: 1,
+                }),
+                error:
+                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+              },
+              {
+                statusCode: 400,
+                metadata: expect.objectContaining({
+                  jobId: 2,
+                }),
+                error:
+                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+              },
+            ],
+            statTags: {
+              destType: 'MP',
+              destinationId: 'default-destinationId',
+              errorCategory: 'platform',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+          },
+        },
+      },
+    },
+  },
 ];

@@ -1318,7 +1318,6 @@ export const data = [
                   enableDeduplication: true,
                   deduplicationKey: 'messageId',
                   enhancedMatch: true,
-                  sendAsCustomEvent: true,
                   customProperties: [
                     { properties: 'presentclass' },
                     { properties: 'presentgrade' },
@@ -1500,7 +1499,7 @@ export const data = [
                         },
                       },
                       {
-                        event_name: 'custom',
+                        event_name: 'Test',
                         event_time: 1597383030,
                         action_source: 'web',
                         event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',

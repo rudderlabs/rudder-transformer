@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import { castArray } from 'lodash';
 import { UserTransformService } from '../services/userTransform';
-import { ProcessorTransformationRequest } from '../types/index';
+import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
 import {
   extractLibraries,
   setupUserTransformHandler,
@@ -38,7 +38,7 @@ export class UserTransformController {
     const requestSize = Number(ctx.request.get('content-length'));
     const events = ctx.request.body as ProcessorTransformationRequest[];
 
-    let processedResponse;
+    let processedResponse: UserTransformationServiceResponse;
     if (process.env.USE_PISCINA === 'true') {
       processedResponse = await transformWithPiscina(events, ctx.state.features, requestSize);
     } else {

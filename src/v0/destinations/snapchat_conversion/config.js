@@ -1,7 +1,15 @@
 const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = 'https://tr.snapchat.com/v2/conversion';
+const ENDPOINT = {
+  Endpoint_v2: 'https://tr.snapchat.com/v2/conversion',
+  Endpoint_v3: 'https://tr.snapchat.com/v3/{ID}/events',
+};
 const MAX_BATCH_SIZE = 2000;
+
+const API_VERSION = {
+  v2: 'legacyApi',
+  v3: 'newApi',
+};
 
 const ConfigCategory = {
   DEFAULT: { name: 'SnapchatTrackDefaultConfig' },
@@ -28,6 +36,33 @@ const ConfigCategory = {
 
   /* Snapchat General Events */
   SIGN_UP: { name: 'SignupConfig' },
+};
+
+const ConfigCategoryV3 = {
+  DEFAULT: { name: 'SnapchatTrackDefaultConfigV3' },
+  TRACK_COMMON: { name: 'TrackEventCommonConfigV3' },
+  /* E-Commerce Events */
+  // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
+  /* Browsing Section */
+  PRODUCTS_SEARCHED: { name: 'ProductsSearchedConfigV3' },
+  PRODUCT_LIST_VIEWED: { name: 'ProductListViewedConfigV3' },
+
+  /* Promotions Section */
+  PROMOTION_VIEWED: { name: 'PromotionViewedConfigV3' },
+  PROMOTION_CLICKED: { name: 'PromotionClickedConfigV3' },
+
+  /* Ordering Section */
+  PRODUCT_VIEWED: { name: 'ProductViewedConfigV3' },
+  PRODUCT_ADDED: { name: 'ProductAddedConfigV3' },
+  CHECKOUT_STARTED: { name: 'CheckoutStartedConfigV3' },
+  PAYMENT_INFO_ENTERED: { name: 'PaymentInfoEnteredConfigV3' },
+  ORDER_COMPLETED: { name: 'OrderCompletedConfigV3' },
+
+  /* Wishlist Section */
+  PRODUCT_ADDED_TO_WISHLIST: { name: 'ProductAddedToWishlistConfigV3' },
+
+  /* Snapchat General Events */
+  SIGN_UP: { name: 'SignupConfigV3' },
 };
 
 const eventNameMapping = {
@@ -76,12 +111,16 @@ const eventNameMapping = {
 };
 const pageTypeToTrackEvent = 'page_view';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+const mappingConfigV3 = getMappingConfig(ConfigCategoryV3, __dirname);
 
 module.exports = {
   ENDPOINT,
   ConfigCategory,
+  ConfigCategoryV3,
   eventNameMapping,
   mappingConfig,
+  mappingConfigV3,
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
+  API_VERSION,
 };

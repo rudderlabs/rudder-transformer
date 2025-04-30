@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "custom_data.content_category",
+    "sourceKeys": ["properties.item_category", "properties.category"],
+    "required": false
+  },
+  {
+    "destKey": "custom_data.num_items",
+    "sourceKeys": ["properties.number_items", "properties.quantity"],
+    "required": false
+  },
+  {
+    "destKey": "custom_data.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "event_id",
+    "sourceKeys": ["properties.client_dedup_id", "properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "custom_data.value",
+    "sourceKeys": ["properties.price", "properties.value", "properties.revenue"],
+    "required": false
+  }
+]

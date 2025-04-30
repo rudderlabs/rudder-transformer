@@ -24,7 +24,6 @@ import { assertRouterOutput, responses } from '../testHelper';
 import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
-import { terminatePiscina } from '../../src/services/piscina/wrapper';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -79,7 +78,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await createHttpTerminator({ server }).terminate();
-  await terminatePiscina();
   if (opts.generate === 'true') {
     const callsDataStr = responses.join('\n');
     const calls = `

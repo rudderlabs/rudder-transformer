@@ -2297,14 +2297,37 @@ const applyJSONStringTemplate = (message, template) =>
 
 /**
  * This groups the events by destination ID and source ID.
- * Note: sourceID is only used for rETL events.
- * @param {*} events The events to be grouped.
- * @returns {array} The array of grouped events.
+ * Optionally groups by destination config when environment variable is set.
+ * Note: source > job_id is only used for rETL events.
+ *
+ * @param {Array} events The events to be grouped.
+ * @param {string} [destinationType] The type of destination (e.g., 'facebook', 'google').
+ *                                  Used to check for destination-specific environment variables.
+ * @returns {Array} The array of grouped events.
  */
-const groupRouterTransformEvents = (events) =>
-  Object.values(
-    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
-  );
+const groupRouterTransformEvents = (events, destinationType) => {
+  // Check for destination-specific environment variable to enable grouping by destination config
+  // Example: GROUP_EVENTS_BY_DESTINATION_CONFIG_FACEBOOK=true for 'facebook' destination type
+  const groupByEnvName = `GROUP_EVENTS_BY_DESTINATION_CONFIG_${destinationType?.toUpperCase()}`;
+  const shouldGroupByDestinationConfig = process.env[groupByEnvName] === 'true';
+
+  const groupResult = lodash.groupBy(events, (ev) => {
+    // If grouping by destination config is enabled, include the stringified config in the grouping key
+    // This ensures events with different destination configs are processed separately
+    const destConfigGroupKey = shouldGroupByDestinationConfig
+      ? JSON.stringify(ev.destination?.Config || 'default')
+      : 'default';
+
+    // Group by destination ID, job ID, and optionally destination config
+    return [
+      ev.destination?.ID || 'default',
+      ev.context?.sources?.job_id || 'default',
+      destConfigGroupKey,
+    ];
+  });
+
+  return Object.values(groupResult);
+};
 
 /*
  * Gets url path omitting the hostname & protocol

@@ -919,6 +919,49 @@ describe('groupRouterTransformEvents', () => {
     const resultGoogle = groupRouterTransformEvents(events, 'google');
     expect(resultGoogle.length).toBe(1);
   });
+
+  it('should group events with same config values but different key order', () => {
+    // Set environment variable to enable grouping by destination config
+    process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_TEST = 'true';
+
+    const events = [
+      {
+        event: 'event1',
+        destination: {
+          ID: 'dest1',
+          Config: { key1: 'value1', key2: 'value2' },
+        },
+      },
+      {
+        event: 'event2',
+        destination: {
+          ID: 'dest1',
+          // Same values but keys in different order
+          Config: { key2: 'value2', key1: 'value1' },
+        },
+      },
+      {
+        event: 'event3',
+        destination: {
+          ID: 'dest1',
+          // Different values
+          Config: { key1: 'different', key2: 'value2' },
+        },
+      },
+    ];
+
+    const result = groupRouterTransformEvents(events, 'test');
+
+    // Should have 2 groups - one for the matching configs (despite different key order)
+    // and one for the different config
+    expect(result.length).toBe(2);
+
+    // First group should have 2 events (the ones with matching configs)
+    expect(result.some((group) => group.length === 2)).toBe(true);
+
+    // Second group should have 1 event (the one with different config)
+    expect(result.some((group) => group.length === 1)).toBe(true);
+  });
 });
 
 describe('applyJSONStringTemplate', () => {

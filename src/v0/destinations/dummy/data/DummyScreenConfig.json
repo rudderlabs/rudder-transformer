@@ -1,0 +1,7 @@
+[
+  {
+    "destKey": "screenName",
+    "sourceKeys": "properties.name",
+    "required": false
+  }
+]

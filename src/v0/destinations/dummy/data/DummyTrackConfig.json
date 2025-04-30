@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "revenue",
+    "sourceKeys": "properties.revenue",
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "products",
+    "sourceKeys": "properties.products",
+    "required": false
+  }
+]

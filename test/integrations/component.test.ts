@@ -223,6 +223,8 @@ describe('Component Test Suite', () => {
 
               switch (tcData.module) {
                 case tags.MODULES.DESTINATION:
+                  process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_DUMMY =
+                    tcData.name === 'dummy' ? 'true' : 'false';
                   await destinationTestHandler(tcData);
                   break;
                 case tags.MODULES.SOURCE:

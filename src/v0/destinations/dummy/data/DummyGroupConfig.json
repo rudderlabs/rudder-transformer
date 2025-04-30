@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "traits.name",
+    "required": false
+  },
+  {
+    "destKey": "industry",
+    "sourceKeys": "traits.industry",
+    "required": false
+  },
+  {
+    "destKey": "employees",
+    "sourceKeys": "traits.employees",
+    "required": false
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["context.traits.email", "traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "firstName",
+    "sourceKeys": ["context.traits.firstName", "traits.firstName"],
+    "required": false
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": ["context.traits.lastName", "traits.lastName"],
+    "required": false
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": ["context.traits.phone", "traits.phone"],
+    "required": false
+  },
+  {
+    "destKey": "address",
+    "sourceKeys": ["context.traits.address", "traits.address"],
+    "required": false
+  }
+]

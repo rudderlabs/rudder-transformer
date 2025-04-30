@@ -1,0 +1,7 @@
+[
+  {
+    "destKey": "previousId",
+    "sourceKeys": "previousId",
+    "required": true
+  }
+]

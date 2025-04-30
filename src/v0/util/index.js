@@ -15,6 +15,7 @@ const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
+const jsonStringify = require('fast-json-stable-stringify');
 const crypto = require('crypto');
 const { v5 } = require('uuid');
 const {
@@ -2315,7 +2316,7 @@ const groupRouterTransformEvents = (events, destinationType) => {
     // If grouping by destination config is enabled, include the stringified config in the grouping key
     // This ensures events with different destination configs are processed separately
     const destConfigGroupKey = shouldGroupByDestinationConfig
-      ? JSON.stringify(ev.destination?.Config || 'default')
+      ? jsonStringify(ev.destination?.Config || 'default')
       : 'default';
 
     // Group by destination ID, job ID, and optionally destination config

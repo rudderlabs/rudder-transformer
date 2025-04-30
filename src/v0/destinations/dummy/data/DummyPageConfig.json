@@ -1,0 +1,22 @@
+[
+  {
+    "destKey": "path",
+    "sourceKeys": "properties.path",
+    "required": false
+  },
+  {
+    "destKey": "url",
+    "sourceKeys": "properties.url",
+    "required": false
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "properties.title",
+    "required": false
+  },
+  {
+    "destKey": "referrer",
+    "sourceKeys": "properties.referrer",
+    "required": false
+  }
+]

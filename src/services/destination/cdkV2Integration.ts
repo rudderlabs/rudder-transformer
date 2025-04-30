@@ -112,7 +112,7 @@ export class CDKV2DestinationService implements DestinationService {
     _version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
+    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events, destinationType);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTo = this.getTags(

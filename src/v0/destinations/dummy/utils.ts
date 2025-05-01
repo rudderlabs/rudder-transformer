@@ -1,9 +1,10 @@
 /**
  * Utility functions for the dummy destination
  */
+import lodash from 'lodash';
 
 import { defaultRequestConfig, defaultPostRequestConfig } from '../../util';
-import { ENDPOINT } from './config';
+import { ENDPOINT, MAX_BATCH_SIZE, DEFAULT_BATCH_SIZE } from './config';
 import { JSON_MIME_TYPE } from '../../util/constant';
 
 /**
@@ -35,4 +36,28 @@ export function buildResponse(payload: Record<string, any>) {
   response.statusCode = 200;
 
   return response;
+}
+
+/**
+ * Batch events for the dummy destination
+ * @param events - The events to batch
+ * @param batchSize - The batch size to use
+ * @returns The batched events
+ */
+export function batchEvents(
+  events: Record<string, any>[],
+  batchSize: number = DEFAULT_BATCH_SIZE,
+): Record<string, any>[][] {
+  // If no events, return empty array
+  if (!events || events.length === 0) {
+    return [];
+  }
+
+  // Use the provided batch size or default
+  const actualBatchSize = Math.min(batchSize, MAX_BATCH_SIZE);
+
+  // Create batches for each destination
+  const batches: Record<string, any>[][] = lodash.chunk(events, actualBatchSize);
+
+  return batches;
 }

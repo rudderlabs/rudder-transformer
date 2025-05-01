@@ -2,6 +2,7 @@
  * Dummy destination transformation
  * This destination is used for testing common or platform changes without destination-specific concerns
  */
+import lodash from 'lodash';
 
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
 import { EventType } from '../../../constants';
@@ -11,7 +12,7 @@ import {
   handleRtTfSingleEventError,
   getSuccessRespEvents,
 } from '../../util';
-import { CONFIG_CATEGORIES, MAPPING_CONFIG } from './config';
+import { CONFIG_CATEGORIES, MAPPING_CONFIG, DEFAULT_BATCH_SIZE, THROTTLING_COST } from './config';
 import { buildResponse } from './utils';
 
 /**
@@ -165,6 +166,11 @@ function process(event: Record<string, any>) {
       throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
 
+  // Add throttling cost based on message type
+  if (THROTTLING_COST && THROTTLING_COST[messageType.toUpperCase()]) {
+    payload.throttlingCost = THROTTLING_COST[messageType.toUpperCase()];
+  }
+
   return payload;
 }
 
@@ -181,7 +187,13 @@ async function processRouterDest(inputs: Record<string, any>[], reqMetadata: Rec
   const successMetadatas: Record<string, any>[] = [];
   const destination = inputs[0]?.destination;
 
-  // Process each input
+  // Check if batching is enabled
+  const enableBatching = destination?.Config?.enableBatching || false;
+  const maxBatchSize = destination?.Config?.maxBatchSize
+    ? parseInt(destination.Config.maxBatchSize, 10)
+    : DEFAULT_BATCH_SIZE;
+
+  // Process each input with dynamic configuration
   inputs.forEach((input) => {
     try {
       // Process the event
@@ -195,15 +207,40 @@ async function processRouterDest(inputs: Record<string, any>[], reqMetadata: Rec
     }
   });
 
-  // If we have successful payloads, build a batched response
+  // If we have successful payloads, build responses
   if (payloads.length > 0) {
-    // Build the response with all payloads in the events array
-    const response = buildResponse({ events: payloads });
+    const successResponses: any[] = [];
 
-    // Create a success response with all the metadata
-    const successResponse = getSuccessRespEvents(response, successMetadatas, destination);
+    // If batching is enabled, batch the payloads
+    if (enableBatching && payloads.length > 1) {
+      // Create batches of payloads
+      const batchedPayloads = lodash.chunk(payloads, maxBatchSize);
+      const batchedMetadata = lodash.chunk(successMetadatas, maxBatchSize);
 
-    return [successResponse, ...failureResponses];
+      // Process each batch
+      batchedPayloads.forEach((batch, index) => {
+        // Build the response with the batch of payloads
+        const response = buildResponse({ events: batch });
+
+        // Create a success response with the batch metadata
+        const batchResponse = getSuccessRespEvents(
+          response,
+          batchedMetadata[index],
+          destination,
+          true,
+        );
+        successResponses.push(batchResponse);
+      });
+    } else {
+      // No batching, build a single response with all payloads
+      const response = buildResponse({ events: payloads });
+
+      // Create a success response with all the metadata
+      const successResponse = getSuccessRespEvents(response, successMetadatas, destination, false);
+      successResponses.push(successResponse);
+    }
+
+    return [...successResponses, ...failureResponses];
   }
 
   return failureResponses;

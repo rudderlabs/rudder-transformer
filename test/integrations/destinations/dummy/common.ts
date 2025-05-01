@@ -7,6 +7,28 @@ export const destTypeInUpperCase = 'DUMMY';
 export const displayName = 'Dummy Destination';
 export const channel = 'web';
 
+export const destination: Destination = {
+  Config: {
+    apiKey: secret1,
+    enableBatching: true,
+    maxBatchSize: 10,
+    maxRetries: 3,
+    retryInterval: 1000,
+    dynamicConfig: true,
+  },
+  DestinationDefinition: {
+    DisplayName: displayName,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Config: {},
+  },
+  Enabled: true,
+  ID: '123',
+  Name: destTypeInUpperCase,
+  Transformations: [],
+  WorkspaceID: 'test-workspace-id',
+};
+
 export const getDestination = (configVariation: number): Destination => {
   return {
     Config: {

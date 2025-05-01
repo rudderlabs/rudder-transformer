@@ -41,3 +41,25 @@ export const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, `${__dirname}`
 
 // Export destination name
 export const DESTINATION = 'DUMMY';
+
+// Batching configuration
+export const MAX_BATCH_SIZE = 10;
+export const DEFAULT_BATCH_SIZE = 5;
+
+// Rate limiting configuration
+export const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+export const RATE_LIMIT_COUNT = 100; // 100 requests per minute
+
+// Retry configuration
+export const MAX_RETRIES = 3;
+export const RETRY_DELAY_MS = 1000; // 1 second
+
+// Throttling cost configuration
+export const THROTTLING_COST = {
+  IDENTIFY: 1,
+  TRACK: 1,
+  PAGE: 1,
+  SCREEN: 1,
+  GROUP: 2, // Group events cost more
+  ALIAS: 2, // Alias events cost more
+};

@@ -8,6 +8,17 @@ export type DestinationDefinition = {
   Config: Record<string, unknown>;
 };
 
+export type AccountDefinition = {
+  Name: string;
+  Config: Record<string, unknown>;
+};
+export type AccountWithDefinition = {
+  ID: string;
+  Options: Record<string, unknown>;
+  Secret: Record<string, unknown>;
+  AccountDefinition: AccountDefinition;
+};
+
 export type Destination<DestinationConfig = Record<string, unknown>> = {
   ID: string;
   Name: string;
@@ -19,6 +30,8 @@ export type Destination<DestinationConfig = Record<string, unknown>> = {
   RevisionID?: string;
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
+  DeliveryAccount?: AccountWithDefinition;
+  DeleteAccount?: AccountWithDefinition;
 };
 
 export type DestinationConnectionConfig<T> = {

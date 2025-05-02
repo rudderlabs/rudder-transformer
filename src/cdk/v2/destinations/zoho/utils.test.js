@@ -275,12 +275,12 @@ describe('searchRecordIdV2', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        Config: mockConfig,
+        destConfig: mockConConfig.destination,
+      });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
         'https://www.zohoapis.com/crm/v6/coql',
@@ -333,12 +333,12 @@ describe('searchRecordIdV2', () => {
 
   testCases2.forEach(({ name, expected, fields }) => {
     it(name, async () => {
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        Config: mockConfig,
+        destConfig: mockConConfig.destination,
+      });
       expect(result).toEqual(expected);
     });
   });

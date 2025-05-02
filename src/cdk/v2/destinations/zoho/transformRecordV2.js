@@ -209,11 +209,18 @@ const handleDeletion = async (
   input,
   identifiers,
   Config,
+  deliveryAccount,
   destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(identifiers, input.metadata, Config, destConfig);
+  const searchResponse = await searchRecordIdV2({
+    identifiers,
+    metadata: input.metadata,
+    Config,
+    deliveryAccount,
+    destConfig,
+  });
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -241,6 +248,7 @@ const processInput = async (
   input,
   operationModuleType,
   Config,
+  deliveryAccount,
   transformedResponseToBeBatched,
   errorResponseList,
   destConfig,
@@ -274,6 +282,7 @@ const processInput = async (
       input,
       identifiers,
       Config,
+      deliveryAccount,
       destConfig,
       transformedResponseToBeBatched,
       errorResponseList,
@@ -314,7 +323,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
 
   const response = [];
   const errorResponseList = [];
-  const { Config } = destination;
+  const { Config, deliveryAccount } = destination;
   const { destination: destConfig } = inputs[0].connection?.config || {};
   if (!destConfig) {
     throw new ConfigurationError('Connection destination config is required');
@@ -336,6 +345,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
     Config,
     destConfig,
+    deliveryAccount,
   );
 
   await Promise.all(
@@ -344,6 +354,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
         input,
         operationModuleType,
         Config,
+        deliveryAccount,
         transformedResponseToBeBatched,
         errorResponseList,
         destConfig,

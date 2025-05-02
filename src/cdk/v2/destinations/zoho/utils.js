@@ -11,13 +11,13 @@ const { isHttpStatusSuccess } = require('../../../../v0/util');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
-const deduceModuleInfoV2 = (Config, destConfig) => {
+const deduceModuleInfoV2 = (Config, destConfig, deliveryAccount) => {
   const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
     upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
-      dataCenter: Config.region,
+      dataCenter: deliveryAccount?.options?.region || Config.region,
       moduleName: object,
     }),
     identifierType,
@@ -179,9 +179,9 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
+const searchRecordIdV2 = async ({ identifiers, metadata, Config, deliveryAccount, destConfig }) => {
   try {
-    const { region } = Config;
+    const region = deliveryAccount?.options?.region || Config.region;
     const { object } = destConfig;
 
     const selectQuery = generateSqlQuery(object, identifiers);

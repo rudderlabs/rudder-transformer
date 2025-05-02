@@ -16,8 +16,6 @@ describe('PiscinaService', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (Piscina as unknown as jest.Mock).mockImplementation(() => mockPiscina);
-    // Reset environment variables
-    process.env.USE_PISCINA = 'true';
     delete process.env.PISCINA_MAX_THREADS;
     delete process.env.PISCINA_MIN_THREADS;
     delete process.env.PISCINA_IDLE_TIMEOUT;
@@ -33,7 +31,6 @@ describe('PiscinaService', () => {
 
   describe('initialize', () => {
     it('should initialize Piscina', () => {
-      process.env.USE_PISCINA = 'true';
       initializePiscina();
       expect(Piscina).toHaveBeenCalled();
       expect(logger.info).toHaveBeenCalledWith('Piscina worker pool initialized');
@@ -62,7 +59,6 @@ describe('PiscinaService', () => {
 
   describe('terminate', () => {
     it('should terminate initialized Piscina', async () => {
-      process.env.USE_PISCINA = 'true';
       initializePiscina();
       await terminatePiscina();
       expect(mockPiscina.destroy).toHaveBeenCalled();

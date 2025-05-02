@@ -63,11 +63,6 @@ class PiscinaService {
   public static initialize(): void {
     const service = PiscinaService.getInstance();
 
-    if (process.env.USE_PISCINA !== 'true') {
-      logger.info('Piscina is disabled via USE_PISCINA environment variable');
-      return;
-    }
-
     if (!service.isInitialized) {
       const config = service.getPiscinaConfig();
       service.piscina = new Piscina({

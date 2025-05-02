@@ -32,20 +32,11 @@ describe('PiscinaService', () => {
   });
 
   describe('initialize', () => {
-    it('should initialize Piscina when enabled', () => {
+    it('should initialize Piscina', () => {
       process.env.USE_PISCINA = 'true';
       initializePiscina();
       expect(Piscina).toHaveBeenCalled();
       expect(logger.info).toHaveBeenCalledWith('Piscina worker pool initialized');
-    });
-
-    it('should not initialize Piscina when disabled', () => {
-      process.env.USE_PISCINA = 'false';
-      initializePiscina();
-      expect(Piscina).not.toHaveBeenCalled();
-      expect(logger.info).toHaveBeenCalledWith(
-        'Piscina is disabled via USE_PISCINA environment variable',
-      );
     });
 
     it('should use environment variables for configuration', () => {

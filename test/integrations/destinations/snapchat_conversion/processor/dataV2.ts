@@ -1,11 +1,13 @@
-import { destination, metadata, mockFns } from '../commonConfig';
 import { ProcessorTestData } from '../../../testTypes';
+import { destination, metadata, mockFns } from '../commonConfig';
 import { overrideDestination } from '../../../testUtils';
-export const dataV3: ProcessorTestData[] = [
+import { authHeader1 } from '../maskedSecrets';
+
+export const dataV2: ProcessorTestData[] = [
   {
-    id: 'processor-1746381267903',
+    id: 'processor-1746381267902',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Page event-> PAGE_VIEW ',
+    description: 'Test case for Page event-> PAGE_VIEW ',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -24,8 +26,7 @@ export const dataV3: ProcessorTestData[] = [
               context: {
                 traits: {
                   email: 'test@email.com',
-                  gender: 'M',
-                  country: 'India',
+                  phone: '+91 2111111 ',
                 },
                 app: {
                   build: '1.0.0',
@@ -74,7 +75,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -89,32 +90,27 @@ export const dataV3: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               userId: '',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'WEB',
-                      event_name: 'PAGE_VIEW',
-                      event_source_url: 'http://www.rudderstack.com',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        country: 'fb54e9062429a93785559529beda15c55f62c29be22267811c0e8346c14846d3',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        ge: '62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                      },
-                    },
-                  ],
+                  event_type: 'PAGE_VIEW',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'WEB',
+                  page_url: 'http://www.rudderstack.com',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -131,9 +127,9 @@ export const dataV3: ProcessorTestData[] = [
     mockFns,
   },
   {
-    id: 'processor-1746381267903',
+    id: 'processor-1746381267902',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Prodcuts Searched event for conversion type offline',
+    description: 'Test case for Prodcuts Searched event for conversion type offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -209,7 +205,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -223,38 +219,38 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        num_items: 4,
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        fn: '96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        ln: '799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        sc_click_id: 'some_click_id',
-                        st: '6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
+                  number_items: 4,
+                  click_id: 'some_click_id',
+                  description: 'Products Searched event for conversion type offline',
+                  hashed_first_name_sha:
+                    '96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a',
+                  hashed_last_name_sha:
+                    '799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f',
+                  hashed_state_sha:
+                    '6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c',
+                  hashed_middle_name_sha:
+                    '99bde068af2d49ed7fc8b8fa79abe13a6059e0db320bb73459fd96624bb4b33f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -271,11 +267,10 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
-    id: 'processor-1746381267903',
+    id: 'processor-1746381267902',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Prodcuts Searched event for conversion type web',
+    description: 'Test case for Prodcuts Searched event for conversion type web',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -343,7 +338,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -357,33 +352,27 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'WEB',
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'WEB',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -400,11 +389,10 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
-    id: 'processor-1746381267903',
+    id: 'processor-1746381267902',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Product Searched event where conversion type is mobile app',
+    description: 'Product Searched event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -475,7 +463,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -492,36 +479,30 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  delivery_method: 'in_store',
+                  device_model: 'AOSP on IA Emulator',
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -541,176 +522,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Product Searched event where conversion type is mobile app and extinfo is available',
-    scenario: 'Default processor scenario',
-    successCriteria: 'Processor test should pass successfully',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        method: 'POST',
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              channel: 'mobile',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  model: 'AOSP on IA Emulator',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                screen: {
-                  density: 420,
-                  height: 1794,
-                  width: 1080,
-                },
-                network: {
-                  bluetooth: false,
-                  carrier: 'Android',
-                  cellular: true,
-                  wifi: true,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                timezone: 'Asia/Kolkata',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 'Products Searched',
-              properties: {
-                delivery_method: 'in_store',
-                query: 't-shirts',
-                event_conversion_type: 'web',
-                storage: 128,
-                free_storage: 8,
-                cpu_cores: 2,
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            metadata,
-            destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
-              appId: 'dhfeih44f',
-              snapAppId: 'hfhdhfd',
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
-              body: {
-                JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                        extinfo: [
-                          'i2',
-                          'com.rudderlabs.javascript',
-                          '1',
-                          '1.0.0',
-                          '14.4.1',
-                          'AOSP on IA Emulator',
-                          'en-US',
-                          'IST',
-                          'Android',
-                          '1080',
-                          '1794',
-                          '420',
-                          '2',
-                          '128',
-                          '8',
-                          'Asia/Kolkata',
-                        ],
-                      },
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
-            metadata,
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-    mockFns,
-  },
-  {
-    id: 'processor-1746381267903',
-    name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test Case for Product List Viewed event where conversion type is mobile app',
+    description: 'Test Case for Product List Viewed event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -791,7 +603,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -808,39 +619,32 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_ids: ['123', '123'],
-                        value: '56',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        country: '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        zp: 'cbb2704f5b334a0cec32e5463d1fd9355f6ef73987bfe0ebb8389b7617452152',
-                      },
-                    },
-                  ],
+                  event_type: 'VIEW_CONTENT',
+                  item_ids: ['123', '123'],
+                  price: '56',
+                  country: 'IN',
+                  hashed_zip: 'cbb2704f5b334a0cec32e5463d1fd9355f6ef73987bfe0ebb8389b7617452152',
+                  region: 'some_region',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -860,8 +664,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test case for checkout_started event where conversion type is mobile app',
+    description: 'Test case for checkout_started event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -939,7 +742,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -956,37 +758,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_ids: ['123', '123'],
-                        value: '42',
-                      },
-                      event_name: 'START_CHECKOUT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'START_CHECKOUT',
+                  item_ids: ['123', '123'],
+                  price: '42',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1006,8 +800,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test Case for Order Completed event where conversion type is mobile app',
+    description: 'Test Case for Order Completed event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1087,7 +880,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -1104,38 +896,30 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        brands: ['brand01', 'brand02'],
-                        content_ids: ['123', '124'],
-                        value: '56',
-                      },
-                      event_name: 'PURCHASE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '124'],
+                  brands: ['brand01', 'brand02'],
+                  price: '56',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1155,7 +939,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test Case for Product Added event where conversion type is mobile app',
+    description: 'Test Case for Product Added event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1226,7 +1010,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -1243,39 +1026,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_category: 'shoes',
-                        content_ids: '123',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'ADD_CART',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_ids: '123',
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'ADD_CART',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1295,7 +1070,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Viewed event where conversion type is web',
+    description: 'Test case for Product Viewed event where conversion type is web',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1367,7 +1142,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -1381,37 +1156,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'WEB',
-                      custom_data: {
-                        content_category: 'shoes',
-                        content_ids: '123',
-                        currency: 'USD',
-                        num_items: 14,
-                        value: '14',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_ids: '123',
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'VIEW_CONTENT',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'WEB',
+                  pixel_id: 'dummyPixelId',
+                  number_items: 14,
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1431,7 +1200,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Viewed event where conversion type is offline',
+    description: 'Test case for Product Viewed event where conversion type is offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1502,7 +1271,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -1516,37 +1285,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        content_ids: '123',
-                        currency: 'USD',
-                        num_items: 1,
-                        value: '14',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_ids: '123',
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'VIEW_CONTENT',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
+                  number_items: 1,
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1566,8 +1329,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test case for Payment Info Entered event where conversion type is offline',
+    description: 'Test case for Payment Info Entered event where conversion type is offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1634,7 +1396,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -1648,31 +1410,27 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      event_id: '12dfdfdf3',
-                      event_name: 'ADD_BILLING',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  transaction_id: '12dfdfdf3',
+                  event_type: 'ADD_BILLING',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1692,7 +1450,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Subscribe event where conversion type is web',
+    description: 'Test case for Subscribe event where conversion type is web',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1762,7 +1520,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -1776,35 +1534,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'SUBSCRIBE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'SUBSCRIBE',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1824,7 +1576,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Promotion Viewed event for conversion type offline',
+    description: 'Test case for Promotion Viewed event for conversion type offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -1894,7 +1646,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -1908,35 +1660,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        price: '14',
-                      },
-                      event_name: 'AD_VIEW',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'AD_VIEW',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1956,7 +1702,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Promotion Clicked event for conversion type offline',
+    description: 'Test case for Promotion Clicked event for conversion type offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2026,7 +1772,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -2040,35 +1786,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        price: '14',
-                      },
-                      event_name: 'AD_CLICK',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'AD_CLICK',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2088,7 +1828,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for save event for conversion type offline',
+    description: 'Test case for save event for conversion type offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2158,7 +1898,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -2172,35 +1912,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'SAVE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'SAVE',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2220,7 +1954,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Viewed event where conversion type is web',
+    description: 'Test case for Product Viewed event where conversion type is web',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2291,7 +2025,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -2305,36 +2039,30 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'WEB',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_source_url: 'hjhb.com',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  page_url: 'hjhb.com',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'VIEW_CONTENT',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'WEB',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2354,7 +2082,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Viewed event where conversion type is offline',
+    description: 'Test case for Product Viewed event where conversion type is offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2425,7 +2153,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -2439,35 +2167,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        content_category: 'shoes',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'VIEW_CONTENT',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2487,7 +2209,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Searched event where conversion type is offline',
+    description: 'Test case for Product Searched event where conversion type is offline',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2555,7 +2277,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -2569,33 +2291,28 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  event_tag: 'offline',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2616,7 +2333,7 @@ export const dataV3: ProcessorTestData[] = [
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
-      '[CAPIv3]: Test Case for Product Added To Whishlist event where conversion type is mobile app',
+      'Test Case for Product Added To Whishlist event where conversion type is mobile app',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2687,7 +2404,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -2704,39 +2420,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_category: 'shoes',
-                        content_ids: '123',
-                        currency: 'USD',
-                        value: '14',
-                      },
-                      event_name: 'ADD_TO_WISHLIST',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  item_category: 'shoes',
+                  item_ids: '123',
+                  price: '14',
+                  currency: 'USD',
+                  event_type: 'ADD_TO_WISHLIST',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2756,7 +2464,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Products Searched event using event mapping',
+    description: 'Test case for Products Searched event using event mapping',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2824,7 +2532,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               rudderEventsToSnapEvents: [
                 {
                   from: 'ProdSearched',
@@ -2846,33 +2553,27 @@ export const dataV3: ProcessorTestData[] = [
               userId: '',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -2893,7 +2594,7 @@ export const dataV3: ProcessorTestData[] = [
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
-      '[CAPIv3]: test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground',
+      'test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -2955,7 +2656,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               rudderEventsToSnapEvents: [
                 {
                   from: 'Product_Added_To_Cart',
@@ -2976,33 +2676,27 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3023,7 +2717,7 @@ export const dataV3: ProcessorTestData[] = [
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
-      '[CAPIv3]: test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground - here destination config need to be modified',
+      'test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground - here destination config need to be modified',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3085,7 +2779,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               rudderEventsToSnapEvents: [
                 {
                   from: 'Product_Added_To_Cart',
@@ -3107,33 +2800,27 @@ export const dataV3: ProcessorTestData[] = [
               type: 'REST',
               userId: '',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      custom_data: {
-                        search_string: 't-shirts',
-                      },
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  search_string: 't-shirts',
+                  event_type: 'SEARCH',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3152,7 +2839,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Enable deduplication with duplication key as email',
+    description: 'Enable deduplication with duplication key as email',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3234,11 +2921,10 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
-              deduplicationKey: 'properties.custom_dedup_id',
               enableDeduplication: true,
+              deduplicationKey: 'properties.custom_dedup_id',
             }),
           },
         ],
@@ -3253,39 +2939,32 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_ids: ['123', '123'],
-                        value: '100',
-                      },
-                      event_id: '1234',
-                      event_name: 'PURCHASE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_ip_address: '127.0.0.1',
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '123'],
+                  client_dedup_id: '1234',
+                  hashed_ip_address:
+                    '12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0',
+                  price: '100',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3305,7 +2984,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Mapping revenue to price for product list viewed event',
+    description: 'Mapping revenue to price for product list viewed event',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3384,7 +3063,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -3401,37 +3079,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_ids: ['123', '123'],
-                        value: '100',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'VIEW_CONTENT',
+                  item_ids: ['123', '123'],
+                  price: '100',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3451,7 +3121,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Mapping revenue to price for product list viewed event',
+    description: 'Mapping revenue to price for product list viewed event',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3530,7 +3200,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -3547,37 +3216,29 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        content_ids: ['123', '123'],
-                        value: '100',
-                      },
-                      event_name: 'VIEW_CONTENT',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'VIEW_CONTENT',
+                  item_ids: ['123', '123'],
+                  price: '100',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3597,7 +3258,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test Case for Order Completed event category',
+    description: 'Test Case for Order Completed event category',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3678,7 +3339,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -3695,39 +3355,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        brands: ['brand01', 'brand02'],
-                        content_category: 'shoes',
-                        content_ids: ['123', '124'],
-                        value: '56',
-                      },
-                      event_name: 'PURCHASE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '124'],
+                  brands: ['brand01', 'brand02'],
+                  item_category: 'shoes',
+                  price: '56',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3747,8 +3399,7 @@ export const dataV3: ProcessorTestData[] = [
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test Case for Order Completed event with both category and item_category',
+    description: 'Test Case for Order Completed event with both category and item_category',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3830,7 +3481,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               appId: 'dhfeih44f',
               snapAppId: 'hfhdhfd',
             }),
@@ -3847,39 +3497,31 @@ export const dataV3: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/hfhdhfd/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'MOBILE_APP',
-                      app_data: {
-                        app_id: 'dhfeih44f',
-                      },
-                      custom_data: {
-                        brands: ['brand01', 'brand02'],
-                        content_category: 'glass',
-                        content_ids: ['123', '124'],
-                        value: '56',
-                      },
-                      event_name: 'PURCHASE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '124'],
+                  brands: ['brand01', 'brand02'],
+                  item_category: 'glass',
+                  price: '56',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -3897,9 +3539,9 @@ export const dataV3: ProcessorTestData[] = [
     mockFns,
   },
   {
-    id: 'processor-1746381267904',
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: test event mapping from destination config',
+    description: 'test event mapping from destination config',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -3961,7 +3603,6 @@ export const dataV3: ProcessorTestData[] = [
             },
             metadata,
             destination: overrideDestination(destination, {
-              apiVersion: 'newApi',
               rudderEventsToSnapEvents: [
                 {
                   from: 'Custom Event',
@@ -3983,34 +3624,30 @@ export const dataV3: ProcessorTestData[] = [
               type: 'REST',
               userId: '',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
-                FORM: {},
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      event_name: 'LEVEL_COMPLETE',
-                      event_time: '1650625078',
-                      user_data: {
-                        client_user_agent:
-                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                      },
-                    },
-                  ],
+                  event_type: 'LEVEL_COMPLETE',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
+                FORM: {},
               },
               files: {},
             },
@@ -4024,9 +3661,9 @@ export const dataV3: ProcessorTestData[] = [
   },
 
   {
-    id: 'processor-1746381267904',
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Product Searched event for conversion type offline',
+    description: 'Test case for sign_up event',
     scenario: 'Default processor scenario',
     successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
@@ -4045,11 +3682,6 @@ export const dataV3: ProcessorTestData[] = [
                 traits: {
                   email: 'test@email.com',
                   phone: '+91 2111111 ',
-                  firstName: 'john',
-                  middleName: 'victor',
-                  lastName: 'doe',
-                  city: 'some_city',
-                  state: 'some_state',
                 },
                 app: {
                   build: '1.0.0',
@@ -4077,24 +3709,14 @@ export const dataV3: ProcessorTestData[] = [
                 screen: {
                   density: 2,
                 },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                clientUserAgent:
+                userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
               },
               type: 'track',
-              event: 'Products Searched',
+              event: 'sign_up',
               properties: {
-                brands: 'abc',
-                action_source: 'web',
-                num_items: 4,
-                sc_click_id: 'some_click_id',
-                description: 'Products Searched event for conversion type offline',
-                event_source_url: 'https://www.example.com&ScCid=123',
+                query: 't-shirts',
+                event_conversion_type: 'web',
               },
               integrations: {
                 All: true,
@@ -4102,7 +3724,7 @@ export const dataV3: ProcessorTestData[] = [
               sentAt: '2022-04-22T10:57:58Z',
             },
             metadata,
-            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+            destination,
           },
         ],
       },
@@ -4115,39 +3737,34 @@ export const dataV3: ProcessorTestData[] = [
             output: {
               version: '1',
               type: 'REST',
+              userId: '',
               method: 'POST',
-              endpoint: 'https://tr.snapchat.com/v3/dummyPixelId/events',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
               headers: {
+                Authorization: authHeader1,
                 'Content-Type': 'application/json',
               },
-              params: {
-                access_token: 'snapchat_conversion1',
-              },
+              params: {},
               body: {
                 JSON: {
-                  data: [
-                    {
-                      action_source: 'OFFLINE',
-                      event_name: 'SEARCH',
-                      event_time: '1650625078',
-                      user_data: {
-                        em: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
-                        fn: '96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a',
-                        idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        ln: '799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f',
-                        madid: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                        ph: 'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
-                        st: '6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c',
-                      },
-                    },
-                  ],
+                  event_type: 'SIGN_UP',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                    'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                    'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                    'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'OFFLINE',
+                  pixel_id: 'dummyPixelId',
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: '',
             },
             metadata,
             statusCode: 200,

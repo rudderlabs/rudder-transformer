@@ -63,6 +63,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'branch',
   'userpilot',
   'loops',
+  'snapchat_conversion',
 ];
 
 beforeAll(async () => {

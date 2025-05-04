@@ -1,12 +1,16 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
-import { FEATURES, IMPLEMENTATIONS, MODULES } from '../../../../../src/v0/util/tags';
+import { generateMetadata, overrideDestination } from '../../../testUtils';
+import { RouterTestData } from '../../../testTypes';
+import { destination, mockFns } from '../commonConfig';
 
-export const dataV3 = [
+export const dataV3: RouterTestData[] = [
   {
+    id: 'router-1746393448027',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test 0 - Web/Offline Events',
-    feature: FEATURES.ROUTER,
-    module: MODULES.DESTINATION,
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
+    feature: 'router',
+    module: 'destination',
     version: 'v0',
     input: {
       request: {
@@ -68,17 +72,8 @@ export const dataV3 = [
                 },
                 sentAt: '2022-04-22T10:57:58Z',
               },
-              metadata: {
-                jobId: 1,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  apiVersion: 'newApi',
-                },
-              },
+              metadata: generateMetadata(1),
+              destination: overrideDestination(destination, { apiVersion: 'newApi' }),
             },
             {
               message: {
@@ -136,17 +131,8 @@ export const dataV3 = [
                 },
                 sentAt: '2022-04-22T10:57:58Z',
               },
-              metadata: {
-                jobId: 2,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  apiVersion: 'newApi',
-                },
-              },
+              metadata: generateMetadata(2),
+              destination: overrideDestination(destination, { apiVersion: 'newApi' }),
             },
             {
               message: {
@@ -204,21 +190,13 @@ export const dataV3 = [
                 },
                 sentAt: '2022-04-22T10:57:58Z',
               },
-              metadata: {
-                jobId: 3,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  apiVersion: 'newApi',
-                },
-              },
+              metadata: generateMetadata(3),
+              destination: overrideDestination(destination, { apiVersion: 'newApi' }),
             },
           ],
           destType: 'snapchat_conversion',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -236,7 +214,7 @@ export const dataV3 = [
                   'Content-Type': 'application/json',
                 },
                 params: {
-                  access_token: secret1,
+                  access_token: 'snapchat_conversion1',
                 },
                 body: {
                   JSON: {
@@ -297,44 +275,25 @@ export const dataV3 = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                  userId: 'u1',
-                },
-                {
-                  jobId: 2,
-                  userId: 'u1',
-                },
-                {
-                  jobId: 3,
-                  userId: 'u1',
-                },
-              ],
-              batched: true,
+              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
               statusCode: 200,
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  apiVersion: 'newApi',
-                },
-              },
+              destination: overrideDestination(destination, { apiVersion: 'newApi' }),
+              batched: true,
             },
           ],
         },
       },
     },
-    mockFns: (_) => {
-      // @ts-ignore
-      Date.now = jest.fn(() => new Date('2022-04-22T10:57:58Z'));
-    },
+    mockFns,
   },
   {
+    id: 'router-1746393448027',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test 1 - Mobile Events',
-    feature: FEATURES.ROUTER,
-    module: MODULES.DESTINATION,
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
+    feature: 'router',
+    module: 'destination',
     version: 'v0',
     input: {
       request: {
@@ -399,25 +358,12 @@ export const dataV3 = [
                 },
                 sentAt: '2022-04-22T10:57:58Z',
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: false,
-                  },
-                },
-                Config: {
-                  apiKey: secret1,
-                  pixelId: 'dummyPixelId',
-                  appId: 'dhfeih44f',
-                  snapAppId: 'hfhdhfd',
-                  apiVersion: 'newApi',
-                },
-              },
-              metadata: {
-                jobId: 28,
-                destinationId: 'd2',
-                workspaceId: 'w2',
-              },
+              metadata: generateMetadata(1),
+              destination: overrideDestination(destination, {
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+                apiVersion: 'newApi',
+              }),
             },
             {
               message: {
@@ -488,29 +434,17 @@ export const dataV3 = [
                 },
                 sentAt: '2022-04-22T10:57:58Z',
               },
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: false,
-                  },
-                },
-                Config: {
-                  apiKey: secret1,
-                  pixelId: 'dummyPixelId',
-                  appId: 'dhfeih44f',
-                  snapAppId: 'hfhdhfd',
-                  apiVersion: 'newApi',
-                },
-              },
-              metadata: {
-                jobId: 29,
-                destinationId: 'd2',
-                workspaceId: 'w2',
-              },
+              metadata: generateMetadata(2),
+              destination: overrideDestination(destination, {
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+                apiVersion: 'newApi',
+              }),
             },
           ],
           destType: 'snapchat_conversion',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -528,7 +462,7 @@ export const dataV3 = [
                   'Content-Type': 'application/json',
                 },
                 params: {
-                  access_token: secret1,
+                  access_token: 'snapchat_conversion1',
                 },
                 body: {
                   JSON: {
@@ -583,34 +517,14 @@ export const dataV3 = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 28,
-                  destinationId: 'd2',
-                  workspaceId: 'w2',
-                },
-                {
-                  jobId: 29,
-                  destinationId: 'd2',
-                  workspaceId: 'w2',
-                },
-              ],
-              batched: true,
+              metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
-              destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: false,
-                  },
-                },
-                Config: {
-                  apiKey: secret1,
-                  pixelId: 'dummyPixelId',
-                  appId: 'dhfeih44f',
-                  snapAppId: 'hfhdhfd',
-                  apiVersion: 'newApi',
-                },
-              },
+              destination: overrideDestination(destination, {
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+                apiVersion: 'newApi',
+              }),
+              batched: true,
             },
           ],
         },
@@ -618,10 +532,13 @@ export const dataV3 = [
     },
   },
   {
+    id: 'router-1746393448027',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test 2',
-    feature: FEATURES.ROUTER,
-    module: MODULES.DESTINATION,
+    scenario: 'Default router scenario',
+    successCriteria: 'Router test should pass successfully',
+    feature: 'router',
+    module: 'destination',
     version: 'v0',
     input: {
       request: {
@@ -726,30 +643,16 @@ export const dataV3 = [
                 },
                 originalTimestamp: '2022-08-01T15:04:49.266Z',
               },
-              metadata: {
-                jobId: 4,
-                userId: 'u1',
-              },
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  appId: 'jahsdfjk-5487-asdfa-9957-7c74eb8d3e80',
-                  snapAppId: '',
-                  enableDeduplication: false,
-                  rudderEventsToSnapEvents: [
-                    {
-                      from: 'Product List Viewed',
-                      to: 'product_list_viewed',
-                    },
-                  ],
-                  apiVersion: 'newApi',
-                },
-              },
+              metadata: generateMetadata(1),
+              destination: overrideDestination(destination, {
+                snapAppId: '',
+                apiVersion: 'newApi',
+              }),
             },
           ],
           destType: 'snapchat_conversion',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -758,38 +661,23 @@ export const dataV3 = [
         body: {
           output: [
             {
-              metadata: [
-                {
-                  jobId: 4,
-                  userId: 'u1',
-                },
-              ],
-              batched: false,
+              metadata: [generateMetadata(1)],
               statusCode: 400,
+              destination: overrideDestination(destination, {
+                snapAppId: '',
+                apiVersion: 'newApi',
+              }),
+              batched: false,
               error: 'Snap App Id is required for app events',
               statTags: {
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
-                feature: FEATURES.ROUTER,
-                implementation: IMPLEMENTATIONS.NATIVE,
-                module: MODULES.DESTINATION,
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
                 destType: 'SNAPCHAT_CONVERSION',
-              },
-              destination: {
-                Config: {
-                  pixelId: 'dummyPixelId',
-                  apiKey: secret1,
-                  appId: 'jahsdfjk-5487-asdfa-9957-7c74eb8d3e80',
-                  snapAppId: '',
-                  enableDeduplication: false,
-                  rudderEventsToSnapEvents: [
-                    {
-                      from: 'Product List Viewed',
-                      to: 'product_list_viewed',
-                    },
-                  ],
-                  apiVersion: 'newApi',
-                },
               },
             },
           ],

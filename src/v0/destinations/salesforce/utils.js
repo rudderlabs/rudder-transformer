@@ -147,6 +147,10 @@ const getAccessTokenOauth = (metadata) => {
     throw new OAuthSecretError('access_token is undefined/null');
   }
 
+  if (!isDefinedAndNotNullAndNotEmpty(metadata.secret?.instance_url)) {
+    throw new OAuthSecretError('instance_url is undefined/null');
+  }
+
   return {
     token: metadata.secret?.access_token,
     instanceUrl: metadata.secret?.instance_url,

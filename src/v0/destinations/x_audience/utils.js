@@ -2,28 +2,14 @@
 const sha256 = require('sha256');
 const lodash = require('lodash');
 const jsonSize = require('json-size');
-const { OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
 const { MAX_PAYLOAD_SIZE_IN_BYTES, BASE_URL, MAX_OPERATIONS } = require('./config');
-const { getAuthHeaderForRequest } = require('../twitter_ads/util');
+const { getAuthHeaderForRequest, getOAuthFields } = require('../twitter_ads/util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const getOAuthFields = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[X Audience]:: OAuth - access keys not found');
-  }
-  const oAuthObject = {
-    consumerKey: secret.consumerKey,
-    consumerSecret: secret.consumerSecret,
-    accessToken: secret.accessToken,
-    accessTokenSecret: secret.accessTokenSecret,
-  };
-  return oAuthObject;
-};
 
 // Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
 const buildResponseWithJSON = (payload, config, metadata) => {
@@ -41,7 +27,7 @@ const buildResponseWithJSON = (payload, config, metadata) => {
     body: response.body.JSON,
   };
 
-  const oAuthObject = getOAuthFields(metadata);
+  const oAuthObject = getOAuthFields(metadata, 'X Audience');
   const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {
     Authorization: authHeader,
@@ -238,4 +224,4 @@ const getUserDetails = (fields, config) => {
   }
   return removeUndefinedAndNullAndEmptyValues(user);
 };
-module.exports = { getOAuthFields, batchEvents, getUserDetails, buildResponseWithJSON };
+module.exports = { batchEvents, getUserDetails, buildResponseWithJSON };

@@ -28,7 +28,12 @@ jest.mock('@rudderstack/integrations-lib', () => ({
 
 describe('Pyroscope', () => {
   it('should initialize Pyroscope with the correct app name', () => {
-    expect(Pyroscope.init).toHaveBeenCalledWith({ appName: 'rudder-transformer' });
+    expect(Pyroscope.init).toHaveBeenCalledWith({
+      appName: 'rudder-transformer',
+      wall: {
+        collectCpuTime: true, // Enable CPU time collection
+      },
+    });
   });
 
   it('addProfilingMiddleware should add middleware', async () => {

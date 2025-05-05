@@ -5,6 +5,9 @@ const stats = require('./util/stats');
 
 Pyroscope.init({
   appName: 'rudder-transformer',
+  wall: {
+    collectCpuTime: true, // Enable CPU time collection
+  },
 });
 
 function durationMiddleware() {

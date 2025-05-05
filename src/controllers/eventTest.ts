@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr, FixMe } from '../util/types';
+import { CatchErr, FixMe } from '../types';
 
 export class EventTestController {
   private static API_VERSION = '1';

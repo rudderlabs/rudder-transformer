@@ -6,8 +6,7 @@ import { ComparatorService } from '../services/comparator';
 import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
 import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
-import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
-import { FixMe } from '../util/types';
+import { FixMe, ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
 
 export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();

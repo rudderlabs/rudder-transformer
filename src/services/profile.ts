@@ -8,7 +8,7 @@ import pprof, { heap } from '@datadog/pprof';
 import { promisify } from 'util';
 import logger from '../logger';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr } from '../util/types';
+import { CatchErr } from '../types';
 
 // The average number of bytes between samples.
 // 512*1024 = 524288

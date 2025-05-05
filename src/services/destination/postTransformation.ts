@@ -13,9 +13,9 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationResponse,
   UserDeletionResponse,
-} from '../../types/index';
+  FixMe,
+} from '../../types';
 import stats from '../../util/stats';
-import { FixMe } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';

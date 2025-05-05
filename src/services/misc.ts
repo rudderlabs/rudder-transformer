@@ -1,7 +1,6 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { getCPUProfile, getHeapProfile } from '../middleware';
 import { Metadata } from '../types';
 import defaultFeaturesConfig from '../features';
 
@@ -63,13 +62,5 @@ export class MiscService {
 
   public static getFeatures() {
     return JSON.stringify(defaultFeaturesConfig);
-  }
-
-  public static async getCPUProfile(seconds: number) {
-    return getCPUProfile(seconds);
-  }
-
-  public static async getHeapProfile() {
-    return getHeapProfile();
   }
 }

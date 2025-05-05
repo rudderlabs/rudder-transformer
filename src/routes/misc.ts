@@ -10,8 +10,6 @@ router.get('/transformerBuildVersion', MiscController.buildVersion); // depricia
 router.get('/buildVersion', MiscController.buildVersion);
 router.get('/version', MiscController.version);
 router.get('/features', MiscController.features);
-router.get('/debug/pprof/profile', MiscController.getCPUProfile);
-router.get('/debug/pprof/heap', MiscController.getHeapProfile);
 
 const miscRoutes = router.routes();
 export default miscRoutes;

@@ -1,0 +1,45 @@
+[
+  {
+    "destKey": "custom_data.brands",
+    "sourceKeys": "properties.brands",
+    "required": false,
+    "metadata": {
+      "type": "IsArray"
+    }
+  },
+  {
+    "destKey": "user_data.sc_click_id",
+    "sourceKeys": "properties.click_id",
+    "required": false
+  },
+  {
+    "destKey": "user_data.sc_cookie1",
+    "sourceKeys": "properties.uuid_c1",
+    "required": false
+  },
+  {
+    "destKey": "app_data.advertiser_tracking_enabled",
+    "sourceKeys": "properties.att_status",
+    "required": false
+  },
+  {
+    "destKey": "user_data.client_ip_address",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "user_data.client_user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "user_data.idfv",
+    "sourceKeys": ["properties.idfv", "context.device.id"],
+    "required": false
+  },
+  {
+    "destKey": "user_data.madid",
+    "sourceKeys": ["properties.adId", "context.device.advertisingId"],
+    "required": false
+  }
+]

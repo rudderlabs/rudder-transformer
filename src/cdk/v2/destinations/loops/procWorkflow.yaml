@@ -1,0 +1,79 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + .message.type + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config.");
+
+  - name: validateIdentifyEvent
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      $.assert(email, "email is required for identify call.");
+
+  - name: validateTrackEvent
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      const email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      $.assert(email || userId, "Either email or userId is required for track call.");
+      $.assert(.message.event, "event is required for track call.");
+
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.payload = {};
+
+  - name: identifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.context.endpoint = "https://app.loops.so/api/v1/contacts/update";
+      const payload = {}
+      Object.assign(payload, .message.({{{{$.getGenericPaths("traits")}}}}));
+      payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      $.context.payload = payload;
+      $.context.method = "PUT";
+
+  - name: trackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.context.endpoint = "https://app.loops.so/api/v1/events/send";
+      const payload = {}
+      Object.assign(payload, .message.({{{{$.getGenericPaths("traits")}}}}));
+      payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      payload.email = .message.({{{{$.getGenericPaths("emailOnly")}}}});
+      payload.eventName = .message.event;
+      payload.eventProperties = .message.properties;
+      $.context.payload = payload;
+      $.context.method = "POST";
+
+  - name: cleanPayload
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = $.context.endpoint;
+      response.headers = {
+        "Authorization": "Bearer " + .destination.Config.apiKey,
+        "Content-Type": "application/json"
+      };
+      response.method = $.context.method;
+      response

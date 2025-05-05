@@ -156,6 +156,7 @@ export type ProxyV0Request = {
     JSON_ARRAY?: Record<string, unknown>;
     XML?: Record<string, unknown>;
     FORM?: Record<string, unknown>;
+    GZIP?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
   metadata: ProxyMetdata;
@@ -234,6 +235,34 @@ export type DeliveryV1Response = {
   authErrorCategory?: string;
   response: DeliveryJobState[];
 };
+
+/**
+ * Interface for response parameters in network handlers
+ */
+export interface ResponseHandlerParams {
+  destinationResponse: {
+    status: number;
+    response?: any;
+    headers?: any;
+  };
+  destinationRequest?: ProxyRequest;
+  destType?: string;
+  rudderJobMetadata: ProxyMetdata | ProxyMetdata[];
+  [key: string]: any;
+}
+
+/**
+ * Interface for response object from network handlers
+ */
+export interface ResponseProxyObject
+  extends Partial<DeliveryV0Response>,
+    Partial<DeliveryV1Response> {
+  status: number;
+  message: string;
+  destinationResponse?: any;
+  response?: DeliveryJobState[];
+  [key: string]: any;
+}
 
 export type ComparatorInput = {
   events: ProcessorTransformationRequest[] | RouterTransformationRequestData[];

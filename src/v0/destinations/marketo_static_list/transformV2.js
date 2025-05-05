@@ -136,7 +136,6 @@ async function processRecordInputs(groupedRecordInputs, destination, listId) {
     finalResponse.push(...errorResponseList);
   }
   return finalResponse;
-  // return [deleteResponse, insertResponse, ...errorResponseList];
 }
 
 module.exports = {

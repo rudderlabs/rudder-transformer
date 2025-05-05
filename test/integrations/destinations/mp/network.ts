@@ -1,4 +1,4 @@
-import { authHeader4, secret4 } from './maskedSecrets';
+import { authHeader4, secret1, secret4 } from './maskedSecrets';
 
 const deleteNwData = [
   {
@@ -1165,4 +1165,187 @@ const deleteNwData = [
     },
   },
 ];
-export const networkCallsData = [...deleteNwData];
+
+const dataDeliveryData = [
+  {
+    httpReq: {
+      url: 'https://api.mixpanel.com/import',
+      data: [
+        {
+          event: 'Test Event 1',
+          properties: {
+            time: 1619006730,
+            $insert_id: 'event1',
+            distinct_id: 'user123',
+            property1: 'value1',
+          },
+        },
+        {
+          event: 'Test Event 2',
+          properties: {
+            time: 1619006731,
+            $insert_id: 'event2',
+            distinct_id: 'user123',
+            property2: 'value2',
+          },
+        },
+      ],
+      params: {
+        project_id: secret1,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'OK',
+      data: 1,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.mixpanel.com/import',
+      data: [
+        {
+          event: 'Test Event 1',
+          properties: {
+            time: 1619006730,
+            $insert_id: 'event1',
+            distinct_id: 'user123',
+            $device_id: 'device123',
+            property1: 'value1',
+          },
+        },
+        {
+          event: 'Test Event 2',
+          properties: {
+            // Missing time property to trigger a validation error
+            $insert_id: 'event2',
+            distinct_id: 'user123',
+            $device_id: 'device123',
+            property2: 'value2',
+          },
+        },
+      ],
+      params: {
+        strict: '1',
+        project_id: secret1,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 400,
+      // statusText: 'OK',
+      data: {
+        failed_records: [
+          {
+            index: 1,
+            $insert_id: 'event2',
+            field: 'time',
+            message: 'Invalid timestamp',
+          },
+        ],
+        num_records_imported: 1,
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.mixpanel.com/import',
+      data: [
+        {
+          event: 'Test Event 1',
+          properties: {
+            time: 1619006730,
+            $insert_id: 'event1',
+            distinct_id: 'user123',
+            property1: 'value1',
+          },
+        },
+      ],
+      params: {
+        project_id: secret1,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 500,
+      // statusText: 'OK',
+      data: {
+        error: 'Internal Server Error',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.mixpanel.com/engage',
+      data: {
+        $token: secret1,
+        $distinct_id: 'user123',
+        $set: {
+          email: 'test@example.com',
+          name: 'Test User',
+        },
+      },
+      params: {
+        verbose: '1',
+        project_id: secret1,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      // statusText: 'OK',
+      data: {
+        error: 'Some properties are invalid',
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.mixpanel.com/groups',
+      data: {
+        $token: secret1,
+        $group_key: 'company',
+        $group_id: 'company123',
+        $set: {
+          name: 'Test Company',
+          industry: 'Technology',
+        },
+      },
+      params: {
+        verbose: '1',
+        project_id: secret1,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      // statusText: 'OK',
+      data: {
+        error: 'Some group properties are invalid',
+      },
+    },
+  },
+];
+
+export const networkCallsData = [...dataDeliveryData, ...deleteNwData];

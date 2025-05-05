@@ -26,7 +26,6 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
 
   // Check if this key has a corresponding error in the errors object
   if (errors && isObject(errors) && errors[errorKey]) {
-    // const errorCode = Object.keys(errors[errorKey])[0]; // Assume there is at least one error code
     const errorMsg = JSON.stringify(errors[errorKey]);
     return { isAbortable: true, errorMsg };
   }

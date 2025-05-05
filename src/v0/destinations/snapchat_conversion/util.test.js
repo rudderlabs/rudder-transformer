@@ -8,7 +8,10 @@ const {
   getHashedValue,
   channelMapping,
   generateBatchedPayloadForArray,
+  getEventTimestamp,
 } = require('./util');
+
+const moment = require('moment');
 
 describe('Snapchat Conversion Utils', () => {
   describe('getNormalizedPhoneNumber', () => {
@@ -360,6 +363,65 @@ describe('channelMapping', () => {
   testCases.forEach(({ name, expected }) => {
     it(name, () => {
       expect(channelMapping).toEqual(expected);
+    });
+  });
+});
+
+describe('getEventTimestamp', () => {
+  const fixedNow = moment('2023-01-15T00:00:00Z');
+
+  beforeEach(() => {
+    jest.spyOn(moment, 'now').mockImplementation(() => fixedNow.valueOf());
+    jest.spyOn(moment, 'unix').mockImplementation((timestamp) => {
+      if (timestamp) {
+        return moment.utc(timestamp * 1000);
+      }
+      return fixedNow;
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  const testCases = [
+    {
+      name: 'should return timestamp if within required days',
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 37 days of fixedNow
+      expected: '1673308800',
+    },
+    {
+      name: 'should throw error if timestamp is older than required days',
+      input: { timestamp: '2022-01-01T00:00:00Z' }, // Outside 37 days window
+      expectedError: 'Events must be sent within 37 days of their occurrence',
+    },
+    {
+      name: 'should return eventTime if no timestamp found in input',
+      input: { other: 'data' },
+      expected: null,
+    },
+    {
+      name: 'should accept custom required days parameter',
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 7 days of fixedNow
+      requiredDays: 7,
+      expected: '1673308800', // Expected Unix timestamp in seconds
+    },
+    {
+      name: 'should throw error if timestamp is older than custom required days',
+      input: { timestamp: '2023-01-01T00:00:00Z' }, // Outside 7 days window
+      requiredDays: 7,
+      expectedError: 'Events must be sent within 7 days of their occurrence',
+    },
+  ];
+
+  testCases.forEach(({ name, input, requiredDays, expected, expectedError }) => {
+    it(name, () => {
+      if (expectedError) {
+        expect(() => getEventTimestamp(input, requiredDays)).toThrow(expectedError);
+      } else {
+        const result = getEventTimestamp(input, requiredDays);
+        expect(result).toBe(expected);
+      }
     });
   });
 });

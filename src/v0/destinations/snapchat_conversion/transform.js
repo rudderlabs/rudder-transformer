@@ -1,6 +1,5 @@
 const get = require('get-value');
-const moment = require('moment');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -11,7 +10,6 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   isAppleFamily,
-  getValidDynamicFormConfig,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
@@ -22,22 +20,26 @@ const {
   ConfigCategory,
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
+  API_VERSION,
 } = require('./config');
 const {
-  msUnixTimestamp,
   getHashedValue,
   getItemIds,
   getPriceSum,
   getDataUseValue,
   getNormalizedPhoneNumber,
-  channelMapping,
   generateBatchedPayloadForArray,
+  eventMappingHandler,
+  getEventConversionType,
+  validateEventConfiguration,
+  getEventTimestamp,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { processV3, processRouterDest: processRouterV3 } = require('./transformV3');
 
 function buildResponse(apiKey, payload) {
   const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT;
+  response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
     Authorization: `Bearer ${apiKey}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -111,19 +113,7 @@ const populateHashedValues = (payload, message) => {
 };
 const getEventCommonProperties = (message) =>
   constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
-const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
-  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
-    throw new ConfigurationError('Pixel Id is required for web and offline events');
-  }
 
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
-    let requiredId = 'App Id';
-    if (!snapAppId) {
-      requiredId = 'Snap App Id';
-    }
-    throw new ConfigurationError(`${requiredId} is required for app events`);
-  }
-};
 const validateRequiredFields = (payload) => {
   if (
     !payload.hashed_email &&
@@ -159,21 +149,6 @@ const addSpecificEventDetails = (
     updatedPayload.pixel_id = pixelId;
   }
   return updatedPayload;
-};
-const getEventConversionType = (message) => {
-  const channel = get(message, 'channel');
-  let eventConversionType = message?.properties?.eventConversionType;
-  if (
-    channelMapping[eventConversionType?.toLowerCase()] ||
-    channelMapping[channel?.toLowerCase()]
-  ) {
-    eventConversionType = eventConversionType
-      ? channelMapping[eventConversionType?.toLowerCase()]
-      : channelMapping[channel?.toLowerCase()];
-  } else {
-    eventConversionType = 'OFFLINE';
-  }
-  return eventConversionType;
 };
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
@@ -261,21 +236,8 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   payload = { ...payload, ...getEventCommonProperties(message) };
   payload = populateHashedValues(payload, message);
   validateRequiredFields(payload);
-  payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
-  const timeStamp = payload.timestamp;
-  if (timeStamp) {
-    const start = moment.unix(moment(timeStamp).format('X'));
-    const current = moment.unix(moment().format('X'));
-    // calculates past event in days
-    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-    if (deltaDay > 28) {
-      throw new InstrumentationError('Events must be sent within 28 days of their occurrence');
-    }
-  }
+  payload.timestamp = getEventTimestamp(message);
   payload.data_use = getDataUseValue(message);
-  if (timeStamp) {
-    payload.timestamp = msUnixTimestamp(payload.timestamp)?.toString()?.slice(0, 10);
-  }
 
   payload.event_conversion_type = eventConversionType;
   payload = addSpecificEventDetails(
@@ -298,39 +260,12 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   return response;
 };
 
-// Checks if there are any mapping events for the track event and returns them
-const eventMappingHandler = (message, destination) => {
-  let event = get(message, 'event');
-
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
-  event = event.toString().trim().replace(/\s+/g, '_');
-
-  let { rudderEventsToSnapEvents } = destination.Config;
-  const mappedEvents = new Set();
-
-  if (Array.isArray(rudderEventsToSnapEvents)) {
-    rudderEventsToSnapEvents = getValidDynamicFormConfig(
-      rudderEventsToSnapEvents,
-      'from',
-      'to',
-      'snapchat_conversion',
-      destination.ID,
-    );
-    rudderEventsToSnapEvents.forEach((mapping) => {
-      if (mapping.from.trim().replace(/\s+/g, '_').toLowerCase() === event.toLowerCase()) {
-        mappedEvents.add(mapping.to);
-      }
-    });
-  }
-
-  return [...mappedEvents];
-};
-
 const process = (event) => {
   const { message, destination } = event;
   // const message = { ...incomingMessage };
+  if (destination.Config?.apiVersion === API_VERSION.v3) {
+    return processV3(event);
+  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -357,6 +292,10 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  if (destination.Config?.apiVersion === API_VERSION.v3) {
+    return processRouterV3(inputs, reqMetadata);
+  }
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   inputs.forEach((event) => {

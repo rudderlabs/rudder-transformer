@@ -51,21 +51,29 @@ describe('getOAuthFields utility test cases', () => {
     }).toThrow('[TWITTER ADS]:: OAuth - consumerKey not found');
   });
 
-  it('should return an oAuthObject even if optional fields are missing', () => {
+  it('should throw an error if accessToken is missing in the secret object', () => {
     const secret = {
       consumerKey: 'testConsumerKey',
       consumerSecret: 'testConsumerSecret',
+      accessTokenSecret: 'testAccessTokenSecret',
     };
     const destinationType = 'TWITTER ADS';
 
-    const expectedOutput = {
+    expect(() => {
+      getOAuthFields({ secret }, destinationType);
+    }).toThrow('[TWITTER ADS]:: OAuth - accessToken not found');
+  });
+
+  it('should throw an error if accessTokenSecret is missing in the secret object', () => {
+    const secret = {
       consumerKey: 'testConsumerKey',
       consumerSecret: 'testConsumerSecret',
-      accessToken: undefined,
-      accessTokenSecret: undefined,
+      accessToken: 'testAccessToken',
     };
+    const destinationType = 'TWITTER ADS';
 
-    const result = getOAuthFields({ secret }, destinationType);
-    expect(result).toEqual(expectedOutput);
+    expect(() => {
+      getOAuthFields({ secret }, destinationType);
+    }).toThrow('[TWITTER ADS]:: OAuth - accessTokenSecret not found');
   });
 });

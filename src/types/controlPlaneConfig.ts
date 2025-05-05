@@ -11,6 +11,7 @@ export type DestinationDefinition = {
 export type AccountDefinition = {
   Name: string;
   Config: Record<string, unknown>;
+  AuthenticationType: string;
 };
 export type AccountWithDefinition = {
   ID: string;

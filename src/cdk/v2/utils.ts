@@ -5,8 +5,8 @@ import { PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
-import { CatchErr } from '../../util/types';
 import { DestHandleMapForCDKV2 } from '../../constants/destinationCanonicalNames';
+import { CatchErr } from '../../types';
 
 const CDK_V2_ROOT_DIR = __dirname;
 

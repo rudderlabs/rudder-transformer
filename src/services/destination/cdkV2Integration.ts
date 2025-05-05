@@ -16,9 +16,9 @@ import {
   RouterTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,
-} from '../../types/index';
+  CatchErr,
+} from '../../types';
 import stats from '../../util/stats';
-import { CatchErr } from '../../util/types';
 import { groupRouterTransformEvents } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';

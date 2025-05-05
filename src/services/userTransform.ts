@@ -9,7 +9,10 @@ import {
   UserTransformationResponse,
   UserTransformationServiceResponse,
   MessageIdMetadataMap,
-} from '../types/index';
+  FixMe,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  CatchErr,
+} from '../types';
 import {
   RespStatusError,
   RetryRequestError,
@@ -20,8 +23,6 @@ import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
 import { CommonUtils } from '../util/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr, FixMe } from '../util/types';
 import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
 import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 

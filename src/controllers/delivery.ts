@@ -12,8 +12,8 @@ import {
   ProcessorTransformationOutput,
   ProxyV0Request,
   ProxyV1Request,
-} from '../types/index';
-import { FixMe } from '../util/types';
+  FixMe,
+} from '../types';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
 import logger from '../logger';

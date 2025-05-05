@@ -1,5 +1,5 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
-import { FixMe } from '../../util/types';
+import { FixMe } from '../../types';
 
 export class EventTesterService {
   private static getDestHandler(version, destination) {

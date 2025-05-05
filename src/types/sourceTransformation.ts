@@ -1,4 +1,4 @@
-import type { CatchErr } from '../util/types';
+import type { CatchErr } from './index';
 import type { Source } from './controlPlaneConfig';
 import type { RudderMessage } from './rudderEvents';
 

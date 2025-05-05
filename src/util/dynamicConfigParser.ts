@@ -1,6 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep';
-import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
-import { FixMe } from './types';
+import { ProcessorTransformationRequest, RouterTransformationRequestData, FixMe } from '../types';
 
 /* eslint-disable no-param-reassign */
 const get = require('get-value');

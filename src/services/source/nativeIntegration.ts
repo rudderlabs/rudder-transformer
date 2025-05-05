@@ -8,9 +8,9 @@ import {
   RudderMessage,
   SourceInputV2,
   SourceTransformationResponse,
-} from '../../types/index';
+  FixMe,
+} from '../../types';
 import stats from '../../util/stats';
-import { FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';

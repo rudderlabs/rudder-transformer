@@ -26,7 +26,7 @@ function getOAuthFields({ secret }, destinationType) {
   if (!secret) {
     throw new OAuthSecretError(`[${destinationType}]:: OAuth - secret not found`);
   }
-  const requiredFields = ['consumerKey', 'consumerSecret'];
+  const requiredFields = ['consumerKey', 'consumerSecret', 'accessToken', 'accessTokenSecret'];
 
   requiredFields.forEach((field) => {
     if (!isDefinedAndNotNullAndNotEmpty(secret[field])) {

@@ -1,7 +1,8 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { FEATURES, IMPLEMENTATIONS, MODULES } from '../../../../../src/v0/util/tags';
+import { dataV3 } from './dataV3';
 
-export const data = [
+export const dataV2 = [
   {
     name: 'snapchat_conversion',
     description: 'Test 0',
@@ -507,3 +508,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...dataV2, ...dataV3];

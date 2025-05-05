@@ -1,6 +1,7 @@
 import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 import { destination, mockFns } from '../commonConfig';
+import { authHeader1 } from '../maskedSecrets';
 
 export const dataV2: RouterTestData[] = [
   {
@@ -212,7 +213,7 @@ export const dataV2: RouterTestData[] = [
                 endpoint: 'https://tr.snapchat.com/v2/conversion',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Bearer snapchat_conversion1',
+                  Authorization: authHeader1,
                 },
                 params: {},
                 body: {

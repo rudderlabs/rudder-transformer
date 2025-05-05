@@ -271,7 +271,6 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
@@ -400,7 +399,6 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
@@ -2888,7 +2886,6 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
     id: 'processor-1746381267903',
     name: 'snapchat_conversion',
@@ -4022,7 +4019,6 @@ export const dataV3: ProcessorTestData[] = [
     },
     mockFns,
   },
-
   {
     id: 'processor-1746381267904',
     name: 'snapchat_conversion',

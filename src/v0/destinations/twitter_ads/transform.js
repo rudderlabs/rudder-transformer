@@ -1,10 +1,6 @@
 const sha256 = require('sha256');
 
-const {
-  InstrumentationError,
-  OAuthSecretError,
-  ConfigurationError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -17,20 +13,7 @@ const { EventType } = require('../../../constants');
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { getAuthHeaderForRequest } = require('./util');
-
-const getOAuthFields = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[TWITTER ADS]:: OAuth - access keys not found');
-  }
-  const oAuthObject = {
-    consumerKey: secret.consumerKey,
-    consumerSecret: secret.consumerSecret,
-    accessToken: secret.accessToken,
-    accessTokenSecret: secret.accessTokenSecret,
-  };
-  return oAuthObject;
-};
+const { getAuthHeaderForRequest, getOAuthFields } = require('./util');
 
 // build final response
 function buildResponse(message, requestJson, metadata, endpointUrl) {
@@ -45,7 +28,7 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
     body: response.body.JSON,
   };
 
-  const oAuthObject = getOAuthFields(metadata);
+  const oAuthObject = getOAuthFields(metadata, 'TWITTER ADS');
   const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {
     Authorization: authHeader,

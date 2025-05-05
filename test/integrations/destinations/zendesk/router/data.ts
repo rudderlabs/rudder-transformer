@@ -108,7 +108,7 @@ export const data = [
               ],
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
-              statusCode: 200,
+              statusCode: 299,
               destination: {
                 Config: {
                   apiToken: secret1,

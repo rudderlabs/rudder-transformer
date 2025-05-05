@@ -197,31 +197,25 @@ const batchEvents = (responseList, destination) => {
 
 const getUserDetails = (fields, config) => {
   const { enableHash } = config;
-  const { email, phone_number, handle, device_id, twitter_id, partner_user_id } = fields;
+  const hashFields = ['email', 'phone_number', 'handle', 'device_id', 'twitter_id'];
+  const nonHashFields = ['partner_user_id'];
+
+  const getHashList = (value) => (enableHash ? value.split(',').map(sha256) : value.split(','));
+
   const user = {};
-  if (email) {
-    const emailList = email.split(',');
-    user.email = enableHash ? emailList.map(sha256) : emailList;
-  }
-  if (phone_number) {
-    const phone_numberList = phone_number.split(',');
-    user.phone_number = enableHash ? phone_numberList.map(sha256) : phone_numberList;
-  }
-  if (handle) {
-    const handleList = handle.split(',');
-    user.handle = enableHash ? handleList.map(sha256) : handleList;
-  }
-  if (device_id) {
-    const device_idList = device_id.split(',');
-    user.device_id = enableHash ? device_idList.map(sha256) : device_idList;
-  }
-  if (twitter_id) {
-    const twitter_idList = twitter_id.split(',');
-    user.twitter_id = enableHash ? twitter_idList.map(sha256) : twitter_idList;
-  }
-  if (partner_user_id) {
-    user.partner_user_id = partner_user_id.split(',');
-  }
+
+  hashFields.forEach((field) => {
+    if (fields[field]) {
+      user[field] = getHashList(fields[field]);
+    }
+  });
+
+  nonHashFields.forEach((field) => {
+    if (fields[field]) {
+      user[field] = fields[field].split(',');
+    }
+  });
+
   return removeUndefinedAndNullAndEmptyValues(user);
 };
 module.exports = { batchEvents, getUserDetails, buildResponseWithJSON };

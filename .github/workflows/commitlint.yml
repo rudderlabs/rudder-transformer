@@ -37,4 +37,5 @@ jobs:
         env:
           NODE_PATH: ${{ github.workspace }}/node_modules
         with:
+          configFile: ../../commitlint.config.mjs
           commitDepth: 1

@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.2.1
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Needed to get full commit history
 
       - name: Setup Node
         uses: actions/setup-node@v4.4.0
@@ -21,7 +21,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Print versions
@@ -31,10 +31,6 @@ jobs:
           npm --version
           npx commitlint --version
 
-      # Run the commitlint action, considering its own dependencies and yours as well 🚀
-      # `github.workspace` is the path to your repository.
-      - uses: wagoid/commitlint-github-action@b948419dd99f3fd78a6548d48f94e3df7f6bf3ed
-        env:
-          NODE_PATH: ${{ github.workspace }}/node_modules
-        with:
-          commitDepth: 1
+      - name: Lint commits
+        run: |
+          npx --no-install commitlint --from=HEAD~1 --to=HEAD --verbose

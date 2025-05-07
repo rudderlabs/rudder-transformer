@@ -4,10 +4,21 @@ import moment from 'moment-timezone';
 import { MAX_BATCH_SIZE } from './config';
 import { isAppleFamily } from '../../util';
 import { Metadata } from '../../../types';
-import { ProcessedEvent, SnapchatDestination, SnapchatPayloadV3 } from './types';
+import {
+  ProcessedEvent,
+  SnapchatDestination,
+  SnapchatMessage,
+  SnapchatHeaders,
+  SnapchatParams,
+  SnapchatBatchResponse,
+  SnapchatPayloadV3,
+} from './types';
 
 export const getMergedPayload = (batch: ProcessedEvent[]): SnapchatPayloadV3 => ({
-  data: batch.flatMap((input) => input.message.body.JSON.data),
+  data: batch.flatMap((input) => {
+    const json = input.message.body.JSON as SnapchatPayloadV3;
+    return json.data;
+  }),
 });
 
 export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] =>
@@ -16,12 +27,12 @@ export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] 
 export const buildBatchedResponse = (
   mergedPayload: SnapchatPayloadV3,
   endpoint: string,
-  headers: Record<string, string>,
-  params: Record<string, string>,
+  headers: SnapchatHeaders,
+  params: SnapchatParams,
   method: string,
   metadata: Partial<Metadata>[],
   destination: SnapchatDestination,
-): any => ({
+): SnapchatBatchResponse => ({
   batchedRequest: {
     body: {
       JSON: mergedPayload,
@@ -43,7 +54,7 @@ export const buildBatchedResponse = (
   destination,
 });
 
-export const processBatch = (eventsChunk: ProcessedEvent[]): any[] => {
+export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatBatchResponse[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -67,13 +78,13 @@ export const processBatch = (eventsChunk: ProcessedEvent[]): any[] => {
 export const batchResponseBuilder = (
   webOrOfflineEventsChunk: ProcessedEvent[],
   mobileEventsChunk: ProcessedEvent[],
-): any[] => {
+): SnapchatBatchResponse[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
-export const getExtInfo = (message: Record<string, any>): string[] | null => {
+export const getExtInfo = (message: SnapchatMessage): string[] | null => {
   const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;

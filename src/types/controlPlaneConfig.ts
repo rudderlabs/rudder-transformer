@@ -8,19 +8,27 @@ export type DestinationDefinition = {
   Config: Record<string, unknown>;
 };
 
-export type AccountDefinition = {
+export type AccountDefinition<Config = Record<string, unknown>> = {
   Name: string;
-  Config: Record<string, unknown>;
+  Config: Config;
   AuthenticationType: string;
 };
-export type AccountWithDefinition = {
+export type AccountWithDefinition<
+  OptionsT = Record<string, unknown>,
+  SecretT = Record<string, unknown>,
+  AccountDefinitionT = AccountDefinition,
+> = {
   ID: string;
-  Options: Record<string, unknown>;
-  Secret: Record<string, unknown>;
-  AccountDefinition: AccountDefinition;
+  Options: OptionsT;
+  Secret: SecretT;
+  AccountDefinition: AccountDefinitionT;
 };
 
-export type Destination<DestinationConfig = Record<string, unknown>> = {
+export type Destination<
+  DestinationConfig = Record<string, unknown>,
+  DeliveryAccountT = AccountWithDefinition,
+  DeleteAccountT = AccountWithDefinition,
+> = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;
@@ -31,8 +39,8 @@ export type Destination<DestinationConfig = Record<string, unknown>> = {
   RevisionID?: string;
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
-  DeliveryAccount?: AccountWithDefinition;
-  DeleteAccount?: AccountWithDefinition;
+  DeliveryAccount?: DeliveryAccountT;
+  DeleteAccount?: DeleteAccountT;
 };
 
 export type DestinationConnectionConfig<T> = {

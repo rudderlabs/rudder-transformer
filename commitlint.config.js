@@ -2,6 +2,7 @@ module.exports = {
   extends: ['@commitlint/config-conventional'],
   rules: {
     'type-enum': () => [2, 'always', ['fix', 'feat', 'chore', 'refactor', 'docs', 'test']],
+    'body-max-line-length': () => [2, 'always', 500],
   },
   // We need this until https://github.com/dependabot/dependabot-core/issues/2445
   // is resolved.

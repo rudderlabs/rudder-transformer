@@ -1,0 +1,83 @@
+{
+  "name": "gainsightpx",
+  "description": "Feature Match Track Call ",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"user\":{\"aptrinsicId\":\"cab9c469-8602-4933-acdb-68338fbb9ab1\",\"identifyId\":\"New!\",\"type\":\"USER\",\"gender\":\"EMPTY_GENDER\",\"email\":\"userEmail@address.com\",\"firstName\":\"test\",\"lastName\":\"rudderlabs\",\"lastSeenDate\":1665582808669,\"signUpDate\":1665582791753,\"firstVisitDate\":1665582791753,\"title\":\"Mr.\",\"phone\":\"\",\"score\":0,\"role\":\"\",\"subscriptionId\":\"\",\"accountId\":\"IBM\",\"numberOfVisits\":1,\"location\":{\"countryName\":\"India\",\"countryCode\":\"\",\"stateName\":\"\",\"stateCode\":\"\",\"city\":\"\",\"street\":\"\",\"postalCode\":\"\",\"continent\":\"\",\"regionName\":\"\",\"timeZone\":\"\",\"coordinates\":{\"latitude\":0,\"longitude\":0}},\"propertyKeys\":[\"AP-EOXPSEZGC5LA-2-1\"],\"createDate\":1665582808376,\"lastModifiedDate\":1665582808717,\"customAttributes\":null,\"globalUnsubscribe\":false,\"sfdcContactId\":\"\",\"lastVisitedUserAgentData\":null,\"id\":\"New!\",\"lastInferredLocation\":null},\"account\":{\"id\":\"IBM\",\"name\":\"International Business Machine\",\"trackedSubscriptionId\":\"\",\"sfdcId\":\"\",\"lastSeenDate\":1665582808669,\"dunsNumber\":\"\",\"industry\":\"\",\"numberOfEmployees\":0,\"sicCode\":\"\",\"website\":\"\",\"naicsCode\":\"\",\"plan\":\"\",\"location\":{\"countryName\":\"\",\"countryCode\":\"\",\"stateName\":\"\",\"stateCode\":\"\",\"city\":\"\",\"street\":\"\",\"postalCode\":\"\",\"continent\":\"\",\"regionName\":\"\",\"timeZone\":\"\",\"coordinates\":{\"latitude\":0,\"longitude\":0}},\"numberOfUsers\":0,\"propertyKeys\":[\"AP-EOXPSEZGC5LA-2-1\"],\"createDate\":1665578567565,\"lastModifiedDate\":1665582808669,\"customAttributes\":null,\"parentGroupId\":\"\"},\"event\":{\"eventType\":\"FEATURE_MATCH\",\"eventId\":\"ae1e5538-1736-4088-86d1-e90a10ffe901-05951b40-944f-4052-9a4a-51c74683f658\",\"propertyKey\":\"AP-8MF5LPSWUBFW-2-1\",\"date\":1665582808376,\"sessionId\":\"AP-8MF5LPSWUBFW-2-1601303023809-98881162\",\"globalContext\":{\"role\":\"Admin\"},\"userType\":\"USER\",\"featureId\":\"05951b40-944f-4052-9a4a-51c74683f658\",\"featureName\":\"Charts\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "GAINSIGHTPX"
+          },
+          "traits": {
+            "type": "USER",
+            "gender": "EMPTY_GENDER",
+            "email": "userEmail@address.com",
+            "firstName": "test",
+            "lastName": "rudderlabs",
+            "title": "Mr.",
+            "globalUnsubscribe": false,
+            "accountId": "IBM",
+            "numberOfVisits": 1,
+            "propertyKeys": ["AP-EOXPSEZGC5LA-2-1"],
+            "score": 0,
+            "id": "New!",
+            "country": "India",
+            "account": {
+              "numberOfEmployees": 0,
+              "numberOfUsers": 0,
+              "id": "IBM",
+              "name": "International Business Machine"
+            }
+          },
+          "externalId": [
+            {
+              "type": "gainsightpxAptrinsicId",
+              "id": "cab9c469-8602-4933-acdb-68338fbb9ab1"
+            }
+          ]
+        },
+        "integrations": {
+          "GAINSIGHTPX": false
+        },
+        "type": "track",
+        "properties": {
+          "propertyKey": "AP-8MF5LPSWUBFW-2-1",
+          "globalContext": {
+            "role": "Admin"
+          },
+          "featureId": "05951b40-944f-4052-9a4a-51c74683f658"
+        },
+        "userId": "New!",
+        "category": "FEATURE_MATCH",
+        "event": "Charts",
+        "sentAt": "2022-10-12T13:53:28.376Z",
+        "originalTimestamp": "2022-10-12T13:53:28.376Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

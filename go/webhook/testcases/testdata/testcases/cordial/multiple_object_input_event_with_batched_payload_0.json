@@ -1,0 +1,204 @@
+{
+  "name": "cordial",
+  "description": "Multiple object Input event with batched payload",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "[{\"contact\":{\"_id\":\"633b2fd70a12be027e0b0xxx\",\"lang_locale\":\"EN-US\",\"channels\":{\"email\":{\"address\":\"johndoe@example.com\",\"subscribeStatus\":\"none\"}},\"createdAt\":\"2022-10-03T18:54:15+0000\",\"email_sha256_hash\":\"f959bdf883831ebb96612eb9xxxx1e0c9481780adf5f70xxx862155531bf61df\",\"first_name\":\"john\",\"last_name\":\"doe\",\"lastUpdateSource\":\"cordial\",\"lastModified\":\"2024-07-24T07:52:46+0000\",\"cID\":\"633b2fd70a12be027e0b0xxx\"},\"event\":{\"_id\":\"66a0b2ce5344b55fxxxc5a64\",\"cID\":\"633b2fd70a12be027e0b0xxx\",\"ts\":\"2024-07-24T07:52:46+00:00\",\"ats\":\"2024-07-24T07:52:39+0000\",\"g\":{\"countryISO\":\"PL\",\"country\":\"Poland\",\"state\":\"MZ\",\"city\":\"Warszawa\",\"postalCode\":\"00-686\",\"geoLoc\":{\"lat\":52.22744369506836,\"lon\":21.009017944335938},\"tz\":\"Europe/Warsaw\"},\"d\":{\"type\":\"computer\",\"device\":\"Macintosh\",\"platform\":\"OS X\",\"browser\":\"Chrome\",\"robot\":false},\"a\":\"browse\",\"UID\":\"471af949fffe749c2ebfxxx950ea73c\",\"sp\":{\"bid\":\"cf6de7f1-cce5-40xx-ac9c-7c82a2xxc09e\"},\"tzo\":-7,\"rl\":\"6\",\"time\":\"2024-07-24T07:52:39+0000\",\"action\":\"browse\",\"bmID\":\"\",\"first\":0,\"properties\":{\"url\":\"https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart\",\"product_item_group_id\":[\"1094269\"],\"product_category\":[\"allproducts\"],\"product_name\":[\"wtp ab\"],\"product_group\":[\"women\"]}}},{\"contact\":{\"_id\":\"633b2fd12312be027e0b0xxx\",\"lang_locale\":\"EN-US\",\"channels\":{\"email\":{\"address\":\"johndoe1@example.com\",\"subscribeStatus\":\"none\"}},\"createdAt\":\"2022-10-03T18:54:15+0000\",\"email_sha256_hash\":\"f95912b883831eab11612eb9xxxx1e0c9481780ad45770xxx862155531bf61df\",\"first_name\":\"john\",\"last_name\":\"doe\",\"lastUpdateSource\":\"cordial\",\"lastModified\":\"2024-07-24T07:52:46+0000\",\"cID\":\"633b2fd12312be027e0b0xxx\"},\"event\":{\"_id\":\"66aku0b2ce527b55fx1xc5a64\",\"cID\":\"633b2fd12312be027e0b0xxx\",\"ts\":\"2024-07-24T07:52:46+00:00\",\"ats\":\"2024-07-24T07:52:39+0000\",\"g\":{\"countryISO\":\"PL\",\"country\":\"Poland\",\"state\":\"MZ\",\"city\":\"Warszawa\",\"postalCode\":\"00-686\",\"geoLoc\":{\"lat\":52.22744369506836,\"lon\":21.009017944335938},\"tz\":\"Europe/Warsaw\"},\"d\":{\"type\":\"computer\",\"device\":\"Macintosh\",\"platform\":\"OS X\",\"browser\":\"Chrome\",\"robot\":false},\"a\":\"browse\",\"UID\":\"471af949fffe74sdh382ebfxxx950ea73c\",\"sp\":{\"bid\":\"cf6de7f1-123ce5-20xx-ac9c-7c82a2xxc09e\"},\"tzo\":-7,\"rl\":\"6\",\"time\":\"2024-07-24T07:52:39+0000\",\"action\":\"browse\",\"bmID\":\"\",\"first\":0,\"properties\":{\"url\":\"https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart\",\"product_item_group_id\":[\"1094269\"],\"product_category\":[\"allproducts\"],\"product_name\":[\"wtp ab\"],\"product_group\":[\"women\"]}}}]",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Cordial"
+          },
+          "traits": {
+            "userId": "633b2fd70a12be027e0b0xxx",
+            "email": "johndoe@example.com",
+            "_id": "633b2fd70a12be027e0b0xxx",
+            "lang_locale": "EN-US",
+            "channels": {
+              "email": {
+                "address": "johndoe@example.com",
+                "subscribeStatus": "none"
+              }
+            },
+            "createdAt": "2022-10-03T18:54:15+0000",
+            "email_sha256_hash": "f959bdf883831ebb96612eb9xxxx1e0c9481780adf5f70xxx862155531bf61df",
+            "first_name": "john",
+            "last_name": "doe",
+            "lastUpdateSource": "cordial",
+            "lastModified": "2024-07-24T07:52:46+0000",
+            "cID": "633b2fd70a12be027e0b0xxx"
+          },
+          "device": {
+            "type": "computer",
+            "device": "Macintosh",
+            "platform": "OS X",
+            "browser": "Chrome",
+            "robot": false
+          },
+          "externalId": [
+            {
+              "id": "633b2fd70a12be027e0b0xxx",
+              "type": "cordialContactId"
+            }
+          ]
+        },
+        "integrations": {
+          "Cordial": false
+        },
+        "type": "track",
+        "event": "browse",
+        "properties": {
+          "event_id": "66a0b2ce5344b55fxxxc5a64",
+          "url": "https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart",
+          "product_item_group_id": ["1094269"],
+          "product_category": ["allproducts"],
+          "product_name": ["wtp ab"],
+          "product_group": ["women"],
+          "cID": "633b2fd70a12be027e0b0xxx",
+          "ts": "2024-07-24T07:52:46+00:00",
+          "ats": "2024-07-24T07:52:39+0000",
+          "g": {
+            "countryISO": "PL",
+            "country": "Poland",
+            "state": "MZ",
+            "city": "Warszawa",
+            "postalCode": "00-686",
+            "geoLoc": {
+              "lat": 52.22744369506836,
+              "lon": 21.009017944335938
+            },
+            "tz": "Europe/Warsaw"
+          },
+          "a": "browse",
+          "UID": "471af949fffe749c2ebfxxx950ea73c",
+          "sp": {
+            "bid": "cf6de7f1-cce5-40xx-ac9c-7c82a2xxc09e"
+          },
+          "tzo": -7,
+          "rl": "6",
+          "time": "2024-07-24T07:52:39+0000",
+          "action": "browse",
+          "bmID": "",
+          "first": 0
+        },
+        "userId": "633b2fd70a12be027e0b0xxx",
+        "timestamp": "2024-07-24T07:52:46+00:00",
+        "sentAt": "2024-07-24T07:52:46+00:00",
+        "originalTimestamp": "2024-07-24T07:52:46+00:00",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Cordial"
+          },
+          "traits": {
+            "userId": "633b2fd12312be027e0b0xxx",
+            "email": "johndoe1@example.com",
+            "_id": "633b2fd12312be027e0b0xxx",
+            "lang_locale": "EN-US",
+            "channels": {
+              "email": {
+                "address": "johndoe1@example.com",
+                "subscribeStatus": "none"
+              }
+            },
+            "createdAt": "2022-10-03T18:54:15+0000",
+            "email_sha256_hash": "f95912b883831eab11612eb9xxxx1e0c9481780ad45770xxx862155531bf61df",
+            "first_name": "john",
+            "last_name": "doe",
+            "lastUpdateSource": "cordial",
+            "lastModified": "2024-07-24T07:52:46+0000",
+            "cID": "633b2fd12312be027e0b0xxx"
+          },
+          "device": {
+            "type": "computer",
+            "device": "Macintosh",
+            "platform": "OS X",
+            "browser": "Chrome",
+            "robot": false
+          },
+          "externalId": [
+            {
+              "id": "633b2fd12312be027e0b0xxx",
+              "type": "cordialContactId"
+            }
+          ]
+        },
+        "integrations": {
+          "Cordial": false
+        },
+        "type": "track",
+        "event": "browse",
+        "properties": {
+          "event_id": "66aku0b2ce527b55fx1xc5a64",
+          "url": "https://aaff-008.dx.commercecloud.salesforce.com/s/UGG-US/cart",
+          "product_item_group_id": ["1094269"],
+          "product_category": ["allproducts"],
+          "product_name": ["wtp ab"],
+          "product_group": ["women"],
+          "cID": "633b2fd12312be027e0b0xxx",
+          "ts": "2024-07-24T07:52:46+00:00",
+          "ats": "2024-07-24T07:52:39+0000",
+          "g": {
+            "countryISO": "PL",
+            "country": "Poland",
+            "state": "MZ",
+            "city": "Warszawa",
+            "postalCode": "00-686",
+            "geoLoc": {
+              "lat": 52.22744369506836,
+              "lon": 21.009017944335938
+            },
+            "tz": "Europe/Warsaw"
+          },
+          "a": "browse",
+          "UID": "471af949fffe74sdh382ebfxxx950ea73c",
+          "sp": {
+            "bid": "cf6de7f1-123ce5-20xx-ac9c-7c82a2xxc09e"
+          },
+          "tzo": -7,
+          "rl": "6",
+          "time": "2024-07-24T07:52:39+0000",
+          "action": "browse",
+          "bmID": "",
+          "first": 0
+        },
+        "userId": "633b2fd12312be027e0b0xxx",
+        "timestamp": "2024-07-24T07:52:46+00:00",
+        "sentAt": "2024-07-24T07:52:46+00:00",
+        "originalTimestamp": "2024-07-24T07:52:46+00:00",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

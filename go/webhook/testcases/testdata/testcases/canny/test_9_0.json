@@ -1,0 +1,96 @@
+{
+  "name": "canny",
+  "description": "test-9",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"created\":\"2022-07-28T10:52:46.294Z\",\"object\":{\"author\":{\"created\":\"2022-07-15T11:16:32.648Z\",\"email\":\"test@rudderstack.com\",\"id\":\"62d14c90fff7c80d0ec08375\",\"isAdmin\":true,\"name\":\"Rudder Test\",\"url\":\"https://rudder.canny.io/admin/users/dummyUser\",\"userID\":\"sampleuserId\"},\"board\":{\"created\":\"2022-07-25T12:11:19.895Z\",\"id\":\"62de88676bc28b44aaaf25cc\",\"name\":\"features\",\"postCount\":13,\"url\":\"https://rudder.canny.io/admin/board/features\"},\"by\":null,\"category\":null,\"commentCount\":0,\"created\":\"2022-07-28T10:52:46.172Z\",\"customFields\":[{\"id\":\"62e13820d7949d44b92d3876\",\"name\":\"abc\",\"value\":\"123\"}],\"details\":\"Array of images\",\"eta\":null,\"id\":\"62e26a7e1d4ea13c124337bd\",\"imageURLs\":[\"https://canny.io/images/6371453a825c79351c52a6063c3af476.jpg\",\"https://canny.io/images/47db6ee5035bfb45ea87a74f2eb17928.jpg\"],\"owner\":null,\"score\":1,\"status\":\"open\",\"tags\":[],\"title\":\"Custom Fields Testing\",\"url\":\"https://rudder.canny.io/admin/board/features/p/custom-fields-testing\"},\"objectType\":\"post\",\"type\":\"post.created\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "sampleuserId",
+        "event": "post.created",
+        "integrations": {
+          "Canny": false
+        },
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Canny",
+            "version": "1.0.0"
+          },
+          "traits": {
+            "created": "2022-07-15T11:16:32.648Z",
+            "email": "test@rudderstack.com",
+            "isAdmin": true,
+            "name": "Rudder Test",
+            "url": "https://rudder.canny.io/admin/users/dummyUser"
+          },
+          "externalId": [
+            {
+              "type": "cannyUserId",
+              "id": "62d14c90fff7c80d0ec08375"
+            }
+          ]
+        },
+        "timestamp": "2022-07-28T10:52:46.294Z",
+        "originalTimestamp": "2022-07-28T10:52:46.294Z",
+        "type": "track",
+        "properties": {
+          "board": {
+            "created": "2022-07-25T12:11:19.895Z",
+            "id": "62de88676bc28b44aaaf25cc",
+            "name": "features",
+            "postCount": 13,
+            "url": "https://rudder.canny.io/admin/board/features"
+          },
+          "by": null,
+          "category": null,
+          "commentCount": 0,
+          "created": "2022-07-28T10:52:46.172Z",
+          "customFields": [
+            {
+              "id": "62e13820d7949d44b92d3876",
+              "name": "abc",
+              "value": "123"
+            }
+          ],
+          "details": "Array of images",
+          "eta": null,
+          "id": "62e26a7e1d4ea13c124337bd",
+          "imageURLs": [
+            "https://canny.io/images/6371453a825c79351c52a6063c3af476.jpg",
+            "https://canny.io/images/47db6ee5035bfb45ea87a74f2eb17928.jpg"
+          ],
+          "objectType": "post",
+          "owner": null,
+          "score": 1,
+          "status": "open",
+          "tags": [],
+          "title": "Custom Fields Testing",
+          "url": "https://rudder.canny.io/admin/board/features/p/custom-fields-testing"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

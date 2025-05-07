@@ -1,5 +1,5 @@
-const { generateRandomString } = require('@rudderstack/integrations-lib');
-const {
+import { generateRandomString } from '@rudderstack/integrations-lib';
+import {
   msUnixTimestamp,
   getItemIds,
   getPriceSum,
@@ -9,9 +9,9 @@ const {
   channelMapping,
   generateBatchedPayloadForArray,
   getEventTimestamp,
-} = require('./util');
+} from './util';
 
-const moment = require('moment');
+import moment from 'moment';
 
 describe('Snapchat Conversion Utils', () => {
   describe('getNormalizedPhoneNumber', () => {
@@ -129,6 +129,7 @@ describe('getHashedValue', () => {
 
   testCases.forEach(({ name, input, expected, expectedLength, expectedPattern }) => {
     it(name, () => {
+      // @ts-ignore - We're intentionally testing with invalid inputs
       const result = getHashedValue(input);
       if (expected !== undefined) {
         expect(result).toBe(expected);
@@ -294,10 +295,19 @@ describe('generateBatchedPayloadForArray', () => {
       input: {
         events: [{ body: { JSON: { event: 1 } } }, { body: { JSON: { event: 2 } } }],
         destination: {
+          ID: 'test-id',
+          Name: 'test-name',
+          DestinationDefinition: {
+            ID: 'def-id',
+            Name: 'def-name',
+            DisplayName: 'Snapchat',
+          },
+          Enabled: true,
+          WorkspaceID: 'workspace-id',
           Config: {
             apiKey,
           },
-        },
+        } as any,
       },
       expected: {
         headers: {
@@ -317,10 +327,19 @@ describe('generateBatchedPayloadForArray', () => {
       input: {
         events: [],
         destination: {
+          ID: 'test-id',
+          Name: 'test-name',
+          DestinationDefinition: {
+            ID: 'def-id',
+            Name: 'def-name',
+            DisplayName: 'Snapchat',
+          },
+          Enabled: true,
+          WorkspaceID: 'workspace-id',
           Config: {
             apiKey,
           },
-        },
+        } as any,
       },
       expected: {
         headers: {

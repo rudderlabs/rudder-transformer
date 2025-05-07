@@ -7,7 +7,7 @@ export const dataV2: RouterTestData[] = [
   {
     id: 'router-1746393448026',
     name: 'snapchat_conversion',
-    description: 'Test 0',
+    description: 'Router test case to batch the conversion events',
     scenario: 'Business + Framework',
     successCriteria: 'Router test should pass successfully',
     feature: 'router',
@@ -219,8 +219,59 @@ export const dataV2: RouterTestData[] = [
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
-                    batch:
-                      '[{"search_string":"t-shirts","event_type":"SEARCH","user_agent":"mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36","hashed_email":"73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2","hashed_phone_number":"bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492","hashed_idfv":"54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f","hashed_mobile_ad_id":"f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2","timestamp":"1650625078","event_conversion_type":"OFFLINE","pixel_id":"dummyPixelId"},{"search_string":"t-shirts","event_type":"SEARCH","user_agent":"mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36","hashed_email":"73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2","hashed_phone_number":"bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492","hashed_idfv":"54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f","hashed_mobile_ad_id":"f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2","timestamp":"1650625078","event_conversion_type":"OFFLINE","pixel_id":"dummyPixelId"},{"search_string":"t-shirts","event_type":"SEARCH","user_agent":"mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36","hashed_email":"73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2","hashed_phone_number":"bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492","hashed_idfv":"54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f","hashed_mobile_ad_id":"f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2","timestamp":"1650625078","event_conversion_type":"OFFLINE","pixel_id":"dummyPixelId"}]',
+                    batch: JSON.stringify([
+                      {
+                        search_string: 't-shirts',
+                        event_type: 'SEARCH',
+                        user_agent:
+                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                        hashed_email:
+                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        hashed_phone_number:
+                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        hashed_idfv:
+                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                        hashed_mobile_ad_id:
+                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                        timestamp: '1650625078',
+                        event_conversion_type: 'OFFLINE',
+                        pixel_id: 'dummyPixelId',
+                      },
+                      {
+                        search_string: 't-shirts',
+                        event_type: 'SEARCH',
+                        user_agent:
+                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                        hashed_email:
+                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        hashed_phone_number:
+                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        hashed_idfv:
+                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                        hashed_mobile_ad_id:
+                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                        timestamp: '1650625078',
+                        event_conversion_type: 'OFFLINE',
+                        pixel_id: 'dummyPixelId',
+                      },
+                      {
+                        search_string: 't-shirts',
+                        event_type: 'SEARCH',
+                        user_agent:
+                          'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                        hashed_email:
+                          '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                        hashed_phone_number:
+                          'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                        hashed_idfv:
+                          '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                        hashed_mobile_ad_id:
+                          'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                        timestamp: '1650625078',
+                        event_conversion_type: 'OFFLINE',
+                        pixel_id: 'dummyPixelId',
+                      },
+                    ]),
                   },
                   XML: {},
                   FORM: {},
@@ -241,7 +292,7 @@ export const dataV2: RouterTestData[] = [
   {
     id: 'router-1746393448027',
     name: 'snapchat_conversion',
-    description: 'Test 1',
+    description: 'Router test case with failure scenario',
     scenario: 'Business + Framework',
     successCriteria: 'Router test should fail',
     feature: 'router',

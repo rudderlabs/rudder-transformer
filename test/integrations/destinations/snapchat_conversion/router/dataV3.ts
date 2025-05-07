@@ -6,7 +6,7 @@ export const dataV3: RouterTestData[] = [
   {
     id: 'router-1746393448027',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test 0 - Web/Offline Events',
+    description: '[CAPIv3]: Router test case to batch the Web/Offline conversion events',
     scenario: 'Business + Framework',
     successCriteria: 'Router test should pass successfully',
     feature: 'router',
@@ -289,7 +289,7 @@ export const dataV3: RouterTestData[] = [
   {
     id: 'router-1746393448027',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test 1 - Mobile Events',
+    description: '[CAPIv3]: Router test case to batch the Mobile Events conversion events',
     scenario: 'Business + Framework',
     successCriteria: 'Router test should pass successfully',
     feature: 'router',
@@ -534,7 +534,7 @@ export const dataV3: RouterTestData[] = [
   {
     id: 'router-1746393448027',
     name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test 2',
+    description: '[CAPIv3]: Router test case with failure scenario',
     scenario: 'Business + Framework',
     successCriteria: 'Router test should fail',
     feature: 'router',

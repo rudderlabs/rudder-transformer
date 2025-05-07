@@ -1,24 +1,27 @@
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { get } = require('lodash');
-const moment = require('moment-timezone');
-const { MAX_BATCH_SIZE } = require('./config');
-const { isAppleFamily } = require('../../util');
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import { get } from 'lodash';
+import moment from 'moment-timezone';
+import { MAX_BATCH_SIZE } from './config';
+import { isAppleFamily } from '../../util';
+import { Metadata } from '../../../types';
+import { ProcessedEvent, SnapchatDestination, SnapchatPayloadV3 } from './types';
 
-const getMergedPayload = (batch) => ({
+export const getMergedPayload = (batch: ProcessedEvent[]): SnapchatPayloadV3 => ({
   data: batch.flatMap((input) => input.message.body.JSON.data),
 });
 
-const getMergedMetadata = (batch) => batch.map((input) => input.metadata);
+export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] =>
+  batch.map((input) => input.metadata);
 
-const buildBatchedResponse = (
-  mergedPayload,
-  endpoint,
-  headers,
-  params,
-  method,
-  metadata,
-  destination,
-) => ({
+export const buildBatchedResponse = (
+  mergedPayload: SnapchatPayloadV3,
+  endpoint: string,
+  headers: Record<string, string>,
+  params: Record<string, string>,
+  method: string,
+  metadata: Partial<Metadata>[],
+  destination: SnapchatDestination,
+): any => ({
   batchedRequest: {
     body: {
       JSON: mergedPayload,
@@ -39,7 +42,8 @@ const buildBatchedResponse = (
   statusCode: 200,
   destination,
 });
-const processBatch = (eventsChunk) => {
+
+export const processBatch = (eventsChunk: ProcessedEvent[]): any[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -59,14 +63,18 @@ const processBatch = (eventsChunk) => {
     );
   });
 };
-const batchResponseBuilder = (webOrOfflineEventsChunk, mobileEventsChunk) => {
+
+export const batchResponseBuilder = (
+  webOrOfflineEventsChunk: ProcessedEvent[],
+  mobileEventsChunk: ProcessedEvent[],
+): any[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
-const getExtInfo = (message) => {
-  const getValue = (path) => {
+export const getExtInfo = (message: Record<string, any>): string[] | null => {
+  const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;
   };
@@ -105,6 +113,7 @@ const getExtInfo = (message) => {
     locale: getValue('context.locale'),
     timezone: getValue('context.timezone'),
     carrier: getValue('context.network.carrier'),
+    timezoneAbbr: null as string | null,
   };
   if (environmentInfo.timezone) {
     environmentInfo.timezoneAbbr = moment().tz(environmentInfo.timezone)?.format('z');
@@ -129,10 +138,10 @@ const getExtInfo = (message) => {
     environmentInfo.timezone,
   ];
 
-  return extInfo.some((value) => value == null) ? null : extInfo;
-};
+  if (extInfo.some((value) => value == null)) {
+    return null;
+  }
 
-module.exports = {
-  batchResponseBuilder,
-  getExtInfo,
+  // Convert all values to strings and filter out nulls
+  return extInfo.map((value) => (value === null ? '' : String(value))) as string[];
 };

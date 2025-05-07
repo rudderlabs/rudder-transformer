@@ -1,31 +1,32 @@
-const get = require('get-value');
-const sha256 = require('sha256');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const moment = require('moment/moment');
-const logger = require('../../../logger');
+import get from 'get-value';
+import sha256 from 'sha256';
+import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import moment from 'moment/moment';
+import logger from '../../../logger';
 
-const {
+import {
   isDefinedAndNotNull,
   getFieldValueFromMessage,
   defaultBatchRequestConfig,
   getValidDynamicFormConfig,
-} = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { ENDPOINT } = require('./config');
+} from '../../util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { ENDPOINT } from './config';
+import { SnapchatDestination } from './types';
 
-const channelMapping = {
+export const channelMapping: Record<string, string> = {
   web: 'WEB',
   mobile: 'MOBILE_APP',
   mobile_app: 'MOBILE_APP',
   offline: 'OFFLINE',
 };
 
-function msUnixTimestamp(timestamp) {
+export function msUnixTimestamp(timestamp: Date): number {
   const time = new Date(timestamp);
   return time.getTime() * 1000 + time.getMilliseconds();
 }
 
-function getHashedValue(identifier) {
+export function getHashedValue(identifier: string): string | null {
   if (identifier) {
     const regexExp = /^[\da-f]{64}$/gi;
     if (!regexExp.test(identifier)) {
@@ -36,7 +37,7 @@ function getHashedValue(identifier) {
   return null;
 }
 
-function getNormalizedPhoneNumber(message) {
+export function getNormalizedPhoneNumber(message: Record<string, any>): string | null {
   const regexExp = /^[\da-f]{64}$/i;
   const phoneNumber = getFieldValueFromMessage(message, 'phone');
 
@@ -47,9 +48,9 @@ function getNormalizedPhoneNumber(message) {
   return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
-function getDataUseValue(message) {
+export function getDataUseValue(message: Record<string, any>): string | null {
   const att = get(message, 'context.device.attTrackingStatus');
-  let limitAdTracking;
+  let limitAdTracking: boolean | string | undefined;
   if (isDefinedAndNotNull(att)) {
     if (att === 3) {
       limitAdTracking = false;
@@ -64,11 +65,11 @@ function getDataUseValue(message) {
   return null;
 }
 
-function getItemIds(message) {
-  let itemIds = [];
+export function getItemIds(message: Record<string, any>): string[] | null {
+  let itemIds: string[] = [];
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
-    products.forEach((element, index) => {
+    products.forEach((element: any, index: number) => {
       const pId = element.product_id;
       if (pId) {
         itemIds.push(pId);
@@ -76,35 +77,40 @@ function getItemIds(message) {
         logger.debug(`product_id not present for product at index ${index}`);
       }
     });
+    return itemIds.length > 0 ? itemIds : [];
   } else {
-    itemIds = null;
+    return null;
   }
-  return itemIds;
 }
-function getPriceSum(message) {
+
+export function getPriceSum(message: Record<string, any>): string {
   let priceSum = 0;
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
-    products.forEach((element) => {
+    products.forEach((element: any) => {
       const { price } = element;
       const { quantity = 1 } = element;
       if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
         priceSum += parseFloat(price) * parseInt(quantity, 10);
       }
     });
+    return String(priceSum);
   } else {
-    priceSum = null;
+    return 'null';
   }
-  return String(priceSum);
 }
 
 /**
  * Create Snapchat Batch payload based on the passed events
- * @param {*} events
- * @returns
+ * @param events - Array of events
+ * @param destination - Destination configuration
+ * @returns Batched request
  */
-function generateBatchedPayloadForArray(events, destination) {
-  const batchResponseList = [];
+export function generateBatchedPayloadForArray(
+  events: any[],
+  destination: SnapchatDestination,
+): any {
+  const batchResponseList: any[] = [];
 
   // extracting destination
   // from the first event in a batch
@@ -131,7 +137,10 @@ function generateBatchedPayloadForArray(events, destination) {
 }
 
 // Checks if there are any mapping events for the track event and returns them
-const eventMappingHandler = (message, destination) => {
+export const eventMappingHandler = (
+  message: Record<string, any>,
+  destination: SnapchatDestination,
+): string[] => {
   let event = get(message, 'event');
 
   if (!event) {
@@ -139,18 +148,18 @@ const eventMappingHandler = (message, destination) => {
   }
   event = event.toString().trim().replace(/\s+/g, '_');
 
-  let { rudderEventsToSnapEvents } = destination.Config;
-  const mappedEvents = new Set();
+  const { rudderEventsToSnapEvents } = destination.Config;
+  const mappedEvents = new Set<string>();
 
   if (Array.isArray(rudderEventsToSnapEvents)) {
-    rudderEventsToSnapEvents = getValidDynamicFormConfig(
+    const validMappings = getValidDynamicFormConfig(
       rudderEventsToSnapEvents,
       'from',
       'to',
       'snapchat_conversion',
       destination.ID,
     );
-    rudderEventsToSnapEvents.forEach((mapping) => {
+    validMappings.forEach((mapping: any) => {
       if (mapping.from.trim().replace(/\s+/g, '_').toLowerCase() === event.toLowerCase()) {
         mappedEvents.add(mapping.to);
       }
@@ -160,7 +169,7 @@ const eventMappingHandler = (message, destination) => {
   return [...mappedEvents];
 };
 
-const getEventConversionType = (message) => {
+export const getEventConversionType = (message: Record<string, any>): string => {
   const channel = get(message, 'channel');
   let eventConversionType = message?.properties?.eventConversionType;
   if (
@@ -176,7 +185,12 @@ const getEventConversionType = (message) => {
   return eventConversionType;
 };
 
-const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
+export const validateEventConfiguration = (
+  eventConversionType: string,
+  pixelId?: string,
+  snapAppId?: string,
+  appId?: string,
+): void => {
   if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
     throw new ConfigurationError('Pixel Id is required for web and offline events');
   }
@@ -190,11 +204,14 @@ const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, app
   }
 };
 
-const getEventTimestamp = (message, requiredDays = 37) => {
+export const getEventTimestamp = (
+  message: Record<string, any>,
+  requiredDays = 37,
+): string | null => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {
-    const start = moment.unix(moment(eventTime).format('X'));
-    const current = moment.unix(moment().format('X'));
+    const start = moment.unix(parseInt(moment(eventTime).format('X'), 10));
+    const current = moment.unix(parseInt(moment().format('X'), 10));
     // calculates past event in days
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
     if (deltaDay > requiredDays) {
@@ -202,22 +219,7 @@ const getEventTimestamp = (message, requiredDays = 37) => {
         `Events must be sent within ${requiredDays} days of their occurrence`,
       );
     }
-    return msUnixTimestamp(eventTime)?.toString()?.slice(0, 10);
+    return msUnixTimestamp(new Date(eventTime))?.toString()?.slice(0, 10);
   }
   return eventTime;
-};
-
-module.exports = {
-  msUnixTimestamp,
-  getItemIds,
-  getPriceSum,
-  getDataUseValue,
-  getNormalizedPhoneNumber,
-  getHashedValue,
-  generateBatchedPayloadForArray,
-  eventMappingHandler,
-  getEventConversionType,
-  validateEventConfiguration,
-  channelMapping,
-  getEventTimestamp,
 };

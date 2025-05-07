@@ -1,17 +1,18 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
-const ENDPOINT = {
+export const ENDPOINT = {
   Endpoint_v2: 'https://tr.snapchat.com/v2/conversion',
   Endpoint_v3: 'https://tr.snapchat.com/v3/{ID}/events',
 };
-const MAX_BATCH_SIZE = 2000;
 
-const API_VERSION = {
+export const MAX_BATCH_SIZE = 2000;
+
+export const API_VERSION = {
   v2: 'legacyApi',
   v3: 'newApi',
 };
 
-const ConfigCategory = {
+export const ConfigCategory = {
   DEFAULT: { name: 'SnapchatTrackDefaultConfig' },
   TRACK_COMMON: { name: 'TrackEventCommonConfig' },
   /* E-Commerce Events */
@@ -38,7 +39,7 @@ const ConfigCategory = {
   SIGN_UP: { name: 'SignupConfig' },
 };
 
-const ConfigCategoryV3 = {
+export const ConfigCategoryV3 = {
   DEFAULT: { name: 'SnapchatTrackDefaultConfigV3' },
   TRACK_COMMON: { name: 'TrackEventCommonConfigV3' },
   /* E-Commerce Events */
@@ -65,7 +66,7 @@ const ConfigCategoryV3 = {
   SIGN_UP: { name: 'SignupConfigV3' },
 };
 
-const eventNameMapping = {
+export const eventNameMapping: Record<string, string> = {
   /* E-Commerce Events */
   /* Browsing Section */
   products_searched: 'SEARCH',
@@ -109,18 +110,7 @@ const eventNameMapping = {
   custom_event_4: 'CUSTOM_EVENT_4',
   custom_event_5: 'CUSTOM_EVENT_5',
 };
-const pageTypeToTrackEvent = 'page_view';
-const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-const mappingConfigV3 = getMappingConfig(ConfigCategoryV3, __dirname);
 
-module.exports = {
-  ENDPOINT,
-  ConfigCategory,
-  ConfigCategoryV3,
-  eventNameMapping,
-  mappingConfig,
-  mappingConfigV3,
-  MAX_BATCH_SIZE,
-  pageTypeToTrackEvent,
-  API_VERSION,
-};
+export const pageTypeToTrackEvent = 'page_view';
+export const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+export const mappingConfigV3 = getMappingConfig(ConfigCategoryV3, __dirname);

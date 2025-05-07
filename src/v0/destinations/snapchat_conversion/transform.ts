@@ -1,8 +1,8 @@
-const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType } = require('../../../constants');
+import get from 'get-value';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { EventType } from '../../../constants';
 
-const {
+import {
   defaultPostRequestConfig,
   constructPayload,
   defaultRequestConfig,
@@ -12,8 +12,8 @@ const {
   isAppleFamily,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
-} = require('../../util');
-const {
+} from '../../util';
+import {
   ENDPOINT,
   eventNameMapping,
   mappingConfig,
@@ -21,8 +21,8 @@ const {
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
   API_VERSION,
-} = require('./config');
-const {
+} from './config';
+import {
   getHashedValue,
   getItemIds,
   getPriceSum,
@@ -33,11 +33,12 @@ const {
   getEventConversionType,
   validateEventConfiguration,
   getEventTimestamp,
-} = require('./util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { processV3, processRouterDest: processRouterV3 } = require('./transformV3');
+} from './util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { processV3, processRouterDest as processRouterV3 } from './transformV3';
+import { SnapchatDestination, SnapchatPayloadV2, SnapchatRouterRequest } from './types';
 
-function buildResponse(apiKey, payload) {
+function buildResponse(apiKey: string, payload: SnapchatPayloadV2): any {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
@@ -48,7 +49,8 @@ function buildResponse(apiKey, payload) {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 }
-const populateHashedTraitsValues = (payload, message) => {
+
+const populateHashedTraitsValues = (payload: any, message: Record<string, any>): any => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
@@ -75,11 +77,11 @@ const populateHashedTraitsValues = (payload, message) => {
 
 /**
  * Seperate out hashing operations into one function
- * @param {*} payload
- * @param {*} message
- * @returns updatedPayload
+ * @param payload - The payload to populate with hashed values
+ * @param message - The message containing the values to hash
+ * @returns updatedPayload - The payload with hashed values
  */
-const populateHashedValues = (payload, message) => {
+const populateHashedValues = (payload: any, message: Record<string, any>): any => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
@@ -111,10 +113,11 @@ const populateHashedValues = (payload, message) => {
   }
   return updatedPayload;
 };
-const getEventCommonProperties = (message) =>
+
+const getEventCommonProperties = (message: Record<string, any>): any =>
   constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
 
-const validateRequiredFields = (payload) => {
+const validateRequiredFields = (payload: any): void => {
   if (
     !payload.hashed_email &&
     !payload.hashed_phone_number &&
@@ -126,14 +129,15 @@ const validateRequiredFields = (payload) => {
     );
   }
 };
+
 const addSpecificEventDetails = (
-  message,
-  payload,
-  eventConversionType,
-  pixelId,
-  snapAppId,
-  appId,
-) => {
+  message: Record<string, any>,
+  payload: any,
+  eventConversionType: string,
+  pixelId?: string,
+  snapAppId?: string,
+  appId?: string,
+): any => {
   const updatedPayload = { ...payload };
   if (eventConversionType === 'WEB') {
     updatedPayload.pixel_id = pixelId;
@@ -152,11 +156,11 @@ const addSpecificEventDetails = (
 };
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
-const trackResponseBuilder = (message, { Config }, mappedEvent) => {
-  let payload = {};
+const trackResponseBuilder = (message: Record<string, any>, destination: SnapchatDestination, mappedEvent: string): any => {
+  let payload: any = {};
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
-  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = destination.Config;
   validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {
@@ -260,9 +264,8 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   return response;
 };
 
-const process = (event) => {
+export const process = (event: any): any => {
   const { message, destination } = event;
-  // const message = { ...incomingMessage };
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processV3(event);
   }
@@ -291,13 +294,13 @@ const process = (event) => {
   return response;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
+export const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any): Promise<any[]> => {
   const { destination } = inputs[0];
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processRouterV3(inputs, reqMetadata);
   }
-  const eventsChunk = []; // temporary variable to divide payload into chunks
-  const errorRespList = [];
+  const eventsChunk: any[] = []; // temporary variable to divide payload into chunks
+  const errorRespList: any[] = [];
   inputs.forEach((event) => {
     try {
       let resp = event.message;
@@ -316,7 +319,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }
   });
 
-  const batchResponseList = [];
+  const batchResponseList: any[] = [];
   if (eventsChunk.length > 0) {
     const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
     batchedEvents.forEach((batch) => {
@@ -329,5 +332,3 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   return [...batchResponseList, ...errorRespList];
 };
-
-module.exports = { process, processRouterDest };

@@ -12,7 +12,14 @@ import {
 } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import { ENDPOINT } from './config';
-import { SnapchatDestination } from './types';
+import {
+  SnapchatDestination,
+  SnapchatMessage,
+  SnapchatBatchedRequest,
+  SnapchatPayloadV2,
+  EventConversionTypeValue,
+  EventConversionType,
+} from './types';
 
 export const channelMapping: Record<string, string> = {
   web: 'WEB',
@@ -37,7 +44,7 @@ export function getHashedValue(identifier: string): string | null {
   return null;
 }
 
-export function getNormalizedPhoneNumber(message: Record<string, any>): string | null {
+export function getNormalizedPhoneNumber(message: SnapchatMessage): string | null {
   const regexExp = /^[\da-f]{64}$/i;
   const phoneNumber = getFieldValueFromMessage(message, 'phone');
 
@@ -48,7 +55,7 @@ export function getNormalizedPhoneNumber(message: Record<string, any>): string |
   return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
-export function getDataUseValue(message: Record<string, any>): string | null {
+export function getDataUseValue(message: SnapchatMessage): string | null {
   const att = get(message, 'context.device.attTrackingStatus');
   let limitAdTracking: boolean | string | undefined;
   if (isDefinedAndNotNull(att)) {
@@ -65,39 +72,41 @@ export function getDataUseValue(message: Record<string, any>): string | null {
   return null;
 }
 
-export function getItemIds(message: Record<string, any>): string[] | null {
-  let itemIds: string[] = [];
+export function getItemIds(message: SnapchatMessage): string[] | null {
+  const itemIds: string[] = [];
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
-    products.forEach((element: any, index: number) => {
+    products.forEach((element: Record<string, unknown>, index: number) => {
       const pId = element.product_id;
       if (pId) {
-        itemIds.push(pId);
+        itemIds.push(String(pId));
       } else {
         logger.debug(`product_id not present for product at index ${index}`);
       }
     });
     return itemIds.length > 0 ? itemIds : [];
-  } else {
-    return null;
   }
+  return null;
 }
 
-export function getPriceSum(message: Record<string, any>): string {
+export function getPriceSum(message: SnapchatMessage): string {
   let priceSum = 0;
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
-    products.forEach((element: any) => {
+    products.forEach((element: Record<string, unknown>) => {
       const { price } = element;
-      const { quantity = 1 } = element;
-      if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
-        priceSum += parseFloat(price) * parseInt(quantity, 10);
+      const quantity = element.quantity || 1;
+      if (
+        price &&
+        !Number.isNaN(parseFloat(String(price))) &&
+        !Number.isNaN(parseInt(String(quantity), 10))
+      ) {
+        priceSum += parseFloat(String(price)) * parseInt(String(quantity), 10);
       }
     });
     return String(priceSum);
-  } else {
-    return 'null';
   }
+  return 'null';
 }
 
 /**
@@ -107,10 +116,10 @@ export function getPriceSum(message: Record<string, any>): string {
  * @returns Batched request
  */
 export function generateBatchedPayloadForArray(
-  events: any[],
+  events: { body: { JSON: SnapchatPayloadV2 } }[],
   destination: SnapchatDestination,
-): any {
-  const batchResponseList: any[] = [];
+): SnapchatBatchedRequest {
+  const batchResponseList: SnapchatPayloadV2[] = [];
 
   // extracting destination
   // from the first event in a batch
@@ -133,12 +142,12 @@ export function generateBatchedPayloadForArray(
     Authorization: `Bearer ${apiKey}`,
   };
 
-  return batchedRequest;
+  return batchedRequest as SnapchatBatchedRequest;
 }
 
 // Checks if there are any mapping events for the track event and returns them
 export const eventMappingHandler = (
-  message: Record<string, any>,
+  message: SnapchatMessage,
   destination: SnapchatDestination,
 ): string[] => {
   let event = get(message, 'event');
@@ -159,7 +168,7 @@ export const eventMappingHandler = (
       'snapchat_conversion',
       destination.ID,
     );
-    validMappings.forEach((mapping: any) => {
+    validMappings.forEach((mapping: { from: string; to: string }) => {
       if (mapping.from.trim().replace(/\s+/g, '_').toLowerCase() === event.toLowerCase()) {
         mappedEvents.add(mapping.to);
       }
@@ -169,33 +178,37 @@ export const eventMappingHandler = (
   return [...mappedEvents];
 };
 
-export const getEventConversionType = (message: Record<string, any>): string => {
+export const getEventConversionType = (message: SnapchatMessage): EventConversionTypeValue => {
   const channel = get(message, 'channel');
-  let eventConversionType = message?.properties?.eventConversionType;
+  const eventConversionTypeFromProps = get(message, 'properties.eventConversionType');
+
   if (
-    channelMapping[eventConversionType?.toLowerCase()] ||
-    channelMapping[channel?.toLowerCase()]
+    typeof eventConversionTypeFromProps === 'string' &&
+    channelMapping[eventConversionTypeFromProps.toLowerCase()]
   ) {
-    eventConversionType = eventConversionType
-      ? channelMapping[eventConversionType?.toLowerCase()]
-      : channelMapping[channel?.toLowerCase()];
-  } else {
-    eventConversionType = 'OFFLINE';
+    return channelMapping[eventConversionTypeFromProps.toLowerCase()] as EventConversionTypeValue;
   }
-  return eventConversionType;
+  if (typeof channel === 'string' && channelMapping[channel.toLowerCase()]) {
+    return channelMapping[channel.toLowerCase()] as EventConversionTypeValue;
+  }
+  return EventConversionType.OFFLINE;
 };
 
 export const validateEventConfiguration = (
-  eventConversionType: string,
+  eventConversionType: EventConversionTypeValue,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
 ): void => {
-  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
+  if (
+    (eventConversionType === EventConversionType.WEB ||
+      eventConversionType === EventConversionType.OFFLINE) &&
+    !pixelId
+  ) {
     throw new ConfigurationError('Pixel Id is required for web and offline events');
   }
 
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
+  if (eventConversionType === EventConversionType.MOBILE_APP && !(appId && snapAppId)) {
     let requiredId = 'App Id';
     if (!snapAppId) {
       requiredId = 'Snap App Id';
@@ -204,10 +217,7 @@ export const validateEventConfiguration = (
   }
 };
 
-export const getEventTimestamp = (
-  message: Record<string, any>,
-  requiredDays = 37,
-): string | null => {
+export const getEventTimestamp = (message: SnapchatMessage, requiredDays = 37): string | null => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {
     const start = moment.unix(parseInt(moment(eventTime).format('X'), 10));

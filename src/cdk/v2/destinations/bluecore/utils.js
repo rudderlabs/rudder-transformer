@@ -87,6 +87,11 @@ const validateOptinEvent = (payload, message) => {
   }
 };
 
+const validateCustomerEvent = (payload, message) => {
+  validateEmail(payload, message);
+  validateCustomerProperties(payload, payload.event);
+};
+
 const validateEventSpecificPayload = (payload, message) => {
   const eventValidators = {
     search: validateSearchEvent,

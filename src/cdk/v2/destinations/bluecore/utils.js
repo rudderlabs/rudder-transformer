@@ -19,7 +19,7 @@ const {
   EVENT_NAME_MAPPING,
   IDENTIFY_EXCLUSION_LIST,
   TRACK_EXCLUSION_LIST,
-  OPTINEVENTS,
+  OPTIN_EVENTS,
 } = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
@@ -64,21 +64,17 @@ const validatePurchaseEvent = (payload) => {
   validateCustomerProperties(payload, 'purchase');
 };
 
-const validateCustomerEvent = (payload, message) => {
+const validateEmail = (payload, message) => {
   if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
     throw new InstrumentationError(
       `[Bluecore] property:: email is required for ${payload.event} action`,
     );
   }
-  validateCustomerProperties(payload, payload.event);
 };
 
-const validateOptinEvent = (payload, message) => {
-  if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
-    throw new InstrumentationError(
-      `[Bluecore] property:: email is required for ${payload.event} action`,
-    );
-  }
+const validateCustomerEvent = (payload, message) => {
+  validateEmail(payload, message);
+  validateCustomerProperties(payload, payload.event);
 };
 
 const validateEventSpecificPayload = (payload, message) => {
@@ -86,8 +82,8 @@ const validateEventSpecificPayload = (payload, message) => {
     search: validateSearchEvent,
     purchase: validatePurchaseEvent,
     identify: validateCustomerEvent,
-    optin: validateOptinEvent,
-    unsubscribe: validateOptinEvent,
+    optin: validateEmail,
+    unsubscribe: validateEmail,
   };
 
   const validator = eventValidators[payload.event];
@@ -166,8 +162,10 @@ const isStandardBluecoreEvent = (eventName) => {
 };
 
 const isOptinEvent = (eventName) => {
-  const eventNameLowerCase = typeof eventName === 'string' ? eventName.toLowerCase() : eventName;
-  return OPTINEVENTS.includes(eventNameLowerCase);
+  if (typeof eventName !== 'string') {
+    return false;
+  }
+  return OPTIN_EVENTS.includes(eventName.toLowerCase());
 };
 
 /**

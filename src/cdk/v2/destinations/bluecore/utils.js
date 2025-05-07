@@ -79,6 +79,14 @@ const validateCustomerEvent = (payload, message) => {
   validateCustomerProperties(payload, payload.event);
 };
 
+const validateOptinEvent = (payload, message) => {
+  if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
+    throw new InstrumentationError(
+      `[Bluecore] property:: email is required for ${payload.event} action`,
+    );
+  }
+};
+
 const validateEventSpecificPayload = (payload, message) => {
   const eventValidators = {
     search: validateSearchEvent,
@@ -214,7 +222,14 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      customProperties.properties.customer = customerProperties;
+      if (isOptinEvent(message?.event)) {
+        customProperties.properties = {
+          ...customProperties.properties,
+          ...customerProperties,
+        };
+      } else {
+        customProperties.properties.customer = customerProperties;
+      }
       break;
     default:
       break;

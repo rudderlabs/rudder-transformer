@@ -7,7 +7,7 @@ import { OptionValues } from 'commander';
 import { filter, removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
 import tags from '../../src/v0/util/tags';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import { Destination, ProxyMetdata, ProxyV0Request, ProxyV1Request } from '../../src/types';
+import { Destination, ProxyMetadata, ProxyV0Request, ProxyV1Request } from '../../src/types';
 import {
   DeliveryV0ResponseSchema,
   DeliveryV0ResponseSchemaForOauth,
@@ -503,10 +503,10 @@ export const compareObjects = (obj1, obj2, logPrefix = '', differences: string[]
 
 export const generateProxyV0Payload = (
   payloadParameters: any,
-  metadataInput?: ProxyMetdata,
+  metadataInput?: ProxyMetadata,
   destinationConfig?: any,
 ): ProxyV0Request => {
-  let metadata: ProxyMetdata = {
+  let metadata: ProxyMetadata = {
     jobId: 1,
     attemptNum: 1,
     userId: 'default-userId',
@@ -544,10 +544,10 @@ export const generateProxyV0Payload = (
 
 export const generateProxyV1Payload = (
   payloadParameters: any,
-  metadataInput?: ProxyMetdata[],
+  metadataInput?: ProxyMetadata[],
   destinationConfig?: any,
 ): ProxyV1Request => {
-  let metadata: ProxyMetdata[] = [
+  let metadata: ProxyMetadata[] = [
     {
       jobId: 1,
       attemptNum: 1,

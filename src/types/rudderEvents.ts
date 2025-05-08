@@ -36,6 +36,9 @@ export const RudderMessageSchema = z
     properties: z.object({}).optional(),
     traits: z.object({}).optional(),
     statusCode: z.number().optional(),
+    fields: z.object({}).optional(),
+    identifiers: z.object({}).optional(),
+    action: z.string().optional(),
   })
   .passthrough();
 
@@ -83,6 +86,7 @@ export const MetadataSchema = z
     destinationDefinitionId: z.string().optional(),
     transformationId: z.string().optional(),
     dontBatch: z.boolean().optional(),
+    secret: z.object({}).optional(),
   })
   .passthrough();
 

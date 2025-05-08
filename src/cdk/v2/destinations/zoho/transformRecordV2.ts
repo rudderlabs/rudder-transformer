@@ -1,10 +1,10 @@
-const {
+import {
   InstrumentationError,
   ConfigurationError,
   RetryableError,
-} = require('@rudderstack/integrations-lib');
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const {
+} from '@rudderstack/integrations-lib';
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getSuccessRespEvents,
@@ -13,37 +13,55 @@ const {
   isEmptyObject,
   defaultDeleteRequestConfig,
   getHashFromArray,
-} = require('../../../../v0/util');
-const zohoConfig = require('./config');
-const {
+  getAccessToken,
+} from '../../../../v0/util';
+import zohoConfig from './config';
+import {
   deduceModuleInfoV2,
   validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
   searchRecordIdV2,
   calculateTrigger,
-} = require('./utils');
-const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
+} from './utils';
+import { REFRESH_TOKEN } from '../../../../adapters/networkhandler/authConstants';
+
+import {
+  Connection,
+  Destination,
+  Metadata,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+} from '../../../../types';
+import {
+  ZohoConDestConfig,
+  ZohoDestiantionConfig,
+  ZohoDeliveryAccount,
+  TransformedResponse,
+  BatchResponse,
+  SearchResponse,
+  ZohoMessage,
+} from './types';
 
 // Main response builder function
 const responseBuilder = (
-  items,
-  destConfig,
-  identifierType,
-  operationModuleType,
-  commonEndPoint,
-  isUpsert,
-  metadata,
-) => {
+  items: Record<string, any>[] | string[],
+  destConfig: ZohoConDestConfig,
+  identifierType: string[],
+  operationModuleType: string,
+  commonEndPoint: string,
+  isUpsert: boolean,
+  metadata: Metadata[],
+): Record<string, any> => {
   const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = destConfig;
 
   const response = defaultRequestConfig();
   response.headers = {
-    Authorization: `Zoho-oauthtoken ${metadata[0].secret.accessToken}`,
+    Authorization: `Zoho-oauthtoken ${getAccessToken(metadata[0], 'accessToken')}`,
   };
 
   const multiSelectFieldLevelDecisionAcc = getHashFromArray(
-    multiSelectFieldLevelDecision,
+    multiSelectFieldLevelDecision || [],
     'from',
     'to',
     false,
@@ -64,22 +82,23 @@ const responseBuilder = (
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${commonEndPoint}/upsert`;
   } else {
-    response.endpoint = `${commonEndPoint}?ids=${items.join(',')}&wf_trigger=${trigger !== 'None'}`;
+    response.endpoint = `${commonEndPoint}?ids=${(items as string[]).join(',')}&wf_trigger=${trigger !== 'None'}`;
     response.method = defaultDeleteRequestConfig.requestMethod;
   }
 
   return response;
 };
+
 const batchResponseBuilder = (
-  transformedResponseToBeBatched,
-  config,
-  destConfig,
-  identifierType,
-  operationModuleType,
-  upsertEndPoint,
-) => {
-  const upsertResponseArray = [];
-  const deletionResponseArray = [];
+  transformedResponseToBeBatched: TransformedResponse,
+  config: Record<string, any>,
+  destConfig: ZohoConDestConfig,
+  identifierType: string[],
+  operationModuleType: string,
+  upsertEndPoint: string,
+): BatchResponse => {
+  const upsertResponseArray: Record<string, any>[] = [];
+  const deletionResponseArray: Record<string, any>[] = [];
   const { upsertData, deletionData, upsertSuccessMetadata, deletionSuccessMetadata } =
     transformedResponseToBeBatched;
 
@@ -148,13 +167,18 @@ const batchResponseBuilder = (
  * @returns {Promise<void>} - A promise that resolves once the upsert operation is handled.
  */
 const handleUpsert = async (
-  input,
-  allFields,
-  operationModuleType,
-  destConfig,
-  transformedResponseToBeBatched,
-  errorResponseList,
-) => {
+  input: RouterTransformationRequestData<
+    ZohoMessage,
+    ZohoDestiantionConfig,
+    Connection<{ destination: ZohoConDestConfig }>,
+    Metadata
+  >,
+  allFields: Record<string, any>,
+  operationModuleType: string,
+  destConfig: ZohoConDestConfig,
+  transformedResponseToBeBatched: TransformedResponse,
+  errorResponseList: any[],
+): Promise<void> => {
   const eventErroneous = validatePresenceOfMandatoryPropertiesV2(destConfig.object, allFields);
 
   if (eventErroneous?.status) {
@@ -177,8 +201,8 @@ const handleUpsert = async (
  * @param {Object} searchResponse - The response object from the search operation.
  * @returns {RetryableError|ConfigurationError} - The error object based on the search response.
  */
-const handleSearchError = (searchResponse) => {
-  if (searchResponse.message.code === 'INVALID_TOKEN') {
+const handleSearchError = (searchResponse: SearchResponse): RetryableError | ConfigurationError => {
+  if (searchResponse.erroneous && searchResponse.message.code === 'INVALID_TOKEN') {
     return new RetryableError(
       `[Zoho]:: ${JSON.stringify(searchResponse.message)} during zoho record search`,
       500,
@@ -186,7 +210,7 @@ const handleSearchError = (searchResponse) => {
       REFRESH_TOKEN,
     );
   }
-  if (searchResponse.message.code === 'INSTRUMENTATION_ERROR') {
+  if (searchResponse.erroneous && searchResponse.message.code === 'INSTRUMENTATION_ERROR') {
     return new InstrumentationError(
       `failed to fetch zoho id for record for: ${searchResponse.message}`,
     );
@@ -206,14 +230,19 @@ const handleSearchError = (searchResponse) => {
  * @param {Array} errorResponseList - The list to store error responses.
  */
 const handleDeletion = async (
-  input,
-  identifiers,
-  Config,
-  deliveryAccount,
-  destConfig,
-  transformedResponseToBeBatched,
-  errorResponseList,
-) => {
+  input: RouterTransformationRequestData<
+    ZohoMessage,
+    ZohoDestiantionConfig,
+    Connection<{ destination: ZohoConDestConfig }>,
+    Metadata
+  >,
+  identifiers: Record<string, any> | undefined,
+  Config: Record<string, any>,
+  deliveryAccount: Record<string, any> | undefined,
+  destConfig: ZohoConDestConfig,
+  transformedResponseToBeBatched: TransformedResponse,
+  errorResponseList: any[],
+): Promise<void> => {
   const searchResponse = await searchRecordIdV2({
     identifiers,
     metadata: input.metadata,
@@ -245,14 +274,19 @@ const handleDeletion = async (
  * @param {Object} conConfig - The connection configuration object.
  */
 const processInput = async (
-  input,
-  operationModuleType,
-  Config,
-  deliveryAccount,
-  transformedResponseToBeBatched,
-  errorResponseList,
-  destConfig,
-) => {
+  input: RouterTransformationRequestData<
+    ZohoMessage,
+    ZohoDestiantionConfig,
+    Connection<{ destination: ZohoConDestConfig }>,
+    Metadata
+  >,
+  operationModuleType: string,
+  Config: Record<string, any>,
+  deliveryAccount: Record<string, any> | undefined,
+  transformedResponseToBeBatched: TransformedResponse,
+  errorResponseList: any[],
+  destConfig: ZohoConDestConfig,
+): Promise<void> => {
   const { fields, action, identifiers } = input.message;
   const allFields = { ...identifiers, ...fields };
 
@@ -313,17 +347,24 @@ const appendSuccessResponses = (response, responseArray, metadataChunks, destina
  * @param {Object} destination - The destination object containing configuration.
  * @returns {Array} - An array of responses after processing the record inputs.
  */
-const processRecordInputsV2 = async (inputs, destination) => {
+const processRecordInputsV2 = async (
+  inputs: RouterTransformationRequestData<
+    ZohoMessage,
+    ZohoDestiantionConfig,
+    Connection<{ destination: ZohoConDestConfig }>,
+    Metadata
+  >[],
+  destination: Destination<ZohoDestiantionConfig, ZohoDeliveryAccount>,
+): Promise<RouterTransformationResponse[]> => {
   if (!inputs || inputs.length === 0) {
     return [];
   }
   if (!destination) {
     return [];
   }
-
-  const response = [];
-  const errorResponseList = [];
-  const { Config, deliveryAccount } = destination;
+  const response: RouterTransformationResponse[] = [];
+  const errorResponseList: any[] = [];
+  const { Config, DeliveryAccount } = destination;
   const { destination: destConfig } = inputs[0].connection?.config || {};
   if (!destConfig) {
     throw new ConfigurationError('Connection destination config is required');
@@ -335,7 +376,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
     );
   }
 
-  const transformedResponseToBeBatched = {
+  const transformedResponseToBeBatched: TransformedResponse = {
     upsertData: [],
     upsertSuccessMetadata: [],
     deletionSuccessMetadata: [],
@@ -345,7 +386,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
     Config,
     destConfig,
-    deliveryAccount,
+    DeliveryAccount,
   );
 
   await Promise.all(
@@ -354,7 +395,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
         input,
         operationModuleType,
         Config,
-        deliveryAccount,
+        DeliveryAccount,
         transformedResponseToBeBatched,
         errorResponseList,
         destConfig,
@@ -386,4 +427,4 @@ const processRecordInputsV2 = async (inputs, destination) => {
   return [...response, ...errorResponseList];
 };
 
-module.exports = { processRecordInputsV2 };
+export { processRecordInputsV2 };

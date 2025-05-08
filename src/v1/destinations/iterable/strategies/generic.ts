@@ -4,7 +4,7 @@ import {
   IterableBulkApiResponse,
   IterableSuccessResponse,
 } from '../types';
-import { ProxyMetdata } from '../../../../types';
+import { ProxyMetadata } from '../../../../types';
 import { TransformerProxyError } from '../../../../v0/util/errorTypes';
 import { TAG_NAMES } from '../../../../v0/util/tags';
 import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
@@ -12,7 +12,7 @@ import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
 class GenericStrategy extends BaseStrategy {
   handleSuccess(responseParams: {
     destinationResponse: IterableBulkApiResponse;
-    rudderJobMetadata: ProxyMetdata[];
+    rudderJobMetadata: ProxyMetadata[];
   }): IterableSuccessResponse {
     const { destinationResponse, rudderJobMetadata } = responseParams;
     const { status } = destinationResponse;

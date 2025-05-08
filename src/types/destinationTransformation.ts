@@ -127,7 +127,7 @@ export type RouterTransformationResponse = {
 /**
  * Metadata structure for proxy requests
  */
-export type ProxyMetdata = {
+export type ProxyMetadata = {
   jobId: number;
   attemptNum: number;
   userId: string;
@@ -159,7 +159,7 @@ export type ProxyV0Request = {
     GZIP?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata: ProxyMetdata;
+  metadata: ProxyMetadata;
   destinationConfig: Record<string, unknown>;
 };
 
@@ -167,7 +167,7 @@ export type ProxyV0Request = {
  * Proxy request structure for version 1
  */
 export type ProxyV1Request = Omit<ProxyV0Request, 'metadata'> & {
-  metadata: ProxyMetdata[];
+  metadata: ProxyMetadata[];
 };
 
 export type ProxyRequest = ProxyV0Request | ProxyV1Request;
@@ -195,8 +195,8 @@ export type ErrorDetailerOptions = {
 };
 
 export type MetaTransferObjectForProxy = {
-  metadata?: ProxyMetdata;
-  metadatas?: ProxyMetdata[];
+  metadata?: ProxyMetadata;
+  metadatas?: ProxyMetadata[];
   errorDetails: ErrorDetailer;
   errorContext: string;
 };
@@ -224,7 +224,7 @@ export type DeliveryV0Response = {
 export type DeliveryJobState = {
   error: string;
   statusCode: number;
-  metadata: ProxyMetdata;
+  metadata: ProxyMetadata;
 };
 
 export type DeliveryV1Response = {
@@ -247,7 +247,7 @@ export interface ResponseHandlerParams {
   };
   destinationRequest?: ProxyRequest;
   destType?: string;
-  rudderJobMetadata: ProxyMetdata | ProxyMetdata[];
+  rudderJobMetadata: ProxyMetadata | ProxyMetadata[];
   [key: string]: any;
 }
 

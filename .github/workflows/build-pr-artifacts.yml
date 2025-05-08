@@ -71,12 +71,13 @@ jobs:
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  run-ingestion-service-test:
-    name: Run Ingestion Service Test
-    needs: [build-transformer-image, generate-tag-names]
-    uses: ./.github/workflows/ingestion-service-test.yml
-    with:
-      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-    secrets:
-      PAT: ${{ secrets.PAT }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  # will enable it once rudder-go-kit docker setup issue get resolve and ingestion svc started using latest rudder-go-kit
+  # run-ingestion-service-test:
+  #   name: Run Ingestion Service Test
+  #   needs: [build-transformer-image, generate-tag-names]
+  #   uses: ./.github/workflows/ingestion-service-test.yml
+  #   with:
+  #     build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+  #   secrets:
+  #     PAT: ${{ secrets.PAT }}
+  #     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}

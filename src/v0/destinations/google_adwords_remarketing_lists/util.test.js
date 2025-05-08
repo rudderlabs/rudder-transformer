@@ -1,5 +1,4 @@
 const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
-const { API_VERSION } = require('./config');
 const { generateRandomString } = require('@rudderstack/integrations-lib');
 
 const accessToken = generateRandomString();
@@ -68,19 +67,17 @@ const expectedResponse = {
   version: '1',
   type: 'REST',
   method: 'POST',
-  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-  headers: {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
-    'developer-token': 'ijkl9101',
-  },
+  endpoint: '',
+  headers: {},
   params: {
+    accessToken,
     listId: '7090784486',
     customerId: '7693729833',
     consent: {
       adPersonalization: 'UNSPECIFIED',
       adUserData: 'UNSPECIFIED',
     },
+    developerToken: 'ijkl9101',
   },
   body: {
     JSON: {

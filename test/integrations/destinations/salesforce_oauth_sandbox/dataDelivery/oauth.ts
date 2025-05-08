@@ -1,5 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
-import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyMetadata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
@@ -50,7 +50,7 @@ const commonRequestParametersWithRightToken = {
   params,
 };
 
-export const proxyMetdataWithSecretWithWrongAccessToken: ProxyMetdata = {
+export const ProxyMetadataWithSecretWithWrongAccessToken: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -65,7 +65,7 @@ export const proxyMetdataWithSecretWithWrongAccessToken: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const proxyMetdataWithSecretWithRightAccessToken: ProxyMetdata = {
+export const ProxyMetadataWithSecretWithRightAccessToken: ProxyMetadata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -80,8 +80,8 @@ export const proxyMetdataWithSecretWithRightAccessToken: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const reqMetadataArrayWithWrongSecret = [proxyMetdataWithSecretWithWrongAccessToken];
-export const reqMetadataArray = [proxyMetdataWithSecretWithRightAccessToken];
+export const reqMetadataArrayWithWrongSecret = [ProxyMetadataWithSecretWithWrongAccessToken];
+export const reqMetadataArray = [ProxyMetadataWithSecretWithRightAccessToken];
 
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
@@ -121,7 +121,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error: JSON.stringify([
                   { message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' },
                 ]),
-                metadata: proxyMetdataWithSecretWithWrongAccessToken,
+                metadata: ProxyMetadataWithSecretWithWrongAccessToken,
                 statusCode: 500,
               },
             ],
@@ -164,7 +164,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error: JSON.stringify({ statusText: 'No Content' }),
-                metadata: proxyMetdataWithSecretWithRightAccessToken,
+                metadata: ProxyMetadataWithSecretWithRightAccessToken,
                 statusCode: 200,
               },
             ],

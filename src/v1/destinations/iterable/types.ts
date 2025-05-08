@@ -1,4 +1,4 @@
-import { ProxyMetdata, ProxyV1Request } from '../../../types';
+import { ProxyMetadata, ProxyV1Request } from '../../../types';
 
 type FailedUpdates = {
   invalidEmails?: string[];
@@ -39,7 +39,7 @@ type IterableBulkRequestBody = {
 
 export type IterableBulkProxyInput = {
   destinationResponse: IterableBulkApiResponse;
-  rudderJobMetadata: ProxyMetdata[];
+  rudderJobMetadata: ProxyMetadata[];
   destType: string;
   destinationRequest?: {
     body: {
@@ -50,7 +50,7 @@ export type IterableBulkProxyInput = {
 
 export type GenericProxyHandlerInput = {
   destinationResponse: any;
-  rudderJobMetadata: ProxyMetdata[];
+  rudderJobMetadata: ProxyMetadata[];
   destType: string;
   destinationRequest: ProxyV1Request;
 };

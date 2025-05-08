@@ -1,0 +1,57 @@
+{
+  "name": "segment",
+  "description": "test-0",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"date\":\"2020-07-10T07:43:09.620Z\",\"type\":\"seacft\",\"description\":\"\",\"connection_id\":\"\",\"client_id\":\"********************************\",\"client_name\":\"My App\",\"ip\":\"47.15.6.58\",\"user_agent\":\"okhttp 2.7.5 / Other 0.0.0\",\"details\":{\"code\":\"*************Xst\"},\"hostname\":\"************.us.auth0.com\",\"user_id\":\"auth0|************************\",\"user_name\":\"example@test.com\",\"auth0_client\":{\"name\":\"Auth0.Android\",\"env\":{\"android\":\"28\"},\"version\":\"1.23.0\"},\"log_id\":\"********************************************************\",\"_id\":\"********************************************************\",\"isMobile\":false}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "date": "2020-07-10T07:43:09.620Z",
+        "type": "seacft",
+        "context": {},
+        "description": "",
+        "connection_id": "",
+        "client_id": "********************************",
+        "client_name": "My App",
+        "ip": "47.15.6.58",
+        "user_agent": "okhttp 2.7.5 / Other 0.0.0",
+        "details": {
+          "code": "*************Xst"
+        },
+        "hostname": "************.us.auth0.com",
+        "user_id": "auth0|************************",
+        "user_name": "example@test.com",
+        "auth0_client": {
+          "name": "Auth0.Android",
+          "env": {
+            "android": "28"
+          },
+          "version": "1.23.0"
+        },
+        "log_id": "********************************************************",
+        "_id": "********************************************************",
+        "isMobile": false,
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  },
+  "skip": "NoAnonID error"
+}

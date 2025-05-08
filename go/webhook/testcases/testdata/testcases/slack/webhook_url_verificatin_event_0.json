@@ -1,0 +1,27 @@
+{
+  "name": "slack",
+  "description": "Webhook url verificatin event",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"token\":\"Jhj5dZrVaK7ZwHHjRyZWjbDl\",\"challenge\":\"3eZbrw1aB10FEMAGAZd4FyFQ\",\"type\":\"url_verification\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": {
+        "challenge": "3eZbrw1aB10FEMAGAZd4FyFQ"
+      }
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

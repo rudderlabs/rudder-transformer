@@ -1,0 +1,74 @@
+{
+  "name": "auth0",
+  "description": "successful signup",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"log_id\":\"90020221031055712103169676686005480714681762668315934738\",\"data\":{\"date\":\"2022-10-31T05:57:06.859Z\",\"type\":\"ss\",\"description\":\"\",\"connection\":\"Username-Password-Authentication\",\"connection_id\":\"con_djwCjiwyID0vZy1S\",\"client_id\":\"vQcJNDTxsM1W72eHFonRJdzyOvawlwIt\",\"client_name\":\"All Applications\",\"ip\":\"35.166.202.113\",\"user_agent\":\"unknown\",\"details\":{\"body\":{\"email\":\"testRudderlabs+21@gmail.com\",\"tenant\":\"dev-cu4jy2zgao6yx15x\",\"password\":\"dummyPassword\",\"client_id\":\"vQcJNDTxsM1W72eHFonRJdzyOvawlwIt\",\"connection\":\"Username-Password-Authentication\"}},\"user_id\":\"auth0|dummyPassword\",\"user_name\":\"testRudderlabs+21@gmail.com\",\"strategy\":\"auth0\",\"strategy_type\":\"database\",\"log_id\":\"90020221031055712103169676686005480714681762668315934738\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "identify",
+        "sentAt": "2022-10-31T05:57:06.859Z",
+        "traits": {
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_djwCjiwyID0vZy1S"
+        },
+        "userId": "auth0|dummyPassword",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "traits": {
+            "userId": "auth0|dummyPassword",
+            "user_name": "testRudderlabs+21@gmail.com"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "userAgent": "unknown",
+          "request_ip": "35.166.202.113",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031055712103169676686005480714681762668315934738",
+          "details": {
+            "body": {
+              "email": "testRudderlabs+21@gmail.com",
+              "tenant": "dev-cu4jy2zgao6yx15x",
+              "password": "dummyPassword",
+              "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+              "connection": "Username-Password-Authentication"
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "All Applications",
+          "description": "",
+          "source_type": "ss"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T05:57:06.859Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

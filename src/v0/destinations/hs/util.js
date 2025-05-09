@@ -887,6 +887,8 @@ const isIterable = (obj) => {
 // remove system fields from the properties because they are not allowed to be updated
 const removeHubSpotSystemField = (properties) => omit(properties, HUBSPOT_SYSTEM_FIELDS);
 
+const isUpsertEnabled = () => process.env.HS_USE_UPSERT_CONTACTS_API === 'true';
+
 module.exports = {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -909,4 +911,5 @@ module.exports = {
   convertToResponseFormat,
   isIterable,
   removeHubSpotSystemField,
+  isUpsertEnabled,
 };

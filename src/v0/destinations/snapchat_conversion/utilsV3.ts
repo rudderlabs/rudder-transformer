@@ -1,24 +1,36 @@
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { get } = require('lodash');
-const moment = require('moment-timezone');
-const { MAX_BATCH_SIZE } = require('./config');
-const { isAppleFamily } = require('../../util');
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import { get } from 'lodash';
+import moment from 'moment-timezone';
+import { MAX_BATCH_SIZE } from './config';
+import { isAppleFamily } from '../../util';
+import { Metadata, RudderMessage } from '../../../types';
+import {
+  ProcessedEvent,
+  SnapchatDestination,
+  SnapchatV3Params,
+  SnapchatPayloadV3,
+  SnapchatV3BatchRequestOutput,
+} from './types';
 
-const getMergedPayload = (batch) => ({
-  data: batch.flatMap((input) => input.message.body.JSON.data),
+export const getMergedPayload = (batch: ProcessedEvent[]): SnapchatPayloadV3 => ({
+  data: batch.flatMap((input) => {
+    const json = input.message.body.JSON as SnapchatPayloadV3;
+    return json.data;
+  }),
 });
 
-const getMergedMetadata = (batch) => batch.map((input) => input.metadata);
+export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] =>
+  batch.map((input) => input.metadata);
 
-const buildBatchedResponse = (
-  mergedPayload,
-  endpoint,
-  headers,
-  params,
-  method,
-  metadata,
-  destination,
-) => ({
+export const buildBatchedResponse = (
+  mergedPayload: SnapchatPayloadV3,
+  endpoint: string,
+  headers: Record<string, any>,
+  params: SnapchatV3Params,
+  method: string,
+  metadata: Partial<Metadata>[],
+  destination: SnapchatDestination,
+): SnapchatV3BatchRequestOutput => ({
   batchedRequest: {
     body: {
       JSON: mergedPayload,
@@ -39,7 +51,8 @@ const buildBatchedResponse = (
   statusCode: 200,
   destination,
 });
-const processBatch = (eventsChunk) => {
+
+export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatV3BatchRequestOutput[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -59,19 +72,23 @@ const processBatch = (eventsChunk) => {
     );
   });
 };
-const batchResponseBuilder = (webOrOfflineEventsChunk, mobileEventsChunk) => {
+
+export const batchResponseBuilder = (
+  webOrOfflineEventsChunk: ProcessedEvent[],
+  mobileEventsChunk: ProcessedEvent[],
+): SnapchatV3BatchRequestOutput[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
-const getExtInfo = (message) => {
-  const getValue = (path) => {
+export const getExtInfo = (message: RudderMessage): string[] | null => {
+  const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;
   };
 
-  const extInfoVersion = isAppleFamily(message.context?.device?.type) ? 'i2' : 'a2';
+  const extInfoVersion = isAppleFamily(getValue('context.device.type')) ? 'i2' : 'a2';
 
   // App related information
   const appInfo = {
@@ -105,6 +122,7 @@ const getExtInfo = (message) => {
     locale: getValue('context.locale'),
     timezone: getValue('context.timezone'),
     carrier: getValue('context.network.carrier'),
+    timezoneAbbr: null as string | null,
   };
   if (environmentInfo.timezone) {
     environmentInfo.timezoneAbbr = moment().tz(environmentInfo.timezone)?.format('z');
@@ -129,10 +147,10 @@ const getExtInfo = (message) => {
     environmentInfo.timezone,
   ];
 
-  return extInfo.some((value) => value == null) ? null : extInfo;
-};
+  if (extInfo.some((value) => value == null)) {
+    return null;
+  }
 
-module.exports = {
-  batchResponseBuilder,
-  getExtInfo,
+  // Convert all values to strings and filter out nulls
+  return extInfo.map((value) => (value === null ? '' : String(value))) as string[];
 };

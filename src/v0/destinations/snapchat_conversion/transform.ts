@@ -1,8 +1,8 @@
-const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EventType } = require('../../../constants');
+import get from 'get-value';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { EventType } from '../../../constants';
 
-const {
+import {
   defaultPostRequestConfig,
   constructPayload,
   defaultRequestConfig,
@@ -12,8 +12,8 @@ const {
   isAppleFamily,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
-} = require('../../util');
-const {
+} from '../../util';
+import {
   ENDPOINT,
   eventNameMapping,
   mappingConfig,
@@ -21,8 +21,8 @@ const {
   MAX_BATCH_SIZE,
   pageTypeToTrackEvent,
   API_VERSION,
-} = require('./config');
-const {
+} from './config';
+import {
   getHashedValue,
   getItemIds,
   getPriceSum,
@@ -33,11 +33,20 @@ const {
   getEventConversionType,
   validateEventConfiguration,
   getEventTimestamp,
-} = require('./util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { processV3, processRouterDest: processRouterV3 } = require('./transformV3');
+} from './util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { processV3, processRouterDest as processRouterV3 } from './transformV3';
+import {
+  SnapchatDestination,
+  SnapchatPayloadV2,
+  SnapchatRouterRequest,
+  SnapchatV2BatchedRequest,
+  SnapchatV2BatchRequestOutput,
+  SnapchatV3BatchedRequest,
+} from './types';
+import { RudderMessage } from '../../../types';
 
-function buildResponse(apiKey, payload) {
+function buildResponse(apiKey: string, payload: SnapchatPayloadV2): SnapchatV2BatchedRequest {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
@@ -46,9 +55,13 @@ function buildResponse(apiKey, payload) {
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  return response as SnapchatV2BatchedRequest;
 }
-const populateHashedTraitsValues = (payload, message) => {
+
+const populateHashedTraitsValues = (
+  payload: SnapchatPayloadV2,
+  message: RudderMessage,
+): SnapchatPayloadV2 => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
@@ -75,11 +88,11 @@ const populateHashedTraitsValues = (payload, message) => {
 
 /**
  * Seperate out hashing operations into one function
- * @param {*} payload
- * @param {*} message
- * @returns updatedPayload
+ * @param payload - The payload to populate with hashed values
+ * @param message - The message containing the values to hash
+ * @returns updatedPayload - The payload with hashed values
  */
-const populateHashedValues = (payload, message) => {
+const populateHashedValues = (payload: SnapchatPayloadV2, message: any): SnapchatPayloadV2 => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
@@ -111,10 +124,11 @@ const populateHashedValues = (payload, message) => {
   }
   return updatedPayload;
 };
-const getEventCommonProperties = (message) =>
+
+const getEventCommonProperties = (message: RudderMessage): any =>
   constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
 
-const validateRequiredFields = (payload) => {
+const validateRequiredFields = (payload: SnapchatPayloadV2): void => {
   if (
     !payload.hashed_email &&
     !payload.hashed_phone_number &&
@@ -126,14 +140,15 @@ const validateRequiredFields = (payload) => {
     );
   }
 };
+
 const addSpecificEventDetails = (
-  message,
-  payload,
-  eventConversionType,
-  pixelId,
-  snapAppId,
-  appId,
-) => {
+  message: RudderMessage,
+  payload: SnapchatPayloadV2,
+  eventConversionType: string,
+  pixelId?: string,
+  snapAppId?: string,
+  appId?: string,
+): SnapchatPayloadV2 => {
   const updatedPayload = { ...payload };
   if (eventConversionType === 'WEB') {
     updatedPayload.pixel_id = pixelId;
@@ -152,11 +167,16 @@ const addSpecificEventDetails = (
 };
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
-const trackResponseBuilder = (message, { Config }, mappedEvent) => {
-  let payload = {};
+const trackResponseBuilder = (
+  message: RudderMessage,
+  destination: SnapchatDestination,
+  mappedEvent: string,
+): SnapchatV2BatchedRequest => {
+  let payload: any = {};
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
-  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
+    destination.Config;
   validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {
@@ -260,9 +280,10 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   return response;
 };
 
-const process = (event) => {
+export const process = (
+  event: SnapchatRouterRequest,
+): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
   const { message, destination } = event;
-  // const message = { ...incomingMessage };
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processV3(event);
   }
@@ -291,20 +312,19 @@ const process = (event) => {
   return response;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
+export const processRouterDest = async (
+  inputs: SnapchatRouterRequest[],
+  reqMetadata: any,
+): Promise<SnapchatV2BatchRequestOutput[]> => {
   const { destination } = inputs[0];
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processRouterV3(inputs, reqMetadata);
   }
-  const eventsChunk = []; // temporary variable to divide payload into chunks
-  const errorRespList = [];
+  const eventsChunk: any[] = []; // temporary variable to divide payload into chunks
+  const errorRespList: any[] = [];
   inputs.forEach((event) => {
     try {
-      let resp = event.message;
-      if (!event.message.statusCode) {
-        // already transformed event
-        resp = process(event);
-      }
+      const resp = process(event);
       eventsChunk.push({
         message: Array.isArray(resp) ? resp : [resp],
         metadata: event.metadata,
@@ -316,7 +336,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }
   });
 
-  const batchResponseList = [];
+  const batchResponseList: any[] = [];
   if (eventsChunk.length > 0) {
     const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
     batchedEvents.forEach((batch) => {
@@ -329,5 +349,3 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   return [...batchResponseList, ...errorRespList];
 };
-
-module.exports = { process, processRouterDest };

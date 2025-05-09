@@ -275,12 +275,12 @@ describe('searchRecordIdV2', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        destination: { Config: mockConfig },
+        connectionConfig: mockConConfig.destination,
+      });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
         'https://www.zohoapis.com/crm/v6/coql',
@@ -333,12 +333,12 @@ describe('searchRecordIdV2', () => {
 
   testCases2.forEach(({ name, expected, fields }) => {
     it(name, async () => {
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        destination: { Config: mockConfig },
+        connectionConfig: mockConConfig.destination,
+      });
       expect(result).toEqual(expected);
     });
   });
@@ -349,8 +349,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should return operationModuleInfo, upsertEndPoint and identifierType when conConfig is present',
       input: {
-        config: { region: 'US' },
-        destination: {
+        destination: { Config: { region: 'US' } },
+        connectionConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -364,8 +364,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should handle different regions in config',
       input: {
-        config: { region: 'EU' },
-        destination: {
+        destination: { Config: { region: 'EU' } },
+        connectionConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -379,8 +379,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should use default US region when config.region is null',
       input: {
-        config: {},
-        destination: {
+        destination: { Config: {} },
+        connectionConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -394,8 +394,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should use default US region when config.region is undefined',
       input: {
-        config: {}, // region is undefined
-        destination: {
+        destination: { Config: {} }, // region is undefined
+        connectionConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -410,7 +410,7 @@ describe('deduceModuleInfoV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = deduceModuleInfoV2(input.config, input.destination);
+      const result = deduceModuleInfoV2(input.connectionConfig, input.destination);
       expect(result).toEqual(expected);
     });
   });

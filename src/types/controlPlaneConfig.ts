@@ -8,7 +8,7 @@ export type DestinationDefinition = {
   Config: Record<string, unknown>;
 };
 
-export type AccountDefinition<Config = Record<string, unknown>> = {
+export type AccountDefinition<Config = { refreshOAuthToken?: string }> = {
   Name: string;
   Config: Config;
   AuthenticationType: string;

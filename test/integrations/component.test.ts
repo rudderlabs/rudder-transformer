@@ -64,6 +64,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'userpilot',
   'loops',
   'slack',
+  'snapchat_conversion',
 ];
 
 beforeAll(async () => {

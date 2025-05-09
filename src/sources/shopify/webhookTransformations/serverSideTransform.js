@@ -20,6 +20,7 @@ const {
   setAnonymousId,
   handleCommonProperties,
   addCartTokenHashToTraits,
+  ensureAnonymousId,
 } = require('./serverSideUtlis');
 const { updateAnonymousIdToUserIdInRedis } = require('../utils');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -146,6 +147,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   // attach anonymousId using note_attributes
   await setAnonymousId(message, event, metricMetadata);
+
+  // Ensure message has an anonymousId always by using uuid as fallback
+  message = ensureAnonymousId(message, metricMetadata);
+
   await updateAnonymousIdToUserIdInRedis(message.anonymousId, message.userId);
 
   // attach email and other contextual properties

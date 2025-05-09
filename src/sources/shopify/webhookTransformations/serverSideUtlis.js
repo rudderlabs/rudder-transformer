@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const { isDefinedAndNotNull, uuidv5 } = require('@rudderstack/integrations-lib');
+const { v4: uuidv4 } = require('uuid');
 const { extractEmailFromPayload } = require('../tracker/util');
 const { constructPayload } = require('../../../v0/util');
 const { INTEGERATION, lineItemsMappingJSON, productMappingJSON } = require('../config');
@@ -164,6 +165,25 @@ const handleCommonProperties = (message, event, shopifyTopic) => {
   return message;
 };
 
+/**
+ * Ensures message has an anonymousId, generating a random UUID if needed
+ * @param {Object} message rudderstack message object
+ * @param {Object} metricMetadata metric metadata object
+ * @returns {Object} message with anonymousId
+ */
+const ensureAnonymousId = (message, metricMetadata) => {
+  if (!message.anonymousId) {
+    message.anonymousId = uuidv4();
+    stats.increment('shopify_pixel_id_stitch_gaps', {
+      event: message.event,
+      reason: 'fallback_random_uuid',
+      source: metricMetadata.source,
+      writeKey: metricMetadata.writeKey,
+    });
+  }
+  return message;
+};
+
 module.exports = {
   createPropertiesForEcomEventFromWebhook,
   getCartToken,
@@ -172,4 +192,5 @@ module.exports = {
   setAnonymousId,
   handleCommonProperties,
   addCartTokenHashToTraits,
+  ensureAnonymousId,
 };

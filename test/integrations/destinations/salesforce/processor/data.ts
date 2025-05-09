@@ -1533,42 +1533,6 @@ export const data = [
             message: {
               anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               channel: 'web',
-              context: {
-                mappedToDestination: true,
-                externalId: [
-                  {
-                    id: 'a005g0000383kmUAAQ',
-                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
-                    identifierType: 'Id',
-                  },
-                ],
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                ip: '0.0.0.0',
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                traits: {
-                  email: 'john@rs.com',
-                  firstname: 'john doe',
-                  Id: 'some-id',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-              },
               integrations: {
                 All: true,
               },
@@ -1642,42 +1606,6 @@ export const data = [
             message: {
               anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               channel: 'web',
-              context: {
-                mappedToDestination: true,
-                externalId: [
-                  {
-                    id: 'a005g0000383kmUAAQ',
-                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
-                    identifierType: 'Id',
-                  },
-                ],
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                ip: '0.0.0.0',
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                traits: {
-                  email: 'john@rs.com',
-                  firstname: 'john doe',
-                  Id: 'some-id',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-              },
               integrations: {
                 All: true,
               },
@@ -1754,42 +1682,6 @@ export const data = [
             message: {
               anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               channel: 'web',
-              context: {
-                mappedToDestination: true,
-                externalId: [
-                  {
-                    id: 'a005g0000383kmUAAQ',
-                    type: 'SALESFORCE_OAUTH_SANDBOX-custom_object__c',
-                    identifierType: 'Id',
-                  },
-                ],
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                ip: '0.0.0.0',
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                traits: {
-                  email: 'john@rs.com',
-                  firstname: 'john doe',
-                  Id: 'some-id',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-              },
               integrations: {
                 All: true,
               },

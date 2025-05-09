@@ -1,0 +1,60 @@
+{
+  "name": "braze",
+  "description": "users.messages.sms.Delivery send",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"events\":[{\"event_type\":\"users.messages.sms.Delivery\",\"id\":\"a1234567-89ab-cdef-0123-456789abcdef\",\"time\":1477502783,\"user\":{\"user_id\":\"0123456789abcdef01234567\",\"external_user_id\":\"user_id\",\"timezone\":\"America/Chicago\"},\"properties\":{\"campaign_id\":\"11234567-89ab-cdef-0123-456789abcdef\",\"campaign_name\":\"Test Campaign\",\"dispatch_id\":\"12345qwert\",\"message_variation_id\":\"c1234567-89ab-cdef-0123-456789abcdef\",\"to_phone_number\":\"+16462345678\",\"subscription_group_id\":\"41234567-89ab-cdef-0123-456789abcdef\",\"from_phone_number\":\"+12123470922\"}}]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"customMapping\":[{\"from\":\"randomEvent\",\"to\":\"In-App Message Clicked\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "timezone": "America/Chicago",
+          "integration": {
+            "name": "Braze"
+          }
+        },
+        "integrations": {
+          "Braze": false
+        },
+        "type": "track",
+        "event": "users.messages.sms.Delivery",
+        "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+        "anonymousId": "0123456789abcdef01234567",
+        "userId": "user_id",
+        "traits": {
+          "phone": "+16462345678"
+        },
+        "properties": {
+          "campaign_id": "11234567-89ab-cdef-0123-456789abcdef",
+          "campaign_name": "Test Campaign",
+          "dispatch_id": "12345qwert",
+          "message_variation_id": "c1234567-89ab-cdef-0123-456789abcdef",
+          "subscription_group_id": "41234567-89ab-cdef-0123-456789abcdef",
+          "from_phone_number": "+12123470922"
+        },
+        "timestamp": "2016-10-26T17:26:23.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

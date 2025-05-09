@@ -1,0 +1,66 @@
+{
+  "name": "close_crm",
+  "description": "lead deletion",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"subscription_id\":\"whsub_123\",\"event\":{\"id\":\"ev_123\",\"date_created\":\"2024-06-14T05:16:04.138000\",\"date_updated\":\"2024-06-14T05:16:04.138000\",\"organization_id\":\"orga_123\",\"user_id\":\"user_123\",\"request_id\":\"req_123\",\"api_key_id\":\"api_123\",\"oauth_client_id\":null,\"oauth_scope\":null,\"object_type\":\"lead\",\"object_id\":\"lead_123\",\"lead_id\":\"lead_123\",\"action\":\"deleted\",\"changed_fields\":[],\"meta\":{\"request_path\":\"/api/v1/lead/lead_123/\",\"request_method\":\"DELETE\"},\"data\":{},\"previous_data\":{\"created_by_name\":\"Rudder User\",\"addresses\":[],\"description\":\"\",\"url\":null,\"date_created\":\"2024-06-14T05:13:42.239000+00:00\",\"status_id\":\"stat_123\",\"contact_ids\":[\"cont_123\"],\"id\":\"lead_12\",\"date_updated\":\"2024-06-14T05:13:42.262000+00:00\",\"updated_by_name\":\"Rudder User\",\"status_label\":\"Potential\",\"name\":\"test name\",\"display_name\":\"test name\",\"organization_id\":\"orga_123\",\"updated_by\":\"user_123\",\"created_by\":\"user_123\"}}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "CloseCRM"
+          }
+        },
+        "integrations": {
+          "CloseCRM": false
+        },
+        "type": "track",
+        "event": "lead deleted",
+        "userId": "lead_123",
+        "messageId": "ev_123",
+        "originalTimestamp": "2024-06-FrT05:16:04.138+00:00",
+        "properties": {
+          "id": "ev_123",
+          "date_created": "2024-06-14T05:16:04.138000",
+          "date_updated": "2024-06-14T05:16:04.138000",
+          "organization_id": "orga_123",
+          "user_id": "user_123",
+          "request_id": "req_123",
+          "api_key_id": "api_123",
+          "object_type": "lead",
+          "object_id": "lead_123",
+          "lead_id": "lead_123",
+          "action": "deleted",
+          "meta": {
+            "request_path": "/api/v1/lead/lead_123/",
+            "request_method": "DELETE"
+          },
+          "data": {},
+          "subscription_id": "whsub_123"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

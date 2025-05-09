@@ -1,0 +1,77 @@
+{
+  "name": "facebook_lead_ads",
+  "description": "facebook lead ads with unavailable/null created_time",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"available_at_this_time\":[\"2025-02-01T00:00:00+0530\"],\"city\":[\"Bengaluru\"],\"conditional_question_1\":[\"Sweatshirt\"],\"conditional_question_2\":[\"Black\"],\"conditional_question_3\":[\"Medium\"],\"country\":[\"IN\"],\"date_of_birth\":[\"01/01/2000\"],\"facebook_lead_id\":[\"3960271960958574\"],\"first_name\":[\"Dummy\"],\"id\":[\"3960271960958574\"],\"last_name\":[\"Name\"],\"military_status\":[\"na\"],\"phone_number\":[\"+910123456789\"],\"post_code\":[\"200000\"],\"relationship_status\":[\"na\"],\"short_answer_ques_1?\":[\"dummy short answer\"],\"state\":[\"Dummy State\"],\"street_address\":[\"Dummy Street\"],\"test_ques_1?\":[\"test ques\"]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "integration": {
+            "name": "FacebookLeadAds"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "address": {
+              "city": "Bengaluru",
+              "country": "IN",
+              "postalCode": "200000",
+              "state": "Dummy State",
+              "street": "Dummy Street"
+            },
+            "available_at_this_time": "2025-02-01T00:00:00+0530",
+            "birthday": "01/01/2000",
+            "city": "Bengaluru",
+            "conditional_question_1": "Sweatshirt",
+            "conditional_question_2": "Black",
+            "conditional_question_3": "Medium",
+            "country": "IN",
+            "date_of_birth": "01/01/2000",
+            "facebook_lead_id": "3960271960958574",
+            "firstName": "Dummy",
+            "first_name": "Dummy",
+            "id": "3960271960958574",
+            "lastName": "Name",
+            "last_name": "Name",
+            "military_status": "na",
+            "phone": "+910123456789",
+            "phone_number": "+910123456789",
+            "post_code": "200000",
+            "relationship_status": "na",
+            "short_answer_ques_1?": "dummy short answer",
+            "state": "Dummy State",
+            "street_address": "Dummy Street",
+            "test_ques_1?": "test ques"
+          }
+        },
+        "integrations": {
+          "FacebookLeadAds": false
+        },
+        "type": "identify",
+        "userId": "3960271960958574",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

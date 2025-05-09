@@ -1,0 +1,55 @@
+{
+  "name": "customerio",
+  "description": "test-12",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"action_id\":41,\"campaign_id\":7,\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"delivery_id\":\"ROk1AAIBcR4iT6mueuxiDtzO8HXv\",\"failure_message\":\"Twilio Error 21408: Permission to send an SMS has not been enabled for the region indicated by the 'To' number: +18008675309.\"},\"event_id\":\"01E4F3DCS83P8HT7R3E6DWQN1X\",\"object_type\":\"sms\",\"metric\":\"attempted\",\"timestamp\":1234567890}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "SMS Attempted",
+        "properties": {
+          "eventId": "01E4F3DCS83P8HT7R3E6DWQN1X",
+          "deliveryId": "ROk1AAIBcR4iT6mueuxiDtzO8HXv",
+          "actionId": 41,
+          "reason": "Twilio Error 21408: Permission to send an SMS has not been enabled for the region indicated by the 'To' number: +18008675309.",
+          "campaignId": 7
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2009-02-13T23:31:30.000Z",
+        "sentAt": "2009-02-13T23:31:30.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

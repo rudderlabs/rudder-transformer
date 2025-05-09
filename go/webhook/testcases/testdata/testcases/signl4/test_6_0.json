@@ -1,0 +1,51 @@
+{
+  "name": "signl4",
+  "description": "test-6",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"eventType\":301,\"eventRaisedUtc\":\"2017-09-01T09:16:17.3717355Z\",\"team\":{\"id\":\"f1801955-4724-44de-902a-f6f02ba9e10f\"},\"id\":\"f56a6b59-1197-4e7d-8eca-8d21a4b57ec3\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Signl4"
+          }
+        },
+        "integrations": {
+          "Signl4": false
+        },
+        "type": "track",
+        "messageId": "f56a6b59-1197-4e7d-8eca-8d21a4b57ec3",
+        "originalTimestamp": "2017-09-01T09:16:17.000Z",
+        "event": "Duty Period Ended",
+        "properties": {
+          "eventType": 301,
+          "team.id": "f1801955-4724-44de-902a-f6f02ba9e10f"
+        },
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

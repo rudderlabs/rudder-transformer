@@ -1,0 +1,69 @@
+{
+  "name": "appcenter",
+  "description": "test-4",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"id\":\"1139624368u\",\"name\":\"tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25)\",\"reason\":\"java.lang.ArithmeticException: divide by zero\",\"file_name\":null,\"line_number\":null,\"url\":\"https://appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/crashes/errors/1139624368u\",\"app_display_name\":\"MSAppCenterTesting\",\"app_platform\":\"Java\",\"app_version\":\"1.0(1)\",\"stack_trace\":[\"tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25);\"],\"affected_users\":0,\"crash_count\":0,\"sent_at\":\"2021-03-02T18:14:33.9713246Z\",\"app_id\":\"ce8b5280-4605-4c1c-8c48-bd54c8fdda31\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "APPCENTER"
+          },
+          "app": {
+            "name": "MSAppCenterTesting",
+            "version": "1.0(1)"
+          }
+        },
+        "integrations": {
+          "APPCENTER": false
+        },
+        "properties": {
+          "id": "1139624368u",
+          "name": "tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25)",
+          "reason": "java.lang.ArithmeticException: divide by zero",
+          "file_name": null,
+          "line_number": null,
+          "url": "https://appcenter.ms/users/venkat-rudderstack.com/apps/MSAppCenterTesting/crashes/errors/1139624368u",
+          "app_display_name": "MSAppCenterTesting",
+          "app_platform": "Java",
+          "app_version": "1.0(1)",
+          "stack_trace": [
+            "tech.desusai.msappcentertesting.MainActivity$1.onClick (MainActivity.java:25);"
+          ],
+          "affected_users": 0,
+          "crash_count": 0,
+          "sent_at": "2021-03-02T18:14:33.9713246Z",
+          "app_id": "ce8b5280-4605-4c1c-8c48-bd54c8fdda31"
+        },
+        "type": "track",
+        "event": "App Crashed",
+        "sentAt": "2021-03-02T18:14:33.9713246Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

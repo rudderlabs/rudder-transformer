@@ -14,12 +14,12 @@ import { JSON_MIME_TYPE } from '../../util/constant';
 import { ENDPOINT } from './config';
 import {
   SnapchatDestination,
-  SnapchatMessage,
-  SnapchatBatchedRequest,
   SnapchatPayloadV2,
   EventConversionTypeValue,
   EventConversionType,
+  SnapchatV2BatchedRequest,
 } from './types';
+import { RudderMessage } from '../../../types';
 
 export const channelMapping: Record<string, string> = {
   web: 'WEB',
@@ -33,7 +33,7 @@ export function msUnixTimestamp(timestamp: Date): number {
   return time.getTime() * 1000 + time.getMilliseconds();
 }
 
-export function getHashedValue(identifier: string): string | null {
+export function getHashedValue(identifier: string): string | undefined {
   if (identifier) {
     const regexExp = /^[\da-f]{64}$/gi;
     if (!regexExp.test(identifier)) {
@@ -41,10 +41,10 @@ export function getHashedValue(identifier: string): string | null {
     }
     return identifier;
   }
-  return null;
+  return undefined;
 }
 
-export function getNormalizedPhoneNumber(message: SnapchatMessage): string | null {
+export function getNormalizedPhoneNumber(message: RudderMessage): string | null {
   const regexExp = /^[\da-f]{64}$/i;
   const phoneNumber = getFieldValueFromMessage(message, 'phone');
 
@@ -55,7 +55,7 @@ export function getNormalizedPhoneNumber(message: SnapchatMessage): string | nul
   return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
-export function getDataUseValue(message: SnapchatMessage): string | null {
+export function getDataUseValue(message: RudderMessage): string | null {
   const att = get(message, 'context.device.attTrackingStatus');
   let limitAdTracking: boolean | string | undefined;
   if (isDefinedAndNotNull(att)) {
@@ -72,7 +72,7 @@ export function getDataUseValue(message: SnapchatMessage): string | null {
   return null;
 }
 
-export function getItemIds(message: SnapchatMessage): string[] | null {
+export function getItemIds(message: RudderMessage): string[] | null {
   const itemIds: string[] = [];
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
@@ -89,7 +89,7 @@ export function getItemIds(message: SnapchatMessage): string[] | null {
   return null;
 }
 
-export function getPriceSum(message: SnapchatMessage): string {
+export function getPriceSum(message: RudderMessage): string {
   let priceSum = 0;
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
@@ -116,9 +116,9 @@ export function getPriceSum(message: SnapchatMessage): string {
  * @returns Batched request
  */
 export function generateBatchedPayloadForArray(
-  events: { body: { JSON: SnapchatPayloadV2 } }[],
+  events: any,
   destination: SnapchatDestination,
-): SnapchatBatchedRequest {
+): SnapchatV2BatchedRequest {
   const batchResponseList: SnapchatPayloadV2[] = [];
 
   // extracting destination
@@ -142,12 +142,12 @@ export function generateBatchedPayloadForArray(
     Authorization: `Bearer ${apiKey}`,
   };
 
-  return batchedRequest as SnapchatBatchedRequest;
+  return batchedRequest as SnapchatV2BatchedRequest;
 }
 
 // Checks if there are any mapping events for the track event and returns them
 export const eventMappingHandler = (
-  message: SnapchatMessage,
+  message: RudderMessage,
   destination: SnapchatDestination,
 ): string[] => {
   let event = get(message, 'event');
@@ -178,7 +178,7 @@ export const eventMappingHandler = (
   return [...mappedEvents];
 };
 
-export const getEventConversionType = (message: SnapchatMessage): EventConversionTypeValue => {
+export const getEventConversionType = (message: RudderMessage): EventConversionTypeValue => {
   const channel = get(message, 'channel');
   const eventConversionTypeFromProps = get(message, 'properties.eventConversionType');
 
@@ -217,7 +217,7 @@ export const validateEventConfiguration = (
   }
 };
 
-export const getEventTimestamp = (message: SnapchatMessage, requiredDays = 37): string | null => {
+export const getEventTimestamp = (message: RudderMessage, requiredDays = 37): string | null => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {
     const start = moment.unix(parseInt(moment(eventTime).format('X'), 10));

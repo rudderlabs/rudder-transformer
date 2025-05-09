@@ -36,9 +36,17 @@ import {
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import { processV3, processRouterDest as processRouterV3 } from './transformV3';
-import { SnapchatDestination, SnapchatPayloadV2, SnapchatRouterRequest } from './types';
+import {
+  SnapchatDestination,
+  SnapchatPayloadV2,
+  SnapchatRouterRequest,
+  SnapchatV2BatchedRequest,
+  SnapchatV2BatchRequestOutput,
+  SnapchatV3BatchedRequest,
+} from './types';
+import { RudderMessage } from '../../../types';
 
-function buildResponse(apiKey: string, payload: SnapchatPayloadV2): any {
+function buildResponse(apiKey: string, payload: SnapchatPayloadV2): SnapchatV2BatchedRequest {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
@@ -47,10 +55,13 @@ function buildResponse(apiKey: string, payload: SnapchatPayloadV2): any {
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+  return response as SnapchatV2BatchedRequest;
 }
 
-const populateHashedTraitsValues = (payload: any, message: Record<string, any>): any => {
+const populateHashedTraitsValues = (
+  payload: SnapchatPayloadV2,
+  message: RudderMessage,
+): SnapchatPayloadV2 => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
@@ -81,7 +92,7 @@ const populateHashedTraitsValues = (payload: any, message: Record<string, any>):
  * @param message - The message containing the values to hash
  * @returns updatedPayload - The payload with hashed values
  */
-const populateHashedValues = (payload: any, message: Record<string, any>): any => {
+const populateHashedValues = (payload: SnapchatPayloadV2, message: any): SnapchatPayloadV2 => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
@@ -114,10 +125,10 @@ const populateHashedValues = (payload: any, message: Record<string, any>): any =
   return updatedPayload;
 };
 
-const getEventCommonProperties = (message: Record<string, any>): any =>
+const getEventCommonProperties = (message: RudderMessage): any =>
   constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
 
-const validateRequiredFields = (payload: any): void => {
+const validateRequiredFields = (payload: SnapchatPayloadV2): void => {
   if (
     !payload.hashed_email &&
     !payload.hashed_phone_number &&
@@ -131,13 +142,13 @@ const validateRequiredFields = (payload: any): void => {
 };
 
 const addSpecificEventDetails = (
-  message: Record<string, any>,
-  payload: any,
+  message: RudderMessage,
+  payload: SnapchatPayloadV2,
   eventConversionType: string,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
-): any => {
+): SnapchatPayloadV2 => {
   const updatedPayload = { ...payload };
   if (eventConversionType === 'WEB') {
     updatedPayload.pixel_id = pixelId;
@@ -156,11 +167,16 @@ const addSpecificEventDetails = (
 };
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
-const trackResponseBuilder = (message: Record<string, any>, destination: SnapchatDestination, mappedEvent: string): any => {
+const trackResponseBuilder = (
+  message: RudderMessage,
+  destination: SnapchatDestination,
+  mappedEvent: string,
+): SnapchatV2BatchedRequest => {
   let payload: any = {};
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
-  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = destination.Config;
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
+    destination.Config;
   validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {
@@ -264,7 +280,9 @@ const trackResponseBuilder = (message: Record<string, any>, destination: Snapcha
   return response;
 };
 
-export const process = (event: any): any => {
+export const process = (
+  event: SnapchatRouterRequest,
+): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processV3(event);
@@ -294,7 +312,10 @@ export const process = (event: any): any => {
   return response;
 };
 
-export const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any): Promise<any[]> => {
+export const processRouterDest = async (
+  inputs: SnapchatRouterRequest[],
+  reqMetadata: any,
+): Promise<SnapchatV2BatchRequestOutput[]> => {
   const { destination } = inputs[0];
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processRouterV3(inputs, reqMetadata);
@@ -303,11 +324,7 @@ export const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMeta
   const errorRespList: any[] = [];
   inputs.forEach((event) => {
     try {
-      let resp = event.message;
-      if (!event.message.statusCode) {
-        // already transformed event
-        resp = process(event);
-      }
+      const resp = process(event);
       eventsChunk.push({
         message: Array.isArray(resp) ? resp : [resp],
         metadata: event.metadata,

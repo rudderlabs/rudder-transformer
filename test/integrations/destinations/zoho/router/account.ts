@@ -12,21 +12,7 @@ const commonDestinaitonConfig = {
       region: 'EU',
     },
   },
-  Config: {
-    module: 'Leads',
-    trigger: 'workflow',
-    addDefaultDuplicateCheck: true,
-    multiSelectFieldLevelDecision: [
-      {
-        from: 'multi-language',
-        to: 'true',
-      },
-      {
-        from: 'multi class',
-        to: 'false',
-      },
-    ],
-  },
+  Config: {},
 };
 
 export const accountData = [

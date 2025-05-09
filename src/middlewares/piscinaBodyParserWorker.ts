@@ -8,12 +8,13 @@ export interface ParseResult {
     name: string;
   };
 }
-export default async function parseJson(rawBody: string): Promise<ParseResult> {
+export default async function parseJson({ buffer }) {
   try {
+    const rawBody = Buffer.from(buffer).toString('utf8');
     const parsed = await bourne.parse(rawBody, { protoAction: 'error' });
     return { parsed };
   } catch (error: any) {
-    return {
+    const res = {
       parsed: null,
       error: {
         message: error.message,
@@ -21,5 +22,6 @@ export default async function parseJson(rawBody: string): Promise<ParseResult> {
         name: error.name,
       },
     };
+    return res;
   }
 }

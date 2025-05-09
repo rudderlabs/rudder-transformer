@@ -21,6 +21,7 @@
     "format": "prettier --write .",
     "lint:fix": "eslint . --fix",
     "lint:fix:json": "eslint --ext .json --fix .",
+    "lint:modified": "git ls-files --modified | grep -E '\\.js$|\\.ts$' | xargs -r eslint --fix",
     "lint": "npm run format && npm run lint:fix",
     "check:merge": "npm run verify || exit 1; codecov",
     "start": "cd dist && NODE_OPTIONS='--no-node-snapshot' node ./src/index.js && cd ..",

@@ -34,16 +34,25 @@
       "request": "launch",
       "name": "Test Single Component",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "--no-node-snapshot",
+        "--max-old-space-size=8192",
+        "--expose-gc",
+        "${workspaceFolder}/node_modules/.bin/jest",
+        "--runInBand",
+        "--detectOpenHandles",
+        "--forceExit"
+      ],
       "args": [
         "-c",
         "jest.config.typescript.js",
         "component",
-        "--destination=monday",
-        "--feature=processor"
+        "--destination=rudder_test",
+        "--feature=router"
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
       "env": {
         "NODE_ENV": "test",
         "NODE_OPTIONS": "--no-node-snapshot",

@@ -2414,32 +2414,31 @@ export const data = [
               type: 'track',
               event: 'Home Page Viewed',
               channel: 'web',
-              context: {
-                source: 'test',
-                userAgent: 'chrome',
-                traits: {
-                  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
-                  email: 'abc@gmail.com',
-                  phone: '+1234589947',
-                  ge: 'male',
-                  db: '19950715',
-                  lastname: 'Rudderlabs',
-                  firstName: 'Test',
-                  address: {
-                    city: 'Kolkata',
-                    state: 'WB',
-                    zip: '700114',
-                    country: 'IN',
-                  },
-                },
-                device: {
-                  advertisingId: 'abc123',
-                },
-                library: {
-                  name: 'rudder-sdk-ruby-sync',
-                  version: '1.0.6',
-                },
-              },
+              //   source: 'test',
+              //   userAgent: 'chrome',
+              //   traits: {
+              //     anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              //     email: 'abc@gmail.com',
+              //     phone: '+1234589947',
+              //     ge: 'male',
+              //     db: '19950715',
+              //     lastname: 'Rudderlabs',
+              //     firstName: 'Test',
+              //     address: {
+              //       city: 'Kolkata',
+              //       state: 'WB',
+              //       zip: '700114',
+              //       country: 'IN',
+              //     },
+              //   },
+              //   device: {
+              //     advertisingId: 'abc123',
+              //   },
+              //   library: {
+              //     name: 'rudder-sdk-ruby-sync',
+              //     version: '1.0.6',
+              //   },
+              // },
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
               timestamp: '2020-08-14T05:30:30.118Z',
               properties: {

@@ -4,14 +4,22 @@ const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
 const { RedisDB } = require('./redis/redisConnector');
 const { shutdownMetricsClient } = require('./stats');
+const { initializePiscina, terminatePiscina } = require('../services/piscina/wrapper');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+const usePiscina = process.env.USE_PISCINA === 'true';
 
 function finalFunction() {
   logger.info('Process exit event received');
   RedisDB.disconnect();
   logger.info('Redis client disconnected');
+
+  if (usePiscina) {
+    terminatePiscina().catch((error) => {
+      logger.error('Error terminating Piscina:', error);
+    });
+  }
 
   logger.error(`Worker (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
@@ -28,7 +36,6 @@ async function shutdownWorkers() {
 }
 
 function start(port, app, metricsApp) {
-
   if (cluster.isMaster) {
     logger.info(`Master (pid: ${process.pid}) has started`);
 
@@ -87,6 +94,10 @@ function start(port, app, metricsApp) {
       await shutdownWorkers();
     });
   } else {
+    if (usePiscina) {
+      initializePiscina();
+    }
+
     const server = app.listen(port);
     gracefulShutdown(server, {
       signals: 'SIGINT SIGTERM SIGSEGV',

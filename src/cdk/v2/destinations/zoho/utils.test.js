@@ -279,7 +279,7 @@ describe('searchRecordIdV2', () => {
         identifiers: fields,
         metadata: mockMetadata,
         destination: { Config: mockConfig },
-        destConfig: mockConConfig.destination,
+        connectionConfig: mockConConfig.destination,
       });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
@@ -337,7 +337,7 @@ describe('searchRecordIdV2', () => {
         identifiers: fields,
         metadata: mockMetadata,
         destination: { Config: mockConfig },
-        destConfig: mockConConfig.destination,
+        connectionConfig: mockConConfig.destination,
       });
       expect(result).toEqual(expected);
     });

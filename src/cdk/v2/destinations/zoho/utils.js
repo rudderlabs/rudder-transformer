@@ -14,8 +14,8 @@ const { CommonUtils } = require('../../../../util/common');
 const getRegion = (destination) =>
   destination?.deliveryAccount?.options?.region || destination?.Config?.region;
 
-const deduceModuleInfoV2 = (destConfig, destination) => {
-  const { object, identifierMappings } = destConfig;
+const deduceModuleInfoV2 = (connectionConfig, destination) => {
+  const { object, identifierMappings } = connectionConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
@@ -45,9 +45,9 @@ function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   };
 }
 
-const formatMultiSelectFieldsV2 = (destConfig, fields) => {
+const formatMultiSelectFieldsV2 = (connectionConfig, fields) => {
   const multiSelectFields = getHashFromArray(
-    destConfig.multiSelectFieldLevelDecision,
+    connectionConfig.multiSelectFieldLevelDecision,
     'from',
     'to',
     false,
@@ -182,10 +182,10 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig }) => {
+const searchRecordIdV2 = async ({ identifiers, metadata, destination, connectionConfig }) => {
   try {
     const region = getRegion(destination);
-    const { object } = destConfig;
+    const { object } = connectionConfig;
 
     const selectQuery = generateSqlQuery(object, identifiers);
     const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);

@@ -9,7 +9,7 @@ const commonDestinaitonConfig = {
   },
   deliveryAccount: {
     options: {
-      region: 'US',
+      region: 'EU',
     },
   },
   Config: {
@@ -80,7 +80,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://www.zohoapis.com/crm/v6/Leads/upsert',
+                endpoint: 'https://www.zohoapis.eu/crm/v6/Leads/upsert',
                 headers: {
                   Authorization: 'Zoho-oauthtoken correct-access-token',
                 },

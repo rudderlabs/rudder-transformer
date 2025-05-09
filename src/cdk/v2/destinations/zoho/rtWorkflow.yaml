@@ -12,7 +12,7 @@ steps:
   - name: validateConfig
     template: |
       const config = ^[0].destination.Config
-      const region = config.region ?? ^[0].destination.deliveryAccount.options.region
+      const region = ^[0].destination.deliveryAccount.options.region ?? config.region
       $.assertConfig(region, "Datacentre Region is not present. Aborting")
 
   - name: validateInput

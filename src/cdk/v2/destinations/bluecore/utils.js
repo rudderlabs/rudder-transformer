@@ -15,7 +15,12 @@ const {
   extractCustomFields,
 } = require('../../../../v0/util');
 const { CommonUtils } = require('../../../../util/common');
-const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = require('./config');
+const {
+  EVENT_NAME_MAPPING,
+  IDENTIFY_EXCLUSION_LIST,
+  TRACK_EXCLUSION_LIST,
+  OPTIN_EVENTS,
+} = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
@@ -59,12 +64,16 @@ const validatePurchaseEvent = (payload) => {
   validateCustomerProperties(payload, 'purchase');
 };
 
-const validateCustomerEvent = (payload, message) => {
+const validateEmail = (payload, message) => {
   if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
     throw new InstrumentationError(
       `[Bluecore] property:: email is required for ${payload.event} action`,
     );
   }
+};
+
+const validateCustomerEvent = (payload, message) => {
+  validateEmail(payload, message);
   validateCustomerProperties(payload, payload.event);
 };
 
@@ -73,8 +82,8 @@ const validateEventSpecificPayload = (payload, message) => {
     search: validateSearchEvent,
     purchase: validatePurchaseEvent,
     identify: validateCustomerEvent,
-    optin: validateCustomerEvent,
-    unsubscribe: validateCustomerEvent,
+    optin: validateEmail,
+    unsubscribe: validateEmail,
   };
 
   const validator = eventValidators[payload.event];
@@ -152,6 +161,13 @@ const isStandardBluecoreEvent = (eventName) => {
   return !!EVENT_NAME_MAPPING.some((item) => item.dest.includes(eventName));
 };
 
+const isOptinEvent = (eventName) => {
+  if (typeof eventName !== 'string') {
+    return false;
+  }
+  return OPTIN_EVENTS.includes(eventName.toLowerCase());
+};
+
 /**
  * Adds an array of products to a message.
  *
@@ -204,12 +220,26 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      customProperties.properties.customer = customerProperties;
+      if (isOptinEvent(message?.event)) {
+        customProperties.properties = {
+          ...customProperties.properties,
+          ...customerProperties,
+        };
+      } else {
+        customProperties.properties.customer = customerProperties;
+      }
       break;
     default:
       break;
   }
   return customProperties;
+};
+
+const constructCommonPayload = (message) => {
+  if (isOptinEvent(message?.event)) {
+    return constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OPTIN.name]);
+  }
+  return constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]);
 };
 
 /**
@@ -219,8 +249,7 @@ const mapCustomProperties = (message) => {
  * @returns {object} - The constructed properties object.
  */
 const constructProperties = (message) => {
-  const commonCategory = CONFIG_CATEGORIES.COMMON;
-  const commonPayload = constructPayload(message, MAPPING_CONFIG[commonCategory.name]);
+  const commonPayload = constructCommonPayload(message);
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   const typeSpecificPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const typeSpecificCustomProperties = mapCustomProperties(message);

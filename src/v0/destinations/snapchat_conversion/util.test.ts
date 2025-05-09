@@ -10,68 +10,64 @@ import {
   generateBatchedPayloadForArray,
   getEventTimestamp,
 } from './util';
-import {
-  SnapchatDestination,
-  SnapchatMessage,
-  SnapchatPayloadV2,
-  EventConversionType,
-} from './types';
+import { SnapchatDestination, SnapchatPayloadV2, EventConversionType } from './types';
 
 import moment from 'moment';
+import { RudderMessage } from '../../../types';
 
 describe('Snapchat Conversion Utils', () => {
   describe('getNormalizedPhoneNumber', () => {
     const testCases = [
       {
         name: 'should remove non-numeric characters and leading zeros from phone number',
-        input: { traits: { phone: '+1 (234) 567-8900' } } as SnapchatMessage,
+        input: { traits: { phone: '+1 (234) 567-8900' } },
         expected: '12345678900',
       },
       {
         name: 'should remove leading zeros from phone number when present',
-        input: { traits: { phone: '00123456789' } } as SnapchatMessage,
+        input: { traits: { phone: '00123456789' } },
         expected: '123456789',
       },
       {
         name: 'should remove non-numeric characters and leading zeros from mixed alphanumeric input',
-        input: { traits: { phone: 'abc0123def0456' } } as SnapchatMessage,
+        input: { traits: { phone: 'abc0123def0456' } },
         expected: '1230456',
       },
       {
         name: 'should return null when phone number is not present',
-        input: { traits: {} } as SnapchatMessage,
+        input: { traits: {} },
         expected: null,
       },
       {
         name: 'should return null when message is empty',
-        input: {} as SnapchatMessage,
+        input: {},
         expected: null,
       },
       {
         name: 'should return the original hash when phone is already a 64-char hex',
-        input: { traits: { phone: 'a'.repeat(64) } } as SnapchatMessage,
+        input: { traits: { phone: 'a'.repeat(64) } },
         expected: 'a'.repeat(64),
       },
       {
         name: 'should return null when phone normalizes to empty string',
-        input: { traits: { phone: '000' } } as SnapchatMessage,
+        input: { traits: { phone: '000' } },
         expected: null,
       },
       {
         name: 'should handle integer phone numbers',
-        input: { traits: { phone: 1234567890 } } as SnapchatMessage,
+        input: { traits: { phone: 1234567890 } },
         expected: '1234567890',
       },
       {
         name: 'should handle object in place of phone number',
-        input: { traits: { phone: { test: 'test' } } } as SnapchatMessage,
+        input: { traits: { phone: { test: 'test' } } },
         expected: null,
       },
     ];
 
     testCases.forEach(({ name, input, expected }) => {
       it(name, () => {
-        const result = getNormalizedPhoneNumber(input);
+        const result = getNormalizedPhoneNumber(input as RudderMessage);
         expect(result).toBe(expected);
       });
     });
@@ -108,17 +104,17 @@ describe('getHashedValue', () => {
     {
       name: 'should return null for null input',
       input: null,
-      expected: null,
+      expected: undefined,
     },
     {
       name: 'should return null for undefined input',
       input: undefined,
-      expected: null,
+      expected: undefined,
     },
     {
       name: 'should return null for empty string',
       input: '',
-      expected: null,
+      expected: undefined,
     },
     {
       name: 'should return original value if already a 64-char hex',
@@ -154,7 +150,7 @@ describe('getItemIds', () => {
   const testCases = [
     {
       name: 'should return null when products is not an array',
-      input: { properties: {} } as SnapchatMessage,
+      input: { properties: {} },
       expected: null,
     },
     {
@@ -163,7 +159,7 @@ describe('getItemIds', () => {
         properties: {
           products: [{ product_id: '123' }, { product_id: '456' }],
         },
-      } as SnapchatMessage,
+      },
       expected: ['123', '456'],
     },
     {
@@ -172,24 +168,24 @@ describe('getItemIds', () => {
         properties: {
           products: [{ product_id: '123' }, { name: 'test' }, { product_id: '456' }],
         },
-      } as SnapchatMessage,
+      },
       expected: ['123', '456'],
     },
     {
       name: 'should return null when products is null',
-      input: { properties: { products: null } } as SnapchatMessage,
+      input: { properties: { products: null } },
       expected: null,
     },
     {
       name: 'should handle empty products array',
-      input: { properties: { products: [] } } as SnapchatMessage,
+      input: { properties: { products: [] } },
       expected: [],
     },
   ];
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      expect(getItemIds(input)).toEqual(expected);
+      expect(getItemIds(input as RudderMessage)).toEqual(expected);
     });
   });
 });
@@ -198,7 +194,7 @@ describe('getPriceSum', () => {
   const testCases = [
     {
       name: 'should return null when products is not an array',
-      input: { properties: {} } as SnapchatMessage,
+      input: { properties: {} },
       expected: 'null',
     },
     {
@@ -210,7 +206,7 @@ describe('getPriceSum', () => {
             { price: '20.0', quantity: 1 },
           ],
         },
-      } as SnapchatMessage,
+      },
       expected: '41',
     },
     {
@@ -219,7 +215,7 @@ describe('getPriceSum', () => {
         properties: {
           products: [{ price: '10.5' }, { price: '20.0' }],
         },
-      } as SnapchatMessage,
+      },
       expected: '30.5',
     },
     {
@@ -232,14 +228,14 @@ describe('getPriceSum', () => {
             { price: '10.0', quantity: 2 },
           ],
         },
-      } as SnapchatMessage,
+      },
       expected: '20',
     },
   ];
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      expect(getPriceSum(input)).toBe(expected);
+      expect(getPriceSum(input as RudderMessage)).toBe(expected);
     });
   });
 });
@@ -248,7 +244,7 @@ describe('getDataUseValue', () => {
   const testCases = [
     {
       name: 'should return null when att is not defined',
-      input: {} as SnapchatMessage,
+      input: {},
       expected: null,
     },
     {
@@ -259,7 +255,7 @@ describe('getDataUseValue', () => {
             attTrackingStatus: 2,
           },
         },
-      } as SnapchatMessage,
+      },
       expected: "['lmu']",
     },
     {
@@ -270,7 +266,7 @@ describe('getDataUseValue', () => {
             attTrackingStatus: 3,
           },
         },
-      } as SnapchatMessage,
+      },
       expected: null,
     },
     {
@@ -281,14 +277,14 @@ describe('getDataUseValue', () => {
             attTrackingStatus: 1,
           },
         },
-      } as SnapchatMessage,
+      },
       expected: null,
     },
   ];
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      expect(getDataUseValue(input)).toBe(expected);
+      expect(getDataUseValue(input as RudderMessage)).toBe(expected);
     });
   });
 });
@@ -433,28 +429,28 @@ describe('getEventTimestamp', () => {
   const testCases = [
     {
       name: 'should return timestamp if within required days',
-      input: { timestamp: '2023-01-10T00:00:00Z' } as SnapchatMessage, // Within 37 days of fixedNow
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 37 days of fixedNow
       expected: '1673308800',
     },
     {
       name: 'should throw error if timestamp is older than required days',
-      input: { timestamp: '2022-01-01T00:00:00Z' } as SnapchatMessage, // Outside 37 days window
+      input: { timestamp: '2022-01-01T00:00:00Z' }, // Outside 37 days window
       expectedError: 'Events must be sent within 37 days of their occurrence',
     },
     {
       name: 'should return eventTime if no timestamp found in input',
-      input: { other: 'data' } as SnapchatMessage,
+      input: { other: 'data' },
       expected: null,
     },
     {
       name: 'should accept custom required days parameter',
-      input: { timestamp: '2023-01-10T00:00:00Z' } as SnapchatMessage, // Within 7 days of fixedNow
+      input: { timestamp: '2023-01-10T00:00:00Z' }, // Within 7 days of fixedNow
       requiredDays: 7,
       expected: '1673308800', // Expected Unix timestamp in seconds
     },
     {
       name: 'should throw error if timestamp is older than custom required days',
-      input: { timestamp: '2023-01-01T00:00:00Z' } as SnapchatMessage, // Outside 7 days window
+      input: { timestamp: '2023-01-01T00:00:00Z' }, // Outside 7 days window
       requiredDays: 7,
       expectedError: 'Events must be sent within 7 days of their occurrence',
     },
@@ -463,9 +459,11 @@ describe('getEventTimestamp', () => {
   testCases.forEach(({ name, input, requiredDays, expected, expectedError }) => {
     it(name, () => {
       if (expectedError) {
-        expect(() => getEventTimestamp(input, requiredDays)).toThrow(expectedError);
+        expect(() => getEventTimestamp(input as RudderMessage, requiredDays)).toThrow(
+          expectedError,
+        );
       } else {
-        const result = getEventTimestamp(input, requiredDays);
+        const result = getEventTimestamp(input as RudderMessage, requiredDays);
         expect(result).toBe(expected);
       }
     });

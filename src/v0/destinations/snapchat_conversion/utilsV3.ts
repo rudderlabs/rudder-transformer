@@ -3,15 +3,13 @@ import { get } from 'lodash';
 import moment from 'moment-timezone';
 import { MAX_BATCH_SIZE } from './config';
 import { isAppleFamily } from '../../util';
-import { Metadata } from '../../../types';
+import { Metadata, RudderMessage } from '../../../types';
 import {
   ProcessedEvent,
   SnapchatDestination,
-  SnapchatMessage,
-  SnapchatHeaders,
-  SnapchatParams,
-  SnapchatBatchResponse,
+  SnapchatV3Params,
   SnapchatPayloadV3,
+  SnapchatV3BatchRequestOutput,
 } from './types';
 
 export const getMergedPayload = (batch: ProcessedEvent[]): SnapchatPayloadV3 => ({
@@ -27,12 +25,12 @@ export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] 
 export const buildBatchedResponse = (
   mergedPayload: SnapchatPayloadV3,
   endpoint: string,
-  headers: SnapchatHeaders,
-  params: SnapchatParams,
+  headers: Record<string, any>,
+  params: SnapchatV3Params,
   method: string,
   metadata: Partial<Metadata>[],
   destination: SnapchatDestination,
-): SnapchatBatchResponse => ({
+): SnapchatV3BatchRequestOutput => ({
   batchedRequest: {
     body: {
       JSON: mergedPayload,
@@ -54,7 +52,7 @@ export const buildBatchedResponse = (
   destination,
 });
 
-export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatBatchResponse[] => {
+export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatV3BatchRequestOutput[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -78,19 +76,19 @@ export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatBatchRespon
 export const batchResponseBuilder = (
   webOrOfflineEventsChunk: ProcessedEvent[],
   mobileEventsChunk: ProcessedEvent[],
-): SnapchatBatchResponse[] => {
+): SnapchatV3BatchRequestOutput[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
-export const getExtInfo = (message: SnapchatMessage): string[] | null => {
+export const getExtInfo = (message: RudderMessage): string[] | null => {
   const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;
   };
 
-  const extInfoVersion = isAppleFamily(message.context?.device?.type) ? 'i2' : 'a2';
+  const extInfoVersion = isAppleFamily(getValue('context.device.type')) ? 'i2' : 'a2';
 
   // App related information
   const appInfo = {

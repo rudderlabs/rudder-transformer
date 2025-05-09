@@ -37,25 +37,32 @@ import {
   SnapchatDestination,
   SnapchatPayloadV3,
   SnapchatRouterRequest,
+  SnapchatV3BatchedRequest,
 } from './types';
+import { RudderMessage } from '../../../types';
 
-function buildResponse(apiKey: string, payload: SnapchatPayloadV3, ID: string | undefined): any {
+function buildResponse(
+  apiKey: string,
+  payload: SnapchatPayloadV3,
+  ID: string,
+): SnapchatV3BatchedRequest {
   const response = defaultRequestConfig();
-  if (ID) {
-    response.endpoint = ENDPOINT.Endpoint_v3.replace('{ID}', ID);
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    response.params = {
-      access_token: apiKey,
-    };
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = payload;
-  }
-  return response;
+  response.endpoint = ENDPOINT.Endpoint_v3.replace('{ID}', ID);
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.params = {
+    access_token: apiKey,
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = payload;
+  return response as SnapchatV3BatchedRequest;
 }
 
-const populateHashedTraitsValues = (payload: any, message: Record<string, any>): any => {
+const populateHashedTraitsValues = (
+  payload: SnapchatPayloadV3,
+  message: RudderMessage,
+): SnapchatPayloadV3 => {
   const updatedPayload = { ...payload };
   const userData = updatedPayload.data[0].user_data || {};
 
@@ -81,7 +88,10 @@ const populateHashedTraitsValues = (payload: any, message: Record<string, any>):
   return updatedPayload;
 };
 
-const populateHashedValues = (payload: any, message: Record<string, any>): any => {
+const populateHashedValues = (
+  payload: SnapchatPayloadV3,
+  message: RudderMessage,
+): SnapchatPayloadV3 => {
   const updatedPayload = populateHashedTraitsValues(payload, message);
 
   const email = getFieldValueFromMessage(message, 'emailOnly');
@@ -99,10 +109,10 @@ const populateHashedValues = (payload: any, message: Record<string, any>): any =
   return updatedPayload;
 };
 
-const getEventCommonProperties = (message: Record<string, any>): any =>
+const getEventCommonProperties = (message: RudderMessage): any =>
   constructPayload(message, mappingConfigV3[ConfigCategoryV3.TRACK_COMMON.name]);
 
-const validateRequiredFields = (payload: any): void => {
+const validateRequiredFields = (payload: SnapchatPayloadV3): void => {
   const userData = payload.data?.[0]?.user_data || {};
   const hasRequiredFields =
     userData.em ||
@@ -118,13 +128,13 @@ const validateRequiredFields = (payload: any): void => {
 };
 
 const addSpecificEventDetails = (
-  message: Record<string, any>,
-  payload: any,
+  message: RudderMessage,
+  payload: SnapchatPayloadV3,
   actionSource: string,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
-): any => {
+): SnapchatPayloadV3 => {
   const updatedPayload = { ...payload };
 
   if (actionSource === 'WEB') {
@@ -166,7 +176,7 @@ const getEventConfig = (eventType: string): any => {
 const isProductEvent = (eventType: string): boolean =>
   ['product_list_viewed', 'checkout_started', 'order_completed'].includes(eventType);
 
-const buildBasePayload = (message: Record<string, any>, event: string): any => {
+const buildBasePayload = (message: RudderMessage, event: string): SnapchatPayloadV3 => {
   const payload: any = { data: [{}] };
   const eventType = event.toLowerCase();
   const eventConfig = getEventConfig(eventType);
@@ -196,13 +206,13 @@ interface ProcessPayloadConfig {
 }
 
 const processPayload = (
-  payload: any,
-  message: Record<string, any>,
+  payload: SnapchatPayloadV3,
+  message: RudderMessage,
   config: ProcessPayloadConfig,
-): any => {
+): SnapchatPayloadV3 => {
   const { actionSource, pixelId, snapAppId, appId, enableDeduplication, deduplicationKey } = config;
 
-  let processedPayload = populateHashedValues(payload, message);
+  let processedPayload: any = populateHashedValues(payload, message);
   validateRequiredFields(processedPayload);
 
   processedPayload.data[0].event_time = getEventTimestamp(message, 7);
@@ -228,10 +238,10 @@ const processPayload = (
 };
 
 const trackResponseBuilder = (
-  message: Record<string, any>,
+  message: RudderMessage,
   destination: SnapchatDestination,
   mappedEvent: string,
-): any => {
+): SnapchatV3BatchedRequest => {
   const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
     destination.Config;
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
@@ -267,18 +277,23 @@ const trackResponseBuilder = (
     deduplicationKey,
   });
 
-  const ID = actionSource === 'MOBILE_APP' ? snapAppId : pixelId;
+  const ID = actionSource === 'MOBILE_APP' ? (snapAppId as string) : (pixelId as string);
   return buildResponse(apiKey, processedPayload, ID);
 };
 
-const handlePageEvent = (message: Record<string, any>, destination: SnapchatDestination): any =>
-  trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+const handlePageEvent = (
+  message: RudderMessage,
+  destination: SnapchatDestination,
+): SnapchatV3BatchedRequest => trackResponseBuilder(message, destination, pageTypeToTrackEvent);
 
-const handleTrackEvent = (message: Record<string, any>, destination: SnapchatDestination): any => {
+const handleTrackEvent = (
+  message: RudderMessage,
+  destination: SnapchatDestination,
+): SnapchatV3BatchedRequest => {
   const mappedEvents = eventMappingHandler(message, destination);
 
   if (mappedEvents.length > 0) {
-    const responses = mappedEvents.map((mappedEvent) =>
+    const responses: any = mappedEvents.map((mappedEvent) =>
       trackResponseBuilder(message, destination, mappedEvent),
     );
     responses[0].body.JSON.data = responses.flatMap((response) => response.body.JSON.data);
@@ -288,7 +303,7 @@ const handleTrackEvent = (message: Record<string, any>, destination: SnapchatDes
   return trackResponseBuilder(message, destination, get(message, 'event'));
 };
 
-export const processV3 = (event: any): any => {
+export const processV3 = (event: SnapchatRouterRequest): SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   const messageType = getEventType(message);
 

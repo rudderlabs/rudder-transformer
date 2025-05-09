@@ -29,7 +29,7 @@ const commonDestinaitonConfig = {
   },
 };
 
-export const data = [
+export const accountData = [
   {
     name: 'zoho_dev',
     description: 'Happy flow with deliveryAccount being passed with destination',
@@ -65,7 +65,7 @@ export const data = [
               connection: commonConnectionConfigV2,
             },
           ],
-          destType: 'zoho_dev',
+          destType: 'zoho',
         },
         method: 'POST',
       },

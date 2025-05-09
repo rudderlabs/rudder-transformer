@@ -27,7 +27,7 @@ export type AccountWithDefinition<
 export type Destination<
   DestinationConfig = Record<string, unknown>,
   DeliveryAccountT = AccountWithDefinition,
-  RegulationAccountT = AccountWithDefinition,
+  DeleteAccountT = AccountWithDefinition,
 > = {
   ID: string;
   Name: string;
@@ -40,7 +40,7 @@ export type Destination<
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
   DeliveryAccount?: DeliveryAccountT;
-  DeleteAccount?: RegulationAccountT;
+  DeleteAccount?: DeleteAccountT;
 };
 
 export type DestinationConnectionConfig<T> = {

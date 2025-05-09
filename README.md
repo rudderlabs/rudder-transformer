@@ -126,6 +126,16 @@ To use real secrets for testing, you have two options:
 - Use descriptive names for different types of secrets (e.g., `secretInvalid`, `secretExpired`, `secretStaging`)
 - When testing error scenarios, make sure to include tests with invalid credentials
 
+### Test Migration Utilities
+
+The repository includes utilities for managing and migrating tests to a new, optimized format. For detailed information about test migration strategies, utilities, and case studies, see the [Test Scripts README](test/scripts/README.md).
+
+The test scripts directory contains:
+- Test migration utilities for converting legacy tests to the new optimized format
+- Documentation on test migration strategies and patterns
+- Case studies of successful test migrations
+- Guidelines for handling mock functions and test validation
+
 ## Contact Us
 
 If you come across any issues while setting up or running the RudderStack Transformer, feel free to start a conversation on our [Slack](https://resources.rudderstack.com/join-rudderstack-slack) channel.

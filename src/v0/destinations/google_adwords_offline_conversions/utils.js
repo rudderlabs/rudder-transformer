@@ -272,7 +272,9 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
         ? sha256(email.trim()).toString()
         : email,
     phone:
-      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
+      hashUserIdentifier && isString(phone) && isDefinedAndNotNull(phone)
+        ? sha256(phone.trim()).toString()
+        : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
   };
 

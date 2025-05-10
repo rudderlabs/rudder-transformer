@@ -1,0 +1,102 @@
+{
+  "name": "canny",
+  "description": "test-6",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"created\":\"2022-07-27T04:12:09.290Z\",\"object\":{\"author\":{\"created\":\"2022-07-15T11:16:32.648Z\",\"email\":\"test@rudderstack.com\",\"id\":\"62d14c90fff7c80d0ec08375\",\"isAdmin\":true,\"name\":\"Rudder Test\",\"url\":\"https://rudder.canny.io/admin/users/dummyUser\",\"userID\":null},\"board\":{\"created\":\"2022-07-25T12:11:19.895Z\",\"id\":\"62de88676bc28b44aaaf25cc\",\"name\":\"features\",\"postCount\":12,\"url\":\"https://rudder.canny.io/admin/board/features\"},\"created\":\"2022-07-27T04:11:59.942Z\",\"id\":\"62e0bb0faf6e2b467328b133\",\"imageURLs\":[],\"parentID\":null,\"post\":{\"author\":{\"created\":\"2022-07-15T11:16:32.648Z\",\"email\":\"test@rudderstack.com\",\"id\":\"62d14c90fff7c80d0ec08375\",\"isAdmin\":true,\"name\":\"Rudder Test\",\"url\":\"https://rudder.canny.io/admin/users/dummyUser\",\"userID\":null},\"by\":null,\"category\":null,\"commentCount\":0,\"details\":\"Array of images\",\"eta\":null,\"id\":\"62dfd0cfb2870d468c9618dd\",\"imageURLs\":[],\"owner\":null,\"score\":1,\"status\":\"open\",\"tags\":[],\"title\":\"Images testing\",\"url\":\"https://rudder.canny.io/admin/board/features/p/images-testing-2\"},\"private\":false,\"value\":\"good\"},\"objectType\":\"comment\",\"type\":\"comment.deleted\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd",
+        "event": "comment.deleted",
+        "integrations": {
+          "Canny": false
+        },
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Canny",
+            "version": "1.0.0"
+          },
+          "traits": {
+            "created": "2022-07-15T11:16:32.648Z",
+            "email": "test@rudderstack.com",
+            "isAdmin": true,
+            "name": "Rudder Test",
+            "url": "https://rudder.canny.io/admin/users/dummyUser"
+          },
+          "externalId": [
+            {
+              "type": "cannyUserId",
+              "id": "62d14c90fff7c80d0ec08375"
+            }
+          ]
+        },
+        "timestamp": "2022-07-27T04:12:09.290Z",
+        "originalTimestamp": "2022-07-27T04:12:09.290Z",
+        "type": "track",
+        "properties": {
+          "objectType": "comment",
+          "board": {
+            "created": "2022-07-25T12:11:19.895Z",
+            "id": "62de88676bc28b44aaaf25cc",
+            "name": "features",
+            "postCount": 12,
+            "url": "https://rudder.canny.io/admin/board/features"
+          },
+          "created": "2022-07-27T04:11:59.942Z",
+          "id": "62e0bb0faf6e2b467328b133",
+          "imageURLs": [],
+          "parentID": null,
+          "post": {
+            "author": {
+              "created": "2022-07-15T11:16:32.648Z",
+              "email": "test@rudderstack.com",
+              "id": "62d14c90fff7c80d0ec08375",
+              "isAdmin": true,
+              "name": "Rudder Test",
+              "url": "https://rudder.canny.io/admin/users/dummyUser",
+              "userID": null
+            },
+            "by": null,
+            "category": null,
+            "commentCount": 0,
+            "details": "Array of images",
+            "eta": null,
+            "id": "62dfd0cfb2870d468c9618dd",
+            "imageURLs": [],
+            "owner": null,
+            "score": 1,
+            "status": "open",
+            "tags": [],
+            "title": "Images testing",
+            "url": "https://rudder.canny.io/admin/board/features/p/images-testing-2"
+          },
+          "private": false,
+          "value": "good"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

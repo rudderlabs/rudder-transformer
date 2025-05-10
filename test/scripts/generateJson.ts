@@ -22,6 +22,9 @@ interface Input {
     headers?: Record<string, string>;
     method?: string;
   };
+  source?: {
+    config: string;
+  };
 }
 
 interface Output {
@@ -40,24 +43,24 @@ jsonGenerator
   .version('0.8.0');
 
 jsonGenerator
-  .command('sources')
+  // .command('sources')
   .description('generator JSON test cases for source')
-  .argument('<string>', 'output path')
-  .option('-s, --source <char>', 'source', '')
-  .action(generateSources);
+  .option('-s, --source <char>', 'source name', '')
+  .option('-l, --location <path>', 'output path', `${new Date().getTime()}`)
+  .action((options) => generateSources(options.location, options));
 
 jsonGenerator.parse();
 
-function getStatusCode(outputResponse?: responseType): number {
-  const statusCodeKeys = ['body.0.statusCode', 'statusCode', 'status'];
+function getStatusCode(outputResponse?: responseType, index?: number): number {
+  const statusCodeKeys = [`body.${index || 0}.statusCode`, 'statusCode', 'status'];
   const stCode = statusCodeKeys
     .map((statusKey) => get(outputResponse, statusKey))
     .find((stCode) => isNumber(stCode));
   return stCode || 200;
 }
 
-function getErrorResponse(outputResponse?: responseType) {
-  const bodyKeys = ['body.0.error', 'error'];
+function getErrorResponse(outputResponse?: responseType, index?: number) {
+  const bodyKeys = [`body.${index || 0}.error`, 'error'];
   const errorResponse = bodyKeys
     .map((statusKey) => get(outputResponse, statusKey))
     .find(isDefinedAndNotNull);
@@ -67,20 +70,6 @@ function getErrorResponse(outputResponse?: responseType) {
   return errorResponse;
 }
 
-function getSourceRequestBody(testCase: any, version?: string) {
-  const bodyElement =
-    testCase.input.request.body.length === 1
-      ? testCase.input.request.body[0]
-      : testCase.input.request.body;
-  if (version === 'v0') {
-    return bodyElement;
-  }
-  if (Array.isArray(bodyElement?.event)) {
-    return bodyElement.event.map((e) => ({ ...e, source: bodyElement.source }));
-  }
-  return { ...bodyElement.event, source: bodyElement.source };
-}
-
 function generateSources(outputFolder: string, options: OptionValues) {
   const rootDir = __dirname;
   const resolvedpath = path.resolve(rootDir, '../integrations/sources');
@@ -88,101 +77,110 @@ function generateSources(outputFolder: string, options: OptionValues) {
   const files = getTestDataFilePaths(resolvedpath, options);
 
   files.forEach((testDataPath) => {
+    console.log(testDataPath);
     const testData = getTestData(testDataPath);
-    testData.forEach(({ version, ...testCase }) => {
-      let statusCode: number = getStatusCode(testCase.output.response);
+    testData.forEach(({ version, input, output, ...testCase }) => {
+      if (version !== 'v2') {
+        return;
+      }
 
-      let responseBody: any = 'OK';
-      if (statusCode == 200) {
-        if (testCase.output.response?.body[0]?.outputToSource?.body) {
-          let rawBody = Buffer.from(
-            testCase.output.response?.body[0]?.outputToSource?.body,
-            'base64',
-          ).toString();
-          if (
-            testCase.output.response?.body[0]?.outputToSource?.contentType === 'application/json'
-          ) {
+      const numberOfPayloads = input.request.body?.length || 0;
+
+      for (let i = 0; i < numberOfPayloads; i++) {
+        let statusCode: number = getStatusCode(output.response, i);
+        let responseBody: any = 'OK';
+        let errQueue: any = [];
+        let queue: any[] = [];
+
+        if (statusCode !== 200) {
+          responseBody = getErrorResponse(output.response, i);
+          try {
+            errQueue = [JSON.parse(input.request.body[i]?.request?.body)];
+          } catch (e) {
+            errQueue = [input.request.body[i]?.request?.body];
+          }
+        } else {
+          queue = output.response?.body[i]?.output?.batch || [];
+        }
+
+        const outputToSource = output.response?.body[i]?.outputToSource;
+        if (outputToSource?.body) {
+          let rawBody = Buffer.from(outputToSource.body, 'base64').toString();
+          if (outputToSource.contentType === 'application/json') {
             responseBody = JSON.parse(rawBody);
           } else {
             responseBody = rawBody;
           }
         }
-      } else {
-        responseBody = getErrorResponse(testCase.output.response);
-      }
 
-      testCase.input.request.body.forEach((body) => {
-        delete body['receivedAt'];
-        delete body['request_ip'];
-      });
+        if (queue?.length > 0) {
+          queue.forEach((queueItem, batchIndex) => {
+            queueItem['receivedAt'] =
+              testCase?.overrideReceivedAt &&
+              testCase.output?.response?.body?.[i]?.output?.batch?.[batchIndex]?.receivedAt
+                ? testCase.output?.response?.body?.[i]?.output?.batch?.[batchIndex]?.receivedAt
+                : '2024-03-03T04:48:29.000Z';
+            queueItem['request_ip'] =
+              testCase?.overrideRequestIP &&
+              testCase.output?.response?.body?.[i]?.output?.batch?.[batchIndex]?.request_ip
+                ? testCase.output?.response?.body?.[i]?.output?.batch?.[batchIndex]?.request_ip
+                : '192.0.2.30';
+            if (!queueItem['messageId']) {
+              queueItem['messageId'] = '00000000-0000-0000-0000-000000000000';
+            }
+          });
+        }
 
-      let errorQueue: any[] = [];
-      if (statusCode !== 200) {
-        errorQueue = Array.isArray(testCase.input.request?.body)
-          ? testCase.input.request?.body
-          : [testCase.input.request?.body];
-      }
+        let headers = input.request.body[i]?.request?.headers ||
+          input.request?.headers || {
+            'Content-Type': 'application/json',
+          };
+        // Flatten any array header values into comma-separated strings
+        for (const [key, value] of Object.entries(headers)) {
+          if (Array.isArray(value)) {
+            headers[key] = value.join(',');
+          }
+        }
 
-      let goTest: TestCaseData = {
-        name: testCase.name,
-        description: testCase.description,
-        input: {
-          request: {
-            query: JSON.stringify(testCase.input.request.params),
-            body: getSourceRequestBody(testCase, version),
-            headers: testCase.input.request.headers || {
-              'Content-Type': 'application/json',
+        let goTest: TestCaseData = {
+          name: testCase.name,
+          description: testCase.description,
+          input: {
+            request: {
+              query:
+                input.request.body[i]?.request?.query_parameters || input.request?.params || {},
+              body: input.request.body[i]?.request?.body || {},
+              headers,
+              method: input.request.body[i]?.request?.method || input.request?.method || 'POST',
+            },
+            source: {
+              config: JSON.stringify(input.request.body[i]?.source?.Config || {}),
             },
           },
-        },
-        output: {
-          response: {
-            status: statusCode,
-            body: responseBody,
+          output: {
+            response: {
+              status: statusCode,
+              body: responseBody,
+            },
+            queue,
+            errQueue,
           },
-          // TODO flatten nested array
-          queue:
-            statusCode == 200
-              ? testCase.output.response?.body
-                  .filter((i) => i.output)
-                  .map((i) => i.output.batch)
-                  .flat()
-              : [],
-          errQueue: errorQueue,
-        },
-      };
-      if (testCase.input.request.method && testCase.input.request.method.toLowerCase() !== 'post') {
-        goTest.input.request.method = testCase.input.request.method;
-      }
-      const dirPath = path.join(outputFolder, goTest.name);
-      const safeName = toSnakeCase(goTest.description)
-        .replace(/[^a-z0-9]/gi, '_')
-        .toLowerCase();
-      const filePath = path.join(dirPath, `${safeName}.json`);
+        };
 
-      if (testCase.skipGo) {
-        goTest.skip = testCase.skipGo;
-      }
+        const dirPath = path.join(`./go/webhook/testcases/testdata/${outputFolder}`, goTest.name);
+        const safeName =
+          toSnakeCase(goTest.description)
+            .replace(/[^a-z0-9]/gi, '_')
+            .toLowerCase() + `_${i}`;
+        const filePath = path.join(dirPath, `${safeName}.json`);
 
-      goTest.output.queue.forEach((queueItem, i) => {
-        queueItem['receivedAt'] =
-          testCase?.overrideReceivedAt &&
-          testCase.output.response?.body?.[0]?.output?.batch?.[i]?.receivedAt
-            ? testCase.output.response?.body?.[0]?.output?.batch?.[i]?.receivedAt
-            : '2024-03-03T04:48:29.000Z';
-        queueItem['request_ip'] =
-          testCase?.overrideRequestIP &&
-          testCase.output.response?.body?.[0]?.output?.batch?.[i]?.request_ip
-            ? testCase.output.response?.body?.[0]?.output?.batch?.[i]?.request_ip
-            : '192.0.2.30';
-        if (!queueItem['messageId']) {
-          queueItem['messageId'] = '00000000-0000-0000-0000-000000000000';
+        if (testCase.skipGo) {
+          goTest.skip = testCase.skipGo;
         }
-      });
 
-      fs.mkdirSync(dirPath, { recursive: true });
-
-      fs.writeFileSync(filePath, JSON.stringify(goTest, null, 2));
+        fs.mkdirSync(dirPath, { recursive: true });
+        fs.writeFileSync(filePath, JSON.stringify(goTest, null, 2));
+      }
     });
   });
 }

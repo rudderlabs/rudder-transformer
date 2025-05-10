@@ -1,0 +1,55 @@
+{
+  "name": "customerio",
+  "description": "test-21",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"action_id\":38,\"broadcast_id\":6,\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"delivery_id\":\"RAECAQFxNeK3bC4SYqhQqFGBQrQ=\",\"failure_message\":\"HTTP 404 Not Found []\"},\"event_id\":\"01E4TY5FVB0ZQ4KVDKRME0XSYZ\",\"object_type\":\"webhook\",\"metric\":\"failed\",\"timestamp\":1585746984}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Webhook Message Failed",
+        "properties": {
+          "eventId": "01E4TY5FVB0ZQ4KVDKRME0XSYZ",
+          "deliveryId": "RAECAQFxNeK3bC4SYqhQqFGBQrQ=",
+          "actionId": 38,
+          "broadcastId": 6,
+          "reason": "HTTP 404 Not Found []"
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2020-04-01T13:16:24.000Z",
+        "sentAt": "2020-04-01T13:16:24.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

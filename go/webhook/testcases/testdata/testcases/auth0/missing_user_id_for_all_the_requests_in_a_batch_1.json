@@ -1,0 +1,57 @@
+{
+  "name": "auth0",
+  "description": "missing userId for all the requests in a batch",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"log_id\":\"90020221031055712103169676686007898566320991926665347090\",\"data\":{\"date\":\"2022-10-31T05:57:06.874Z\",\"type\":\"sapi\",\"description\":\"Create a User\",\"client_id\":\"vQcJNDTxsM1W72eHFonRJdzyOvawlwIt\",\"client_name\":\"\",\"ip\":\"35.166.202.113\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36\",\"log_id\":\"90020221031055712103169676686007898566320991926665347090\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T05:57:06.874Z",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.166.202.113",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031055712103169676686007898566320991926665347090",
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Create a User",
+          "source_type": "sapi"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T05:57:06.874Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "name": "braze",
+  "description": "users.messages.inappmessage.Click event",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"events\":[{\"event_type\":\"users.messages.inappmessage.Click\",\"id\":\"a1234567-89ab-cdef-0123-456789abcdef\",\"time\":1477502783,\"user\":{\"user_id\":\"0123456789abcdef01234567\",\"external_user_id\":\"user_id\",\"device_id\":\"fedcba87-6543-210f-edc-ba9876543210\",\"timezone\":\"America/Chicago\"},\"properties\":{\"app_id\":\"01234567-89ab-cdef-0123-456789abcdef\",\"canvas_id\":\"11234567-89ab-cdef-0123-456789abcdef\",\"canvas_name\":\"My Cool Campaign\",\"canvas_variation_id\":\"31234567-89ab-cdef-0123-456789abcdef\",\"canvas_step_id\":\"41234567-89ab-cdef-0123-456789abcdef\",\"platform\":\"android\",\"os_version\":\"Android (N)\",\"device_model\":\"Nexus 5X\",\"button_id\":\"0\",\"send_id\":\"f123456789abcdef01234567\"}}]}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"customMapping\":[{\"from\":\"randomEvent\",\"to\":\"In-App Message Clicked\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Braze"
+          },
+          "device": {
+            "id": "fedcba87-6543-210f-edc-ba9876543210",
+            "model": "Nexus 5X"
+          },
+          "timezone": "America/Chicago",
+          "os": {
+            "version": "Android (N)",
+            "name": "android"
+          }
+        },
+        "integrations": {
+          "Braze": false
+        },
+        "type": "track",
+        "event": "users.messages.inappmessage.Click",
+        "messageId": "a1234567-89ab-cdef-0123-456789abcdef",
+        "anonymousId": "0123456789abcdef01234567",
+        "userId": "user_id",
+        "properties": {
+          "app_id": "01234567-89ab-cdef-0123-456789abcdef",
+          "canvas_id": "11234567-89ab-cdef-0123-456789abcdef",
+          "canvas_name": "My Cool Campaign",
+          "canvas_variation_id": "31234567-89ab-cdef-0123-456789abcdef",
+          "canvas_step_id": "41234567-89ab-cdef-0123-456789abcdef",
+          "button_id": "0",
+          "send_id": "f123456789abcdef01234567"
+        },
+        "timestamp": "2016-10-26T17:26:23.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

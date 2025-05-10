@@ -1,0 +1,65 @@
+{
+  "name": "webhook",
+  "description": "successful webhook request with query params and headers",
+  "input": {
+    "request": {
+      "query": {
+        "query_param_key_1": ["query_param_value_1"],
+        "query_param_key_2": ["query_param_value_2"],
+        "writeKey": ["write_key"]
+      },
+      "body": "{\"prop1\":\"value1\",\"prop2\":\"value2\"}",
+      "headers": {
+        "Accept-Encoding": "gzip",
+        "User-Agent": "Go-http-client/1.1",
+        "X-Forwarded-For": "192.0.2.30",
+        "Connection": "keep-alive",
+        "Content-Length": "35",
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"putRequestDetailsInContext\":true}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "webhook_source_event",
+        "properties": {
+          "prop1": "value1",
+          "prop2": "value2"
+        },
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "method": "POST",
+          "url": "/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2",
+          "proto": "HTTP/1.1",
+          "headers": {
+            "Accept-Encoding": "gzip",
+            "User-Agent": "Go-http-client/1.1",
+            "X-Forwarded-For": "192.0.2.30",
+            "Connection": "keep-alive",
+            "Content-Length": "35",
+            "Content-Type": "application/json"
+          },
+          "query_parameters": {
+            "query_param_key_1": "query_param_value_1",
+            "query_param_key_2": "query_param_value_2",
+            "writeKey": "write_key"
+          }
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

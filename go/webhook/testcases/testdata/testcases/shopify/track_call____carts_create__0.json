@@ -1,0 +1,27 @@
+{
+  "name": "shopify",
+  "description": "Track Call -> carts_create ",
+  "input": {
+    "request": {
+      "query": {
+        "topic": ["carts_create"]
+      },
+      "body": "{\"id\":\"shopify_test3\",\"token\":\"shopify_test3\",\"line_items\":[],\"note\":null,\"updated_at\":\"2023-02-10T12:16:07.251Z\",\"created_at\":\"2023-02-10T12:05:04.402Z\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

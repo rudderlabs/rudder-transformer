@@ -24,8 +24,11 @@ export const data = [
               url: '/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2',
               proto: 'HTTP/1.1',
               headers: {
+                'Accept-Encoding': ['gzip'],
+                'User-Agent': ['Go-http-client/1.1'],
+                'X-Forwarded-For': ['192.0.2.30'],
                 Connection: ['keep-alive'],
-                'Content-Length': ['48'],
+                'Content-Length': ['35'],
                 'Content-Type': ['application/json'],
               },
               query_parameters: {
@@ -51,7 +54,7 @@ export const data = [
               proto: 'HTTP/1.1',
               headers: {
                 Connection: ['keep-alive'],
-                'Content-Length': ['48'],
+                'Content-Length': ['35'],
                 'Content-Type': ['application/json'],
               },
               query_parameters: {
@@ -77,7 +80,7 @@ export const data = [
               proto: 'HTTP/1.1',
               headers: {
                 Connection: ['keep-alive'],
-                'Content-Length': ['48'],
+                'Content-Length': ['35'],
                 'Content-Type': ['application/json'],
               },
               query_parameters: {
@@ -111,8 +114,11 @@ export const data = [
                     url: '/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2',
                     proto: 'HTTP/1.1',
                     headers: {
+                      'Accept-Encoding': 'gzip',
+                      'User-Agent': 'Go-http-client/1.1',
+                      'X-Forwarded-For': '192.0.2.30',
                       Connection: 'keep-alive',
-                      'Content-Length': '48',
+                      'Content-Length': '35',
                       'Content-Type': 'application/json',
                     },
                     query_parameters: {
@@ -176,13 +182,10 @@ export const data = [
               url: '/v1/webhook?writeKey=write_key&query_param_key_1=query_param_value_1&query_param_key_2=query_param_value_2',
               proto: 'HTTP/1.1',
               headers: {
-                Accept: ['*/*'],
-                'Accept-Encoding': ['gzip, deflate, br'],
                 Connection: ['keep-alive'],
-                'Content-Length': ['48'],
+                'Content-Length': ['35'],
                 'Content-Type': ['application/json'],
                 'Postman-Token': ['1d06ebe8-086f-44dd-916a-ad5ab26959f6'],
-                'User-Agent': ['PostmanRuntime/7.43.0'],
               },
               query_parameters: {
                 query_param_key_1: ['query_param_value_1'],

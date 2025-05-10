@@ -1,0 +1,75 @@
+{
+  "name": "iterable",
+  "description": "test-6",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"email\":\"docs@iterable.com\",\"eventName\":\"emailClick\",\"dataFields\":{\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36\",\"ip\":\"162.245.22.184\",\"templateId\":93849,\"userAgentDevice\":\"Mac\",\"url\":\"https://www.iterable.com\",\"canonicalUrlId\":\"3145668988\",\"city\":\"San Francisco\",\"region\":\"CA\",\"email\":\"docs@iterable.com\",\"createdAt\":\"2016-12-02 20:31:39 +00:00\",\"campaignId\":59667,\"messageId\":\"d0aa7801f91f4824997a631f3ed583c3\",\"emailSubject\":\"My subject\",\"campaignName\":\"My campaign name\",\"workflowId\":null,\"workflowName\":null,\"templateName\":\"My template name\",\"channelId\":3420,\"messageTypeId\":3866,\"experimentId\":null,\"linkUrl\":\"https://www.iterable.com\",\"linkId\":\"3145668988\",\"emailId\":\"c59667:t93849:docs@iterable.com\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "emailClick",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36",
+          "ip": "162.245.22.184",
+          "templateId": 93849,
+          "userAgentDevice": "Mac",
+          "url": "https://www.iterable.com",
+          "canonicalUrlId": "3145668988",
+          "city": "San Francisco",
+          "region": "CA",
+          "createdAt": "2016-12-02 20:31:39 +00:00",
+          "campaignId": 59667,
+          "messageId": "d0aa7801f91f4824997a631f3ed583c3",
+          "emailSubject": "My subject",
+          "campaignName": "My campaign name",
+          "workflowId": null,
+          "workflowName": null,
+          "templateName": "My template name",
+          "channelId": 3420,
+          "messageTypeId": 3866,
+          "experimentId": null,
+          "linkUrl": "https://www.iterable.com",
+          "linkId": "3145668988",
+          "emailId": "c59667:t93849:docs@iterable.com"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "timestamp": "2016-12-02T20:31:39.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

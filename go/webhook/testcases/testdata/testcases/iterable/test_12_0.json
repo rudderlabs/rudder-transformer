@@ -1,0 +1,75 @@
+{
+  "name": "iterable",
+  "description": "test-12",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"email\":\"docs@iterable.com\",\"userId\":\"1\",\"eventName\":\"hostedUnsubscribeClick\",\"dataFields\":{\"country\":\"United States\",\"city\":\"San Jose\",\"campaignId\":1074721,\"ip\":\"192.168.0.1\",\"userAgentDevice\":\"Mac\",\"messageId\":\"ceb3d4d929fc406ca93b28a0ef1efff1\",\"emailId\":\"c1074721:t1506266:docs@iterable.com\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36\",\"workflowName\":\"My workflow\",\"locale\":null,\"templateId\":1506266,\"emailSubject\":\"My email subject\",\"url\":\"https://iterable.com\",\"labels\":[],\"createdAt\":\"2020-03-21 00:24:08 +00:00\",\"templateName\":\"My email template\",\"messageTypeId\":13406,\"experimentId\":null,\"region\":\"CA\",\"campaignName\":\"My email campaign\",\"workflowId\":60102,\"email\":\"docs@iterable.com\",\"channelId\":12466}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "1",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "hostedUnsubscribeClick",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "country": "United States",
+          "city": "San Jose",
+          "campaignId": 1074721,
+          "ip": "192.168.0.1",
+          "userAgentDevice": "Mac",
+          "messageId": "ceb3d4d929fc406ca93b28a0ef1efff1",
+          "emailId": "c1074721:t1506266:docs@iterable.com",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36",
+          "workflowName": "My workflow",
+          "locale": null,
+          "templateId": 1506266,
+          "emailSubject": "My email subject",
+          "url": "https://iterable.com",
+          "labels": [],
+          "createdAt": "2020-03-21 00:24:08 +00:00",
+          "templateName": "My email template",
+          "messageTypeId": 13406,
+          "experimentId": null,
+          "region": "CA",
+          "campaignName": "My email campaign",
+          "workflowId": 60102,
+          "channelId": 12466
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "timestamp": "2020-03-21T00:24:08.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

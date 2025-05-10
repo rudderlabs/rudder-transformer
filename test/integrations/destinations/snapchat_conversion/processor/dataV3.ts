@@ -1,13 +1,19 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
-export const dataV3 = [
+import { destination, metadata, mockFns } from '../commonConfig';
+import { ProcessorTestData } from '../../../testTypes';
+import { overrideDestination } from '../../../testUtils';
+export const dataV3: ProcessorTestData[] = [
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Page event-> PAGE_VIEW ',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -67,26 +73,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 20,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -94,11 +84,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 20,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -137,20 +122,26 @@ export const dataV3 = [
               },
               files: {},
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Prodcuts Searched event for conversion type offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -217,26 +208,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -244,11 +219,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -293,366 +263,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case for Track event without event Key',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                  country: 'IN',
-                  zicode: 'Sxp-12345',
-                  region: 'some_region',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 22,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'Event name is required',
-            metadata: {
-              jobId: 22,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'snapchat_conversion',
-    description:
-      '[CAPIv3]: Test case for Identify event which is not supported in this destination',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  model: 'AOSP on IA Emulator',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'identify',
-              event: 'Products Searched',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 23,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 23,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: 'Event type identify is not supported',
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Pixel id is not set as a destination config field',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  model: 'AOSP on IA Emulator',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 'Products Searched',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 24,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 24,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: 'Pixel Id is required for web and offline events',
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Prodcuts Searched event for conversion type web',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -711,26 +341,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 25,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -738,11 +352,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 25,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -782,251 +391,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case where appId is not present in destination config',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              channel: 'mobile',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 'Products Searched',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 26,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 26,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: 'Snap App Id is required for app events',
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case where snap app id is not present in destination config',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              channel: 'mobile',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 'Products Searched',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 27,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 27,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: 'Snap App Id is required for app events',
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Product Searched event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1087,28 +471,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 28,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1116,11 +486,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 28,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1163,21 +528,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Product Searched event where conversion type is mobile app and extinfo is available',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1250,28 +621,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 28,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1279,11 +636,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 28,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1344,21 +696,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test Case for Product List Viewed event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1429,28 +787,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 29,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1458,11 +802,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 29,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1508,21 +847,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test case for checkout_started event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1590,28 +935,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 30,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1619,11 +950,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 30,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1667,21 +993,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test Case for Order Completed event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1751,28 +1083,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1780,11 +1098,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1829,20 +1142,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test Case for Product Added event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1903,28 +1222,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 32,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1932,11 +1237,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 32,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -1982,20 +1282,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Viewed event where conversion type is web',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2058,28 +1364,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 33,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2087,11 +1375,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 33,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2135,20 +1418,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Viewed event where conversion type is offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2210,28 +1499,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 34,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2239,11 +1510,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 34,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2287,21 +1553,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test case for Payment Info Entered event where conversion type is offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2359,28 +1631,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 35,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2388,11 +1642,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 35,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2430,20 +1679,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Subscribe event where conversion type is web',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2504,28 +1759,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 36,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2533,11 +1770,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 36,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2579,20 +1811,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Promotion Viewed event for conversion type offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2653,28 +1891,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 37,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2682,11 +1902,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 37,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2728,20 +1943,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Promotion Clicked event for conversion type offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2802,28 +2023,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 38,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2831,11 +2034,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 38,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -2877,20 +2075,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for save event for conversion type offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2951,28 +2155,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 39,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2980,11 +2166,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 39,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -3026,20 +2207,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Viewed event where conversion type is web',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3101,28 +2288,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 40,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3130,11 +2299,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 40,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -3177,20 +2341,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Viewed event where conversion type is offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3252,28 +2422,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 41,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3281,11 +2433,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 41,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -3327,20 +2474,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Searched event where conversion type is offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3399,26 +2552,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 42,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3426,11 +2563,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 42,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -3470,21 +2602,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test Case for Product Added To Whishlist event where conversion type is mobile app',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3545,28 +2683,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 43,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3574,11 +2698,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 43,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -3624,20 +2743,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Products Searched event using event mapping',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3695,32 +2820,18 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              rudderEventsToSnapEvents: [
+                {
+                  from: 'ProdSearched',
+                  to: 'products_searched',
                 },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [
-                  {
-                    from: 'ProdSearched',
-                    to: 'products_searched',
-                  },
-                ],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 44,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+              ],
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3728,11 +2839,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 44,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               userId: '',
@@ -3772,137 +2878,27 @@ export const dataV3 = [
               },
               files: {},
             },
-
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
-    name: 'snapchat_conversion',
-    description: "[CAPIv3]: Test case event doesn't match with snapchat events",
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 'ProdSearched',
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 45,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 45,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: "Event ProdSearched doesn't match with Snapchat Events!",
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3954,32 +2950,18 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              rudderEventsToSnapEvents: [
+                {
+                  from: 'Product_Added_To_Cart',
+                  to: 'products_searched',
                 },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [
-                  {
-                    from: 'Product_Added_To_Cart',
-                    to: 'products_searched',
-                  },
-                ],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 46,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+              ],
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -3987,11 +2969,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 46,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4031,21 +3008,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: test event naming (i.e passed vs the names provided in webapp) by bringing them to a common ground - here destination config need to be modified',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4097,32 +3080,18 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              rudderEventsToSnapEvents: [
+                {
+                  from: 'Product_Added_To_Cart',
+                  to: 'products_searched',
                 },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [
-                  {
-                    from: 'Product Added To Cart',
-                    to: 'products_searched',
-                  },
-                ],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 47,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+              ],
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4130,11 +3099,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 47,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4174,20 +3138,26 @@ export const dataV3 = [
               },
               files: {},
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Enable deduplication with duplication key as email',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4259,30 +3229,16 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                deduplicationKey: 'properties.custom_dedup_id',
-                enableDeduplication: true,
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 48,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+              deduplicationKey: 'properties.custom_dedup_id',
+              enableDeduplication: true,
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4290,11 +3246,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 48,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4340,20 +3291,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Mapping revenue to price for product list viewed event',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4422,28 +3379,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 49,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4451,11 +3394,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 49,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4499,20 +3437,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Mapping revenue to price for product list viewed event',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4581,28 +3525,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 50,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4610,11 +3540,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 50,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4658,20 +3583,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test Case for Order Completed event category',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4742,28 +3673,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4771,11 +3688,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4821,21 +3733,27 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267903',
     name: 'snapchat_conversion',
     description:
       '[CAPIv3]: Test Case for Order Completed event with both category and item_category',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4907,28 +3825,14 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                apiKey: secret1,
-                pixelId: 'dummyPixelId',
-                appId: 'dhfeih44f',
-                snapAppId: 'hfhdhfd',
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              appId: 'dhfeih44f',
+              snapAppId: 'hfhdhfd',
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -4936,11 +3840,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 31,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -4986,20 +3885,26 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
+    id: 'processor-1746381267904',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: test event mapping from destination config',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5051,32 +3956,18 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
+            metadata,
+            destination: overrideDestination(destination, {
+              apiVersion: 'newApi',
+              rudderEventsToSnapEvents: [
+                {
+                  from: 'Custom Event',
+                  to: 'level_complete',
                 },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [
-                  {
-                    from: 'Custom Event',
-                    to: 'level_complete',
-                  },
-                ],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 47,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+              ],
+            }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -5084,11 +3975,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 47,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -5125,135 +4011,26 @@ export const dataV3 = [
               },
               files: {},
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
   {
-    name: 'snapchat_conversion',
-    description: "[CAPIv3]: Test case non string event doesn't match with snapchat events",
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@email.com',
-                  phone: '+91 2111111 ',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-              },
-              type: 'track',
-              event: 1234,
-              properties: {
-                query: 't-shirts',
-                event_conversion_type: 'web',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                rudderEventsToSnapEvents: [],
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 45,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 45,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-            error: "Event 1234 doesn't match with Snapchat Events!",
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
+    id: 'processor-1746381267904',
     name: 'snapchat_conversion',
     description: '[CAPIv3]: Test case for Product Searched event for conversion type offline',
+    scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5320,26 +4097,10 @@ export const dataV3 = [
               },
               sentAt: '2022-04-22T10:57:58Z',
             },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
+            metadata,
+            destination: overrideDestination(destination, { apiVersion: 'newApi' }),
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -5347,11 +4108,6 @@ export const dataV3 = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
             output: {
               version: '1',
               type: 'REST',
@@ -5389,371 +4145,12 @@ export const dataV3 = [
               files: {},
               userId: '',
             },
+            metadata,
             statusCode: 200,
           },
         ],
       },
     },
+    mockFns,
   },
-  {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case with unavailable required field',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  firstName: 'john',
-                  middleName: 'victor',
-                  lastName: 'doe',
-                  city: 'some_city',
-                  state: 'some_state',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-              },
-              type: 'track',
-              event: 'Products Searched',
-              properties: {
-                brands: 'abc',
-                action_source: 'web',
-                num_items: 4,
-                sc_click_id: 'some_click_id',
-                description: 'Products Searched event for conversion type offline',
-                event_source_url: 'https://www.example.com&ScCid=123',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'At least one of email or phone or advertisingId or ip and clientUserAgent is required',
-            metadata: {
-              destinationId: 'd2',
-              jobId: 21,
-              workspaceId: 'w2',
-            },
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case without any event type',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-04-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  firstName: 'john',
-                  middleName: 'victor',
-                  lastName: 'doe',
-                  city: 'some_city',
-                  state: 'some_state',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-              },
-              event: 'Products Searched',
-              properties: {
-                brands: 'abc',
-                action_source: 'web',
-                num_items: 4,
-                sc_click_id: 'some_click_id',
-                description: 'Products Searched event for conversion type offline',
-                event_source_url: 'https://www.example.com&ScCid=123',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-04-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'Event type is required',
-            metadata: {
-              destinationId: 'd2',
-              jobId: 21,
-              workspaceId: 'w2',
-            },
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'snapchat_conversion',
-    description: '[CAPIv3]: Test case when event time is more than 7 days',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
-              originalTimestamp: '2022-03-22T10:57:58Z',
-              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
-              context: {
-                traits: {
-                  email: 'test@gmail.com',
-                  firstName: 'john',
-                  middleName: 'victor',
-                  lastName: 'doe',
-                  city: 'some_city',
-                  state: 'some_state',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                device: {
-                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  manufacturer: 'Google',
-                  name: 'generic_x86_arm',
-                  type: 'ios',
-                  attTrackingStatus: 3,
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                locale: 'en-US',
-                os: {
-                  name: 'iOS',
-                  version: '14.4.1',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'ga4AppInstanceId',
-                    id: 'f0dd99v4f979fb997ce453373900f891',
-                  },
-                ],
-              },
-              event: 'Products Searched',
-              type: 'track',
-              properties: {
-                brands: 'abc',
-                action_source: 'web',
-                num_items: 4,
-                sc_click_id: 'some_click_id',
-                description: 'Products Searched event for conversion type offline',
-                event_source_url: 'https://www.example.com&ScCid=123',
-              },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2022-03-22T10:57:58Z',
-            },
-            destination: {
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: false,
-                },
-              },
-              Config: {
-                pixelId: 'dummyPixelId',
-                apiKey: secret1,
-                apiVersion: 'newApi',
-              },
-            },
-            metadata: {
-              jobId: 21,
-              destinationId: 'd2',
-              workspaceId: 'w2',
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'Events must be sent within 7 days of their occurrence',
-            metadata: {
-              destinationId: 'd2',
-              jobId: 21,
-              workspaceId: 'w2',
-            },
-            statTags: {
-              destType: 'SNAPCHAT_CONVERSION',
-              destinationId: 'd2',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'w2',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-].map((tc) => ({
-  ...tc,
-  mockFns: (_) => {
-    // @ts-ignore
-    Date.now = jest.fn(() => new Date('2022-04-23T10:57:58Z'));
-  },
-}));
+];

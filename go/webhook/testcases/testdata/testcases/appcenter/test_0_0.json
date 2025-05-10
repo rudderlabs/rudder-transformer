@@ -1,0 +1,29 @@
+{
+  "name": "appcenter",
+  "description": "test-0",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"text\":\"Hello from your abc-test app in App Center!\",\"sent_at\":\"2023-01-02T07: 53: 28.3117824Z\",\"url\":\"https://appcenter.ms/users/abc-rudderstack.com/apps/abc-test\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": {
+        "text": "Hello from your abc-test app in App Center!",
+        "sent_at": "2023-01-02T07: 53: 28.3117824Z",
+        "url": "https://appcenter.ms/users/abc-rudderstack.com/apps/abc-test"
+      }
+    },
+    "queue": [],
+    "errQueue": []
+  }
+}

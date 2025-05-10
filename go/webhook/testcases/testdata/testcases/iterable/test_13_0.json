@@ -1,0 +1,55 @@
+{
+  "name": "iterable",
+  "description": "test-13",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"email\":\"docs@iterable.com\",\"eventName\":\"inAppClick\",\"dataFields\":{\"email\":\"docs@iterable.com\",\"createdAt\":\"2018-03-27 00:44:40 +00:00\",\"campaignId\":269450}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "inAppClick",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "createdAt": "2018-03-27 00:44:40 +00:00",
+          "campaignId": 269450
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "timestamp": "2018-03-27T00:44:40.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

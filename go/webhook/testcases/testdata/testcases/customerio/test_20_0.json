@@ -1,0 +1,61 @@
+{
+  "name": "customerio",
+  "description": "test-20",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"action_id\":40,\"broadcast_id\":9,\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"delivery_id\":\"RPILAgEBcRhNAufr2aU82jtDZEh6\",\"href\":\"http://bing.com\",\"link_id\":1,\"recipient\":\"https://test.example.com/process\"},\"event_id\":\"01E4C6F5N1Y54TVGJTN64Y1ZS9\",\"object_type\":\"webhook\",\"metric\":\"clicked\",\"timestamp\":1585252373}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          },
+          "traits": {
+            "email": "https://test.example.com/process"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Webhook Message Link Clicked",
+        "properties": {
+          "eventId": "01E4C6F5N1Y54TVGJTN64Y1ZS9",
+          "deliveryId": "RPILAgEBcRhNAufr2aU82jtDZEh6",
+          "actionId": 40,
+          "broadcastId": 9,
+          "link": {
+            "url": "http://bing.com",
+            "id": 1
+          }
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2020-03-26T19:52:53.000Z",
+        "sentAt": "2020-03-26T19:52:53.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

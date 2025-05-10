@@ -1,0 +1,38 @@
+{
+  "name": "pipedream",
+  "description": "Group type  -> type and userId is given",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"userId\":\"user123\",\"groupId\":\"17\",\"context\":{},\"traits\":{\"operation\":\"add\"},\"type\":\"group\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "user123",
+        "groupId": "17",
+        "context": {},
+        "traits": {
+          "operation": "add"
+        },
+        "type": "group",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

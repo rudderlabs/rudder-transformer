@@ -1,0 +1,57 @@
+{
+  "name": "iterable",
+  "description": "test-26",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"email\":\"docs@iterable.com\",\"eventName\":\"smsSendSkip\",\"dataFields\":{\"createdAt\":\"2019-08-07 18:49:48 +00:00\",\"reason\":\"DuplicateMarketingMessage\",\"campaignId\":729390,\"messageId\":\"2c780bf42f26485db0fc6571d2e0f6a0\",\"email\":\"docs@iterable.com\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "userId": "0e13848b1c7e27eb5d88c5d35b70783e",
+        "context": {
+          "integration": {
+            "name": "Iterable",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
+          }
+        },
+        "event": "smsSendSkip",
+        "integrations": {
+          "Iterable": false
+        },
+        "properties": {
+          "createdAt": "2019-08-07 18:49:48 +00:00",
+          "reason": "DuplicateMarketingMessage",
+          "campaignId": 729390,
+          "messageId": "2c780bf42f26485db0fc6571d2e0f6a0"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "timestamp": "2019-08-07T18:49:48.000Z",
+        "type": "track",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "name": "pipedream",
+  "description": "Page type  -> type and userId is given",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"anonymousId\":\"21e13f4bc7ceddad\",\"channel\":\"mobile\",\"context\":{\"os\":{\"name\":\"Android\",\"version\":\"9\"},\"timezone\":\"Asia/Kolkata\",\"traits\":{\"customProp\":\"customValue\"},\"userAgent\":\"Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)\"},\"name\":\"Home\",\"properties\":{\"title\":\"Home | RudderStack\",\"url\":\"http://www.rudderstack.com\"},\"receivedAt\":\"2020-09-29T14:50:43.005+05:30\",\"type\":\"page\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "21e13f4bc7ceddad",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "9"
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "customProp": "customValue"
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+        },
+        "name": "Home",
+        "properties": {
+          "title": "Home | RudderStack",
+          "url": "http://www.rudderstack.com"
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "type": "page",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "name": "olark",
+  "description": "Olark webhook response",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"kind\":\"Conversation\",\"id\":\"ho6HrHxoabmm6q0G103JU0JFaor0BobA\",\"manuallySubmitted\":false,\"items\":[{\"kind\":\"OfflineMessage\",\"timestamp\":\"1669288532.567071\",\"body\":\"name: test rudderstack\\nemail: rudder14@gmail.com\\nMessage: veavv\"}],\"tags\":[],\"groups\":[{\"kind\":\"Group\",\"id\":\"ca77f4296fb7568909ad864aebf48201\",\"name\":\"Group 1\"}],\"visitor\":{\"kind\":\"Visitor\",\"id\":\"45WjM9eMYwJ7cJMo103JU0JaForAA6Db\",\"fullName\":\"test rudderstack\",\"emailAddress\":\"rudder14@gmail.com\",\"ip\":\"\",\"country\":\"India\",\"countryCode\":\"IN\",\"browser\":\"Chrome 105.0.0.0\",\"operatingSystem\":\"Macintosh\",\"conversationBeginPage\":\"http://localhost:5503/\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Conversation",
+        "traits": {},
+        "userId": "45WjM9eMYwJ7cJMo103JU0JaForAA6Db",
+        "context": {
+          "os": {
+            "name": "Macintosh"
+          },
+          "page": {
+            "url": "http://localhost:5503/"
+          },
+          "traits": {
+            "name": "test rudderstack",
+            "email": "rudder14@gmail.com",
+            "country": "India"
+          },
+          "browser": {
+            "name": "Chrome",
+            "version": "105.0.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Olark"
+          }
+        },
+        "properties": {
+          "tags": [],
+          "items": [
+            {
+              "body": "name: test rudderstack\nemail: rudder14@gmail.com\nMessage: veavv",
+              "kind": "OfflineMessage",
+              "timestamp": "1669288532.567071"
+            }
+          ]
+        },
+        "integrations": {
+          "Olark": false
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      },
+      {
+        "name": "Group 1",
+        "type": "group",
+        "traits": {
+          "kind": "Group"
+        },
+        "userId": "45WjM9eMYwJ7cJMo103JU0JaForAA6Db",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Olark"
+          }
+        },
+        "groupId": "ca77f4296fb7568909ad864aebf48201",
+        "integrations": {
+          "Olark": false
+        },
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

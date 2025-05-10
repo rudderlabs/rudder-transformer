@@ -1,0 +1,32 @@
+{
+  "name": "webhook",
+  "description": "failed webhook request with malformed JSON body",
+  "input": {
+    "request": {
+      "query": {
+        "query_param_key_1": ["query_param_value_1"],
+        "query_param_key_2": ["query_param_value_2"],
+        "writeKey": ["write_key"]
+      },
+      "body": "{\"prop1\": \"value1\", \"prop2\": \"value2\"",
+      "headers": {
+        "Connection": "keep-alive",
+        "Content-Length": "35",
+        "Content-Type": "application/json",
+        "Postman-Token": "1d06ebe8-086f-44dd-916a-ad5ab26959f6"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"putRequestDetailsInContext\":true}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "Malformed JSON in request body\n"
+    },
+    "queue": [],
+    "errQueue": ["{\"prop1\": \"value1\", \"prop2\": \"value2\""]
+  }
+}

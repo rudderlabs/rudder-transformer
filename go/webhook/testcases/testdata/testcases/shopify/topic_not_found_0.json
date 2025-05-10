@@ -1,0 +1,30 @@
+{
+  "name": "shopify",
+  "description": "Topic Not found",
+  "input": {
+    "request": {
+      "query": {
+        "topic": [],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
+      },
+      "body": "{}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "Topic not found\n"
+    },
+    "queue": [],
+    "errQueue": [{}]
+  },
+  "skip": "not possible"
+}

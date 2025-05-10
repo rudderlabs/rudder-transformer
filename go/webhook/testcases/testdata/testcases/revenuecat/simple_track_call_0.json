@@ -1,0 +1,103 @@
+{
+  "name": "revenuecat",
+  "description": "Simple track call",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"api_version\":\"1.0\",\"event\":{\"aliases\":[\"f8e14f51-0c76-49ba-8d67-c229f1875dd9\",\"389ad6dd-bb40-4c03-9471-1353da2d55ec\"],\"app_user_id\":\"f8e14f51-0c76-49ba-8d67-c229f1875dd9\",\"commission_percentage\":null,\"country_code\":\"US\",\"currency\":null,\"entitlement_id\":null,\"entitlement_ids\":null,\"environment\":\"SANDBOX\",\"event_timestamp_ms\":1698617217232,\"expiration_at_ms\":1698624417232,\"id\":\"8CF0CD6C-CAF3-41FB-968A-661938235AF0\",\"is_family_share\":null,\"offer_code\":null,\"original_app_user_id\":\"f8e14f51-0c76-49ba-8d67-c229f1875dd9\",\"original_transaction_id\":null,\"period_type\":\"NORMAL\",\"presented_offering_id\":null,\"price\":null,\"price_in_purchased_currency\":null,\"product_id\":\"test_product\",\"purchased_at_ms\":1698617217232,\"store\":\"APP_STORE\",\"subscriber_attributes\":{\"$displayName\":{\"updated_at_ms\":1698617217232,\"value\":\"Mister Mistoffelees\"},\"$email\":{\"updated_at_ms\":1698617217232,\"value\":\"tuxedo@revenuecat.com\"},\"$phoneNumber\":{\"updated_at_ms\":1698617217232,\"value\":\"+19795551234\"},\"my_custom_attribute_1\":{\"updated_at_ms\":1698617217232,\"value\":\"catnip\"}},\"takehome_percentage\":null,\"tax_percentage\":null,\"transaction_id\":null,\"type\":\"TEST\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "RevenueCat"
+          },
+          "externalId": [
+            {
+              "type": "revenuecatAppUserId",
+              "id": "f8e14f51-0c76-49ba-8d67-c229f1875dd9"
+            }
+          ]
+        },
+        "integrations": {
+          "RevenueCat": false
+        },
+        "type": "track",
+        "properties": {
+          "aliases": [
+            "f8e14f51-0c76-49ba-8d67-c229f1875dd9",
+            "389ad6dd-bb40-4c03-9471-1353da2d55ec"
+          ],
+          "appUserId": "f8e14f51-0c76-49ba-8d67-c229f1875dd9",
+          "commissionPercentage": null,
+          "countryCode": "US",
+          "currency": null,
+          "entitlementId": null,
+          "entitlementIds": null,
+          "environment": "SANDBOX",
+          "eventTimestampMs": 1698617217232,
+          "expirationAtMs": 1698624417232,
+          "id": "8CF0CD6C-CAF3-41FB-968A-661938235AF0",
+          "isFamilyShare": null,
+          "offerCode": null,
+          "originalAppUserId": "f8e14f51-0c76-49ba-8d67-c229f1875dd9",
+          "originalTransactionId": null,
+          "periodType": "NORMAL",
+          "presentedOfferingId": null,
+          "price": null,
+          "priceInPurchasedCurrency": null,
+          "productId": "test_product",
+          "purchasedAtMs": 1698617217232,
+          "store": "APP_STORE",
+          "subscriberAttributes": {
+            "$displayName": {
+              "updated_at_ms": 1698617217232,
+              "value": "Mister Mistoffelees"
+            },
+            "$email": {
+              "updated_at_ms": 1698617217232,
+              "value": "tuxedo@revenuecat.com"
+            },
+            "$phoneNumber": {
+              "updated_at_ms": 1698617217232,
+              "value": "+19795551234"
+            },
+            "my_custom_attribute_1": {
+              "updated_at_ms": 1698617217232,
+              "value": "catnip"
+            }
+          },
+          "takehomePercentage": null,
+          "taxPercentage": null,
+          "transactionId": null,
+          "type": "TEST"
+        },
+        "event": "TEST",
+        "userId": "f8e14f51-0c76-49ba-8d67-c229f1875dd9",
+        "messageId": "8CF0CD6C-CAF3-41FB-968A-661938235AF0",
+        "originalTimestamp": "2023-10-29T22:06:57.232Z",
+        "sentAt": "2023-10-29T22:06:57.232Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

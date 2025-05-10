@@ -1,0 +1,84 @@
+{
+  "name": "auth0",
+  "description": "update tenant settings",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"log_id\":\"90020221031061530247169676961198100736838335677367058450\",\"data\":{\"date\":\"2022-10-31T06:15:25.196Z\",\"type\":\"gd_tenant_update\",\"description\":\"Guardian - Updates tenant settings\",\"ip\":\"35.160.3.103\",\"details\":{\"request\":{\"ip\":\"35.160.3.103\",\"auth\":{\"scopes\":[\"read:authenticators\"],\"subject\":\"google-oauth2|123456\",\"strategy\":\"jwt_api2_internal_token\"},\"body\":{\"picture_url\":\"[REDACTED]\",\"friendly_name\":\"[REDACTED]\"},\"path\":\"/api/tenants/settings\",\"query\":{},\"method\":\"PATCH\"},\"response\":{\"body\":{\"name\":\"dev-cu4jy2zgao6yx15x\",\"picture_url\":\"[REDACTED]\",\"friendly_name\":\"[REDACTED]\",\"guardian_mfa_page\":\"[REDACTED]\"},\"statusCode\":200}},\"user_id\":\"google-oauth2|123456\",\"log_id\":\"90020221031061530247169676961198100736838335677367058450\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Guardian tenant update",
+        "sentAt": "2022-10-31T06:15:25.196Z",
+        "userId": "google-oauth2|123456",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061530247169676961198100736838335677367058450",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "scopes": ["read:authenticators"],
+                "subject": "google-oauth2|123456",
+                "strategy": "jwt_api2_internal_token"
+              },
+              "body": {
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]"
+              },
+              "path": "/api/tenants/settings",
+              "query": {},
+              "method": "PATCH"
+            },
+            "response": {
+              "body": {
+                "name": "dev-cu4jy2zgao6yx15x",
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]",
+                "guardian_mfa_page": "[REDACTED]"
+              },
+              "statusCode": 200
+            }
+          },
+          "description": "Guardian - Updates tenant settings",
+          "source_type": "gd_tenant_update"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.196Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

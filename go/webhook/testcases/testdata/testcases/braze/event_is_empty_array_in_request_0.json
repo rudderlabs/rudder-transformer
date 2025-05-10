@@ -1,0 +1,25 @@
+{
+  "name": "braze",
+  "description": "event is empty array in request",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "[]",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{\"customMapping\":[{\"from\":\"randomEvent\",\"to\":\"In-App Message Clicked\"}]}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "eventList should be an array\n"
+    },
+    "queue": [],
+    "errQueue": [[]]
+  }
+}

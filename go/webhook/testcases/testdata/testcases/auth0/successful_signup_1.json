@@ -1,0 +1,109 @@
+{
+  "name": "auth0",
+  "description": "successful signup",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"log_id\":\"90020221031055712103169676686007898566320991926665347090\",\"data\":{\"date\":\"2022-10-31T05:57:06.874Z\",\"type\":\"sapi\",\"description\":\"Create a User\",\"client_id\":\"vQcJNDTxsM1W72eHFonRJdzyOvawlwIt\",\"client_name\":\"\",\"ip\":\"35.166.202.113\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36\",\"details\":{\"request\":{\"ip\":\"35.166.202.113\",\"auth\":{\"user\":{\"name\":\"rudder test\",\"email\":\"test@rudderstack.com\",\"user_id\":\"auth0|dummyPassword\"},\"strategy\":\"jwt\",\"credentials\":{\"jti\":\"571921bf7833a97efabf08d765a0ec8f\",\"scopes\":[\"create:actions\"]}},\"body\":{\"email\":\"testRudderlabs+21@gmail.com\",\"password\":\"dummyPassword\",\"connection\":\"Username-Password-Authentication\"},\"path\":\"/api/v2/users\",\"query\":{},\"method\":\"post\",\"channel\":\"https://manage.auth0.com/\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36\"},\"response\":{\"body\":{\"name\":\"testRudderlabs+21@gmail.com\",\"email\":\"testRudderlabs+21@gmail.com\",\"picture\":\"https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png\",\"user_id\":\"auth0|dummyPassword\",\"nickname\":\"testRudderlabs+21\",\"created_at\":\"2022-10-31T05:57:06.864Z\",\"identities\":[{\"user_id\":\"auth0|dummyPassword\",\"isSocial\":false,\"provider\":\"auth0\",\"connection\":\"Username-Password-Authentication\"}],\"updated_at\":\"2022-10-31T05:57:06.864Z\",\"email_verified\":false},\"statusCode\":201}},\"user_id\":\"auth0|dummyPassword\",\"log_id\":\"90020221031055712103169676686007898566320991926665347090\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T05:57:06.874Z",
+        "userId": "auth0|dummyPassword",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "auth0|dummyPassword"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.166.202.113",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031055712103169676686007898566320991926665347090",
+          "details": {
+            "request": {
+              "ip": "35.166.202.113",
+              "auth": {
+                "user": {
+                  "name": "rudder test",
+                  "email": "test@rudderstack.com",
+                  "user_id": "auth0|dummyPassword"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": ["create:actions"]
+                }
+              },
+              "body": {
+                "email": "testRudderlabs+21@gmail.com",
+                "password": "dummyPassword",
+                "connection": "Username-Password-Authentication"
+              },
+              "path": "/api/v2/users",
+              "query": {},
+              "method": "post",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "name": "testRudderlabs+21@gmail.com",
+                "email": "testRudderlabs+21@gmail.com",
+                "picture": "https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png",
+                "user_id": "auth0|dummyPassword",
+                "nickname": "testRudderlabs+21",
+                "created_at": "2022-10-31T05:57:06.864Z",
+                "identities": [
+                  {
+                    "user_id": "auth0|dummyPassword",
+                    "isSocial": false,
+                    "provider": "auth0",
+                    "connection": "Username-Password-Authentication"
+                  }
+                ],
+                "updated_at": "2022-10-31T05:57:06.864Z",
+                "email_verified": false
+              },
+              "statusCode": 201
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Create a User",
+          "source_type": "sapi"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T05:57:06.874Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

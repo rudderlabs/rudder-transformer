@@ -1,0 +1,32 @@
+{
+  "name": "adjust",
+  "description": "Simple track call with no query parameters",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"id\":\"adjust\",\"updated_at\":\"2023-02-10T12:16:07.251Z\",\"created_at\":\"2023-02-10T12:05:04.402Z\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "Query_parameters is missing\n"
+    },
+    "queue": [],
+    "errQueue": [
+      {
+        "id": "adjust",
+        "updated_at": "2023-02-10T12:16:07.251Z",
+        "created_at": "2023-02-10T12:05:04.402Z"
+      }
+    ]
+  },
+  "skip": "FIXME"
+}

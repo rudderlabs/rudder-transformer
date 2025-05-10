@@ -1,2 +1,41 @@
+# Get changed files in test/integrations/sources/
+changed_sources=$(git diff --cached --name-only | grep "test/integrations/sources/" | cut -d'/' -f4 | sort -u)
 
+if [ ! -z "$changed_sources" ]; then
+  changes_detected=false
+  modified_sources=""
+  
+  for source in $changed_sources; do
+    echo "Generating test cases for $source"
+    go_testcase_path="go/webhook/testcases/testdata/testcases/$source"
+    
+    # Store git status before generation
+    before_status=$(git status --porcelain "$go_testcase_path")
+    
+    # Generate new test cases
+    npm run generate:testcases -- --source "$source"
+    
+    # Check if files were modified
+    after_status=$(git status --porcelain "$go_testcase_path")
+    if [ "$before_status" != "$after_status" ]; then
+      # New changes detected, add them to git
+      git add "$go_testcase_path"
+      changes_detected=true
+      modified_sources="$modified_sources\n\033[1;32m- $source\033[0m"
+    fi
+  done
+
+  # If any changes were detected, show summary and exit
+  if [ "$changes_detected" = true ]; then
+    echo "\n\033[1;33m🔔 ATTENTION 🔔\033[0m"
+    echo "\033[1;36mNew integration test cases were generated for the following sources:\033[0m"
+    echo "$modified_sources"
+    echo "\n\033[1;36mTest cases have been added to git in:\033[0m"
+    echo "\033[1;32mgo/webhook/testcases/testdata/testcases/<source>\033[0m"
+    echo "\n\033[1;31m⚠️  Action Required: Please verify the generated test cases and commit again ⚠️\033[0m\n"
+    exit 1
+  fi
+fi
+
+# If we get here, either no test files changed or no new Go files were generated
 npm run pre-commit

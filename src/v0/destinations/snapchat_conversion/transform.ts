@@ -38,15 +38,24 @@ import { JSON_MIME_TYPE } from '../../util/constant';
 import { processV3, processRouterDest as processRouterV3 } from './transformV3';
 import {
   SnapchatDestination,
-  SnapchatPayloadV2,
-  SnapchatRouterRequest,
-  SnapchatV2BatchedRequest,
-  SnapchatV2BatchRequestOutput,
-  SnapchatV3BatchedRequest,
+  CommonRouterRequest,
+  V2Payload,
+  V2BatchedRequest,
+  V2BatchEvent,
+  V2BatchRequestOutput,
+  V3BatchedRequest,
+  V3BatchRequestOutput,
+  EventConversionTypeValue,
 } from './types';
 import { RudderMessage } from '../../../types';
 
-function buildResponse(apiKey: string, payload: SnapchatPayloadV2): SnapchatV2BatchedRequest {
+/**
+ * Builds a response object for the Snapchat V2 API
+ * @param apiKey - The API key for authentication
+ * @param payload - The payload to send to Snapchat
+ * @returns A formatted request object
+ */
+function buildResponse(apiKey: string, payload: V2Payload): V2BatchedRequest {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
@@ -55,20 +64,23 @@ function buildResponse(apiKey: string, payload: SnapchatPayloadV2): SnapchatV2Ba
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response as SnapchatV2BatchedRequest;
+  return response as V2BatchedRequest;
 }
 
-const populateHashedTraitsValues = (
-  payload: SnapchatPayloadV2,
-  message: RudderMessage,
-): SnapchatPayloadV2 => {
+/**
+ * Populates hashed trait values in the payload
+ * @param payload - The payload to populate
+ * @param message - The message containing the traits
+ * @returns The updated payload with hashed trait values
+ */
+const populateHashedTraitsValues = (payload: V2Payload, message: RudderMessage): V2Payload => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
   const city = getFieldValueFromMessage(message, 'city');
   const state = getFieldValueFromMessage(message, 'state');
   const zip = getFieldValueFromMessage(message, 'zipcode');
-  const updatedPayload = {
+  const updatedPayload: V2Payload = {
     ...payload,
     hashed_first_name_sha: firstName
       ? getHashedValue(firstName.toString().toLowerCase().trim())
@@ -87,15 +99,22 @@ const populateHashedTraitsValues = (
 };
 
 /**
- * Seperate out hashing operations into one function
+ * Separate out hashing operations into one function
  * @param payload - The payload to populate with hashed values
  * @param message - The message containing the values to hash
- * @returns updatedPayload - The payload with hashed values
+ * @returns The payload with hashed values
  */
-const populateHashedValues = (payload: SnapchatPayloadV2, message: any): SnapchatPayloadV2 => {
+const populateHashedValues = (payload: V2Payload, message: RudderMessage): V2Payload => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
-  const ip = message.context?.ip || message.request_ip;
+  let ip;
+  if (message.context && 'ip' in message.context) {
+    ip = message.context.ip;
+  } else if ('request_ip' in message) {
+    ip = (message as any).request_ip;
+  } else {
+    ip = undefined;
+  }
 
   const updatedPayload = populateHashedTraitsValues(payload, message);
   if (email) {
@@ -107,28 +126,54 @@ const populateHashedValues = (payload: SnapchatPayloadV2, message: any): Snapcha
   if (ip) {
     updatedPayload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
   }
+
   // only in case of ios platform this is required
-  if (
-    isAppleFamily(message.context?.device?.type) &&
-    (message.properties?.idfv || message.context?.device?.id)
-  ) {
-    updatedPayload.hashed_idfv = getHashedValue(
-      message.properties?.idfv || message.context?.device?.id,
-    );
+  const context = message.context as Record<string, any> | undefined;
+  const properties = message.properties as Record<string, any> | undefined;
+
+  const device =
+    context && 'device' in context ? (context.device as Record<string, any>) : undefined;
+  const isIosDevice = device && 'type' in device && isAppleFamily(device.type as string);
+
+  const deviceId =
+    // Get device ID from properties.idfv or device.id
+    properties?.idfv || (device && 'id' in device ? device.id : undefined);
+
+  if (isIosDevice && deviceId) {
+    updatedPayload.hashed_idfv = getHashedValue(deviceId as string);
   }
 
-  if (message.properties?.adId || message.context?.device?.advertisingId) {
-    updatedPayload.hashed_mobile_ad_id = getHashedValue(
-      message.properties?.adId || message.context?.device?.advertisingId,
-    );
+  const adId = properties?.adId || device?.advertisingId || undefined;
+
+  if (adId) {
+    updatedPayload.hashed_mobile_ad_id = getHashedValue(adId as string);
   }
   return updatedPayload;
 };
 
-const getEventCommonProperties = (message: RudderMessage): any =>
-  constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
+/**
+ * Safely constructs payload from message and mapping config
+ * @param message - The message containing the event data
+ * @param configMapping - The mapping configuration to use
+ * @returns The constructed payload or empty object if null
+ */
+const getPayloadFromMapping = (message: RudderMessage, configMapping: any): Partial<V2Payload> =>
+  constructPayload(message, configMapping) || {};
 
-const validateRequiredFields = (payload: SnapchatPayloadV2): void => {
+/**
+ * Gets common properties for all events
+ * @param message - The message to extract properties from
+ * @returns Common properties for all events
+ */
+const getEventCommonProperties = (message: RudderMessage): Partial<V2Payload> =>
+  getPayloadFromMapping(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
+
+/**
+ * Validates that required fields are present in the payload
+ * @param payload - The payload to validate
+ * @throws InstrumentationError if required fields are missing
+ */
+const validateRequiredFields = (payload: V2Payload): void => {
   if (
     !payload.hashed_email &&
     !payload.hashed_phone_number &&
@@ -141,15 +186,25 @@ const validateRequiredFields = (payload: SnapchatPayloadV2): void => {
   }
 };
 
+/**
+ * Adds specific event details to the payload based on the event conversion type
+ * @param message - The message containing the event
+ * @param payload - The payload to add details to
+ * @param eventConversionType - The type of event conversion
+ * @param pixelId - The pixel ID for web events
+ * @param snapAppId - The Snap app ID for mobile events
+ * @param appId - The app ID for mobile events
+ * @returns The updated payload with specific event details
+ */
 const addSpecificEventDetails = (
   message: RudderMessage,
-  payload: SnapchatPayloadV2,
-  eventConversionType: string,
+  payload: V2Payload,
+  eventConversionType: EventConversionTypeValue,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
-): SnapchatPayloadV2 => {
-  const updatedPayload = { ...payload };
+): V2Payload => {
+  const updatedPayload: V2Payload = { ...payload };
   if (eventConversionType === 'WEB') {
     updatedPayload.pixel_id = pixelId;
     updatedPayload.page_url = getFieldValueFromMessage(message, 'pageUrl');
@@ -166,13 +221,19 @@ const addSpecificEventDetails = (
   return updatedPayload;
 };
 
-// Returns the response for the track event after constructing the payload and setting necessary fields
+/**
+ * Builds a response for a track event
+ * @param message - The message containing the event
+ * @param destination - The destination configuration
+ * @param mappedEvent - The mapped event name
+ * @returns A formatted request object
+ */
 const trackResponseBuilder = (
   message: RudderMessage,
   destination: SnapchatDestination,
   mappedEvent: string,
-): SnapchatV2BatchedRequest => {
-  let payload: any = {};
+): V2BatchedRequest => {
+  let payload: V2Payload = {};
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
   const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
@@ -185,55 +246,73 @@ const trackResponseBuilder = (
     switch (event.toLowerCase()) {
       /* Browsing Section */
       case 'products_searched':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.PRODUCTS_SEARCHED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case 'product_list_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
-        payload.item_ids = getItemIds(message);
+        payload.item_ids = getItemIds(message) || undefined;
         payload.price = payload.price || getPriceSum(message);
         break;
       /* Promotions Section */
       case 'promotion_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PROMOTION_VIEWED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.PROMOTION_VIEWED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case 'promotion_clicked':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PROMOTION_CLICKED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.PROMOTION_CLICKED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Ordering Section */
       case 'product_viewed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]);
+        payload = getPayloadFromMapping(message, mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case 'checkout_started':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.CHECKOUT_STARTED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
-        payload.item_ids = getItemIds(message);
+        payload.item_ids = getItemIds(message) || undefined;
         payload.price = payload.price || getPriceSum(message);
         break;
       case 'payment_info_entered':
-        payload = constructPayload(
+        payload = getPayloadFromMapping(
           message,
           mappingConfig[ConfigCategory.PAYMENT_INFO_ENTERED.name],
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       case 'order_completed':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.ORDER_COMPLETED.name]);
+        payload = getPayloadFromMapping(
+          message,
+          mappingConfig[ConfigCategory.ORDER_COMPLETED.name],
+        );
         payload.event_type = eventNameMapping[event.toLowerCase()];
-        payload.item_ids = getItemIds(message);
+        payload.item_ids = getItemIds(message) || undefined;
         payload.price = payload.price || getPriceSum(message);
         break;
       case 'product_added':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);
+        payload = getPayloadFromMapping(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       /* Wishlist Section */
       case 'product_added_to_wishlist':
-        payload = constructPayload(
+        payload = getPayloadFromMapping(
           message,
           mappingConfig[ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.name],
         );
@@ -241,11 +320,11 @@ const trackResponseBuilder = (
         break;
       /* Snapchat General Events */
       case 'sign_up':
-        payload = constructPayload(message, mappingConfig[ConfigCategory.SIGN_UP.name]);
+        payload = getPayloadFromMapping(message, mappingConfig[ConfigCategory.SIGN_UP.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       default:
-        payload = constructPayload(message, mappingConfig[ConfigCategory.DEFAULT.name]);
+        payload = getPayloadFromMapping(message, mappingConfig[ConfigCategory.DEFAULT.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
     }
@@ -256,8 +335,8 @@ const trackResponseBuilder = (
   payload = { ...payload, ...getEventCommonProperties(message) };
   payload = populateHashedValues(payload, message);
   validateRequiredFields(payload);
-  payload.timestamp = getEventTimestamp(message);
-  payload.data_use = getDataUseValue(message);
+  payload.timestamp = getEventTimestamp(message) || undefined;
+  payload.data_use = getDataUseValue(message) || undefined;
 
   payload.event_conversion_type = eventConversionType;
   payload = addSpecificEventDetails(
@@ -280,9 +359,14 @@ const trackResponseBuilder = (
   return response;
 };
 
+/**
+ * Processes a single event
+ * @param event - The event to process
+ * @returns A formatted request object or array of request objects
+ */
 export const process = (
-  event: SnapchatRouterRequest,
-): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
+  event: CommonRouterRequest,
+): V2BatchedRequest | V2BatchedRequest[] | V3BatchedRequest => {
   const { message, destination } = event;
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processV3(event);
@@ -312,16 +396,22 @@ export const process = (
   return response;
 };
 
+/**
+ * Processes multiple events for router destination
+ * @param inputs - The events to process
+ * @param reqMetadata - Request metadata
+ * @returns An array of batch request outputs
+ */
 export const processRouterDest = async (
-  inputs: SnapchatRouterRequest[],
-  reqMetadata: any,
-): Promise<SnapchatV2BatchRequestOutput[]> => {
+  inputs: CommonRouterRequest[],
+  reqMetadata: Record<string, unknown>,
+): Promise<V2BatchRequestOutput[] | V3BatchRequestOutput[]> => {
   const { destination } = inputs[0];
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processRouterV3(inputs, reqMetadata);
   }
-  const eventsChunk: any[] = []; // temporary variable to divide payload into chunks
-  const errorRespList: any[] = [];
+  const eventsChunk: V2BatchEvent[] = []; // temporary variable to divide payload into chunks
+  const errorRespList: Record<string, unknown>[] = [];
   inputs.forEach((event) => {
     try {
       const resp = process(event);
@@ -336,9 +426,16 @@ export const processRouterDest = async (
     }
   });
 
-  const batchResponseList: any[] = [];
+  const batchResponseList: V2BatchRequestOutput[] = [];
   if (eventsChunk.length > 0) {
-    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    const batchedEvents = batchMultiplexedEvents(
+      eventsChunk.map((event) => ({
+        message: Array.isArray(event.message) ? event.message : [event.message],
+        metadata: event.metadata,
+        destination: event.destination,
+      })),
+      MAX_BATCH_SIZE,
+    );
     batchedEvents.forEach((batch) => {
       const batchedRequest = generateBatchedPayloadForArray(batch.events, batch.destination);
       batchResponseList.push(
@@ -347,5 +444,5 @@ export const processRouterDest = async (
     });
   }
 
-  return [...batchResponseList, ...errorRespList];
+  return [...batchResponseList, ...(errorRespList as V2BatchRequestOutput[])];
 };

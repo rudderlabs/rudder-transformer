@@ -10,7 +10,7 @@ import {
   generateBatchedPayloadForArray,
   getEventTimestamp,
 } from './util';
-import { SnapchatDestination, SnapchatPayloadV2, EventConversionType } from './types';
+import { SnapchatDestination, SnapchatV2Payload, EventConversionType } from './types';
 
 import moment from 'moment';
 import { RudderMessage } from '../../../types';
@@ -301,7 +301,7 @@ describe('generateBatchedPayloadForArray', () => {
               JSON: {
                 event_type: 'CUSTOM_EVENT',
                 event_conversion_type: EventConversionType.WEB,
-              } as SnapchatPayloadV2,
+              } as SnapchatV2Payload,
             },
           },
           {
@@ -309,7 +309,7 @@ describe('generateBatchedPayloadForArray', () => {
               JSON: {
                 event_type: 'CUSTOM_EVENT',
                 event_conversion_type: EventConversionType.WEB,
-              } as SnapchatPayloadV2,
+              } as SnapchatV2Payload,
             },
           },
         ],

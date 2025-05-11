@@ -5,27 +5,28 @@ import { MAX_BATCH_SIZE } from './config';
 import { isAppleFamily } from '../../util';
 import { Metadata, RudderMessage } from '../../../types';
 import {
-  ProcessedEvent,
+  SnapchatV3ProcessedEvent,
   SnapchatDestination,
   SnapchatV3Params,
-  SnapchatPayloadV3,
+  SnapchatV3Payload,
   SnapchatV3BatchRequestOutput,
+  SnapchatV3Headers,
 } from './types';
 
-export const getMergedPayload = (batch: ProcessedEvent[]): SnapchatPayloadV3 => ({
+export const getMergedPayload = (batch: SnapchatV3ProcessedEvent[]): SnapchatV3Payload => ({
   data: batch.flatMap((input) => {
-    const json = input.message.body.JSON as SnapchatPayloadV3;
+    const json = input.message.body.JSON as SnapchatV3Payload;
     return json.data;
   }),
 });
 
-export const getMergedMetadata = (batch: ProcessedEvent[]): Partial<Metadata>[] =>
+export const getMergedMetadata = (batch: SnapchatV3ProcessedEvent[]): Partial<Metadata>[] =>
   batch.map((input) => input.metadata);
 
 export const buildBatchedResponse = (
-  mergedPayload: SnapchatPayloadV3,
+  mergedPayload: SnapchatV3Payload,
   endpoint: string,
-  headers: Record<string, any>,
+  headers: SnapchatV3Headers,
   params: SnapchatV3Params,
   method: string,
   metadata: Partial<Metadata>[],
@@ -52,7 +53,9 @@ export const buildBatchedResponse = (
   destination,
 });
 
-export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatV3BatchRequestOutput[] => {
+export const processBatch = (
+  eventsChunk: SnapchatV3ProcessedEvent[],
+): SnapchatV3BatchRequestOutput[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -74,8 +77,8 @@ export const processBatch = (eventsChunk: ProcessedEvent[]): SnapchatV3BatchRequ
 };
 
 export const batchResponseBuilder = (
-  webOrOfflineEventsChunk: ProcessedEvent[],
-  mobileEventsChunk: ProcessedEvent[],
+  webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[],
+  mobileEventsChunk: SnapchatV3ProcessedEvent[],
 ): SnapchatV3BatchRequestOutput[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);

@@ -14,7 +14,7 @@ import { JSON_MIME_TYPE } from '../../util/constant';
 import { ENDPOINT } from './config';
 import {
   SnapchatDestination,
-  SnapchatPayloadV2,
+  SnapchatV2Payload,
   EventConversionTypeValue,
   EventConversionType,
   SnapchatV2BatchedRequest,
@@ -116,10 +116,10 @@ export function getPriceSum(message: RudderMessage): string {
  * @returns Batched request
  */
 export function generateBatchedPayloadForArray(
-  events: any,
+  events: SnapchatV2BatchedRequest[],
   destination: SnapchatDestination,
 ): SnapchatV2BatchedRequest {
-  const batchResponseList: SnapchatPayloadV2[] = [];
+  const batchResponseList: SnapchatV2Payload[] = [];
 
   // extracting destination
   // from the first event in a batch
@@ -129,7 +129,7 @@ export function generateBatchedPayloadForArray(
 
   // Batch event into dest batch structure
   events.forEach((ev) => {
-    batchResponseList.push(ev.body.JSON);
+    batchResponseList.push(ev.body.JSON as SnapchatV2Payload);
   });
 
   batchedRequest.body.JSON_ARRAY = {

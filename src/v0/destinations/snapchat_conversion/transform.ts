@@ -38,14 +38,13 @@ import { JSON_MIME_TYPE } from '../../util/constant';
 import { processV3, processRouterDest as processRouterV3 } from './transformV3';
 import {
   SnapchatDestination,
-  CommonRouterRequest,
-  V2Payload,
-  V2BatchedRequest,
-  V2BatchEvent,
-  V2BatchRequestOutput,
-  V3BatchedRequest,
-  V3BatchRequestOutput,
   EventConversionTypeValue,
+  SnapchatRouterRequest,
+  SnapchatV2BatchedRequest,
+  SnapchatV3BatchedRequest,
+  SnapchatV2Payload,
+  SnapchatV2ProcessedEvent,
+  SnapchatV2BatchRequestOutput,
 } from './types';
 import { RudderMessage } from '../../../types';
 
@@ -55,7 +54,7 @@ import { RudderMessage } from '../../../types';
  * @param payload - The payload to send to Snapchat
  * @returns A formatted request object
  */
-function buildResponse(apiKey: string, payload: V2Payload): V2BatchedRequest {
+function buildResponse(apiKey: string, payload: SnapchatV2Payload): SnapchatV2BatchedRequest {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v2;
   response.headers = {
@@ -64,7 +63,7 @@ function buildResponse(apiKey: string, payload: V2Payload): V2BatchedRequest {
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response as V2BatchedRequest;
+  return response as SnapchatV2BatchedRequest;
 }
 
 /**
@@ -73,14 +72,17 @@ function buildResponse(apiKey: string, payload: V2Payload): V2BatchedRequest {
  * @param message - The message containing the traits
  * @returns The updated payload with hashed trait values
  */
-const populateHashedTraitsValues = (payload: V2Payload, message: RudderMessage): V2Payload => {
+const populateHashedTraitsValues = (
+  payload: SnapchatV2Payload,
+  message: RudderMessage,
+): SnapchatV2Payload => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
   const city = getFieldValueFromMessage(message, 'city');
   const state = getFieldValueFromMessage(message, 'state');
   const zip = getFieldValueFromMessage(message, 'zipcode');
-  const updatedPayload: V2Payload = {
+  const updatedPayload: SnapchatV2Payload = {
     ...payload,
     hashed_first_name_sha: firstName
       ? getHashedValue(firstName.toString().toLowerCase().trim())
@@ -104,17 +106,13 @@ const populateHashedTraitsValues = (payload: V2Payload, message: RudderMessage):
  * @param message - The message containing the values to hash
  * @returns The payload with hashed values
  */
-const populateHashedValues = (payload: V2Payload, message: RudderMessage): V2Payload => {
+const populateHashedValues = (
+  payload: SnapchatV2Payload,
+  message: RudderMessage,
+): SnapchatV2Payload => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
-  let ip;
-  if (message.context && 'ip' in message.context) {
-    ip = message.context.ip;
-  } else if ('request_ip' in message) {
-    ip = (message as any).request_ip;
-  } else {
-    ip = undefined;
-  }
+  const ip = get(message, 'context.ip') || message.request_ip;
 
   const updatedPayload = populateHashedTraitsValues(payload, message);
   if (email) {
@@ -126,27 +124,20 @@ const populateHashedValues = (payload: V2Payload, message: RudderMessage): V2Pay
   if (ip) {
     updatedPayload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
   }
-
   // only in case of ios platform this is required
-  const context = message.context as Record<string, any> | undefined;
-  const properties = message.properties as Record<string, any> | undefined;
-
-  const device =
-    context && 'device' in context ? (context.device as Record<string, any>) : undefined;
-  const isIosDevice = device && 'type' in device && isAppleFamily(device.type as string);
-
-  const deviceId =
-    // Get device ID from properties.idfv or device.id
-    properties?.idfv || (device && 'id' in device ? device.id : undefined);
-
-  if (isIosDevice && deviceId) {
-    updatedPayload.hashed_idfv = getHashedValue(deviceId as string);
+  if (
+    isAppleFamily(get(message, 'context.device.type')) &&
+    (get(message, 'properties.idfv') || get(message, 'context.device.id'))
+  ) {
+    updatedPayload.hashed_idfv = getHashedValue(
+      get(message, 'properties.idfv') || get(message, 'context.device.id'),
+    );
   }
 
-  const adId = properties?.adId || device?.advertisingId || undefined;
-
-  if (adId) {
-    updatedPayload.hashed_mobile_ad_id = getHashedValue(adId as string);
+  if (get(message, 'properties.adId') || get(message, 'context.device.advertisingId')) {
+    updatedPayload.hashed_mobile_ad_id = getHashedValue(
+      get(message, 'properties.adId') || get(message, 'context.device.advertisingId'),
+    );
   }
   return updatedPayload;
 };
@@ -157,15 +148,17 @@ const populateHashedValues = (payload: V2Payload, message: RudderMessage): V2Pay
  * @param configMapping - The mapping configuration to use
  * @returns The constructed payload or empty object if null
  */
-const getPayloadFromMapping = (message: RudderMessage, configMapping: any): Partial<V2Payload> =>
-  constructPayload(message, configMapping) || {};
+const getPayloadFromMapping = (
+  message: RudderMessage,
+  configMapping: any,
+): Partial<SnapchatV2Payload> => constructPayload(message, configMapping) || {};
 
 /**
  * Gets common properties for all events
  * @param message - The message to extract properties from
  * @returns Common properties for all events
  */
-const getEventCommonProperties = (message: RudderMessage): Partial<V2Payload> =>
+const getEventCommonProperties = (message: RudderMessage): Partial<SnapchatV2Payload> =>
   getPayloadFromMapping(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
 
 /**
@@ -173,7 +166,7 @@ const getEventCommonProperties = (message: RudderMessage): Partial<V2Payload> =>
  * @param payload - The payload to validate
  * @throws InstrumentationError if required fields are missing
  */
-const validateRequiredFields = (payload: V2Payload): void => {
+const validateRequiredFields = (payload: SnapchatV2Payload): void => {
   if (
     !payload.hashed_email &&
     !payload.hashed_phone_number &&
@@ -198,13 +191,13 @@ const validateRequiredFields = (payload: V2Payload): void => {
  */
 const addSpecificEventDetails = (
   message: RudderMessage,
-  payload: V2Payload,
+  payload: SnapchatV2Payload,
   eventConversionType: EventConversionTypeValue,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
-): V2Payload => {
-  const updatedPayload: V2Payload = { ...payload };
+): SnapchatV2Payload => {
+  const updatedPayload: SnapchatV2Payload = { ...payload };
   if (eventConversionType === 'WEB') {
     updatedPayload.pixel_id = pixelId;
     updatedPayload.page_url = getFieldValueFromMessage(message, 'pageUrl');
@@ -232,8 +225,8 @@ const trackResponseBuilder = (
   message: RudderMessage,
   destination: SnapchatDestination,
   mappedEvent: string,
-): V2BatchedRequest => {
-  let payload: V2Payload = {};
+): SnapchatV2BatchedRequest => {
+  let payload: SnapchatV2Payload = {};
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
   const eventConversionType = getEventConversionType(message);
   const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
@@ -365,8 +358,8 @@ const trackResponseBuilder = (
  * @returns A formatted request object or array of request objects
  */
 export const process = (
-  event: CommonRouterRequest,
-): V2BatchedRequest | V2BatchedRequest[] | V3BatchedRequest => {
+  event: SnapchatRouterRequest,
+): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processV3(event);
@@ -402,21 +395,18 @@ export const process = (
  * @param reqMetadata - Request metadata
  * @returns An array of batch request outputs
  */
-export const processRouterDest = async (
-  inputs: CommonRouterRequest[],
-  reqMetadata: Record<string, unknown>,
-): Promise<V2BatchRequestOutput[] | V3BatchRequestOutput[]> => {
+const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any) => {
   const { destination } = inputs[0];
   if (destination.Config?.apiVersion === API_VERSION.v3) {
     return processRouterV3(inputs, reqMetadata);
   }
-  const eventsChunk: V2BatchEvent[] = []; // temporary variable to divide payload into chunks
-  const errorRespList: Record<string, unknown>[] = [];
+  const eventsChunk: SnapchatV2ProcessedEvent[] = []; // temporary variable to divide payload into chunks
+  const errorRespList: any[] = [];
   inputs.forEach((event) => {
     try {
       const resp = process(event);
       eventsChunk.push({
-        message: Array.isArray(resp) ? resp : [resp],
+        message: (Array.isArray(resp) ? resp : [resp]) as SnapchatV2BatchedRequest[],
         metadata: event.metadata,
         destination: event.destination,
       });
@@ -426,16 +416,9 @@ export const processRouterDest = async (
     }
   });
 
-  const batchResponseList: V2BatchRequestOutput[] = [];
+  const batchResponseList: SnapchatV2BatchRequestOutput[] = [];
   if (eventsChunk.length > 0) {
-    const batchedEvents = batchMultiplexedEvents(
-      eventsChunk.map((event) => ({
-        message: Array.isArray(event.message) ? event.message : [event.message],
-        metadata: event.metadata,
-        destination: event.destination,
-      })),
-      MAX_BATCH_SIZE,
-    );
+    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
     batchedEvents.forEach((batch) => {
       const batchedRequest = generateBatchedPayloadForArray(batch.events, batch.destination);
       batchResponseList.push(
@@ -444,5 +427,7 @@ export const processRouterDest = async (
     });
   }
 
-  return [...batchResponseList, ...(errorRespList as V2BatchRequestOutput[])];
+  return [...batchResponseList, ...errorRespList];
 };
+
+export { processRouterDest };

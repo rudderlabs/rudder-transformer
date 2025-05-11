@@ -34,16 +34,21 @@ import { JSON_MIME_TYPE } from '../../util/constant';
 import { batchResponseBuilder, getExtInfo } from './utilsV3';
 import {
   SnapchatDestination,
-  CommonRouterRequest,
-  V3ProcessedEvent,
-  V3Payload,
-  V3BatchedRequest,
-  V3BatchRequestOutput,
+  SnapchatV3ProcessedEvent,
+  SnapchatV3Payload,
+  SnapchatV3BatchedRequest,
   CommonProcessPayloadConfig,
+  SnapchatRouterRequest,
+  SnapchatV3EventData,
+  SnapchatV3BatchRequestOutput,
 } from './types';
 import { RudderMessage } from '../../../types';
 
-function buildResponse(apiKey: string, payload: V3Payload, ID: string): V3BatchedRequest {
+function buildResponse(
+  apiKey: string,
+  payload: SnapchatV3Payload,
+  ID: string,
+): SnapchatV3BatchedRequest {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT.Endpoint_v3.replace('{ID}', ID);
   response.headers = {
@@ -54,11 +59,14 @@ function buildResponse(apiKey: string, payload: V3Payload, ID: string): V3Batche
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = payload;
-  return response as V3BatchedRequest;
+  return response as SnapchatV3BatchedRequest;
 }
 
-const populateHashedTraitsValues = (payload: V3Payload, message: RudderMessage): V3Payload => {
-  const updatedPayload = { ...payload };
+const populateHashedTraitsValues = (
+  payload: SnapchatV3Payload,
+  message: RudderMessage,
+): SnapchatV3Payload => {
+  const updatedPayload: SnapchatV3Payload = { ...payload };
   const userData = updatedPayload.data[0].user_data || {};
 
   const getHashedTrait = (value: any): string | undefined => {
@@ -83,28 +91,39 @@ const populateHashedTraitsValues = (payload: V3Payload, message: RudderMessage):
   return updatedPayload;
 };
 
-const populateHashedValues = (payload: V3Payload, message: RudderMessage): V3Payload => {
-  const updatedPayload = populateHashedTraitsValues(payload, message);
+const populateHashedValues = (
+  payload: SnapchatV3Payload,
+  message: RudderMessage,
+): SnapchatV3Payload => {
+  const updatedPayload: SnapchatV3Payload = populateHashedTraitsValues(payload, message);
+  const userData = updatedPayload.data[0].user_data || {};
 
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const trimmedEmail = email?.toString().toLowerCase().trim();
   if (trimmedEmail && validator.isEmail(trimmedEmail)) {
-    updatedPayload.data[0].user_data.em = getHashedValue(trimmedEmail);
+    userData.em = getHashedValue(trimmedEmail);
   }
 
   const phone = getNormalizedPhoneNumber(message);
   const trimmedPhone = phone?.toString().toLowerCase().trim();
   if (trimmedPhone) {
-    updatedPayload.data[0].user_data.ph = getHashedValue(trimmedPhone);
+    userData.ph = getHashedValue(trimmedPhone);
   }
+
+  updatedPayload.data[0].user_data = userData;
 
   return updatedPayload;
 };
 
-const getEventCommonProperties = (message: RudderMessage): any =>
-  constructPayload(message, mappingConfigV3[ConfigCategoryV3.TRACK_COMMON.name]);
+const getPayloadFromMapping = (
+  message: RudderMessage,
+  configMapping: any,
+): Partial<SnapchatV3EventData> => constructPayload(message, configMapping) || {};
 
-const validateRequiredFields = (payload: V3Payload): void => {
+const getEventCommonProperties = (message: RudderMessage): Partial<SnapchatV3EventData> =>
+  getPayloadFromMapping(message, mappingConfigV3[ConfigCategoryV3.TRACK_COMMON.name]);
+
+const validateRequiredFields = (payload: SnapchatV3Payload): void => {
   const userData = payload.data?.[0]?.user_data || {};
   const hasRequiredFields =
     userData.em ||
@@ -121,13 +140,13 @@ const validateRequiredFields = (payload: V3Payload): void => {
 
 const addSpecificEventDetails = (
   message: RudderMessage,
-  payload: V3Payload,
+  payload: SnapchatV3Payload,
   actionSource: string,
   pixelId?: string,
   snapAppId?: string,
   appId?: string,
-): V3Payload => {
-  const updatedPayload = { ...payload };
+): SnapchatV3Payload => {
+  const updatedPayload: SnapchatV3Payload = { ...payload };
 
   if (actionSource === 'WEB') {
     updatedPayload.data[0].event_source_url = getFieldValueFromMessage(message, 'pageUrl');
@@ -168,12 +187,12 @@ const getEventConfig = (eventType: string): any => {
 const isProductEvent = (eventType: string): boolean =>
   ['product_list_viewed', 'checkout_started', 'order_completed'].includes(eventType);
 
-const buildBasePayload = (message: RudderMessage, event: string): V3Payload => {
-  const payload: any = { data: [{}] };
+const buildBasePayload = (message: RudderMessage, event: string): SnapchatV3Payload => {
+  const payload: SnapchatV3Payload = { data: [{}] };
   const eventType = event.toLowerCase();
   const eventConfig = getEventConfig(eventType);
 
-  payload.data[0] = constructPayload(message, eventConfig);
+  payload.data[0] = getPayloadFromMapping(message, eventConfig);
   payload.data[0].event_name = eventNameMapping[eventType];
 
   // Handle special cases for product events
@@ -181,7 +200,7 @@ const buildBasePayload = (message: RudderMessage, event: string): V3Payload => {
     if (!payload.data[0].custom_data) {
       payload.data[0].custom_data = {};
     }
-    payload.data[0].custom_data.content_ids = getItemIds(message);
+    payload.data[0].custom_data.content_ids = getItemIds(message) || undefined;
     payload.data[0].custom_data.value = payload.data[0].custom_data.value || getPriceSum(message);
   }
 
@@ -191,17 +210,17 @@ const buildBasePayload = (message: RudderMessage, event: string): V3Payload => {
 // Using CommonProcessPayloadConfig from types.ts instead
 
 const processPayload = (
-  payload: V3Payload,
+  payload: SnapchatV3Payload,
   message: RudderMessage,
   config: CommonProcessPayloadConfig,
-): V3Payload => {
+): SnapchatV3Payload => {
   const { actionSource, pixelId, snapAppId, appId, enableDeduplication, deduplicationKey } = config;
 
-  let processedPayload: any = populateHashedValues(payload, message);
+  let processedPayload: SnapchatV3Payload = populateHashedValues(payload, message);
   validateRequiredFields(processedPayload);
 
-  processedPayload.data[0].event_time = getEventTimestamp(message, 7);
-  processedPayload.data[0].data_processing_options = getDataUseValue(message);
+  processedPayload.data[0].event_time = getEventTimestamp(message, 7) || undefined;
+  processedPayload.data[0].data_processing_options = getDataUseValue(message) || undefined;
   processedPayload.data[0].action_source = actionSource;
 
   processedPayload = addSpecificEventDetails(
@@ -226,7 +245,7 @@ const trackResponseBuilder = (
   message: RudderMessage,
   destination: SnapchatDestination,
   mappedEvent: string,
-): V3BatchedRequest => {
+): SnapchatV3BatchedRequest => {
   const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } =
     destination.Config;
   const event = mappedEvent?.toString().trim().replace(/\s+/g, '_');
@@ -238,8 +257,8 @@ const trackResponseBuilder = (
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  const payload = buildBasePayload(message, event);
-  const commonProperties = getEventCommonProperties(message);
+  const payload: SnapchatV3Payload = buildBasePayload(message, event);
+  const commonProperties: Partial<SnapchatV3EventData> = getEventCommonProperties(message);
 
   // Merge common properties with payload
   if (commonProperties?.user_data) {
@@ -253,7 +272,7 @@ const trackResponseBuilder = (
   }
 
   // Process and validate payload
-  const processedPayload = processPayload(payload, message, {
+  const processedPayload: SnapchatV3Payload = processPayload(payload, message, {
     actionSource,
     pixelId,
     snapAppId,
@@ -269,16 +288,16 @@ const trackResponseBuilder = (
 const handlePageEvent = (
   message: RudderMessage,
   destination: SnapchatDestination,
-): V3BatchedRequest => trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+): SnapchatV3BatchedRequest => trackResponseBuilder(message, destination, pageTypeToTrackEvent);
 
 const handleTrackEvent = (
   message: RudderMessage,
   destination: SnapchatDestination,
-): V3BatchedRequest => {
-  const mappedEvents = eventMappingHandler(message, destination);
+): SnapchatV3BatchedRequest => {
+  const mappedEvents: string[] = eventMappingHandler(message, destination);
 
   if (mappedEvents.length > 0) {
-    const responses: V3BatchedRequest[] = mappedEvents.map((mappedEvent) =>
+    const responses: SnapchatV3BatchedRequest[] = mappedEvents.map((mappedEvent: string) =>
       trackResponseBuilder(message, destination, mappedEvent),
     );
 
@@ -293,7 +312,7 @@ const handleTrackEvent = (
   return trackResponseBuilder(message, destination, get(message, 'event'));
 };
 
-export const processV3 = (event: CommonRouterRequest): V3BatchedRequest => {
+const processV3 = (event: SnapchatRouterRequest): SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   const messageType = getEventType(message);
 
@@ -312,12 +331,9 @@ export const processV3 = (event: CommonRouterRequest): V3BatchedRequest => {
   throw new InstrumentationError(`Event type ${messageType} is not supported`);
 };
 
-export const processRouterDest = async (
-  inputs: CommonRouterRequest[],
-  reqMetadata: Record<string, unknown>,
-): Promise<V3BatchRequestOutput[]> => {
-  const webOrOfflineEventsChunk: V3ProcessedEvent[] = [];
-  const mobileEventsChunk: V3ProcessedEvent[] = [];
+const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any) => {
+  const webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[] = [];
+  const mobileEventsChunk: SnapchatV3ProcessedEvent[] = [];
   const errorRespList: any[] = [];
 
   inputs.forEach((event) => {
@@ -339,7 +355,12 @@ export const processRouterDest = async (
     }
   });
 
-  const batchResponseList = batchResponseBuilder(webOrOfflineEventsChunk, mobileEventsChunk);
+  const batchResponseList: SnapchatV3BatchRequestOutput[] = batchResponseBuilder(
+    webOrOfflineEventsChunk,
+    mobileEventsChunk,
+  );
 
   return [...batchResponseList, ...errorRespList];
 };
+
+export { processV3, processRouterDest };

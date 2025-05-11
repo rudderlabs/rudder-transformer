@@ -7,10 +7,7 @@ import {
   RudderMessage,
 } from '../../../types';
 
-import {
-  BatchedRequest as BaseBatchedRequest,
-  BatchRequestOutput as BaseBatchRequestOutput,
-} from '../../../types/destinationTransformation';
+import { BatchedRequest, BatchRequestOutput } from '../../../types/destinationTransformation';
 
 /**
  * Event conversion types supported by Snapchat
@@ -79,18 +76,10 @@ export type SnapchatDestination = Destination<SnapchatDestinationConfig>;
 /**
  * Router request type for Snapchat
  */
-export type CommonRouterRequest = RouterTransformationRequestData<
+export type SnapchatRouterRequest = RouterTransformationRequestData<
   RudderMessage,
   SnapchatDestination
 >;
-
-/**
- * Event processing input type
- */
-export type CommonEventProcessingInput = {
-  message: RudderMessage;
-  destination: SnapchatDestination;
-};
 
 /**
  * Configuration for payload processing
@@ -104,31 +93,25 @@ export type CommonProcessPayloadConfig = {
   deduplicationKey?: string;
 };
 
-// For backward compatibility
-export type SnapchatRouterRequest = CommonRouterRequest;
-export type EventProcessingInput = CommonEventProcessingInput;
-
-/**
- * Types specific to Snapchat API V2 (Legacy API)
- */
-
 /**
  * Headers for V2 API requests
  */
-export type V2Headers = {
+export type SnapchatV2Headers = {
   'Content-Type': string;
   Authorization: string;
 };
 
+export type SnapchatV2Params = Record<string, unknown>;
+
 /**
  * Payload for V2 API requests
  */
-export type V2Payload = {
+export type SnapchatV2Payload = {
   event_type?: string;
   event_conversion_type?: EventConversionTypeValue;
   event_tag?: string;
   timestamp?: string;
-  client_dedup_id?: string; // Deduplication ID
+  client_dedup_id?: string;
   item_ids?: string[];
   price?: number | string;
   data_use?: string;
@@ -141,7 +124,7 @@ export type V2Payload = {
   hashed_phone_number?: string;
   hashed_ip_address?: string;
   hashed_mobile_ad_id?: string;
-  hashed_idfv?: string; // iOS Vendor Identifier
+  hashed_idfv?: string;
   hashed_first_name_sha?: string;
   hashed_middle_name_sha?: string;
   hashed_last_name_sha?: string;
@@ -154,77 +137,78 @@ export type V2Payload = {
 /**
  * Batched request for V2 API
  */
-export type V2BatchedRequest = BaseBatchedRequest<V2Payload, V2Headers>;
+export type SnapchatV2BatchedRequest = BatchedRequest<
+  SnapchatV2Payload,
+  SnapchatV2Headers,
+  SnapchatV2Params
+>;
 
 /**
  * Batch request output for V2 API
  */
-export type V2BatchRequestOutput = BaseBatchRequestOutput<
-  V2Payload,
-  V2Headers,
-  Record<string, unknown>,
+export type SnapchatV2BatchRequestOutput = BatchRequestOutput<
+  SnapchatV2Payload,
+  SnapchatV2Headers,
+  SnapchatV2Params,
   SnapchatDestination
 >;
 
 /**
- * Response type for V2 API
- */
-export type V2Response = {
-  endpoint: string;
-  headers: V2Headers;
-  method: string;
-  body: {
-    JSON: V2Payload;
-  };
-};
-
-/**
  * Batch event for V2 API
  */
-export type V2BatchEvent = {
-  message:
-    | V2Response[]
-    | V2Response
-    | V2BatchedRequest[]
-    | V2BatchedRequest
-    | (V2BatchedRequest | V3BatchedRequest)[];
+export type SnapchatV2ProcessedEvent = {
+  message: SnapchatV2BatchedRequest[];
   metadata: Partial<Metadata>;
   destination: SnapchatDestination;
 };
 
+// Snapchat V3 types ------------------------------------------------
+
 /**
- * Types specific to Snapchat API V3 (New API)
+ * Payload for V3 API requests
  */
+export type SnapchatV3Payload = {
+  data: SnapchatV3EventData[];
+};
+
+export type SnapchatV3Headers = {
+  'Content-Type': string;
+};
 
 /**
  * Parameters for V3 API requests
  */
-export type V3Params = {
-  access_token?: string;
-  [key: string]: string | undefined;
+export type SnapchatV3Params = {
+  access_token: string;
 };
+
+/**
+ * Processed event for V3 API
+ */
+export type SnapchatV3ProcessedEvent = {
+  message: SnapchatV3BatchedRequest;
+  metadata: Partial<Metadata>;
+  destination: SnapchatDestination;
+};
+
+export type SnapchatV3BatchedRequest = BatchedRequest<
+  SnapchatV3Payload,
+  SnapchatV3Headers,
+  SnapchatV3Params
+>;
+export type SnapchatV3BatchRequestOutput = BatchRequestOutput<
+  SnapchatV3Payload,
+  SnapchatV3Headers,
+  SnapchatV3Params,
+  SnapchatDestination
+>;
 
 /**
  * User data for V3 API
  */
-export type V3UserData = {
-  email?: string;
-  phone?: string;
-  external_id?: string;
-  ip_address?: string;
-  user_agent?: string;
-  hashed_email?: string;
-  hashed_phone?: string;
-  hashed_ip_address?: string;
-  hashed_mobile_ad_id?: string;
-  client_ip_address?: string;
-  client_user_agent?: string;
-  sc_click_id?: string;
-  sc_cookie1?: string;
-  idfv?: string; // iOS Vendor Identifier
-  em?: string; // Hashed email
-  ph?: string; // Hashed phone
-  madid?: string; // Mobile ad ID
+export type SnapchatV3UserData = {
+  em?: string; // email
+  ph?: string; // phone
   fn?: string; // First name
   ln?: string; // Last name
   ge?: string; // Gender
@@ -232,143 +216,53 @@ export type V3UserData = {
   zp?: string; // Zip code
   st?: string; // State
   country?: string;
+  madid?: string; // Mobile ad ID
+  client_ip_address?: string;
+  client_user_agent?: string;
+  sc_click_id?: string;
+  sc_cookie1?: string;
+  idfv?: string;
   [key: string]: unknown;
 };
 
 /**
  * Custom data for V3 API
  */
-export type V3CustomData = {
+export type SnapchatV3CustomData = {
+  order_id?: string;
   currency?: string;
+  num_items?: string;
   value?: string | number;
-  price?: string | number;
-  content_ids?: string[] | string;
-  content_category?: string;
+  content_ids?: string[];
+  content_category?: string | string[];
   content_name?: string;
   content_type?: string;
-  num_items?: string | number;
   search_string?: string;
-  order_id?: string;
-  description?: string;
-  status?: string;
-  ext_info?: string;
   [key: string]: unknown;
 };
 
 /**
  * App data for V3 API
  */
-export type V3AppData = {
+export type SnapchatV3AppData = {
   app_id?: string;
-  advertiser_tracking_enabled?: string | boolean;
-  extinfo?: string | string[]; // Extended information
+  advertiser_tracking_enabled?: boolean;
+  extinfo?: string[];
   [key: string]: unknown;
 };
 
 /**
  * Event data for V3 API
  */
-export type V3EventData = {
-  event_type?: string;
+export type SnapchatV3EventData = {
   event_name?: string;
-  event_conversion_type?: EventConversionTypeValue;
-  event_tag?: string;
-  timestamp?: string;
-  event_id?: string;
-  client_dedup_id?: string; // Deduplication ID
-  item_ids?: string[];
-  price?: number;
-  data_use?: string[];
-  user_data: V3UserData;
-  custom_data?: V3CustomData;
-  app_data?: V3AppData;
-  action_source?: EventConversionTypeValue;
   event_time?: string;
-  data_processing_options?: string[];
   event_source_url?: string;
+  event_id?: string;
+  action_source?: EventConversionTypeValue;
+  data_processing_options?: string;
+  user_data?: SnapchatV3UserData;
+  custom_data?: SnapchatV3CustomData;
+  app_data?: SnapchatV3AppData;
   [key: string]: unknown;
 };
-
-/**
- * Payload for V3 API requests
- */
-export type V3Payload = {
-  data: V3EventData[];
-};
-
-/**
- * Batched request for V3 API
- */
-export type V3BatchedRequest = BaseBatchedRequest<V3Payload, Record<string, unknown>, V3Params>;
-
-/**
- * Batch request output for V3 API
- */
-export type V3BatchRequestOutput = BaseBatchRequestOutput<
-  V3Payload,
-  Record<string, unknown>,
-  V3Params,
-  SnapchatDestination
->;
-
-/**
- * Response type for V3 API
- */
-export type V3Response = {
-  endpoint: string;
-  headers: {
-    Authorization?: string;
-    'Content-Type': string;
-  };
-  method: string;
-  params?: V3Params;
-  body: {
-    JSON: V3Payload;
-  };
-};
-
-/**
- * Processed event for V3 API
- */
-export type V3ProcessedEvent = {
-  message: BaseBatchedRequest<V3Payload, Record<string, unknown>, V3Params>;
-  metadata: Partial<Metadata>;
-  destination: SnapchatDestination;
-};
-
-/**
- * Common response type for API calls (used for both V2 and V3)
- */
-export type SnapchatResponse = V2Response | V3Response;
-
-/**
- * Type for batch response item
- */
-export type BatchResponseItem = {
-  batchedRequest: {
-    batch: V2Payload[] | V3Payload[];
-    endpoint: string;
-    headers: V2Headers;
-    params: V3Params;
-    method: string;
-  };
-  metadata: Partial<Metadata>[];
-  destination: SnapchatDestination;
-  statusCode: number;
-};
-
-// For backward compatibility
-export type SnapchatUserData = V3UserData;
-export type SnapchatCustomData = V3CustomData;
-export type SnapchatAppData = V3AppData;
-export type SnapchatEventData = V3EventData;
-export type SnapchatPayloadV2 = V2Payload;
-export type SnapchatPayloadV3 = V3Payload;
-export type SnapchatV2Headers = V2Headers;
-export type SnapchatV3Params = V3Params;
-export type ProcessedEvent = V3ProcessedEvent;
-export type SnapchatV2BatchedRequest = V2BatchedRequest;
-export type SnapchatV2BatchRequestOutput = V2BatchRequestOutput;
-export type SnapchatV3BatchedRequest = V3BatchedRequest;
-export type SnapchatV3BatchRequestOutput = V3BatchRequestOutput;
-export type BatchEvent = V2BatchEvent;

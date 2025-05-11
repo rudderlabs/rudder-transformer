@@ -9,6 +9,8 @@ import {
 
 import { BatchedRequest, BatchRequestOutput } from '../../../types/destinationTransformation';
 
+// COMMON ENUMS AND CONSTANTS
+
 /**
  * Event conversion types supported by Snapchat
  */
@@ -29,7 +31,7 @@ export const ApiVersion = {
   V3: 'newApi',
 } as const;
 
-export type ApiVersionValue = (typeof ApiVersion)[keyof typeof ApiVersion];
+// CONFIGURATION TYPES
 
 /**
  * Event mapping schema for Rudder to Snapchat events
@@ -38,8 +40,6 @@ export const EventMappingSchema = z.object({
   from: z.string().min(1, 'Source event name cannot be empty'),
   to: z.string().min(1, 'Destination event name cannot be empty'),
 });
-
-export type EventMapping = z.infer<typeof EventMappingSchema>;
 
 /**
  * Snapchat destination configuration schema with validation
@@ -58,10 +58,10 @@ export const SnapchatDestinationConfigSchema = z
   .passthrough()
   .refine(
     (data) =>
-      // At least one of pixelId, snapAppId, or appId must be provided
-      Boolean(data.pixelId || data.snapAppId || data.appId),
+      // Either pixelId OR (both appId AND snapAppId) must be provided
+      Boolean(data.pixelId || (data.appId && data.snapAppId)),
     {
-      message: 'At least one of pixelId, snapAppId, or appId must be provided',
+      message: 'Either pixelId OR (both appId AND snapAppId) must be provided',
       path: ['pixelId', 'snapAppId', 'appId'],
     },
   );
@@ -69,9 +69,7 @@ export const SnapchatDestinationConfigSchema = z
 export type SnapchatDestinationConfig = z.infer<typeof SnapchatDestinationConfigSchema>;
 export type SnapchatDestination = Destination<SnapchatDestinationConfig>;
 
-/**
- * Common types for both API versions
- */
+// COMMON REQUEST TYPES
 
 /**
  * Router request type for Snapchat
@@ -93,6 +91,8 @@ export type CommonProcessPayloadConfig = {
   deduplicationKey?: string;
 };
 
+// SNAPCHAT V2 API TYPES
+
 /**
  * Headers for V2 API requests
  */
@@ -101,6 +101,9 @@ export type SnapchatV2Headers = {
   Authorization: string;
 };
 
+/**
+ * Parameters for V2 API requests
+ */
 export type SnapchatV2Params = Record<string, unknown>;
 
 /**
@@ -154,7 +157,7 @@ export type SnapchatV2BatchRequestOutput = BatchRequestOutput<
 >;
 
 /**
- * Batch event for V2 API
+ * Processed event for V2 API
  */
 export type SnapchatV2ProcessedEvent = {
   message: SnapchatV2BatchedRequest[];
@@ -162,15 +165,11 @@ export type SnapchatV2ProcessedEvent = {
   destination: SnapchatDestination;
 };
 
-// Snapchat V3 types ------------------------------------------------
+// SNAPCHAT V3 API TYPES
 
 /**
- * Payload for V3 API requests
+ * Headers for V3 API requests
  */
-export type SnapchatV3Payload = {
-  data: SnapchatV3EventData[];
-};
-
 export type SnapchatV3Headers = {
   'Content-Type': string;
 };
@@ -183,32 +182,11 @@ export type SnapchatV3Params = {
 };
 
 /**
- * Processed event for V3 API
- */
-export type SnapchatV3ProcessedEvent = {
-  message: SnapchatV3BatchedRequest;
-  metadata: Partial<Metadata>;
-  destination: SnapchatDestination;
-};
-
-export type SnapchatV3BatchedRequest = BatchedRequest<
-  SnapchatV3Payload,
-  SnapchatV3Headers,
-  SnapchatV3Params
->;
-export type SnapchatV3BatchRequestOutput = BatchRequestOutput<
-  SnapchatV3Payload,
-  SnapchatV3Headers,
-  SnapchatV3Params,
-  SnapchatDestination
->;
-
-/**
  * User data for V3 API
  */
 export type SnapchatV3UserData = {
-  em?: string; // email
-  ph?: string; // phone
+  em?: string; // Email
+  ph?: string; // Phone
   fn?: string; // First name
   ln?: string; // Last name
   ge?: string; // Gender
@@ -265,4 +243,39 @@ export type SnapchatV3EventData = {
   custom_data?: SnapchatV3CustomData;
   app_data?: SnapchatV3AppData;
   [key: string]: unknown;
+};
+
+/**
+ * Payload for V3 API requests
+ */
+export type SnapchatV3Payload = {
+  data: SnapchatV3EventData[];
+};
+
+/**
+ * Batched request for V3 API
+ */
+export type SnapchatV3BatchedRequest = BatchedRequest<
+  SnapchatV3Payload,
+  SnapchatV3Headers,
+  SnapchatV3Params
+>;
+
+/**
+ * Batch request output for V3 API
+ */
+export type SnapchatV3BatchRequestOutput = BatchRequestOutput<
+  SnapchatV3Payload,
+  SnapchatV3Headers,
+  SnapchatV3Params,
+  SnapchatDestination
+>;
+
+/**
+ * Processed event for V3 API
+ */
+export type SnapchatV3ProcessedEvent = {
+  message: SnapchatV3BatchedRequest;
+  metadata: Partial<Metadata>;
+  destination: SnapchatDestination;
 };

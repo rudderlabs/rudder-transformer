@@ -13,6 +13,11 @@ import {
   SnapchatV3Headers,
 } from './types';
 
+/**
+ * Merges multiple payloads into a single Snapchat V3 payload
+ * @param batch - Array of processed events to merge
+ * @returns A single payload with combined data from all events
+ */
 export const getMergedPayload = (batch: SnapchatV3ProcessedEvent[]): SnapchatV3Payload => ({
   data: batch.flatMap((input) => {
     const json = input.message.body.JSON as SnapchatV3Payload;
@@ -20,9 +25,25 @@ export const getMergedPayload = (batch: SnapchatV3ProcessedEvent[]): SnapchatV3P
   }),
 });
 
+/**
+ * Extracts metadata from a batch of processed events
+ * @param batch - Array of processed events
+ * @returns Array of metadata objects from each event
+ */
 export const getMergedMetadata = (batch: SnapchatV3ProcessedEvent[]): Partial<Metadata>[] =>
   batch.map((input) => input.metadata);
 
+/**
+ * Builds a batched response for Snapchat V3 API
+ * @param mergedPayload - The combined payload from multiple events
+ * @param endpoint - The API endpoint to send the request to
+ * @param headers - HTTP headers for the request
+ * @param params - URL parameters for the request
+ * @param method - HTTP method (POST, GET, etc.)
+ * @param metadata - Array of metadata objects from each event
+ * @param destination - Destination configuration
+ * @returns A formatted batch request object ready to be sent to Snapchat
+ */
 export const buildBatchedResponse = (
   mergedPayload: SnapchatV3Payload,
   endpoint: string,
@@ -76,6 +97,12 @@ export const processBatch = (
   });
 };
 
+/**
+ * Builds batched responses for both web/offline and mobile events
+ * @param webOrOfflineEventsChunk - Array of web or offline events
+ * @param mobileEventsChunk - Array of mobile app events
+ * @returns Array of batched request objects for different event types
+ */
 export const batchResponseBuilder = (
   webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[],
   mobileEventsChunk: SnapchatV3ProcessedEvent[],
@@ -85,6 +112,11 @@ export const batchResponseBuilder = (
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
+/**
+ * Extracts extended information from the message for mobile app events
+ * @param message - The message containing the event data
+ * @returns Extended information string or undefined if not available
+ */
 export const getExtInfo = (message: RudderMessage): string[] | null => {
   const getValue = (path: string): string | null => {
     const value = get(message, path);

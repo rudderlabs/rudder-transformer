@@ -21,6 +21,10 @@ import {
 } from './types';
 import { RudderMessage } from '../../../types';
 
+/**
+ * Mapping of channel types to Snapchat conversion types
+ * Used to determine the event_conversion_type parameter
+ */
 export const channelMapping: Record<string, string> = {
   web: 'WEB',
   mobile: 'MOBILE_APP',
@@ -28,11 +32,21 @@ export const channelMapping: Record<string, string> = {
   offline: 'OFFLINE',
 };
 
+/**
+ * Converts a timestamp to millisecond Unix timestamp format
+ * @param timestamp - The timestamp to convert
+ * @returns The timestamp in milliseconds since Unix epoch
+ */
 export function msUnixTimestamp(timestamp: Date): number {
   const time = new Date(timestamp);
   return time.getTime() * 1000 + time.getMilliseconds();
 }
 
+/**
+ * Hashes a value using SHA-256 if it's not already hashed
+ * @param identifier - The value to hash
+ * @returns The SHA-256 hash of the value, or the value itself if already hashed
+ */
 export function getHashedValue(identifier: string): string | undefined {
   if (identifier) {
     const regexExp = /^[\da-f]{64}$/gi;
@@ -44,6 +58,11 @@ export function getHashedValue(identifier: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Normalizes and formats a phone number for Snapchat
+ * @param message - The message containing the phone number
+ * @returns A normalized phone number with non-numeric characters removed and leading zeros trimmed
+ */
 export function getNormalizedPhoneNumber(message: RudderMessage): string | null {
   const regexExp = /^[\da-f]{64}$/i;
   const phoneNumber = getFieldValueFromMessage(message, 'phone');
@@ -55,6 +74,11 @@ export function getNormalizedPhoneNumber(message: RudderMessage): string | null 
   return String(phoneNumber).replace(/\D/g, '').replace(/^0+/, '') || null;
 }
 
+/**
+ * Gets the data use value for Snapchat's data_use parameter
+ * @param message - The message containing the ATT tracking status
+ * @returns The data use value for Snapchat, or null if not applicable
+ */
 export function getDataUseValue(message: RudderMessage): string | null {
   const att = get(message, 'context.device.attTrackingStatus');
   let limitAdTracking: boolean | string | undefined;
@@ -111,9 +135,9 @@ export function getPriceSum(message: RudderMessage): string {
 
 /**
  * Create Snapchat Batch payload based on the passed events
- * @param events - Array of events
+ * @param events - Array of events to batch
  * @param destination - Destination configuration
- * @returns Batched request
+ * @returns Batched request with proper headers and endpoint configuration
  */
 export function generateBatchedPayloadForArray(
   events: SnapchatV2BatchedRequest[],
@@ -145,7 +169,13 @@ export function generateBatchedPayloadForArray(
   return batchedRequest as SnapchatV2BatchedRequest;
 }
 
-// Checks if there are any mapping events for the track event and returns them
+/**
+ * Checks if there are any mapping events for the track event and returns them
+ * @param message - The message containing the event
+ * @param destination - The destination configuration with event mappings
+ * @returns Array of mapped event names based on configuration
+ * @throws InstrumentationError if event name is missing
+ */
 export const eventMappingHandler = (
   message: RudderMessage,
   destination: SnapchatDestination,
@@ -178,6 +208,11 @@ export const eventMappingHandler = (
   return [...mappedEvents];
 };
 
+/**
+ * Determines the event conversion type based on message properties
+ * @param message - The message to analyze
+ * @returns The appropriate Snapchat event conversion type (WEB, MOBILE_APP, OFFLINE)
+ */
 export const getEventConversionType = (message: RudderMessage): EventConversionTypeValue => {
   const channel = get(message, 'channel');
   const eventConversionTypeFromProps = get(message, 'properties.eventConversionType');
@@ -194,6 +229,14 @@ export const getEventConversionType = (message: RudderMessage): EventConversionT
   return EventConversionType.OFFLINE;
 };
 
+/**
+ * Validates that the required configuration is present for the event conversion type
+ * @param eventConversionType - The type of event conversion
+ * @param pixelId - The pixel ID for web events
+ * @param snapAppId - The Snap app ID for mobile events
+ * @param appId - The app ID for mobile events
+ * @throws ConfigurationError if required configuration is missing
+ */
 export const validateEventConfiguration = (
   eventConversionType: EventConversionTypeValue,
   pixelId?: string,
@@ -217,6 +260,13 @@ export const validateEventConfiguration = (
   }
 };
 
+/**
+ * Gets the event timestamp in the format required by Snapchat
+ * @param message - The message containing the timestamp
+ * @param requiredDays - Maximum number of days in the past allowed for events (default: 37)
+ * @returns The formatted timestamp for Snapchat, or null if not available
+ * @throws InstrumentationError if event is older than the allowed time window
+ */
 export const getEventTimestamp = (message: RudderMessage, requiredDays = 37): string | null => {
   const eventTime = getFieldValueFromMessage(message, 'timestamp');
   if (eventTime) {

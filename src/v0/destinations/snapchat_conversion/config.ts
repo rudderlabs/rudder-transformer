@@ -8,8 +8,8 @@ export const ENDPOINT = {
 export const MAX_BATCH_SIZE = 2000;
 
 export const API_VERSION = {
-  v2: 'legacyApi',
-  v3: 'newApi',
+  V2: 'legacyApi',
+  V3: 'newApi',
 };
 
 export const ConfigCategory = {

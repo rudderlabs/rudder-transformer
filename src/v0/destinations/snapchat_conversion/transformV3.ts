@@ -44,6 +44,13 @@ import {
 } from './types';
 import { RudderMessage } from '../../../types';
 
+/**
+ * Builds a response object for the Snapchat V3 API
+ * @param apiKey - The API key for authentication
+ * @param payload - The payload to send to Snapchat
+ * @param ID - The pixel ID or app ID depending on the event type
+ * @returns A formatted request object with proper headers and endpoint configuration
+ */
 function buildResponse(
   apiKey: string,
   payload: SnapchatV3Payload,
@@ -62,6 +69,12 @@ function buildResponse(
   return response as SnapchatV3BatchedRequest;
 }
 
+/**
+ * Populates hashed trait values in the payload for V3 API
+ * @param payload - The payload to populate
+ * @param message - The message containing the traits
+ * @returns The updated payload with hashed trait values for first name, last name, etc.
+ */
 const populateHashedTraitsValues = (
   payload: SnapchatV3Payload,
   message: RudderMessage,
@@ -91,6 +104,12 @@ const populateHashedTraitsValues = (
   return updatedPayload;
 };
 
+/**
+ * Populates all hashed values in the payload for V3 API
+ * @param payload - The payload to populate with hashed values
+ * @param message - The message containing the values to hash
+ * @returns The payload with hashed values for email, phone, and other user identifiers
+ */
 const populateHashedValues = (
   payload: SnapchatV3Payload,
   message: RudderMessage,
@@ -115,14 +134,30 @@ const populateHashedValues = (
   return updatedPayload;
 };
 
+/**
+ * Safely constructs payload from message and mapping config for V3 API
+ * @param message - The message containing the event data
+ * @param configMapping - The mapping configuration to use
+ * @returns The constructed payload or empty object if null
+ */
 const getPayloadFromMapping = (
   message: RudderMessage,
   configMapping: any,
 ): Partial<SnapchatV3EventData> => constructPayload(message, configMapping) || {};
 
+/**
+ * Gets common properties for all events in V3 API
+ * @param message - The message to extract properties from
+ * @returns Common properties that should be included in all event payloads
+ */
 const getEventCommonProperties = (message: RudderMessage): Partial<SnapchatV3EventData> =>
   getPayloadFromMapping(message, mappingConfigV3[ConfigCategoryV3.TRACK_COMMON.name]);
 
+/**
+ * Validates that required fields are present in the V3 payload
+ * @param payload - The payload to validate
+ * @throws InstrumentationError if required fields are missing (email, phone, advertisingId, or IP + userAgent)
+ */
 const validateRequiredFields = (payload: SnapchatV3Payload): void => {
   const userData = payload.data?.[0]?.user_data || {};
   const hasRequiredFields =
@@ -138,6 +173,16 @@ const validateRequiredFields = (payload: SnapchatV3Payload): void => {
   }
 };
 
+/**
+ * Adds specific event details to the V3 payload based on the action source
+ * @param message - The message containing the event
+ * @param payload - The payload to add details to
+ * @param actionSource - The source of the event (WEB, MOBILE_APP, OFFLINE)
+ * @param pixelId - The pixel ID for web events
+ * @param snapAppId - The Snap app ID for mobile events
+ * @param appId - The app ID for mobile events
+ * @returns The updated payload with specific event details based on action source
+ */
 const addSpecificEventDetails = (
   message: RudderMessage,
   payload: SnapchatV3Payload,
@@ -166,6 +211,11 @@ const addSpecificEventDetails = (
   return updatedPayload;
 };
 
+/**
+ * Gets the appropriate event configuration based on event type
+ * @param eventType - The type of event
+ * @returns The mapping configuration for the specified event type
+ */
 const getEventConfig = (eventType: string): any => {
   const configMap: Record<string, any> = {
     products_searched: mappingConfigV3[ConfigCategoryV3.PRODUCTS_SEARCHED.name],
@@ -184,9 +234,20 @@ const getEventConfig = (eventType: string): any => {
   return configMap[eventType] || mappingConfigV3[ConfigCategoryV3.DEFAULT.name];
 };
 
+/**
+ * Checks if the event is a product-related event
+ * @param eventType - The type of event
+ * @returns True if the event is product-related, false otherwise
+ */
 const isProductEvent = (eventType: string): boolean =>
   ['product_list_viewed', 'checkout_started', 'order_completed'].includes(eventType);
 
+/**
+ * Builds the base payload for an event in V3 API
+ * @param message - The message containing the event
+ * @param event - The event name
+ * @returns A base payload with common event properties
+ */
 const buildBasePayload = (message: RudderMessage, event: string): SnapchatV3Payload => {
   const payload: SnapchatV3Payload = { data: [{}] };
   const eventType = event.toLowerCase();
@@ -207,8 +268,13 @@ const buildBasePayload = (message: RudderMessage, event: string): SnapchatV3Payl
   return payload;
 };
 
-// Using CommonProcessPayloadConfig from types.ts instead
-
+/**
+ * Processes a payload for the V3 API
+ * @param payload - The payload to process
+ * @param message - The message containing the event
+ * @param config - Configuration for processing the payload
+ * @returns The processed payload with all required fields
+ */
 const processPayload = (
   payload: SnapchatV3Payload,
   message: RudderMessage,
@@ -241,6 +307,13 @@ const processPayload = (
   return processedPayload;
 };
 
+/**
+ * Builds a response for a track event in V3 API
+ * @param message - The message containing the event
+ * @param destination - The destination configuration
+ * @param mappedEvent - The mapped event name
+ * @returns A formatted request object with all required Snapchat parameters
+ */
 const trackResponseBuilder = (
   message: RudderMessage,
   destination: SnapchatDestination,
@@ -285,11 +358,23 @@ const trackResponseBuilder = (
   return buildResponse(apiKey, processedPayload, ID);
 };
 
+/**
+ * Handles page events for V3 API
+ * @param message - The message containing the page event
+ * @param destination - The destination configuration
+ * @returns A formatted request object for the page event
+ */
 const handlePageEvent = (
   message: RudderMessage,
   destination: SnapchatDestination,
 ): SnapchatV3BatchedRequest => trackResponseBuilder(message, destination, pageTypeToTrackEvent);
 
+/**
+ * Handles track events for V3 API
+ * @param message - The message containing the track event
+ * @param destination - The destination configuration
+ * @returns A formatted request object for the track event
+ */
 const handleTrackEvent = (
   message: RudderMessage,
   destination: SnapchatDestination,
@@ -312,6 +397,12 @@ const handleTrackEvent = (
   return trackResponseBuilder(message, destination, get(message, 'event'));
 };
 
+/**
+ * Processes a single event for Snapchat Conversion API V3
+ * @param event - The event to process
+ * @returns A formatted request object for the V3 API
+ * @throws InstrumentationError if event type is not supported or required fields are missing
+ */
 const processV3 = (event: SnapchatRouterRequest): SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   const messageType = getEventType(message);
@@ -331,6 +422,12 @@ const processV3 = (event: SnapchatRouterRequest): SnapchatV3BatchedRequest => {
   throw new InstrumentationError(`Event type ${messageType} is not supported`);
 };
 
+/**
+ * Processes multiple events for Snapchat Conversion API V3
+ * @param inputs - Array of events to process
+ * @param reqMetadata - Request metadata
+ * @returns Array of processed events and error responses
+ */
 const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any) => {
   const webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[] = [];
   const mobileEventsChunk: SnapchatV3ProcessedEvent[] = [];

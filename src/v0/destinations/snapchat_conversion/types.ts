@@ -31,6 +31,8 @@ export const ApiVersion = {
   V3: 'newApi',
 } as const;
 
+export type ApiVersionValue = (typeof ApiVersion)[keyof typeof ApiVersion];
+
 // CONFIGURATION TYPES
 
 /**

@@ -45,6 +45,7 @@ import {
   SnapchatV2Payload,
   SnapchatV2ProcessedEvent,
   SnapchatV2BatchRequestOutput,
+  ApiVersionValue,
 } from './types';
 import { RudderMessage } from '../../../types';
 
@@ -52,7 +53,7 @@ import { RudderMessage } from '../../../types';
  * Builds a response object for the Snapchat V2 API
  * @param apiKey - The API key for authentication
  * @param payload - The payload to send to Snapchat
- * @returns A formatted request object
+ * @returns A formatted request object with proper headers and endpoint configuration
  */
 function buildResponse(apiKey: string, payload: SnapchatV2Payload): SnapchatV2BatchedRequest {
   const response = defaultRequestConfig();
@@ -70,7 +71,7 @@ function buildResponse(apiKey: string, payload: SnapchatV2Payload): SnapchatV2Ba
  * Populates hashed trait values in the payload
  * @param payload - The payload to populate
  * @param message - The message containing the traits
- * @returns The updated payload with hashed trait values
+ * @returns The updated payload with hashed trait values for first name, last name, etc.
  */
 const populateHashedTraitsValues = (
   payload: SnapchatV2Payload,
@@ -104,7 +105,7 @@ const populateHashedTraitsValues = (
  * Separate out hashing operations into one function
  * @param payload - The payload to populate with hashed values
  * @param message - The message containing the values to hash
- * @returns The payload with hashed values
+ * @returns The payload with hashed values for email, phone, IP, and device identifiers
  */
 const populateHashedValues = (
   payload: SnapchatV2Payload,
@@ -156,7 +157,7 @@ const getPayloadFromMapping = (
 /**
  * Gets common properties for all events
  * @param message - The message to extract properties from
- * @returns Common properties for all events
+ * @returns Common properties that should be included in all event payloads
  */
 const getEventCommonProperties = (message: RudderMessage): Partial<SnapchatV2Payload> =>
   getPayloadFromMapping(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
@@ -164,7 +165,7 @@ const getEventCommonProperties = (message: RudderMessage): Partial<SnapchatV2Pay
 /**
  * Validates that required fields are present in the payload
  * @param payload - The payload to validate
- * @throws InstrumentationError if required fields are missing
+ * @throws InstrumentationError if required fields are missing (email, phone, advertisingId, or IP + userAgent)
  */
 const validateRequiredFields = (payload: SnapchatV2Payload): void => {
   if (
@@ -183,11 +184,11 @@ const validateRequiredFields = (payload: SnapchatV2Payload): void => {
  * Adds specific event details to the payload based on the event conversion type
  * @param message - The message containing the event
  * @param payload - The payload to add details to
- * @param eventConversionType - The type of event conversion
+ * @param eventConversionType - The type of event conversion (WEB, MOBILE_APP, OFFLINE)
  * @param pixelId - The pixel ID for web events
  * @param snapAppId - The Snap app ID for mobile events
  * @param appId - The app ID for mobile events
- * @returns The updated payload with specific event details
+ * @returns The updated payload with specific event details based on conversion type
  */
 const addSpecificEventDetails = (
   message: RudderMessage,
@@ -219,7 +220,7 @@ const addSpecificEventDetails = (
  * @param message - The message containing the event
  * @param destination - The destination configuration
  * @param mappedEvent - The mapped event name
- * @returns A formatted request object
+ * @returns A formatted request object with all required Snapchat parameters
  */
 const trackResponseBuilder = (
   message: RudderMessage,
@@ -353,17 +354,21 @@ const trackResponseBuilder = (
 };
 
 /**
- * Processes a single event
+ * Processes a single event for Snapchat Conversion API
  * @param event - The event to process
- * @returns A formatted request object or array of request objects
+ * @returns A formatted request object or array of request objects based on API version
+ * @throws InstrumentationError if event type is not supported or required fields are missing
  */
 export const process = (
   event: SnapchatRouterRequest,
 ): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
   const { message, destination } = event;
-  if (destination.Config?.apiVersion === API_VERSION.v3) {
+  const apiVersion = destination.Config?.apiVersion as ApiVersionValue;
+
+  if (apiVersion === API_VERSION.V3) {
     return processV3(event);
   }
+
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -397,9 +402,12 @@ export const process = (
  */
 const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any) => {
   const { destination } = inputs[0];
-  if (destination.Config?.apiVersion === API_VERSION.v3) {
+  const apiVersion = destination.Config?.apiVersion as ApiVersionValue;
+
+  if (apiVersion === API_VERSION.V3) {
     return processRouterV3(inputs, reqMetadata);
   }
+
   const eventsChunk: SnapchatV2ProcessedEvent[] = []; // temporary variable to divide payload into chunks
   const errorRespList: any[] = [];
   inputs.forEach((event) => {

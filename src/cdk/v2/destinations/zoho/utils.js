@@ -232,4 +232,5 @@ module.exports = {
   searchRecordIdV2,
   calculateTrigger,
   validateConfigurationIssue,
+  getRegion,
 };

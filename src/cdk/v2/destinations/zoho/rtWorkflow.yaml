@@ -3,6 +3,8 @@ bindings:
     path: ../../../../constants
   - name: processRecordInputsV2
     path: ./transformRecordV2
+  - name: getRegion
+    path: ./utils
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
   - name: InstrumentationError
@@ -11,8 +13,7 @@ bindings:
 steps:
   - name: validateConfig
     template: |
-      const config = ^[0].destination.Config
-      const region = ^[0].destination.deliveryAccount.options.region ?? config.region
+      const region = $.getRegion(^[0].destination);
       $.assertConfig(region, "Datacentre Region is not present. Aborting")
 
   - name: validateInput

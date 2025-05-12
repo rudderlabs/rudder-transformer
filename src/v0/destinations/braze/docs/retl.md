@@ -51,11 +51,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
 
 ## VDM v2 Support
 
-The Braze destination supports Variable Data Mapping (VDM) v2, allowing for flexible mapping of source data to Braze-specific formats.
+This destination doesn't support VDM v2. (No support for `record` event type)
 
 ## Connection Configuration
-
-For detailed configuration parameters, please refer to the [Configuration section in the main README](../README.md#configuration).
 
 ## Data Flow
 

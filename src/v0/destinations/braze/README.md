@@ -13,24 +13,24 @@ Implementation in **Javascript**
 
 - **Data Center**: Specifies the Braze data center to use
 
-  - Format: `[REGION]-[NUMBER]` (e.g., `US-01`, `EU-01`)
+  - Format: `[REGION]-[NUMBER]` (e.g., `US-01`, `EU-01`, `AU-01`)
   - Available data centers:
     - US: `US-01` through `US-08` (e.g., `US-01`, `US-02`, etc.)
-    - EU: `EU-01` through `EU-02` (e.g., `EU-01`, `EU-02`)
-    - Other regions: Consult Braze documentation for the latest available regions
+    - EU: `EU-01` through `EU-03` (e.g., `EU-01`, `EU-02`)
+    - AU: `AU-01`
 
 - **App Key**: Required for SDK implementations (device mode)
 
 ### Optional Settings
 
 - **Support Deduplication**: Enable to avoid sending duplicate user attributes
-- **Prefix Properties**: Add a prefix to all properties sent to Braze
 - **Enable Nested Array Operations**: Enable operations on nested arrays
-- **Enable Nested Object Operations**: Enable operations on nested objects
 - **Track Anonymous User**: Enable tracking of users without a userId
 - **Enable Subscription Group in Group Call**: Enable subscription group functionality in group calls
 
 ## Integration Functionalities
+
+> Braze supports **Device mode** and  **Hybrid mode**
 
 ### Supported Message Types
 
@@ -47,17 +47,48 @@ Implementation in **Javascript**
 - **Message Types**: All message types
 - **Batch Limits**:
   - Track events (includes Page and Screen events): 75 events per batch
-  - Identify events: 50 events per batch
   - Alias events: 50 events per batch
   - Subscription events: 25 events per batch
   - User deletion: 50 users per batch
 
+### Rate Limits
+
+The Braze API enforces rate limits to ensure system stability. Here are the rate limits for the endpoints used by this destination:
+
+| Endpoint | Rate Limit | Batch Limits | Description |
+|----------|------------|--------------|-------------|
+| `/users/track` | 3,000 requests per 3 seconds | 75 events, 75 purchases, 75 attributes per request | Used for sending track events, user attributes, and purchases |
+| `/users/identify` | 20,000 requests per minute | - | Used for identity resolution (merging anonymous and identified users) |
+| `/users/alias/new` | 20,000 requests per minute | - | Used for creating new user aliases |
+| `/users/alias/update` | 20,000 requests per minute | - | Used for updating user aliases |
+| `/users/delete` | 20,000 requests per minute | 50 users per batch | Used for user deletion |
+| `/users/export/ids` | 2,500 requests per minute* | - | Used for fetching user profiles (for deduplication) |
+| `/users/merge` | 20,000 requests per minute | - | Used for merging user profiles |
+| `/subscription/status/set` | 5,000 requests per minute | - | Used for updating subscription group status |
+
+*Note: For accounts created after August 22, 2024, the rate limit for `/users/export/ids` is 250 requests per minute.
+
+#### Monitoring Rate Limits
+
+Every API response from Braze includes the following headers:
+- `X-RateLimit-Limit`: Maximum number of requests allowed in the current time window
+- `X-RateLimit-Remaining`: Number of requests remaining in the current time window
+- `X-RateLimit-Reset`: Time at which the current rate limit window resets (UTC epoch seconds)
+
+#### Handling Rate Limit Errors
+
+If you exceed rate limits, Braze will return a `429 Too Many Requests` status code. The destination implements exponential backoff retry logic to handle these errors.
+
+[Docs Reference](https://braze.com/docs/api/api_limits/#rate-limits-by-request-type)
+
+
 ### Intermediate Calls
 
+#### Identify Flow (with alias or anonymousId)
 - **Supported**: Yes
 - **Use Case**: Identity resolution through the Braze Identify API
 - **Endpoint**: `/users/identify`
-- This functionality merges anonymous users (with anonymousId) with identified users (with userId/external_id)
+- This functionality merges anonymous users (with anonymousId or alias object) with identified users (with userId/external_id -> brazeExternalId)
 
 ```Javascript
 // The condition that leads to intermediate identify call:
@@ -69,7 +100,45 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
 }
 ```
 
-### Merging Behavior
+> No intermediate calls are made for Track, Page, Screen, Group, and Alias events
+
+### Anonymous User Profiles
+
+- **Alias-Only User Creation**:
+  - When only an anonymous Identify or Track call is made (with anonymousId but no userId), RudderStack creates an alias-only profile in Braze
+  - The alias is created with:
+    - `alias_label`: "rudder_id"
+    - `alias_name`: The anonymousId value from the event
+  - This allows for tracking anonymous users before they are identified
+
+```Javascript
+// Corresponding code
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
+      alias_label: 'rudder_id',
+    };
+  }
+  return payload;
+}
+```
+
+- **External ID Assignment**:
+  - If a RudderStack external_id or userId is present in subsequent events, it is added as the Braze external_id
+  - This enables proper identity resolution when the user is later identified
+
+### User Identity Resolution Behavior
 
 - **User Identity Resolution**:
 
@@ -84,16 +153,11 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
   - Users can only have one alias for a specific label
   - If a user already exists with the same external_id and has an existing alias with the same label, profiles will not be combined
 
-- **Considerations**:
-  - Merging is handled automatically for Identify events when both userId and anonymousId are present
-  - For more complex merging scenarios, consider using Braze's `/users/merge` endpoint directly
-  - When merging users, be aware that some data might not be merged if the merge_behavior is set to "none"
 
 ### Proxy Delivery
 
 - **Supported**: Yes
 - **Source Code Path**: `src/v0/destinations/braze/networkHandler.js`
-- Handles both v0 and v1 proxy requests
 
 ### User Deletion
 
@@ -106,7 +170,7 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
 #### Deduplication
 
 - **Supported**: Yes
-- **Configuration**: Enable via `supportDedup` setting
+- **Configuration**: Enable via `supportDedup` setting in destination config
 - **How It Works**:
 
   - When enabled, RudderStack maintains a user store with previously sent attributes
@@ -150,9 +214,6 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
 
 - Supports operations on nested arrays in user attributes
 
-#### Nested Object Operations
-
-- Supports operations on nested objects in user attributes
 
 #### Reserved Properties Handling
 
@@ -170,26 +231,28 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
 
 ### Event Ordering
 
-- **Required**: No specific ordering requirements documented
-- Braze processes events based on the timestamp provided
+#### Identify, Alias, Group
+These event types require strict event ordering as they are used for identity resolution. One might end up with older attributes overwriting new attributes, leading to incorrect user profiles.
+
+#### Track, Page, Screen (Braze supports updation of user attributes along with track events)
+
+Braze's events object have a mandatory `time` field. RudderStack populates this field with the event's timestamp.
+This means that Braze will process events in the order based on their timestamp.
+
+Despite this time-based ordering, the issue here is, the user attributes can end up out of order similar to identify based calls mentioned above.
+
+> Effectively, Braze requires strict event ordering for all event types.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
 
-- **Feasible**: Yes, for initial data loading
-- Braze explicitly supports importing legacy user data through the `/users/track` endpoint
-- Events are processed based on the provided timestamp
-- According to Braze documentation: "You may submit data through the Braze API for a user who has not yet used your mobile app to generate a user profile. If the user subsequently uses the application all information following their identification using the SDK will be merged with the existing user profile you created using the API call."
+- **Not Feasible**:
+Based on **Event Ordering** section above, it is not feasible to replay missing data of any event type.
 
 #### Already Delivered Data Replay
 
-- **Partially Feasible**: Depends on the message type and configuration
-- **Identify Events**:
-
-  - With RudderStack deduplication enabled, duplicate user attributes will be filtered out, preventing duplicate profiles
-  - However, this doesn't leverage Braze's merge functionality, which requires explicit calls to `/users/identify` or `/users/merge` endpoints
-  - For proper identity resolution during replay, consider implementing custom logic to call these endpoints
+- **Not Feasible**
 
 - **Track/Page/Screen Events**:
 
@@ -202,24 +265,11 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
   - **Not Recommended**: Similar to track events, purchase events will be duplicated in Braze
   - This could result in incorrect revenue calculations and purchase counts
 
-- **Configuration Considerations**:
-  - For user attribute updates only, enable RudderStack deduplication (`supportDedup` setting)
-  - For complete data replay including events, be aware that this will create duplicate events in Braze
-  - There is no native way to prevent event duplication in Braze during replay
-
 ## Version Information
 
 ### Current Version
 
-- Current implementation is in v0 (JavaScript)
-- Uses Braze REST API endpoints for data delivery
-- Supports both synchronous and asynchronous operations
-- No documented end-of-life date for this implementation
-
-### New Version Availability
-
-- No newer version documented at this time
-- Braze regularly updates their REST API, but the core endpoints used by this integration remain stable
+Braze doesn't have any versioned releases of thier APIs.
 
 ## Documentation Links
 

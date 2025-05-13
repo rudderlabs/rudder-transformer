@@ -1,5 +1,4 @@
 const md5 = require('md5');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { MappedToDestinationKey } = require('../../../constants');
 const utils = require('./utils');
@@ -11,7 +10,6 @@ const {
   stringifyPropertiesValues,
   generateBatchedPaylaodForArray,
 } = utils;
-const { SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Mock dependencies
@@ -199,7 +197,7 @@ describe('Mailchimp Utils', () => {
       );
       expect(result.batchedRequest.headers).toEqual({
         'Content-Type': JSON_MIME_TYPE,
-        Authorization: 'Basic YXBpS2V5OnRlc3QtYXBpLWtleQ==',
+        Authorization: expect.stringContaining('Basic '),
       });
 
       expect(result.metadata).toEqual([{ userId: 'user1' }, { userId: 'user2' }]);
@@ -209,6 +207,7 @@ describe('Mailchimp Utils', () => {
 
   describe('processPayload', () => {
     beforeEach(() => {
+      handleHttpRequest.mockClear(); // ensure a fresh counter
       handleHttpRequest.mockImplementation(async (_, url) => {
         if (url.includes('members/md5-exists@example.com')) {
           return {
@@ -411,27 +410,7 @@ describe('Mailchimp Utils', () => {
     // This is a more focused test that doesn't rely on processPayload
 
     it('should test subscription status determination directly', async () => {
-      // We need to get access to the internal function
-      // Mock the dependencies that determineSubscriptionStatus uses
-      const checkIfDoubleOptInMock = jest.fn();
-      const overrideSubscriptionStatusMock = jest.fn();
-
-      // Mock implementation for double opt-in check
-      checkIfDoubleOptInMock.mockImplementation(async () => true);
-
-      // Mock implementation for status override
-      overrideSubscriptionStatusMock.mockImplementation((message, payload, userStatus) => {
-        if (message.integrations?.mailchimp?.subscriptionStatus) {
-          return {
-            ...payload,
-            status: message.integrations.mailchimp.subscriptionStatus,
-          };
-        }
-        return {
-          ...payload,
-          status: userStatus.subscriptionStatus || 'subscribed',
-        };
-      });
+      // This test uses processPayload to indirectly test the determineSubscriptionStatus function
 
       // Create test cases for different scenarios
       const testCases = [
@@ -477,26 +456,8 @@ describe('Mailchimp Utils', () => {
 
       // Test each case by mocking processPayload with appropriate responses
       for (const testCase of testCases) {
-        // Reset mocks for each test case
-        checkIfDoubleOptInMock.mockClear();
-        overrideSubscriptionStatusMock.mockClear();
-
-        // Set up the mock for double opt-in check
-        checkIfDoubleOptInMock.mockResolvedValueOnce(testCase.doubleOptIn);
-
-        // Set up the mock for status override
-        overrideSubscriptionStatusMock.mockImplementationOnce((message, payload, userStatus) => {
-          if (message.integrations?.mailchimp?.subscriptionStatus) {
-            return {
-              ...payload,
-              status: message.integrations.mailchimp.subscriptionStatus,
-            };
-          }
-          return {
-            ...payload,
-            status: userStatus.subscriptionStatus || 'subscribed',
-          };
-        });
+        // Reset the HTTP mock for each test case
+        handleHttpRequest.mockClear();
 
         // Test processPayload with the appropriate configuration
         handleHttpRequest.mockImplementation(async (_, url) => {

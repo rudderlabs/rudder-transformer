@@ -1,0 +1,72 @@
+{
+  "name": "close_crm",
+  "description": "group creation",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"subscription_id\":\"whsub_123\",\"event\":{\"id\":\"ev_123\",\"date_created\":\"2024-06-13T03:53:33.917000\",\"date_updated\":\"2024-06-13T03:53:33.917000\",\"organization_id\":\"orga_123\",\"user_id\":\"user_123\",\"request_id\":\"req_123\",\"api_key_id\":null,\"oauth_client_id\":null,\"oauth_scope\":null,\"object_type\":\"group\",\"object_id\":\"group_123\",\"lead_id\":null,\"action\":\"created\",\"changed_fields\":[],\"meta\":{\"request_path\":\"/api/v1/graphql/\",\"request_method\":\"POST\"},\"data\":{\"id\":\"group_123\",\"name\":\"Test group\",\"members\":[{\"user_id\":\"user_123\"}]},\"previous_data\":{}}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "integration": {
+            "name": "CloseCRM"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          }
+        },
+        "event": "group created",
+        "integrations": {
+          "CloseCRM": false
+        },
+        "messageId": "ev_123",
+        "originalTimestamp": "2024-06-ThT03:53:33.917+00:00",
+        "properties": {
+          "action": "created",
+          "data": {
+            "id": "group_123",
+            "members": [
+              {
+                "user_id": "user_123"
+              }
+            ],
+            "name": "Test group"
+          },
+          "date_created": "2024-06-13T03:53:33.917000",
+          "date_updated": "2024-06-13T03:53:33.917000",
+          "id": "ev_123",
+          "meta": {
+            "request_method": "POST",
+            "request_path": "/api/v1/graphql/"
+          },
+          "object_id": "group_123",
+          "object_type": "group",
+          "organization_id": "orga_123",
+          "request_id": "req_123",
+          "subscription_id": "whsub_123",
+          "user_id": "user_123"
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

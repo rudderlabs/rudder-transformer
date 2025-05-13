@@ -1,0 +1,68 @@
+{
+  "name": "mailmodo",
+  "description": "test-1",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"fuuid\":\"27905\",\"next-step-id\":\"success\",\"total-steps\":\"3\",\"responseId\":\"b9a5d224-cc5a-4e64-9800-5a3db9515fdf\",\"recipientEmail\":\"test.rudderlabs21997@gmail.com\",\"formId\":\"formosztd5\",\"recordedAt\":{\"ts\":1662695704,\"date\":\"2022-09-09\",\"hour\":9,\"minute\":25},\"submissionSource\":\"amp\",\"elementjbtz42\":\"Everything \",\"element8jzo13\":[\"Reliable\",\"High Quality\",\"Useful\"],\"recipientData\":{\"email\":\"test.rudderlabs21997@gmail.com\"},\"recommend\":\"9\",\"liking\":\"upvote\",\"satisfaction\":\"4\",\"campaignId\":\"0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd\",\"campaignName\":\"Campaign-testing\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "a80b34ec43ca959c7b8e5116ac626c3cf8561f62616e000a01729a8a900cc0a0",
+        "context": {
+          "integration": {
+            "name": "Mailmodo",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "test.rudderlabs21997@gmail.com"
+          }
+        },
+        "event": "Form Submitted",
+        "integrations": {
+          "Mailmodo": false
+        },
+        "originalTimestamp": "2022-09-09T03:55:04.000Z",
+        "properties": {
+          "campaignId": "0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd",
+          "campaignName": "Campaign-testing",
+          "element8jzo13[0]": "Reliable",
+          "element8jzo13[1]": "High Quality",
+          "element8jzo13[2]": "Useful",
+          "elementjbtz42": "Everything ",
+          "formId": "formosztd5",
+          "fuuid": "27905",
+          "liking": "upvote",
+          "next-step-id": "success",
+          "recommend": "9",
+          "responseId": "b9a5d224-cc5a-4e64-9800-5a3db9515fdf",
+          "satisfaction": "4",
+          "submissionSource": "amp",
+          "total-steps": "3"
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

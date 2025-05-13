@@ -1,0 +1,55 @@
+{
+  "name": "customerio",
+  "description": "test-9",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"action_id\":38,\"campaign_id\":6,\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"delivery_id\":\"RAEABQFxN56fWzydfV4_EGvfobI=\",\"failure_message\":\"NoDevicesSynced\"},\"event_id\":\"01E4VSX8SZ0T9AQMH4Q16NRB89\",\"object_type\":\"push\",\"metric\":\"attempted\",\"timestamp\":1585776075}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Push Attempted",
+        "properties": {
+          "eventId": "01E4VSX8SZ0T9AQMH4Q16NRB89",
+          "deliveryId": "RAEABQFxN56fWzydfV4_EGvfobI=",
+          "actionId": 38,
+          "reason": "NoDevicesSynced",
+          "campaignId": 6
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2020-04-01T21:21:15.000Z",
+        "sentAt": "2020-04-01T21:21:15.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

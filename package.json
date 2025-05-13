@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.97.2",
+  "version": "1.98.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -52,7 +52,8 @@
     "release": "npx standard-version",
     "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "clean:node": "modclean",
-    "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
+    "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
+    "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -64,7 +65,7 @@
     "@datadog/pprof": "^5.5.1",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@rudderstack/integrations-lib": "^0.2.25",
+    "@rudderstack/integrations-lib": "^0.2.31",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
     "@rudderstack/workflow-engine": "^0.8.13",
@@ -124,7 +125,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.6.3",
+    "@commitlint/config-conventional": "^19.8.0",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
     "@types/fast-json-stable-stringify": "^2.1.0",
     "@types/jest": "^29.5.1",
@@ -141,7 +142,7 @@
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.1",
     "commitizen": "^4.3.0",
-    "commitlint": "^17.6.3",
+    "commitlint": "^19.8.0",
     "conventional-github-releaser": "^3.1.5",
     "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",

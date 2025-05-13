@@ -46,6 +46,7 @@ import {
   SnapchatV2ProcessedEvent,
   SnapchatV2BatchRequestOutput,
   ApiVersionValue,
+  MappingConfig,
 } from './types';
 import { RudderMessage } from '../../../types';
 
@@ -130,15 +131,15 @@ const populateHashedValues = (
     isAppleFamily(get(message, 'context.device.type')) &&
     (get(message, 'properties.idfv') || get(message, 'context.device.id'))
   ) {
-    updatedPayload.hashed_idfv = getHashedValue(
-      get(message, 'properties.idfv') || get(message, 'context.device.id'),
-    );
+    const idfv = get(message, 'properties.idfv') || get(message, 'context.device.id');
+    if (idfv) {
+      updatedPayload.hashed_idfv = getHashedValue(idfv);
+    }
   }
 
-  if (get(message, 'properties.adId') || get(message, 'context.device.advertisingId')) {
-    updatedPayload.hashed_mobile_ad_id = getHashedValue(
-      get(message, 'properties.adId') || get(message, 'context.device.advertisingId'),
-    );
+  const adId = get(message, 'properties.adId') || get(message, 'context.device.advertisingId');
+  if (adId) {
+    updatedPayload.hashed_mobile_ad_id = getHashedValue(adId);
   }
   return updatedPayload;
 };
@@ -151,7 +152,7 @@ const populateHashedValues = (
  */
 const getPayloadFromMapping = (
   message: RudderMessage,
-  configMapping: any,
+  configMapping: MappingConfig,
 ): Partial<SnapchatV2Payload> => constructPayload(message, configMapping) || {};
 
 /**
@@ -253,7 +254,7 @@ const trackResponseBuilder = (
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message) || undefined;
-        payload.price = payload.price || getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message) || undefined;
         break;
       /* Promotions Section */
       case 'promotion_viewed':
@@ -282,7 +283,7 @@ const trackResponseBuilder = (
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message) || undefined;
-        payload.price = payload.price || getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message) || undefined;
         break;
       case 'payment_info_entered':
         payload = getPayloadFromMapping(
@@ -298,7 +299,7 @@ const trackResponseBuilder = (
         );
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message) || undefined;
-        payload.price = payload.price || getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message) || undefined;
         break;
       case 'product_added':
         payload = getPayloadFromMapping(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);

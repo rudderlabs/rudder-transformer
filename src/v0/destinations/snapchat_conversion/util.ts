@@ -113,7 +113,7 @@ export function getItemIds(message: RudderMessage): string[] | null {
   return null;
 }
 
-export function getPriceSum(message: RudderMessage): string {
+export function getPriceSum(message: RudderMessage): string | null {
   let priceSum = 0;
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
@@ -130,7 +130,7 @@ export function getPriceSum(message: RudderMessage): string {
     });
     return String(priceSum);
   }
-  return 'null';
+  return null;
 }
 
 /**

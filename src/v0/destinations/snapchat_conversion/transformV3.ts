@@ -41,6 +41,7 @@ import {
   SnapchatRouterRequest,
   SnapchatV3EventData,
   SnapchatV3BatchRequestOutput,
+  MappingConfig,
 } from './types';
 import { RudderMessage } from '../../../types';
 
@@ -142,7 +143,7 @@ const populateHashedValues = (
  */
 const getPayloadFromMapping = (
   message: RudderMessage,
-  configMapping: any,
+  configMapping: MappingConfig,
 ): Partial<SnapchatV3EventData> => constructPayload(message, configMapping) || {};
 
 /**
@@ -262,7 +263,8 @@ const buildBasePayload = (message: RudderMessage, event: string): SnapchatV3Payl
       payload.data[0].custom_data = {};
     }
     payload.data[0].custom_data.content_ids = getItemIds(message) || undefined;
-    payload.data[0].custom_data.value = payload.data[0].custom_data.value || getPriceSum(message);
+    payload.data[0].custom_data.value =
+      payload.data[0].custom_data.value || getPriceSum(message) || undefined;
   }
 
   return payload;

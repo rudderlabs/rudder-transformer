@@ -461,4 +461,5 @@ module.exports = {
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
   updateConversion,
+  getAddConversionPayload,
 };

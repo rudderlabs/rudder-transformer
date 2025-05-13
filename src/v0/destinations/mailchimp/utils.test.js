@@ -1,4 +1,5 @@
 const md5 = require('md5');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { MappedToDestinationKey } = require('../../../constants');
 const utils = require('./utils');
@@ -10,6 +11,7 @@ const {
   stringifyPropertiesValues,
   generateBatchedPaylaodForArray,
 } = utils;
+const { SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Mock dependencies
@@ -254,6 +256,19 @@ describe('Mailchimp Utils', () => {
             },
             httpResponse: {
               success: true,
+            },
+          };
+        } else if (url.includes('lists/audience-error')) {
+          return {
+            processedResponse: {},
+            httpResponse: {
+              success: false,
+              response: {
+                response: {
+                  status: 403,
+                },
+                message: 'Access denied',
+              },
             },
           };
         }
@@ -504,6 +519,98 @@ describe('Mailchimp Utils', () => {
         // Verify the result
         expect(result).toHaveProperty('status', testCase.expectedStatus);
       }
+    });
+
+    it('should throw NetworkError when checkIfDoubleOptIn fails', async () => {
+      handleHttpRequest.mockClear();
+      handleHttpRequest.mockImplementation(async (_, url) => {
+        if (url.includes('members/md5-test@example.com')) {
+          return {
+            processedResponse: {},
+            httpResponse: {
+              success: false,
+              response: {
+                message: 'Resource not found',
+              },
+            },
+          };
+        } else if (url.includes('lists/audience-error')) {
+          return {
+            processedResponse: {},
+            httpResponse: {
+              success: false,
+              response: {
+                response: {
+                  status: 403,
+                },
+                message: 'Access denied',
+              },
+            },
+          };
+        }
+      });
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience-error';
+      const metadata = { userId: 'test-user' };
+
+      await expect(processPayload(message, config, audienceId, metadata)).rejects.toThrow(
+        'User does not have access to the requested operation',
+      );
+    });
+
+    it('should throw InstrumentationError when subscription status is invalid', async () => {
+      handleHttpRequest.mockClear();
+      handleHttpRequest.mockImplementation(async (_, url) => {
+        if (url.includes('members/md5-test@example.com')) {
+          return {
+            processedResponse: {
+              response: {
+                contact_id: '456',
+                status: 'subscribed',
+              },
+            },
+            httpResponse: {
+              success: true,
+            },
+          };
+        }
+      });
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+        integrations: {
+          mailchimp: {
+            subscriptionStatus: 'invalid-status', // Invalid status
+          },
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience123';
+      const metadata = { userId: 'test-user' };
+
+      await expect(processPayload(message, config, audienceId, metadata)).rejects.toThrow(
+        'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
+      );
     });
   });
 });

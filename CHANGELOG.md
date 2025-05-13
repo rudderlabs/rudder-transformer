@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.99.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.98.0...v1.99.0) (2025-05-12)
+
+
+### Features
+
+* add new event mapping for tiktok ([#4298](https://github.com/rudderlabs/rudder-transformer/issues/4298)) ([cbadc01](https://github.com/rudderlabs/rudder-transformer/commit/cbadc014e292fb9e6ccf3ed0e72baca2ba806a34))
+
 ## [1.98.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.97.2...v1.98.0) (2025-04-29)
 
 

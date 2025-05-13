@@ -1,0 +1,62 @@
+{
+  "name": "customerio",
+  "description": "test-6",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"data\":{\"action_id\":36,\"broadcast_id\":9,\"customer_id\":\"0200102\",\"identifiers\":{\"id\":\"0200102\"},\"delivery_id\":\"RPILAgABcRhIBqSp7kiPekGBIeVh\",\"href\":\"http://google.com\",\"link_id\":1,\"recipient\":\"test@example.com\",\"subject\":\"hello\"},\"event_id\":\"01E4C8BES5XT87ZWRJFTB35YJ3\",\"object_type\":\"email\",\"metric\":\"clicked\",\"timestamp\":1585254348}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Customer.io"
+          },
+          "traits": {
+            "email": "test@example.com"
+          }
+        },
+        "integrations": {
+          "Customer.io": false
+        },
+        "type": "track",
+        "event": "Email Link Clicked",
+        "properties": {
+          "eventId": "01E4C8BES5XT87ZWRJFTB35YJ3",
+          "deliveryId": "RPILAgABcRhIBqSp7kiPekGBIeVh",
+          "actionId": 36,
+          "broadcastId": 9,
+          "emailSubject": "hello",
+          "link": {
+            "url": "http://google.com",
+            "id": 1
+          }
+        },
+        "userId": "0200102",
+        "originalTimestamp": "2020-03-26T20:25:48.000Z",
+        "sentAt": "2020-03-26T20:25:48.000Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "name": "signl4",
+  "description": "test-4",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"eventType\":203,\"eventRaisedUtc\":\"2018-04-17T15:00:32Z\",\"subscription\":{\"id\":\"1578ebd9-0a27-44ab-bc8e-52cd7d32e81d\"},\"user\":{\"username\":\"Rene\",\"mailaddress\":\"rene@signl4.com\",\"id\":\"f0bd5063-9588-51cf-b3d9-94e5647dedc5\"},\"alert\":{\"statusCode\":0,\"eventId\":\"2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2\",\"externalEventId\":\"Content you passed in the X-S4-ExternalID parameter\",\"id\":\"2518783235958846071_4e2dfab2-4717-42bc-8d37-8682402309c2\"},\"annotation\":{\"message\":\"OK, I'll take care about it.\",\"id\":\"2518783235661483318_99ebffe0-1b90-40ef-990a-fbd842484761\"},\"id\":\"141c0f88-7831-4d5e-b055-f6e83c269770\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Signl4"
+          },
+          "externalId": [
+            {
+              "type": "signl4UserId",
+              "id": "f0bd5063-9588-51cf-b3d9-94e5647dedc5"
+            }
+          ],
+          "traits": {
+            "email": "rene@signl4.com",
+            "name": "Rene"
+          }
+        },
+        "integrations": {
+          "Signl4": false
+        },
+        "type": "track",
+        "messageId": "141c0f88-7831-4d5e-b055-f6e83c269770",
+        "originalTimestamp": "2018-04-17T15:00:32.000Z",
+        "event": "Alert Annotated",
+        "properties": {
+          "eventType": 203,
+          "subscription.id": "1578ebd9-0a27-44ab-bc8e-52cd7d32e81d",
+          "alert.statusCode": 0,
+          "alert.eventId": "2518783235949759942_fbc7b4a4-badd-47b8-9e1d-702fb6a1a0b2",
+          "alert.externalEventId": "Content you passed in the X-S4-ExternalID parameter",
+          "alert.id": "2518783235958846071_4e2dfab2-4717-42bc-8d37-8682402309c2",
+          "annotation.message": "OK, I'll take care about it.",
+          "annotation.id": "2518783235661483318_99ebffe0-1b90-40ef-990a-fbd842484761"
+        },
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30"
+      }
+    ],
+    "errQueue": []
+  }
+}

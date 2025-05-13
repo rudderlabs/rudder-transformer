@@ -1,0 +1,67 @@
+{
+  "name": "mailmodo",
+  "description": "test-8",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"fuuid\":\"98255\",\"next-step-id\":\"success\",\"total-steps\":\"3\",\"responseId\":\"ad20a980-4fce-44b6-887d-2236df514a76\",\"recipientEmail\":\"test@rudderstack.com\",\"formId\":\"formosztd5\",\"recordedAt\":{\"ts\":1662695887,\"date\":\"2022-09-09\",\"hour\":9,\"minute\":28},\"submissionSource\":\"amp\",\"elementjbtz42\":\"peace\",\"element8jzo13\":[\"Useful\"],\"recipientData\":{\"email\":\"test@rudderstack.com\",\"first_name\":\"abcda\"},\"recommend\":\"1\",\"liking\":\"downvote\",\"satisfaction\":\"1\",\"campaignId\":\"0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd\",\"campaignName\":\"Campaign-testing\"}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "anonymousId": "1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd",
+        "context": {
+          "integration": {
+            "name": "Mailmodo",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "email": "test@rudderstack.com",
+            "first_name": "abcda"
+          }
+        },
+        "event": "Form Submitted",
+        "integrations": {
+          "Mailmodo": false
+        },
+        "originalTimestamp": "2022-09-09T03:58:07.000Z",
+        "properties": {
+          "fuuid": "98255",
+          "next-step-id": "success",
+          "total-steps": "3",
+          "responseId": "ad20a980-4fce-44b6-887d-2236df514a76",
+          "formId": "formosztd5",
+          "submissionSource": "amp",
+          "elementjbtz42": "peace",
+          "element8jzo13[0]": "Useful",
+          "recommend": "1",
+          "liking": "downvote",
+          "satisfaction": "1",
+          "campaignId": "0b53e1bf-84ae-4198-9184-8a4d6e1fa3dd",
+          "campaignName": "Campaign-testing"
+        },
+        "type": "track",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

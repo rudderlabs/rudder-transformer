@@ -1,0 +1,41 @@
+{
+  "name": "gainsightpx",
+  "description": "No Match Track Call ",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"event\":{\"eventType\":\"Unavailable\",\"eventId\":\"ddb9ca94-beb1-449c-bdcd-b53190f8e784\",\"propertyKey\":\"AP-8MF5LPSWUBFW-2-1\",\"date\":1601303075964,\"sessionId\":\"AP-8MF5LPSWUBFW-2-1601303023809-98881162\",\"globalContext\":{\"role\":\"Admin\"},\"userType\":\"USER\",\"segmentId\":\"e3ab2e48-24f9-4602-ab92-b9f1f4343845\",\"segmentName\":\"Linux User\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 400,
+      "body": "Event type Unavailable not supported\n"
+    },
+    "queue": [],
+    "errQueue": [
+      {
+        "event": {
+          "eventType": "Unavailable",
+          "eventId": "ddb9ca94-beb1-449c-bdcd-b53190f8e784",
+          "propertyKey": "AP-8MF5LPSWUBFW-2-1",
+          "date": 1601303075964,
+          "sessionId": "AP-8MF5LPSWUBFW-2-1601303023809-98881162",
+          "globalContext": {
+            "role": "Admin"
+          },
+          "userType": "USER",
+          "segmentId": "e3ab2e48-24f9-4602-ab92-b9f1f4343845",
+          "segmentName": "Linux User"
+        }
+      }
+    ]
+  }
+}

@@ -3,9 +3,9 @@ import {
   RudderMessage,
   SourceTransformationResponse,
   SourceTransformationSuccessResponse,
-} from '../../types/index';
+  CatchErr,
+} from '../../types';
 import { CommonUtils } from '../../util/common';
-import { CatchErr } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
 import { ErrorReportingService } from '../errorReporting';
 

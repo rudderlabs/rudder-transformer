@@ -1,0 +1,112 @@
+{
+  "name": "auth0",
+  "description": "update tenant settings",
+  "input": {
+    "request": {
+      "query": {},
+      "body": "{\"log_id\":\"90020221031061527239169676960191065529099349299958906898\",\"data\":{\"date\":\"2022-10-31T06:15:25.201Z\",\"type\":\"sapi\",\"description\":\"Update tenant settings\",\"client_id\":\"vQcJNDTxsM1W72eHFonRJdzyOvawlwIt\",\"client_name\":\"\",\"ip\":\"35.160.3.103\",\"user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36\",\"details\":{\"request\":{\"ip\":\"35.160.3.103\",\"auth\":{\"user\":{\"name\":\"rudder test\",\"email\":\"test@rudderstack.com\",\"user_id\":\"google-oauth2|123456\"},\"strategy\":\"jwt\",\"credentials\":{\"jti\":\"571921bf7833a97efabf08d765a0ec8f\",\"scopes\":[\"create:actions\"]}},\"body\":{\"picture_url\":\"\",\"support_url\":\"\",\"friendly_name\":\"mecro-action\",\"support_email\":\"support@test.com\"},\"path\":\"/api/v2/tenants/settings\",\"query\":{},\"method\":\"patch\",\"channel\":\"https://manage.auth0.com/\",\"userAgent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36\"},\"response\":{\"body\":{\"flags\":{\"enable_sso\":true,\"universal_login\":true,\"disable_impersonation\":true,\"allow_changing_enable_sso\":false,\"revoke_refresh_token_grant\":false,\"disable_clickjack_protection_headers\":false,\"new_universal_login_experience_enabled\":true,\"enforce_client_authentication_on_passwordless_start\":true,\"cannot_change_enforce_client_authentication_on_passwordless_start\":true},\"picture_url\":\"\",\"support_url\":\"\",\"friendly_name\":\"mecro-action\",\"support_email\":\"support@test.com\",\"enabled_locales\":[\"en\"],\"sandbox_version\":\"16\",\"universal_login\":{}},\"statusCode\":200}},\"user_id\":\"google-oauth2|123456\",\"log_id\":\"90020221031061527239169676960191065529099349299958906898\"}}",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "method": "POST"
+    },
+    "source": {
+      "config": "{}"
+    }
+  },
+  "output": {
+    "response": {
+      "status": 200,
+      "body": "OK"
+    },
+    "queue": [
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T06:15:25.201Z",
+        "userId": "google-oauth2|123456",
+        "anonymousId": "97fcd7b2-cc24-47d7-b776-057b7b199513",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061527239169676960191065529099349299958906898",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "user": {
+                  "name": "rudder test",
+                  "email": "test@rudderstack.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": ["create:actions"]
+                }
+              },
+              "body": {
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com"
+              },
+              "path": "/api/v2/tenants/settings",
+              "query": {},
+              "method": "patch",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "flags": {
+                  "enable_sso": true,
+                  "universal_login": true,
+                  "disable_impersonation": true,
+                  "allow_changing_enable_sso": false,
+                  "revoke_refresh_token_grant": false,
+                  "disable_clickjack_protection_headers": false,
+                  "new_universal_login_experience_enabled": true,
+                  "enforce_client_authentication_on_passwordless_start": true,
+                  "cannot_change_enforce_client_authentication_on_passwordless_start": true
+                },
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com",
+                "enabled_locales": ["en"],
+                "sandbox_version": "16",
+                "universal_login": {}
+              },
+              "statusCode": 200
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Update tenant settings",
+          "source_type": "sapi"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.201Z",
+        "receivedAt": "2024-03-03T04:48:29.000Z",
+        "request_ip": "192.0.2.30",
+        "messageId": "00000000-0000-0000-0000-000000000000"
+      }
+    ],
+    "errQueue": []
+  }
+}

@@ -195,7 +195,7 @@ describe('getPriceSum', () => {
     {
       name: 'should return null when products is not an array',
       input: { properties: {} },
-      expected: 'null',
+      expected: null,
     },
     {
       name: 'should sum prices * quantities',

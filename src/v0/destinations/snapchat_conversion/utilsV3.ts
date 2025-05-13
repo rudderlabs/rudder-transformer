@@ -160,7 +160,13 @@ export const getExtInfo = (message: RudderMessage): string[] | null => {
     timezoneAbbr: null as string | null,
   };
   if (environmentInfo.timezone) {
-    environmentInfo.timezoneAbbr = moment().tz(environmentInfo.timezone)?.format('z');
+    try {
+      environmentInfo.timezoneAbbr = moment.tz.zone(environmentInfo.timezone)
+        ? moment().tz(environmentInfo.timezone).format('z')
+        : null;
+    } catch {
+      environmentInfo.timezoneAbbr = null;
+    }
   }
 
   const extInfo = [

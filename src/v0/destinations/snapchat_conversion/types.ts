@@ -281,3 +281,22 @@ export type SnapchatV3ProcessedEvent = {
   metadata: Partial<Metadata>;
   destination: SnapchatDestination;
 };
+
+/**
+ * Metadata for field mapping
+ */
+export type MappingMetadata = {
+  type?: string;
+  [key: string]: unknown;
+};
+
+/**
+ * Configuration for mapping fields from Rudder message to Snapchat payload
+ */
+export type MappingConfig = Array<{
+  destKey: string;
+  sourceKeys: string | string[];
+  required?: boolean;
+  metadata?: MappingMetadata;
+  sourceFromGenericMap?: boolean;
+}>;

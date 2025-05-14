@@ -1,4 +1,4 @@
-import { TestCaseData } from '../../../../integrations/testTypes';
+import { ProcessorTestData } from '../../../../integrations/testTypes';
 import { overrideDestination } from '../../../testUtils';
 import {
   baseProcessorDestination as baseDestination,
@@ -6,7 +6,7 @@ import {
   generateCommonMetadata,
 } from '../common';
 
-export const data: TestCaseData[] = [
+export const data: ProcessorTestData[] = [
   {
     id: 'slack-identify-default-template',
     name: 'slack',
@@ -83,7 +83,6 @@ export const data: TestCaseData[] = [
               },
               files: {},
               userId: '12345',
-              statusCode: 200,
             },
             metadata: generateCommonMetadata(126, '12345', '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780'),
             statusCode: 200,

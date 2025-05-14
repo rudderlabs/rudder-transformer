@@ -76,7 +76,11 @@ The migration script supports both patterns, with Pattern 1 being the default fo
 
 ## Test Case Structure
 
-Migrated tests follow a standardized structure with enhanced metadata:
+Migrated tests follow a standardized structure with enhanced metadata. Depending on the feature type (processor, router, etc.), different TypeScript interfaces should be used:
+
+### Generic Test Case Structure
+
+For simple test cases or when specific types aren't applicable:
 
 ```typescript
 export const testCases: TestCaseData[] = [
@@ -116,6 +120,172 @@ export const testCases: TestCaseData[] = [
 ];
 ```
 
+### Processor Test Structure
+
+For processor tests, use the `ProcessorTestData` type:
+
+```typescript
+import { ProcessorTestData } from '../../../../integrations/testTypes';
+
+export const data: ProcessorTestData[] = [
+  {
+    id: 'destination-processor-test',
+    name: 'destination_name',
+    description: 'Test description',
+    scenario: 'Business scenario',
+    successCriteria: 'Success criteria',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              /* RudderMessage */
+            },
+            metadata: {
+              /* Metadata */
+            },
+            destination: {
+              /* Destination */
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              /* ProcessorTransformationOutput */
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.example.com',
+              headers: { /* headers */ },
+              params: { /* params */ },
+              body: {
+                JSON: { /* JSON body */ },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'user123',
+            },
+            metadata: { /* Metadata */ },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: (mockAdapter) => {
+      // Mock HTTP requests
+    },
+  },
+];
+```
+
+### Important Note About `statusCode` Property
+
+When using `ProcessorTestData` and `RouterTestData` types, be aware that there's a discrepancy between the type definitions and the actual expected structure:
+
+- The `ProcessorTransformationOutput` type (used in both processor and router tests) doesn't include a `statusCode` property according to the type definition.
+- However, many existing tests include a `statusCode` property in the `batchedRequest` objects.
+- This can cause TypeScript errors when using the specific types.
+
+To avoid these errors, you can:
+1. Use the generic `TestCaseData` type instead of the specific types
+2. Remove the `statusCode` property from the `batchedRequest` objects
+3. Cast the objects to `any` or use type assertions
+
+### Router Test Structure
+
+For router tests, use the `RouterTestData` type:
+
+```typescript
+import { RouterTestData } from '../../../../integrations/testTypes';
+
+export const data: RouterTestData[] = [
+  {
+    id: 'destination-router-test',
+    name: 'destination_name',
+    description: 'Test description',
+    scenario: 'Business scenario',
+    successCriteria: 'Success criteria',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                /* RudderMessage */
+              },
+              metadata: {
+                /* Metadata */
+              },
+              destination: {
+                /* Destination */
+              },
+            },
+          ],
+          destType: 'destination_name',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  /* ProcessorTransformationOutput */
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.example.com',
+                  headers: { /* headers */ },
+                  params: { /* params */ },
+                  body: {
+                    JSON: { /* JSON body */ },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'user123',
+                },
+              ],
+              destination: {
+                /* Destination */
+              },
+              metadata: [
+                /* Metadata */
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: (mockAdapter) => {
+      // Mock HTTP requests
+    },
+  },
+];
+```
+
 ### Key Fields
 
 - **id**: Unique identifier for the test case
@@ -131,7 +301,77 @@ export const testCases: TestCaseData[] = [
 - **output**: Expected response
 - **mockFns**: Function to mock HTTP requests
 
-### Integration with Component Tests
+### Utility Functions for Test Data
+
+The `testUtils.ts` file provides several utility functions that should be used in test files to maintain consistency and reduce duplication:
+
+### `overrideDestination`
+
+Use this function to override specific properties in a destination configuration:
+
+```typescript
+import { overrideDestination } from '../../../testUtils';
+
+const destination = overrideDestination(baseDestination, {
+  configKey1: 'value1',
+  configKey2: 'value2',
+});
+```
+
+### `generateMetadata`
+
+Use this function to generate metadata objects with consistent structure:
+
+```typescript
+import { generateMetadata } from '../../../testUtils';
+
+const metadata = generateMetadata(jobId, userId, messageId);
+```
+
+### `transformResultBuilder`
+
+Use this function to create output objects with the correct structure:
+
+```typescript
+import { transformResultBuilder } from '../../../testUtils';
+
+const output = transformResultBuilder({
+  version: '1',
+  type: 'REST',
+  method: 'POST',
+  endpoint: 'https://api.example.com',
+  headers: { /* headers */ },
+  params: { /* params */ },
+  JSON: { /* JSON body */ },
+  userId: 'user123',
+});
+```
+
+### Message Generation Functions
+
+Use these functions to generate message objects with consistent structure:
+
+```typescript
+import {
+  generateTrackPayload,
+  generateIndentifyPayload,
+  generatePageOrScreenPayload,
+  generateGroupPayload
+} from '../../../testUtils';
+
+const trackMessage = generateTrackPayload({
+  event: 'event_name',
+  properties: { /* properties */ },
+  context: { /* context */ },
+});
+
+const identifyMessage = generateIndentifyPayload({
+  traits: { /* traits */ },
+  context: { /* context */ },
+});
+```
+
+## Integration with Component Tests
 
 Migrated tests are automatically validated using Zod schemas when the destination is added to the `INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE` array in `test/integrations/component.test.ts`. This array currently includes:
 

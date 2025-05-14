@@ -1,4 +1,4 @@
-import { TestCaseData } from '../../../../integrations/testTypes';
+import { RouterTestData } from '../../../../integrations/testTypes';
 import { overrideDestination } from '../../../testUtils';
 import {
   baseRouterDestination as baseDestination,
@@ -6,7 +6,7 @@ import {
   generateCommonMetadata,
 } from '../common';
 
-export const data: TestCaseData[] = [
+export const data: RouterTestData[] = [
   {
     id: 'slack-router-unsupported-event',
     name: 'slack',
@@ -147,7 +147,6 @@ export const data: TestCaseData[] = [
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   method: 'POST',
                   params: {},
-                  statusCode: 200,
                   type: 'REST',
                   userId: '12345',
                   version: '1',

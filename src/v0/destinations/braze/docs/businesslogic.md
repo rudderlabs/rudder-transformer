@@ -12,14 +12,38 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 
 **Request Flow**:
-1. If both `userId` (or `brazeExternalId`) and `anonymousId` are present:
+1. If identity resolution conditions are met:
+   ```javascript
+   const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+   const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+   const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
+   if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+     // Make identify call
+   }
+   ```
    - First, an intermediate call is made to `/users/identify` to merge the anonymous user with the identified user
    - Then, the user attributes are sent to `/users/track`
-2. If only `userId` is present:
-   - User attributes are sent directly to `/users/track`
-3. If only `anonymousId` is present:
+2. If only `userId` or `brazeExternalId` is present (without `anonymousId` or custom alias):
+   - User attributes are sent directly to `/users/track` with `external_id` set
+3. If only `anonymousId` is present (without `userId` or `brazeExternalId`):
    - An alias-only profile is created with `alias_label: "rudder_id"` and `alias_name: anonymousId`
-   - User attributes are sent to `/users/track`
+   - User attributes are sent to `/users/track` with `user_alias` set
+4. If custom alias is provided in the integrations object:
+   - The custom alias is used instead of the default `rudder_id` alias
+   ```javascript
+   // Example of custom alias in integrations object
+   {
+     "integrations": {
+       "braze": {
+         "alias": {
+           "alias_name": "custom-id-123",
+           "alias_label": "custom_label"
+         }
+       }
+     }
+   }
+   ```
 
 **Transformations**:
 1. User traits are mapped to Braze user attributes
@@ -202,6 +226,76 @@ Certain properties are reserved by Braze and handled specially:
 - **Purchase standard properties**: These properties have special handling in purchase events
   - product_id, sku, price, quantity, currency
 
+
+## Multiplexing
+
+The Braze destination can generate multiple API calls from a single input event in specific scenarios. This section clarifies which scenarios are considered true multiplexing versus those that use intermediary calls.
+
+### Multiplexing Scenarios
+
+1. **Identify Events with Identity Resolution Conditions**:
+   
+   Input: Identify event meeting specific conditions
+   Conditions:
+   ```javascript
+   const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+   const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+   const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
+   if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+     // Make identify call
+   }
+   ```
+   Output:
+   - API Call 1: POST /users/identify (merge anonymous and identified users)
+   - API Call 2: POST /users/track (send user attributes)
+   Multiplexing: NO (first call is intermediary)
+   
+   **Note**: This is not considered true multiplexing as the first call is an intermediary step for identity resolution before the main data delivery. The identify call is only made when either `anonymousId` or a custom alias is present AND either `userId` or `brazeExternalId` is present.
+
+2. **Group Events with Subscription Groups Enabled**:
+   ```
+   Input: Group event with subscription group data
+   Output:
+   - API Call 1: POST /users/track (send group attributes)
+   - API Call 2: POST /v2/subscription/status/set (update subscription status)
+   Multiplexing: YES
+   ```
+   **Note**: This is true multiplexing as both calls deliver different aspects of the same event to Braze.
+
+3. **Events with Deduplication Enabled**:
+   ```
+   Input: Any event with deduplication enabled
+   Output:
+   - API Call 1: POST /users/export/ids (fetch current user profiles)
+   - API Call 2: POST /users/track (send deduplicated attributes)
+   Multiplexing: NO (first call is intermediary)
+   ```
+   **Note**: This is not considered true multiplexing as the first call is only to fetch data for deduplication before the main data delivery.
+
+4. **Track Events with Both User Attributes and Event Data**:
+   ```
+   Input: Track event with user attributes
+   Output: Single API call to /users/track with multiple data types:
+   {
+     "attributes": [...],  // User profile updates
+     "events": [...]       // Event data
+   }
+   Multiplexing: NO (single API call)
+   ```
+   **Note**: This is not multiplexing as it's a single API call, even though it updates multiple aspects of the user profile.
+
+5. **Purchase Events (Order Completed)**:
+   ```
+   Input: Track event with name "Order Completed"
+   Output: Single API call to /users/track with multiple data types:
+   {
+     "attributes": [...],  // User profile updates
+     "purchases": [...]    // Purchase data
+   }
+   Multiplexing: NO (single API call)
+   ```
+   **Note**: This is not multiplexing as it's a single API call, even though it updates multiple aspects of the user profile.
 
 ## Mapping Configuration
 

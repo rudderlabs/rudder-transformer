@@ -55,16 +55,14 @@ Implementation in **Javascript**
 
 The Braze API enforces rate limits to ensure system stability. Here are the rate limits for the endpoints used by this destination:
 
-| Endpoint | Rate Limit | Batch Limits | Description |
-|----------|------------|--------------|-------------|
-| `/users/track` | 3,000 requests per 3 seconds | 75 events, 75 purchases, 75 attributes per request | Used for sending track events, user attributes, and purchases |
-| `/users/identify` | 20,000 requests per minute | - | Used for identity resolution (merging anonymous and identified users) |
-| `/users/alias/new` | 20,000 requests per minute | - | Used for creating new user aliases |
-| `/users/alias/update` | 20,000 requests per minute | - | Used for updating user aliases |
-| `/users/delete` | 20,000 requests per minute | 50 users per batch | Used for user deletion |
-| `/users/export/ids` | 2,500 requests per minute* | - | Used for fetching user profiles (for deduplication) |
-| `/users/merge` | 20,000 requests per minute | - | Used for merging user profiles |
-| `/subscription/status/set` | 5,000 requests per minute | - | Used for updating subscription group status |
+| Endpoint | Event Types | Rate Limit | Batch Limits | Description |
+|----------|-------------|------------|--------------|-------------|
+| `/users/track` | Identify, Track, Page, Screen, Group | 3,000 requests per 3 seconds | 75 events, 75 purchases, 75 attributes per request | Used for sending track events, user attributes, and purchases |
+| `/users/identify` | Identify (with both userId and anonymousId) | 20,000 requests per minute | - | Used for identity resolution (merging anonymous and identified users) |
+| `/users/delete` | User Deletion (via Suppression API) | 20,000 requests per minute | 50 users per batch | Used for user deletion |
+| `/users/export/ids` | Any event when deduplication is enabled | 2,500 requests per minute* | - | Used for fetching user profiles (for deduplication) |
+| `/users/merge` | Alias | 20,000 requests per minute | - | Used for merging user profiles |
+| `/subscription/status/set` | Group (with subscription groups enabled) | 5,000 requests per minute | - | Used for updating subscription group status |
 
 *Note: For accounts created after August 22, 2024, the rate limit for `/users/export/ids` is 250 requests per minute.
 
@@ -264,6 +262,56 @@ Based on **Event Ordering** section above, it is not feasible to replay missing 
 
   - **Not Recommended**: Similar to track events, purchase events will be duplicated in Braze
   - This could result in incorrect revenue calculations and purchase counts
+
+### Multiplexing
+
+- **Supported**: Yes
+- **Description**: The Braze destination can generate multiple API calls from a single input event in specific scenarios.
+
+#### Multiplexing Scenarios
+
+1. **Identify Events with Identity Resolution Conditions**:
+   - **Multiplexing**: NO
+   - **Conditions for Identity Resolution**:
+     ```javascript
+     const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+     const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
+     const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
+     if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
+       await processIdentify({ message, destination });
+     }
+     ```
+   - First API Call: `/users/identify` - To merge the anonymous user with the identified user (intermediary call)
+   - Second API Call: `/users/track` - To send user attributes (primary call)
+   - **Note**: This is not considered true multiplexing as the first call is an intermediary step for identity resolution before the main data delivery. The identify call is only made when specific conditions are met.
+
+2. **Group Events with Subscription Groups Enabled**:
+   - **Multiplexing**: YES
+   - First API Call: `/users/track` - To send group attributes
+   - Second API Call: `/v2/subscription/status/set` - To update subscription status
+   - **Note**: This is true multiplexing as both calls deliver different aspects of the same event to Braze.
+
+3. **Events with Deduplication Enabled**:
+   - **Multiplexing**: NO
+   - First API Call: `/users/export/ids` - To fetch current user profiles (intermediary call)
+   - Second API Call: `/users/track` - To send deduplicated attributes (primary call)
+   - **Note**: This is not considered true multiplexing as the first call is only to fetch data for deduplication before the main data delivery.
+
+4. **Track Events with Both User Attributes and Event Data**:
+   - **Multiplexing**: NO
+   - Single API Call to `/users/track` with multiple data types in the payload:
+     - `attributes` array - For user profile updates
+     - `events` array - For event tracking
+   - **Note**: This is not multiplexing as it's a single API call, even though it updates multiple aspects of the user profile.
+
+5. **Purchase Events (Order Completed)**:
+   - **Multiplexing**: NO
+   - Single API Call to `/users/track` with multiple data types in the payload:
+     - `attributes` array - For user profile updates
+     - `purchases` array - For purchase tracking
+   - **Note**: This is not multiplexing as it's a single API call, even though it updates multiple aspects of the user profile.
+
 
 ## Version Information
 

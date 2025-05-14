@@ -130,7 +130,16 @@ const processRecordEventArray = async (
  * @returns {Array} - The final response payload.
  */
 async function preparePayload(events, config) {
-  const { audienceId, userSchema, isRaw, type, subType, isHashRequired, disableFormat } = config;
+  const {
+    audienceId,
+    userSchema,
+    isRaw,
+    type,
+    subType,
+    isHashRequired,
+    disableFormat,
+    isValueBasedAudience,
+  } = config;
   const { destination } = events[0];
   const { accessToken, appSecret } = destination.Config;
   const prepareParams = {
@@ -151,6 +160,11 @@ async function preparePayload(events, config) {
   if (!checkSubsetOfArray(schemaFields, cleanUserSchema)) {
     throw new ConfigurationError('One or more of the schema fields are not supported');
   }
+  if (!isValueBasedAudience && cleanUserSchema.includes('LOOKALIKE_VALUE')) {
+    throw new ConfigurationError(
+      'LOOKALIKE_VALUE field can only be used for Value-Based Custom Audiences.',
+    );
+  }
 
   const paramsPayload = {};
 
@@ -168,6 +182,15 @@ async function preparePayload(events, config) {
   );
 
   const processAction = async (action, operation) => {
+    if (
+      isValueBasedAudience &&
+      !cleanUserSchema.includes('LOOKALIKE_VALUE') &&
+      operation === 'add'
+    ) {
+      throw new ConfigurationError(
+        'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+      );
+    }
     if (groupedRecordsByAction[action]) {
       const recordChunksArray = returnArrayOfSubarrays(
         groupedRecordsByAction[action],
@@ -247,7 +270,7 @@ async function processRecordInputsV1(groupedRecordInputs) {
  */
 const processRecordInputsV2 = async (groupedRecordInputs) => {
   const { connection, message } = groupedRecordInputs[0];
-  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
+  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, isValueBasedAudience } =
     connection.config.destination;
   const identifiers = message?.identifiers;
   let userSchema;
@@ -269,6 +292,7 @@ const processRecordInputsV2 = async (groupedRecordInputs) => {
     subType,
     isHashRequired,
     disableFormat,
+    isValueBasedAudience,
   });
 };
 

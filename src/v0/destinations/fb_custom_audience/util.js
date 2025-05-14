@@ -2,7 +2,11 @@ const lodash = require('lodash');
 const sha256 = require('sha256');
 const crypto = require('crypto');
 const jsonSize = require('json-size');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const { typeFields, subTypeFields, getEndPoint } = require('./config');
 const {
@@ -12,7 +16,6 @@ const {
 } = require('../../util');
 const stats = require('../../../util/stats');
 
-const { isDefinedAndNotNull } = require('../../util');
 const config = require('./config');
 
 /**
@@ -126,6 +129,9 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'EXTERN_ID':
         updatedProperty = stringifiedUserInformation;
         break;
+      case 'LOOKALIKE_VALUE':
+        updatedProperty = Number.isFinite(userInformation) ? userInformation : 0;
+        break;
       default:
         throw new ConfigurationError(`The property ${userProperty} is not supported`);
     }
@@ -140,7 +146,9 @@ const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, update
    * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
    * sending empty string for the properties for which user hasn't provided any value
    */
-  if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
+  if (eachProperty === 'LOOKALIKE_VALUE') {
+    dataElement.push(tmpUpdatedProperty);
+  } else if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
     if (tmpUpdatedProperty) {
       tmpUpdatedProperty = `${tmpUpdatedProperty}`;
       dataElement.push(sha256(tmpUpdatedProperty));

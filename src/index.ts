@@ -24,11 +24,7 @@ const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
-app.use(
-  bodyParser({
-    jsonLimit: '200mb',
-  }),
-);
+app.use(bodyParser({ jsonLimit: '200mb' }));
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 

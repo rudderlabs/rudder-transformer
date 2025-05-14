@@ -39,6 +39,8 @@ const createTestEvent = (
       Enabled: true,
       WorkspaceID: 'ws-1',
       Transformations: [],
+      // hasDynamicConfig is intentionally not set by default to test backward compatibility
+      // Tests that need to test specific hasDynamicConfig values will set it explicitly
     },
   } as ProcessorTransformationRequest;
 };
@@ -52,6 +54,8 @@ describe('DynamicConfigParser', () => {
         config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
         traits: { email: 'test@example.com', appId: 'test-app-id' },
         expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
       {
         name: 'should handle nested configuration values',
@@ -84,6 +88,8 @@ describe('DynamicConfigParser', () => {
             },
           ],
         },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
       {
         name: 'should use default values when the path does not exist',
@@ -96,32 +102,74 @@ describe('DynamicConfigParser', () => {
           apiKey: 'default-api-key',
           userId: 'default-user',
         },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
       {
         name: 'should handle event alias for message',
         config: { apiKey: '{{ event.traits.appId || "default-api-key" }}' },
         traits: { email: 'test@example.com', appId: 'test-app-id' },
         expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
+      },
+      {
+        name: 'should skip processing when hasDynamicConfig is false',
+        config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+        traits: { email: 'test@example.com', appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+        hasDynamicConfig: false,
+        expectedSameReference: true,
+      },
+      {
+        name: 'should process events when hasDynamicConfig is undefined (backward compatibility)',
+        config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+        traits: { email: 'test@example.com', appId: 'test-app-id' },
+        expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
+      },
+      {
+        name: 'should process events when hasDynamicConfig is true',
+        config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+        traits: { email: 'test@example.com', appId: 'test-app-id' },
+        expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: true,
+        expectedSameReference: false,
       },
     ];
 
     // Run the table-driven tests
-    test.each(testCases)('$name', ({ config, traits, expectedConfig }) => {
-      // Arrange
-      const event = createTestEvent(config, traits);
-      const originalEvent = cloneDeep(event);
+    test.each(testCases)(
+      '$name',
+      ({ config, traits, expectedConfig, hasDynamicConfig, expectedSameReference }) => {
+        // Arrange
+        const event = createTestEvent(config, traits);
+        // Set hasDynamicConfig if specified in the test case
+        if (hasDynamicConfig !== undefined) {
+          event.destination.hasDynamicConfig = hasDynamicConfig;
+        }
+        const originalEvent = cloneDeep(event);
 
-      // Act
-      const result = DynamicConfigParser.process([event]);
+        // Act
+        const result = DynamicConfigParser.process([event]);
 
-      // Assert
-      expect(result).toHaveLength(1);
-      expect(result[0]).not.toBe(event); // Should be a new object
-      expect(result[0].destination.Config).toEqual(expectedConfig);
+        // Assert
+        expect(result).toHaveLength(1);
 
-      // Original event should not be modified
-      expect(event).toEqual(originalEvent);
-    });
+        // Check if the result should be the same reference as the original event
+        if (expectedSameReference) {
+          expect(result[0]).toBe(event); // Should be the same object (not processed)
+        } else {
+          expect(result[0]).not.toBe(event); // Should be a new object (processed)
+        }
+
+        expect(result[0].destination.Config).toEqual(expectedConfig);
+
+        // Original event should not be modified
+        expect(event).toEqual(originalEvent);
+      },
+    );
 
     it('should handle multiple events', () => {
       // Arrange
@@ -157,6 +205,8 @@ describe('DynamicConfigParser', () => {
         config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
         traits: { appId: 'test-app-id' },
         expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
       {
         name: 'should handle track message type',
@@ -164,6 +214,8 @@ describe('DynamicConfigParser', () => {
         config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
         traits: { appId: 'test-app-id' },
         expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
       {
         name: 'should handle page message type',
@@ -171,26 +223,50 @@ describe('DynamicConfigParser', () => {
         config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
         traits: { appId: 'test-app-id' },
         expectedConfig: { apiKey: 'test-app-id' },
+        hasDynamicConfig: undefined,
+        expectedSameReference: false,
       },
     ];
 
     // Run the message type table-driven tests
-    test.each(messageTypeTestCases)('$name', ({ messageType, config, traits, expectedConfig }) => {
-      // Arrange
-      const event = createTestEvent(config, traits, messageType);
-      const originalEvent = cloneDeep(event);
+    test.each(messageTypeTestCases)(
+      '$name',
+      ({
+        messageType,
+        config,
+        traits,
+        expectedConfig,
+        hasDynamicConfig,
+        expectedSameReference,
+      }) => {
+        // Arrange
+        const event = createTestEvent(config, traits, messageType);
+        // Set hasDynamicConfig if specified in the test case
+        if (hasDynamicConfig !== undefined) {
+          event.destination.hasDynamicConfig = hasDynamicConfig;
+        }
+        const originalEvent = cloneDeep(event);
 
-      // Act
-      const result = DynamicConfigParser.process([event]);
+        // Act
+        const result = DynamicConfigParser.process([event]);
 
-      // Assert
-      expect(result).toHaveLength(1);
-      expect(result[0].message.type).toBe(messageType);
-      expect(result[0].destination.Config).toEqual(expectedConfig);
+        // Assert
+        expect(result).toHaveLength(1);
+        expect(result[0].message.type).toBe(messageType);
 
-      // Original event should not be modified
-      expect(event).toEqual(originalEvent);
-    });
+        // Check if the result should be the same reference as the original event
+        if (expectedSameReference) {
+          expect(result[0]).toBe(event); // Should be the same object (not processed)
+        } else {
+          expect(result[0]).not.toBe(event); // Should be a new object (processed)
+        }
+
+        expect(result[0].destination.Config).toEqual(expectedConfig);
+
+        // Original event should not be modified
+        expect(event).toEqual(originalEvent);
+      },
+    );
 
     it('should not modify shared destination objects', () => {
       // Arrange
@@ -281,6 +357,70 @@ describe('DynamicConfigParser', () => {
       // Check that the processed events have the correct values
       expect(result[0].destination.Config).toEqual({ apiKey: 'test-app-id-1' });
       expect(result[1].destination.Config).toEqual({ apiKey: 'test-app-id-2' });
+    });
+
+    // Table-driven test for batch processing with mixed hasDynamicConfig flags
+    const batchTestCases = [
+      {
+        name: 'should handle mixed hasDynamicConfig flags in a batch',
+        eventConfigs: [
+          {
+            config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+            traits: { email: 'test1@example.com', appId: 'test-app-id-1' },
+            hasDynamicConfig: false,
+            expectedConfig: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+            expectedSameReference: true,
+          },
+          {
+            config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+            traits: { email: 'test2@example.com', appId: 'test-app-id-2' },
+            hasDynamicConfig: true,
+            expectedConfig: { apiKey: 'test-app-id-2' },
+            expectedSameReference: false,
+          },
+          {
+            config: { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+            traits: { email: 'test3@example.com', appId: 'test-app-id-3' },
+            hasDynamicConfig: undefined,
+            expectedConfig: { apiKey: 'test-app-id-3' },
+            expectedSameReference: false,
+          },
+        ],
+      },
+    ];
+
+    // Run the batch test cases
+    test.each(batchTestCases)('$name', ({ eventConfigs }) => {
+      // Arrange
+      const events = eventConfigs.map((eventConfig) => {
+        const event = createTestEvent(eventConfig.config, eventConfig.traits);
+        if (eventConfig.hasDynamicConfig !== undefined) {
+          event.destination.hasDynamicConfig = eventConfig.hasDynamicConfig;
+        }
+        return event;
+      });
+
+      // Store original events to verify they're not modified
+      const originalEvents = cloneDeep(events);
+
+      // Act
+      const result = DynamicConfigParser.process(events);
+
+      // Assert
+      expect(result).toHaveLength(events.length);
+
+      // Verify each event was processed correctly
+      eventConfigs.forEach((eventConfig, index) => {
+        if (eventConfig.expectedSameReference) {
+          expect(result[index]).toBe(events[index]); // Should be the same object (not processed)
+        } else {
+          expect(result[index]).not.toBe(events[index]); // Should be a new object (processed)
+        }
+        expect(result[index].destination.Config).toEqual(eventConfig.expectedConfig);
+      });
+
+      // Original events should not be modified
+      expect(events).toEqual(originalEvents);
     });
   });
 });

@@ -70,8 +70,14 @@ export class DynamicConfigParser {
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ) {
     const eventRespArr = events.map(
-      (e: ProcessorTransformationRequest | RouterTransformationRequestData) =>
-        this.getDynamicConfig(e),
+      (e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
+        // Only skip processing if hasDynamicConfig is explicitly false
+        // For undefined (older server versions), process the event
+        if (e.destination?.hasDynamicConfig === false) {
+          return e;
+        }
+        return DynamicConfigParser.getDynamicConfig(e);
+      },
     );
     return eventRespArr;
   }

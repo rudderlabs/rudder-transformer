@@ -11,6 +11,7 @@ const sampleDestination: Destination = {
     prefixProperties: true,
     useNativeSDK: false,
   },
+  hasDynamicConfig: false,
   DestinationDefinition: {
     DisplayName: 'Mixpanel',
     ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
@@ -25,6 +26,7 @@ const sampleDestination: Destination = {
 };
 
 const destinationWithSetOnceProperty = {
+  hasDynamicConfig: false,
   Config: {
     apiSecret: secret1,
     dataResidency: 'us',

@@ -12,6 +12,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
         customerId: '1234567890',
@@ -104,6 +105,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
         customerId: '1234567890',
@@ -144,6 +146,7 @@ const events = [
   {
     metadata: { secret: {}, jobId: 3, userId: 'u1' },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
         customerId: '1234567890',
@@ -236,6 +239,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
         customerId: '{{event.context.customerID || "" }}',
@@ -330,6 +334,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
         customerId: '{{event.context.customerID || "" }}',
@@ -424,6 +429,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         customerId: '1234567890',
         subAccount: true,
@@ -460,6 +466,7 @@ const events = [
       userId: 'u1',
     },
     destination: {
+      hasDynamicConfig: false,
       Config: {
         customerId: '1234567890',
         subAccount: true,
@@ -672,6 +679,7 @@ export const data = [
                 version: '1',
               },
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
                   customerId: '1234567890',
@@ -704,6 +712,7 @@ export const data = [
             {
               batched: false,
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
                   customerId: '1234567890',
@@ -745,6 +754,7 @@ export const data = [
             {
               batched: false,
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
                   customerId: '1234567890',
@@ -831,24 +841,25 @@ export const data = [
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
                   'developer-token': 'ijkl91011',
-                  'login-customer-id': 11,
+                  'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
-                  customerId: '1234567890',
+                  customerId: '{{event.context.customerID || "" }}',
                   developerToken: 'ijkl91011',
                   event: 'Page View',
-                  loginCustomerId: 11,
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
                   subAccount: true,
                 },
                 type: 'REST',
                 version: '1',
               },
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
-                  customerId: 1234567890,
+                  customerId: '{{event.context.customerID || "" }}',
                   listOfConversions: [
                     {
                       conversions: 'Page View',
@@ -857,7 +868,7 @@ export const data = [
                       conversions: 'Product Added',
                     },
                   ],
-                  loginCustomerId: 11,
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                   subAccount: true,
                 },
@@ -877,10 +888,75 @@ export const data = [
             },
             {
               batched: false,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    conversionAdjustments: [
+                      {
+                        adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                        adjustmentType: 'ENHANCEMENT',
+                        gclidDateTimePair: {
+                          conversionDateTime: '2022-01-01 12:32:45-08:00',
+                          gclid: 'gclid1234',
+                        },
+                        orderId: '10000',
+                        restatementValue: {
+                          adjustedValue: 10,
+                          currencyCode: 'INR',
+                        },
+                        userAgent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                        userIdentifiers: [
+                          {
+                            hashedPhoneNumber:
+                              '04387707e6cbed8c4538c81cc570ed9252d579469f36c273839b26d784e4bdbe',
+                          },
+                          {
+                            addressInfo: {
+                              city: 'London',
+                              hashedFirstName:
+                                'a8cfcd74832004951b4408cdb0a5dbcd8c7e52d43f7fe244bf720582e05241da',
+                              hashedLastName:
+                                '1c574b17eefa532b6d61c963550a82d2d3dfca4a7fb69e183374cfafd5328ee4',
+                              hashedStreetAddress:
+                                '9a4d2e50828448f137f119a3ebdbbbab8d6731234a67595fdbfeb2a2315dd550',
+                              state: 'UK',
+                            },
+                          },
+                        ],
+                      },
+                    ],
+                    partialFailure: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: '',
+                files: {},
+                headers: {
+                  Authorization: authHeader1,
+                  'Content-Type': 'application/json',
+                  'developer-token': 'ijkl91011',
+                  'login-customer-id': '{{event.context.subaccountID || "" }}',
+                },
+                method: 'POST',
+                params: {
+                  accessToken: 'google_adwords_enhanced_conversions1',
+                  customerId: '{{event.context.customerID || "" }}',
+                  developerToken: 'ijkl91011',
+                  event: 'Page View',
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
+                  subAccount: true,
+                },
+                type: 'REST',
+                version: '1',
+              },
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
-                  customerId: {},
+                  customerId: '{{event.context.customerID || "" }}',
                   listOfConversions: [
                     {
                       conversions: 'Page View',
@@ -889,12 +965,11 @@ export const data = [
                       conversions: 'Product Added',
                     },
                   ],
-                  loginCustomerId: 11,
+                  loginCustomerId: '{{event.context.subaccountID || "" }}',
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                   subAccount: true,
                 },
               },
-              error: 'customerId should be a string or number',
               metadata: [
                 {
                   jobId: 5,
@@ -906,19 +981,12 @@ export const data = [
                   userId: 'u1',
                 },
               ],
-              statusCode: 400,
-              statTags: {
-                destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
+              statusCode: 200,
             },
             {
               batched: false,
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   authStatus: 'active',
                   customerId: '1234567890',
@@ -982,6 +1050,7 @@ export const data = [
                 },
               ],
               destination: {
+                hasDynamicConfig: false,
                 Config: {
                   customerId: '1234567890',
                   subAccount: true,

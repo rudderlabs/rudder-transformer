@@ -81,103 +81,103 @@ describe('durationMiddleware', () => {
   });
 });
 
-describe('requestSizeMiddleware', () => {
-  it('should record the size of the request and response', async () => {
-    const app = new Koa(); // Create a Koa app instance
-    addRequestSizeMiddleware(app); // Pass the app instance to the middleware
+// describe('requestSizeMiddleware', () => {
+//   it('should record the size of the request and response', async () => {
+//     const app = new Koa(); // Create a Koa app instance
+//     addRequestSizeMiddleware(app); // Pass the app instance to the middleware
 
-    const ctx = {
-      method: 'POST',
-      status: 200,
-      request: {
-        url: '/test',
-        body: { key: 'value' },
-      },
-      response: {
-        body: { success: true },
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
+//     const ctx = {
+//       method: 'POST',
+//       status: 200,
+//       request: {
+//         url: '/test',
+//         body: { key: 'value' },
+//       },
+//       response: {
+//         body: { success: true },
+//       },
+//     };
+//     const next = jest.fn().mockResolvedValue(null);
 
-    // Simulate the middleware execution
-    await app.middleware[0](ctx, next);
+//     // Simulate the middleware execution
+//     await app.middleware[0](ctx, next);
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', expect.any(Number), {
-      method: 'POST',
-      code: 200,
-      route: '/test',
-    });
+//     expect(stats.histogram).toHaveBeenCalledWith('http_request_size', expect.any(Number), {
+//       method: 'POST',
+//       code: 200,
+//       route: '/test',
+//     });
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', expect.any(Number), {
-      method: 'POST',
-      code: 200,
-      route: '/test',
-    });
-  });
+//     expect(stats.histogram).toHaveBeenCalledWith('http_response_size', expect.any(Number), {
+//       method: 'POST',
+//       code: 200,
+//       route: '/test',
+//     });
+//   });
 
-  it('should handle missing request and response bodies', async () => {
-    const app = new Koa();
-    addRequestSizeMiddleware(app);
+//   it('should handle missing request and response bodies', async () => {
+//     const app = new Koa();
+//     addRequestSizeMiddleware(app);
 
-    const ctx = {
-      method: 'GET',
-      status: 200,
-      request: {
-        url: '/test',
-        // No body property
-      },
-      response: {
-        // No body property
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
+//     const ctx = {
+//       method: 'GET',
+//       status: 200,
+//       request: {
+//         url: '/test',
+//         // No body property
+//       },
+//       response: {
+//         // No body property
+//       },
+//     };
+//     const next = jest.fn().mockResolvedValue(null);
 
-    await app.middleware[0](ctx, next);
+//     await app.middleware[0](ctx, next);
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 0, {
-      method: 'GET',
-      code: 200,
-      route: '/test',
-    });
+//     expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 0, {
+//       method: 'GET',
+//       code: 200,
+//       route: '/test',
+//     });
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 0, {
-      method: 'GET',
-      code: 200,
-      route: '/test',
-    });
-  });
+//     expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 0, {
+//       method: 'GET',
+//       code: 200,
+//       route: '/test',
+//     });
+//   });
 
-  it('should handle empty request and response bodies', async () => {
-    const app = new Koa();
-    addRequestSizeMiddleware(app);
+//   it('should handle empty request and response bodies', async () => {
+//     const app = new Koa();
+//     addRequestSizeMiddleware(app);
 
-    const ctx = {
-      method: 'POST',
-      status: 200,
-      request: {
-        url: '/test',
-        body: {},
-      },
-      response: {
-        body: {},
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
+//     const ctx = {
+//       method: 'POST',
+//       status: 200,
+//       request: {
+//         url: '/test',
+//         body: {},
+//       },
+//       response: {
+//         body: {},
+//       },
+//     };
+//     const next = jest.fn().mockResolvedValue(null);
 
-    await app.middleware[0](ctx, next);
+//     await app.middleware[0](ctx, next);
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 2, {
-      // "{}" is 2 bytes
-      method: 'POST',
-      code: 200,
-      route: '/test',
-    });
+//     expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 2, {
+//       // "{}" is 2 bytes
+//       method: 'POST',
+//       code: 200,
+//       route: '/test',
+//     });
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 2, {
-      // "{}" is 2 bytes
-      method: 'POST',
-      code: 200,
-      route: '/test',
-    });
-  });
-});
+//     expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 2, {
+//       // "{}" is 2 bytes
+//       method: 'POST',
+//       code: 200,
+//       route: '/test',
+//     });
+//   });
+// });

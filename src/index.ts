@@ -8,6 +8,7 @@ import { metricsRouter } from './routes/metricsRouter';
 import cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
+import { piscinaJsonBodyParser } from './middlewares/piscinaBodyParser';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
@@ -24,11 +25,16 @@ const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
-app.use(
-  bodyParser({
-    jsonLimit: '200mb',
-  }),
-);
+if (process.env.PISCINA_BODY_PARSER === 'true') {
+  app.use(piscinaJsonBodyParser());
+} else {
+  app.use(
+    bodyParser({
+      jsonLimit: '200mb',
+    }),
+  );
+}
+
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 

@@ -128,6 +128,7 @@ export const data = [
                   validateOnly: false,
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -244,6 +245,7 @@ export const data = [
                   validateOnly: false,
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -319,6 +321,7 @@ export const data = [
                   authStatus: 'active',
                   customVariables: [{ from: '', to: '' }],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -394,6 +397,7 @@ export const data = [
                   authStatus: 'active',
                   customVariables: [{ from: '', to: '' }],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -467,6 +471,7 @@ export const data = [
                   authStatus: 'active',
                   customVariables: [{ from: '', to: '' }],
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -674,6 +679,7 @@ export const data = [
                   authStatus: 'active',
                   customVariables: [{ from: '', to: '' }],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -808,6 +814,7 @@ export const data = [
                   validateOnly: false,
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -922,6 +929,7 @@ export const data = [
                   validateOnly: false,
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -983,6 +991,7 @@ export const data = [
                   authStatus: 'active',
                   customVariables: [{ from: '', to: '' }],
                 },
+                hasDynamicConfig: false,
               },
             },
           ],

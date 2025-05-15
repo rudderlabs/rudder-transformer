@@ -799,7 +799,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { ...v1Destination, apiVersion: undefined },
+            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -849,7 +849,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { ...v1Destination, apiVersion: undefined },
+            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -899,7 +899,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: { ...v1Destination, apiVersion: undefined },
+            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {

@@ -153,7 +153,7 @@ export const groupTestData = [
       request: {
         body: [
           {
-            destination: { ...v2Destination, Config: { ...v2Destination.Config, apiServer: 'eu' } },
+            destination: {   hasDynamicConfig: false, ...v2Destination, Config: { ...v2Destination.Config, apiServer: 'eu' } },
             message: generateSimplifiedGroupPayload({
               userId: 'user@5',
               groupId: 'rudderlabs',
@@ -368,7 +368,7 @@ export const groupTestData = [
       request: {
         body: [
           {
-            destination: { ...v1Destination, Config: v1Destination.Config, sendAnonymousId: true },
+            destination: {   hasDynamicConfig: false, ...v1Destination, Config: v1Destination.Config, sendAnonymousId: true },
             message: {
               anonymousId: 'anonId',
               groupId: 'test_company_id_wdasda',

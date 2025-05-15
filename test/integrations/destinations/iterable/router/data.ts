@@ -54,6 +54,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(1),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -112,6 +113,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -177,6 +179,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -242,6 +245,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -298,6 +302,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(3),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -371,6 +376,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(4),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -440,6 +446,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(5),
               destination: {
+                  hasDynamicConfig: false,
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
                 DestinationDefinition: {
@@ -568,6 +575,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(6),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -617,6 +625,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(7),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -668,6 +677,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(8),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -738,6 +748,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(2)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -799,6 +810,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(3)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -862,6 +874,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(4)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -941,6 +954,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(6)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1001,6 +1015,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(7)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1051,6 +1066,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(8)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1116,6 +1132,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(5)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
                 DestinationDefinition: {
@@ -1228,6 +1245,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(1),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1287,6 +1305,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1353,6 +1372,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1427,6 +1447,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(4),
               destination: {
+                  hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1482,6 +1503,7 @@ export const data: RouterTestData[] = [
                 version: '1',
               },
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   hubID: '22066036',

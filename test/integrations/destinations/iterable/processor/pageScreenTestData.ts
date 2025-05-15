@@ -73,6 +73,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -184,6 +185,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -297,6 +299,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -406,6 +409,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -517,6 +521,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -630,6 +635,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -739,6 +745,7 @@ export const pageScreenTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
+                hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {

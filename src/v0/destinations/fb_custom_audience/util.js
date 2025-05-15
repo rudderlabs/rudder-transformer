@@ -130,7 +130,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
         updatedProperty = stringifiedUserInformation;
         break;
       case 'LOOKALIKE_VALUE':
-        updatedProperty = Number.isFinite(userInformation) ? userInformation : 0;
+        updatedProperty = userInformation;
         break;
       default:
         throw new ConfigurationError(`The property ${userProperty} is not supported`);
@@ -147,7 +147,8 @@ const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, update
    * sending empty string for the properties for which user hasn't provided any value
    */
   if (eachProperty === 'LOOKALIKE_VALUE') {
-    dataElement.push(tmpUpdatedProperty);
+    const finalValue = Number.isFinite(tmpUpdatedProperty) ? tmpUpdatedProperty : 0;
+    dataElement.push(finalValue);
   } else if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
     if (tmpUpdatedProperty) {
       tmpUpdatedProperty = `${tmpUpdatedProperty}`;

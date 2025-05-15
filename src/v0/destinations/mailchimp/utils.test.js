@@ -613,4 +613,188 @@ describe('Mailchimp Utils', () => {
       );
     });
   });
+
+  describe('Optional Chaining in checkIfMailExists', () => {
+    // Since checkIfMailExists is not exported, we'll test it indirectly through processPayload
+    // We'll focus on testing the specific scenarios where optional chaining is used
+
+    beforeEach(() => {
+      handleHttpRequest.mockClear();
+    });
+
+    it('should handle response with undefined response object', async () => {
+      // First call to checkIfMailExists
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          // response is undefined
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      // Second call for checkIfDoubleOptIn
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          response: {
+            double_optin: true,
+          },
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience123';
+      const metadata = { userId: 'test-user' };
+
+      const result = await processPayload(message, config, audienceId, metadata);
+
+      // Since the email doesn't exist (no contact_id), it should set status to pending (double opt-in is true)
+      expect(result).toHaveProperty('status', 'pending');
+      expect(handleHttpRequest).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle response with undefined contact_id', async () => {
+      // First call to checkIfMailExists
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          response: {
+            // contact_id is undefined
+            status: 'subscribed',
+          },
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      // Second call for checkIfDoubleOptIn
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          response: {
+            double_optin: false,
+          },
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience123';
+      const metadata = { userId: 'test-user' };
+
+      const result = await processPayload(message, config, audienceId, metadata);
+
+      // Since the email doesn't exist (no contact_id), it should set status to subscribed (double opt-in is false)
+      expect(result).toHaveProperty('status', 'subscribed');
+      expect(handleHttpRequest).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle response with undefined status', async () => {
+      // First call to checkIfMailExists
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          response: {
+            contact_id: '123456',
+            // status is undefined
+          },
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience123';
+      const metadata = { userId: 'test-user' };
+
+      const result = await processPayload(message, config, audienceId, metadata);
+
+      // Since the email exists (has contact_id) but no status, it should use the default 'subscribed'
+      expect(result).toHaveProperty('status', 'subscribed');
+      expect(handleHttpRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('should handle failed http response with undefined message', async () => {
+      // First call to checkIfMailExists
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {},
+        httpResponse: {
+          success: false,
+          response: {
+            // message is undefined
+          },
+        },
+      }));
+
+      // Second call for checkIfDoubleOptIn
+      handleHttpRequest.mockImplementationOnce(() => ({
+        processedResponse: {
+          response: {
+            double_optin: true,
+          },
+        },
+        httpResponse: {
+          success: true,
+        },
+      }));
+
+      const message = {
+        traits: {
+          email: 'test@example.com',
+        },
+      };
+
+      const config = {
+        apiKey: 'test-api-key',
+        datacenterId: 'us1',
+        enableMergeFields: true,
+      };
+
+      const audienceId = 'audience123';
+      const metadata = { userId: 'test-user' };
+
+      const result = await processPayload(message, config, audienceId, metadata);
+
+      // Since the email doesn't exist, it should set status to pending (double opt-in is true)
+      expect(result).toHaveProperty('status', 'pending');
+      expect(handleHttpRequest).toHaveBeenCalledTimes(2);
+    });
+  });
 });

@@ -211,6 +211,94 @@ Track events that update data extensions also require strict event ordering to e
 - **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
 - **Track Events (Event Definition Triggers)**: Not recommended, as this would trigger the same journey multiple times.
 
+### API Endpoints and Rate Limits
+
+The SFMC destination uses several REST API endpoints to handle different types of events and operations. Below is a detailed breakdown of each endpoint, its purpose, and associated limitations.
+
+#### Endpoints Overview
+
+| Endpoint | Purpose | Event Types | Use Cases |
+|----------|---------|-------------|-----------|
+| `auth.marketingcloudapis.com/v2/token` | Authentication | All | Obtaining access token for API calls |
+| `rest.marketingcloudapis.com/contacts/v1/contacts` | Contact Creation/Update | Identify | Creating or updating contacts in Contact Builder |
+| `rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}` | Data Extension Update | Identify, Track | Updating data in specified data extensions |
+| `rest.marketingcloudapis.com/interaction/v1/events` | Event Definition Trigger | Track | Triggering journeys via event definitions |
+
+#### Detailed Endpoint Information
+
+##### Authentication Endpoint
+- **URL**: `https://{subdomain}.auth.marketingcloudapis.com/v2/token`
+- **Method**: POST
+- **Used For**: All event types
+- **Payload**:
+  ```json
+  {
+    "grant_type": "client_credentials",
+    "client_id": "{clientId}",
+    "client_secret": "{clientSecret}"
+  }
+  ```
+- **Response**: Access token used for subsequent API calls
+- **Caching**: Token is cached for a configurable period (default: 1000 milliseconds)
+- **Rate Limits**: No specific limit documented, but subject to overall API call limits
+
+##### Contact Creation/Update Endpoint
+- **URL**: `https://{subdomain}.rest.marketingcloudapis.com/contacts/v1/contacts`
+- **Method**: POST
+- **Used For**: Identify events (when `createOrUpdateContacts` is enabled)
+- **Payload**:
+  ```json
+  {
+    "attributeSets": [],
+    "contactKey": "{userId or email}"
+  }
+  ```
+- **Purpose**: Creates or updates a contact in Contact Builder
+- **Limitations**:
+  - Requires a unique contact key (userId or email)
+  - Limited attribute support in this implementation
+
+##### Data Extension Update Endpoint
+- **URL**: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}`
+- **Method**: PUT
+- **Used For**: Identify and Track events
+- **Payload**:
+  ```json
+  {
+    "values": {
+      "Contact Key": "{contactKey}",
+      ...mapped fields
+    }
+  }
+  ```
+- **Purpose**: Updates data in specified data extensions
+- **Variations**:
+  - Single primary key: `/rows/Contact Key:{contactKey}`
+  - Multiple primary keys: `/rows/{key1}:{value1},{key2}:{value2},...`
+  - UUID as primary key: `/rows/Uuid:{messageId}`
+- **Limitations**:
+  - Data extension must exist before sending data
+  - Field names in data extension must match mapped fields (in title case)
+  - Primary key fields must exist in the data extension
+
+##### Event Definition Trigger Endpoint
+- **URL**: `https://{subdomain}.rest.marketingcloudapis.com/interaction/v1/events`
+- **Method**: POST
+- **Used For**: Track events (when mapped to event definition keys)
+- **Payload**:
+  ```json
+  {
+    "ContactKey": "{contactId}",
+    "EventDefinitionKey": "{mappedEventDefinitionKey}",
+    "Data": { ...properties }
+  }
+  ```
+- **Purpose**: Triggers journeys via event definitions
+- **Limitations**:
+  - Event definition must exist before triggering
+  - Contact must exist in Contact Builder
+  - `contactId` must be provided in the event properties
+
 ### Rate Limits and Batch Sizes
 
 Salesforce Marketing Cloud enforces API rate limits based on your subscription level:
@@ -223,10 +311,16 @@ Salesforce Marketing Cloud enforces API rate limits based on your subscription l
 
 There are no specific hourly or daily limits, but it's recommended to not exceed 2,000 SOAP API calls per minute.
 
-For REST API endpoints used by this destination:
-- Authentication endpoint: No specific limit documented
-- Data extension update endpoint: Subject to overall API call limits
-- Event definition trigger endpoint: Subject to overall API call limits
+#### Endpoint-Specific Considerations
+
+- **Authentication**: Token requests should be minimized through caching
+- **Contact Creation/Update**: High-volume operations should be batched through data extensions instead
+- **Data Extension Updates**:
+  - No documented batch size limit, but large payloads may impact performance
+  - Updates are upserts - they create new rows or update existing ones based on primary keys
+- **Event Definition Triggers**:
+  - Each trigger potentially starts a journey
+  - High volumes of triggers may impact journey performance
 
 ### Multiplexing
 

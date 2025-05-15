@@ -213,7 +213,7 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId, metadata) =>
   );
   if (!httpResponse.success) {
     const error = httpResponse.response?.response;
-    const status = error.status || 400;
+    const status = error?.status || 400;
     throw new NetworkError('User does not have access to the requested operation', status, {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     });
@@ -312,6 +312,40 @@ const overrideSubscriptionStatus = (message, primaryPayload, userStatus) => {
 };
 
 /**
+ * Determines the appropriate subscription status for a user in Mailchimp
+ * @param {*} userStatus Object containing user existence status and current subscription status
+ * @param {*} apiKey Mailchimp API key
+ * @param {*} datacenterId Mailchimp datacenter ID
+ * @param {*} audienceId Mailchimp audience ID
+ * @param {*} metadata Request metadata
+ * @param {*} message The event message
+ * @param {*} primaryPayload The current payload being constructed
+ * @returns Updated payload with appropriate subscription status
+ */
+const determineSubscriptionStatus = async (
+  userStatus,
+  apiKey,
+  datacenterId,
+  audienceId,
+  metadata,
+  message,
+  primaryPayload,
+) => {
+  let updatedPayload = { ...primaryPayload };
+
+  if (!userStatus.exists) {
+    const isDoubleOptin = await checkIfDoubleOptIn(apiKey, datacenterId, audienceId, metadata);
+    updatedPayload.status = isDoubleOptin
+      ? SUBSCRIPTION_STATUS.pending
+      : SUBSCRIPTION_STATUS.subscribed;
+  } else {
+    updatedPayload = overrideSubscriptionStatus(message, updatedPayload, userStatus);
+  }
+
+  return updatedPayload;
+};
+
+/**
  * Produces standard payload for mailchimp api
  * @param {*} message
  * @param {*} Config
@@ -329,7 +363,6 @@ const processPayload = async (message, Config, audienceId, metadata) => {
     // it is expected to have merge fields in proper format, along with appropriate status.
     addExternalIdToTraits(message);
     primaryPayload = getFieldValueFromMessage(message, 'traits');
-    email = get(primaryPayload, 'email_address');
     const mappedAddress = get(primaryPayload, 'merge_fields.ADDRESS');
     if (mappedAddress && Object.keys(mappedAddress).length > 0) {
       primaryPayload.merge_fields.ADDRESS = validateAddressObject(mappedAddress);
@@ -358,14 +391,15 @@ const processPayload = async (message, Config, audienceId, metadata) => {
     }
     const userStatus = await checkIfMailExists(apiKey, datacenterId, audienceId, email, metadata);
 
-    if (!userStatus.exists) {
-      const isDoubleOptin = await checkIfDoubleOptIn(apiKey, datacenterId, audienceId, metadata);
-      primaryPayload.status = isDoubleOptin
-        ? SUBSCRIPTION_STATUS.pending
-        : SUBSCRIPTION_STATUS.subscribed;
-    } else {
-      primaryPayload = overrideSubscriptionStatus(message, primaryPayload, userStatus);
-    }
+    primaryPayload = await determineSubscriptionStatus(
+      userStatus,
+      apiKey,
+      datacenterId,
+      audienceId,
+      metadata,
+      message,
+      primaryPayload,
+    );
   }
 
   return removeUndefinedAndNullValues(primaryPayload);

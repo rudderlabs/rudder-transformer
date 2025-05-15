@@ -1,0 +1,277 @@
+# Salesforce Marketing Cloud Destination
+
+Implementation in **Javascript**
+
+## Configuration
+
+### Required Settings
+
+- **Client ID**: Required for authentication with Salesforce Marketing Cloud API
+  - Must have appropriate permissions for the operations you want to perform
+
+- **Client Secret**: Required for authentication with Salesforce Marketing Cloud API
+
+- **Subdomain**: The subdomain of your Salesforce Marketing Cloud instance
+  - Format: `[subdomain]` (e.g., `mycompany`)
+  - This is used to construct the API endpoints
+
+- **External Key**: The external key of the data extension to use for Identify events
+  - This is required for storing user profile data
+
+### Optional Settings
+
+- ** Do Not Create or Update Contacts**: Enable to NOT create or update contacts in Salesforce Marketing Cloud
+  - When enabled, Identify events will NOT create or update contacts in addition to updating data extensions
+
+- **Event to External Key Mapping**: Maps track events to data extension external keys
+  - Format: `[event name]:[external key]`
+  - Required for track events to be processed
+
+- **Event to Primary Key Mapping**: Maps track events to data extension primary keys
+  - Format: `[event name]:[primary key]`
+  - Default primary key is "Contact Key" if not specified
+
+- **Event to UUID Mapping**: Maps track events to UUID flag
+  - Format: `[event name]:[true/false]`
+  - Determines whether to use UUID as primary key
+
+- **Event to Definition Mapping**: Maps track events to event definition keys
+  - Format: `[event name]:[event definition key]`
+  - Required for triggering journey events
+
+## Integration Functionalities
+
+### Supported Message Types
+
+- Identify
+- Track
+
+### Batching Support
+
+- **Supported**: No
+- **Message Types**: N/A
+
+### Intermediate Calls
+
+#### Identify Flow (with Create or Update Contacts enabled)
+- **Supported**: Yes
+- **Use Case**: Creating or updating contacts in Salesforce Marketing Cloud
+- **Endpoint**: `/contacts/v1/contacts`
+- This functionality creates or updates a contact before updating the data extension
+
+```javascript
+// The condition that leads to intermediate identify call:
+if (category.type === 'identify' && !createOrUpdateContacts) {
+  // first call to identify the contact
+  const identifyContactsPayload = responseBuilderForIdentifyContacts(
+    message,
+    subDomain,
+    authToken,
+  );
+  await handleHttpRequest(identifyContactsPayload, metadata);
+  // second call to update data extension
+  return responseBuilderForInsertData(
+    message,
+    externalKey,
+    subDomain,
+    category,
+    authToken,
+    'identify',
+  );
+}
+```
+
+### Transformer Logic Flow
+
+#### Event Stream to Data Extension Updates
+
+##### Identify Flow
+
+When a message with `type = identify` is received:
+
+1. Check if `createOrUpdateContacts` is set to `false` (default behavior)
+   - If `false`, two API calls are made:
+     1. First call to identify/create the contact:
+        - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/contacts/v1/contacts`
+        - Method: `POST`
+        - Uses `contactKey` (userId or email) as the unique identifier
+        - Body: `{ attributeSets: [], contactKey: "{userId or email}" }`
+     2. Second call to insert/update data in the Data Extension:
+        - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/Contact Key:{contactKey}`
+        - Method: `PUT`
+        - Uses `contactKey` (userId or email) as row identifier
+        - Body: `{ values: { "Contact Key": "{contactKey}", ...payload } }`
+   - If `true`, throws a configuration error indicating that creating/updating contacts is disabled
+
+##### Track Flow
+
+When a message with `type = track` is received:
+
+1. Check if the event name is mapped to an Event Definition Key
+   - If mapped, use Event Definition trigger flow (see below)
+2. If not mapped to an Event Definition, check if event is mapped to a Data Extension External Key
+   - If not mapped, throw a configuration error
+3. If mapped to a Data Extension, determine the primary key strategy:
+   - If `uuid` is set to `true` for this event:
+     - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/Uuid:{messageId}`
+     - Method: `PUT`
+     - Uses message ID as the primary key
+     - Body: `{ values: { "Uuid": "{messageId}", ...payload } }`
+   - If custom primary keys are defined:
+     - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{key1}:{value1},{key2}:{value2},...`
+     - Method: `PUT`
+     - Uses specified primary key fields and values
+     - Body: `{ values: { ...payload } }`
+   - If no primary key strategy is defined:
+     - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/Contact Key:{contactKey}`
+     - Method: `PUT`
+     - Uses `contactKey` (userId or email) as row identifier (default)
+     - Body: `{ values: { "Contact Key": "{contactKey}", ...payload } }`
+
+#### Contact Object Updates
+
+For Contact Object updates (via Identify events):
+
+1. The Contact is identified by `contactKey` (userId or email)
+2. API call is made to create or update the contact:
+   - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/contacts/v1/contacts`
+   - Method: `POST`
+   - Body: `{ attributeSets: [], contactKey: "{userId or email}" }`
+3. This creates the Contact record in the Contact Builder if it doesn't exist
+4. Note: This step is skipped if `createOrUpdateContacts` is set to `true`
+
+#### Event Definition Triggers
+
+For Event Definition triggers (via Track events mapped to Event Definition Keys):
+
+1. Check if the event name is mapped to an Event Definition Key in the configuration
+2. If mapped, construct an event trigger payload:
+   - Endpoint: `https://{subdomain}.rest.marketingcloudapis.com/interaction/v1/events`
+   - Method: `POST`
+   - Body:
+     ```
+     {
+       "ContactKey": "{contactId}",
+       "EventDefinitionKey": "{mappedEventDefinitionKey}",
+       "Data": { ...properties }
+     }
+     ```
+3. The `contactId` is expected to be in `message.properties.contactId`
+4. The Event Definition Key is retrieved from the mapping configuration
+5. All other properties from the track event are passed in the `Data` field
+6. This triggers any Journey that is listening for this Event Definition Key
+
+### Proxy Delivery
+
+- **Supported**: No
+
+### User Deletion
+
+- **Supported**: No
+
+### Additional Functionalities
+
+#### Data Extension Updates
+
+- **Supported**: Yes
+- **How It Works**:
+  - For Identify events, user profile data is stored in a data extension specified by the External Key configuration
+  - For Track events, event data is stored in data extensions specified by the Event to External Key mapping
+  - Primary keys can be configured for each event type to determine how data is updated in the data extension
+
+#### Event Definition Triggers
+
+- **Supported**: Yes
+- **How It Works**:
+  - Track events can be mapped to event definition keys using the Event to Definition Mapping configuration
+  - When a track event is received with a matching event name, the corresponding event definition is triggered
+  - This can be used to trigger journeys in Salesforce Marketing Cloud
+
+## General Queries
+
+### Event Ordering
+
+#### Identify
+Identify events require strict event ordering as they update user profiles in data extensions. Processing events out of order could result in older data overwriting newer data.
+
+#### Track
+Track events that update data extensions also require strict event ordering to ensure data integrity. However, track events that trigger event definitions (journeys) are less sensitive to ordering as they typically represent discrete events.
+
+### Data Replay Feasibility
+
+#### Missing Data Replay
+
+- **Identify Events**: Not recommended. Replaying missing identify events could overwrite newer data with older data.
+- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
+- **Track Events (Event Definition Triggers)**: Feasible, as these typically represent discrete events that trigger journeys.
+
+#### Already Delivered Data Replay
+
+- **Identify Events**: Not recommended. Replaying already delivered identify events would update the same records again, potentially overwriting changes made after the original event.
+- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
+- **Track Events (Event Definition Triggers)**: Not recommended, as this would trigger the same journey multiple times.
+
+### Rate Limits and Batch Sizes
+
+Salesforce Marketing Cloud enforces API rate limits based on your subscription level:
+
+| Edition | API Calls Per Year |
+|---------|-------------------|
+| Pro | 2 million |
+| Corporate | 6 million |
+| Enterprise | 200 million |
+
+There are no specific hourly or daily limits, but it's recommended to not exceed 2,000 SOAP API calls per minute.
+
+For REST API endpoints used by this destination:
+- Authentication endpoint: No specific limit documented
+- Data extension update endpoint: Subject to overall API call limits
+- Event definition trigger endpoint: Subject to overall API call limits
+
+### Multiplexing
+
+#### Identify Events with Create or Update Contacts Enabled
+- **Multiplexing**: YES
+- First API Call: `/contacts/v1/contacts` - To create or update the contact
+- Second API Call: `/hub/v1/dataevents/key:{externalKey}/rows/Contact Key:{contactKey}` - To update the data extension
+
+#### Track Events with Event Definition Mapping
+- **Multiplexing**: NO
+- Single API Call: `/interaction/v1/events` - To trigger the event definition
+
+#### Track Events with Data Extension Updates
+- **Multiplexing**: NO
+- Single API Call: `/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}` - To update the data extension
+
+## Version Information
+
+### Current Version
+
+Salesforce Marketing Cloud uses REST API v1 for the endpoints used by this destination.
+
+## Documentation Links
+
+### REST API Documentation
+
+- [Salesforce Marketing Cloud REST API Overview](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/rest-api-overview.html)
+- [Authentication](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/authentication.html)
+- [Data Extensions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/data-extension-rows-via-rest.html)
+- [Event Definitions](https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/event-definition-key.html)
+
+### RETL Functionality
+
+#### RETL Flow
+
+The RETL (Reverse ETL) flow is a specialized path for handling events that have been mapped to the destination through RudderStack's Reverse ETL feature. This flow is triggered when the message contains `context.mappedToDestination` set to a truthy value.
+
+When a message is received with the `mappedToDestination` flag:
+1. The destination extracts destination-specific external ID information
+2. Currently, only "data extension" is supported as an object type
+3. The destination constructs a PUT request to update the Data Extension row
+4. All traits from the message are included in the values object
+
+For detailed RETL functionality, please refer to [docs/retl.md](docs/retl.md)
+
+### Business Logic and Mappings
+
+For business logic and mappings information, please refer to [docs/businesslogic.md](docs/businesslogic.md)

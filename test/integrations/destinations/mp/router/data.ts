@@ -485,6 +485,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -591,6 +592,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -727,6 +729,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -804,6 +807,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -841,6 +845,7 @@ export const data = [
                 module: 'destination',
               },
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1347,6 +1352,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1452,6 +1458,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1587,6 +1594,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1664,6 +1672,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1701,6 +1710,7 @@ export const data = [
                 module: 'destination',
               },
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,

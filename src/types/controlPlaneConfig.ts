@@ -43,6 +43,7 @@ export type Destination<
   IsConnectionEnabled?: boolean;
   DeliveryAccount?: DeliveryAccountT;
   DeleteAccount?: DeleteAccountT;
+  hasDynamicConfig?: boolean; // Flag indicating whether the destination config contains dynamic config patterns
 };
 
 export type DestinationConnectionConfig<T> = {

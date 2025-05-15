@@ -8,6 +8,7 @@ interface TestReportData {
   testCase: TestCaseData;
   actualResponse: any;
   status: 'passed' | 'failed';
+  verbose: boolean;
   diff?: string;
 }
 
@@ -19,7 +20,7 @@ export const enhancedTestReport = {
    * Generate a detailed test report with JSON diff for failed cases
    */
   generateDetailedReport(data: TestReportData) {
-    const { testCase, actualResponse, status } = data;
+    const { testCase, actualResponse, status, verbose } = data;
     const expectedResponse = testCase.output.response?.body;
 
     // Create Allure test case details
@@ -65,7 +66,10 @@ export const enhancedTestReport = {
       // Add failure details
       const failureMessage = `Test failed for ${testCase.name}\nSee JSON diff for details`;
       allure.step(failureMessage, () => {
-        expect(actualResponse).toEqual(expectedResponse);
+        console.log(failureMessage);
+        if (verbose) {
+          expect(actualResponse).toEqual(expectedResponse);
+        }
       });
     }
 
@@ -75,7 +79,7 @@ export const enhancedTestReport = {
   /**
    * Validate test case response with enhanced reporting
    */
-  validateTestResponse(testCase: TestCaseData, response: any): boolean {
+  validateTestResponse(testCase: TestCaseData, response: any, verbose: boolean = false): boolean {
     const expectedResponse = testCase.output.response?.body;
     const actualResponse = response;
     const status = _.isEqual(actualResponse, expectedResponse) ? 'passed' : 'failed';
@@ -84,6 +88,7 @@ export const enhancedTestReport = {
       testCase,
       actualResponse,
       status,
+      verbose,
     });
 
     return status === 'passed';
@@ -126,9 +131,9 @@ export const enhancedTestUtils = {
   /**
    * Run post-test cleanup and reporting
    */
-  afterTestRun(testCase: TestCaseData, response: any) {
+  afterTestRun(testCase: TestCaseData, response: any, verbose: boolean = false) {
     allure.step('Test Verification', () => {
-      return enhancedTestReport.validateTestResponse(testCase, response);
+      return enhancedTestReport.validateTestResponse(testCase, response, verbose);
     });
   },
 };

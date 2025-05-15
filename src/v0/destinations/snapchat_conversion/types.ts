@@ -57,16 +57,7 @@ export const SnapchatDestinationConfigSchema = z
     apiVersion: z.enum([ApiVersion.V2, ApiVersion.V3]).optional(),
     rudderEventsToSnapEvents: z.array(EventMappingSchema).optional(),
   })
-  .passthrough()
-  .refine(
-    (data) =>
-      // Either pixelId OR (both appId AND snapAppId) must be provided
-      Boolean(data.pixelId || (data.appId && data.snapAppId)),
-    {
-      message: 'Either pixelId OR (both appId AND snapAppId) must be provided',
-      path: ['pixelId', 'snapAppId', 'appId'],
-    },
-  );
+  .passthrough();
 
 export type SnapchatDestinationConfig = z.infer<typeof SnapchatDestinationConfigSchema>;
 export type SnapchatDestination = Destination<SnapchatDestinationConfig>;

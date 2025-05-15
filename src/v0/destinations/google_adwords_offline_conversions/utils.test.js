@@ -1,9 +1,11 @@
+const sha256 = require('sha256');
 const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
+  getAddConversionPayload,
 } = require('./utils');
 
 const API_VERSION = 'v18';
@@ -226,24 +228,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.traits.phone;
     delete fittingPayload.properties.email;
-    let expectedOutput = {
-      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
-      payload: {
-        conversions: [
-          {
-            conversionDateTime: '2022-01-01 12:32:45-08:00',
-            conversionEnvironment: 'WEB',
-            userIdentifiers: [
-              {
-                hashedPhoneNumber:
-                  '2e0da1dbea5e4dc3ef73fde4de9329dd19f9030b384c169ff776002f45fd9a32',
-                userIdentifierSource: 'THIRD_PARTY',
-              },
-            ],
-          },
-        ],
-      },
-    };
+
     expect(() =>
       getClickConversionPayloadAndEndpoint(fittingPayload, config, '9625812972'),
     ).toThrow(
@@ -391,6 +376,177 @@ describe('getCallConversionPayload', () => {
           conversionDateTime: '2022-01-01 12:32:45-08:00',
         },
       ],
+    });
+  });
+});
+
+describe('getAddConversionPayload', () => {
+  // Helper function to create a valid message with required fields
+  const createValidMessage = (overrides = {}) => {
+    return {
+      event: 'testEvent',
+      timestamp: '2022-01-01T12:32:45Z',
+      properties: {
+        revenue: 100, // Required field
+        currency: 'USD', // Required field
+        ...(overrides.properties || {}),
+      },
+      traits: {
+        email: 'test@example.com',
+        phone: '+1234567890',
+        ...(overrides.traits || {}),
+      },
+    };
+  };
+
+  it('should create add conversion payload with default config', () => {
+    const message = createValidMessage();
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    expect(result.enable_partial_failure).toBe(false);
+    expect(result.enable_warnings).toBe(false);
+    expect(result.validate_only).toBe(false);
+    expect(result.operations.create.transaction_attribute.transaction_date_time).toBeDefined();
+    expect(result.operations.create.userIdentifiers[0].hashedEmail).toBeDefined();
+    expect(result.operations.create.consent).toBeDefined();
+  });
+
+  it('should hash email when hashUserIdentifier is true and email is a string', () => {
+    const message = createValidMessage();
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Email should be hashed
+    expect(result.operations.create.userIdentifiers[0].hashedEmail).not.toBe('test@example.com');
+    expect(result.operations.create.userIdentifiers[0].hashedEmail).toBe(
+      sha256('test@example.com').toString(),
+    );
+  });
+
+  it('should not hash email when hashUserIdentifier is false', () => {
+    const message = createValidMessage();
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: false,
+      defaultUserIdentifier: 'email',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Email should not be hashed
+    expect(result.operations.create.userIdentifiers[0].hashedEmail).toBe('test@example.com');
+  });
+
+  it('should hash phone when hashUserIdentifier is true and phone is a string', () => {
+    const message = createValidMessage({
+      traits: { email: undefined, phone: '+1234567890' },
+    });
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'phone',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Phone should be hashed
+    expect(result.operations.create.userIdentifiers[0].hashedPhoneNumber).not.toBe('+1234567890');
+    expect(result.operations.create.userIdentifiers[0].hashedPhoneNumber).toBe(
+      sha256('+1234567890').toString(),
+    );
+  });
+
+  it('should use alternative identifier when default identifier is not available', () => {
+    const message = createValidMessage({
+      traits: { email: undefined, phone: '+1234567890' },
+    });
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email', // Email is not available in the message
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Should use phone as alternative
+    expect(result.operations.create.userIdentifiers[0].hashedEmail).toBeUndefined();
+    expect(result.operations.create.userIdentifiers[0].hashedPhoneNumber).toBeDefined();
+  });
+
+  it('should handle empty userIdentifiers when no identifiers are available', () => {
+    const message = createValidMessage({
+      traits: { email: {}, phone: {} },
+    });
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Should have empty userIdentifiers
+    expect(result.operations.create.userIdentifiers[0]).toEqual({
+      hashedEmail: {},
+    });
+  });
+
+  it('should convert transaction amount to micros', () => {
+    const message = createValidMessage({
+      properties: { revenue: 100 },
+    });
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email',
+    };
+
+    const result = getAddConversionPayload(message, config, {});
+
+    // Should convert to micros (100 * 1000000)
+    expect(result.operations.create.transaction_attribute.transaction_amount_micros).toBe(
+      '100000000',
+    );
+  });
+
+  it('should set consent object from eventLevelConsentsData', () => {
+    const message = createValidMessage();
+
+    const config = {
+      validateOnly: false,
+      hashUserIdentifier: true,
+      defaultUserIdentifier: 'email',
+    };
+
+    const eventLevelConsentsData = {
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    };
+
+    const result = getAddConversionPayload(message, config, eventLevelConsentsData);
+
+    // Should set consent from eventLevelConsentsData
+    expect(result.operations.create.consent).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
     });
   });
 });

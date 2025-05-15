@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.100.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.99.0...v1.100.0) (2025-05-14)
+
+
+### Features
+
+* remove hardcoded node_options ([#4316](https://github.com/rudderlabs/rudder-transformer/issues/4316)) ([6dcdc2d](https://github.com/rudderlabs/rudder-transformer/commit/6dcdc2d55ed3b68cad9347781a2116d712af7a73))
+
 ## [1.99.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.98.0...v1.99.0) (2025-05-12)
 
 

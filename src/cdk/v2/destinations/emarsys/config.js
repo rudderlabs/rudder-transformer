@@ -14,8 +14,11 @@ const groupedSuccessfulPayload = {
   },
 };
 
+// Get batch size from environment variable with default fallback to 1000
+const MAX_BATCH_SIZE = parseInt(process.env.EMARSYS_MAX_BATCH_SIZE, 10) || 1000;
+
 module.exports = {
-  MAX_BATCH_SIZE: 1000,
+  MAX_BATCH_SIZE,
   EMAIL_FIELD_ID: 3,
   OPT_IN_FILED_ID: 31,
   ALLOWED_OPT_IN_VALUES,

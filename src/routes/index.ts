@@ -1,7 +1,7 @@
+import 'dotenv/config';
 import Koa from 'koa';
 import Router from '@koa/router';
 import { existsSync, readFileSync } from 'fs';
-import dotenv from 'dotenv';
 import { koaSwagger } from 'koa2-swagger-ui';
 import path from 'path';
 import userTransformRoutes from './userTransform';
@@ -13,8 +13,6 @@ import testEventRoutes from './testEvents';
 import { trackingPlanRoutes } from './trackingPlan';
 import logger from '../logger';
 import { isNotEmpty } from '../v0/util';
-
-dotenv.config();
 
 export function applicationRoutes(app: Koa<any, object>) {
   app.use(proxyRoutes);

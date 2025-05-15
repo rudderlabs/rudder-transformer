@@ -182,16 +182,16 @@ async function preparePayload(events, config) {
   );
 
   const processAction = async (action, operation) => {
-    if (
-      isValueBasedAudience &&
-      !cleanUserSchema.includes('LOOKALIKE_VALUE') &&
-      operation === 'add'
-    ) {
-      throw new ConfigurationError(
-        'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
-      );
-    }
     if (groupedRecordsByAction[action]) {
+      if (
+        isValueBasedAudience &&
+        !cleanUserSchema.includes('LOOKALIKE_VALUE') &&
+        operation === 'add'
+      ) {
+        throw new ConfigurationError(
+          'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+        );
+      }
       const recordChunksArray = returnArrayOfSubarrays(
         groupedRecordsByAction[action],
         MAX_USER_COUNT,

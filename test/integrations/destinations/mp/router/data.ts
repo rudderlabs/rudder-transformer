@@ -514,8 +514,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -620,8 +624,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -756,8 +764,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -780,8 +792,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/groups/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1376,8 +1392,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1481,8 +1501,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1616,8 +1640,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1640,8 +1668,12 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/groups/',
-                  headers: {},
-                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    strict: 1,
+                  },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {

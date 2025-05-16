@@ -3,6 +3,7 @@ import path from 'path';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../../types';
 import { FeatureFlags } from '../../middlewares/featureFlag';
 import logger from '../../logger';
+import stats from '../../util/stats';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -20,6 +21,8 @@ class PiscinaService {
   private piscina: Piscina | null = null;
 
   private isInitialized = false;
+
+  private metricsInterval: NodeJS.Timeout | null = null;
 
   private static getInstance(): PiscinaService {
     if (!PiscinaService.instance) {
@@ -72,7 +75,32 @@ class PiscinaService {
       });
       service.isInitialized = true;
       logger.info('Piscina worker pool initialized');
+
+      // Start collecting Piscina metrics
+      service.startMetricsCollection();
     }
+  }
+
+  private startMetricsCollection(): void {
+    if (!this.piscina) return;
+
+    // Clear any existing interval
+    if (this.metricsInterval) {
+      clearInterval(this.metricsInterval);
+    }
+
+    // Set up interval to collect metrics
+    this.metricsInterval = setInterval(() => {
+      try {
+        // Get queue size from Piscina instance
+        const queueSize = this.piscina?.queueSize || 0;
+
+        // Update queue size
+        stats.gauge('piscina_queue_size', queueSize);
+      } catch (error) {
+        logger.error('Error collecting Piscina metrics:', error);
+      }
+    }, 5000); // Collect metrics every 5 seconds
   }
 
   public static async terminate(): Promise<void> {
@@ -80,6 +108,11 @@ class PiscinaService {
 
     if (service.isInitialized && service.piscina) {
       logger.info('Terminating Piscina worker pool');
+      // Clear metrics interval
+      if (service.metricsInterval) {
+        clearInterval(service.metricsInterval);
+        service.metricsInterval = null;
+      }
       await service.piscina.destroy();
       service.piscina = null;
       service.isInitialized = false;

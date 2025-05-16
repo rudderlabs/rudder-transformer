@@ -326,7 +326,7 @@ export const data = [
                 },
               },
               statusCode: 500,
-              error: '[TWITTER ADS]:: OAuth - access keys not found',
+              error: '[TWITTER ADS]:: OAuth - secret not found',
               metadata: [{}],
               statTags: {
                 errorCategory: 'platform',
@@ -420,6 +420,7 @@ export const data = [
   ...tc,
   mockFns: (_) => {
     jest.mock('../../../../../src/v0/destinations/twitter_ads/util', () => ({
+      ...jest.requireActual('../../../../../src/v0/destinations/twitter_ads/util'),
       getAuthHeaderForRequest: (_a, _b) => {
         return { Authorization: authHeaderConstant };
       },

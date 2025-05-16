@@ -1,5 +1,9 @@
 const crypto = require('crypto');
 const oauth1a = require('oauth-1.0a');
+const {
+  OAuthSecretError,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('@rudderstack/integrations-lib');
 
 function getAuthHeaderForRequest(request, oAuthObject) {
   const oauth = oauth1a({
@@ -18,4 +22,24 @@ function getAuthHeaderForRequest(request, oAuthObject) {
   return oauth.toHeader(authorization);
 }
 
-module.exports = { getAuthHeaderForRequest };
+function getOAuthFields({ secret }, destinationType) {
+  if (!secret) {
+    throw new OAuthSecretError(`[${destinationType}]:: OAuth - secret not found`);
+  }
+  const requiredFields = ['consumerKey', 'consumerSecret', 'accessToken', 'accessTokenSecret'];
+
+  requiredFields.forEach((field) => {
+    if (!isDefinedAndNotNullAndNotEmpty(secret[field])) {
+      throw new OAuthSecretError(`[${destinationType}]:: OAuth - ${field} not found`);
+    }
+  });
+  const oAuthObject = {
+    consumerKey: secret.consumerKey,
+    consumerSecret: secret.consumerSecret,
+    accessToken: secret.accessToken,
+    accessTokenSecret: secret.accessTokenSecret,
+  };
+  return oAuthObject;
+}
+
+module.exports = { getAuthHeaderForRequest, getOAuthFields };

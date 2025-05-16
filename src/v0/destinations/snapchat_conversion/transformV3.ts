@@ -42,8 +42,10 @@ import {
   SnapchatV3EventData,
   SnapchatV3BatchRequestOutput,
   MappingConfig,
+  SnapchatV3EventType,
+  SnapchatV3EventConfigMap,
 } from './types';
-import { RudderMessage } from '../../../types';
+import { RouterTransformationResponse, RudderMessage } from '../../../types';
 
 /**
  * Builds a response object for the Snapchat V3 API
@@ -83,7 +85,7 @@ const populateHashedTraitsValues = (
   const updatedPayload: SnapchatV3Payload = { ...payload };
   const userData = updatedPayload.data[0].user_data || {};
 
-  const getHashedTrait = (value: any): string | undefined => {
+  const getHashedTrait = (value: string | number): string | undefined => {
     if (!value) return undefined;
     const trimmed = value.toString().trim().toLowerCase();
     if (!trimmed) return undefined;
@@ -217,8 +219,8 @@ const addSpecificEventDetails = (
  * @param eventType - The type of event
  * @returns The mapping configuration for the specified event type
  */
-const getEventConfig = (eventType: string): any => {
-  const configMap: Record<string, any> = {
+const getEventConfig = (eventType: SnapchatV3EventType): MappingConfig => {
+  const configMap: SnapchatV3EventConfigMap = {
     products_searched: mappingConfigV3[ConfigCategoryV3.PRODUCTS_SEARCHED.name],
     product_list_viewed: mappingConfigV3[ConfigCategoryV3.PRODUCT_LIST_VIEWED.name],
     promotion_viewed: mappingConfigV3[ConfigCategoryV3.PROMOTION_VIEWED.name],
@@ -433,7 +435,7 @@ const processV3 = (event: SnapchatRouterRequest): SnapchatV3BatchedRequest => {
 const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: any) => {
   const webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[] = [];
   const mobileEventsChunk: SnapchatV3ProcessedEvent[] = [];
-  const errorRespList: any[] = [];
+  const errorRespList: RouterTransformationResponse[] = [];
 
   inputs.forEach((event) => {
     try {

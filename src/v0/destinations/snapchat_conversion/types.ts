@@ -8,6 +8,7 @@ import {
 } from '../../../types';
 
 import { BatchedRequest, BatchRequestOutput } from '../../../types/destinationTransformation';
+import { eventNameMapping } from './config';
 
 // COMMON ENUMS AND CONSTANTS
 
@@ -291,3 +292,13 @@ export type MappingConfig = Array<{
   metadata?: MappingMetadata;
   sourceFromGenericMap?: boolean;
 }>;
+
+/**
+ * Event type for Snapchat V3 API
+ */
+export type SnapchatV3EventType = keyof typeof eventNameMapping;
+
+/**
+ * Event configuration map type for Snapchat V3 API
+ */
+export type SnapchatV3EventConfigMap = Record<SnapchatV3EventType, MappingConfig>;

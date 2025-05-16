@@ -48,7 +48,7 @@ import {
   ApiVersionValue,
   MappingConfig,
 } from './types';
-import { RudderMessage } from '../../../types';
+import { RouterTransformationResponse, RudderMessage } from '../../../types';
 
 /**
  * Builds a response object for the Snapchat V2 API
@@ -410,7 +410,7 @@ const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: a
   }
 
   const eventsChunk: SnapchatV2ProcessedEvent[] = []; // temporary variable to divide payload into chunks
-  const errorRespList: any[] = [];
+  const errorRespList: RouterTransformationResponse[] = [];
   inputs.forEach((event) => {
     try {
       const resp = process(event);

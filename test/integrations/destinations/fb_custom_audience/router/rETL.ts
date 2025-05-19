@@ -321,6 +321,78 @@ export const rETLRecordV2RouterRequestWithValueBasedAudience: RouterTransformati
       },
       metadata: generateMetadata(4),
     },
+    {
+      destination: destinationV2,
+      connection: connectionWithValueBasedAudience,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '5',
+        rudderId: '5',
+        identifiers: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+          LOOKALIKE_VALUE: '100',
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(5),
+    },
+    {
+      destination: destinationV2,
+      connection: connectionWithValueBasedAudience,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '6',
+        rudderId: '6',
+        identifiers: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+          LOOKALIKE_VALUE: [{}],
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(6),
+    },
+    {
+      destination: destinationV2,
+      connection: connectionWithValueBasedAudience,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '7',
+        rudderId: '7',
+        identifiers: {
+          EMAIL: 'subscribed@eewrfrd.com',
+          FI: 'ghui',
+          LOOKALIKE_VALUE: {},
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(7),
+    },
   ],
   destType: 'fb_custom_audience',
 };

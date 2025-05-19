@@ -148,9 +148,10 @@ const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, proper
    * Ensure it's a finite number and greater than or equal to 0, if not, default to 0.
    */
   if (propertyName === 'LOOKALIKE_VALUE') {
-    const finalValue =
-      Number.isFinite(normalizedValue) && normalizedValue >= 0 ? normalizedValue : 0;
-    dataElement.push(finalValue);
+    const lookalikeValue = Number(normalizedValue);
+    const validLookalikeValue =
+      Number.isFinite(lookalikeValue) && lookalikeValue >= 0 ? lookalikeValue : 0;
+    dataElement.push(validLookalikeValue);
     return dataElement;
   }
 

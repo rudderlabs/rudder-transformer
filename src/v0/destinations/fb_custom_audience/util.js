@@ -139,30 +139,35 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   return updatedProperty;
 };
 
-const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, updatedProperty) => {
-  let tmpUpdatedProperty = updatedProperty;
+const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, propertyValue) => {
+  // Normalize undefined/null to empty string
+  const normalizedValue = propertyValue ?? '';
+
   /**
-   * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
-   * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-   * sending empty string for the properties for which user hasn't provided any value
+   * Special case for LOOKALIKE_VALUE, for value-based audience
+   * Ensure it's a finite number and greater than or equal to 0, if not, default to 0.
    */
-  if (eachProperty === 'LOOKALIKE_VALUE') {
-    const finalValue = Number.isFinite(tmpUpdatedProperty) ? tmpUpdatedProperty : 0;
+  if (propertyName === 'LOOKALIKE_VALUE') {
+    const finalValue =
+      Number.isFinite(normalizedValue) && normalizedValue >= 0 ? normalizedValue : 0;
     dataElement.push(finalValue);
-  } else if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-    if (tmpUpdatedProperty) {
-      tmpUpdatedProperty = `${tmpUpdatedProperty}`;
-      dataElement.push(sha256(tmpUpdatedProperty));
-    } else {
-      dataElement.push('');
-    }
+    return dataElement;
   }
-  // if property name is MADID or EXTERN_ID if the value is undefined send empty string
-  else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
-    dataElement.push('');
+
+  /**
+   * Hash the original value for the properties apart from 'MADID' and 'EXTERN_ID',
+   * as hashing is not required for them.
+   * Reference: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+   * Send an empty string for the properties for which the user hasn't provided any value.
+   */
+  const isHashable = isHashRequired && propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+
+  if (isHashable) {
+    dataElement.push(normalizedValue ? sha256(String(normalizedValue)) : '');
   } else {
-    dataElement.push(tmpUpdatedProperty || '');
+    dataElement.push(normalizedValue);
   }
+
   return dataElement;
 };
 

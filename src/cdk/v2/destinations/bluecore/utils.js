@@ -99,7 +99,6 @@ const validateEventSpecificPayload = (payload, message) => {
     identify: validateCustomerEvent,
     optin: validateEmail,
     unsubscribe: validateEmail,
-    subscription_event: validateEmail,
   };
 
   const validator = eventValidators[payload.event];

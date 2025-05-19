@@ -99,6 +99,7 @@ const validateEventSpecificPayload = (payload, message) => {
     identify: validateCustomerEvent,
     optin: validateEmail,
     unsubscribe: validateEmail,
+    subscription_event: validateEmail,
   };
 
   const validator = eventValidators[payload.event];
@@ -227,7 +228,9 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      if (isOptinEvent(message?.event)) {
+      if (isSubscriptionEvent(message?.event)) {
+        // if subscription event, then customer properties should be in properties object
+        // https://help.bluecore.com/en/articles/6786828-events-api#h_66485dc4cd
         customProperties.properties = {
           ...customProperties.properties,
           ...customerProperties,
@@ -240,6 +243,25 @@ const mapCustomProperties = (message) => {
       break;
   }
   return customProperties;
+};
+
+const constructSubscriptionEventPayload = (message) => {
+  const emailConsent = get(message, 'properties.channel_consents.email', { default: null });
+  if (!isDefinedAndNotNull(emailConsent)) {
+    throw new InstrumentationError('[Bluecore]:: email consent is required for subscription event');
+  }
+  if (getType(emailConsent) !== 'boolean') {
+    throw new InstrumentationError(
+      '[Bluecore]:: email consent should be a boolean value for subscription event',
+    );
+  }
+
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.SUBSCRIPTION_EVENT.name],
+  );
+  payload.event = emailConsent ? 'optin' : 'unsubscribe';
+  return payload;
 };
 
 const constructSubscriptionEventPayload = (message) => {

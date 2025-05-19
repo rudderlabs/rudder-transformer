@@ -5,6 +5,7 @@ const {
   deduceTrackEventName,
   populateAccurateDistinctId,
   createProductForStandardEcommEvent,
+  constructCommonPayload,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -399,5 +400,75 @@ describe('createProductForStandardEcommEvent', () => {
     const eventName = 'some event';
     const result = createProductForStandardEcommEvent(message, eventName);
     expect(result).toBeNull();
+  });
+});
+
+describe('constructCommonPayload', () => {
+  const testCases = [
+    {
+      name: 'should return the common payload when the event is not a subscription event',
+      message: {
+        event: 'some event',
+        context: {
+          traits: {
+            email: 'test@example.com',
+          },
+        },
+        properties: { name: 'product 1' },
+      },
+      expected: { properties: { customer: { email: 'test@example.com' } } },
+      errorMessage: '',
+    },
+    {
+      name: 'should return the subscription event payload when the event is a subscription event and the email consent is true',
+      message: {
+        event: 'subscription_event',
+        properties: { channel_consents: { email: true } },
+      },
+      expected: { event: 'optin', properties: {} },
+      errorMessage: '',
+    },
+    {
+      name: 'should return the subscription event payload when the event is a subscription event and the email consent is false',
+      message: {
+        event: 'subscription_event',
+        properties: { channel_consents: { email: false } },
+      },
+      expected: { event: 'unsubscribe', properties: {} },
+      errorMessage: '',
+    },
+    {
+      name: 'should return throw error when the event is a subscription event and the email consent is not provided',
+      message: {
+        event: 'subscription_event',
+        properties: {},
+      },
+      errorMessage: '[Bluecore]:: email consent is required for subscription event',
+    },
+    {
+      name: 'should return throw error when the event is a subscription event and the email consent is not a boolean',
+      message: {
+        event: 'subscription_event',
+        properties: { channel_consents: { email: 'false' } },
+      },
+      errorMessage: '[Bluecore]:: email consent should be a boolean value for subscription event',
+    },
+  ];
+
+  testCases.forEach(({ name, message, expected, errorMessage }) => {
+    test(name, () => {
+      if (errorMessage) {
+        expect.assertions(2);
+        try {
+          constructCommonPayload(message);
+        } catch (e) {
+          expect(e).toBeInstanceOf(InstrumentationError);
+          expect(e.message).toEqual(errorMessage);
+        }
+      } else {
+        const result = constructCommonPayload(message);
+        expect(result).toEqual(expected);
+      }
+    });
   });
 });

@@ -1,5 +1,12 @@
 [
   {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["channel_consents", "list"]
+    }
+  },
+  {
     "destKey": "properties.name",
     "sourceKeys": "name",
     "required": false,

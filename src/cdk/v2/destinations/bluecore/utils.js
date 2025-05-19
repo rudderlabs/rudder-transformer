@@ -6,6 +6,8 @@ const {
   getHashFromArrayWithDuplicate,
   isDefinedAndNotNull,
   isDefinedNotNullNotEmpty,
+  get,
+  getType,
 } = require('@rudderstack/integrations-lib');
 const {
   getFieldValueFromMessage,
@@ -15,12 +17,7 @@ const {
   extractCustomFields,
 } = require('../../../../v0/util');
 const { CommonUtils } = require('../../../../util/common');
-const {
-  EVENT_NAME_MAPPING,
-  IDENTIFY_EXCLUSION_LIST,
-  TRACK_EXCLUSION_LIST,
-  OPTIN_EVENTS,
-} = require('./config');
+const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
@@ -84,6 +81,7 @@ const validateEventSpecificPayload = (payload, message) => {
     identify: validateCustomerEvent,
     optin: validateEmail,
     unsubscribe: validateEmail,
+    subscription_event: validateEmail,
   };
 
   const validator = eventValidators[payload.event];
@@ -161,11 +159,11 @@ const isStandardBluecoreEvent = (eventName) => {
   return !!EVENT_NAME_MAPPING.some((item) => item.dest.includes(eventName));
 };
 
-const isOptinEvent = (eventName) => {
+const isSubscriptionEvent = (eventName) => {
   if (typeof eventName !== 'string') {
     return false;
   }
-  return OPTIN_EVENTS.includes(eventName.toLowerCase());
+  return eventName.toUpperCase() === 'SUBSCRIPTION_EVENT';
 };
 
 /**
@@ -220,7 +218,9 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      if (isOptinEvent(message?.event)) {
+      if (isSubscriptionEvent(message?.event)) {
+        // if subscription event, then customer properties should be in properties object
+        // https://help.bluecore.com/en/articles/6786828-events-api#h_66485dc4cd
         customProperties.properties = {
           ...customProperties.properties,
           ...customerProperties,
@@ -235,9 +235,28 @@ const mapCustomProperties = (message) => {
   return customProperties;
 };
 
+const constructSubscriptionEventPayload = (message) => {
+  const emailConsent = get(message, 'properties.channel_consents.email', { default: null });
+  if (!isDefinedAndNotNull(emailConsent)) {
+    throw new InstrumentationError('[Bluecore]:: email consent is required for subscription event');
+  }
+  if (getType(emailConsent) !== 'boolean') {
+    throw new InstrumentationError(
+      '[Bluecore]:: email consent should be a boolean value for subscription event',
+    );
+  }
+
+  const payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.SUBSCRIPTION_EVENT.name],
+  );
+  payload.event = emailConsent ? 'optin' : 'unsubscribe';
+  return payload;
+};
+
 const constructCommonPayload = (message) => {
-  if (isOptinEvent(message?.event)) {
-    return constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OPTIN.name]);
+  if (isSubscriptionEvent(message?.event)) {
+    return constructSubscriptionEventPayload(message);
   }
   return constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]);
 };
@@ -326,4 +345,6 @@ module.exports = {
   constructProperties,
   createProductForStandardEcommEvent,
   populateAccurateDistinctId,
+  isSubscriptionEvent,
+  constructCommonPayload,
 };

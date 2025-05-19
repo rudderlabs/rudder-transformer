@@ -15,9 +15,9 @@ const CONFIG_CATEGORIES = {
     name: 'bluecoreCommonConfig',
     type: 'common',
   },
-  OPTIN: {
-    name: 'bluecoreOptinEventConfig',
-    type: 'optin',
+  SUBSCRIPTION_EVENT: {
+    name: 'bluecoreSubscriptionEventConfig',
+    type: 'subscription_event',
   },
 };
 
@@ -68,8 +68,6 @@ const IDENTIFY_EXCLUSION_LIST = [
 
 const TRACK_EXCLUSION_LIST = [...IDENTIFY_EXCLUSION_LIST, 'query', 'order_id', 'total', 'products'];
 
-const OPTIN_EVENTS = ['optin', 'unsubscribe'];
-
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,
@@ -79,5 +77,4 @@ module.exports = {
   BLUECORE_EXCLUSION_FIELDS,
   IDENTIFY_EXCLUSION_LIST,
   TRACK_EXCLUSION_LIST,
-  OPTIN_EVENTS,
 };

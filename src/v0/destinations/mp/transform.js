@@ -43,9 +43,13 @@ const { CommonUtils } = require('../../../util/common');
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
 
+const setStrictMode = (destConfig) => ({
+  strict: destConfig.strictMode ? 1 : 0,
+});
+
 const setImportCredentials = (destConfig) => {
   const endpoint = `${getBaseEndpoint(destConfig)}/import/`;
-  const params = { strict: destConfig.strictMode ? 1 : 0 };
+  const params = setStrictMode(destConfig);
   const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
   let credentials;
   if (token) {
@@ -95,7 +99,10 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
     }
     default:
       response.endpoint = `${getBaseEndpoint(destConfig)}/engage/`;
-      response.headers = {};
+      response.headers = {
+        'Content-Type': 'application/json',
+      };
+      response.params = setStrictMode(destConfig);
   }
   return response;
 };

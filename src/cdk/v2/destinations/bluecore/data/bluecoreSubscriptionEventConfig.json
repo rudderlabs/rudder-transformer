@@ -3,7 +3,7 @@
     "destKey": "properties",
     "sourceKeys": "properties",
     "metadata": {
-      "excludes": ["channel_consents", "list"]
+      "excludes": ["channelConsents", "list"]
     }
   },
   {

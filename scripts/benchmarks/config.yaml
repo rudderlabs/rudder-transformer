@@ -1,0 +1,34 @@
+# To introduce a new env var change both run-tests.sh and docker-compose.yaml
+# These variables are ALWAYS required:
+# * tests.name
+# * tests.STATS_COLLECTION_INTERVAL
+# * tests.DURATION_MINUTES
+#
+# Additional memory configuration:
+# BEWARE: v8_flags.max_heap_size > 0 implies v8_flags.max_semi_space_size == 0 || v8_flags.max_old_space_size == 0
+# * UT_MAX_SEMI_SPACE_SIZE - Sets Node.js --max-semi-space-size flag
+# * UT_MAX_OLD_SPACE_SIZE - Sets Node.js --max-old-space-size flag
+# * UT_MAX_HEAP_SIZE - Sets Node.js --max-heap-size flag
+rl_image: fracasula/rudder-load:latest
+stats_collection_interval: 10
+duration_minutes: 2
+tests:
+  - name: test-classic
+    UT_NUM_PROCS: 5
+    UT_POOLING: false
+  - name: test-classic-semi512
+    UT_NUM_PROCS: 5
+    UT_POOLING: false
+    UT_MAX_SEMI_SPACE_SIZE: 512
+    UT_MAX_HEAP_SIZE: 5120
+  - name: test-piscina
+    UT_NUM_PROCS: 5
+    UT_MAX_THREADS: 8
+    UT_MIN_THREADS: 2
+  - name: test-piscina-semi512
+    UT_NUM_PROCS: 5
+    UT_MAX_THREADS: 8
+    UT_MIN_THREADS: 2
+    UT_MAX_SEMI_SPACE_SIZE: 512
+    UT_MAX_HEAP_SIZE: 5120
+#    RL_BATCH_SIZES: 30

@@ -1,0 +1,71 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    #image: fracasula/ut-custom:latest
+    container_name: user-transformer
+    ports:
+      - "9090:9090"
+    deploy:
+      resources:
+        limits:
+          cpus: '5.0' # Limits the container to max 5 CPUs
+          memory: 10G  # Limits the container to max 5GB of memory
+    environment:
+      # Node memory configuration variables
+      UT_MAX_SEMI_SPACE_SIZE: ${UT_MAX_SEMI_SPACE_SIZE:-}
+      UT_MAX_OLD_SPACE_SIZE: ${UT_MAX_OLD_SPACE_SIZE:-}
+      UT_MAX_HEAP_SIZE: ${UT_MAX_HEAP_SIZE:-}
+      # Application configuration variables
+      NUM_PROCS: ${UT_NUM_PROCS:-5}
+      PISCINA_CONCURRENT_TASKS_PER_WORKER: ${UT_CONCURRENT_TASKS_PER_WORKER:-1000}
+      PISCINA_MAX_THREADS: ${UT_MAX_THREADS:-8}
+      PISCINA_MIN_THREADS: ${UT_MIN_THREADS:-2}
+      PISCINA_IDLE_TIMEOUT: ${UT_WORKER_IDLE_TIMEOUT:-1000}
+      USE_PISCINA: ${UT_POOLING:-true}
+#      IVM_MEMORY: ${UT_IVM_MEMORY:-512}
+  rudder-load:
+    image: ${RL_IMAGE:-fracasula/rudder-load:latest}
+    container_name: rudder-load
+    command: ["/rudder-load-producer"]
+    ports:
+      - "9102:9102"
+    deploy:
+      resources:
+        limits:
+          cpus: '5.0'
+          memory: 5G
+    environment:
+      MODE:                      ${RL_MODE:-http}
+      HOSTNAME:                  rudder-load-0-test
+      LOAD_RUN_ID:               "loadRunID1" # if empty, a random UUID will be generated
+      REPLICAS:                  1
+      CONCURRENCY:               ${RL_CONCURRENCY:-3000}
+      MESSAGE_GENERATORS:        ${RL_MESSAGE_GENERATORS:-1500}
+      MAX_EVENTS_PER_SECOND:     ${RL_MAX_EVENTS_PER_SECOND:-0}
+      SOURCES:                   2tJ69WBiVaaCO6DqELKNtrW0JLB
+      HTTP_ENDPOINT:             http://user-transformer:9090/customTransform
+      HTTP2_ENDPOINT:            http://user-transformer:9090/customTransform
+      USE_ONE_CLIENT_PER_SLOT:   ${RL_USE_ONE_CLIENT_PER_SLOT:-false}
+      ENABLE_SOFT_MEMORY_LIMIT:  true
+      SOFT_MEMORY_LIMIT:         5Gi
+      GOMEMLIMIT:                5000000000 # 5GB in bytes
+      GOMAXPROCS:                5
+      TOTAL_USERS:               10000
+      HOT_USER_GROUPS:           100
+      BATCH_SIZES:               ${RL_BATCH_SIZES:-10}
+      HOT_BATCH_SIZES:           100
+      EVENT_TYPES:               ut-email
+      HOT_EVENT_TYPES:           100
+      VALIDATOR_TYPE:            user-transformer-hash-email
+      HTTP_COMPRESSION:          ${RL_COMPRESSION:-false}
+      HTTP_CONCURRENCY:          200000
+      HTTP_CONTENT_TYPE:         application/json
+      HTTP_MAX_CONNS_PER_HOST:   200000
+      HTTP_MAX_IDLE_CONN:        1h
+      HTTP_READ_TIMEOUT:         30s
+      HTTP_WRITE_TIMEOUT:        30s
+      HTTP2_COMPRESSION:         ${RL_COMPRESSION:-false}
+      HTTP2_TIMEOUT:             600s
+      HTTP2_IDLE_CONN_TIMEOUT:   30s
+      HTTP2_CONTENT_TYPE:        application/json

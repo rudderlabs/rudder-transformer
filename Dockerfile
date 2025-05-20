@@ -5,7 +5,7 @@ ENV HUSKY 0
 RUN apk update
 RUN apk upgrade
 
-RUN apk add --no-cache tini make g++ python3
+RUN apk add --no-cache tini make g++ python3 bash
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
@@ -24,6 +24,7 @@ USER node
 
 COPY package*.json ./
 COPY scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
+COPY scripts/start-service.sh ./start-service.sh
 RUN npm ci --no-audit --cache .npm
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
@@ -35,7 +36,7 @@ ENTRYPOINT ["/sbin/tini", "--"]
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
     CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
-CMD [ "npm", "start" ]
+CMD [ "./start-service.sh" ]
 
 EXPOSE 9090/tcp
 
@@ -45,6 +46,7 @@ WORKDIR /home/node/app
 USER node
 COPY --chown=node:node --from=development /home/node/app/package*.json ./
 COPY --chown=node:node --from=development /home/node/app/scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
+COPY --chown=node:node --from=development /home/node/app/start-service.sh ./start-service.sh
 
 ENV SKIP_PREPARE_SCRIPT='true'
 
@@ -69,11 +71,13 @@ COPY --chown=node:node --from=prodDepsBuilder /home/node/app/node_modules ./node
 
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 
+COPY --chown=node:node --from=development /home/node/app/start-service.sh ./start-service.sh
+
 ENTRYPOINT ["/sbin/tini", "--"]
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
     CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
-CMD [ "npm", "start" ]
+CMD [ "./start-service.sh" ]
 
 EXPOSE 9090/tcp

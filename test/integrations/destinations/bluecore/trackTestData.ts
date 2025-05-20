@@ -467,7 +467,7 @@ export const trackTestData = [
     id: 'bluecore-track-test-6',
     name: 'bluecore',
     description:
-      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channel_consents value, it will be sent as optin or optout event to bluecore',
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',
@@ -491,7 +491,7 @@ export const trackTestData = [
                   phone: '9112340375',
                 },
               },
-              properties: { ...commonPropsWithoutProducts, channel_consents: { email: true } },
+              properties: { ...commonPropsWithoutProducts, channelConsents: { email: true } },
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
@@ -536,7 +536,7 @@ export const trackTestData = [
     id: 'bluecore-track-test-7',
     name: 'bluecore',
     description:
-      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channel_consents value, it will be sent as optin or optout event to bluecore',
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',
@@ -560,7 +560,7 @@ export const trackTestData = [
                   phone: '9112340375',
                 },
               },
-              properties: { ...commonPropsWithoutProducts, channel_consents: { email: false } },
+              properties: { ...commonPropsWithoutProducts, channelConsents: { email: false } },
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),

@@ -235,7 +235,7 @@ const mapCustomProperties = (message) => {
 };
 
 const constructSubscriptionEventPayload = (message) => {
-  const emailConsent = get(message, 'properties.channel_consents.email', { default: null });
+  const emailConsent = get(message, 'properties.channelConsents.email', { default: null });
   if (!isDefinedAndNotNull(emailConsent)) {
     throw new InstrumentationError('[Bluecore]:: email consent is required for subscription event');
   }

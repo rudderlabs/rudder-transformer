@@ -423,7 +423,7 @@ describe('constructCommonPayload', () => {
       name: 'should return the subscription event payload when the event is a subscription event and the email consent is true',
       message: {
         event: 'subscription_event',
-        properties: { channel_consents: { email: true } },
+        properties: { channelConsents: { email: true } },
       },
       expected: { event: 'optin', properties: {} },
       errorMessage: '',
@@ -432,7 +432,7 @@ describe('constructCommonPayload', () => {
       name: 'should return the subscription event payload when the event is a subscription event and the email consent is false',
       message: {
         event: 'subscription_event',
-        properties: { channel_consents: { email: false } },
+        properties: { channelConsents: { email: false } },
       },
       expected: { event: 'unsubscribe', properties: {} },
       errorMessage: '',
@@ -449,7 +449,7 @@ describe('constructCommonPayload', () => {
       name: 'should return throw error when the event is a subscription event and the email consent is not a boolean',
       message: {
         event: 'subscription_event',
-        properties: { channel_consents: { email: 'false' } },
+        properties: { channelConsents: { email: 'false' } },
       },
       errorMessage: '[Bluecore]:: email consent should be a boolean value for subscription event',
     },

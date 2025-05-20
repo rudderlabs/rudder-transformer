@@ -77,14 +77,14 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 500,
+            status: 400,
             message: 'Invalid response format (HTML) during response transformation',
             statTags,
             response: [
               {
                 error:
                   '"<!DOCTYPE html><html> <body> <h1>My First Heading</h1><p>My first paragraph.</p> </body></html>"',
-                statusCode: 500,
+                statusCode: 400,
                 metadata: generateMetadata(1),
               },
             ],

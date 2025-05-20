@@ -69,13 +69,12 @@ for ((i=0; i<TEST_COUNT; i++)); do
     eval "$CMD"
 
     echo "Waiting a bit for containers to be ready..."
-    sleep 30
+    sleep 15
 
     echo "Collecting stats (duration: ${DURATION}m) into ${NAME}-stats.csv"
-    #TODO remove below comments
-    #timeout "${DURATION_SECS}" make INTERVAL="${STATS_COLLECTION_INTERVAL}" NAME="${NAME}" collect-stats || true
-    #INTERVAL=$(INTERVAL) OUTFILE=./test-results/$(NAME)-stats.csv ./scripts/benchmarks/collect-stats.sh
-    timeout INTERVAL=${DURATION_SECS} OUTFILE=./test-results/"${NAME}"-stats.csv ./scripts/benchmarks/collect-stats.sh || true
+    export INTERVAL=${STATS_COLLECTION_INTERVAL};
+    export OUTFILE=./test-results/"${NAME}"-stats.csv;
+    timeout ${DURATION_SECS} ./scripts/benchmarks/collect-stats.sh || true
 
     echo "Test $NAME completed. Stopping containers..."
     docker-compose -f bench-compose.yml down

@@ -21,6 +21,8 @@ CONTAINERS=${CONTAINERS:-user-transformer rudder-load}
 echo "Output file: $OUTFILE"
 mkdir -p "$(dirname "$OUTFILE")"
 
+echo "Will run with interval ${INTERVAL}..."
+
 # Add CSV header
 echo "Time,Container,CPU_Percentage,Mem_Usage,Net_IO,BLOCK_IO,Events_per_second" > "$OUTFILE"
 

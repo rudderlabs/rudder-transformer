@@ -59,3 +59,24 @@ uninstall:
 test:
 	kubectl port-forward service/gateway-external 8080:8080 -n openfaas & \
 	npm run test:ut:integration:ci
+
+# Benchmark recipes
+.PHONY: up
+up:
+	docker-compose -f bench-compose.yml up -d --build
+
+.PHONY: down
+down:
+	docker-compose -f bench-compose.yml down
+
+.PHONY: logs
+logs:
+	docker-compose -f bench-compose.yml logs -f
+
+.PHONY: stats
+stats:
+	docker stats user-transformer rudder-load
+
+.PHONY: run-benchmarks
+run-benchmarks:
+	./scripts/benchmarks/run.sh ./scripts/benchmarks/config.yaml

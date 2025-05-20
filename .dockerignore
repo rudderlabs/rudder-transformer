@@ -7,4 +7,8 @@
 !tsconfig.json
 !test
 !scripts/skipPrepareScript.js
+!scripts/start-service.sh
 !swagger
+response.gz
+temp-transform.mjs
+*.-stats.csv

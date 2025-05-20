@@ -152,3 +152,6 @@ allure-report/
 
 # git conflict files
 *.orig
+
+# Benchmarks
+test-results

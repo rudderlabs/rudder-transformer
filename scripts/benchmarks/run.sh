@@ -14,6 +14,7 @@ TEST_COUNT=$(yq '.tests | length' "$CONFIG")
 
 # Array of optional UT environment variables
 OPTIONAL_VARS=(
+    "UT_IMAGE"
     "UT_MAX_SEMI_SPACE_SIZE"
     "UT_MAX_OLD_SPACE_SIZE"
     "UT_MAX_HEAP_SIZE"

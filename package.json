@@ -139,7 +139,7 @@
     "@typescript-eslint/parser": "^5.59.2",
     "allure-jest": "^3.0.7",
     "axios-mock-adapter": "^1.22.0",
-    "benchmark-suite": "^0.1.8",
+    "benchmark-suite": "^1.2.13",
     "commander": "^10.0.1",
     "commitizen": "^4.3.0",
     "commitlint": "^19.8.0",

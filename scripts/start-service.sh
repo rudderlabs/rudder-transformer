@@ -18,4 +18,4 @@ if [ -n "$UT_MAX_HEAP_SIZE" ]; then
 fi
 
 echo "Starting WebServer with arguments: $NODE_ARGS"
-cd dist && NODE_OPTIONS='--no-node-snapshot' node "$NODE_ARGS" ./src/index.js && cd ..
+cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..

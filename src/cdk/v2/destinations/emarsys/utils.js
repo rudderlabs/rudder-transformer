@@ -8,6 +8,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
+const stats = require('../../../../util/stats');
 const {
   getIntegrationsObj,
   validateEventName,
@@ -349,6 +350,11 @@ function processEventBatches(typedEventGroups, constants) {
   let batchesOfIdentifyEvents;
   const finalOutput = [];
 
+  // Initialize counts on groupedSuccessfulPayload for each type.
+  groupedSuccessfulPayload.identify.count = 0;
+  groupedSuccessfulPayload.group.count = 0;
+  groupedSuccessfulPayload.track.count = 0;
+
   // Process each event group based on type
   Object.keys(typedEventGroups).forEach((eventType) => {
     switch (eventType) {
@@ -358,17 +364,46 @@ function processEventBatches(typedEventGroups, constants) {
           batchesOfIdentifyEvents,
           'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
         );
+        groupedSuccessfulPayload.identify.count = groupedSuccessfulPayload.identify.batches.length;
         break;
       case EventType.GROUP:
         groupedSuccessfulPayload.group.batches = createGroupBatches(typedEventGroups[eventType]);
+        groupedSuccessfulPayload.group.count = groupedSuccessfulPayload.group.batches.length;
         break;
       case EventType.TRACK:
         groupedSuccessfulPayload.track.batches = createTrackBatches(typedEventGroups[eventType]);
+        // createTrackBatches always returns an array, typically with one batch object.
+        // The count will reflect the number of such "batch" entries.
+        groupedSuccessfulPayload.track.count = groupedSuccessfulPayload.track.batches.length;
         break;
       default:
         break;
     }
   });
+
+  // Emit stats for batch counts
+  if (constants?.destination?.ID) {
+    const destinationId = constants.destination.ID;
+
+    if (groupedSuccessfulPayload.identify.batches && groupedSuccessfulPayload.identify.count > 0) {
+      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.identify.count, {
+        event_type: EventType.IDENTIFY,
+        destination_id: destinationId,
+      });
+    }
+    if (groupedSuccessfulPayload.group.batches && groupedSuccessfulPayload.group.count > 0) {
+      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.group.count, {
+        event_type: EventType.GROUP,
+        destination_id: destinationId,
+      });
+    }
+    if (groupedSuccessfulPayload.track.batches && groupedSuccessfulPayload.track.count > 0) {
+      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.track.count, {
+        event_type: EventType.TRACK,
+        destination_id: destinationId,
+      });
+    }
+  }
 
   // Convert batches into requests for each event type and push to final output
   appendRequestsToOutput(groupedSuccessfulPayload.identify, finalOutput, constants);

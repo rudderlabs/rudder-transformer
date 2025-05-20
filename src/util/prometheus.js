@@ -563,6 +563,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'emarsys_batch_count',
+        help: 'emarsys_batch_count',
+        type: 'gauge',
+        labelNames: ['event_type', 'destination_id'],
+      },
+      {
         name: 'mixpanel_batch_engage_pack_size',
         help: 'mixpanel_batch_engage_pack_size',
         type: 'gauge',

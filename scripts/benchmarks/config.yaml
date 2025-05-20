@@ -11,7 +11,7 @@
 # * UT_MAX_HEAP_SIZE - Sets Node.js --max-heap-size flag
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_minutes: 1
+duration_minutes: 2
 tests:
   - name: test-classic
     UT_NUM_PROCS: 5

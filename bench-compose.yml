@@ -1,8 +1,8 @@
 version: '3.8'
 services:
   app:
-    build: .
-    #image: fracasula/ut-custom:latest
+    #build: .
+    image: ${UT_IMAGE:-fracasula/ut-custom:latest}
     container_name: user-transformer
     ports:
       - "9090:9090"
@@ -23,7 +23,7 @@ services:
       PISCINA_MIN_THREADS: ${UT_MIN_THREADS:-2}
       PISCINA_IDLE_TIMEOUT: ${UT_WORKER_IDLE_TIMEOUT:-1000}
       USE_PISCINA: ${UT_POOLING:-true}
-#      IVM_MEMORY: ${UT_IVM_MEMORY:-512}
+      #IVM_MEMORY: ${UT_IVM_MEMORY:-512}
   rudder-load:
     image: ${RL_IMAGE:-fracasula/rudder-load:latest}
     container_name: rudder-load

@@ -2400,10 +2400,98 @@ export const data = [
       },
     },
   },
+  {
+    name: 'twitter_ads',
+    description: 'Test case to validate if secret do not contain required field',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Home Page Viewed',
+              channel: 'web',
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              properties: {
+                pixelId: 'dummyPixelId',
+                conversionTime: '2023-06-01T06:03:08.739Z',
+                eventId: '429047995',
+                phone: '+919927455678',
+                twclid: '543',
+                shipping: 3,
+                subtotal: 22.5,
+                affiliation: 'Google Store',
+                checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                email: 'abc@ax.com',
+              },
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: {
+                All: true,
+              },
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            destination: {
+              Config: {
+                pixelId: 'dummyPixelId',
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                twitterAdsEventNames: [
+                  {
+                    rudderEventName: 'ABC Searched',
+                    twitterEventId: 'tw-234234324234',
+                  },
+                  {
+                    rudderEventName: 'Home Page Viewed',
+                    twitterEventId: 'tw-324fdsf',
+                  },
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: '[TWITTER ADS]:: OAuth - consumerSecret not found',
+            statTags: {
+              errorCategory: 'platform',
+              errorType: 'oAuthSecret',
+              destType: 'TWITTER_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+            metadata: {
+              secret: {
+                consumerKey: 'qwe',
+                accessToken: 'dummyAccessToken',
+                accessTokenSecret: 'testAccessTokenSecret',
+              },
+            },
+            statusCode: 500,
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {
     jest.mock('../../../../../src/v0/destinations/twitter_ads/util', () => ({
+      ...jest.requireActual('../../../../../src/v0/destinations/twitter_ads/util'),
       getAuthHeaderForRequest: (_a, _b) => {
         return { Authorization: authHeaderConstant };
       },

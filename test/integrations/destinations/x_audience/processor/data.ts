@@ -224,10 +224,158 @@ export const data = [
       },
     },
   },
+  {
+    name: 'x_audience',
+    description: 'Validation for oauth secret',
+    successCriteria: 'It should be passed with 200 and return oauth secret not found for jobs',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'record',
+              action: 'insert',
+              fields: {
+                ...fields,
+                device_id: 'did123,did456',
+                effective_at: '2024-05-15T00:00:00Z',
+                expires_at: '2025-05-15T00:00:00Z',
+              },
+              context: {},
+              recordId: '1',
+            },
+            metadata: {
+              jobId: 1,
+              attemptNum: 1,
+              userId: 'default-userId',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              dontBatch: false,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 1,
+              attemptNum: 1,
+              userId: 'default-userId',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              dontBatch: false,
+            },
+            statusCode: 500,
+            error: '[X Audience]:: OAuth - secret not found',
+            statTags: {
+              errorCategory: 'platform',
+              destinationId: 'default-destinationId',
+              errorType: 'oAuthSecret',
+              destType: 'X_AUDIENCE',
+              module: 'destination',
+              implementation: 'native',
+              workspaceId: 'default-workspaceId',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'x_audience',
+    description: 'Validation for oauth secret',
+    successCriteria:
+      'It should be passed with 200 Ok and and return oauth consumerKey not found for jobs',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'record',
+              action: 'insert',
+              fields: {
+                ...fields,
+                device_id: 'did123,did456',
+                effective_at: '2024-05-15T00:00:00Z',
+                expires_at: '2025-05-15T00:00:00Z',
+              },
+              context: {},
+              recordId: '1',
+            },
+            metadata: {
+              jobId: 1,
+              attemptNum: 1,
+              userId: 'default-userId',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              dontBatch: false,
+              secret: {
+                consumerSecret: 'validConsumerSecret',
+                accessToken: 'validAccessToken',
+                accessTokenSecret: 'validAccessTokenSecret',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 1,
+              attemptNum: 1,
+              userId: 'default-userId',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              dontBatch: false,
+              secret: {
+                consumerSecret: 'validConsumerSecret',
+                accessToken: 'validAccessToken',
+                accessTokenSecret: 'validAccessTokenSecret',
+              },
+            },
+            statusCode: 500,
+            error: '[X Audience]:: OAuth - consumerKey not found',
+            statTags: {
+              errorCategory: 'platform',
+              destinationId: 'default-destinationId',
+              errorType: 'oAuthSecret',
+              destType: 'X_AUDIENCE',
+              module: 'destination',
+              implementation: 'native',
+              workspaceId: 'default-workspaceId',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {
     jest.mock('../../../../../src/v0/destinations/twitter_ads/util', () => ({
+      ...jest.requireActual('../../../../../src/v0/destinations/twitter_ads/util'),
       getAuthHeaderForRequest: (_a, _b) => {
         return { Authorization: authHeaderConstant };
       },

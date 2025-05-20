@@ -2,28 +2,14 @@
 const sha256 = require('sha256');
 const lodash = require('lodash');
 const jsonSize = require('json-size');
-const { OAuthSecretError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
 const { MAX_PAYLOAD_SIZE_IN_BYTES, BASE_URL, MAX_OPERATIONS } = require('./config');
-const { getAuthHeaderForRequest } = require('../twitter_ads/util');
+const { getAuthHeaderForRequest, getOAuthFields } = require('../twitter_ads/util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const getOAuthFields = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[X Audience]:: OAuth - access keys not found');
-  }
-  const oAuthObject = {
-    consumerKey: secret.consumerKey,
-    consumerSecret: secret.consumerSecret,
-    accessToken: secret.accessToken,
-    accessTokenSecret: secret.accessTokenSecret,
-  };
-  return oAuthObject;
-};
 
 // Docs: https://developer.x.com/en/docs/x-ads-api/audiences/api-reference/custom-audience-user
 const buildResponseWithJSON = (payload, config, metadata) => {
@@ -41,7 +27,7 @@ const buildResponseWithJSON = (payload, config, metadata) => {
     body: response.body.JSON,
   };
 
-  const oAuthObject = getOAuthFields(metadata);
+  const oAuthObject = getOAuthFields(metadata, 'X Audience');
   const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {
     Authorization: authHeader,
@@ -211,31 +197,25 @@ const batchEvents = (responseList, destination) => {
 
 const getUserDetails = (fields, config) => {
   const { enableHash } = config;
-  const { email, phone_number, handle, device_id, twitter_id, partner_user_id } = fields;
+  const hashFields = ['email', 'phone_number', 'handle', 'device_id', 'twitter_id'];
+  const nonHashFields = ['partner_user_id'];
+
+  const getHashList = (value) => (enableHash ? value.split(',').map(sha256) : value.split(','));
+
   const user = {};
-  if (email) {
-    const emailList = email.split(',');
-    user.email = enableHash ? emailList.map(sha256) : emailList;
-  }
-  if (phone_number) {
-    const phone_numberList = phone_number.split(',');
-    user.phone_number = enableHash ? phone_numberList.map(sha256) : phone_numberList;
-  }
-  if (handle) {
-    const handleList = handle.split(',');
-    user.handle = enableHash ? handleList.map(sha256) : handleList;
-  }
-  if (device_id) {
-    const device_idList = device_id.split(',');
-    user.device_id = enableHash ? device_idList.map(sha256) : device_idList;
-  }
-  if (twitter_id) {
-    const twitter_idList = twitter_id.split(',');
-    user.twitter_id = enableHash ? twitter_idList.map(sha256) : twitter_idList;
-  }
-  if (partner_user_id) {
-    user.partner_user_id = partner_user_id.split(',');
-  }
+
+  hashFields.forEach((field) => {
+    if (fields[field]) {
+      user[field] = getHashList(fields[field]);
+    }
+  });
+
+  nonHashFields.forEach((field) => {
+    if (fields[field]) {
+      user[field] = fields[field].split(',');
+    }
+  });
+
   return removeUndefinedAndNullAndEmptyValues(user);
 };
-module.exports = { getOAuthFields, batchEvents, getUserDetails, buildResponseWithJSON };
+module.exports = { batchEvents, getUserDetails, buildResponseWithJSON };

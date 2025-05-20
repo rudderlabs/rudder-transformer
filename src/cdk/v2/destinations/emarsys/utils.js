@@ -21,8 +21,26 @@ const {
   OPT_IN_FILED_ID,
   ALLOWED_OPT_IN_VALUES,
   MAX_BATCH_SIZE_BYTES,
-  groupedSuccessfulPayload,
 } = require('./config');
+
+// Create a fresh payload object for each request to ensure thread safety
+const createPayloadObject = () => ({
+  identify: {
+    method: 'PUT',
+    batches: [],
+    count: 0,
+  },
+  group: {
+    method: 'POST',
+    batches: [],
+    count: 0,
+  },
+  track: {
+    method: 'POST',
+    batches: [],
+    count: 0,
+  },
+});
 const { EventType } = require('../../../../constants');
 
 const base64Sha = (str) => {
@@ -350,31 +368,29 @@ function processEventBatches(typedEventGroups, constants) {
   let batchesOfIdentifyEvents;
   const finalOutput = [];
 
-  // Initialize counts on groupedSuccessfulPayload for each type.
-  groupedSuccessfulPayload.identify.count = 0;
-  groupedSuccessfulPayload.group.count = 0;
-  groupedSuccessfulPayload.track.count = 0;
+  // Create a new payload object for this request to ensure thread safety
+  const payloadObject = createPayloadObject();
 
   // Process each event group based on type
   Object.keys(typedEventGroups).forEach((eventType) => {
     switch (eventType) {
       case EventType.IDENTIFY:
         batchesOfIdentifyEvents = createIdentifyBatches(typedEventGroups[eventType]);
-        groupedSuccessfulPayload.identify.batches = formatIdentifyPayloadsWithEndpoint(
+        payloadObject.identify.batches = formatIdentifyPayloadsWithEndpoint(
           batchesOfIdentifyEvents,
           'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
         );
-        groupedSuccessfulPayload.identify.count = groupedSuccessfulPayload.identify.batches.length;
+        payloadObject.identify.count = payloadObject.identify.batches.length;
         break;
       case EventType.GROUP:
-        groupedSuccessfulPayload.group.batches = createGroupBatches(typedEventGroups[eventType]);
-        groupedSuccessfulPayload.group.count = groupedSuccessfulPayload.group.batches.length;
+        payloadObject.group.batches = createGroupBatches(typedEventGroups[eventType]);
+        payloadObject.group.count = payloadObject.group.batches.length;
         break;
       case EventType.TRACK:
-        groupedSuccessfulPayload.track.batches = createTrackBatches(typedEventGroups[eventType]);
+        payloadObject.track.batches = createTrackBatches(typedEventGroups[eventType]);
         // createTrackBatches always returns an array, typically with one batch object.
         // The count will reflect the number of such "batch" entries.
-        groupedSuccessfulPayload.track.count = groupedSuccessfulPayload.track.batches.length;
+        payloadObject.track.count = payloadObject.track.batches.length;
         break;
       default:
         break;
@@ -385,20 +401,20 @@ function processEventBatches(typedEventGroups, constants) {
   if (constants?.destination?.ID) {
     const destinationId = constants.destination.ID;
 
-    if (groupedSuccessfulPayload.identify.batches && groupedSuccessfulPayload.identify.count > 0) {
-      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.identify.count, {
+    if (payloadObject.identify.batches && payloadObject.identify.count > 0) {
+      stats.gauge('emarsys_batch_count', payloadObject.identify.count, {
         event_type: EventType.IDENTIFY,
         destination_id: destinationId,
       });
     }
-    if (groupedSuccessfulPayload.group.batches && groupedSuccessfulPayload.group.count > 0) {
-      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.group.count, {
+    if (payloadObject.group.batches && payloadObject.group.count > 0) {
+      stats.gauge('emarsys_batch_count', payloadObject.group.count, {
         event_type: EventType.GROUP,
         destination_id: destinationId,
       });
     }
-    if (groupedSuccessfulPayload.track.batches && groupedSuccessfulPayload.track.count > 0) {
-      stats.gauge('emarsys_batch_count', groupedSuccessfulPayload.track.count, {
+    if (payloadObject.track.batches && payloadObject.track.count > 0) {
+      stats.gauge('emarsys_batch_count', payloadObject.track.count, {
         event_type: EventType.TRACK,
         destination_id: destinationId,
       });
@@ -406,9 +422,9 @@ function processEventBatches(typedEventGroups, constants) {
   }
 
   // Convert batches into requests for each event type and push to final output
-  appendRequestsToOutput(groupedSuccessfulPayload.identify, finalOutput, constants);
-  appendRequestsToOutput(groupedSuccessfulPayload.group, finalOutput, constants);
-  appendRequestsToOutput(groupedSuccessfulPayload.track, finalOutput, constants, false);
+  appendRequestsToOutput(payloadObject.identify, finalOutput, constants);
+  appendRequestsToOutput(payloadObject.group, finalOutput, constants);
+  appendRequestsToOutput(payloadObject.track, finalOutput, constants, false);
 
   return finalOutput;
 }
@@ -443,4 +459,5 @@ module.exports = {
   deduceExternalIdValue,
   deduceEventId,
   deduceCustomIdentifier,
+  createPayloadObject, // Export for testing
 };

@@ -26,11 +26,18 @@ const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
-app.use(
-  bodyParser({
-    jsonLimit: '200mb',
-  }),
-);
+// Create a conditional bodyParser middleware that skips parsing for the /customTransformRaw route
+app.use(async (ctx, next) => {
+  if (ctx.path === '/customTransform') {
+    // Skip bodyParser for this route
+    await next();
+  } else {
+    // Apply bodyParser for all other routes
+    await bodyParser({
+      jsonLimit: '200mb',
+    })(ctx, next);
+  }
+});
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 

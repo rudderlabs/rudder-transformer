@@ -12,12 +12,20 @@ router.post(
   UserTransformController.reconcileFunction,
 );
 
+// router.post(
+//   '/customTransform',
+//   RouteActivationMiddleware.isUserTransformRouteActive,
+//   FeatureFlagMiddleware.handle,
+//   StatsMiddleware.executionStats,
+//   UserTransformController.transform,
+// );
+
 router.post(
   '/customTransform',
   RouteActivationMiddleware.isUserTransformRouteActive,
   FeatureFlagMiddleware.handle,
   StatsMiddleware.executionStats,
-  UserTransformController.transform,
+  UserTransformController.transformRaw,
 );
 router.post(
   '/transformation/test',

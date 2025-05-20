@@ -76,8 +76,9 @@ class PiscinaService {
       service.isInitialized = true;
       logger.info('Piscina worker pool initialized');
 
+      // TODO metrics
       // Start collecting Piscina metrics
-      service.startMetricsCollection();
+      // service.startMetricsCollection();
     }
   }
 
@@ -127,8 +128,18 @@ class PiscinaService {
     const service = PiscinaService.getInstance();
     return service.getPiscinaInstance().run({ events, features, requestSize });
   }
+
+  public static async transformWithRawBody(
+    body: string,
+    features: FeatureFlags,
+    requestSize: number,
+  ): Promise<UserTransformationServiceResponse> {
+    const service = PiscinaService.getInstance();
+    return service.getPiscinaInstance().run({ body, features, requestSize });
+  }
 }
 
 export const initializePiscina = PiscinaService.initialize;
 export const terminatePiscina = PiscinaService.terminate;
 export const transformWithPiscina = PiscinaService.transform;
+export const transformWithPiscinaRawBody = PiscinaService.transformWithRawBody;

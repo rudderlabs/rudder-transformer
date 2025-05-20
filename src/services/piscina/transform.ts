@@ -7,10 +7,18 @@ export default async function transform({
   events,
   features,
   requestSize,
+  body,
 }: {
-  events: ProcessorTransformationRequest[];
+  events?: ProcessorTransformationRequest[];
   features: FeatureFlags;
   requestSize: number;
+  body?: string;
 }): Promise<UserTransformationServiceResponse> {
-  return UserTransformService.transformRoutine(events, features, requestSize);
+  // If body is provided, parse it in the worker thread
+  if (body) {
+    const parsedEvents = JSON.parse(body) as ProcessorTransformationRequest[];
+    return UserTransformService.transformRoutine(parsedEvents, features, requestSize);
+  }
+  // Fallback to the original implementation
+  return UserTransformService.transformRoutine(events!, features, requestSize);
 }

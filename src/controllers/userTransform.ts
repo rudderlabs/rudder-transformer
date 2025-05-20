@@ -10,7 +10,7 @@ import {
 import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { transformWithPiscina } from '../services/piscina/wrapper';
+import { transformWithPiscina, transformWithPiscinaRawBody } from '../services/piscina/wrapper';
 
 export class UserTransformController {
   /**
@@ -53,6 +53,46 @@ export class UserTransformController {
     ControllerUtility.postProcess(ctx, processedResponse.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',
+      ctx.response.body,
+    );
+    return ctx;
+  }
+
+  public static async transformRaw(ctx: Context) {
+    logger.debug(
+      '(User transform - router:/customTransformRaw ):: Request to transformer with raw body',
+    );
+
+    const requestSize = Number(ctx.request.get('content-length'));
+
+    // Read the raw request body as a string
+    const body = await new Promise<string>((resolve, reject) => {
+      let data = '';
+      ctx.req.setEncoding('utf8');
+      ctx.req.on('data', chunk => {
+        data += chunk;
+      });
+      ctx.req.on('end', () => resolve(data));
+      ctx.req.on('error', err => reject(err));
+    });
+
+    let processedResponse: UserTransformationServiceResponse;
+    if (process.env.USE_PISCINA === 'true') {
+      processedResponse = await transformWithPiscinaRawBody(body, ctx.state.features, requestSize);
+    } else {
+      // For non-Piscina mode, parse the JSON in the main thread
+      const events = JSON.parse(body) as ProcessorTransformationRequest[];
+      processedResponse = await UserTransformService.transformRoutine(
+        events,
+        ctx.state.features,
+        requestSize,
+      );
+    }
+
+    ctx.body = processedResponse.transformedEvents;
+    ControllerUtility.postProcess(ctx, processedResponse.retryStatus);
+    logger.debug(
+      '(User transform - router:/customTransformRaw ):: Response from transformer',
       ctx.response.body,
     );
     return ctx;

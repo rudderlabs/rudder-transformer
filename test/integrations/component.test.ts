@@ -70,6 +70,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'snapchat_conversion',
   'rudder_test',
   'tiktok_ads',
+  'bluecore',
 ];
 
 beforeAll(async () => {

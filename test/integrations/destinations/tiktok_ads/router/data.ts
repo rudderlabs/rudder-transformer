@@ -1,11 +1,33 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
+import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
-export const data = [
+
+const baseDestinationDefinition = {
+  ID: '123',
+  Name: 'tiktok_ads',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'tiktok_ads',
+    DisplayName: 'tiktok_ads',
+    Config: {},
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+  RevisionID: '123',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
+};
+
+export const data: RouterTestData[] = [
   {
+    id: 'tiktok_ads-router-test-0',
     name: 'tiktok_ads',
     description: 'Test 0 -> Events 1.0 Multiple events in single batch',
     feature: FEATURES.ROUTER,
     module: 'destination',
+    successCriteria: 'Should pass successfully',
+    scenario: 'Default router scenario',
     version: 'v0',
     input: {
       request: {
@@ -73,6 +95,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -142,6 +165,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -214,6 +238,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -286,6 +311,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -495,6 +521,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -509,6 +536,9 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-1',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 1 -> Events 1.0 Single Event inside batch',
     feature: FEATURES.ROUTER,
@@ -574,6 +604,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -647,6 +678,7 @@ export const data = [
                 },
               ],
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -668,6 +700,9 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-2',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
       'Test 2 -> Events 2.0 Single event is mapped to multiple tiktok event in config and exceeding max batch size',
@@ -721,6 +756,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -774,6 +810,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -827,6 +864,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -876,6 +914,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1023,6 +1062,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1132,6 +1172,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1152,6 +1193,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-3',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
       'Test 3 -> Events 2.0 Single event is mapped to single tiktok event in config and over the max batch limit',
@@ -1205,6 +1249,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1254,6 +1299,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1303,6 +1349,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1352,6 +1399,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1504,6 +1552,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1576,6 +1625,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1592,6 +1642,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-4',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 4 -> One input event is invalid with one event to multiple events',
     feature: FEATURES.ROUTER,
@@ -1644,6 +1697,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1697,6 +1751,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1750,6 +1805,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1799,6 +1855,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1951,6 +2008,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -1967,6 +2025,7 @@ export const data = [
             {
               batched: false,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   eventsToStandard: [
@@ -2003,6 +2062,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-5',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 5 -> Some input events are test events with one event to multiple events',
     feature: FEATURES.ROUTER,
@@ -2055,6 +2117,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2108,6 +2171,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2162,6 +2226,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2211,6 +2276,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2358,6 +2424,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2434,6 +2501,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2520,6 +2588,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2536,6 +2605,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-6',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 6 -> All input events are test events',
     feature: FEATURES.ROUTER,
@@ -2586,6 +2658,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2639,6 +2712,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2732,6 +2806,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',
@@ -2817,6 +2892,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
+                ...baseDestinationDefinition,
                 Config: {
                   accessToken: 'dummyAccessToken',
                   pixelCode: 'dummyPixelCode',

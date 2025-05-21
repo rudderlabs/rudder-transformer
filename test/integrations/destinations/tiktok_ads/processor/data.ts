@@ -1,12 +1,58 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-05-21T07:35:36.463Z
+ */
+
+import { ProcessorTestData } from '../../../testTypes';
+import { Metadata } from '../../../../../src/types';
+
+const baseMetadata: Metadata = {
+  sourceId: 'default-source',
+  workspaceId: 'default-workspace',
+  namespace: 'default-namespace',
+  instanceId: 'default-instance',
+  sourceType: 'default-source-type',
+  sourceCategory: 'default-category',
+  trackingPlanId: 'default-tracking-plan',
+  trackingPlanVersion: 1,
+  sourceTpConfig: {},
+  mergedTpConfig: {},
+  destinationId: 'default-destination',
+  jobRunId: 'default-job-run',
+  jobId: 1,
+  sourceBatchId: 'default-batch',
+  sourceJobId: 'default-source-job',
+  sourceJobRunId: 'default-source-job-run',
+  sourceTaskId: 'default-task',
+  sourceTaskRunId: 'default-task-run',
+  recordId: {},
+  destinationType: 'default-destination-type',
+  messageId: 'default-message-id',
+  oauthAccessToken: 'default-token',
+  messageIds: ['default-message-id'],
+  rudderId: 'default-rudder-id',
+  receivedAt: '2025-05-21T07:35:35.801Z',
+  eventName: 'default-event',
+  eventType: 'default-type',
+  sourceDefinitionId: 'default-source-def',
+  destinationDefinitionId: 'default-dest-def',
+  transformationId: 'default-transform',
+  dontBatch: false,
+};
+
+export const data: ProcessorTestData[] = [
   {
+    id: 'processor-1747812936460',
     name: 'tiktok_ads',
     description: 'Test 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -86,12 +132,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -164,6 +225,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -171,13 +233,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936460',
     name: 'tiktok_ads',
     description: 'Test 1',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -253,12 +319,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -328,6 +409,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -335,13 +417,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 2',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -415,12 +501,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -488,6 +589,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -495,13 +597,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 3',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -578,12 +684,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -594,6 +715,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error:
               'Event name (product added to wishlist1) is not valid, must be mapped to one of standard events',
@@ -604,6 +726,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -611,13 +735,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 4',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -694,12 +822,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -770,6 +913,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -777,13 +921,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 5',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -860,12 +1008,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -936,6 +1099,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -943,13 +1107,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 6',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1025,12 +1193,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1100,6 +1283,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1107,13 +1291,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 7',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1189,12 +1377,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1264,6 +1467,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1271,13 +1475,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 8',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1352,12 +1560,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1368,6 +1591,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -1377,6 +1601,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -1384,13 +1610,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 9',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1464,12 +1694,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1480,6 +1725,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event type is required',
             statTags: {
@@ -1489,6 +1735,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -1496,13 +1744,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 10',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1577,12 +1829,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1651,6 +1918,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1658,13 +1926,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 11',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1740,12 +2012,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1815,6 +2102,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1822,13 +2110,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 12',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -1891,12 +2183,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -1948,6 +2255,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -1955,13 +2263,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 13',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2037,12 +2349,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2112,6 +2439,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -2119,13 +2447,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 14',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2201,12 +2533,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2217,6 +2564,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event type identify is not supported',
             statTags: {
@@ -2226,6 +2574,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -2233,13 +2583,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 15',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2315,12 +2669,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2390,6 +2759,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -2397,13 +2767,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 16',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2479,12 +2853,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2554,6 +2943,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -2561,13 +2951,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 17',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2647,12 +3041,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2723,6 +3132,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -2730,13 +3140,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 18',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2816,12 +3230,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -2892,6 +3321,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -2899,13 +3329,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 19',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -2981,12 +3415,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3056,6 +3505,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -3063,13 +3513,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 20',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3145,7 +3599,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
@@ -3165,6 +3628,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3234,6 +3703,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
           {
@@ -3296,6 +3766,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -3303,13 +3774,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 21',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3385,7 +3860,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
@@ -3397,6 +3881,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3407,6 +3897,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event name (abc) is not valid, must be mapped to one of standard events',
             statTags: {
@@ -3416,6 +3907,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -3423,13 +3916,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 22',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3505,7 +4002,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
@@ -3521,6 +4027,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3590,6 +4102,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -3597,13 +4110,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 23',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3678,7 +4195,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
@@ -3694,6 +4220,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3763,6 +4295,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -3770,13 +4303,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 24',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -3851,7 +4388,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
@@ -3867,6 +4413,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -3936,6 +4488,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -3943,13 +4496,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 25',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4045,12 +4602,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4120,6 +4692,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -4127,13 +4700,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 26',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4216,12 +4793,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4294,6 +4886,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -4301,13 +4894,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 27',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4391,12 +4988,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4470,6 +5082,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -4477,13 +5090,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 28',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4571,12 +5188,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4656,6 +5288,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -4663,13 +5296,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 29 -> custom_event Pass',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4749,13 +5386,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4828,6 +5480,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -4835,13 +5488,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 30 -> custom_event Failure case for flag set as false',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -4921,13 +5578,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -4938,6 +5610,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error:
               'Event name (custom_event) is not valid, must be mapped to one of standard events',
@@ -4948,6 +5621,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -4955,13 +5630,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 31 -> Camel Case Custom Event Pass',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5041,13 +5720,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5120,6 +5814,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -5127,13 +5822,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 32 -> V2 -> Camel Case Custom Event Pass',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5186,7 +5885,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -5194,6 +5902,12 @@ export const data = [
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5264,6 +5978,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -5271,14 +5986,18 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description:
       'Test 33 -> V2 -> Event mapped to one standard event with contents present as it is in properties',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5341,7 +6060,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -5355,6 +6083,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5426,6 +6160,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -5433,13 +6168,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 34 -> V2 -> Event mapped to multiple standard events and no phone',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5501,7 +6240,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -5519,6 +6267,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5624,6 +6378,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -5631,13 +6386,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 35 -> V2 -> array of external_id and phone number',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5694,7 +6453,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -5712,6 +6480,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5823,6 +6597,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -5830,13 +6605,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 36-> V2 -> Event not standard and no custom events allowed',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -5920,13 +6699,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5937,6 +6731,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error:
               'Event name (product added to wishlist1) is not valid, must be mapped to one of standard events',
@@ -5947,6 +6742,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -5954,19 +6751,22 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 37-> V2 -> No Message type',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
               anonymousId: '21e13f4bc7ceddad',
               channel: 'web',
-
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
               session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
               originalTimestamp: '2019-10-14T09:03:17.562Z',
@@ -5977,13 +6777,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -5994,6 +6809,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event type is required',
             statTags: {
@@ -6003,6 +6819,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -6010,13 +6828,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 38-> V2 -> Event not found',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6032,13 +6854,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6049,6 +6886,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -6058,6 +6896,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -6065,13 +6905,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 39-> V2 -> Access Token not found',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6087,12 +6931,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 pixelCode: 'configuration',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6103,6 +6962,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Access Token not found. Aborting',
             statTags: {
@@ -6112,6 +6972,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -6119,13 +6981,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 40-> V2 -> Pixel Code not found. Aborting',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6141,12 +7007,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6157,6 +7038,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Pixel Code not found. Aborting',
             statTags: {
@@ -6166,6 +7048,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -6173,13 +7057,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 41 -> V2 -> One of standard event',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6238,7 +7126,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -6256,6 +7153,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6333,6 +7236,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -6340,13 +7244,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 42 -> V2 -> One of standard event and contents from products',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6423,7 +7331,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -6441,6 +7358,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6533,6 +7456,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -6540,13 +7464,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 43 -> V2 -> Contents present as object in properties',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6594,7 +7522,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -6608,6 +7545,12 @@ export const data = [
                   },
                 ],
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6673,6 +7616,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -6680,13 +7624,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 44 -> Events 2.0 Event type identify not suported',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6709,13 +7657,28 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 version: 'v2',
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6726,6 +7689,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event type identify is not supported',
             statTags: {
@@ -6735,6 +7699,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -6742,14 +7708,18 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description:
       'Test 45-> events 1.0 build contents from properties.product.$ where length of prodicts is 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6812,12 +7782,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6874,6 +7859,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -6881,13 +7867,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
     description: 'Test 46 -> V2 -> Custom Event with no properties',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -6919,7 +7909,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -6927,6 +7926,12 @@ export const data = [
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -6976,6 +7981,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -6983,13 +7989,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
-    description: 'Test 46 -> V2 -> Standard Event with no properties',
+    description: 'Test 47 -> V2 -> Standard Event with no properties',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -7021,7 +8031,16 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 version: 'v2',
                 accessToken: 'dummyAccessToken',
@@ -7029,6 +8048,12 @@ export const data = [
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -7078,6 +8103,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -7085,25 +8111,44 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
-    description: 'Testing if the event name provided as a string or not',
+    description: 'Test 48 -> Testing if the event name provided as a string or not',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
               type: 'track',
-              event: 123,
+              event: 123 as unknown as string,
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -7114,6 +8159,7 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -7123,6 +8169,8 @@ export const data = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
+              destinationId: 'default-destination',
+              workspaceId: 'default-workspace',
             },
           },
         ],
@@ -7130,13 +8178,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
-    description: 'Testing the purchase event',
+    description: 'Test 49 -> Testing the purchase event',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -7216,12 +8268,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -7294,6 +8361,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -7301,13 +8369,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1747812936461',
     name: 'tiktok_ads',
-    description: 'Testing the lead event',
+    description: 'Test 50 -> Testing the lead event',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -7383,12 +8455,27 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: baseMetadata,
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -7458,6 +8545,7 @@ export const data = [
               files: {},
               userId: '',
             },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],

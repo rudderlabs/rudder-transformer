@@ -58,14 +58,14 @@ export class DynamicConfigParser {
     if (value) {
       if (Array.isArray(value)) {
         value.forEach((key, index) => {
-          value[index] = this.configureVal(key, event);
+          value[index] = DynamicConfigParser.configureVal(key, event);
         });
       } else if (typeof value === 'object') {
         Object.keys(value).forEach((obj) => {
-          value[obj] = this.configureVal(value[obj], event);
+          value[obj] = DynamicConfigParser.configureVal(value[obj], event);
         });
       } else if (typeof value === 'string') {
-        value = this.getDynamicConfigValue(event, value);
+        value = DynamicConfigParser.getDynamicConfigValue(event, value);
       }
     }
     return value;
@@ -95,7 +95,10 @@ export class DynamicConfigParser {
     const configCopy = cloneDeep(Config);
 
     // Process the Config and set it on the copied destination
-    resultantEvent.destination.Config = this.configureVal(configCopy, resultantEvent);
+    resultantEvent.destination.Config = DynamicConfigParser.configureVal(
+      configCopy,
+      resultantEvent,
+    );
 
     return resultantEvent;
   }

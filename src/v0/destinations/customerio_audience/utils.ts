@@ -15,12 +15,11 @@ import {
   SegmentationParam,
   SegmentationPayload,
   CustomerIOBatchResponse,
-  SegmentActionType,
   CustomerIOConnectionConfigSchema,
   CustomerIOMessageSchema,
   ProcessedEvent,
 } from './type';
-import { Metadata } from '../../../types';
+import { Metadata, RecordActionType } from '../../../types/rudderEvents';
 
 const getIdType = (connection: CustomerIOConnection): string =>
   connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
@@ -126,7 +125,8 @@ export const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequest): string => event.message.action;
+const getEventAction = (event: CustomerIORouterRequest): RecordActionType =>
+  event.message.action as RecordActionType;
 
 const validateEvent = (event: CustomerIORouterRequest): boolean => {
   const { message, connection } = event;
@@ -155,6 +155,6 @@ export const createEventChunk = (event: CustomerIORouterRequest): ProcessedEvent
   return {
     payload: { ids: [id] },
     metadata: event.metadata,
-    eventAction: eventAction as SegmentActionType,
+    eventAction,
   };
 };

@@ -4,10 +4,12 @@ import {
   Connection,
   Destination,
   DestinationConnectionConfig,
-  MessageTypeSchema,
   Metadata,
   RouterTransformationRequestData,
+  RudderRecordV2Schema,
+  RudderRecordV2,
 } from '../../../types';
+import { RecordActionType } from '../../../types/rudderEvents';
 
 import {
   BatchedRequest,
@@ -37,11 +39,7 @@ export type SegmentationHeaders = {
   Authorization: string;
 };
 
-export const SegmentAction = {
-  INSERT: 'insert',
-  UPDATE: 'update',
-  DELETE: 'delete',
-} as const;
+// We use RudderRecordV2's action type directly
 
 export const CustomerIODestinationConfigSchema = z
   .object({
@@ -63,34 +61,37 @@ export const CustomerIOConnectionConfigSchema = z
 
 export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConfigSchema>;
 
-const SegmentActionSchema = z.nativeEnum(SegmentAction);
+// Message type specific to CustomerIO, based on RudderRecordV2Schema
+export const CustomerIOMessageSchema = RudderRecordV2Schema.extend({
+  // Make messageId optional to maintain compatibility with existing tests
+  messageId: z.string().optional(),
+  // Override the identifiers field with CustomerIO-specific validation
+  // For CustomerIO, identifiers is required and must contain exactly one identifier
+  identifiers: z
+    .record(z.string(), z.union([z.string(), z.number()]))
+    // Make identifiers required for CustomerIO audience (even though it's optional in base schema)
+    .superRefine((identifiers, ctx) => {
+      if (Object.keys(identifiers).length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'cannot be empty',
+        });
+      } else if (Object.keys(identifiers).length !== 1) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'only one identifier is supported',
+        });
+      }
+    }),
+});
 
-// Message type specific to CustomerIO
-export const CustomerIOMessageSchema = z
-  .object({
-    type: z.literal(MessageTypeSchema.enum.record),
-    action: SegmentActionSchema,
-    identifiers: z
-      .record(z.string(), z.union([z.string(), z.number()]))
-      .superRefine((identifiers, ctx) => {
-        if (Object.keys(identifiers).length === 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'cannot be empty',
-          });
-        } else if (Object.keys(identifiers).length !== 1) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'only one identifier is supported',
-          });
-        }
-      }),
-  })
-  .passthrough();
-
-export type SegmentActionType = z.infer<typeof SegmentActionSchema>;
-
-export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
+// CustomerIOMessage extends RudderRecordV2 with CustomerIO-specific validation
+export type CustomerIOMessage = Omit<RudderRecordV2, 'messageId' | 'identifiers'> & {
+  // Make messageId optional to maintain compatibility with existing tests
+  messageId?: string;
+  // For CustomerIO, identifiers is required and must contain exactly one identifier
+  identifiers: Record<string, string | number>;
+};
 
 // Final exported types using generics from base types
 export type CustomerIODestination = Destination<CustomerIODestinationConfig>;
@@ -121,5 +122,5 @@ export type CustomerIOBatchedRequest = BatchedRequest<
 export type CustomerIOBatchedRequestBody = BatchedRequestBody<SegmentationPayload>;
 
 export type ProcessedEvent = RespList & {
-  eventAction: SegmentActionType;
+  eventAction: RecordActionType;
 };

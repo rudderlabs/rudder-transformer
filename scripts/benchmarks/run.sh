@@ -16,6 +16,7 @@ TEST_COUNT=$(yq '.tests | length' "$CONFIG")
 OPTIONAL_VARS=(
     "UT_IMAGE"
     "UT_PROF"
+    "UT_PERF"
     "UT_MAX_SEMI_SPACE_SIZE"
     "UT_MAX_OLD_SPACE_SIZE"
     "UT_MAX_HEAP_SIZE"
@@ -50,6 +51,10 @@ for ((i=0; i<TEST_COUNT; i++)); do
     echo "Starting test: $NAME"
     docker-compose -f bench-compose.yml down
 
+    # Creating default profiling files
+    touch "./test-results/profiles/prof-test.log" || true
+    touch "./test-results/profiles/perf-test.log" || true
+
     # Build docker-compose command
     CMD="RL_IMAGE=$RL_IMAGE"
 
@@ -63,8 +68,8 @@ for ((i=0; i<TEST_COUNT; i++)); do
             CMD="$CMD $VAR=$VALUE"
             if [[ "$VAR" == "UT_PROF" ]]; then
                 touch "./test-results/profiles/prof-$VALUE.log"
-            else
-                touch "./test-results/profiles/prof-test.log" || true
+            elif [[ "$VAR" == "UT_PERF" ]]; then
+                touch "./test-results/profiles/perf-$VALUE.log"
             fi
         fi
     done

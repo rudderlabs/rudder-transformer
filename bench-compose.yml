@@ -8,6 +8,9 @@ services:
       - type: bind
         source: ./test-results/profiles/prof-${UT_PROF:-test}.log
         target: /home/node/app/prof-${UT_PROF:-test}.log
+      - type: bind
+        source: ./test-results/profiles/perf-${UT_PERF:-test}.log
+        target: /home/node/app/perf-${UT_PERF:-test}.log
     ports:
       - "9090:9090"
     deploy:
@@ -18,6 +21,7 @@ services:
     environment:
       # Node process configuration variables
       UT_PROF: ${UT_PROF:-test}
+      UT_PERF: ${UT_PERF:-test}
       UT_MAX_SEMI_SPACE_SIZE: ${UT_MAX_SEMI_SPACE_SIZE:-}
       UT_MAX_OLD_SPACE_SIZE: ${UT_MAX_OLD_SPACE_SIZE:-}
       UT_MAX_HEAP_SIZE: ${UT_MAX_HEAP_SIZE:-}

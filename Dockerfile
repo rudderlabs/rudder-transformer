@@ -5,7 +5,7 @@ ENV HUSKY 0
 RUN apk update
 RUN apk upgrade
 
-RUN apk add --no-cache tini make g++ python3 bash
+RUN apk add --no-cache tini make g++ python3 bash linux-tools perf
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 

@@ -23,4 +23,10 @@ fi
 
 echo "Running with node version: $(node --version)"
 echo "Starting WebServer with arguments: $NODE_ARGS"
-cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..
+
+if [ -n "$UT_PERF" ]; then
+  echo "Starting with perf profiling enabled"
+  perf record -o /home/node/app/perf-$UT_PERF.log -g -- cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..
+else
+  cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..
+fi

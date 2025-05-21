@@ -1,4 +1,4 @@
-import { generateMetadata, generateRecordPayload, overrideDestination } from '../../../testUtils';
+import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 import {
   destType,
@@ -296,7 +296,8 @@ export const data = [
               metadata: [generateMetadata(9)],
               batched: false,
               statusCode: 400,
-              error: 'type: Invalid literal value, expected "record"; rudderId: Required',
+              error:
+                'type: Invalid literal value, expected "record"; rudderId: Required; messageId: Required',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

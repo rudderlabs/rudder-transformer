@@ -63,8 +63,6 @@ export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConf
 
 // Message type specific to CustomerIO, based on RudderRecordV2Schema
 export const CustomerIOMessageSchema = RudderRecordV2Schema.extend({
-  // Make messageId optional to maintain compatibility with existing tests
-  messageId: z.string().optional(),
   // Override the identifiers field with CustomerIO-specific validation
   // For CustomerIO, identifiers is required and must contain exactly one identifier
   identifiers: z
@@ -86,9 +84,7 @@ export const CustomerIOMessageSchema = RudderRecordV2Schema.extend({
 });
 
 // CustomerIOMessage extends RudderRecordV2 with CustomerIO-specific validation
-export type CustomerIOMessage = Omit<RudderRecordV2, 'messageId' | 'identifiers'> & {
-  // Make messageId optional to maintain compatibility with existing tests
-  messageId?: string;
+export type CustomerIOMessage = Omit<RudderRecordV2, 'identifiers'> & {
   // For CustomerIO, identifiers is required and must contain exactly one identifier
   identifiers: Record<string, string | number>;
 };

@@ -56,17 +56,12 @@ export enum RecordActionType {
   DELETE = 'delete',
 }
 
-/**
- * Schema for RudderRecordV2 events
- * - identifiers is optional for destinations
- * - rudderId is required for all events
- */
 export const RudderRecordV2Schema = z
   .object({
     type: z.literal('record'),
     action: z.nativeEnum(RecordActionType),
     fields: z.record(z.string(), z.any()).optional(),
-    identifiers: z.record(z.string(), z.union([z.string(), z.number(), z.null()])).optional(),
+    identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
     recordId: z.string().optional(),
     rudderId: z.string(),
     messageId: z.string(),

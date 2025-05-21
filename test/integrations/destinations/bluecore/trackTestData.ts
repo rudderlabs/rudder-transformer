@@ -1,13 +1,11 @@
-import {
-  generateSimplifiedTrackPayload,
-  generateTrackPayload,
-  overrideDestination,
-  transformResultBuilder,
-} from '../../testUtils';
+import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../testUtils';
+import { ProcessorTestData } from '../../testTypes';
+import { baseMetadata, baseDestinationDefinition } from './common';
 
 const destination = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
   Name: 'BLUECORE',
+  DestinationDefinition: baseDestinationDefinition,
   Config: {
     bluecoreNamespace: 'dummy_sandbox',
     eventsMapping: [
@@ -30,15 +28,11 @@ const destination = {
     ],
   },
   Enabled: true,
+  WorkspaceID: 'default-workspace',
   Transformations: [],
-  DestinationDefinition: { Config: { cdkV2Enabled: true } },
-};
-
-const metadata = {
-  sourceType: '',
-  destinationType: '',
-  namespace: '',
-  destinationId: '',
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
 };
 
 const commonTraits = {
@@ -88,7 +82,7 @@ const commonOutputHeaders = {
 
 const eventEndPoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
-export const trackTestData = [
+export const trackTestData: ProcessorTestData[] = [
   {
     id: 'bluecore-track-test-1',
     name: 'bluecore',
@@ -102,10 +96,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: destination,
-            metadata,
+            destination,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'TestEven001',
@@ -166,7 +161,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -186,10 +181,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'TestEven001',
@@ -237,7 +233,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -257,10 +253,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'optin',
@@ -308,7 +305,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -328,10 +325,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'unsubscribe',
@@ -379,7 +377,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -399,10 +397,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'TestEven001',
@@ -456,7 +455,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -476,10 +475,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'subscription_event',
@@ -527,7 +527,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -547,10 +547,11 @@ export const trackTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'subscription_event',
@@ -596,7 +597,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],

@@ -9,9 +9,13 @@
 # * UT_MAX_SEMI_SPACE_SIZE - Sets Node.js --max-semi-space-size flag
 # * UT_MAX_OLD_SPACE_SIZE - Sets Node.js --max-old-space-size flag
 # * UT_MAX_HEAP_SIZE - Sets Node.js --max-heap-size flag
+#
+# Profiling configuration:
+# * UT_PROF - Enables Node.js built-in profiling with --prof flag, value is used in profile filename
+# * UT_PERF - When set to "true", enables CPU profiling with perf, profiles saved as perf-{UT_PROF}.log
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_minutes: 1
+duration_minutes: 2
 tests:
 #  - name: test-classic
 #    UT_NUM_PROCS: 5
@@ -26,7 +30,8 @@ tests:
     UT_NUM_PROCS: 5
     UT_MAX_THREADS: 8
     UT_MIN_THREADS: 2
-    UT_PROF: piscina
+#    UT_PROF: piscina
+    UT_PERF: piscina
 #  - name: test-piscina-semi512
 #    UT_NUM_PROCS: 5
 #    UT_MAX_THREADS: 8

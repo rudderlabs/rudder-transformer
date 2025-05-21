@@ -4,6 +4,13 @@ services:
     #build: .
     image: ${UT_IMAGE:-fracasula/ut-custom:latest}
     container_name: user-transformer
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - PERFMON
+    security_opt:
+      - seccomp=unconfined
     volumes:
       - type: bind
         source: ./test-results/profiles/prof-${UT_PROF:-test}.log

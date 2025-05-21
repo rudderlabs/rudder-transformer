@@ -12,6 +12,7 @@ export const data = [
           input: [
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -68,6 +69,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -122,6 +124,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -150,6 +153,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -178,6 +182,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -200,6 +205,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -222,6 +228,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -390,6 +397,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 Config: {
                   restApiKey: secret1,
                   prefixProperties: true,
@@ -424,6 +432,7 @@ export const data = [
           input: [
             {
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -493,6 +502,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -562,6 +572,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -615,6 +626,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -668,6 +680,7 @@ export const data = [
             },
             {
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -820,6 +833,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {
@@ -855,6 +869,7 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 5, userId: 'u1' }],
               destination: {
+                  hasDynamicConfig: false,
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',
                 Config: {

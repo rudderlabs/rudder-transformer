@@ -804,6 +804,110 @@ describe('groupRouterTransformEvents', () => {
       [{ context: { sources: { job_id: 'job1' } } }],
     ]);
   });
+
+  it('should group events by destination config when hasDynamicConfig is true', () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups due to different configs
+    expect(result[0][0].destination.Config.key1).toBe('value1');
+    expect(result[1][0].destination.Config.key1).toBe('value2');
+  });
+
+  it('should not group events by destination config when hasDynamicConfig is false', () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: false,
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: false,
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(1); // 1 group because configs are ignored
+    expect(result[0].length).toBe(2); // Both events in the same group
+  });
+
+  it('should handle undefined hasDynamicConfig flag (backward compatibility)', () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          // hasDynamicConfig is undefined (older server versions)
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          // hasDynamicConfig is undefined (older server versions)
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups due to different configs
+    // Should group by config even when hasDynamicConfig is undefined
+    // This maintains backward compatibility with older server versions
+    expect(result[0][0].destination.Config.key1).toBe('value1');
+    expect(result[1][0].destination.Config.key1).toBe('value2');
+  });
+
+  it('should handle configs with different key orders as the same config', () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value1', key2: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key2: 'value2', key1: 'value1' }, // Same values but different order
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(1); // 1 group because configs are equivalent
+    expect(result[0].length).toBe(2); // Both events in the same group
+  });
 });
 
 describe('applyJSONStringTemplate', () => {

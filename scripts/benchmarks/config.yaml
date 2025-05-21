@@ -11,12 +11,12 @@
 # * UT_MAX_HEAP_SIZE - Sets Node.js --max-heap-size flag
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_minutes: 2
+duration_minutes: 1
 tests:
-  - name: test-classic
-    UT_NUM_PROCS: 5
-    UT_POOLING: false
-    UT_IMAGE: fracasula/ut-custom:satish
+#  - name: test-classic
+#    UT_NUM_PROCS: 5
+#    UT_POOLING: false
+#    UT_IMAGE: fracasula/ut-custom:satish
 #  - name: test-classic-semi512
 #    UT_NUM_PROCS: 5
 #    UT_POOLING: false
@@ -26,11 +26,13 @@ tests:
     UT_NUM_PROCS: 5
     UT_MAX_THREADS: 8
     UT_MIN_THREADS: 2
+    UT_PROF: piscina
 #  - name: test-piscina-semi512
 #    UT_NUM_PROCS: 5
 #    UT_MAX_THREADS: 8
 #    UT_MIN_THREADS: 2
 #    UT_MAX_SEMI_SPACE_SIZE: 512
 #    UT_MAX_HEAP_SIZE: 5120
+#    UT_PROF: piscina-semi512
 #    ---
 #    RL_BATCH_SIZES: 30

@@ -17,5 +17,9 @@ if [ -n "$UT_MAX_HEAP_SIZE" ]; then
   NODE_ARGS="$NODE_ARGS --max-heap-size=$UT_MAX_HEAP_SIZE"
 fi
 
+if [ -n "$UT_PROF" ]; then
+  NODE_ARGS="$NODE_ARGS --prof --no-logfile-per-isolate --logfile=/home/node/app/prof-$UT_PROF.log"
+fi
+
 echo "Starting WebServer with arguments: $NODE_ARGS"
 cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..

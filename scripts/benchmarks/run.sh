@@ -15,6 +15,7 @@ TEST_COUNT=$(yq '.tests | length' "$CONFIG")
 # Array of optional UT environment variables
 OPTIONAL_VARS=(
     "UT_IMAGE"
+    "UT_PROF"
     "UT_MAX_SEMI_SPACE_SIZE"
     "UT_MAX_OLD_SPACE_SIZE"
     "UT_MAX_HEAP_SIZE"
@@ -41,6 +42,9 @@ STATS_COLLECTION_INTERVAL=$(yq '.stats_collection_interval' "$1")
 DURATION=$(yq '.duration_minutes' "$1")
 DURATION_SECS=$((DURATION * 60))
 
+# Ensure test-results and profiles directories exist
+mkdir -p ./test-results/profiles
+
 for ((i=0; i<TEST_COUNT; i++)); do
     NAME=$(yq -r ".tests[$i].name" "$1")
     echo "Starting test: $NAME"
@@ -57,6 +61,11 @@ for ((i=0; i<TEST_COUNT; i++)); do
         # This handles both missing variables and explicitly set "false" variables
         if [[ -n "$VALUE" && "$VALUE" != "null" ]]; then
             CMD="$CMD $VAR=$VALUE"
+            if [[ "$VAR" == "UT_PROF" ]]; then
+                touch "./test-results/profiles/prof-$VALUE.log"
+            else
+                touch "./test-results/profiles/prof-test.log" || true
+            fi
         fi
     done
 

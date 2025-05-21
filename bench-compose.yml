@@ -4,15 +4,20 @@ services:
     #build: .
     image: ${UT_IMAGE:-fracasula/ut-custom:latest}
     container_name: user-transformer
+    volumes:
+      - type: bind
+        source: ./test-results/profiles/prof-${UT_PROF:-test}.log
+        target: /home/node/app/prof-${UT_PROF:-test}.log
     ports:
       - "9090:9090"
     deploy:
       resources:
         limits:
           cpus: '5.0' # Limits the container to max 5 CPUs
-          memory: 10G  # Limits the container to max 5GB of memory
+          memory: 10G  # Limits the container to max 10GB of memory
     environment:
-      # Node memory configuration variables
+      # Node process configuration variables
+      UT_PROF: ${UT_PROF:-test}
       UT_MAX_SEMI_SPACE_SIZE: ${UT_MAX_SEMI_SPACE_SIZE:-}
       UT_MAX_OLD_SPACE_SIZE: ${UT_MAX_OLD_SPACE_SIZE:-}
       UT_MAX_HEAP_SIZE: ${UT_MAX_HEAP_SIZE:-}

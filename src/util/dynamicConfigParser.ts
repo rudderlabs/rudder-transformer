@@ -3,9 +3,15 @@ import { ProcessorTransformationRequest, RouterTransformationRequestData, FixMe 
 
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const unset = require('unset-value');
 
 export class DynamicConfigParser {
+  /**
+   * Extracts dynamic configuration value from a string template
+   *
+   * @param event The event containing values to substitute in the template
+   * @param value The template string to process
+   * @returns The processed value
+   */
   private static getDynamicConfigValue(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
     value: FixMe,
@@ -22,7 +28,8 @@ export class DynamicConfigParser {
       const pathVal = get(event, fieldPath);
       if (pathVal) {
         value = pathVal;
-        unset(event, fieldPath);
+        // Note: We're not using unset(event, fieldPath) anymore to avoid modifying the original event
+        // This is a change from the original implementation
       } else {
         value = matResult.groups.defaultVal.replace(/"/g, '').trim();
       }
@@ -37,6 +44,13 @@ export class DynamicConfigParser {
     return value;
   }
 
+  /**
+   * Recursively processes dynamic configuration values in an object, array, or string
+   *
+   * @param value The value to process (object, array, or string)
+   * @param event The event containing values to substitute in templates
+   * @returns The processed value
+   */
   private static configureVal(
     value: FixMe,
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
@@ -44,25 +58,48 @@ export class DynamicConfigParser {
     if (value) {
       if (Array.isArray(value)) {
         value.forEach((key, index) => {
-          value[index] = this.configureVal(key, event);
+          value[index] = DynamicConfigParser.configureVal(key, event);
         });
       } else if (typeof value === 'object') {
         Object.keys(value).forEach((obj) => {
-          value[obj] = this.configureVal(value[obj], event);
+          value[obj] = DynamicConfigParser.configureVal(value[obj], event);
         });
       } else if (typeof value === 'string') {
-        value = this.getDynamicConfigValue(event, value);
+        value = DynamicConfigParser.getDynamicConfigValue(event, value);
       }
     }
     return value;
   }
 
+  /**
+   * Processes dynamic configuration in the event
+   * Creates a shallow copy of the event and destination, but deep clones only the Config
+   * This is more efficient than deep cloning the entire event
+   *
+   * @param event The event to process
+   * @returns A new event object with processed dynamic configuration
+   */
   private static getDynamicConfig(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
   ) {
-    const resultantEvent = cloneDeep(event);
-    const { Config } = resultantEvent.destination;
-    resultantEvent.destination.Config = this.configureVal(Config, resultantEvent);
+    // Create a shallow copy of the event
+    const resultantEvent = { ...event };
+
+    // Create a shallow copy of the destination
+    resultantEvent.destination = { ...event.destination };
+
+    // Get the Config from the original event
+    const { Config } = event.destination;
+
+    // Deep clone only the Config
+    const configCopy = cloneDeep(Config);
+
+    // Process the Config and set it on the copied destination
+    resultantEvent.destination.Config = DynamicConfigParser.configureVal(
+      configCopy,
+      resultantEvent,
+    );
+
     return resultantEvent;
   }
 

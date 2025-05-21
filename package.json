@@ -65,7 +65,7 @@
     "@datadog/pprof": "^5.5.1",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@rudderstack/integrations-lib": "^0.2.31",
+    "@rudderstack/integrations-lib": "^0.2.32",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
     "@rudderstack/workflow-engine": "^0.8.13",

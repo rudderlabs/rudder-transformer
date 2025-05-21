@@ -69,6 +69,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'slack',
   'snapchat_conversion',
   'tiktok_ads',
+  'bluecore',
 ];
 
 beforeAll(async () => {

@@ -19,7 +19,7 @@ import {
   CustomerIOMessageSchema,
   ProcessedEvent,
 } from './type';
-import { Metadata, RecordActionType } from '../../../types/rudderEvents';
+import { Metadata, RecordAction } from '../../../types/rudderEvents';
 
 const getIdType = (connection: CustomerIOConnection): string =>
   connection.config.destination.identifierMappings[0]?.to || DEFAULT_ID_TYPE;
@@ -125,8 +125,8 @@ export const batchResponseBuilder = (
   return [...insertResponses, ...deleteResponses];
 };
 
-const getEventAction = (event: CustomerIORouterRequest): RecordActionType =>
-  event.message.action as RecordActionType;
+const getEventAction = (event: CustomerIORouterRequest): RecordAction =>
+  event.message.action as RecordAction;
 
 const validateEvent = (event: CustomerIORouterRequest): boolean => {
   const { message, connection } = event;

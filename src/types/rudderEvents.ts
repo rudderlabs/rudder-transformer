@@ -48,9 +48,9 @@ export const RudderRecordV1Schema = z.object({
 export type RudderRecordV1 = z.infer<typeof RudderRecordV1Schema>;
 
 /**
- * Enum for record action types
+ * Enum for record actions
  */
-export enum RecordActionType {
+export enum RecordAction {
   INSERT = 'insert',
   UPDATE = 'update',
   DELETE = 'delete',
@@ -59,7 +59,7 @@ export enum RecordActionType {
 export const RudderRecordV2Schema = z
   .object({
     type: z.literal('record'),
-    action: z.nativeEnum(RecordActionType),
+    action: z.nativeEnum(RecordAction),
     fields: z.record(z.string(), z.any()).optional(),
     identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
     recordId: z.string().optional(),

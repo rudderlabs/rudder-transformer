@@ -9,7 +9,7 @@ import {
   RudderRecordV2Schema,
   RudderRecordV2,
 } from '../../../types';
-import { RecordActionType } from '../../../types/rudderEvents';
+import { RecordAction } from '../../../types/rudderEvents';
 
 import {
   BatchedRequest,
@@ -118,5 +118,5 @@ export type CustomerIOBatchedRequest = BatchedRequest<
 export type CustomerIOBatchedRequestBody = BatchedRequestBody<SegmentationPayload>;
 
 export type ProcessedEvent = RespList & {
-  eventAction: RecordActionType;
+  eventAction: RecordAction;
 };

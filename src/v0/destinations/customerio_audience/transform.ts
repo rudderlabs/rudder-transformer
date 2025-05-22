@@ -4,7 +4,7 @@ import {
   CustomerIORouterRequest,
   ProcessedEvent,
 } from './type';
-import { RecordActionType } from '../../../types/rudderEvents';
+import { RecordAction } from '../../../types/rudderEvents';
 import { batchResponseBuilder, createEventChunk } from './utils';
 import { handleRtTfSingleEventError } from '../../util';
 
@@ -42,11 +42,11 @@ const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata:
 
   // Split successful events into delete and insert/update lists
   const deleteRespList = successfulEvents
-    .filter((event) => event.eventAction === RecordActionType.DELETE)
+    .filter((event) => event.eventAction === RecordAction.DELETE)
     .map(({ payload, metadata }) => ({ payload, metadata }));
 
   const insertOrUpdateRespList = successfulEvents
-    .filter((event) => event.eventAction !== RecordActionType.DELETE)
+    .filter((event) => event.eventAction !== RecordAction.DELETE)
     .map(({ payload, metadata }) => ({ payload, metadata }));
 
   const batchSuccessfulRespList = batchResponseBuilder(

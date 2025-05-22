@@ -1,8 +1,8 @@
 # To introduce a new env var change both run-tests.sh and docker-compose.yaml
 # These variables are ALWAYS required:
 # * tests.name
-# * tests.STATS_COLLECTION_INTERVAL
-# * tests.DURATION_MINUTES
+# * tests.stats_collection_interval
+# * tests.duration_seconds
 #
 # Additional memory configuration:
 # BEWARE: v8_flags.max_heap_size > 0 implies v8_flags.max_semi_space_size == 0 || v8_flags.max_old_space_size == 0
@@ -17,7 +17,7 @@
 # * UT_TRACE_SYNC_IO - Enabled Node.js built-in detector for synchronous code, value is used for creating the profiles folder
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_minutes: 1
+duration_seconds: 10
 tests:
 #  - name: test-classic
 #    UT_NUM_PROCS: 5

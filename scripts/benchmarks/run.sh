@@ -42,8 +42,7 @@ OPTIONAL_VARS=(
 # Get the image values from config
 RL_IMAGE=$(yq -r '.rl_image // "fracasula/rudder-load:latest"' "$CONFIG")
 STATS_COLLECTION_INTERVAL=$(yq '.stats_collection_interval' "$1")
-DURATION=$(yq '.duration_minutes' "$1")
-DURATION_SECS=$((DURATION * 60))
+DURATION_SECS=$(yq '.duration_seconds' "$1")
 
 # Ensure test-results and profiles directories exist
 mkdir -p ./test-results/profiles/prof/default
@@ -52,13 +51,16 @@ mkdir -p ./test-results/profiles/perf/default
 mkdir -p ./test-results/profiles/tracesyncio/default
 
 for ((i=0; i<TEST_COUNT; i++)); do
+    # Reset UT_PROF_VALUE for each test
+    UT_PROF_VALUE=""
+
     NAME=$(yq -r ".tests[$i].name" "$1")
     echo "Starting test: $NAME"
     docker-compose -f bench-compose.yml down
 
     # Build docker-compose command
     CMD="RL_IMAGE=$RL_IMAGE"
-    
+
     # Add all optional variables to command
     for VAR in "${OPTIONAL_VARS[@]}"; do
         # Check if the variable exists in the config
@@ -70,6 +72,8 @@ for ((i=0; i<TEST_COUNT; i++)); do
             if [[ "$VAR" == "UT_PROF" ]]; then
                 mkdir -p ./test-results/profiles/prof/$VALUE
                 rm -f ./test-results/profiles/prof/$VALUE/*
+                # Save the UT_PROF value for later processing
+                UT_PROF_VALUE=$VALUE
             elif [[ "$VAR" == "UT_CPU_PROF" ]]; then
                 mkdir -p ./test-results/profiles/cpuprof/$VALUE
                 rm -f ./test-results/profiles/cpuprof/$VALUE/*
@@ -96,16 +100,54 @@ for ((i=0; i<TEST_COUNT; i++)); do
     echo "Waiting a bit for containers to be ready..."
     sleep 15 # TODO replace this with a call to the health endpoint of the user transformer
 
-    echo "Collecting stats (duration: ${DURATION}m) into ${NAME}-stats.csv"
+    echo "Collecting stats (duration: ${DURATION_SECS}s) into ${NAME}-stats.csv"
     export INTERVAL=${STATS_COLLECTION_INTERVAL};
     export OUTFILE=./test-results/"${NAME}"-stats.csv;
     timeout ${DURATION_SECS} ./scripts/benchmarks/collect-stats.sh || true
 
     echo "Test $NAME completed. Stopping containers..."
     # Kill the node process in user-transformer container
-    
     docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*snapshot" | head -n 1 | awk '{print $1}')
     docker stop rudder-load
     sleep 5 # to give time for profiling files to be created
+
+    # Process profiling files if UT_PROF was set
+    if [[ -n "${UT_PROF_VALUE:-}" ]]; then
+        echo "Processing V8 profiling files in ./test-results/profiles/prof/$UT_PROF_VALUE/"
+        PROFILE_DIR="./test-results/profiles/prof/$UT_PROF_VALUE"
+
+        # Count total files to process more efficiently (only .log files)
+        total_files=$(ls -lah "$PROFILE_DIR" | grep "isolate-.*\.log" | wc -l)
+
+        echo "Detected a total of $total_files profile files..."
+
+        # Process each log file with node --prof-process
+        current_file=0
+        for file in "$PROFILE_DIR"/isolate-*.log; do
+            if [[ -f "$file" ]]; then
+                # Increment counter and calculate percentage
+                current_file=$((current_file+1))
+                percentage=$((current_file * 100 / total_files))
+
+                # Use --no-warnings to suppress the ExperimentalWarning
+                node --no-warnings --prof-process $file > ${file}-v8.txt
+
+                # Print progress on the same line
+                printf "\rProcessing files: %d%% complete (%d/%d)" "$percentage" "$current_file" "$total_files"
+            fi
+        done
+
+        # Print newline after progress is complete
+        echo ""
+
+        # Combine all processed files into one
+        cat "$PROFILE_DIR"/isolate-*.log-v8.txt > "$PROFILE_DIR/combined-profile.txt"
+
+        # Clean up individual files, keeping only the combined profile
+        rm -f "$PROFILE_DIR"/isolate-*.log "$PROFILE_DIR"/isolate-*.log-v8.txt
+
+        echo "V8 profiling files processed and combined into $PROFILE_DIR/combined-profile.txt"
+    fi
+
     docker-compose -f bench-compose.yml down
 done

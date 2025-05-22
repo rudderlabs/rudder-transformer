@@ -517,9 +517,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -627,9 +625,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -767,9 +763,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -795,9 +789,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1395,9 +1387,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1504,9 +1494,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1643,9 +1631,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1671,9 +1657,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: {},
                   body: {
                     JSON: {},
                     JSON_ARRAY: {

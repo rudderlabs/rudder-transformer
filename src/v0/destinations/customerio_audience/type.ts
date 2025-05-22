@@ -7,7 +7,6 @@ import {
   Metadata,
   RouterTransformationRequestData,
   RudderRecordV2Schema,
-  RudderRecordV2,
 } from '../../../types';
 import { RecordAction } from '../../../types/rudderEvents';
 
@@ -66,28 +65,14 @@ export const CustomerIOMessageSchema = RudderRecordV2Schema.extend({
   // Override the identifiers field with CustomerIO-specific validation
   // For CustomerIO, identifiers is required and must contain exactly one identifier
   identifiers: z
-    .record(z.string(), z.union([z.string(), z.number()]))
-    // Make identifiers required for CustomerIO audience (even though it's optional in base schema)
-    .superRefine((identifiers, ctx) => {
-      if (Object.keys(identifiers).length === 0) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'cannot be empty',
-        });
-      } else if (Object.keys(identifiers).length !== 1) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: 'only one identifier is supported',
-        });
-      }
+    .record(z.string().min(1), z.union([z.string(), z.number()]))
+    .refine((ids) => Object.keys(ids).length === 1, {
+      message: 'exactly one identifier is supported',
     }),
 });
 
-// CustomerIOMessage extends RudderRecordV2 with CustomerIO-specific validation
-export type CustomerIOMessage = Omit<RudderRecordV2, 'identifiers'> & {
-  // For CustomerIO, identifiers is required and must contain exactly one identifier
-  identifiers: Record<string, string | number>;
-};
+// CustomerIOMessage type derived directly from the schema
+export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
 
 // Final exported types using generics from base types
 export type CustomerIODestination = Destination<CustomerIODestinationConfig>;

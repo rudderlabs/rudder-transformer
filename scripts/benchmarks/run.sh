@@ -103,7 +103,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
     sleep 15 # TODO replace this with a call to the health endpoint of the user transformer
 
     if [[ -n "${UT_TRACE_SYNC_IO:-}" ]]; then
-        docker logs user-transformer -f > "$UT_TRACE_SYNC_IO" &
+        docker logs user-transformer -f > "$UT_TRACE_SYNC_IO" 2>&1 &
     fi
 
     echo "Collecting stats (duration: ${DURATION_SECS}s) into ${NAME}-stats.csv"

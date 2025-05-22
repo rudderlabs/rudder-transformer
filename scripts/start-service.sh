@@ -3,6 +3,8 @@
 set -e
 
 # Build Node.js memory arguments
+NODE_APP=/home/node/app
+PROFILES=$NODE_APP/profiles
 NODE_ARGS="--no-node-snapshot"
 
 if [ -n "$UT_MAX_SEMI_SPACE_SIZE" ]; then
@@ -18,19 +20,28 @@ if [ -n "$UT_MAX_HEAP_SIZE" ]; then
 fi
 
 if [ -n "$UT_PROF" ]; then
-  #NODE_ARGS="$NODE_ARGS --prof --no-logfile-per-isolate --logfile=/home/node/app/prof-$UT_PROF.log"
-  mkdir -p /home/node/app/profiles/$UT_PROF
-  NODE_ARGS="$NODE_ARGS --cpu-prof --cpu-prof-dir=/home/node/app/profiles/$UT_PROF"
+  mkdir -p $PROFILES/prof/$UT_PROF
+  #--no-logfile-per-isolate
+  NODE_ARGS="$NODE_ARGS --prof --logfile=$PROFILES/prof/$UT_PROF/prof.log"
+fi
+
+if [ -n "$UT_CPU_PROF" ]; then
+  mkdir -p $PROFILES/cpuprof/$UT_CPU_PROF
+  NODE_ARGS="$NODE_ARGS --cpu-prof --cpu-prof-dir=$PROFILES/cpuprof/$UT_CPU_PROF"
+fi
+
+if [ -n "$UT_TRACE_SYNC_IO" ]; then
+  NODE_ARGS="$NODE_ARGS --trace-sync-io"
 fi
 
 echo "Running with node version: $(node --version)"
 echo "Starting WebServer with arguments: $NODE_ARGS"
 
+cd dist
+
 if [ -n "$UT_PERF" ]; then
   echo "Starting with perf profiling enabled"
-  cd dist
-  perf record -o /home/node/app/perf-$UT_PERF.log -g -F 99 --no-inherit -- node $NODE_ARGS ./src/index.js
-  cd ..
+  perf record -o $PROFILES/perf/$UT_PERF/perf.log -g -F 99 --no-inherit -- node $NODE_ARGS ./src/index.js
 else
-  cd dist && NODE_OPTIONS="--no-node-snapshot" node $NODE_ARGS ./src/index.js && cd ..
+  node $NODE_ARGS ./src/index.js
 fi

@@ -16,7 +16,9 @@ TEST_COUNT=$(yq '.tests | length' "$CONFIG")
 OPTIONAL_VARS=(
     "UT_IMAGE"
     "UT_PROF"
+    "UT_CPU_PROF"
     "UT_PERF"
+    "UT_TRACE_SYNC_IO"
     "UT_MAX_SEMI_SPACE_SIZE"
     "UT_MAX_OLD_SPACE_SIZE"
     "UT_MAX_HEAP_SIZE"
@@ -44,9 +46,10 @@ DURATION=$(yq '.duration_minutes' "$1")
 DURATION_SECS=$((DURATION * 60))
 
 # Ensure test-results and profiles directories exist
-mkdir -p ./test-results/profiles/default
-# Creating default profiling files
-touch "./test-results/profiles/perf-default.log" || true
+mkdir -p ./test-results/profiles/prof/default
+mkdir -p ./test-results/profiles/cpuprof/default
+mkdir -p ./test-results/profiles/perf/default
+mkdir -p ./test-results/profiles/tracesyncio/default
 
 for ((i=0; i<TEST_COUNT; i++)); do
     NAME=$(yq -r ".tests[$i].name" "$1")
@@ -55,7 +58,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     # Build docker-compose command
     CMD="RL_IMAGE=$RL_IMAGE"
-
+    
     # Add all optional variables to command
     for VAR in "${OPTIONAL_VARS[@]}"; do
         # Check if the variable exists in the config
@@ -65,10 +68,18 @@ for ((i=0; i<TEST_COUNT; i++)); do
         if [[ -n "$VALUE" && "$VALUE" != "null" ]]; then
             CMD="$CMD $VAR=$VALUE"
             if [[ "$VAR" == "UT_PROF" ]]; then
-                mkdir -p ./test-results/profiles/$VALUE
-                rm -f ./test-results/profiles/$VALUE/*
+                mkdir -p ./test-results/profiles/prof/$VALUE
+                rm -f ./test-results/profiles/prof/$VALUE/*
+            elif [[ "$VAR" == "UT_CPU_PROF" ]]; then
+                mkdir -p ./test-results/profiles/cpuprof/$VALUE
+                rm -f ./test-results/profiles/cpuprof/$VALUE/*
             elif [[ "$VAR" == "UT_PERF" ]]; then
-                touch "./test-results/profiles/perf-$VALUE.log"
+                mkdir -p ./test-results/profiles/perf/$VALUE
+                rm -f ./test-results/profiles/perf/$VALUE/*
+            elif [[ "$VAR" == "UT_TRACE_SYNC_IO" ]]; then
+                mkdir -p ./test-results/profiles/tracesyncio/$VALUE
+                rm -f ./test-results/profiles/tracesyncio/$VALUE/*
+                docker logs -f user-transformer > "./test-results/profiles/tracesyncio/$VALUE/trace.log" &
             fi
         fi
     done
@@ -92,6 +103,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     echo "Test $NAME completed. Stopping containers..."
     # Kill the node process in user-transformer container
+    
     docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*snapshot" | head -n 1 | awk '{print $1}')
     docker stop rudder-load
     sleep 5 # to give time for profiling files to be created

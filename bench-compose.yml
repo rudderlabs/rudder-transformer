@@ -12,10 +12,9 @@ services:
     security_opt:
       - seccomp=unconfined
     volumes:
-      - ./test-results/profiles/${UT_PROF:-default}:/home/node/app/profiles/${UT_PROF:-default}
-      - type: bind
-        source: ./test-results/profiles/perf-${UT_PERF:-default}.log
-        target: /home/node/app/perf-${UT_PERF:-default}.log
+      - ./test-results/profiles/prof/${UT_PROF:-default}:/home/node/app/profiles/prof/${UT_PROF:-default}
+      - ./test-results/profiles/cpuprof/${UT_CPU_PROF:-default}:/home/node/app/profiles/cpuprof/${UT_CPU_PROF:-default}
+      - ./test-results/profiles/perf/${UT_PERF:-default}:/home/node/app/profiles/perf/${UT_PERF:-default}
     ports:
       - "9090:9090"
     deploy:
@@ -26,7 +25,9 @@ services:
     environment:
       # Node process configuration variables
       UT_PROF: ${UT_PROF}
+      UT_CPU_PROF: ${UT_CPU_PROF}
       UT_PERF: ${UT_PERF}
+      UT_TRACE_SYNC_IO: ${UT_TRACE_SYNC_IO}
       UT_MAX_SEMI_SPACE_SIZE: ${UT_MAX_SEMI_SPACE_SIZE:-}
       UT_MAX_OLD_SPACE_SIZE: ${UT_MAX_OLD_SPACE_SIZE:-}
       UT_MAX_HEAP_SIZE: ${UT_MAX_HEAP_SIZE:-}

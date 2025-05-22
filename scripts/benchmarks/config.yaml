@@ -11,11 +11,13 @@
 # * UT_MAX_HEAP_SIZE - Sets Node.js --max-heap-size flag
 #
 # Profiling configuration:
-# * UT_PROF - Enables Node.js built-in profiling with --prof flag, value is used in profile filename
-# * UT_PERF - When set to "true", enables CPU profiling with perf, profiles saved as perf-{UT_PROF}.log
+# * UT_PROF - Enables Node.js built-in profiling with --prof flag, value is used for creating the profiles folder
+# * UT_CPU_PROF - Enables Node.js built-in CPU profiling with --cpu-prof flag, value is used for creating the profiles folder
+# * UT_PERF - Enables CPU profiling with perf, value is used for creating the profiles folder
+# * UT_TRACE_SYNC_IO - Enabled Node.js built-in detector for synchronous code, value is used for creating the profiles folder
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_minutes: 2
+duration_minutes: 1
 tests:
 #  - name: test-classic
 #    UT_NUM_PROCS: 5
@@ -30,8 +32,8 @@ tests:
     UT_NUM_PROCS: 5
     UT_MAX_THREADS: 8
     UT_MIN_THREADS: 2
-#    UT_PROF: piscina
-    UT_PERF: piscina
+    UT_PROF: piscina
+#    UT_PERF: piscina
 #  - name: test-piscina-semi512
 #    UT_NUM_PROCS: 5
 #    UT_MAX_THREADS: 8

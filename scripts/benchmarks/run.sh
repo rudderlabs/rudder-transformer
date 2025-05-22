@@ -51,8 +51,9 @@ mkdir -p ./test-results/profiles/perf/default
 mkdir -p ./test-results/profiles/tracesyncio/default
 
 for ((i=0; i<TEST_COUNT; i++)); do
-    # Reset UT_PROF_VALUE for each test
+    # Reset values for each test
     UT_PROF_VALUE=""
+    UT_TRACE_SYNC_IO=""
 
     NAME=$(yq -r ".tests[$i].name" "$1")
     echo "Starting test: $NAME"
@@ -83,7 +84,8 @@ for ((i=0; i<TEST_COUNT; i++)); do
             elif [[ "$VAR" == "UT_TRACE_SYNC_IO" ]]; then
                 mkdir -p ./test-results/profiles/tracesyncio/$VALUE
                 rm -f ./test-results/profiles/tracesyncio/$VALUE/*
-                docker logs -f user-transformer > "./test-results/profiles/tracesyncio/$VALUE/trace.log" &
+                UT_TRACE_SYNC_IO=./test-results/profiles/tracesyncio/$VALUE/trace.log
+                echo "Trace Sync IO activated. Output will be saved into $UT_TRACE_SYNC_IO"
             fi
         fi
     done
@@ -99,6 +101,10 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     echo "Waiting a bit for containers to be ready..."
     sleep 15 # TODO replace this with a call to the health endpoint of the user transformer
+
+    if [[ -n "${UT_TRACE_SYNC_IO:-}" ]]; then
+        docker logs user-transformer -f > "$UT_TRACE_SYNC_IO" &
+    fi
 
     echo "Collecting stats (duration: ${DURATION_SECS}s) into ${NAME}-stats.csv"
     export INTERVAL=${STATS_COLLECTION_INTERVAL};

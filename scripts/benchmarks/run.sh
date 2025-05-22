@@ -44,16 +44,14 @@ DURATION=$(yq '.duration_minutes' "$1")
 DURATION_SECS=$((DURATION * 60))
 
 # Ensure test-results and profiles directories exist
-mkdir -p ./test-results/profiles
+mkdir -p ./test-results/profiles/default
+# Creating default profiling files
+touch "./test-results/profiles/perf-default.log" || true
 
 for ((i=0; i<TEST_COUNT; i++)); do
     NAME=$(yq -r ".tests[$i].name" "$1")
     echo "Starting test: $NAME"
     docker-compose -f bench-compose.yml down
-
-    # Creating default profiling files
-    touch "./test-results/profiles/prof-test.log" || true
-    touch "./test-results/profiles/perf-test.log" || true
 
     # Build docker-compose command
     CMD="RL_IMAGE=$RL_IMAGE"
@@ -67,7 +65,8 @@ for ((i=0; i<TEST_COUNT; i++)); do
         if [[ -n "$VALUE" && "$VALUE" != "null" ]]; then
             CMD="$CMD $VAR=$VALUE"
             if [[ "$VAR" == "UT_PROF" ]]; then
-                touch "./test-results/profiles/prof-$VALUE.log"
+                mkdir -p ./test-results/profiles/$VALUE
+                rm -f ./test-results/profiles/$VALUE/*
             elif [[ "$VAR" == "UT_PERF" ]]; then
                 touch "./test-results/profiles/perf-$VALUE.log"
             fi
@@ -84,7 +83,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
     eval "$CMD"
 
     echo "Waiting a bit for containers to be ready..."
-    sleep 15
+    sleep 15 # TODO replace this with a call to the health endpoint of the user transformer
 
     echo "Collecting stats (duration: ${DURATION}m) into ${NAME}-stats.csv"
     export INTERVAL=${STATS_COLLECTION_INTERVAL};
@@ -92,5 +91,9 @@ for ((i=0; i<TEST_COUNT; i++)); do
     timeout ${DURATION_SECS} ./scripts/benchmarks/collect-stats.sh || true
 
     echo "Test $NAME completed. Stopping containers..."
+    # Kill the node process in user-transformer container
+    docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*snapshot" | head -n 1 | awk '{print $1}')
+    docker stop rudder-load
+    sleep 5 # to give time for profiling files to be created
     docker-compose -f bench-compose.yml down
 done

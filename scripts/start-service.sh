@@ -18,7 +18,9 @@ if [ -n "$UT_MAX_HEAP_SIZE" ]; then
 fi
 
 if [ -n "$UT_PROF" ]; then
-  NODE_ARGS="$NODE_ARGS --prof --no-logfile-per-isolate --logfile=/home/node/app/prof-$UT_PROF.log"
+  #NODE_ARGS="$NODE_ARGS --prof --no-logfile-per-isolate --logfile=/home/node/app/prof-$UT_PROF.log"
+  mkdir -p /home/node/app/profiles/$UT_PROF
+  NODE_ARGS="$NODE_ARGS --cpu-prof --cpu-prof-dir=/home/node/app/profiles/$UT_PROF"
 fi
 
 echo "Running with node version: $(node --version)"

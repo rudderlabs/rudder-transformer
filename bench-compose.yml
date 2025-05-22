@@ -12,12 +12,10 @@ services:
     security_opt:
       - seccomp=unconfined
     volumes:
+      - ./test-results/profiles/${UT_PROF:-default}:/home/node/app/profiles/${UT_PROF:-default}
       - type: bind
-        source: ./test-results/profiles/prof-${UT_PROF:-test}.log
-        target: /home/node/app/prof-${UT_PROF:-test}.log
-      - type: bind
-        source: ./test-results/profiles/perf-${UT_PERF:-test}.log
-        target: /home/node/app/perf-${UT_PERF:-test}.log
+        source: ./test-results/profiles/perf-${UT_PERF:-default}.log
+        target: /home/node/app/perf-${UT_PERF:-default}.log
     ports:
       - "9090:9090"
     deploy:
@@ -27,8 +25,8 @@ services:
           memory: 10G  # Limits the container to max 10GB of memory
     environment:
       # Node process configuration variables
-      UT_PROF: ${UT_PROF:-test}
-      UT_PERF: ${UT_PERF:-test}
+      UT_PROF: ${UT_PROF}
+      UT_PERF: ${UT_PERF}
       UT_MAX_SEMI_SPACE_SIZE: ${UT_MAX_SEMI_SPACE_SIZE:-}
       UT_MAX_OLD_SPACE_SIZE: ${UT_MAX_OLD_SPACE_SIZE:-}
       UT_MAX_HEAP_SIZE: ${UT_MAX_HEAP_SIZE:-}
@@ -39,6 +37,7 @@ services:
       PISCINA_MIN_THREADS: ${UT_MIN_THREADS:-2}
       PISCINA_IDLE_TIMEOUT: ${UT_WORKER_IDLE_TIMEOUT:-1000}
       USE_PISCINA: ${UT_POOLING:-true}
+      CONFIG_BACKEND_URL: https://api.rudderstack.com
       #IVM_MEMORY: ${UT_IVM_MEMORY:-512}
   rudder-load:
     image: ${RL_IMAGE:-fracasula/rudder-load:latest}

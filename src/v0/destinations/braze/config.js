@@ -57,6 +57,10 @@ const BRAZE_NON_BILLABLE_ATTRIBUTES = [
 ];
 
 const BRAZE_PURCHASE_STANDARD_PROPERTIES = ['product_id', 'sku', 'price', 'quantity', 'currency'];
+
+// Feature flags
+const ENABLE_CONDITIONAL_BRAZE_IDENTIFY = process.env?.ENABLE_CONDITIONAL_BRAZE_IDENTIFY === 'true';
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
@@ -74,4 +78,5 @@ module.exports = {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
+  ENABLE_CONDITIONAL_BRAZE_IDENTIFY,
 };

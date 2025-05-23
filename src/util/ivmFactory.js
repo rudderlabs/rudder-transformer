@@ -95,7 +95,7 @@ async function createIvm(
       const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
 
       var metadata = function(event) {
-        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
+        const eventMetadata = event ? JSON.parse(JSON.stringify(eventsMetadata[event.messageId] || {})) : {};
         return eventMetadata;
       }
       switch(transformType) {

@@ -58,10 +58,6 @@ steps:
   - name: handleSubscriptionEvent
     condition: $.outputs.messageType === {{$.EventType.TRACK}} && $.isSubscriptionEvent(.message.event)
     steps:
-      - name: validateInput
-        description: Additional validation for Track events
-        template: |
-          $.assert(.message.event, "event_name could not be mapped. Aborting.")
       - name: preparePayload
         template: |
           const payload = $.constructSubscriptionEventPayload(.message);

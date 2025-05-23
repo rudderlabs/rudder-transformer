@@ -190,43 +190,26 @@ const normalizeProductArray = (products) => {
   return finalProductArray;
 };
 
+const traits = ['traits', 'context.traits'];
+
 const mapCustomProperties = (message) => {
   let customerProperties;
   const customProperties = { properties: {} };
   const messageType = message.type.toUpperCase();
   switch (messageType) {
     case 'IDENTIFY':
-      customerProperties = extractCustomFields(
-        message,
-        {},
-        ['traits', 'context.traits'],
-        IDENTIFY_EXCLUSION_LIST,
-      );
+      customerProperties = extractCustomFields(message, {}, traits, IDENTIFY_EXCLUSION_LIST);
       customProperties.properties.customer = customerProperties;
       break;
     case 'TRACK':
-      customerProperties = extractCustomFields(
-        message,
-        {},
-        ['traits', 'context.traits'],
-        IDENTIFY_EXCLUSION_LIST,
-      );
+      customerProperties = extractCustomFields(message, {}, traits, IDENTIFY_EXCLUSION_LIST);
       customProperties.properties = extractCustomFields(
         message,
         {},
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      if (isSubscriptionEvent(message?.event)) {
-        // if subscription event, then customer properties should be in properties object
-        // https://help.bluecore.com/en/articles/6786828-events-api#h_66485dc4cd
-        customProperties.properties = {
-          ...customProperties.properties,
-          ...customerProperties,
-        };
-      } else {
-        customProperties.properties.customer = customerProperties;
-      }
+      customProperties.properties.customer = customerProperties;
       break;
     default:
       break;
@@ -250,14 +233,11 @@ const constructSubscriptionEventPayload = (message) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.SUBSCRIPTION_EVENT.name],
   );
   payload.event = emailConsent ? 'optin' : 'unsubscribe';
-  return payload;
-};
-
-const constructCommonPayload = (message) => {
-  if (isSubscriptionEvent(message?.event)) {
-    return constructSubscriptionEventPayload(message);
-  }
-  return constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]);
+  const customCustomerProperties = {
+    properties: extractCustomFields(message, {}, traits, IDENTIFY_EXCLUSION_LIST),
+  };
+  const finalPayload = lodash.merge(payload, customCustomerProperties);
+  return finalPayload;
 };
 
 /**
@@ -267,7 +247,7 @@ const constructCommonPayload = (message) => {
  * @returns {object} - The constructed properties object.
  */
 const constructProperties = (message) => {
-  const commonPayload = constructCommonPayload(message);
+  const commonPayload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name]);
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   const typeSpecificPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   const typeSpecificCustomProperties = mapCustomProperties(message);
@@ -345,5 +325,5 @@ module.exports = {
   createProductForStandardEcommEvent,
   populateAccurateDistinctId,
   isSubscriptionEvent,
-  constructCommonPayload,
+  constructSubscriptionEventPayload,
 };

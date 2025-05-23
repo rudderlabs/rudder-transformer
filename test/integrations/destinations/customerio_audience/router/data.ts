@@ -296,8 +296,7 @@ export const data = [
               metadata: [generateMetadata(9)],
               batched: false,
               statusCode: 400,
-              error:
-                'type: Invalid literal value, expected "record"; rudderId: Required; messageId: Required',
+              error: 'type: Invalid literal value, expected "record"; rudderId: Required',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

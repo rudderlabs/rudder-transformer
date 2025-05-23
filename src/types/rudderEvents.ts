@@ -56,29 +56,26 @@ export enum RecordAction {
   DELETE = 'delete',
 }
 
-export const RudderRecordV2Schema = z
-  .object({
-    type: z.literal('record'),
-    action: z.nativeEnum(RecordAction),
-    fields: z.record(z.string(), z.any()).optional(),
-    identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
-    recordId: z.string().optional(),
-    rudderId: z.string(),
-    messageId: z.string(),
-    context: z
-      .object({
-        sources: z
-          .object({
-            job_id: z.string(),
-            version: z.string(),
-            job_run_id: z.string(),
-            task_run_id: z.string(),
-          })
-          .optional(),
-      })
-      .optional(),
-  })
-  .passthrough();
+export const RudderRecordV2Schema = RudderMessageSchema.extend({
+  type: z.literal('record'),
+  action: z.nativeEnum(RecordAction),
+  fields: z.record(z.string(), z.any()).optional(),
+  identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  recordId: z.string().optional(),
+  rudderId: z.string(),
+  context: z
+    .object({
+      sources: z
+        .object({
+          job_id: z.string(),
+          version: z.string(),
+          job_run_id: z.string(),
+          task_run_id: z.string(),
+        })
+        .optional(),
+    })
+    .optional(),
+});
 
 export type RudderRecordV2 = z.infer<typeof RudderRecordV2Schema>;
 

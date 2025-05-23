@@ -43,6 +43,7 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
+  ENABLE_CONDITIONAL_BRAZE_IDENTIFY,
 } = require('./config');
 
 const logger = require('../../../logger');
@@ -509,21 +510,25 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
 
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        stats.gauge('braze_identify_calls_count_without_filter', 1, {
+        stats.increment('braze_identify_calls_total', {
           destination_id: destination.ID,
         });
 
-        if (process.env?.ENABLE_CONDITIONAL_BRAZE_IDENTIFY === 'true') {
-          // Check if user exists in store
-          // Get current user identifiers from message
-          const currentIdentifiers = getUserIdentifiers(message);
-          const existingUser = processParams.userStore.get(currentIdentifiers.external_id);
+        if (ENABLE_CONDITIONAL_BRAZE_IDENTIFY) {
+          try {
+            // Get current user identifiers from message
+            const currentIdentifiers = getUserIdentifiers(message);
+            const existingUser = processParams.userStore.get(currentIdentifiers.external_id);
 
-          if (existingUser && hasMatchingAlias(existingUser, currentIdentifiers)) {
-            stats.gauge('braze_identify_skipped_count', 1, {
-              destination_id: destination.ID,
-            });
-          } else {
+            if (existingUser && hasMatchingAlias(existingUser, currentIdentifiers)) {
+              stats.increment('braze_identify_skipped_total', {
+                destination_id: destination.ID,
+              });
+            } else {
+              await processIdentify({ message, destination });
+            }
+          } catch (error) {
+            logger.error('Error in conditional braze identify logic:', error);
             await processIdentify({ message, destination });
           }
         } else {

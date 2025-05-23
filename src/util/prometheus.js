@@ -509,15 +509,15 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
-        name: 'braze_identify_calls_count_without_filter',
-        help: 'braze_identify_calls_count_without_filter',
-        type: 'gauge',
+        name: 'braze_identify_calls_total',
+        help: 'Total number of Braze identify calls without filtering',
+        type: 'counter',
         labelNames: ['destination_id'],
       },
       {
-        name: 'braze_identify_skipped_count',
-        help: 'braze_identify_skipped_count',
-        type: 'gauge',
+        name: 'braze_identify_skipped_total',
+        help: 'Total number of Braze identify calls skipped',
+        type: 'counter',
         labelNames: ['destination_id'],
       },
       {

@@ -801,6 +801,10 @@ function handleReservedProperties(props) {
 }
 
 function getUserIdentifiers(message) {
+  if (!message || typeof message !== 'object') {
+    throw new InstrumentationError('Invalid message object provided to getUserIdentifiers');
+  }
+
   const integrationsObj = getIntegrationsObj(message, 'BRAZE');
   const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
 

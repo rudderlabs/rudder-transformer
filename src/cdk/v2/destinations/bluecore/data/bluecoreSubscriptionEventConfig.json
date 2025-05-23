@@ -1,0 +1,59 @@
+[
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["channelConsents", "list"]
+    }
+  },
+  {
+    "destKey": "properties.name",
+    "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.age",
+    "sourceKeys": ["context.traits.age", "traits.age"],
+    "required": false
+  },
+  {
+    "destKey": "properties.sex",
+    "sourceKeys": ["traits.gender", "context.traits.gender", "traits.sex", "context.traits.sex"],
+    "required": false
+  },
+  {
+    "destKey": "properties.address",
+    "sourceKeys": "address",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.email",
+    "sourceKeys": "emailOnly",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.client",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "properties.device",
+    "sourceKeys": "context.device.model",
+    "required": false
+  }
+]

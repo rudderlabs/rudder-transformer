@@ -32,7 +32,7 @@ steps:
       payload.properties.distinct_id = $.populateAccurateDistinctId(payload, .message);
       $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
   - name: handleTrackEvent
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    condition: $.outputs.messageType === {{$.EventType.TRACK}} && $.isSubscriptionEvent(.message.event) === false
     steps:
       - name: validateInput
         description: Additional validation for Track events
@@ -54,6 +54,17 @@ steps:
             $.verifyPayload(newPayload, ^.message);
             $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
           )[];
+
+  - name: handleSubscriptionEvent
+    condition: $.outputs.messageType === {{$.EventType.TRACK}} && $.isSubscriptionEvent(.message.event)
+    steps:
+      - name: preparePayload
+        template: |
+          const payload = $.constructSubscriptionEventPayload(.message);
+          payload.properties.distinct_id = $.populateAccurateDistinctId(payload, ^.message);
+          payload.properties.token = ^.destination.Config.bluecoreNamespace;
+          $.verifyPayload(payload, ^.message);
+          $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
 
   - name: buildResponse
     template: |

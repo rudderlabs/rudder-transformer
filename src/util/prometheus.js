@@ -509,6 +509,18 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
+        name: 'braze_identify_calls_count_without_filter',
+        help: 'braze_identify_calls_count_without_filter',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_identify_skipped_count',
+        help: 'braze_identify_skipped_count',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'braze_batch_attributes_pack_size',
         help: 'braze_batch_attributes_pack_size',
         type: 'gauge',

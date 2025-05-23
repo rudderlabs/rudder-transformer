@@ -800,6 +800,31 @@ function handleReservedProperties(props) {
   return _.omit(props, reserved);
 }
 
+function getUserIdentifiers(message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
+  return {
+    external_id: brazeExternalID,
+    alias_name: integrationsObj?.alias?.alias_name || message.anonymousId,
+    alias_label: integrationsObj?.alias?.alias_label || 'rudder_id',
+  };
+}
+
+// check if the exisiting user has the same alias or not
+function hasMatchingAlias(existingUser, currentIdentifiers) {
+  if (!Array.isArray(existingUser.user_aliases)) {
+    return false;
+  }
+
+  return existingUser.user_aliases.some((alias) => {
+    return (
+      alias.alias_label === currentIdentifiers.alias_label &&
+      alias.alias_name === currentIdentifiers.alias_name
+    );
+  });
+}
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -816,4 +841,6 @@ module.exports = {
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
   combineSubscriptionGroups,
+  getUserIdentifiers,
+  hasMatchingAlias,
 };

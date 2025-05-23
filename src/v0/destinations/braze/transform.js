@@ -16,6 +16,8 @@ const {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
+  getUserIdentifiers,
+  hasMatchingAlias,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -48,6 +50,7 @@ const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const stats = require('../../../util/stats');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -502,11 +505,30 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
 
       const integrationsObj = getIntegrationsObj(message, 'BRAZE');
       const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
-
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        await processIdentify({ message, destination });
+        stats.gauge('braze_identify_calls_count_without_filter', 1, {
+          destination_id: destination.ID,
+        });
+
+        if (process.env?.ENABLE_CONDITIONAL_BRAZE_IDENTIFY === 'true') {
+          // Check if user exists in store
+          // Get current user identifiers from message
+          const currentIdentifiers = getUserIdentifiers(message);
+          const existingUser = processParams.userStore.get(currentIdentifiers.external_id);
+
+          if (existingUser && hasMatchingAlias(existingUser, currentIdentifiers)) {
+            stats.gauge('braze_identify_skipped_count', 1, {
+              destination_id: destination.ID,
+            });
+          } else {
+            await processIdentify({ message, destination });
+          }
+        } else {
+          await processIdentify({ message, destination });
+        }
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

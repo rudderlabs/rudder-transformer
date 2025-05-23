@@ -17,7 +17,12 @@ const {
   extractCustomFields,
 } = require('../../../../v0/util');
 const { CommonUtils } = require('../../../../util/common');
-const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = require('./config');
+const {
+  EVENT_NAME_MAPPING,
+  IDENTIFY_EXCLUSION_LIST,
+  TRACK_EXCLUSION_LIST,
+  SUBSCRIPTION_EVENT_EXCLUSION_LIST,
+} = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
@@ -234,7 +239,7 @@ const constructSubscriptionEventPayload = (message) => {
   );
   payload.event = emailConsent ? 'optin' : 'unsubscribe';
   const customCustomerProperties = {
-    properties: extractCustomFields(message, {}, traits, IDENTIFY_EXCLUSION_LIST),
+    properties: extractCustomFields(message, {}, traits, SUBSCRIPTION_EVENT_EXCLUSION_LIST),
   };
   const finalPayload = lodash.merge(payload, customCustomerProperties);
   return finalPayload;

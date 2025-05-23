@@ -5,7 +5,7 @@ const {
   deduceTrackEventName,
   populateAccurateDistinctId,
   createProductForStandardEcommEvent,
-  constructCommonPayload,
+  constructSubscriptionEventPayload,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -403,26 +403,13 @@ describe('createProductForStandardEcommEvent', () => {
   });
 });
 
-describe('constructCommonPayload', () => {
+describe('constructSubscriptionEventPayload', () => {
   const testCases = [
-    {
-      name: 'should return the common payload when the event is not a subscription event',
-      message: {
-        event: 'some event',
-        context: {
-          traits: {
-            email: 'test@example.com',
-          },
-        },
-        properties: { name: 'product 1' },
-      },
-      expected: { properties: { customer: { email: 'test@example.com' } } },
-      errorMessage: '',
-    },
     {
       name: 'should return the subscription event payload when the event is a subscription event and the email consent is true',
       message: {
         event: 'subscription_event',
+        type: 'track',
         properties: { channelConsents: { email: true } },
       },
       expected: { event: 'optin', properties: {} },
@@ -432,6 +419,7 @@ describe('constructCommonPayload', () => {
       name: 'should return the subscription event payload when the event is a subscription event and the email consent is false',
       message: {
         event: 'subscription_event',
+        type: 'track',
         properties: { channelConsents: { email: false } },
       },
       expected: { event: 'unsubscribe', properties: {} },
@@ -441,6 +429,7 @@ describe('constructCommonPayload', () => {
       name: 'should return throw error when the event is a subscription event and the email consent is not provided',
       message: {
         event: 'subscription_event',
+        type: 'track',
         properties: {},
       },
       errorMessage: '[Bluecore]:: email consent is required for subscription event',
@@ -449,6 +438,7 @@ describe('constructCommonPayload', () => {
       name: 'should return throw error when the event is a subscription event and the email consent is not a boolean',
       message: {
         event: 'subscription_event',
+        type: 'track',
         properties: { channelConsents: { email: 'false' } },
       },
       errorMessage: '[Bluecore]:: email consent should be a boolean value for subscription event',
@@ -460,13 +450,13 @@ describe('constructCommonPayload', () => {
       if (errorMessage) {
         expect.assertions(2);
         try {
-          constructCommonPayload(message);
+          constructSubscriptionEventPayload(message);
         } catch (e) {
           expect(e).toBeInstanceOf(InstrumentationError);
           expect(e.message).toEqual(errorMessage);
         }
       } else {
-        const result = constructCommonPayload(message);
+        const result = constructSubscriptionEventPayload(message);
         expect(result).toEqual(expected);
       }
     });

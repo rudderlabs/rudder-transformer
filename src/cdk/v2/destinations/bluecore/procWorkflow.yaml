@@ -64,7 +64,7 @@ steps:
           $.assert(.message.event, "event_name could not be mapped. Aborting.")
       - name: preparePayload
         template: |
-          const payload = $.constructProperties(.message);
+          const payload = $.constructSubscriptionEventPayload(.message);
           payload.properties.distinct_id = $.populateAccurateDistinctId(payload, ^.message);
           payload.properties.token = ^.destination.Config.bluecoreNamespace;
           $.verifyPayload(payload, ^.message);

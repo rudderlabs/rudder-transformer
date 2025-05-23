@@ -1,4 +1,4 @@
-import { generateMetadata, generateRecordPayload, overrideDestination } from '../../../testUtils';
+import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 import {
   destType,
@@ -296,7 +296,7 @@ export const data = [
               metadata: [generateMetadata(9)],
               batched: false,
               statusCode: 400,
-              error: 'type: Invalid literal value, expected "record"',
+              error: 'type: Invalid literal value, expected "record"; rudderId: Required',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -304,7 +304,7 @@ export const data = [
               metadata: [generateMetadata(10)],
               batched: false,
               statusCode: 400,
-              error: 'identifiers: cannot be empty',
+              error: 'identifiers: exactly one identifier is supported',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -312,7 +312,7 @@ export const data = [
               metadata: [generateMetadata(11)],
               batched: false,
               statusCode: 400,
-              error: 'identifiers: only one identifier is supported',
+              error: 'identifiers: exactly one identifier is supported',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

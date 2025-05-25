@@ -398,27 +398,25 @@ function processEventBatches(typedEventGroups, constants) {
   });
 
   // Emit stats for batch counts
-  if (constants?.destination?.ID) {
-    const destinationId = constants.destination.ID;
+  const destinationId = constants?.destination?.ID;
 
-    if (payloadObject.identify.batches && payloadObject.identify.count > 0) {
-      stats.gauge('emarsys_batch_count', payloadObject.identify.count, {
-        event_type: EventType.IDENTIFY,
-        destination_id: destinationId,
-      });
-    }
-    if (payloadObject.group.batches && payloadObject.group.count > 0) {
-      stats.gauge('emarsys_batch_count', payloadObject.group.count, {
-        event_type: EventType.GROUP,
-        destination_id: destinationId,
-      });
-    }
-    if (payloadObject.track.batches && payloadObject.track.count > 0) {
-      stats.gauge('emarsys_batch_count', payloadObject.track.count, {
-        event_type: EventType.TRACK,
-        destination_id: destinationId,
-      });
-    }
+  if (payloadObject.identify.batches && payloadObject.identify.count > 0) {
+    stats.gauge('emarsys_batch_count', payloadObject.identify.count, {
+      event_type: EventType.IDENTIFY,
+      destination_id: destinationId,
+    });
+  }
+  if (payloadObject.group.batches && payloadObject.group.count > 0) {
+    stats.gauge('emarsys_batch_count', payloadObject.group.count, {
+      event_type: EventType.GROUP,
+      destination_id: destinationId,
+    });
+  }
+  if (payloadObject.track.batches && payloadObject.track.count > 0) {
+    stats.gauge('emarsys_batch_count', payloadObject.track.count, {
+      event_type: EventType.TRACK,
+      destination_id: destinationId,
+    });
   }
 
   // Convert batches into requests for each event type and push to final output

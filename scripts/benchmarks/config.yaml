@@ -32,7 +32,8 @@ tests:
     UT_NUM_PROCS: 5
     UT_MAX_THREADS: 8
     UT_MIN_THREADS: 2
-    UT_TRACE_SYNC_IO: piscina
+    UT_CPU_PROF: piscina
+#    UT_TRACE_SYNC_IO: piscina
 #    UT_PERF: piscina
 #  - name: test-piscina-semi512
 #    UT_NUM_PROCS: 5

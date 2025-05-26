@@ -105,7 +105,7 @@ async function runUserTransform(
   );
 
   await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    if (args.length == 0 || !secrets?.[args[0]]) return 'ERROR';
     return secrets[args[0]];
   });
 
@@ -250,6 +250,8 @@ async function runUserTransform(
       transferIn: true,
     });
     try {
+      // We must use .apply here because bootstrapScriptResult is an ivm.Reference, not a plain JS function.
+      // eslint-disable-next-line sonarjs/no-callback-outside-function
       await bootstrapScriptResult.apply(undefined, [
         fnRef,
         new ivm.Reference(resolve),

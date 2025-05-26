@@ -11,16 +11,13 @@ const { isHttpStatusSuccess } = require('../../../../v0/util');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
-const getRegion = (destination) =>
-  destination?.deliveryAccount?.options?.region || destination?.Config?.region;
-
-const deduceModuleInfoV2 = (connectionConfig, destination) => {
-  const { object, identifierMappings } = connectionConfig;
+const deduceModuleInfoV2 = (Config, destConfig) => {
+  const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
     upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
-      dataCenter: getRegion(destination),
+      dataCenter: Config.region,
       moduleName: object,
     }),
     identifierType,
@@ -45,9 +42,9 @@ function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   };
 }
 
-const formatMultiSelectFieldsV2 = (connectionConfig, fields) => {
+const formatMultiSelectFieldsV2 = (destConfig, fields) => {
   const multiSelectFields = getHashFromArray(
-    connectionConfig.multiSelectFieldLevelDecision,
+    destConfig.multiSelectFieldLevelDecision,
     'from',
     'to',
     false,
@@ -182,10 +179,10 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async ({ identifiers, metadata, destination, connectionConfig }) => {
+const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
   try {
-    const region = getRegion(destination);
-    const { object } = connectionConfig;
+    const { region } = Config;
+    const { object } = destConfig;
 
     const selectQuery = generateSqlQuery(object, identifiers);
     const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
@@ -232,5 +229,4 @@ module.exports = {
   searchRecordIdV2,
   calculateTrigger,
   validateConfigurationIssue,
-  getRegion,
 };

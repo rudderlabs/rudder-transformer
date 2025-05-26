@@ -15,6 +15,10 @@ const CONFIG_CATEGORIES = {
     name: 'bluecoreCommonConfig',
     type: 'common',
   },
+  SUBSCRIPTION_EVENT: {
+    name: 'bluecoreSubscriptionEventConfig',
+    type: 'subscription_event',
+  },
 };
 
 const EVENT_NAME_MAPPING = [
@@ -62,6 +66,20 @@ const IDENTIFY_EXCLUSION_LIST = [
   'event',
 ];
 
+const SUBSCRIPTION_EVENT_EXCLUSION_LIST = [
+  'name',
+  'firstName',
+  'first_name',
+  'firstname',
+  'lastName',
+  'last_name',
+  'lastname',
+  'email',
+  'age',
+  'sex',
+  'address',
+];
+
 const TRACK_EXCLUSION_LIST = [...IDENTIFY_EXCLUSION_LIST, 'query', 'order_id', 'total', 'products'];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -73,4 +91,5 @@ module.exports = {
   BLUECORE_EXCLUSION_FIELDS,
   IDENTIFY_EXCLUSION_LIST,
   TRACK_EXCLUSION_LIST,
+  SUBSCRIPTION_EVENT_EXCLUSION_LIST,
 };

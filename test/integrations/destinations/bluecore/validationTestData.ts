@@ -83,7 +83,7 @@ export const validationTestData = [
     },
   },
   {
-    id: 'bluecore-validation-test-1',
+    id: 'bluecore-validation-test-2',
     name: 'bluecore',
     description: '[Error]: Check for not finding bluecoreNamespace',
     scenario: 'Framework',
@@ -141,6 +141,70 @@ export const validationTestData = [
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
             metadata,
             statTags: outputStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'bluecore-validation-test-3',
+    name: 'bluecore',
+    description: '[Error]: invalid payload for subscription event, no email consent',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain error message and status code should be 400, as no email consent is not found in the payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'BLUECORE',
+              Config: {
+                bluecoreNamespace: 'dummy_sandbox',
+                eventsMapping: [
+                  {
+                    from: 'ABC Searched',
+                    to: 'search',
+                  },
+                ],
+              },
+              Enabled: true,
+              Transformations: [],
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+            },
+            metadata,
+            message: {
+              type: 'track',
+              event: 'subscription_event',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+              },
+              properties: { p: 1, channel_consents: {} },
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '[Bluecore]:: email consent is required for subscription event: Workflow: procWorkflow, Step: handleSubscriptionEvent, ChildStep: preparePayload, OriginalError: [Bluecore]:: email consent is required for subscription event',
+            statTags: outputStatTags,
+            metadata,
             statusCode: 400,
           },
         ],

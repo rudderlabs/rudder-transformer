@@ -467,7 +467,7 @@ export const trackTestData = [
     id: 'bluecore-track-test-6',
     name: 'bluecore',
     description:
-      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore',
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore. In this test we checking for optin event',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',
@@ -538,7 +538,7 @@ export const trackTestData = [
     id: 'bluecore-track-test-7',
     name: 'bluecore',
     description:
-      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore',
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore. In this test we checking for unsubscribe event',
     scenario: 'Business',
     successCriteria:
       'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',

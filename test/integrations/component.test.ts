@@ -68,6 +68,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'loops',
   'slack',
   'snapchat_conversion',
+  'rudder_test',
 ];
 
 beforeAll(async () => {

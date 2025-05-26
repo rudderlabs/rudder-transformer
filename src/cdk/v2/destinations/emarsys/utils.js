@@ -144,7 +144,7 @@ const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
     `context.traits.${configuredPayloadProperty}`,
   ]);
 
-  if (!isDefinedAndNotNull(deduceExternalIdValue)) {
+  if (!isDefinedAndNotNull(externalIdValue)) {
     throw new InstrumentationError(
       `Could not find value for externalId required in ${message.type} call. Aborting.`,
     );

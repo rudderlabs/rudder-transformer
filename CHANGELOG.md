@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.101.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.100.0...v1.101.0) (2025-05-26)
+
+
+### Features
+
+* bluecore email subscription event ([#4304](https://github.com/rudderlabs/rudder-transformer/issues/4304)) ([b1d0c53](https://github.com/rudderlabs/rudder-transformer/commit/b1d0c53669462195bde85a18c209b28477d3e209))
+* update destination type with optional account types ([#4291](https://github.com/rudderlabs/rudder-transformer/issues/4291)) ([f368f00](https://github.com/rudderlabs/rudder-transformer/commit/f368f009ad011a7907378859072985b91f3ed1d3))
+
+
+### Bug Fixes
+
+* add uuid as fallback to missing anonymousId in webhook events ([#4276](https://github.com/rudderlabs/rudder-transformer/issues/4276)) ([f6bbbf0](https://github.com/rudderlabs/rudder-transformer/commit/f6bbbf0ecd60bbbf056c5e9d01047dc9e71cd0cb))
+
 ## [1.100.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.99.0...v1.100.0) (2025-05-14)
 
 

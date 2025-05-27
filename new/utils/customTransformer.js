@@ -238,13 +238,13 @@ async function runUserTransform(
 
   // Set up logging in the isolate
   jail.setSync('log', function (...args) {
-    if (testMode) {
+    // if (testMode) { // TODO
       let logString = 'Log:';
       args.forEach((arg) => {
         logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
       });
       logs.push(logString);
-    }
+    // }
   });
 
   // Set up metadata in the isolate
@@ -337,8 +337,13 @@ async function runUserTransform(
             ]);
           })
           .catch(error => {
+            // Create an object with both message and stack for better error reporting
+            const errorInfo = {
+              message: error.message,
+              stack: error.stack || ''
+            };
             reject.applyIgnored(undefined, [
-              new ivm.ExternalCopy(error.message).copyInto()
+              new ivm.ExternalCopy(errorInfo).copyInto()
             ]);
           });
         });
@@ -486,7 +491,12 @@ async function runUserTransform(
         { timeout: ivmExecutionTimeout },
       );
     } catch (error) {
-      reject(error.message);
+      // Create an error object with both message and stack for better error reporting
+      const errorInfo = {
+        message: error.message,
+        stack: error.stack || ''
+      };
+      reject(errorInfo);
     }
   });
 
@@ -506,8 +516,24 @@ async function runUserTransform(
       throw new Error('Timed out');
     }
   } catch (error) {
-    console.error(`Transformation failed with error: ${error}`);
-    throw error;
+    // Check if error is an object with message and stack properties
+    if (error && typeof error === 'object' && error.message) {
+      const errorMessage = error.message;
+      const stackTrace = error.stack || '';
+      console.error(`Transformation failed with error: ${errorMessage}`);
+      console.log(`IVM Logs: ${logs}`);
+      if (stackTrace) {
+        console.error(`Stack trace: ${stackTrace}`);
+      }
+      // Create a new error with the message and stack trace
+      const enhancedError = new Error(errorMessage);
+      enhancedError.stack = stackTrace;
+      throw enhancedError;
+    } else {
+      console.error(`Transformation failed with error: ${error}`);
+      console.log(`IVM Logs: ${logs}`);
+      throw error;
+    }
   } finally {
     // Release resources
     clearTimeout(setTimeoutHandle);
@@ -587,9 +613,8 @@ async function userTransformHandler(
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Extract messages from events
-      const eventMessages = events.map((event) => event.message);
       const eventsMetadata = {};
-      events.forEach((ev) => {
+      events.forEach((ev) => { // TODO why do we keep repeating this?
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
@@ -599,28 +624,40 @@ async function userTransformHandler(
         credentialsMap[cred.key] = cred.value;
       });
 
-      console.log('Code:', testMode, res);
+      // console.debug('Code:', testMode, res);
 
-      // Run the transformation
-      const result = await runUserTransform(
-        eventMessages,
-        res.code,
-        res.secrets || {},
-        eventsMetadata,
-        res.id,
-        res.workspaceId,
-        testMode,
-        libraryVersionIDs,
-        credentialsMap,
-      );
+      try {
+        // Run the transformation
+        const result = await runUserTransform(
+          events,
+          res.code,
+          res.secrets || {},
+          eventsMetadata,
+          res.id,
+          res.workspaceId,
+          testMode,
+          libraryVersionIDs,
+          credentialsMap,
+        );
 
-      // Process the result
-      return testMode
-        ? result
-        : result.transformedEvents.map((ev) => ({
-            transformedEvent: ev,
-            metadata: {},
-          }));
+        // TODO check testMode throughout the whole "new" folder
+
+        // Process the result
+        return testMode
+          ? result
+          : result.transformedEvents.map((ev) => ({
+              transformedEvent: ev,
+              metadata: {}, // TODO fix metadata
+            }));
+      } catch (error) {
+        // Enhanced error handling with stack trace
+        console.error(`Error in userTransformHandler: ${error.message}`);
+        if (error.stack) {
+          console.error(`Stack trace: ${error.stack}`);
+        }
+        // Rethrow the error with enhanced information
+        throw error;
+      }
     }
   }
 

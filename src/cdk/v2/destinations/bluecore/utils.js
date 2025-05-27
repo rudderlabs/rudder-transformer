@@ -79,19 +79,6 @@ const validateCustomerEvent = (payload, message) => {
   validateCustomerProperties(payload, payload.event);
 };
 
-const validateOptinEvent = (payload, message) => {
-  if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
-    throw new InstrumentationError(
-      `[Bluecore] property:: email is required for ${payload.event} action`,
-    );
-  }
-};
-
-const validateCustomerEvent = (payload, message) => {
-  validateEmail(payload, message);
-  validateCustomerProperties(payload, payload.event);
-};
-
 const validateEventSpecificPayload = (payload, message) => {
   const eventValidators = {
     search: validateSearchEvent,
@@ -242,25 +229,6 @@ const mapCustomProperties = (message) => {
       break;
   }
   return customProperties;
-};
-
-const constructSubscriptionEventPayload = (message) => {
-  const emailConsent = get(message, 'properties.channelConsents.email', { default: null });
-  if (!isDefinedAndNotNull(emailConsent)) {
-    throw new InstrumentationError('[Bluecore]:: email consent is required for subscription event');
-  }
-  if (getType(emailConsent) !== 'boolean') {
-    throw new InstrumentationError(
-      '[Bluecore]:: email consent should be a boolean value for subscription event',
-    );
-  }
-
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.SUBSCRIPTION_EVENT.name],
-  );
-  payload.event = emailConsent ? 'optin' : 'unsubscribe';
-  return payload;
 };
 
 const constructSubscriptionEventPayload = (message) => {

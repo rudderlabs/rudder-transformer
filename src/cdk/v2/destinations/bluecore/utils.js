@@ -214,16 +214,7 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
-      if (isSubscriptionEvent(message?.event)) {
-        // if subscription event, then customer properties should be in properties object
-        // https://help.bluecore.com/en/articles/6786828-events-api#h_66485dc4cd
-        customProperties.properties = {
-          ...customProperties.properties,
-          ...customerProperties,
-        };
-      } else {
-        customProperties.properties.customer = customerProperties;
-      }
+      customProperties.properties.customer = customerProperties;
       break;
     default:
       break;

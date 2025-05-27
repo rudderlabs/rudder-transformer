@@ -41,7 +41,7 @@ function shutdownWorkers() {
  */
 function start(port, app) {
   // Skip clustering if not enabled
-  if (process.env.CLUSTER_ENABLED !== 'true') {
+  if (numWorkers < 2) {
     const server = app.listen(port, () => {
       console.log(`App started. Listening on port: ${port}`);
     });

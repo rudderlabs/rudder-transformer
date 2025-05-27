@@ -36,6 +36,7 @@ export const RudderMessageSchema = z
     properties: z.object({}).optional(),
     traits: z.object({}).optional(),
     statusCode: z.number().optional(),
+    rudderId: z.string().optional(),
   })
   .passthrough();
 
@@ -62,7 +63,6 @@ export const RudderRecordV2Schema = RudderMessageSchema.extend({
   fields: z.record(z.string(), z.any()).optional(),
   identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   recordId: z.string().optional(),
-  rudderId: z.string(),
   context: z
     .object({
       sources: z

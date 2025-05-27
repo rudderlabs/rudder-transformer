@@ -1,13 +1,24 @@
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
 const NodeCache = require('node-cache');
+const parseStaticImports = require('parse-static-imports');
+const { camelCase, isNil, isObject } = require('lodash');
+const logger = require('../../src/logger');
+const stats = require('../../src/util/stats');
 
 // Cache for storing transformation code with a TTL of 24 hours
 const transformationCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
+const libraryCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
+const rudderLibraryCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
 
 // Config backend URL for fetching transformations
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
+const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
+const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibraries`;
+
+// Regular expression for Rudder libraries
+const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 
 // Error classes for handling response status
 class RespStatusError extends Error {
@@ -47,13 +58,59 @@ async function runUserTransform(
   eventsMetadata,
   transformationId,
   workspaceId,
-  testMode = false
+  testMode = false,
+  libraryVersionIDs = []
 ) {
   // Create a new isolate
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   const logs = [];
   const jail = context.global;
+
+  // Extract libraries from code
+  const extractedLibraries = Object.keys(extractLibraries(code));
+
+  // Fetch libraries
+  const libraries = await Promise.all(
+    libraryVersionIDs.map(async (libraryVersionId) => await getLibraryCode(libraryVersionId))
+  );
+
+  // Create a map of library names to library code
+  const librariesMap = {};
+
+  if (code && libraries) {
+    // Add regular libraries
+    libraries.forEach((library) => {
+      const libHandleName = camelCase(library.name);
+      if (extractedLibraries.includes(libHandleName)) {
+        librariesMap[libHandleName] = library.code;
+      }
+    });
+
+    // Add Rudder libraries
+    const rudderLibImportNames = extractedLibraries.filter((name) =>
+      RUDDER_LIBRARY_REGEX.test(name)
+    );
+
+    const rudderLibraries = await Promise.all(
+      rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName))
+    );
+
+    rudderLibraries.forEach((library) => {
+      librariesMap[library.importName] = library.code;
+    });
+  }
+
+  // Compile library modules
+  const compiledModules = {};
+
+  await Promise.all(
+    Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
+      compiledModules[moduleName] = {
+        module: await loadModule(isolate, context, moduleName, moduleCode),
+      };
+    })
+  );
 
   // Make the global object available in the context
   await jail.set('global', jail.derefInto());
@@ -161,14 +218,21 @@ async function runUserTransform(
   // Bootstrap script to set up the environment in the isolate
   const bootstrap = await isolate.compileScript(`
     new function() {
-      // Grab a reference to the ivm module and delete it from global scope
+      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
+      // only place in the context with a reference to the module. The 'ivm' module is very powerful
+      // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
 
-      // Set up fetch in the global scope
+      // Now we create the other half of the 'log' function in this isolate. We'll just take every
+      // argument, create an external copy of it and pass it along to the log function above.
       let fetch = _fetch;
       delete _fetch;
       global.fetch = function(...args) {
+        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
+        // doesn't make a difference who requests the copy, the result is the same.
+        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
+        // return value or thrown exception from 'log'.
         return new Promise(resolve => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
@@ -177,11 +241,10 @@ async function runUserTransform(
         });
       };
 
-      // Set up fetchV2 in the global scope
       let fetchV2 = _fetchV2;
       delete _fetchV2;
       global.fetchV2 = function(...args) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve,reject) => {
           fetchV2.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),
@@ -190,7 +253,6 @@ async function runUserTransform(
         });
       };
 
-      // Set up geolocation in the global scope
       let geolocation = _geolocation;
       delete _geolocation;
       global.geolocation = function(...args) {
@@ -202,8 +264,7 @@ async function runUserTransform(
           ]);
         });
       };
-
-      // Set up rsSecrets in the global scope
+      
       let rsSecrets = _rsSecrets;
       delete _rsSecrets;
       global.rsSecrets = function(...args) {
@@ -212,35 +273,139 @@ async function runUserTransform(
         ]);
       };
 
-      // Return a function to run the user's code
+      let getCredential = _getCredential;
+      delete _getCredential;
+      global.getCredential = function(...args) {
+        const key = args[0];
+        return getCredential(new ivm.ExternalCopy(key).copyInto());
+      };
+
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
+        reject,
         events
-      ) {
-        const derefMainFunc = fnRef.deref();
-        Promise.resolve(derefMainFunc(events))
+        ){
+          const derefMainFunc = fnRef.deref();
+          Promise.resolve(derefMainFunc(events))
           .then(value => {
             resolve.applyIgnored(undefined, [
               new ivm.ExternalCopy(value).copyInto()
             ]);
           })
           .catch(error => {
-            resolve.applyIgnored(undefined, [
+            reject.applyIgnored(undefined, [
               new ivm.ExternalCopy(error.message).copyInto()
             ]);
           });
-      });
-    }
+        });
+      }
   `);
 
   // Run the bootstrap script
   const bootstrapScriptResult = await bootstrap.run(context);
 
-  // Compile and run the user's code
-  const customScript = await isolate.compileScript(`${code}`);
-  await customScript.run(context);
-  const fnRef = await jail.get('transform', { reference: true });
+  // Wrap the code in a module wrapper to handle ES module imports
+  const codeWithWrapper =
+    // eslint-disable-next-line prefer-template
+    code +
+    `
+    export async function transformWrapper(transformationPayload) {
+      let events = transformationPayload.events
+      let transformType = transformationPayload.transformationType
+      let outputEvents = []
+      const eventMessages = events.map(event => event.message);
+      const eventsMetadata = {};
+      events.forEach(ev => {
+        eventsMetadata[ev.message.messageId] = ev.metadata;
+      });
+
+      const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
+
+      var metadata = function(event) {
+        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
+        return eventMetadata;
+      }
+      switch(transformType) {
+        case "transformBatch":
+          let transformedEventsBatch;
+          try {
+            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          } catch (error) {
+            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
+            return outputEvents;
+          }
+          if (!Array.isArray(transformedEventsBatch)) {
+            outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
+            break;
+          }
+          outputEvents = transformedEventsBatch.map(transformedEvent => {
+            if (!isObject(transformedEvent)) {
+              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: {}};
+            }
+            return{transformedEvent, metadata: metadata(transformedEvent)};
+          })
+          break;
+        case "transformEvent":
+          await Promise.all(eventMessages.map(async ev => {
+            const currMsgId = ev.messageId;
+            try{
+              let transformedOutput = await transformEvent(ev, metadata);
+              // if func returns null/undefined drop event
+              if (transformedOutput === null || transformedOutput === undefined) return;
+              if (Array.isArray(transformedOutput)) {
+                const producedEvents = [];
+                const encounteredError = !transformedOutput.every(e => {
+                  if (isObject(e)) {
+                    producedEvents.push({transformedEvent: e, metadata: eventsMetadata[currMsgId] || {}});
+                    return true;
+                  } else {
+                    outputEvents.push({error: "returned event in events array from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
+                    return false;
+                  }
+                })
+                if (!encounteredError) {
+                  outputEvents.push(...producedEvents);
+                }
+                return;
+              }
+              if (!isObject(transformedOutput)) {
+                return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
+              }
+              outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
+              return;
+            } catch (error) {
+              // Handling the errors in versionedRouter.js
+              return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
+            }
+          }));
+          break;
+      }
+      return outputEvents
+    }
+  `;
+
+  // Compile the code as a module instead of a script
+  const customModule = await isolate.compileModule(codeWithWrapper, {
+    filename: 'base transformation',
+  });
+
+  // Instantiate the module with a handler for imports
+  await customModule.instantiate(context, async (spec) => {
+    if (librariesMap[spec]) {
+      return compiledModules[spec].module;
+    }
+    // Release the isolate context before throwing an error
+    await context.release();
+    console.log(`Import from ${spec} failed. Module not found.`);
+    throw new Error(`Import from ${spec} failed. Module not found.`);
+  });
+
+  // Evaluate the module
+  await customModule.evaluate();
+
+  // Get the transformWrapper function from the module's namespace
+  const fnRef = await customModule.namespace.get('transformWrapper', { reference: true });
 
   // Execute the user's code
   const executionPromise = new Promise(async (resolve, reject) => {
@@ -281,7 +446,7 @@ async function runUserTransform(
   } finally {
     // Release resources
     fnRef.release();
-    customScript.release();
+    customModule.release();
     bootstrapScriptResult.release();
     context.release();
     isolate.dispose();
@@ -370,7 +535,8 @@ async function userTransformHandler(
         eventsMetadata,
         res.id,
         res.workspaceId,
-        testMode
+        testMode,
+        libraryVersionIDs
       );
 
       // Process the result
@@ -389,9 +555,128 @@ async function userTransformHandler(
   return events;
 }
 
+/**
+ * Load a module into the isolate
+ * @param {Object} isolate - The isolate
+ * @param {Object} context - The context
+ * @param {string} moduleName - The name of the module
+ * @param {string} moduleCode - The code of the module
+ * @returns {Promise<Object>} - The compiled module
+ */
+async function loadModule(isolate, context, moduleName, moduleCode) {
+  const module = await isolate.compileModule(moduleCode, {
+    filename: `library ${moduleName}`,
+  });
+  await module.instantiate(context, () => {});
+  return module;
+}
+
+/**
+ * Parse static imports from JavaScript code
+ * @param {string} code - The JavaScript code to parse
+ * @returns {Object} - An object where keys are module names and values are arrays of imported names
+ */
+function parserForJSImports(code) {
+  const obj = {};
+  const modules = parseStaticImports(code);
+
+  modules.forEach((mod) => {
+    const { moduleName, defaultImport, namedImports } = mod;
+    if (moduleName) {
+      obj[moduleName] = [];
+
+      if (defaultImport) {
+        obj[moduleName].push(defaultImport);
+      }
+
+      namedImports.forEach((imp) => {
+        obj[moduleName].push(imp.name);
+      });
+    }
+  });
+  return obj;
+}
+
+/**
+ * Extract libraries from code
+ * @param {string} code - The code to extract libraries from
+ * @returns {Object} - An object where keys are module names and values are arrays of imported names
+ */
+function extractLibraries(code) {
+  return parserForJSImports(code);
+}
+
+/**
+ * Get library code by version ID
+ * @param {string} versionId - The version ID of the library
+ * @returns {Promise<Object>} - The library object
+ */
+async function getLibraryCode(versionId) {
+  const library = libraryCache.get(versionId);
+  if (library) return library;
+
+  try {
+    const url = `${getLibrariesUrl}?versionId=${versionId}`;
+    console.log(`Fetching library from ${url}`);
+
+    // Use fetch with proxy if HTTPS_PROXY is set
+    let fetchOptions = {};
+    if (process.env.HTTPS_PROXY) {
+      const HttpsProxyAgent = require('https-proxy-agent');
+      fetchOptions.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
+    }
+
+    const response = await fetch(url, fetchOptions);
+
+    responseStatusHandler(response.status, 'Transformation Library', versionId, url);
+    const myJson = await response.json();
+    libraryCache.set(versionId, myJson);
+    return myJson;
+  } catch (error) {
+    console.error(`Error fetching library code for versionId: ${versionId}`, error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get Rudder library by import name
+ * @param {string} importName - The import name of the Rudder library (e.g., "@rs/hash/v1")
+ * @returns {Promise<Object>} - The Rudder library object
+ */
+async function getRudderLibByImportName(importName) {
+  const rudderLibrary = rudderLibraryCache.get(importName);
+  if (rudderLibrary) return rudderLibrary;
+
+  try {
+    const [name, version] = importName.split('/').slice(-2);
+    const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
+    console.log(`Fetching Rudder library from ${url}`);
+
+    // Use fetch with proxy if HTTPS_PROXY is set
+    let fetchOptions = {};
+    if (process.env.HTTPS_PROXY) {
+      const HttpsProxyAgent = require('https-proxy-agent');
+      fetchOptions.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
+    }
+
+    const response = await fetch(url, fetchOptions);
+
+    responseStatusHandler(response.status, 'Rudder Library', importName, url);
+    const myJson = await response.json();
+    rudderLibraryCache.set(importName, myJson);
+    return myJson;
+  } catch (error) {
+    console.error(`Error fetching rudder library code for importName: ${importName}`, error.message);
+    throw error;
+  }
+}
+
 module.exports = {
   userTransformHandler,
   runUserTransform,
   getTransformationCode,
+  getLibraryCode,
+  getRudderLibByImportName,
+  extractLibraries,
   CONFIG_BACKEND_URL
 };

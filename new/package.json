@@ -17,8 +17,10 @@
     "jsonwebtoken": "^9.0.0",
     "koa": "^2.15.4",
     "koa-ratelimit": "^5.0.1",
+    "lodash": "^4.17.21",
     "node-cache": "^5.1.2",
-    "node-fetch": "^2.6.12"
+    "node-fetch": "^2.6.12",
+    "parse-static-imports": "^1.1.0"
   },
   "engines": {
     "node": ">=14.0.0"

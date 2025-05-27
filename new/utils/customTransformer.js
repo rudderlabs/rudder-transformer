@@ -3,8 +3,8 @@ const fetch = require('node-fetch');
 const NodeCache = require('node-cache');
 const parseStaticImports = require('parse-static-imports');
 const { camelCase, isNil, isObject } = require('lodash');
-const logger = require('../../src/logger');
-const stats = require('../../src/util/stats');
+
+// TODO fetchWithDnsWrapper instead of fetch
 
 // Cache for storing transformation code with a TTL of 24 hours
 const transformationCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
@@ -16,9 +16,28 @@ const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudder
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
 const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibraries`;
+const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
+const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
 
 // Regular expression for Rudder libraries
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
+
+const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
+
+// Function to extract stack trace up to the last substring match
+const extractStackTraceUptoLastSubstringMatch = (trace, stringLiterals) => {
+  const traceLines = trace.split('\n');
+  let lastRelevantIndex = 0;
+
+  for (let i = traceLines.length - 1; i >= 0; i -= 1) {
+    if (stringLiterals.some((str) => traceLines[i].includes(str))) {
+      lastRelevantIndex = i;
+      break;
+    }
+  }
+
+  return traceLines.slice(0, lastRelevantIndex + 1).join('\n');
+};
 
 // Error classes for handling response status
 class RespStatusError extends Error {
@@ -59,7 +78,8 @@ async function runUserTransform(
   transformationId,
   workspaceId,
   testMode = false,
-  libraryVersionIDs = []
+  libraryVersionIDs = [],
+  credentials = {},
 ) {
   // Create a new isolate
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
@@ -72,13 +92,15 @@ async function runUserTransform(
 
   // Fetch libraries
   const libraries = await Promise.all(
-    libraryVersionIDs.map(async (libraryVersionId) => await getLibraryCode(libraryVersionId))
+    libraryVersionIDs.map(async (libraryVersionId) => await getLibraryCode(libraryVersionId)),
   );
 
   // Create a map of library names to library code
   const librariesMap = {};
 
   if (code && libraries) {
+    // TODO what about extractLibraries?
+
     // Add regular libraries
     libraries.forEach((library) => {
       const libHandleName = camelCase(library.name);
@@ -89,11 +111,11 @@ async function runUserTransform(
 
     // Add Rudder libraries
     const rudderLibImportNames = extractedLibraries.filter((name) =>
-      RUDDER_LIBRARY_REGEX.test(name)
+      RUDDER_LIBRARY_REGEX.test(name),
     );
 
     const rudderLibraries = await Promise.all(
-      rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName))
+      rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName)),
     );
 
     rudderLibraries.forEach((library) => {
@@ -109,13 +131,15 @@ async function runUserTransform(
       compiledModules[moduleName] = {
         module: await loadModule(isolate, context, moduleName, moduleCode),
       };
-    })
+    }),
   );
 
-  // Make the global object available in the context
+  // This makes the global object available in the context as 'global'. We use 'derefInto()' here
+  // because otherwise 'global' would actually be a Reference{} object in the new isolate.
   await jail.set('global', jail.derefInto());
 
-  // Transfer the ivm module to the new isolate
+  // The entire ivm module is transferable! We transfer the module to the new isolate so that we
+  // have access to the library from within the isolate.
   await jail.set('_ivm', ivm);
 
   // Set up fetch in the isolate
@@ -123,15 +147,14 @@ async function runUserTransform(
     '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
       try {
-        const fetchStartTime = new Date();
+        // TODO use fetchWithDnsWrapper and fetchStartTime to measure fetch call duration
         const res = await fetch(...args);
         const data = await res.json();
-        console.log(`Fetch call completed in ${new Date() - fetchStartTime}ms`);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
       }
-    })
+    }),
   );
 
   // Set up fetchV2 in the isolate (with more detailed response)
@@ -139,6 +162,7 @@ async function runUserTransform(
     '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
+        // TODO use fetchWithDnsWrapper
         const fetchStartTime = new Date();
         const res = await fetch(...args);
         const headersContent = {};
@@ -162,7 +186,7 @@ async function runUserTransform(
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
-    })
+    }),
   );
 
   // Set up geolocation in the isolate
@@ -189,8 +213,22 @@ async function runUserTransform(
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
-    })
+    }),
   );
+
+  // Set up credentials in the isolate
+  await jail.set('_getCredential', function (key) {
+    if (isNil(credentials) || !isObject(credentials)) {
+      console.error(
+        `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
+      );
+      return undefined;
+    }
+    if (key === null || key === undefined) {
+      throw new TypeError('Key should be valid and defined');
+    }
+    return credentials[key];
+  });
 
   // Set up secrets in the isolate
   await jail.set('_rsSecrets', function (...args) {
@@ -210,9 +248,14 @@ async function runUserTransform(
   });
 
   // Set up metadata in the isolate
-  jail.setSync('metadata', function (...args) {
-    const eventMetadata = eventsMetadata[args[0].messageId] || {};
-    return new ivm.ExternalCopy(eventMetadata).copyInto();
+  // jail.setSync('metadata', function (...args) {
+  //   const eventMetadata = eventsMetadata[args[0].messageId] || {};
+  //   return new ivm.ExternalCopy(eventMetadata).copyInto();
+  // });
+
+  // Set up extractStackTrace in the isolate
+  await jail.set('extractStackTrace', function (trace, stringLiterals) {
+    return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
   // Bootstrap script to set up the environment in the isolate
@@ -264,7 +307,7 @@ async function runUserTransform(
           ]);
         });
       };
-      
+
       let rsSecrets = _rsSecrets;
       delete _rsSecrets;
       global.rsSecrets = function(...args) {
@@ -386,12 +429,12 @@ async function runUserTransform(
   `;
 
   // Compile the code as a module instead of a script
-  const customModule = await isolate.compileModule(codeWithWrapper, {
+  const customScriptModule = await isolate.compileModule(codeWithWrapper, {
     filename: 'base transformation',
   });
 
   // Instantiate the module with a handler for imports
-  await customModule.instantiate(context, async (spec) => {
+  await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
@@ -400,56 +443,80 @@ async function runUserTransform(
     console.log(`Import from ${spec} failed. Module not found.`);
     throw new Error(`Import from ${spec} failed. Module not found.`);
   });
+  await customScriptModule.evaluate();
 
-  // Evaluate the module
-  await customModule.evaluate();
+  const supportedFuncs = {};
+
+  await Promise.all(
+    SUPPORTED_FUNC_NAMES.map(async (sName) => {
+      const funcRef = await customScriptModule.namespace.get(sName, {
+        reference: true,
+      });
+      if (funcRef && funcRef.typeof === 'function') {
+        supportedFuncs[sName] = funcRef;
+      }
+    }),
+  );
+
+  const availableFuncNames = Object.keys(supportedFuncs);
+  if (availableFuncNames.length !== 1) {
+    throw new Error(
+      `Expected one of ${SUPPORTED_FUNC_NAMES}. Found ${Object.values(availableFuncNames)}`,
+    );
+  }
 
   // Get the transformWrapper function from the module's namespace
-  const fnRef = await customModule.namespace.get('transformWrapper', { reference: true });
+  const fnRef = await customScriptModule.namespace.get('transformWrapper', {
+    reference: true,
+  });
+  const fName = availableFuncNames[0];
 
   // Execute the user's code
+  const transformationPayload = {};
+  transformationPayload.events = events;
+  transformationPayload.transformationType = fName;
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
       transferIn: true,
     });
     try {
-      await bootstrapScriptResult.apply(undefined, [
-        fnRef,
-        new ivm.Reference(resolve),
-        sharedMessagesList,
-      ]);
+      await bootstrapScriptResult.apply(
+        undefined,
+        [fnRef, new ivm.Reference(resolve), new ivm.Reference(reject), sharedTransformationPayload],
+        { timeout: ivmExecutionTimeout },
+      );
     } catch (error) {
       reject(error.message);
     }
   });
 
   let result;
-  let transformationError;
   const invokeTime = new Date();
+  // Set a timeout for the execution
+  let setTimeoutHandle;
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeoutHandle = setTimeout(() => {
+      reject(new Error('Timed out'));
+    }, userTransformTimeout);
+  });
 
   try {
-    // Set a timeout for the execution
-    const timeoutPromise = new Promise((resolve) => {
-      const wait = setTimeout(() => {
-        clearTimeout(wait);
-        resolve('Timedout');
-      }, 4000);
-    });
-
     result = await Promise.race([executionPromise, timeoutPromise]);
-    if (result === 'Timedout') {
+    if (result === 'Timed out') {
       throw new Error('Timed out');
     }
   } catch (error) {
-    transformationError = error;
+    console.error(`Transformation failed with error: ${error}`);
     throw error;
   } finally {
     // Release resources
+    clearTimeout(setTimeoutHandle);
     fnRef.release();
-    customModule.release();
-    bootstrapScriptResult.release();
+    bootstrap.release();
+    customScriptModule.release();
     context.release();
-    isolate.dispose();
+    // bootstrapScriptResult.release(); TODO ???
+    await isolate.dispose();
 
     console.log(`User transform function completed in ${new Date() - invokeTime}ms`);
     console.log(`User transform function input events: ${events.length}`);
@@ -513,7 +580,8 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  testMode = false
+  testMode = false,
+  credentials = {}, // TODO
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
@@ -525,7 +593,13 @@ async function userTransformHandler(
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
-      console.log("Code:", testMode, res)
+      // Extract credentials from events
+      const credentialsMap = {};
+      (events[0]?.credentials || []).forEach((cred) => {
+        credentialsMap[cred.key] = cred.value;
+      });
+
+      console.log('Code:', testMode, res);
 
       // Run the transformation
       const result = await runUserTransform(
@@ -536,18 +610,17 @@ async function userTransformHandler(
         res.id,
         res.workspaceId,
         testMode,
-        libraryVersionIDs
+        libraryVersionIDs,
+        credentialsMap,
       );
 
       // Process the result
-      const userTransformedEvents = testMode
+      return testMode
         ? result
         : result.transformedEvents.map((ev) => ({
             transformedEvent: ev,
             metadata: {},
           }));
-
-      return userTransformedEvents;
     }
   }
 
@@ -666,17 +739,21 @@ async function getRudderLibByImportName(importName) {
     rudderLibraryCache.set(importName, myJson);
     return myJson;
   } catch (error) {
-    console.error(`Error fetching rudder library code for importName: ${importName}`, error.message);
+    console.error(
+      `Error fetching rudder library code for importName: ${importName}`,
+      error.message,
+    );
     throw error;
   }
 }
 
 module.exports = {
   userTransformHandler,
-  runUserTransform,
+  runUserTransform, // TODO check unused functions
   getTransformationCode,
   getLibraryCode,
   getRudderLibByImportName,
   extractLibraries,
-  CONFIG_BACKEND_URL
+  extractStackTraceUptoLastSubstringMatch,
+  CONFIG_BACKEND_URL,
 };

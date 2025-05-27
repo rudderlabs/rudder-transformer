@@ -4,41 +4,95 @@
  */
 
 import { ProcessorTestData } from '../../../testTypes';
-import { Metadata } from '../../../../../src/types';
+import { MessageType } from '../../../../../src/types';
+import { generateMetadata } from '../../../testUtils';
 
-const baseMetadata: Metadata = {
-  sourceId: 'default-source',
-  workspaceId: 'default-workspace',
-  namespace: 'default-namespace',
-  instanceId: 'default-instance',
-  sourceType: 'default-source-type',
-  sourceCategory: 'default-category',
-  trackingPlanId: 'default-tracking-plan',
-  trackingPlanVersion: 1,
-  sourceTpConfig: {},
-  mergedTpConfig: {},
-  destinationId: 'default-destination',
-  jobRunId: 'default-job-run',
-  jobId: 1,
-  sourceBatchId: 'default-batch',
-  sourceJobId: 'default-source-job',
-  sourceJobRunId: 'default-source-job-run',
-  sourceTaskId: 'default-task',
-  sourceTaskRunId: 'default-task-run',
-  recordId: {},
-  destinationType: 'default-destination-type',
-  messageId: 'default-message-id',
-  oauthAccessToken: 'default-token',
-  messageIds: ['default-message-id'],
-  rudderId: 'default-rudder-id',
-  receivedAt: '2025-05-21T07:35:35.801Z',
-  eventName: 'default-event',
-  eventType: 'default-type',
-  sourceDefinitionId: 'default-source-def',
-  destinationDefinitionId: 'default-dest-def',
-  transformationId: 'default-transform',
-  dontBatch: false,
+const commonContents = [
+  {
+    price: 8,
+    quantity: 2,
+    content_type: 'socks',
+    content_id: '1077218',
+  },
+  {
+    price: 30,
+    quantity: 1,
+    content_type: 'dress',
+    content_id: '1197218',
+  },
+];
+
+const commonProperties = {
+  contents: commonContents,
+  currency: 'USD',
+  value: 46,
 };
+
+const baseTrackMessage = {
+  anonymousId: '21e13f4bc7ceddad',
+  channel: 'web',
+  context: {
+    app: {
+      build: '1.0.0',
+      name: 'RudderLabs JavaScript SDK',
+      namespace: 'com.rudderlabs.javascript',
+      version: '1.0.0',
+    },
+    library: {
+      name: 'RudderLabs JavaScript SDK',
+      version: '1.0.0',
+    },
+    userAgent: 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+    ip: '13.57.97.131',
+    locale: 'en-US',
+    os: {
+      name: '',
+      version: '',
+    },
+    screen: {
+      density: 2,
+    },
+    externalId: [
+      {
+        type: 'tiktokExternalId',
+        id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+      },
+    ],
+  },
+  messageId: '84e26acc-56a5-4835-8233-591137fca468',
+  session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+  originalTimestamp: '2019-10-14T09:03:17.562Z',
+  timestamp: '2020-09-17T19:49:27Z',
+  type: 'track' as MessageType,
+  integrations: {
+    All: true,
+  },
+  sentAt: '2019-10-14T09:03:22.563Z',
+};
+
+const generateDestination = (
+  baseConfig: Record<string, any> = {
+    accessToken: 'dummyAccessToken',
+    pixelCode: '{{PIXEL-CODE}}',
+    hashUserProperties: false,
+  },
+) => ({
+  ID: 'default-destination-id',
+  Name: 'Default Destination',
+  DestinationDefinition: {
+    ID: 'default-dest-def-id',
+    Name: 'Default Destination Definition',
+    DisplayName: 'Default Display Name',
+    Config: {},
+  },
+  Enabled: true,
+  WorkspaceID: 'default-workspaceId',
+  Transformations: [],
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
+  Config: baseConfig,
+});
 
 export const data: ProcessorTestData[] = [
   {
@@ -56,59 +110,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -127,33 +133,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -179,24 +161,7 @@ export const data: ProcessorTestData[] = [
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     ad: {
                       callback: 'dummyclickId',
@@ -225,7 +190,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -247,42 +212,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout started',
               properties: {
                 eventId: '1616318632825_357',
@@ -297,50 +227,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -366,24 +259,7 @@ export const data: ProcessorTestData[] = [
                   event: 'InitiateCheckout',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -409,7 +285,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -479,20 +355,7 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -501,28 +364,8 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -549,24 +392,7 @@ export const data: ProcessorTestData[] = [
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
                   test_event_code: 'sample rudder test_event_code',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -589,7 +415,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -611,42 +437,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'Product Added to Wishlist1',
               properties: {
                 eventId: '1616318632825_357',
@@ -662,50 +453,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -715,7 +469,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error:
               'Event name (product added to wishlist1) is not valid, must be mapped to one of standard events',
@@ -726,8 +480,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -749,42 +503,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'Product Added to Wishlist',
               properties: {
                 eventId: '1616318632825_357',
@@ -800,50 +519,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -870,24 +552,7 @@ export const data: ProcessorTestData[] = [
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
                   test_event_code: 'sample rudder test_event_code',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -913,7 +578,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -935,42 +600,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'Product Added to Wishlist',
               properties: {
                 eventId: '1616318632825_357',
@@ -986,50 +616,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -1056,24 +649,7 @@ export const data: ProcessorTestData[] = [
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
                   test_event_code: 'sample rudder test_event_code',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -1099,7 +675,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -1171,20 +747,7 @@ export const data: ProcessorTestData[] = [
                     email: 'sample@sample.com',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -1193,28 +756,12 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+            }),
           },
         ],
       },
@@ -1240,24 +787,7 @@ export const data: ProcessorTestData[] = [
                   event: 'Subscribe',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -1283,7 +813,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -1305,42 +835,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'payment info entered',
               properties: {
                 eventId: '1616318632825_357',
@@ -1355,50 +850,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -1424,24 +882,7 @@ export const data: ProcessorTestData[] = [
                   event: 'AddPaymentInfo',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -1467,7 +908,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -1489,42 +930,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               properties: {
                 eventId: '1616318632825_357',
                 context: {
@@ -1538,50 +944,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -1591,7 +960,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -1601,8 +970,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -1672,20 +1041,7 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -1694,28 +1050,8 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -1725,7 +1061,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event type is required',
             statTags: {
@@ -1735,8 +1071,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -1807,20 +1143,7 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -1829,28 +1152,8 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -1875,24 +1178,7 @@ export const data: ProcessorTestData[] = [
                   pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddPaymentInfo',
                   event_id: '1616318632825_357',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -1918,7 +1204,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -1940,42 +1226,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'submitform',
               properties: {
                 eventId: '16163186328257',
@@ -1990,50 +1241,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2059,24 +1273,7 @@ export const data: ProcessorTestData[] = [
                   event: 'SubmitForm',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -2102,7 +1299,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -2124,42 +1321,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'submitform',
               properties: {
                 eventId: '16163186328257',
@@ -2178,33 +1340,9 @@ export const data: ProcessorTestData[] = [
                   ip: '13.57.97.131',
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2255,7 +1393,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -2277,42 +1415,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'contact',
               properties: {
                 eventId: '16163186328257',
@@ -2327,50 +1430,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2396,24 +1462,7 @@ export const data: ProcessorTestData[] = [
                   event: 'Contact',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -2439,7 +1488,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -2511,20 +1560,7 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -2533,28 +1569,8 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2564,7 +1580,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event type identify is not supported',
             statTags: {
@@ -2574,8 +1590,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -2597,42 +1613,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
@@ -2647,50 +1628,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2716,24 +1660,7 @@ export const data: ProcessorTestData[] = [
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -2759,7 +1686,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -2781,42 +1708,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'order completed',
               properties: {
                 eventId: '1616318632825_357',
@@ -2831,50 +1723,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -2900,24 +1755,7 @@ export const data: ProcessorTestData[] = [
                   event: 'PlaceAnOrder',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -2943,7 +1781,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -2965,46 +1803,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                traits: {
-                  email: 'user@sample.com',
-                  phone: '+919912345678',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'SubscriBe',
               properties: {
                 eventId: '1616318632825_357',
@@ -3019,50 +1818,17 @@ export const data: ProcessorTestData[] = [
                     email: 'sample@rudder.com',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+            }),
           },
         ],
       },
@@ -3089,24 +1855,7 @@ export const data: ProcessorTestData[] = [
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
                   test_event_code: 'TEST0000000011',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -3132,7 +1881,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -3208,20 +1957,7 @@ export const data: ProcessorTestData[] = [
                     email: '',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
@@ -3230,28 +1966,12 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+            }),
           },
         ],
       },
@@ -3278,24 +1998,7 @@ export const data: ProcessorTestData[] = [
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
                   test_event_code: 'TEST0000000011',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -3321,7 +2024,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -3386,20 +2089,7 @@ export const data: ProcessorTestData[] = [
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -3415,28 +2105,8 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -3462,24 +2132,7 @@ export const data: ProcessorTestData[] = [
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://rudder.mywebsite.com/purchase',
@@ -3505,7 +2158,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -3566,20 +2219,7 @@ export const data: ProcessorTestData[] = [
               event: 'abc',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -3599,42 +2239,26 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                eventsToStandard: [
-                  {
-                    from: 'abc',
-                    to: 'download',
-                  },
-                  {
-                    from: 'abc',
-                    to: 'search',
-                  },
-                  {
-                    from: 'def',
-                    to: 'search',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              eventsToStandard: [
+                {
+                  from: 'abc',
+                  to: 'download',
+                },
+                {
+                  from: 'abc',
+                  to: 'search',
+                },
+                {
+                  from: 'def',
+                  to: 'search',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -3660,24 +2284,7 @@ export const data: ProcessorTestData[] = [
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -3703,7 +2310,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
           {
@@ -3723,24 +2330,7 @@ export const data: ProcessorTestData[] = [
                   event: 'search',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -3766,7 +2356,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -3788,59 +2378,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'abc',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -3855,39 +2397,19 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                eventsToStandard: [
-                  {
-                    from: 'def',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              eventsToStandard: [
+                {
+                  from: 'def',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -3897,7 +2419,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event name (abc) is not valid, must be mapped to one of standard events',
             statTags: {
@@ -3907,8 +2429,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -3930,59 +2452,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'abc',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -3997,43 +2471,23 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                eventsToStandard: [
-                  {
-                    from: 'abc',
-                    to: 'download',
-                  },
-                  {
-                    from: 'def',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              eventsToStandard: [
+                {
+                  from: 'abc',
+                  to: 'download',
+                },
+                {
+                  from: 'def',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -4059,24 +2513,7 @@ export const data: ProcessorTestData[] = [
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -4102,7 +2539,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -4124,59 +2561,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'abc',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -4190,43 +2579,23 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-                eventsToStandard: [
-                  {
-                    from: 'abc',
-                    to: 'download',
-                  },
-                  {
-                    from: 'def',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+              eventsToStandard: [
+                {
+                  from: 'abc',
+                  to: 'download',
+                },
+                {
+                  from: 'def',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -4252,24 +2621,7 @@ export const data: ProcessorTestData[] = [
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -4295,7 +2647,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -4317,59 +2669,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'abc',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
                 context: {
@@ -4383,43 +2687,23 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-                eventsToStandard: [
-                  {
-                    from: 'abc',
-                    to: 'download',
-                  },
-                  {
-                    from: 'def',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+              eventsToStandard: [
+                {
+                  from: 'abc',
+                  to: 'download',
+                },
+                {
+                  from: 'def',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -4445,24 +2729,7 @@ export const data: ProcessorTestData[] = [
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -4488,7 +2755,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -4510,59 +2777,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 products: [
                   {
                     product_id: 123,
@@ -4597,33 +2816,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -4649,24 +2844,7 @@ export const data: ProcessorTestData[] = [
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -4692,7 +2870,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -4714,42 +2892,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
@@ -4788,33 +2931,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -4886,7 +3005,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -4908,42 +3027,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
@@ -4983,33 +3067,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -5082,7 +3142,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -5104,42 +3164,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 category: 'Urban',
@@ -5183,33 +3208,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -5288,7 +3289,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -5310,59 +3311,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'custom_event',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -5381,34 +3334,14 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+            }),
           },
         ],
       },
@@ -5434,24 +3367,7 @@ export const data: ProcessorTestData[] = [
                   event: 'custom_event',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     ad: {
                       callback: 'dummyclickId',
@@ -5480,7 +3396,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -5502,59 +3418,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'custom_event',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -5573,34 +3441,14 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: false,
+            }),
           },
         ],
       },
@@ -5610,7 +3458,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error:
               'Event name (custom_event) is not valid, must be mapped to one of standard events',
@@ -5621,8 +3469,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -5644,59 +3492,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'customEvent',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -5715,34 +3515,14 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+            }),
           },
         ],
       },
@@ -5768,24 +3548,7 @@ export const data: ProcessorTestData[] = [
                   event: 'customEvent',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     ad: {
                       callback: 'dummyclickId',
@@ -5814,7 +3577,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -5861,20 +3624,7 @@ export const data: ProcessorTestData[] = [
               event: 'customEvent',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 url: 'http://demo.mywebsite.com/purchase',
                 clickId: 'dummyclickId',
                 currency: 'USD',
@@ -5885,30 +3635,14 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+            }),
           },
         ],
       },
@@ -5978,7 +3712,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -6037,20 +3771,7 @@ export const data: ProcessorTestData[] = [
               event: 'addToCart',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -6060,36 +3781,20 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -6160,7 +3865,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -6217,20 +3922,7 @@ export const data: ProcessorTestData[] = [
               event: 'addToCart',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -6240,40 +3932,24 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                  {
-                    from: 'AddToCart',
-                    to: 'AddToWishlist',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+                {
+                  from: 'AddToCart',
+                  to: 'AddToWishlist',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -6378,7 +4054,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -6428,20 +4104,7 @@ export const data: ProcessorTestData[] = [
               event: 'addToCart',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -6453,40 +4116,24 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                  {
-                    from: 'AddToCart',
-                    to: 'AddToWishlist',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+                {
+                  from: 'AddToCart',
+                  to: 'AddToWishlist',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -6597,7 +4244,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -6619,49 +4266,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
-                },
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'Product Added to Wishlist1',
               properties: {
                 eventId: '1616318632825_357',
@@ -6677,51 +4282,18 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -6731,7 +4303,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error:
               'Event name (product added to wishlist1) is not valid, must be mapped to one of standard events',
@@ -6742,8 +4314,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -6777,29 +4349,13 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -6809,7 +4365,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event type is required',
             statTags: {
@@ -6819,8 +4375,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -6854,29 +4410,13 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -6886,7 +4426,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -6896,8 +4436,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -6931,28 +4471,12 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                pixelCode: 'configuration',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              pixelCode: 'configuration',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -6962,7 +4486,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Access Token not found. Aborting',
             statTags: {
@@ -6972,8 +4496,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -7007,28 +4531,12 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -7038,7 +4546,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Pixel Code not found. Aborting',
             statTags: {
@@ -7048,8 +4556,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -7102,20 +4610,7 @@ export const data: ProcessorTestData[] = [
               event: 'viewcontent',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -7126,40 +4621,24 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-                sendCustomEvents: false,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                  {
-                    from: 'AddToCart',
-                    to: 'AddToWishlist',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+              sendCustomEvents: false,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+                {
+                  from: 'AddToCart',
+                  to: 'AddToWishlist',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -7236,7 +4715,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -7331,40 +4810,24 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: true,
-                sendCustomEvents: false,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                  {
-                    from: 'AddToCart',
-                    to: 'AddToWishlist',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: true,
+              sendCustomEvents: false,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+                {
+                  from: 'AddToCart',
+                  to: 'AddToWishlist',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -7456,7 +4919,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -7522,36 +4985,20 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-                eventsToStandard: [
-                  {
-                    from: 'addToCart',
-                    to: 'download',
-                  },
-                ],
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+              eventsToStandard: [
+                {
+                  from: 'addToCart',
+                  to: 'download',
+                },
+              ],
+            }),
           },
         ],
       },
@@ -7616,7 +5063,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -7657,29 +5104,13 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                version: 'v2',
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              version: 'v2',
+            }),
           },
         ],
       },
@@ -7689,7 +5120,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event type identify is not supported',
             statTags: {
@@ -7699,8 +5130,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -7723,42 +5154,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'checkout step completed',
               properties: {
                 eventId: '1616318632825_357',
@@ -7777,33 +5173,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -7859,7 +5231,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -7909,30 +5281,14 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+            }),
           },
         ],
       },
@@ -7981,7 +5337,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -8031,30 +5387,14 @@ export const data: ProcessorTestData[] = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                version: 'v2',
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-                sendCustomEvents: true,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination({
+              version: 'v2',
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+              sendCustomEvents: true,
+            }),
           },
         ],
       },
@@ -8103,7 +5443,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -8128,28 +5468,8 @@ export const data: ProcessorTestData[] = [
               type: 'track',
               event: 123 as unknown as string,
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -8159,7 +5479,7 @@ export const data: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 400,
             error: 'Event is a required field and should be a string',
             statTags: {
@@ -8169,8 +5489,8 @@ export const data: ProcessorTestData[] = [
               module: 'destination',
               implementation: 'native',
               feature: 'processor',
-              destinationId: 'default-destination',
-              workspaceId: 'default-workspace',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],
@@ -8192,59 +5512,11 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                ip: '13.57.97.131',
-                locale: 'en-US',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'purchase',
               properties: {
                 eventId: '1616318632825_357',
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -8263,33 +5535,9 @@ export const data: ProcessorTestData[] = [
                   },
                 },
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -8315,24 +5563,7 @@ export const data: ProcessorTestData[] = [
                   event: 'Purchase',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     ad: {
                       callback: 'dummyclickId',
@@ -8361,7 +5592,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -8383,42 +5614,7 @@ export const data: ProcessorTestData[] = [
         body: [
           {
             message: {
-              anonymousId: '21e13f4bc7ceddad',
-              channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
-                library: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                userAgent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                locale: 'en-US',
-                ip: '13.57.97.131',
-                os: {
-                  name: '',
-                  version: '',
-                },
-                screen: {
-                  density: 2,
-                },
-                externalId: [
-                  {
-                    type: 'tiktokExternalId',
-                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  },
-                ],
-              },
-              messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-              originalTimestamp: '2019-10-14T09:03:17.562Z',
-              timestamp: '2020-09-17T19:49:27Z',
-              type: 'track',
+              ...baseTrackMessage,
               event: 'lead',
               properties: {
                 eventId: '16163186328257',
@@ -8433,50 +5629,13 @@ export const data: ProcessorTestData[] = [
                     email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                   },
                 },
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
+                contents: commonContents,
                 currency: 'USD',
                 value: 46,
               },
-              integrations: {
-                All: true,
-              },
-              sentAt: '2019-10-14T09:03:22.563Z',
             },
-            metadata: baseMetadata,
-            destination: {
-              ID: 'default-destination-id',
-              Name: 'Default Destination',
-              DestinationDefinition: {
-                ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
-                DisplayName: 'Default Display Name',
-                Config: {},
-              },
-              Config: {
-                accessToken: 'dummyAccessToken',
-                pixelCode: '{{PIXEL-CODE}}',
-                hashUserProperties: false,
-              },
-              Enabled: true,
-              WorkspaceID: 'default-workspace',
-              Transformations: [],
-              RevisionID: 'default-revision',
-              IsProcessorEnabled: true,
-              IsConnectionEnabled: true,
-            },
+            metadata: generateMetadata(1),
+            destination: generateDestination(),
           },
         ],
       },
@@ -8502,24 +5661,7 @@ export const data: ProcessorTestData[] = [
                   event: 'Lead',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
-                  properties: {
-                    contents: [
-                      {
-                        price: 8,
-                        quantity: 2,
-                        content_type: 'socks',
-                        content_id: '1077218',
-                      },
-                      {
-                        price: 30,
-                        quantity: 1,
-                        content_type: 'dress',
-                        content_id: '1197218',
-                      },
-                    ],
-                    currency: 'USD',
-                    value: 46,
-                  },
+                  properties: commonProperties,
                   context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
@@ -8545,7 +5687,7 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: '',
             },
-            metadata: baseMetadata,
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],

@@ -1,7 +1,8 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
 import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
-import { generateDestination } from '../common';
+import { overrideDestination } from '../../../testUtils';
+import { destinationConfig } from '../common';
 
 export const data: RouterTestData[] = [
   {
@@ -78,7 +79,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -144,7 +145,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -213,7 +214,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -282,7 +283,7 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -488,7 +489,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -567,7 +568,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: true,
@@ -637,7 +638,7 @@ export const data: RouterTestData[] = [
                   version: '1',
                 },
               ],
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: true,
@@ -711,7 +712,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -761,7 +762,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -811,7 +812,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -857,7 +858,7 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1001,7 +1002,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1107,7 +1108,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1180,7 +1181,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1226,7 +1227,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1272,7 +1273,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1318,7 +1319,7 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1467,7 +1468,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1536,7 +1537,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1604,7 +1605,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1654,7 +1655,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1704,7 +1705,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1750,7 +1751,7 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1899,7 +1900,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -1912,7 +1913,7 @@ export const data: RouterTestData[] = [
             },
             {
               batched: false,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 eventsToStandard: [
                   { from: 'addToCart', to: 'CompletePayment' },
@@ -2000,7 +2001,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2050,7 +2051,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2101,7 +2102,7 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2147,7 +2148,7 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2291,7 +2292,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2364,7 +2365,7 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2447,7 +2448,7 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2513,7 +2514,7 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2564,7 +2565,7 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2654,7 +2655,7 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
@@ -2737,7 +2738,7 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: generateDestination({
+              destination: overrideDestination(destinationConfig, {
                 accessToken: 'dummyAccessToken',
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,

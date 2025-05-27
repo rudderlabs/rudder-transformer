@@ -5,8 +5,8 @@
 
 import { ProcessorTestData } from '../../../testTypes';
 import { MessageType } from '../../../../../src/types';
-import { generateMetadata } from '../../../testUtils';
-import { generateDestination } from '../common';
+import { generateMetadata, overrideDestination } from '../../../testUtils';
+import { destinationConfig } from '../common';
 
 const commonContents = [
   {
@@ -112,7 +112,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -210,7 +214,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -342,7 +350,11 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -436,7 +448,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -502,7 +518,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -599,7 +619,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -734,7 +758,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: true,
@@ -833,7 +857,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -927,7 +955,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1028,7 +1060,11 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1130,7 +1166,11 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1224,7 +1264,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1319,7 +1363,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1413,7 +1461,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1547,7 +1599,11 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1611,7 +1667,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1706,7 +1766,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -1801,7 +1865,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: true,
@@ -1944,7 +2008,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: true,
@@ -2083,7 +2147,11 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -2217,7 +2285,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -2376,7 +2444,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -2450,7 +2518,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -2558,7 +2626,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: true,
@@ -2666,7 +2734,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: true,
@@ -2795,7 +2863,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -2910,7 +2982,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -3046,7 +3122,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -3187,7 +3267,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -3313,7 +3397,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -3420,7 +3504,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -3494,7 +3578,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -3613,7 +3697,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -3759,7 +3843,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -3910,7 +3994,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -4094,7 +4178,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -4265,7 +4349,7 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -4327,7 +4411,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -4388,7 +4472,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -4449,7 +4533,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               pixelCode: 'configuration',
               hashUserProperties: false,
               version: 'v2',
@@ -4509,7 +4593,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               hashUserProperties: false,
               version: 'v2',
@@ -4599,7 +4683,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -4788,7 +4872,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -4963,7 +5047,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -5082,7 +5166,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
               hashUserProperties: false,
@@ -5152,7 +5236,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -5259,7 +5347,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -5365,7 +5453,7 @@ export const data: ProcessorTestData[] = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: generateMetadata(1),
-            destination: generateDestination({
+            destination: overrideDestination(destinationConfig, {
               version: 'v2',
               accessToken: 'dummyAccessToken',
               pixelCode: '{{PIXEL-CODE}}',
@@ -5446,7 +5534,11 @@ export const data: ProcessorTestData[] = [
               event: 123 as unknown as string,
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -5514,7 +5606,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },
@@ -5612,7 +5708,11 @@ export const data: ProcessorTestData[] = [
               },
             },
             metadata: generateMetadata(1),
-            destination: generateDestination(),
+            destination: overrideDestination(destinationConfig, {
+              accessToken: 'dummyAccessToken',
+              pixelCode: '{{PIXEL-CODE}}',
+              hashUserProperties: false,
+            }),
           },
         ],
       },

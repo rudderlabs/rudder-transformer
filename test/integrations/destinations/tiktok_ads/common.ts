@@ -1,10 +1,6 @@
-export const generateDestination = (
-  baseConfig: Record<string, any> = {
-    accessToken: 'dummyAccessToken',
-    pixelCode: '{{PIXEL-CODE}}',
-    hashUserProperties: false,
-  },
-) => ({
+import { Destination } from '../../../../src/types/controlPlaneConfig';
+
+export const destinationConfig: Destination = {
   ID: 'default-destination-id',
   Name: 'Default Destination',
   DestinationDefinition: {
@@ -19,5 +15,5 @@ export const generateDestination = (
   RevisionID: 'default-revision',
   IsProcessorEnabled: true,
   IsConnectionEnabled: true,
-  Config: baseConfig,
-});
+  Config: {},
+};

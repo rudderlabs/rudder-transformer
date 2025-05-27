@@ -80,3 +80,7 @@ stats:
 .PHONY: run-benchmarks
 run-benchmarks:
 	./scripts/benchmarks/run.sh ./scripts/benchmarks/config.yaml
+
+.PHONY: report
+report:
+	cd cmd/benchmark-report && go run main.go

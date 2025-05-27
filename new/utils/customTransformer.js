@@ -646,8 +646,9 @@ async function userTransformHandler(
         return testMode
           ? result
           : result.transformedEvents.map((ev) => ({
-              transformedEvent: ev,
-              metadata: {}, // TODO fix metadata
+              output: ev.transformedEvent,
+              metadata: ev.metadata || eventsMetadata[ev.transformedEvent?.messageId] || {}, // TODO check if metadata is correct (e.g. commonMetadata?)
+              statusCode: 200,
             }));
       } catch (error) {
         // Enhanced error handling with stack trace

@@ -85,22 +85,18 @@ async function transformRoutine(body, features = {}, requestSize = 0) {
           return;
         }
 
-        if (!isNonFuncObject(ev.transformedEvent)) {
+        if (!isNonFuncObject(ev.output)) {
           transformedEvents.push({
             statusCode: 400,
             error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-              ev.transformedEvent,
+              ev.output,
             )}`,
             metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
           });
           return;
         }
 
-        transformedEvents.push({
-          output: ev.transformedEvent,
-          metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-          statusCode: 200,
-        });
+        transformedEvents.push(ev);
       });
     } catch (error) {
       console.error(error);

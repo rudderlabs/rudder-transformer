@@ -19,10 +19,10 @@ rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
 duration_seconds: 120
 tests:
-  - name: test-classic
-    UT_NUM_PROCS: 5
-    UT_POOLING: false
-    UT_IMAGE: fracasula/ut-custom:satish
+#  - name: test-classic
+#    UT_NUM_PROCS: 5
+#    UT_POOLING: false
+#    UT_IMAGE: fracasula/ut-custom:satish
   - name: test-new
     UT_NUM_PROCS: 5
     UT_IMAGE: fracasula/ut-custom-new:latest

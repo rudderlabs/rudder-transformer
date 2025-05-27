@@ -1,5 +1,4 @@
 const ivm = require('isolated-vm');
-const fetch = require('node-fetch');
 const NodeCache = require('node-cache');
 const parseStaticImports = require('parse-static-imports');
 const { camelCase, isNil, isObject } = require('lodash');

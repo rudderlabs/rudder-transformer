@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * add uuid as fallback to missing anonymousId in webhook events ([#4276](https://github.com/rudderlabs/rudder-transformer/issues/4276)) ([f6bbbf0](https://github.com/rudderlabs/rudder-transformer/commit/f6bbbf0ecd60bbbf056c5e9d01047dc9e71cd0cb))
+* fix event metadata shallow copy issue in user transformer ([#4345](https://github.com/rudderlabs/rudder-transformer/issues/4345)) ([8893d7e](https://github.com/rudderlabs/rudder-transformer/commit/8893d7e9be1830ee79d17cc4e58a1ec6d389bb03))
 
 ## [1.100.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.99.0...v1.100.0) (2025-05-14)
 

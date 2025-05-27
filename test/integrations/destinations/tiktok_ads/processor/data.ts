@@ -6,6 +6,7 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { MessageType } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
+import { generateDestination } from '../common';
 
 const commonContents = [
   {
@@ -69,30 +70,6 @@ const baseTrackMessage = {
   },
   sentAt: '2019-10-14T09:03:22.563Z',
 };
-
-const generateDestination = (
-  baseConfig: Record<string, any> = {
-    accessToken: 'dummyAccessToken',
-    pixelCode: '{{PIXEL-CODE}}',
-    hashUserProperties: false,
-  },
-) => ({
-  ID: 'default-destination-id',
-  Name: 'Default Destination',
-  DestinationDefinition: {
-    ID: 'default-dest-def-id',
-    Name: 'Default Destination Definition',
-    DisplayName: 'Default Display Name',
-    Config: {},
-  },
-  Enabled: true,
-  WorkspaceID: 'default-workspaceId',
-  Transformations: [],
-  RevisionID: 'default-revision',
-  IsProcessorEnabled: true,
-  IsConnectionEnabled: true,
-  Config: baseConfig,
-});
 
 export const data: ProcessorTestData[] = [
   {

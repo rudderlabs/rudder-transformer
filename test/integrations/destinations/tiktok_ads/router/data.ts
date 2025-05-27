@@ -1,6 +1,7 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
 import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
+import { generateDestination } from '../common';
 
 const baseDestinationDefinition = {
   ID: '123',
@@ -94,15 +95,11 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -164,15 +161,11 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -237,15 +230,11 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -310,15 +299,11 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -520,15 +505,11 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
         },
@@ -603,15 +584,11 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -677,15 +654,11 @@ export const data: RouterTestData[] = [
                   version: '1',
                 },
               ],
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
               metadata: [
                 {
                   jobId: 3,
@@ -755,20 +728,16 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -809,20 +778,16 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -863,16 +828,12 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -913,16 +874,12 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1061,20 +1018,16 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: {
@@ -1171,20 +1124,16 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
           ],
         },
@@ -1248,16 +1197,12 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1298,16 +1243,12 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1348,16 +1289,12 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1398,16 +1335,12 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1551,16 +1484,12 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               batchedRequest: {
@@ -1624,16 +1553,12 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },
@@ -1696,20 +1621,16 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1750,20 +1671,16 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1804,16 +1721,12 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1854,16 +1767,12 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2007,37 +1916,29 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batched: false,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                  hashUserProperties: false,
-                  pixelCode: 'dummyPixelCode',
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+                hashUserProperties: false,
+                pixelCode: 'dummyPixelCode',
+                version: 'v2',
+              }),
               error: 'Event name (abc) is not valid, must be mapped to one of standard events',
               metadata: [
                 {
@@ -2116,20 +2017,16 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2170,20 +2067,16 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2225,16 +2118,12 @@ export const data: RouterTestData[] = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -2275,16 +2164,12 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2423,20 +2308,16 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: {
@@ -2500,20 +2381,16 @@ export const data: RouterTestData[] = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2587,16 +2464,12 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },
@@ -2657,19 +2530,16 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2711,16 +2581,12 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2805,19 +2671,16 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2891,16 +2754,12 @@ export const data: RouterTestData[] = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                ...baseDestinationDefinition,
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-                hasDynamicConfig: false,
-              },
+              destination: generateDestination({
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },

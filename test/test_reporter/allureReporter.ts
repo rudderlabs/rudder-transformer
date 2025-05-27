@@ -65,7 +65,7 @@ export const enhancedTestReport = {
       // Add failure details
       const failureMessage = `Test failed for ${testCase.name}\nSee JSON diff for details`;
       allure.step(failureMessage, () => {
-        throw new Error(failureMessage);
+        expect(actualResponse).toEqual(expectedResponse);
       });
     }
 

@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
@@ -8,8 +8,6 @@ import { metricsRouter } from './routes/metricsRouter';
 import cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
-
-dotenv.config();
 
 // eslint-disable-next-line import/first
 import logger from './logger';
@@ -26,11 +24,7 @@ const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
-app.use(
-  bodyParser({
-    jsonLimit: '200mb',
-  }),
-);
+app.use(bodyParser({ jsonLimit: '200mb' }));
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 

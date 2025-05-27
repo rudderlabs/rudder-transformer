@@ -48,7 +48,6 @@ const buildResponse = (
   response.body.FORM = {
     payload,
   };
-  response.statusCode = 200;
   logger.debug(response);
   return response;
 };
@@ -281,12 +280,10 @@ const process = (event) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       response = processIdentify(message, destination);
-      response.statusCode = 200;
       respList.push(response);
       break;
     case EventType.TRACK:
       response = processTrack(message, destination);
-      response.statusCode = 200;
       respList.push(response);
       break;
     default:

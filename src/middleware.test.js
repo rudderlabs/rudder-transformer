@@ -1,4 +1,6 @@
-const Koa = require('koa'); // Import Koa
+const Koa = require('koa');
+const bodyParser = require('koa-bodyparser');
+const request = require('supertest');
 const {
   addStatMiddleware,
   addRequestSizeMiddleware,
@@ -83,32 +85,33 @@ describe('durationMiddleware', () => {
 
 describe('requestSizeMiddleware', () => {
   it('should record the size of the request and response', async () => {
-    const app = new Koa(); // Create a Koa app instance
-    addRequestSizeMiddleware(app); // Pass the app instance to the middleware
+    const responseBody = { response: 'bar' };
+    const requestBody = { request: 'foo' };
+    const requestBodySize = Buffer.byteLength(JSON.stringify(requestBody));
+    const responseBodySize = Buffer.byteLength(JSON.stringify(responseBody));
 
-    const ctx = {
-      method: 'POST',
-      status: 200,
-      request: {
-        url: '/test',
-        body: { key: 'value' },
-      },
-      response: {
-        body: { success: true },
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
+    const app = new Koa();
+    app.use(bodyParser({ jsonLimit: '200mb' }));
+    addRequestSizeMiddleware(app);
+    app.use(async (ctx) => {
+      ctx.response.body = responseBody;
+    });
 
-    // Simulate the middleware execution
-    await app.middleware[0](ctx, next);
+    const res = await request(app.callback())
+      .post('/test')
+      .send(requestBody)
+      .set('Content-Type', 'application/json');
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', expect.any(Number), {
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(responseBody);
+
+    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', requestBodySize, {
       method: 'POST',
       code: 200,
       route: '/test',
     });
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', expect.any(Number), {
+    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', responseBodySize, {
       method: 'POST',
       code: 200,
       route: '/test',
@@ -117,22 +120,14 @@ describe('requestSizeMiddleware', () => {
 
   it('should handle missing request and response bodies', async () => {
     const app = new Koa();
+    app.use(bodyParser({ jsonLimit: '200mb' }));
     addRequestSizeMiddleware(app);
+    app.use(async (ctx) => {
+      ctx.status = 200;
+    });
 
-    const ctx = {
-      method: 'GET',
-      status: 200,
-      request: {
-        url: '/test',
-        // No body property
-      },
-      response: {
-        // No body property
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
-
-    await app.middleware[0](ctx, next);
+    const res = await request(app.callback()).get('/test');
+    expect(res.status).toBe(200);
 
     expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 0, {
       method: 'GET',
@@ -148,33 +143,33 @@ describe('requestSizeMiddleware', () => {
   });
 
   it('should handle empty request and response bodies', async () => {
+    const responseBody = {};
+    const requestBody = {};
+    const requestBodySize = Buffer.byteLength(JSON.stringify(requestBody));
+    const responseBodySize = Buffer.byteLength(JSON.stringify(responseBody));
+
     const app = new Koa();
+    app.use(bodyParser({ jsonLimit: '200mb' }));
     addRequestSizeMiddleware(app);
+    app.use(async (ctx) => {
+      ctx.response.body = responseBody;
+    });
 
-    const ctx = {
-      method: 'POST',
-      status: 200,
-      request: {
-        url: '/test',
-        body: {},
-      },
-      response: {
-        body: {},
-      },
-    };
-    const next = jest.fn().mockResolvedValue(null);
+    const res = await request(app.callback())
+      .post('/test')
+      .send(requestBody)
+      .set('Content-Type', 'application/json');
 
-    await app.middleware[0](ctx, next);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual(responseBody);
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', 2, {
-      // "{}" is 2 bytes
+    expect(stats.histogram).toHaveBeenCalledWith('http_request_size', requestBodySize, {
       method: 'POST',
       code: 200,
       route: '/test',
     });
 
-    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', 2, {
-      // "{}" is 2 bytes
+    expect(stats.histogram).toHaveBeenCalledWith('http_response_size', responseBodySize, {
       method: 'POST',
       code: 200,
       route: '/test',

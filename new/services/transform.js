@@ -9,7 +9,7 @@ async function transformRoutine(body, features = {}, requestSize = 0) {
   
   try {
     // Parse the JSON in the main thread
-    const events = JSON.parse(body);
+    const events = JSON.parse(body); // TODO check JSON parsing here if we can do better
     
     // Group events by destination and source IDs
     const groupedEvents = groupBy(events, (event) => 

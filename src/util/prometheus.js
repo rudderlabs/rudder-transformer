@@ -1041,6 +1041,18 @@ class Prometheus {
         type: 'counter',
         labelNames: ['transformationId', 'workspaceId'],
       },
+      {
+        name: 'memory_fenced_requests',
+        help: 'number of requests that were memory fenced',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'http_concurrent_requests',
+        help: 'number of concurrent requests being processed',
+        type: 'gauge',
+        labelNames: [],
+      },
     ];
 
     metrics.forEach((metric) => {

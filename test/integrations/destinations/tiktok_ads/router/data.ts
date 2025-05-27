@@ -3,23 +3,6 @@ import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
 import { generateDestination } from '../common';
 
-const baseDestinationDefinition = {
-  ID: '123',
-  Name: 'tiktok_ads',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'tiktok_ads',
-    DisplayName: 'tiktok_ads',
-    Config: {},
-  },
-  Enabled: true,
-  WorkspaceID: '123',
-  Transformations: [],
-  RevisionID: '123',
-  IsProcessorEnabled: true,
-  IsConnectionEnabled: true,
-};
-
 export const data: RouterTestData[] = [
   {
     id: 'tiktok_ads-router-test-0',

@@ -422,5 +422,159 @@ describe('DynamicConfigParser', () => {
       // Original events should not be modified
       expect(events).toEqual(originalEvents);
     });
+
+    it('should unset fields from the processed event after extracting values', () => {
+      // Arrange
+      const event = createTestEvent(
+        { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+        { email: 'test@example.com', appId: 'test-app-id' },
+      );
+
+      // Act
+      const result = DynamicConfigParser.process([event]);
+
+      // Assert
+      expect(result).toHaveLength(1);
+      expect(result[0].destination.Config).toEqual({ apiKey: 'test-app-id' });
+
+      // The processed event should have the appId field unset from traits
+      expect(result[0].message.traits).toEqual({ email: 'test@example.com' });
+      expect((result[0].message.traits as any).appId).toBeUndefined();
+
+      // Original event should still have the appId field
+      expect((event.message.traits as any).appId).toBe('test-app-id');
+    });
+  });
+
+  describe('USE_HAS_DYNAMIC_CONFIG_FLAG environment variable', () => {
+    const originalEnv = process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+
+    afterEach(() => {
+      // Restore original environment variable
+      if (originalEnv === undefined) {
+        delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+      } else {
+        process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = originalEnv;
+      }
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', () => {
+      // Arrange
+      delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+
+      const events = [
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test@example.com', appId: 'test-app-id' },
+        ),
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test2@example.com', appId: 'test-app-id-2' },
+        ),
+      ];
+
+      // Set hasDynamicConfig flags
+      events[0].destination.hasDynamicConfig = false; // Should skip processing
+      events[1].destination.hasDynamicConfig = true; // Should process
+
+      // Act
+      const result = DynamicConfigParser.process(events);
+
+      // Assert
+      expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
+      expect(result[0].destination.Config.apiKey).toBe(
+        '{{ message.traits.appId || "default-api-key" }}',
+      );
+
+      expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "true"', () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'true';
+
+      const events = [
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test@example.com', appId: 'test-app-id' },
+        ),
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test2@example.com', appId: 'test-app-id-2' },
+        ),
+      ];
+
+      // Set hasDynamicConfig flags
+      events[0].destination.hasDynamicConfig = false; // Should skip processing
+      events[1].destination.hasDynamicConfig = true; // Should process
+
+      // Act
+      const result = DynamicConfigParser.process(events);
+
+      // Assert
+      expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
+      expect(result[0].destination.Config.apiKey).toBe(
+        '{{ message.traits.appId || "default-api-key" }}',
+      );
+
+      expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
+    });
+
+    it('should ignore hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "false"', () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'false';
+
+      const events = [
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test@example.com', appId: 'test-app-id' },
+        ),
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test2@example.com', appId: 'test-app-id-2' },
+        ),
+      ];
+
+      // Set hasDynamicConfig flags (should be ignored)
+      events[0].destination.hasDynamicConfig = false; // Should still process because flag is disabled
+      events[1].destination.hasDynamicConfig = true; // Should process
+
+      // Act
+      const result = DynamicConfigParser.process(events);
+
+      // Assert
+      // Both events should be processed regardless of hasDynamicConfig flag
+      expect(result[0]).not.toBe(events[0]); // Should be new reference (processed)
+      expect(result[0].destination.Config.apiKey).toBe('test-app-id');
+
+      expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to any other value', () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'some-other-value';
+
+      const events = [
+        createTestEvent(
+          { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
+          { email: 'test@example.com', appId: 'test-app-id' },
+        ),
+      ];
+
+      // Set hasDynamicConfig flag
+      events[0].destination.hasDynamicConfig = false; // Should skip processing
+
+      // Act
+      const result = DynamicConfigParser.process(events);
+
+      // Assert
+      expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
+      expect(result[0].destination.Config.apiKey).toBe(
+        '{{ message.traits.appId || "default-api-key" }}',
+      );
+    });
   });
 });

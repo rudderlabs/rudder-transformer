@@ -28,6 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
+const { DynamicConfigParser } = require('../../util/dynamicConfigParser');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -2314,17 +2315,16 @@ const applyJSONStringTemplate = (message, template) =>
 const groupRouterTransformEvents = (events) =>
   Object.values(
     lodash.groupBy(events, (ev) => {
-      // Check if hasDynamicConfig flag is available
-      // If undefined (older server versions), process all events as if they might have dynamic config
-      // Only skip processing if the flag is explicitly false
-      const hasDynamicConfigFlag = ev.destination?.hasDynamicConfig;
-      const shouldGroupByDestinationConfig = hasDynamicConfigFlag !== false;
+      // Use the function to determine if we should group by destination config
+      const shouldGroupByConfig = DynamicConfigParser.shouldGroupByDestinationConfig(
+        ev.destination,
+      );
 
       // If we should group by destination config, include it in the grouping key
       // Otherwise, use 'default' to group all events with the same destination ID together
       let destConfigGroupKey = 'default';
 
-      if (shouldGroupByDestinationConfig && ev.destination?.Config) {
+      if (shouldGroupByConfig && ev.destination?.Config) {
         // Use fast-json-stable-stringify to ensure consistent ordering of keys
         // This ensures that { a: 1, b: 2 } and { b: 2, a: 1 } are treated as the same config
         destConfigGroupKey = stableStringify(ev.destination.Config);

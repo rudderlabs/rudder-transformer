@@ -3,8 +3,50 @@ import { ProcessorTransformationRequest, RouterTransformationRequestData, FixMe 
 
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
+const unset = require('unset-value');
 
 export class DynamicConfigParser {
+  /**
+   * Gets the current value of the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable.
+   * This is a getter function to allow for easier testing by reading the env var each time.
+   *
+   * @returns true if the hasDynamicConfig flag should be used, false for legacy behavior
+   */
+  private static get useHasDynamicConfigFlag(): boolean {
+    return process.env.USE_HAS_DYNAMIC_CONFIG_FLAG !== 'false';
+  }
+
+  /**
+   * Utility function to check if dynamic config processing should be skipped
+   * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
+   *
+   * @param destination - The destination object containing the hasDynamicConfig flag
+   * @returns true if processing should be skipped, false otherwise
+   */
+  public static shouldSkipDynamicConfigProcessing(destination: any): boolean {
+    // Only skip processing if we're using the hasDynamicConfig flag and it's explicitly false
+    return this.useHasDynamicConfigFlag && destination?.hasDynamicConfig === false;
+  }
+
+  /**
+   * Utility function to check if events should be grouped by destination config
+   * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
+   *
+   * @param destination - The destination object containing the hasDynamicConfig flag
+   * @returns true if events should be grouped by destination config, false otherwise
+   */
+  public static shouldGroupByDestinationConfig(destination: any): boolean {
+    if (!this.useHasDynamicConfigFlag) {
+      // If not using the flag, always group by config (legacy behavior)
+      return true;
+    }
+
+    // If using the flag, check the hasDynamicConfig value
+    // If undefined (older server versions), process all events as if they might have dynamic config
+    // Only skip grouping by config if the flag is explicitly false
+    return destination?.hasDynamicConfig !== false;
+  }
+
   /**
    * Extracts dynamic configuration value from a string template
    *
@@ -28,8 +70,7 @@ export class DynamicConfigParser {
       const pathVal = get(event, fieldPath);
       if (pathVal) {
         value = pathVal;
-        // Note: We're not using unset(event, fieldPath) anymore to avoid modifying the original event
-        // This is a change from the original implementation
+        unset(event, fieldPath);
       } else {
         value = matResult.groups.defaultVal.replace(/"/g, '').trim();
       }
@@ -73,8 +114,7 @@ export class DynamicConfigParser {
 
   /**
    * Processes dynamic configuration in the event
-   * Creates a shallow copy of the event and destination, but deep clones only the Config
-   * This is more efficient than deep cloning the entire event
+   * Creates a deep copy of the event to avoid modifying the original when using unset operations
    *
    * @param event The event to process
    * @returns A new event object with processed dynamic configuration
@@ -82,21 +122,13 @@ export class DynamicConfigParser {
   private static getDynamicConfig(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
   ) {
-    // Create a shallow copy of the event
-    const resultantEvent = { ...event };
-
-    // Create a shallow copy of the destination
-    resultantEvent.destination = { ...event.destination };
-
-    // Get the Config from the original event
-    const { Config } = event.destination;
-
-    // Deep clone only the Config
-    const configCopy = cloneDeep(Config);
+    // Create a deep copy of the event to avoid modifying the original
+    // This is necessary because the unset operation modifies the event object
+    const resultantEvent = cloneDeep(event);
 
     // Process the Config and set it on the copied destination
     resultantEvent.destination.Config = DynamicConfigParser.configureVal(
-      configCopy,
+      resultantEvent.destination.Config,
       resultantEvent,
     );
 
@@ -108,11 +140,11 @@ export class DynamicConfigParser {
   ) {
     const eventRespArr = events.map(
       (e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
-        // Only skip processing if hasDynamicConfig is explicitly false
-        // For undefined (older server versions), process the event
-        if (e.destination?.hasDynamicConfig === false) {
+        // Check if we should skip processing using the static method
+        if (DynamicConfigParser.shouldSkipDynamicConfigProcessing(e.destination)) {
           return e;
         }
+        // Process the event
         return DynamicConfigParser.getDynamicConfig(e);
       },
     );

@@ -486,203 +486,6 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
-                  headers: {
-                    Authorization: authHeader1,
-                    'Content-Type': 'application/json',
-                    'developer-token': secret3,
-                  },
-                  params: { event: 'Store sales', customerId: '7693729833' },
-                  body: {
-                    JSON: {
-                      event: '7693729833',
-                      isStoreConversion: true,
-                      createJobPayload: {
-                        job: {
-                          storeSalesMetadata: {
-                            loyaltyFraction: 1,
-                            transaction_upload_fraction: '1',
-                          },
-                          type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
-                        },
-                      },
-                      addConversionPayload: {
-                        operations: [
-                          {
-                            create: {
-                              consent: {
-                                adPersonalization: 'UNSPECIFIED',
-                                adUserData: 'UNSPECIFIED',
-                              },
-                              transaction_attribute: {
-                                store_attribute: { store_code: 'store code' },
-                                transaction_amount_micros: '100000000',
-                                order_id: 'order id',
-                                currency_code: 'INR',
-                                transaction_date_time: '2019-10-14 16:45:18+05:30',
-                              },
-                              userIdentifiers: [
-                                {
-                                  hashedEmail:
-                                    '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
-                                },
-                              ],
-                            },
-                          },
-                          {
-                            create: {
-                              consent: {
-                                adPersonalization: 'UNSPECIFIED',
-                                adUserData: 'UNSPECIFIED',
-                              },
-                              transaction_attribute: {
-                                store_attribute: { store_code: 'store code2' },
-                                transaction_amount_micros: '100000000',
-                                order_id: 'order id',
-                                currency_code: 'INR',
-                                transaction_date_time: '2019-10-14 16:45:18+05:30',
-                              },
-                              userIdentifiers: [
-                                {
-                                  hashedEmail:
-                                    '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
-                                },
-                              ],
-                            },
-                          },
-                        ],
-                        enable_partial_failure: false,
-                        enable_warnings: false,
-                        validate_only: true,
-                      },
-                      executeJobPayload: { validate_only: true },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833:uploadCallConversions`,
-                  headers: {
-                    Authorization: authHeader1,
-                    'Content-Type': 'application/json',
-                    'developer-token': secret3,
-                  },
-                  params: {
-                    event: 'Order Completed',
-                    customerId: '7693729833',
-                    customVariables: [{ from: '', to: '' }],
-                    properties: {
-                      loyaltyFraction: 1,
-                      order_id: 'order id',
-                      currency: 'INR',
-                      revenue: '100',
-                      store_code: 'store code2',
-                      email: 'alex@example.com',
-                      gclid: 'gclid',
-                      product_id: '123445',
-                      quantity: 123,
-                      callerId: '1234',
-                      callStartDateTime: '2019-10-14T11:15:18.299Z',
-                    },
-                  },
-                  body: {
-                    JSON: {
-                      conversions: [
-                        {
-                          consent: {
-                            adPersonalization: 'UNSPECIFIED',
-                            adUserData: 'UNSPECIFIED',
-                          },
-                          callerId: '1234',
-                          callStartDateTime: '2019-10-14T11:15:18.299Z',
-                          conversionDateTime: '2019-10-14 16:45:18+05:30',
-                          conversionValue: 100,
-                          currencyCode: 'INR',
-                        },
-                      ],
-                      partialFailure: true,
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
-              metadata: [
-                {
-                  secret: {
-                    access_token: secret1,
-                    refresh_token: 'efgh5678',
-                    developer_token: secret3,
-                  },
-                  jobId: 3,
-                  userId: 'u1',
-                },
-                {
-                  secret: {
-                    access_token: secret1,
-                    refresh_token: 'efgh5678',
-                    developer_token: secret3,
-                  },
-                  jobId: 4,
-                  userId: 'u1',
-                },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  rudderAccountId: '2Hsy2iFyoG5VLDd9wQcggHLMYFA',
-                  customerId: '769-372-9833',
-                  subAccount: false,
-                  UserIdentifierSource: 'FIRST_PARTY',
-                  conversionEnvironment: 'none',
-                  defaultUserIdentifier: 'email',
-                  hashUserIdentifier: true,
-                  validateOnly: true,
-                  eventsToOfflineConversionsTypeMapping: [
-                    { from: 'Data Reading Guide', to: 'click' },
-                    { from: 'Order Completed', to: 'store' },
-                    { from: 'Sign-up - click', to: 'click' },
-                    { from: 'Outbound click (rudderstack.com)', to: 'click' },
-                    { from: 'Page view', to: 'click' },
-                    { from: 'download', to: 'click' },
-                    { from: 'Product Clicked', to: 'store' },
-                    { from: 'Order Completed', to: 'call' },
-                  ],
-                  loginCustomerId: '4219454086',
-                  eventsToConversionsNamesMapping: [
-                    { from: 'Data Reading Guide', to: 'Data Reading Guide' },
-                    { from: 'Order Completed', to: 'Order Completed' },
-                    { from: 'Sign-up - click', to: 'Sign-up - click' },
-                    {
-                      from: 'Outbound click (rudderstack.com)',
-                      to: 'Outbound click (rudderstack.com)',
-                    },
-                    { from: 'Page view', to: 'Page view' },
-                    { from: 'Sign up completed', to: 'Sign-up - click' },
-                    { from: 'download', to: 'Page view' },
-                    { from: 'Product Clicked', to: 'Store sales' },
-                  ],
-                  authStatus: 'active',
-                  customVariables: [{ from: '', to: '' }],
-                },
-                hasDynamicConfig: false,
-              },
-            },
-            {
               batchedRequest: {
                 version: '1',
                 type: 'REST',
@@ -928,6 +731,203 @@ export const data = [
                   defaultUserIdentifier: 'phone',
                   validateOnly: false,
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                },
+                hasDynamicConfig: false,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  headers: {
+                    Authorization: authHeader1,
+                    'Content-Type': 'application/json',
+                    'developer-token': secret3,
+                  },
+                  params: { event: 'Store sales', customerId: '7693729833' },
+                  body: {
+                    JSON: {
+                      event: '7693729833',
+                      isStoreConversion: true,
+                      createJobPayload: {
+                        job: {
+                          storeSalesMetadata: {
+                            loyaltyFraction: 1,
+                            transaction_upload_fraction: '1',
+                          },
+                          type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+                        },
+                      },
+                      addConversionPayload: {
+                        operations: [
+                          {
+                            create: {
+                              consent: {
+                                adPersonalization: 'UNSPECIFIED',
+                                adUserData: 'UNSPECIFIED',
+                              },
+                              transaction_attribute: {
+                                store_attribute: { store_code: 'store code' },
+                                transaction_amount_micros: '100000000',
+                                order_id: 'order id',
+                                currency_code: 'INR',
+                                transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              },
+                              userIdentifiers: [
+                                {
+                                  hashedEmail:
+                                    '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                                },
+                              ],
+                            },
+                          },
+                          {
+                            create: {
+                              consent: {
+                                adPersonalization: 'UNSPECIFIED',
+                                adUserData: 'UNSPECIFIED',
+                              },
+                              transaction_attribute: {
+                                store_attribute: { store_code: 'store code2' },
+                                transaction_amount_micros: '100000000',
+                                order_id: 'order id',
+                                currency_code: 'INR',
+                                transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              },
+                              userIdentifiers: [
+                                {
+                                  hashedEmail:
+                                    '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                                },
+                              ],
+                            },
+                          },
+                        ],
+                        enable_partial_failure: false,
+                        enable_warnings: false,
+                        validate_only: true,
+                      },
+                      executeJobPayload: { validate_only: true },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833:uploadCallConversions`,
+                  headers: {
+                    Authorization: authHeader1,
+                    'Content-Type': 'application/json',
+                    'developer-token': secret3,
+                  },
+                  params: {
+                    event: 'Order Completed',
+                    customerId: '7693729833',
+                    customVariables: [{ from: '', to: '' }],
+                    properties: {
+                      loyaltyFraction: 1,
+                      order_id: 'order id',
+                      currency: 'INR',
+                      revenue: '100',
+                      store_code: 'store code2',
+                      email: 'alex@example.com',
+                      gclid: 'gclid',
+                      product_id: '123445',
+                      quantity: 123,
+                      callerId: '1234',
+                      callStartDateTime: '2019-10-14T11:15:18.299Z',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      conversions: [
+                        {
+                          consent: {
+                            adPersonalization: 'UNSPECIFIED',
+                            adUserData: 'UNSPECIFIED',
+                          },
+                          callerId: '1234',
+                          callStartDateTime: '2019-10-14T11:15:18.299Z',
+                          conversionDateTime: '2019-10-14 16:45:18+05:30',
+                          conversionValue: 100,
+                          currencyCode: 'INR',
+                        },
+                      ],
+                      partialFailure: true,
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 3,
+                  userId: 'u1',
+                },
+                {
+                  secret: {
+                    access_token: secret1,
+                    refresh_token: 'efgh5678',
+                    developer_token: secret3,
+                  },
+                  jobId: 4,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  rudderAccountId: '2Hsy2iFyoG5VLDd9wQcggHLMYFA',
+                  customerId: '769-372-9833',
+                  subAccount: false,
+                  UserIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'none',
+                  defaultUserIdentifier: 'email',
+                  hashUserIdentifier: true,
+                  validateOnly: true,
+                  eventsToOfflineConversionsTypeMapping: [
+                    { from: 'Data Reading Guide', to: 'click' },
+                    { from: 'Order Completed', to: 'store' },
+                    { from: 'Sign-up - click', to: 'click' },
+                    { from: 'Outbound click (rudderstack.com)', to: 'click' },
+                    { from: 'Page view', to: 'click' },
+                    { from: 'download', to: 'click' },
+                    { from: 'Product Clicked', to: 'store' },
+                    { from: 'Order Completed', to: 'call' },
+                  ],
+                  loginCustomerId: '4219454086',
+                  eventsToConversionsNamesMapping: [
+                    { from: 'Data Reading Guide', to: 'Data Reading Guide' },
+                    { from: 'Order Completed', to: 'Order Completed' },
+                    { from: 'Sign-up - click', to: 'Sign-up - click' },
+                    {
+                      from: 'Outbound click (rudderstack.com)',
+                      to: 'Outbound click (rudderstack.com)',
+                    },
+                    { from: 'Page view', to: 'Page view' },
+                    { from: 'Sign up completed', to: 'Sign-up - click' },
+                    { from: 'download', to: 'Page view' },
+                    { from: 'Product Clicked', to: 'Store sales' },
+                  ],
+                  authStatus: 'active',
+                  customVariables: [{ from: '', to: '' }],
                 },
                 hasDynamicConfig: false,
               },

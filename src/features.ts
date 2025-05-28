@@ -37,6 +37,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     SALESFORCE_OAUTH: true,
     SALESFORCE_OAUTH_SANDBOX: true,
     SFMC: true,
+    SFMC_V2: true,
     SNAPCHAT_CONVERSION: true,
     TIKTOK_ADS: true,
     TRENGO: true,

@@ -681,7 +681,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -814,7 +816,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -843,7 +847,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -1147,7 +1153,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -1369,7 +1377,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2027,7 +2037,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2130,7 +2142,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2158,7 +2172,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2251,7 +2267,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2279,7 +2297,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2307,7 +2327,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2401,7 +2423,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2429,7 +2453,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2563,7 +2589,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2740,7 +2768,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -2849,7 +2879,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3226,7 +3258,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3371,7 +3405,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3481,7 +3517,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3590,7 +3628,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3707,7 +3747,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3821,7 +3863,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -3934,7 +3978,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -4046,7 +4092,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -4157,7 +4205,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -4277,7 +4327,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -4945,7 +4997,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -5071,7 +5125,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -5295,7 +5351,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -5677,7 +5735,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -5705,7 +5765,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -5943,7 +6005,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6070,7 +6134,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6276,7 +6342,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6560,7 +6628,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6588,7 +6658,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/groups/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6765,7 +6837,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -6918,7 +6992,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7072,7 +7148,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7322,7 +7400,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7353,7 +7433,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7482,7 +7564,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7513,7 +7597,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7862,7 +7948,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7893,7 +7981,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7930,7 +8020,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -7966,7 +8058,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},
@@ -8102,7 +8196,9 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/engage/',
-              headers: {},
+              headers: {
+                'Content-Type': 'application/json',
+              },
               params: {},
               body: {
                 JSON: {},

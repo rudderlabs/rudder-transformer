@@ -463,4 +463,144 @@ export const trackTestData = [
       },
     },
   },
+  {
+    id: 'bluecore-track-test-6',
+    name: 'bluecore',
+    description:
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore. In this test we checking for optin event',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destination,
+            metadata,
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'subscription_event',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  ...commonTraits,
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                  c1: 'customer property 1',
+                },
+              },
+              properties: { ...commonPropsWithoutProducts, channelConsents: { email: true } },
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: eventEndPoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                properties: {
+                  distinct_id: 'test@rudderstack.com',
+                  age: '22',
+                  anonymousId: '9c6bd77ea9da3e68',
+                  email: 'test@rudderstack.com',
+                  id: 'user@1',
+                  phone: '9112340375',
+                  product_id: '123',
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
+                  c1: 'customer property 1',
+                },
+                event: 'optin',
+              },
+              userId: '',
+            }),
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'bluecore-track-test-7',
+    name: 'bluecore',
+    description:
+      'subscription_event event is also considered as a track event, user need to not map it from the UI, based on the channelConsents value, it will be sent as optin or optout event to bluecore. In this test we checking for unsubscribe event',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain only event payload and status code should be 200, for the event payload should contain flattened properties in the payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destination,
+            metadata,
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'subscription_event',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  ...commonTraits,
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+              },
+              properties: { ...commonPropsWithoutProducts, channelConsents: { email: false } },
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: eventEndPoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                properties: {
+                  distinct_id: 'test@rudderstack.com',
+                  product_id: '123',
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
+                  age: '22',
+                  anonymousId: '9c6bd77ea9da3e68',
+                  id: 'user@1',
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+                event: 'unsubscribe',
+              },
+              userId: '',
+            }),
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

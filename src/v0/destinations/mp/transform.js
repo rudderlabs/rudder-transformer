@@ -45,7 +45,9 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
 
 const setImportCredentials = (destConfig) => {
   const endpoint = `${getBaseEndpoint(destConfig)}/import/`;
-  const params = { strict: destConfig.strictMode ? 1 : 0 };
+  const params = {
+    strict: destConfig.strictMode ? 1 : 0,
+  };
   const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
   let credentials;
   if (token) {
@@ -95,7 +97,9 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
     }
     default:
       response.endpoint = `${getBaseEndpoint(destConfig)}/engage/`;
-      response.headers = {};
+      response.headers = {
+        'Content-Type': 'application/json',
+      };
   }
   return response;
 };

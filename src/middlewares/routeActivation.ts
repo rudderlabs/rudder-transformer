@@ -1,8 +1,6 @@
+import 'dotenv/config';
 import { Context, Next } from 'koa';
-import dotenv from 'dotenv';
 import { RouterTransformationRequest } from '../types';
-
-dotenv.config();
 
 const ACTIVE_SOURCE_ROUTE_VERSIONS = ['v2'];
 const transformerMode = process.env.TRANSFORMER_MODE;

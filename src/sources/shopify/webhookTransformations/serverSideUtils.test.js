@@ -6,6 +6,7 @@ const {
   getCartToken,
   setAnonymousId,
   addCartTokenHashToTraits,
+  ensureAnonymousId,
 } = require('./serverSideUtlis');
 
 const stats = require('../../../util/stats');
@@ -175,6 +176,34 @@ describe('serverSideUtils.js', () => {
       addCartTokenHashToTraits(message, event);
 
       expect(message.context.traits).toEqual({ existingTrait: 'value' });
+    });
+  });
+
+  describe('Test ensureAnonymousId', () => {
+    it('should not modify message if anonymousId already exists', () => {
+      const message = { anonymousId: 'existing-id' };
+      const metricMetadata = { source: 'test', writeKey: 'test-key' };
+
+      const result = ensureAnonymousId(message, metricMetadata);
+
+      expect(result.anonymousId).toBe('existing-id');
+      expect(stats.increment).not.toHaveBeenCalled();
+    });
+
+    it('should generate a random UUID if anonymousId is missing', () => {
+      const message = {};
+      const metricMetadata = { source: 'test', writeKey: 'test-key' };
+
+      const result = ensureAnonymousId(message, metricMetadata);
+
+      expect(result.anonymousId).toBeDefined();
+      expect(typeof result.anonymousId).toBe('string');
+      expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_id_stitch_gaps', {
+        event: undefined,
+        reason: 'fallback_random_uuid',
+        source: 'test',
+        writeKey: 'test-key',
+      });
     });
   });
 });

@@ -82,7 +82,7 @@ async function transform({ body, features = {}, requestSize = 0 }) {
     }
 
     return {
-      transformedEvents, // Could we potentially stringify this and return it without cloning?
+      transformedEvents: JSON.stringify(transformedEvents),
       retryStatus,
     };
   } catch (error) {

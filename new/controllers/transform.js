@@ -25,6 +25,7 @@ async function transformRaw(ctx) {
     // Set the response
     ctx.body = processedResponse.transformedEvents;
     ctx.status = processedResponse.retryStatus || 200;
+    ctx.type = 'application/json';
 
     // TODO use proper logging
     // console.log('(User transform - router:/customTransform ):: Response from transformer');

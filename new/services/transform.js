@@ -137,7 +137,7 @@ async function transformRoutine(body, features = {}, requestSize = 0) {
     }
 
     return {
-      transformedEvents,
+      transformedEvents: JSON.stringify(transformedEvents),
       retryStatus,
     };
   } catch (error) {

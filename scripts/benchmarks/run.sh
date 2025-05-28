@@ -113,9 +113,11 @@ for ((i=0; i<TEST_COUNT; i++)); do
     timeout ${DURATION_SECS} ./scripts/benchmarks/collect-stats.sh || true
 
     echo "Test $NAME completed. Stopping containers..."
+    mkdir -p ./test-results/logs
+    docker logs user-transformer > ./test-results/logs/${NAME}.log
     # Kill the node process in user-transformer container
-    docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*index\.js" | head -n 1 | awk '{print $1}')
-    docker stop rudder-load
+    docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*index\.js" | head -n 1 | awk '{print $1}') || true
+    docker stop rudder-load || true
     sleep 5 # to give time for profiling files to be created
 
     # Process profiling files if UT_PROF was set

@@ -63,7 +63,7 @@ const responseStatusHandler = (status, entity, id, url) => {
 };
 
 const SHARE_ISOLATE = process.env.SHARE_ISOLATE === "true";
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '512', 10);
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
 /**

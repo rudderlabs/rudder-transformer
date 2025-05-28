@@ -699,6 +699,20 @@ describe('extractCustomFields', () => {
 });
 
 describe('groupRouterTransformEvents', () => {
+  // Save original environment
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    // Reset environment variables before each test
+    process.env = { ...originalEnv };
+    delete process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_TEST;
+  });
+
+  afterAll(() => {
+    // Restore original environment after all tests
+    process.env = originalEnv;
+  });
+
   it('should group events by destination.ID and context.sources.job_id', () => {
     const events = [
       {
@@ -803,6 +817,150 @@ describe('groupRouterTransformEvents', () => {
       [{ destination: { ID: 'dest1' } }],
       [{ context: { sources: { job_id: 'job1' } } }],
     ]);
+  });
+
+  it('should group by destination config when environment variable is set', () => {
+    // Set environment variable to enable grouping by destination config
+    process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_TEST = 'true';
+
+    const events = [
+      {
+        event: 'event1',
+        destination: { ID: 'dest1', Config: { key1: 'value1' } },
+      },
+      {
+        event: 'event2',
+        destination: { ID: 'dest1', Config: { key1: 'value2' } },
+      },
+      {
+        event: 'event3',
+        destination: { ID: 'dest1', Config: { key1: 'value1' } },
+      },
+      {
+        event: 'event4',
+        destination: { ID: 'dest1', Config: { key1: 'value2' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events, 'test');
+
+    expect(result.length).toBe(2); // 2 unique groups based on Config
+    expect(result).toEqual([
+      [
+        {
+          event: 'event1',
+          destination: { ID: 'dest1', Config: { key1: 'value1' } },
+        },
+        {
+          event: 'event3',
+          destination: { ID: 'dest1', Config: { key1: 'value1' } },
+        },
+      ],
+      [
+        {
+          event: 'event2',
+          destination: { ID: 'dest1', Config: { key1: 'value2' } },
+        },
+        {
+          event: 'event4',
+          destination: { ID: 'dest1', Config: { key1: 'value2' } },
+        },
+      ],
+    ]);
+  });
+
+  it('should not group by destination config when environment variable is not set', () => {
+    const events = [
+      {
+        event: 'event1',
+        destination: { ID: 'dest1', Config: { key1: 'value1' } },
+      },
+      {
+        event: 'event2',
+        destination: { ID: 'dest1', Config: { key1: 'value2' } },
+      },
+    ];
+    const result = groupRouterTransformEvents(events, 'test');
+
+    expect(result.length).toBe(1); // 1 group since we're not grouping by Config
+    expect(result).toEqual([
+      [
+        {
+          event: 'event1',
+          destination: { ID: 'dest1', Config: { key1: 'value1' } },
+        },
+        {
+          event: 'event2',
+          destination: { ID: 'dest1', Config: { key1: 'value2' } },
+        },
+      ],
+    ]);
+  });
+
+  it('should handle different destination types correctly', () => {
+    // Set environment variable for a specific destination type
+    process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_FACEBOOK = 'true';
+
+    const events = [
+      {
+        event: 'event1',
+        destination: { ID: 'dest1', Config: { key1: 'value1' } },
+      },
+      {
+        event: 'event2',
+        destination: { ID: 'dest1', Config: { key1: 'value2' } },
+      },
+    ];
+
+    // Should group by config for 'facebook' destination type
+    const resultFacebook = groupRouterTransformEvents(events, 'facebook');
+    expect(resultFacebook.length).toBe(2);
+
+    // Should not group by config for 'google' destination type
+    const resultGoogle = groupRouterTransformEvents(events, 'google');
+    expect(resultGoogle.length).toBe(1);
+  });
+
+  it('should group events with same config values but different key order', () => {
+    // Set environment variable to enable grouping by destination config
+    process.env.GROUP_EVENTS_BY_DESTINATION_CONFIG_TEST = 'true';
+
+    const events = [
+      {
+        event: 'event1',
+        destination: {
+          ID: 'dest1',
+          Config: { key1: 'value1', key2: 'value2' },
+        },
+      },
+      {
+        event: 'event2',
+        destination: {
+          ID: 'dest1',
+          // Same values but keys in different order
+          Config: { key2: 'value2', key1: 'value1' },
+        },
+      },
+      {
+        event: 'event3',
+        destination: {
+          ID: 'dest1',
+          // Different values
+          Config: { key1: 'different', key2: 'value2' },
+        },
+      },
+    ];
+
+    const result = groupRouterTransformEvents(events, 'test');
+
+    // Should have 2 groups - one for the matching configs (despite different key order)
+    // and one for the different config
+    expect(result.length).toBe(2);
+
+    // First group should have 2 events (the ones with matching configs)
+    expect(result.some((group) => group.length === 2)).toBe(true);
+
+    // Second group should have 1 event (the one with different config)
+    expect(result.some((group) => group.length === 1)).toBe(true);
   });
 });
 
@@ -1058,7 +1216,9 @@ describe('', () => {
       regex: `\\b(?!1000\\b)\\d{4,}\\b`,
     };
     try {
-      const result = utilities.handleMetadataForValue(value, metadata);
+      utilities.handleMetadataForValue(value, metadata);
+      // If we reach here, the test should fail because an exception was expected
+      expect(true).toBe(false);
     } catch (e) {
       expect(e.message).toBe(
         `The value 'test value' does not match the regex pattern, \\b(?!1000\\b)\\d{4,}\\b`,

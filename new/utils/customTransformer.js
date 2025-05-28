@@ -2,6 +2,7 @@ const ivm = require('isolated-vm');
 const NodeCache = require('node-cache');
 const parseStaticImports = require('parse-static-imports');
 const { camelCase, isNil, isObject } = require('lodash');
+const { createIvm, compileAndCacheModule, SHARE_ISOLATE } = require('./ivmFactory');
 
 // TODO fetchWithDnsWrapper instead of fetch
 
@@ -62,19 +63,7 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
-const SHARE_ISOLATE = process.env.SHARE_ISOLATE === "true";
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
-
-/**
- * Global isolate instance for running user code in a sandboxed environment.
- * @type {import('isolated-vm').Isolate}
- */
-let isolate = null;
-if (SHARE_ISOLATE) {
-  isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  console.log("Sharing isolate")
-}
 
 /**
  * Run user transformation code in an isolated VM
@@ -90,14 +79,9 @@ async function runUserTransform(
   libraryVersionIDs = [],
   credentials = {},
 ) {
-  // Create a new isolate
-  let localIsolate = isolate;
-  if (!SHARE_ISOLATE) {
-    localIsolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  }
-  const context = await localIsolate.createContext();
+  // Create or retrieve an IVM instance with the code
+  const ivmInstance = await createIvm(transformationId, code);
   const logs = [];
-  const jail = context.global;
 
   // Extract libraries from code
   const extractedLibraries = Object.keys(extractLibraries(code));
@@ -135,15 +119,17 @@ async function runUserTransform(
     });
   }
 
+  // Get references to IVM components
+  const { isolate, context, jail } = ivmInstance;
+
   // Compile library modules
-  const compiledModules = {};
+  ivmInstance.compiledModules = {};
 
   // TODO add caching so that if a module was already loaded we don't compile it again and just add it to the context
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
-      compiledModules[moduleName] = {
-        // TODO module should be released
-        module: await loadModule(localIsolate, context, moduleName, moduleCode),
+      ivmInstance.compiledModules[moduleName] = {
+        module: await loadModule(isolate, context, moduleName, moduleCode),
       };
     }),
   );
@@ -261,232 +247,61 @@ async function runUserTransform(
     // }
   });
 
-  // Set up metadata in the isolate
-  // jail.setSync('metadata', function (...args) {
-  //   const eventMetadata = eventsMetadata[args[0].messageId] || {};
-  //   return new ivm.ExternalCopy(eventMetadata).copyInto();
-  // });
-
   // Set up extractStackTrace in the isolate
   await jail.set('extractStackTrace', function (trace, stringLiterals) {
     return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
-  // Bootstrap script to set up the environment in the isolate
-  const bootstrap = await localIsolate.compileScript(`
-    new function() {
-      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
-      // only place in the context with a reference to the module. The 'ivm' module is very powerful
-      // so you should not put it in the hands of untrusted code.
-      let ivm = _ivm;
-      delete _ivm;
+  // Run the bootstrap script if not already run
+  if (!ivmInstance.bootstrapScriptResult) {
+    ivmInstance.bootstrapScriptResult = await ivmInstance.bootstrap.run(context);
+  }
 
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let fetch = _fetch;
-      delete _fetch;
-      global.fetch = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        return new Promise(resolve => {
-          fetch.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
+  // Check if we already have a compiled module
+  if (!ivmInstance.customScriptModule) {
+    // If not, compile and cache the module
+    await compileAndCacheModule(transformationId, code, ivmInstance);
 
-      let fetchV2 = _fetchV2;
-      delete _fetchV2;
-      global.fetchV2 = function(...args) {
-        return new Promise((resolve,reject) => {
-          fetchV2.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            new ivm.Reference(reject),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
-
-      let geolocation = _geolocation;
-      delete _geolocation;
-      global.geolocation = function(...args) {
-        return new Promise((resolve, reject) => {
-          geolocation.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            new ivm.Reference(reject),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
-
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
-      };
-
-      let getCredential = _getCredential;
-      delete _getCredential;
-      global.getCredential = function(...args) {
-        const key = args[0];
-        return getCredential(new ivm.ExternalCopy(key).copyInto());
-      };
-
-      return new ivm.Reference(function forwardMainPromise(
-        fnRef,
-        resolve,
-        reject,
-        events
-        ){
-          const derefMainFunc = fnRef.deref();
-          Promise.resolve(derefMainFunc(events))
-          .then(value => {
-            resolve.applyIgnored(undefined, [
-              new ivm.ExternalCopy(value).copyInto()
-            ]);
-          })
-          .catch(error => {
-            // Create an object with both message and stack for better error reporting
-            const errorInfo = {
-              message: error.message,
-              stack: error.stack || ''
-            };
-            reject.applyIgnored(undefined, [
-              new ivm.ExternalCopy(errorInfo).copyInto()
-            ]);
-          });
-        });
+    // Instantiate the module with a handler for imports
+    await ivmInstance.customScriptModule.instantiate(context, async (spec) => {
+      if (librariesMap[spec]) {
+        return ivmInstance.compiledModules[spec].module;
       }
-  `);
+      // Log the error but don't release the context here as it's managed by ivmFactory
+      console.log(`Import from ${spec} failed. Module not found.`);
+      throw new Error(`Import from ${spec} failed. Module not found.`);
+    });
+    await ivmInstance.customScriptModule.evaluate();
+  }
 
-  // Run the bootstrap script
-  const bootstrapScriptResult = await bootstrap.run(context);
+  // Check if we already have the supported functions and transformWrapper reference
+  if (!ivmInstance.supportedFuncs || Object.keys(ivmInstance.supportedFuncs).length === 0) {
+    ivmInstance.supportedFuncs = {};
+    await Promise.all(
+      SUPPORTED_FUNC_NAMES.map(async (sName) => {
+        const funcRef = await ivmInstance.customScriptModule.namespace.get(sName, {
+          reference: true,
+        });
+        if (funcRef && funcRef.typeof === 'function') {
+          ivmInstance.supportedFuncs[sName] = funcRef;
+        }
+      }),
+    );
+  }
 
-  // Wrap the code in a module wrapper to handle ES module imports
-  const codeWithWrapper =
-    // eslint-disable-next-line prefer-template
-    code +
-    `
-    export async function transformWrapper(transformationPayload) {
-      let events = transformationPayload.events
-      let transformType = transformationPayload.transformationType
-      let outputEvents = []
-      const eventMessages = events.map(event => event.message);
-      const eventsMetadata = {};
-      events.forEach(ev => {
-        eventsMetadata[ev.message.messageId] = ev.metadata;
-      });
-
-      const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
-
-      var metadata = function(event) {
-        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
-        return eventMetadata;
-      }
-      switch(transformType) {
-        case "transformBatch":
-          let transformedEventsBatch;
-          try {
-            transformedEventsBatch = await transformBatch(eventMessages, metadata);
-          } catch (error) {
-            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
-            return outputEvents;
-          }
-          if (!Array.isArray(transformedEventsBatch)) {
-            outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
-            break;
-          }
-          outputEvents = transformedEventsBatch.map(transformedEvent => {
-            if (!isObject(transformedEvent)) {
-              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: {}};
-            }
-            return{transformedEvent, metadata: metadata(transformedEvent)};
-          })
-          break;
-        case "transformEvent":
-          await Promise.all(eventMessages.map(async ev => {
-            const currMsgId = ev.messageId;
-            try{
-              let transformedOutput = await transformEvent(ev, metadata);
-              // if func returns null/undefined drop event
-              if (transformedOutput === null || transformedOutput === undefined) return;
-              if (Array.isArray(transformedOutput)) {
-                const producedEvents = [];
-                const encounteredError = !transformedOutput.every(e => {
-                  if (isObject(e)) {
-                    producedEvents.push({transformedEvent: e, metadata: eventsMetadata[currMsgId] || {}});
-                    return true;
-                  } else {
-                    outputEvents.push({error: "returned event in events array from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-                    return false;
-                  }
-                })
-                if (!encounteredError) {
-                  outputEvents.push(...producedEvents);
-                }
-                return;
-              }
-              if (!isObject(transformedOutput)) {
-                return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-              }
-              outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
-              return;
-            } catch (error) {
-              // Handling the errors in versionedRouter.js
-              return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
-            }
-          }));
-          break;
-      }
-      return outputEvents
-    }
-  `;
-
-  // Compile the code as a module instead of a script
-  const customScriptModule = await localIsolate.compileModule(codeWithWrapper, {
-    filename: 'base transformation',
-  });
-
-  // Instantiate the module with a handler for imports
-  await customScriptModule.instantiate(context, async (spec) => {
-    if (librariesMap[spec]) {
-      return compiledModules[spec].module;
-    }
-    // Release the isolate context before throwing an error
-    await context.release(); // TODO should only the context be released here? double check
-    console.log(`Import from ${spec} failed. Module not found.`);
-    throw new Error(`Import from ${spec} failed. Module not found.`);
-  });
-  await customScriptModule.evaluate();
-
-  const supportedFuncs = {};
-  await Promise.all(
-    SUPPORTED_FUNC_NAMES.map(async (sName) => {
-      const funcRef = await customScriptModule.namespace.get(sName, {
-        reference: true,
-      });
-      if (funcRef && funcRef.typeof === 'function') {
-        supportedFuncs[sName] = funcRef;
-      }
-    }),
-  );
-
-  const availableFuncNames = Object.keys(supportedFuncs);
+  const availableFuncNames = Object.keys(ivmInstance.supportedFuncs);
   if (availableFuncNames.length !== 1) {
     throw new Error(
       `Expected one of ${SUPPORTED_FUNC_NAMES}. Found ${Object.values(availableFuncNames)}`,
     );
   }
 
-  // Get the transformWrapper function from the module's namespace
-  const fnRef = await customScriptModule.namespace.get('transformWrapper', {
-    reference: true,
-  });
+  // Get the transformWrapper function from the module's namespace if not already available
+  if (!ivmInstance.fnRef) {
+    ivmInstance.fnRef = await ivmInstance.customScriptModule.namespace.get('transformWrapper', {
+      reference: true,
+    });
+  }
   const fName = availableFuncNames[0];
 
   // Execute the user's code
@@ -498,9 +313,9 @@ async function runUserTransform(
       transferIn: true,
     });
     try {
-      await bootstrapScriptResult.apply(
+      await ivmInstance.bootstrapScriptResult.apply(
         undefined,
-        [fnRef, new ivm.Reference(resolve), new ivm.Reference(reject), sharedTransformationPayload],
+        [ivmInstance.fnRef, new ivm.Reference(resolve), new ivm.Reference(reject), sharedTransformationPayload],
         { timeout: ivmExecutionTimeout },
       );
     } catch (error) {
@@ -548,20 +363,11 @@ async function runUserTransform(
       throw error;
     }
   } finally {
-    // Release resources
+    // Release timeout
     clearTimeout(setTimeoutHandle);
-    fnRef.release();
-    for (const funcName of availableFuncNames) {
-      supportedFuncs[funcName].release();
-    }
-    customScriptModule.release();
-    bootstrap.release();
-    jail.release();
-    bootstrapScriptResult.release();
-    // context.release(); // releasing the jail should be sufficient, we'd get an error if we tried to release the context too
-    if (!SHARE_ISOLATE) {
-      await localIsolate.dispose();
-    }
+
+    // Note: We don't release IVM resources here if it's cached
+    // The ivmFactory will handle resource cleanup when the cache expires
 
     // TODO use proper logger
     // console.log(`User transform function completed in ${new Date() - invokeTime}ms`);
@@ -676,9 +482,13 @@ async function userTransformHandler(
               statusCode: 200,
             }));
       } catch (error) {
-        if (SHARE_ISOLATE && error.message === "Isolate is disposed") { // TODO this is hacky!!!
-          isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-          console.error("Recreating isolate!");
+        if (SHARE_ISOLATE && error.message === "Isolate is disposed") {
+          // If using shared isolate and it's disposed, clear the global reference
+          // so ivmFactory will create a new one on next call
+          if (global.sharedIsolate) {
+            delete global.sharedIsolate;
+          }
+          console.error("Shared isolate was disposed, will create a new one on next call");
         }
 
         // Enhanced error handling with stack trace

@@ -62,9 +62,19 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
-// Memory limit for the isolate VM
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const SHARE_ISOLATE = process.env.SHARE_ISOLATE === "true";
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '512', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+
+/**
+ * Global isolate instance for running user code in a sandboxed environment.
+ * @type {import('isolated-vm').Isolate}
+ */
+let isolate = null;
+if (SHARE_ISOLATE) {
+  isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
+  console.log("Sharing isolate")
+}
 
 /**
  * Run user transformation code in an isolated VM
@@ -81,8 +91,11 @@ async function runUserTransform(
   credentials = {},
 ) {
   // Create a new isolate
-  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  const context = await isolate.createContext();
+  let localIsolate = isolate;
+  if (!SHARE_ISOLATE) {
+    localIsolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
+  }
+  const context = await localIsolate.createContext();
   const logs = [];
   const jail = context.global;
 
@@ -125,10 +138,11 @@ async function runUserTransform(
   // Compile library modules
   const compiledModules = {};
 
+  // TODO add caching so that if a module was already loaded we don't compile it again and just add it to the context
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       compiledModules[moduleName] = {
-        module: await loadModule(isolate, context, moduleName, moduleCode),
+        module: await loadModule(localIsolate, context, moduleName, moduleCode),
       };
     }),
   );
@@ -258,7 +272,7 @@ async function runUserTransform(
   });
 
   // Bootstrap script to set up the environment in the isolate
-  const bootstrap = await isolate.compileScript(`
+  const bootstrap = await localIsolate.compileScript(`
     new function() {
       // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
       // only place in the context with a reference to the module. The 'ivm' module is very powerful
@@ -433,7 +447,7 @@ async function runUserTransform(
   `;
 
   // Compile the code as a module instead of a script
-  const customScriptModule = await isolate.compileModule(codeWithWrapper, {
+  const customScriptModule = await localIsolate.compileModule(codeWithWrapper, {
     filename: 'base transformation',
   });
 
@@ -540,11 +554,14 @@ async function runUserTransform(
     bootstrap.release();
     customScriptModule.release();
     context.release();
-    // bootstrapScriptResult.release(); TODO ???
-    await isolate.dispose();
+    bootstrapScriptResult.release();
+    if (!SHARE_ISOLATE) {
+      await localIsolate.dispose();
+    }
 
-    console.log(`User transform function completed in ${new Date() - invokeTime}ms`);
-    console.log(`User transform function input events: ${events.length}`);
+    // TODO use proper logger
+    // console.log(`User transform function completed in ${new Date() - invokeTime}ms`);
+    // console.log(`User transform function input events: ${events.length}`);
   }
 
   return {
@@ -558,19 +575,23 @@ async function runUserTransform(
  * Caches the transformation code by versionId
  */
 async function getTransformationCode(versionId) {
-  console.log(`Getting transformation code for version ${versionId}`);
+  // TODO use proper logging
+  // console.log(`Getting transformation code for version ${versionId}`);
 
   // Check if the transformation is in the cache
   const cachedTransformation = transformationCache.get(versionId);
   if (cachedTransformation) {
-    console.log(`Using cached transformation for version ${versionId}`);
+    // TODO use proper logging
+    // console.log(`Using cached transformation for version ${versionId}`);
     return cachedTransformation;
   }
 
   try {
     // Fetch the transformation from CONFIG_BACKEND_URL
     const url = `${getTransformationURL}?versionId=${versionId}`;
-    console.log(`Fetching transformation from ${url}`);
+
+    // TODO use proper logging
+    // console.log(`Fetching transformation from ${url}`);
 
     // Use fetch with proxy if HTTPS_PROXY is set
     let fetchOptions = {};
@@ -613,7 +634,8 @@ async function userTransformHandler(
     if (res) {
       // Extract messages from events
       const eventsMetadata = {};
-      events.forEach((ev) => { // TODO why do we keep repeating this?
+      events.forEach((ev) => {
+        // TODO why do we keep repeating this?
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
@@ -650,6 +672,11 @@ async function userTransformHandler(
               statusCode: 200,
             }));
       } catch (error) {
+        if (SHARE_ISOLATE && error.message === "Isolate is disposed") { // TODO this is hacky!!!
+          isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
+          console.error("Recreating isolate!");
+        }
+
         // Enhanced error handling with stack trace
         console.error(`Error in userTransformHandler: ${error.message}`);
         if (error.stack) {
@@ -727,7 +754,9 @@ async function getLibraryCode(versionId) {
 
   try {
     const url = `${getLibrariesUrl}?versionId=${versionId}`;
-    console.log(`Fetching library from ${url}`);
+
+    // TODO use proper logging
+    // console.log(`Fetching library from ${url}`);
 
     // Use fetch with proxy if HTTPS_PROXY is set
     let fetchOptions = {};
@@ -760,7 +789,9 @@ async function getRudderLibByImportName(importName) {
   try {
     const [name, version] = importName.split('/').slice(-2);
     const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
-    console.log(`Fetching Rudder library from ${url}`);
+
+    // TODO use proper logging
+    // console.log(`Fetching Rudder library from ${url}`);
 
     // Use fetch with proxy if HTTPS_PROXY is set
     let fetchOptions = {};

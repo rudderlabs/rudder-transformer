@@ -1,30 +1,20 @@
-const { userTransformHandler } = require('../utils/customTransformer');
-const { initializePiscina, transformWithPiscina } = require('./piscina/wrapper');
-
-// Initialize Piscina if enabled
-const usePiscina = process.env.USE_PISCINA === 'true';
-if (usePiscina) {
-  initializePiscina();
-}
+const { userTransformHandler } = require('../../utils/customTransformer');
 
 /**
- * Service function to transform events
- * Parses the raw body and calls the userTransformHandler function
+ * Worker function that will run in the worker thread
+ * @param {Object} options - Options for transformation
+ * @param {string} options.body - Request body containing the events to transform
+ * @param {Object} options.features - Feature flags
+ * @param {number} options.requestSize - Request size
+ * @returns {Promise<Object>} - Transformed events and retry status
  */
-async function transformRoutine(body, features = {}, requestSize = 0) {
+async function transform({ body, features = {}, requestSize = 0 }) {
   let retryStatus = 200;
 
   try {
-    // If Piscina is enabled, use it for transformation
-    if (usePiscina) {
-      return transformWithPiscina(body, features, requestSize);
-    }
-
-    // Parse the JSON in the main thread
-    const events = JSON.parse(body);
-
     // Group events by destination and source IDs
     const eventsMetadata = {};
+    const events = JSON.parse(body);
     events.forEach((ev) => {
       eventsMetadata[ev.message.messageId] = ev.metadata;
     });
@@ -32,46 +22,8 @@ async function transformRoutine(body, features = {}, requestSize = 0) {
     const transformedEvents = [];
     const transformationVersionId = events[0]?.destination?.Transformations[0]?.VersionID;
 
-    // Process each group of events
-    // await Promise.all(
-    // Object.entries(groupedEvents).map(async ([, destEvents]) => {
-    //   const eventsToProcess = destEvents;
-    //   const transformationVersionId =
-    //     eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-    //
-    //   const messageIds = [];
-    //   const messageIdsSet = new Set();
-    //   const messageIdMetadataMap = {};
-    //
-    //   eventsToProcess.forEach((ev) => {
-    //     messageIds.push(ev.metadata?.messageId);
-    //     messageIdsSet.add(ev.metadata?.messageId);
-    //     messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
-    //   });
-    //
-    //   const workspaceId = eventsToProcess[0]?.metadata.workspaceId;
-    //   const commonMetadata = {
-    //     sourceId: eventsToProcess[0]?.metadata?.sourceId,
-    //     destinationId: eventsToProcess[0]?.metadata.destinationId,
-    //     destinationType: eventsToProcess[0]?.metadata.destinationType,
-    //     workspaceId,
-    //     transformationId: eventsToProcess[0]?.metadata.transformationId,
-    //     messageIds,
-    //   };
-    //
-    //   if (!transformationVersionId) {
-    //     const errorMessage = 'Transformation VersionID not found';
-    //     console.error(`[CT] ${errorMessage}`);
-    //     transformedEvents.push({
-    //       statusCode: 400,
-    //       error: errorMessage,
-    //       metadata: commonMetadata,
-    //     });
-    //     return;
-    //   }
-
     try {
-      const commonMetadata = {} // TODO
+      const commonMetadata = {}; // TODO
 
       // Get libraries version IDs if available
       let librariesVersionIDs = [];
@@ -130,11 +82,11 @@ async function transformRoutine(body, features = {}, requestSize = 0) {
     }
 
     return {
-      transformedEvents,
+      transformedEvents, // Could we potentially stringify this and return it without cloning?
       retryStatus,
     };
   } catch (error) {
-    console.error('Error in transformRoutine:', error);
+    console.error('Error in worker thread:', error);
     throw error;
   }
 }
@@ -148,6 +100,4 @@ function isNonFuncObject(obj) {
   return obj && typeof obj === 'object' && !Array.isArray(obj);
 }
 
-module.exports = {
-  transformRoutine,
-};
+module.exports = transform;

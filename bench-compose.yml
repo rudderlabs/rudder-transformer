@@ -38,8 +38,9 @@ services:
       PISCINA_MIN_THREADS: ${UT_MIN_THREADS:-2}
       PISCINA_IDLE_TIMEOUT: ${UT_WORKER_IDLE_TIMEOUT:-1000}
       USE_PISCINA: ${UT_POOLING:-true}
+      SHARE_ISOLATE: ${UT_SHARE_ISOLATE:-false}
       CONFIG_BACKEND_URL: https://api.rudderstack.com
-      #IVM_MEMORY: ${UT_IVM_MEMORY:-512}
+      ISOLATE_VM_MEMORY: ${UT_IVM_MEMORY:-512}
   rudder-load:
     image: ${RL_IMAGE:-fracasula/rudder-load:latest}
     container_name: rudder-load

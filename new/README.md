@@ -9,6 +9,8 @@ This is a simplified version of the Rudder Transformer that only handles the `/c
 - `routes.js`: Defines the routes for the `/customTransform` endpoint
 - `controllers/transform.js`: Controller for the `/customTransform` endpoint
 - `services/transform.js`: Service for transforming events
+- `services/piscina/wrapper.js`: Wrapper for Piscina worker thread pool
+- `services/piscina/transform.js`: Worker file for Piscina
 - `utils/customTransformer.js`: Utility functions for running transformations in an isolated VM
 
 ## Installation
@@ -45,6 +47,16 @@ curl -X POST -H "Content-Type: application/json" -d '[{"message":{"messageId":"1
 - `GEOLOCATION_TIMEOUT_IN_MS`: Timeout for geolocation requests in milliseconds (default: 1000)
 - `CONFIG_BACKEND_URL`: URL for the config backend service (default: 'https://api.rudderlabs.com')
 - `HTTPS_PROXY`: HTTPS proxy URL for making requests to the config backend (optional)
+
+### Piscina Configuration
+
+Piscina is a Node.js worker thread pool implementation that can be used to offload CPU-intensive tasks to worker threads. To enable Piscina, set the following environment variables:
+
+- `USE_PISCINA`: Set to `true` to enable Piscina
+- `MIN_THREADS`: Minimum number of worker threads (default: 0)
+- `MAX_THREADS`: Maximum number of worker threads (default: number of CPU cores)
+- `WORKER_IDLE_TIMEOUT`: Idle timeout for worker threads in milliseconds (default: 60000)
+- `CONCURRENT_TASKS_PER_WORKER`: Maximum number of concurrent tasks per worker thread (default: 1)
 
 ## Authentication
 
@@ -167,3 +179,13 @@ docker-compose up
 ## TODOs
 * Update node version
 * Update dependencies in package.json
+
+## Notes
+
+### Performance improvements
+
+* Using isolated-vm v6 with node 24 goes from 4.7k to 5k eps
+* If we just share the isolated-vm without doing anything else, the performance is worse
+* If we shared the same isolated-vm with piscina, after a while we get an error saying "Isolate is disposed"
+* TODO try to recreate the isolate when it has been disposed of
+* TODO try to have the piscina worker return a stringify version of the result and avoid cloning

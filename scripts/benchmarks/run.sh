@@ -33,6 +33,7 @@ OPTIONAL_VARS=(
     "UT_IVM_MEMORY"
     "UT_USE_EXPRESS"
     "UT_USE_KOA"
+    "UT_SHARE_ISOLATE"
 
     "RL_MODE"
     "RL_BATCH_SIZES"
@@ -113,7 +114,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     echo "Test $NAME completed. Stopping containers..."
     # Kill the node process in user-transformer container
-    docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*snapshot" | head -n 1 | awk '{print $1}')
+    docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*index\.js" | head -n 1 | awk '{print $1}')
     docker stop rudder-load
     sleep 5 # to give time for profiling files to be created
 

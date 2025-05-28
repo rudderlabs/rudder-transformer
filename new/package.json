@@ -20,7 +20,8 @@
     "lodash": "^4.17.21",
     "node-cache": "^5.1.2",
     "node-fetch": "^3.3.2",
-    "parse-static-imports": "^1.1.0"
+    "parse-static-imports": "^1.1.0",
+    "piscina": "^4.3.0"
   },
   "engines": {
     "node": ">=24.0.0"

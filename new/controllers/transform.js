@@ -5,8 +5,6 @@ const { transformRoutine } = require('../services/transform');
  * Reads the raw request body and calls the transform service
  */
 async function transformRaw(ctx) {
-  console.log('(User transform - router:/customTransform ):: Request to transformer with raw body');
-
   const requestSize = ctx.state.requestSize || Number(ctx.request.get('content-length'));
 
   // Read the raw request body as a string
@@ -27,8 +25,9 @@ async function transformRaw(ctx) {
     // Set the response
     ctx.body = processedResponse.transformedEvents;
     ctx.status = processedResponse.retryStatus || 200;
-    
-    console.log('(User transform - router:/customTransform ):: Response from transformer');
+
+    // TODO use proper logging
+    // console.log('(User transform - router:/customTransform ):: Response from transformer');
   } catch (error) {
     console.error('Error processing transform request:', error);
     ctx.status = 500;

@@ -39,6 +39,7 @@ services:
       PISCINA_IDLE_TIMEOUT: ${UT_WORKER_IDLE_TIMEOUT:-1000}
       USE_PISCINA: ${UT_POOLING:-false}
       SHARE_ISOLATE: ${UT_SHARE_ISOLATE:-false}
+      IVM_CACHE: ${UT_IVM_CACHE:-false}
       CONFIG_BACKEND_URL: https://api.rudderstack.com
       ISOLATE_VM_MEMORY: ${UT_IVM_MEMORY:-128}
   rudder-load:

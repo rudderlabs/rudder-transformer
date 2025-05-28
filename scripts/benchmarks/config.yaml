@@ -29,8 +29,13 @@ tests:
     UT_IMAGE: fracasula/ut-custom-new:latest
   - name: test-new-share-isolate
     UT_NUM_PROCS: 5
-    UT_IVM_MEMORY: 1024
+    UT_IVM_MEMORY: 128
     UT_SHARE_ISOLATE: true
+    UT_IMAGE: fracasula/ut-custom-new:latest
+  - name: test-new-ivm-cache
+    UT_NUM_PROCS: 5
+    UT_IVM_MEMORY: 128
+    UT_IVM_CACHE: true
     UT_IMAGE: fracasula/ut-custom-new:latest
   - name: test-new-piscina
     UT_NUM_PROCS: 4
@@ -41,6 +46,15 @@ tests:
     UT_POOLING: true
     UT_IVM_MEMORY: 128
     UT_IMAGE: fracasula/ut-custom-new:latest
+  - name: test-new-piscina-more-max-threads
+    UT_NUM_PROCS: 4
+    UT_MIN_THREADS: 2
+    UT_MAX_THREADS: 5
+    UT_WORKER_IDLE_TIMEOUT: 1000
+    UT_CONCURRENT_TASKS_PER_WORKER: 100
+    UT_POOLING: true
+    UT_IVM_MEMORY: 128
+    UT_IMAGE: fracasula/ut-custom-new:latest
   - name: test-new-piscina-share-isolate
     UT_NUM_PROCS: 4
     UT_MIN_THREADS: 2
@@ -48,8 +62,18 @@ tests:
     UT_WORKER_IDLE_TIMEOUT: 1000
     UT_CONCURRENT_TASKS_PER_WORKER: 10
     UT_POOLING: true
-    UT_IVM_MEMORY: 1024
+    UT_IVM_MEMORY: 128
     UT_SHARE_ISOLATE: true
+    UT_IMAGE: fracasula/ut-custom-new:latest
+  - name: test-new-piscina-ivm-cache
+    UT_NUM_PROCS: 4
+    UT_MIN_THREADS: 2
+    UT_MAX_THREADS: 2
+    UT_WORKER_IDLE_TIMEOUT: 1000
+    UT_CONCURRENT_TASKS_PER_WORKER: 10
+    UT_POOLING: true
+    UT_IVM_MEMORY: 128
+    UT_IVM_CACHE: true
     UT_IMAGE: fracasula/ut-custom-new:latest
 ########################################################################################################################
 #  - name: test-classic-semi512

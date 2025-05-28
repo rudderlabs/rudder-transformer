@@ -156,5 +156,5 @@ for ((i=0; i<TEST_COUNT; i++)); do
         echo "V8 profiling files processed and combined into $PROFILE_DIR/combined-profile.txt"
     fi
 
-    docker-compose -f bench-compose.yml down
+    docker-compose -f bench-compose.yml down || true
 done

@@ -160,3 +160,5 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     docker-compose -f bench-compose.yml down || true
 done
+
+make report > ./test-results/${STATS_COLLECTION_INTERVAL}-report.txt

@@ -534,7 +534,7 @@ async function runUserTransform(
       const errorMessage = error.message;
       const stackTrace = error.stack || '';
       console.error(`Transformation failed with error: ${errorMessage}`);
-      console.log(`IVM Logs: ${logs}`);
+      console.log(`IVM Logs ${error}: ${logs}`);
       if (stackTrace) {
         console.error(`Stack trace: ${stackTrace}`);
       }
@@ -544,7 +544,7 @@ async function runUserTransform(
       throw enhancedError;
     } else {
       console.error(`Transformation failed with error: ${error}`);
-      console.log(`IVM Logs: ${logs}`);
+      console.log(`IVM Logs ${error}: ${logs}`);
       throw error;
     }
   } finally {

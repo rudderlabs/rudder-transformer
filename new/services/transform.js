@@ -1,10 +1,17 @@
-const { userTransformHandler } = require('../utils/customTransformer');
 const { initializePiscina, transformWithPiscina } = require('./piscina/wrapper');
 
 // Initialize Piscina if enabled
+/**
+ * @type {(events: any[], transformationVersionId: string, librariesVersionIDs: string[]) => Promise<any[]>}
+ */
+let userTransformHandler = null;
 const usePiscina = process.env.USE_PISCINA === 'true';
 if (usePiscina) {
   initializePiscina();
+} else {
+  // avoid importing customTransformer twice if piscina is enabled or more isolates will be created
+  const customTransformer = require('../utils/customTransformer');
+  userTransformHandler = customTransformer.userTransformHandler;
 }
 
 /**

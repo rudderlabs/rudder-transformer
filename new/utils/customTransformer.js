@@ -261,8 +261,11 @@ async function runUserTransform(
   if (!ivmInstance.customScriptModule) {
     // If not, compile and cache the module
     await compileAndCacheModule(transformationId, code, ivmInstance);
+  }
 
-    // Instantiate the module with a handler for imports
+  // Always instantiate and evaluate the module with the proper import handler
+  // This ensures that imports are properly resolved
+  if (!ivmInstance.moduleInstantiated) {
     await ivmInstance.customScriptModule.instantiate(context, async (spec) => {
       if (librariesMap[spec]) {
         return ivmInstance.compiledModules[spec].module;
@@ -272,6 +275,7 @@ async function runUserTransform(
       throw new Error(`Import from ${spec} failed. Module not found.`);
     });
     await ivmInstance.customScriptModule.evaluate();
+    ivmInstance.moduleInstantiated = true;
   }
 
   // Check if we already have the supported functions and transformWrapper reference

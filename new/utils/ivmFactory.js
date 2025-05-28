@@ -183,11 +183,12 @@ async function createIvm(transformationVersionId, code) {
       const cachedModule = moduleCache.get(transformationVersionId);
       if (cachedModule) {
         console.log(`Using cached module for transformationVersionId: ${transformationVersionId}`);
-        // Attach the cached module and references to the IVM instance
+        // Attach only the cached module and wrapper code to the IVM instance
+        // The supportedFuncs and fnRef will be set by customTransformer.js after instantiation
         cachedIvm.customScriptModule = cachedModule.customScriptModule;
         cachedIvm.codeWithWrapper = cachedModule.codeWithWrapper;
-        cachedIvm.supportedFuncs = cachedModule.supportedFuncs;
-        cachedIvm.fnRef = cachedModule.fnRef;
+        // Reset the moduleInstantiated flag to ensure proper instantiation
+        cachedIvm.moduleInstantiated = false;
       } else if (cachedIvm.isolate) {
         // If no cached module but we have code, compile it and cache it
         await compileAndCacheModule(transformationVersionId, code, cachedIvm);
@@ -472,52 +473,17 @@ async function compileAndCacheModule(transformationVersionId, code, ivmInstance)
 
     // Cache the module and wrapper code only if caching is enabled
     if (IVM_CACHE) {
-      // For cached modules, we can instantiate, evaluate, and access the namespace
-      // since these will be reused across requests
-      try {
-        // First instantiate and evaluate the module
-        await customScriptModule.instantiate(ivmInstance.context, (specifier) => {
-          // This is a simplified import handler since the actual imports are handled in customTransformer.js
-          console.log(`Module import requested for: ${specifier}`);
-          // Return null to indicate no module was found
-          return null;
-        });
-        await customScriptModule.evaluate();
+      // For cached modules, we don't instantiate or evaluate here
+      // We'll just cache the compiled module and let customTransformer.js handle the instantiation
+      // This avoids issues with import resolution during caching
 
-        // Now we can safely access the namespace
-        const supportedFuncs = {};
-        await Promise.all(
-          ['transformEvent', 'transformBatch'].map(async (sName) => {
-            const funcRef = await customScriptModule.namespace.get(sName, {
-              reference: true,
-            });
-            if (funcRef && funcRef.typeof === 'function') {
-              supportedFuncs[sName] = funcRef;
-            }
-          }),
-        );
+      // Cache the module and wrapper code
+      moduleCache.set(transformationVersionId, {
+        customScriptModule,
+        codeWithWrapper
+      });
 
-        const fnRef = await customScriptModule.namespace.get('transformWrapper', {
-          reference: true,
-        });
-
-        // Cache the module, wrapper code, and references
-        moduleCache.set(transformationVersionId, {
-          customScriptModule,
-          codeWithWrapper,
-          supportedFuncs,
-          fnRef
-        });
-
-        // Update the ivmInstance with the new references
-        ivmInstance.supportedFuncs = supportedFuncs;
-        ivmInstance.fnRef = fnRef;
-
-        console.log(`Compiled, instantiated, and cached module for transformationVersionId: ${transformationVersionId}`);
-      } catch (error) {
-        console.error(`Error preparing module for cache: ${error.message}`);
-        // Even if caching fails, we still want to store the compiled module in the instance
-      }
+      console.log(`Compiled and cached module for transformationVersionId: ${transformationVersionId}`);
     } else {
       console.log(`Compiled module for transformationVersionId: ${transformationVersionId} (caching disabled)`);
     }

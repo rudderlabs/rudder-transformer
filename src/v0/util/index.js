@@ -28,7 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
-const { DynamicConfigParser } = require('../../util/dynamicConfigParser');
+const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -2316,9 +2316,7 @@ const groupRouterTransformEvents = (events) =>
   Object.values(
     lodash.groupBy(events, (ev) => {
       // Use the function to determine if we should group by destination config
-      const shouldGroupByConfig = DynamicConfigParser.shouldGroupByDestinationConfig(
-        ev.destination,
-      );
+      const shouldGroupByConfig = shouldGroupByDestinationConfig(ev.destination);
 
       // If we should group by destination config, include it in the grouping key
       // Otherwise, use 'default' to group all events with the same destination ID together

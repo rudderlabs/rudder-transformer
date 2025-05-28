@@ -1,50 +1,51 @@
+/* eslint-disable unicorn/no-for-loop */
 import cloneDeep from 'lodash/cloneDeep';
-import { ProcessorTransformationRequest, RouterTransformationRequestData, FixMe } from '../types';
+import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
+import { shouldSkipDynamicConfigProcessing } from './utils';
 
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const unset = require('unset-value');
 
 export class DynamicConfigParser {
-  /**
-   * Gets the current value of the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable.
-   * This is a getter function to allow for easier testing by reading the env var each time.
-   *
-   * @returns true if the hasDynamicConfig flag should be used, false for legacy behavior
-   */
-  private static get useHasDynamicConfigFlag(): boolean {
-    return process.env.USE_HAS_DYNAMIC_CONFIG_FLAG !== 'false';
-  }
+  // Pre-compiled regex patterns for better performance
+  private static readonly QUOTE_REGEX = /"/g;
+
+  private static readonly PATH_VALIDATION_REGEX = /^[A-Z_a-z]\w*(\.[A-Z_a-z]\w*)*$/;
 
   /**
-   * Utility function to check if dynamic config processing should be skipped
-   * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
+   * Parses a dynamic config template string without regex to avoid backtracking issues
+   * Expected format: {{ path || defaultValue }}
    *
-   * @param destination - The destination object containing the hasDynamicConfig flag
-   * @returns true if processing should be skipped, false otherwise
+   * @param value The template string to parse
+   * @returns Parsed components or null if not a valid template
    */
-  public static shouldSkipDynamicConfigProcessing(destination: any): boolean {
-    // Only skip processing if we're using the hasDynamicConfig flag and it's explicitly false
-    return this.useHasDynamicConfigFlag && destination?.hasDynamicConfig === false;
-  }
+  private static parseDynamicTemplate(value: string): { path: string; defaultVal: string } | null {
+    const trimmed = value.trim();
 
-  /**
-   * Utility function to check if events should be grouped by destination config
-   * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
-   *
-   * @param destination - The destination object containing the hasDynamicConfig flag
-   * @returns true if events should be grouped by destination config, false otherwise
-   */
-  public static shouldGroupByDestinationConfig(destination: any): boolean {
-    if (!this.useHasDynamicConfigFlag) {
-      // If not using the flag, always group by config (legacy behavior)
-      return true;
+    // Quick checks for template format
+    if (!trimmed.startsWith('{{') || !trimmed.endsWith('}}')) {
+      return null;
     }
 
-    // If using the flag, check the hasDynamicConfig value
-    // If undefined (older server versions), process all events as if they might have dynamic config
-    // Only skip grouping by config if the flag is explicitly false
-    return destination?.hasDynamicConfig !== false;
+    // Extract content between {{ and }}
+    const content = trimmed.slice(2, -2).trim();
+
+    // Find the || separator
+    const separatorIndex = content.indexOf('||');
+    if (separatorIndex === -1) {
+      return null;
+    }
+
+    const path = content.slice(0, separatorIndex).trim();
+    const defaultVal = content.slice(separatorIndex + 2).trim();
+
+    // Validate path format (must start with letter/underscore, contain only word chars and dots)
+    if (!path || !DynamicConfigParser.PATH_VALIDATION_REGEX.test(path)) {
+      return null;
+    }
+
+    return { path, defaultVal };
   }
 
   /**
@@ -56,65 +57,90 @@ export class DynamicConfigParser {
    */
   private static getDynamicConfigValue(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
-    value: FixMe,
-  ) {
-    // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
-    //  " {{message.traits.key  ||   \"email\" }} "
-    //  " {{ message.traits.key || 1233 }} "
-    const defFormat =
-      /^\s*{{\s*(?<path>[A-Z_a-z](\w*\.[A-Z_a-z]\w*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
-    const matResult = value.match(defFormat);
-    if (matResult) {
-      // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
-      const fieldPath = matResult.groups.path.replace(/^event\.(.*)$/, 'message.$1');
-      const pathVal = get(event, fieldPath);
-      if (pathVal) {
-        value = pathVal;
-        unset(event, fieldPath);
-      } else {
-        value = matResult.groups.defaultVal.replace(/"/g, '').trim();
-      }
+    value: string,
+  ): any {
+    // Early exit: check if string contains template pattern
+    if (!value.includes('{{')) {
       return value;
     }
-    /** var format2 = /<some other regex>/;
-        matResult = value.match(format2);
-        if (matResult) {
-          <more logic here>
-          return value
-        } */
-    return value;
+
+    // Parse template using string operations instead of regex
+    const parsed = DynamicConfigParser.parseDynamicTemplate(value);
+    if (!parsed) {
+      return value;
+    }
+
+    const { path, defaultVal } = parsed;
+
+    // Optimized path replacement - avoid regex when not needed
+    let fieldPath: string;
+    if (path.startsWith('event.')) {
+      // Manual replacement is faster than regex for simple cases
+      fieldPath = `message.${path.slice(6)}`;
+    } else {
+      fieldPath = path;
+    }
+
+    const pathVal = get(event, fieldPath);
+    if (pathVal !== undefined && pathVal !== null) {
+      unset(event, fieldPath);
+      return pathVal;
+    }
+
+    // Optimized default value processing
+    return defaultVal.replace(DynamicConfigParser.QUOTE_REGEX, '').trim();
   }
 
   /**
    * Recursively processes dynamic configuration values in an object, array, or string
+   * Optimized for performance with early exits and efficient iteration
    *
    * @param value The value to process (object, array, or string)
    * @param event The event containing values to substitute in templates
    * @returns The processed value
    */
   private static configureVal(
-    value: FixMe,
+    value: Record<string, any> | any[] | string | number | boolean | null | undefined,
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
-  ) {
-    if (value) {
-      if (Array.isArray(value)) {
-        value.forEach((key, index) => {
-          value[index] = DynamicConfigParser.configureVal(key, event);
-        });
-      } else if (typeof value === 'object') {
-        Object.keys(value).forEach((obj) => {
-          value[obj] = DynamicConfigParser.configureVal(value[obj], event);
-        });
-      } else if (typeof value === 'string') {
-        value = DynamicConfigParser.getDynamicConfigValue(event, value);
-      }
+  ): any {
+    // Early exit for null/undefined values
+    if (value == null) {
+      return value;
     }
+
+    // Handle different value types with optimized approaches
+    if (typeof value === 'string') {
+      // Direct string processing - most common case
+      return DynamicConfigParser.getDynamicConfigValue(event, value);
+    }
+
+    if (Array.isArray(value)) {
+      // Optimized array processing using traditional for loop for maximum performance
+      const { length } = value;
+      for (let i = 0; i < length; i += 1) {
+        value[i] = DynamicConfigParser.configureVal(value[i], event);
+      }
+      return value;
+    }
+
+    if (typeof value === 'object') {
+      // Optimized object processing - using traditional for loop for maximum performance
+      const keys = Object.keys(value);
+      const { length } = keys;
+      for (let i = 0; i < length; i += 1) {
+        const key = keys[i];
+        value[key] = DynamicConfigParser.configureVal(value[key], event);
+      }
+      return value;
+    }
+
+    // For primitive types (number, boolean), return as-is
     return value;
   }
 
   /**
    * Processes dynamic configuration in the event
-   * Creates a deep copy of the event to avoid modifying the original when using unset operations
+   * Creates a shallow copy of the event and deep copy of destination config to avoid modifying the original
    *
    * @param event The event to process
    * @returns A new event object with processed dynamic configuration
@@ -122,9 +148,15 @@ export class DynamicConfigParser {
   private static getDynamicConfig(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
   ) {
-    // Create a deep copy of the event to avoid modifying the original
-    // This is necessary because the unset operation modifies the event object
-    const resultantEvent = cloneDeep(event);
+    // Create a shallow copy of the event and deep copy only the destination config
+    // This is more performant than cloning the entire event since only the config gets mutated
+    const resultantEvent = {
+      ...event,
+      destination: {
+        ...event.destination,
+        Config: cloneDeep(event.destination.Config),
+      },
+    };
 
     // Process the Config and set it on the copied destination
     resultantEvent.destination.Config = DynamicConfigParser.configureVal(
@@ -138,16 +170,21 @@ export class DynamicConfigParser {
   public static process(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ) {
-    const eventRespArr = events.map(
-      (e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
-        // Check if we should skip processing using the static method
-        if (DynamicConfigParser.shouldSkipDynamicConfigProcessing(e.destination)) {
-          return e;
-        }
+    // Optimized batch processing using traditional for loop for maximum performance
+    const { length } = events;
+    const eventRespArr = new Array(length);
+
+    for (let i = 0; i < length; i += 1) {
+      const event = events[i];
+      // Check if we should skip processing using the imported function
+      if (shouldSkipDynamicConfigProcessing(event.destination)) {
+        eventRespArr[i] = event;
+      } else {
         // Process the event
-        return DynamicConfigParser.getDynamicConfig(e);
-      },
-    );
+        eventRespArr[i] = DynamicConfigParser.getDynamicConfig(event);
+      }
+    }
+
     return eventRespArr;
   }
 }

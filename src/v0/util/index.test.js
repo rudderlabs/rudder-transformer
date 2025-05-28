@@ -915,7 +915,7 @@ describe('groupRouterTransformEvents', () => {
     afterEach(() => {
       // Restore original environment variable
       if (originalEnv === undefined) {
-        delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+        process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
       } else {
         process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = originalEnv;
       }
@@ -923,7 +923,7 @@ describe('groupRouterTransformEvents', () => {
 
     it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', () => {
       // Arrange
-      delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
 
       const events = [
         {

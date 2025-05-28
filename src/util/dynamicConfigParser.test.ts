@@ -162,12 +162,20 @@ describe('DynamicConfigParser', () => {
           expect(result[0]).toBe(event); // Should be the same object (not processed)
         } else {
           expect(result[0]).not.toBe(event); // Should be a new object (processed)
+          expect(result[0].destination).not.toBe(event.destination); // Destination should be cloned
+          expect(result[0].destination.Config).not.toBe(event.destination.Config); // Config should be cloned
+          expect(result[0].message).toBe(event.message); // Message should be the same reference (gets modified by unset)
         }
 
         expect(result[0].destination.Config).toEqual(expectedConfig);
 
-        // Original event should not be modified
-        expect(event).toEqual(originalEvent);
+        // For events that were processed, the destination config should remain unchanged
+        if (!expectedSameReference) {
+          // The destination config should remain unchanged in the original event (because we cloned it)
+          expect(event.destination.Config).toEqual(originalEvent.destination.Config);
+          // The message may or may not be modified depending on whether unset operations occurred
+          // We can't make a blanket assertion here since it depends on the specific test case
+        }
       },
     );
 
@@ -193,8 +201,13 @@ describe('DynamicConfigParser', () => {
       expect(result[0].destination.Config).toEqual({ apiKey: 'test-app-id-1' });
       expect(result[1].destination.Config).toEqual({ apiKey: 'test-app-id-2' });
 
-      // Original events should not be modified
-      expect(events).toEqual(originalEvents);
+      // Original events' destination configs should remain unchanged (because we cloned them)
+      // but messages will be modified by unset operations
+      events.forEach((event, index) => {
+        expect(event.destination.Config).toEqual(originalEvents[index].destination.Config);
+        // The messages should have fields removed by unset operations
+        expect(event.message).not.toEqual(originalEvents[index].message);
+      });
     });
 
     // Table-driven test for different message types
@@ -259,12 +272,20 @@ describe('DynamicConfigParser', () => {
           expect(result[0]).toBe(event); // Should be the same object (not processed)
         } else {
           expect(result[0]).not.toBe(event); // Should be a new object (processed)
+          expect(result[0].destination).not.toBe(event.destination); // Destination should be cloned
+          expect(result[0].destination.Config).not.toBe(event.destination.Config); // Config should be cloned
+          expect(result[0].message).toBe(event.message); // Message should be the same reference (gets modified by unset)
         }
 
         expect(result[0].destination.Config).toEqual(expectedConfig);
 
-        // Original event should not be modified
-        expect(event).toEqual(originalEvent);
+        // For events that were processed, the destination config should remain unchanged
+        if (!expectedSameReference) {
+          // The destination config should remain unchanged in the original event (because we cloned it)
+          expect(event.destination.Config).toEqual(originalEvent.destination.Config);
+          // The message may or may not be modified depending on whether unset operations occurred
+          // We can't make a blanket assertion here since it depends on the specific test case
+        }
       },
     );
 
@@ -415,12 +436,26 @@ describe('DynamicConfigParser', () => {
           expect(result[index]).toBe(events[index]); // Should be the same object (not processed)
         } else {
           expect(result[index]).not.toBe(events[index]); // Should be a new object (processed)
+          expect(result[index].destination).not.toBe(events[index].destination); // Destination should be cloned
+          expect(result[index].destination.Config).not.toBe(events[index].destination.Config); // Config should be cloned
         }
         expect(result[index].destination.Config).toEqual(eventConfig.expectedConfig);
       });
 
-      // Original events should not be modified
-      expect(events).toEqual(originalEvents);
+      // Original events' destination configs should remain unchanged (because we cloned them)
+      // but messages will be modified by unset operations for processed events
+      events.forEach((event, index) => {
+        const eventConfig = eventConfigs[index];
+        expect(event.destination.Config).toEqual(originalEvents[index].destination.Config);
+
+        // Only processed events should have their messages modified by unset operations
+        if (!eventConfig.expectedSameReference) {
+          expect(event.message).not.toEqual(originalEvents[index].message);
+        } else {
+          // Events that were not processed should have unchanged messages
+          expect(event.message).toEqual(originalEvents[index].message);
+        }
+      });
     });
 
     it('should unset fields from the processed event after extracting values', () => {
@@ -441,8 +476,10 @@ describe('DynamicConfigParser', () => {
       expect(result[0].message.traits).toEqual({ email: 'test@example.com' });
       expect((result[0].message.traits as any).appId).toBeUndefined();
 
-      // Original event should still have the appId field
-      expect((event.message.traits as any).appId).toBe('test-app-id');
+      // Since we only clone destination config (not message), the original event's message
+      // will also be modified by unset operations - this is the performance optimization
+      expect((event.message.traits as any).appId).toBeUndefined();
+      expect(event.message.traits).toEqual({ email: 'test@example.com' });
     });
   });
 
@@ -452,7 +489,7 @@ describe('DynamicConfigParser', () => {
     afterEach(() => {
       // Restore original environment variable
       if (originalEnv === undefined) {
-        delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+        process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
       } else {
         process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = originalEnv;
       }
@@ -460,7 +497,7 @@ describe('DynamicConfigParser', () => {
 
     it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', () => {
       // Arrange
-      delete process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
 
       const events = [
         createTestEvent(
@@ -487,6 +524,8 @@ describe('DynamicConfigParser', () => {
       );
 
       expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination).not.toBe(events[1].destination); // Destination should be cloned
+      expect(result[1].destination.Config).not.toBe(events[1].destination.Config); // Config should be cloned
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
@@ -519,6 +558,8 @@ describe('DynamicConfigParser', () => {
       );
 
       expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination).not.toBe(events[1].destination); // Destination should be cloned
+      expect(result[1].destination.Config).not.toBe(events[1].destination.Config); // Config should be cloned
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
@@ -547,9 +588,13 @@ describe('DynamicConfigParser', () => {
       // Assert
       // Both events should be processed regardless of hasDynamicConfig flag
       expect(result[0]).not.toBe(events[0]); // Should be new reference (processed)
+      expect(result[0].destination).not.toBe(events[0].destination); // Destination should be cloned
+      expect(result[0].destination.Config).not.toBe(events[0].destination.Config); // Config should be cloned
       expect(result[0].destination.Config.apiKey).toBe('test-app-id');
 
       expect(result[1]).not.toBe(events[1]); // Should be new reference (processed)
+      expect(result[1].destination).not.toBe(events[1].destination); // Destination should be cloned
+      expect(result[1].destination.Config).not.toBe(events[1].destination.Config); // Config should be cloned
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
@@ -575,6 +620,143 @@ describe('DynamicConfigParser', () => {
       expect(result[0].destination.Config.apiKey).toBe(
         '{{ message.traits.appId || "default-api-key" }}',
       );
+    });
+  });
+
+  describe('Edge cases and error handling', () => {
+    // Test cases for uncovered lines to improve coverage
+    const edgeCaseTestCases = [
+      {
+        name: 'should handle malformed templates without {{ or }}',
+        config: { apiKey: 'not a template' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: 'not a template' },
+      },
+      {
+        name: 'should handle templates that start with {{ but do not end with }}',
+        config: { apiKey: '{{ message.traits.appId || "default"' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{ message.traits.appId || "default"' },
+      },
+      {
+        name: 'should handle templates without || separator',
+        config: { apiKey: '{{ message.traits.appId }}' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{ message.traits.appId }}' },
+      },
+      {
+        name: 'should handle templates with invalid path format',
+        config: { apiKey: '{{ 123invalid.path || "default" }}' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{ 123invalid.path || "default" }}' },
+      },
+      {
+        name: 'should handle templates with empty path',
+        config: { apiKey: '{{  || "default" }}' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{  || "default" }}' },
+      },
+      {
+        name: 'should handle templates with path containing invalid characters',
+        config: { apiKey: '{{ path.with-dash || "default" }}' },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: { apiKey: '{{ path.with-dash || "default" }}' },
+      },
+      {
+        name: 'should handle null and undefined values in config',
+        config: {
+          nullValue: null,
+          undefinedValue: undefined,
+          numberValue: 42,
+          booleanValue: true,
+          template: '{{ message.traits.appId || "default" }}',
+        },
+        traits: { appId: 'test-app-id' },
+        expectedConfig: {
+          nullValue: null,
+          undefinedValue: undefined,
+          numberValue: 42,
+          booleanValue: true,
+          template: 'test-app-id',
+        },
+      },
+    ];
+
+    // Run the edge case tests
+    test.each(edgeCaseTestCases)('$name', ({ config, traits, expectedConfig }) => {
+      // Arrange
+      const event = createTestEvent(config, traits);
+
+      // Act
+      const result = DynamicConfigParser.process([event]);
+
+      // Assert
+      expect(result).toHaveLength(1);
+      expect(result[0].destination.Config).toEqual(expectedConfig);
+    });
+
+    it('should handle arrays with mixed value types', () => {
+      // Arrange
+      const event = createTestEvent(
+        {
+          mixedArray: [
+            '{{ message.traits.appId || "default1" }}',
+            42,
+            true,
+            null,
+            undefined,
+            { nested: '{{ message.traits.email || "default2" }}' },
+          ],
+        },
+        { appId: 'test-app-id', email: 'test@example.com' },
+      );
+
+      // Act
+      const result = DynamicConfigParser.process([event]);
+
+      // Assert
+      expect(result[0].destination.Config.mixedArray).toEqual([
+        'test-app-id',
+        42,
+        true,
+        null,
+        undefined,
+        { nested: 'test@example.com' },
+      ]);
+    });
+
+    it('should handle deeply nested objects with various value types', () => {
+      // Arrange
+      const event = createTestEvent(
+        {
+          level1: {
+            level2: {
+              template: '{{ message.traits.appId || "default" }}',
+              number: 123,
+              boolean: false,
+              nullValue: null,
+              array: ['{{ message.traits.email || "default-email" }}', 456],
+            },
+          },
+        },
+        { appId: 'test-app-id', email: 'test@example.com' },
+      );
+
+      // Act
+      const result = DynamicConfigParser.process([event]);
+
+      // Assert
+      expect(result[0].destination.Config).toEqual({
+        level1: {
+          level2: {
+            template: 'test-app-id',
+            number: 123,
+            boolean: false,
+            nullValue: null,
+            array: ['test@example.com', 456],
+          },
+        },
+      });
     });
   });
 });

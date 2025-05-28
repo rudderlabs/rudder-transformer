@@ -142,6 +142,7 @@ async function runUserTransform(
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       compiledModules[moduleName] = {
+        // TODO module should be released
         module: await loadModule(localIsolate, context, moduleName, moduleCode),
       };
     }),
@@ -457,14 +458,13 @@ async function runUserTransform(
       return compiledModules[spec].module;
     }
     // Release the isolate context before throwing an error
-    await context.release();
+    await context.release(); // TODO should only the context be released here? double check
     console.log(`Import from ${spec} failed. Module not found.`);
     throw new Error(`Import from ${spec} failed. Module not found.`);
   });
   await customScriptModule.evaluate();
 
   const supportedFuncs = {};
-
   await Promise.all(
     SUPPORTED_FUNC_NAMES.map(async (sName) => {
       const funcRef = await customScriptModule.namespace.get(sName, {
@@ -551,10 +551,14 @@ async function runUserTransform(
     // Release resources
     clearTimeout(setTimeoutHandle);
     fnRef.release();
-    bootstrap.release();
+    for (const funcName of availableFuncNames) {
+      supportedFuncs[funcName].release();
+    }
     customScriptModule.release();
-    context.release();
+    bootstrap.release();
+    jail.release();
     bootstrapScriptResult.release();
+    // context.release(); // releasing the jail should be sufficient, we'd get an error if we tried to release the context too
     if (!SHARE_ISOLATE) {
       await localIsolate.dispose();
     }

@@ -114,7 +114,7 @@ for ((i=0; i<TEST_COUNT; i++)); do
 
     echo "Test $NAME completed. Stopping containers..."
     mkdir -p ./test-results/logs
-    docker logs user-transformer > ./test-results/logs/${NAME}.log
+    docker logs user-transformer &> ./test-results/logs/${NAME}.log
     # Kill the node process in user-transformer container
     docker exec user-transformer kill $(docker exec user-transformer ps aux | grep "node.*index\.js" | head -n 1 | awk '{print $1}') || true
     docker stop rudder-load || true

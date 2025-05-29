@@ -1,4 +1,5 @@
 const NodeCache = require('node-cache');
+const AsyncLock = require('async-lock');
 const { TransformationIsolate } = require('./transformationIsolate');
 
 // Environment variables for IVM cache configuration
@@ -16,6 +17,10 @@ const ivmCache = new NodeCache({
   useClones: false, // Don't clone objects when getting from cache
   deleteOnExpire: true, // Automatically delete expired items
 });
+
+// Create an instance of AsyncLock to prevent race conditions when accessing the cache
+console.log("Creating AsyncLock");
+const lock = new AsyncLock();
 
 // Setup cache event listeners for resource cleanup
 ivmCache.on('expired', async (key, value) => {
@@ -117,22 +122,36 @@ async function createIvm(
     );
   }
 
-  // Check if we already have a cached TransformationIsolate for this transformation version
-  const cachedIvm = ivmCache.get(transformationVersionId);
-  if (cachedIvm) {
-    // console.log(
-    //   `Using cached TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
-    // );
-    return cachedIvm;
-  }
+  // Use async-lock to prevent race conditions when accessing the cache
+  return lock.acquire(transformationVersionId, async () => {
+    // Check if we already have a cached TransformationIsolate for this transformation version
+    const cachedIvm = ivmCache.get(transformationVersionId);
+    if (cachedIvm) {
+      // console.log(
+      //   `Using cached TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
+      // );
+      return cachedIvm;
+    }
 
-  // Check if we've reached the maximum cache size
-  const currentCacheSize = ivmCache.keys().length;
-  if (currentCacheSize >= IVM_CACHE_MAX) {
-    console.warn(
-      `IVM cache limit (${IVM_CACHE_MAX}) reached. Creating new TransformationIsolate without caching.`,
-    );
-    return createNewIvm(
+    // Check if we've reached the maximum cache size
+    const currentCacheSize = ivmCache.keys().length;
+    if (currentCacheSize >= IVM_CACHE_MAX) {
+      console.warn(
+        `IVM cache limit (${IVM_CACHE_MAX}) reached. Creating new TransformationIsolate without caching.`,
+      );
+      return createNewIvm(
+        code,
+        secrets,
+        eventsMetadata,
+        transformationVersionId,
+        workspaceId,
+        libraryVersionIDs,
+        credentials,
+      );
+    }
+
+    // Create a new TransformationIsolate and cache it
+    const newIvm = await createNewIvm(
       code,
       secrets,
       eventsMetadata,
@@ -141,24 +160,13 @@ async function createIvm(
       libraryVersionIDs,
       credentials,
     );
-  }
+    ivmCache.set(transformationVersionId, newIvm);
+    console.log(
+      `Created and cached new TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
+    );
 
-  // Create a new TransformationIsolate and cache it
-  const newIvm = await createNewIvm(
-    code,
-    secrets,
-    eventsMetadata,
-    transformationVersionId,
-    workspaceId,
-    libraryVersionIDs,
-    credentials,
-  );
-  ivmCache.set(transformationVersionId, newIvm);
-  console.log(
-    `Created and cached new TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
-  );
-
-  return newIvm;
+    return newIvm;
+  });
 }
 
 /**
@@ -215,13 +223,16 @@ function getCacheStats() {
  * Clear the IVM cache
  */
 async function clearCache() {
-  const keys = ivmCache.keys();
-  for (const key of keys) {
-    const isolateInstance = ivmCache.get(key);
-    await releaseIvmResources(isolateInstance);
-  }
-  ivmCache.flushAll();
-  console.log('IVM cache cleared');
+  // Use a special lock key for clearing the entire cache
+  return lock.acquire('__clear_cache__', async () => {
+    const keys = ivmCache.keys();
+    for (const key of keys) {
+      const isolateInstance = ivmCache.get(key);
+      await releaseIvmResources(isolateInstance);
+    }
+    ivmCache.flushAll();
+    console.log('IVM cache cleared');
+  });
 }
 
 module.exports = {

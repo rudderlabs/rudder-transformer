@@ -16,4 +16,5 @@ export const destinationConfig: Destination = {
   IsProcessorEnabled: true,
   IsConnectionEnabled: true,
   Config: {},
+  hasDynamicConfig: false,
 };

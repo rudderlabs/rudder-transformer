@@ -29,4 +29,14 @@ router.post(
   transformRaw
 );
 
+router.post( // TODO hack to get past processor error
+  '/v0/destinations/webhook',
+  authenticate, // Authentication middleware
+  rateLimitMiddleware, // Rate limiting middleware
+  isUserTransformRouteActive,
+  handleFeatureFlags,
+  executionStats,
+  transformRaw
+);
+
 module.exports = router.routes();

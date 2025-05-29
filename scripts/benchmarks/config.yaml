@@ -17,7 +17,7 @@
 # * UT_TRACE_SYNC_IO - Enabled Node.js built-in detector for synchronous code, value is used for creating the profiles folder
 rl_image: fracasula/rudder-load:latest
 stats_collection_interval: 10
-duration_seconds: 120
+duration_seconds: 180
 tests:
   - name: test-classic
     UT_NUM_PROCS: 5
@@ -27,11 +27,11 @@ tests:
     UT_NUM_PROCS: 5
     UT_IVM_MEMORY: 128
     UT_IMAGE: fracasula/ut-custom-new:latest
-  - name: test-new-share-isolate
-    UT_NUM_PROCS: 5
-    UT_IVM_MEMORY: 128
-    UT_SHARE_ISOLATE: true
-    UT_IMAGE: fracasula/ut-custom-new:latest
+#  - name: test-new-share-isolate
+#    UT_NUM_PROCS: 5
+#    UT_IVM_MEMORY: 128
+#    UT_SHARE_ISOLATE: true
+#    UT_IMAGE: fracasula/ut-custom-new:latest
   - name: test-new-ivm-cache
     UT_NUM_PROCS: 5
     UT_IVM_MEMORY: 128
@@ -46,25 +46,25 @@ tests:
     UT_POOLING: true
     UT_IVM_MEMORY: 128
     UT_IMAGE: fracasula/ut-custom-new:latest
-  - name: test-new-piscina-more-max-threads
-    UT_NUM_PROCS: 4
-    UT_MIN_THREADS: 2
-    UT_MAX_THREADS: 5
-    UT_WORKER_IDLE_TIMEOUT: 1000
-    UT_CONCURRENT_TASKS_PER_WORKER: 100
-    UT_POOLING: true
-    UT_IVM_MEMORY: 128
-    UT_IMAGE: fracasula/ut-custom-new:latest
-  - name: test-new-piscina-share-isolate
-    UT_NUM_PROCS: 4
-    UT_MIN_THREADS: 2
-    UT_MAX_THREADS: 2
-    UT_WORKER_IDLE_TIMEOUT: 1000
-    UT_CONCURRENT_TASKS_PER_WORKER: 10
-    UT_POOLING: true
-    UT_IVM_MEMORY: 128
-    UT_SHARE_ISOLATE: true
-    UT_IMAGE: fracasula/ut-custom-new:latest
+#  - name: test-new-piscina-more-max-threads
+#    UT_NUM_PROCS: 4
+#    UT_MIN_THREADS: 2
+#    UT_MAX_THREADS: 5
+#    UT_WORKER_IDLE_TIMEOUT: 1000
+#    UT_CONCURRENT_TASKS_PER_WORKER: 100
+#    UT_POOLING: true
+#    UT_IVM_MEMORY: 128
+#    UT_IMAGE: fracasula/ut-custom-new:latest
+#  - name: test-new-piscina-share-isolate
+#    UT_NUM_PROCS: 4
+#    UT_MIN_THREADS: 2
+#    UT_MAX_THREADS: 2
+#    UT_WORKER_IDLE_TIMEOUT: 1000
+#    UT_CONCURRENT_TASKS_PER_WORKER: 10
+#    UT_POOLING: true
+#    UT_IVM_MEMORY: 128
+#    UT_SHARE_ISOLATE: true
+#    UT_IMAGE: fracasula/ut-custom-new:latest
   - name: test-new-piscina-ivm-cache
     UT_NUM_PROCS: 4
     UT_MIN_THREADS: 2

@@ -18,7 +18,11 @@ const app = new Koa();
 
 // Create a conditional bodyParser middleware that skips parsing for the /customTransform route
 app.use(async (ctx, next) => {
-  if (ctx.path === '/customTransform') {
+  if (
+    ctx.path === '/customTransform' ||
+    ctx.path === '/v0/destinations/webhook' ||
+    ctx.path === '/health'
+  ) {
     // Skip bodyParser for this route
     await next();
   } else {

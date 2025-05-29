@@ -1041,6 +1041,13 @@ class Prometheus {
         type: 'counter',
         labelNames: ['transformationId', 'workspaceId'],
       },
+      // Piscina metrics
+      {
+        name: 'piscina_queue_size',
+        help: 'Current size of the Piscina worker queue',
+        type: 'gauge',
+        labelNames: [],
+      },
     ];
 
     metrics.forEach((metric) => {

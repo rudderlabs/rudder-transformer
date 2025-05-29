@@ -3,6 +3,7 @@ const lodash = require('lodash');
 const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
+const stats = require('../../../util/stats');
 const {
   constructPayload,
   getFieldValueFromMessage,
@@ -29,6 +30,7 @@ const {
   MAX_BATCH_SIZE,
   WhiteListedTraitsV2,
   revision,
+  revisionOct2024,
 } = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
@@ -334,17 +336,26 @@ const batchSubscribeEvents = (subscribeRespList) => {
   return batchedResponseList;
 };
 const buildRequest = (payload, destination, category) => {
-  const { privateApiKey } = destination.Config;
+  const { privateApiKey, useNewKlaviyoRevisionVersion } = destination.Config;
   const response = defaultRequestConfig();
+
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: useNewKlaviyoRevisionVersion ? revisionOct2024 : revision,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
+
+  // temporary stats for oct 2024 revision
+  if (useNewKlaviyoRevisionVersion) {
+    stats.increment('klaviyo_revision_oct2024_requests_total', {
+      requestType: category.name,
+      destination_id: destination.ID,
+    });
+  }
   return response;
 };
 
@@ -579,19 +590,28 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
  */
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
+  const { privateApiKey, useNewKlaviyoRevisionVersion } = destination.Config;
   response.endpoint = `${BASE_ENDPOINT}${CONFIG_CATEGORIES[subscription.operation.toUpperCase()].apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
-    revision,
+    revision: useNewKlaviyoRevisionVersion ? revisionOct2024 : revision,
   };
   response.body.JSON = getSubscriptionPayload(
     subscription.listId,
     subscription.profile,
     subscription.operation,
   );
+
+  // temporary stats for oct 2024 revision
+  if (useNewKlaviyoRevisionVersion) {
+    stats.increment('klaviyo_revision_oct2024_requests_total', {
+      requestType: subscription.operation,
+      destination_id: destination.ID,
+    });
+  }
   return response;
 };
 

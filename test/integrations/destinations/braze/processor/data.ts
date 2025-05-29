@@ -11,6 +11,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -135,6 +136,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -224,6 +226,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -342,6 +345,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -471,6 +475,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -599,6 +604,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -719,6 +725,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -864,6 +871,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1136,6 +1144,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1236,6 +1245,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1306,6 +1316,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1427,6 +1438,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1608,6 +1620,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1789,6 +1802,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2021,6 +2035,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2239,6 +2254,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2370,6 +2386,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2501,6 +2518,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2607,6 +2625,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2690,6 +2709,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2773,6 +2793,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2908,6 +2929,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3129,6 +3151,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3251,6 +3274,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3323,6 +3347,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3455,6 +3480,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3647,6 +3673,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3725,6 +3752,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3898,6 +3926,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4045,6 +4074,7 @@ export const data = [
         body: [
           {
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4212,6 +4242,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4312,6 +4343,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
+                hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,

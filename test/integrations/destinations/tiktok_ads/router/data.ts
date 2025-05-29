@@ -78,6 +78,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: false,
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -146,6 +147,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: false,
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -217,6 +219,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: false,
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -288,6 +291,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: false,
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -496,6 +500,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: false,
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -574,6 +579,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: true,
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -646,6 +652,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   hashUserProperties: true,
                 },
+                hasDynamicConfig: false,
               },
               metadata: [
                 {
@@ -724,6 +731,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -776,6 +784,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -824,6 +833,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -872,6 +882,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -1022,6 +1033,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1130,6 +1142,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -1198,6 +1211,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1246,6 +1260,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1294,6 +1309,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1342,6 +1358,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -1493,6 +1510,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1564,6 +1582,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -1635,6 +1654,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1687,6 +1707,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1735,6 +1756,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1783,6 +1805,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -1938,6 +1961,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -1953,6 +1977,7 @@ export const data = [
                   pixelCode: 'dummyPixelCode',
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
               error: 'Event name (abc) is not valid, must be mapped to one of standard events',
               metadata: [
@@ -2040,6 +2065,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -2092,6 +2118,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -2141,6 +2168,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -2189,6 +2217,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -2339,6 +2368,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -2414,6 +2444,7 @@ export const data = [
                     { from: 'addToCart', to: 'download' },
                   ],
                 },
+                hasDynamicConfig: false,
               },
             },
             {
@@ -2495,6 +2526,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -2613,6 +2645,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],
@@ -2790,6 +2823,7 @@ export const data = [
                   hashUserProperties: false,
                   version: 'v2',
                 },
+                hasDynamicConfig: false,
               },
             },
           ],

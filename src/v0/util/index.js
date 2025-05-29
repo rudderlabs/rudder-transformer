@@ -17,6 +17,7 @@ const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
 const { v5 } = require('uuid');
+const stableStringify = require('fast-json-stable-stringify');
 const {
   InstrumentationError,
   BaseError,
@@ -27,6 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
+const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -2296,14 +2298,42 @@ const applyJSONStringTemplate = (message, template) =>
   }).evaluate(message);
 
 /**
- * This groups the events by destination ID and source ID.
+ * This groups the events by destination ID, source ID, and optionally by destination config.
  * Note: sourceID is only used for rETL events.
+ *
+ * The function checks the hasDynamicConfig flag on the destination to determine if events
+ * should be grouped by destination config as well. This is important for destinations that
+ * use dynamic configuration where different events might need different config values.
+ *
+ * For backward compatibility with older server versions where the hasDynamicConfig flag
+ * might not be available, the function treats undefined flags as if dynamic config might
+ * be present (only skips grouping by config when the flag is explicitly false).
+ *
  * @param {*} events The events to be grouped.
  * @returns {array} The array of grouped events.
  */
 const groupRouterTransformEvents = (events) =>
   Object.values(
-    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+    lodash.groupBy(events, (ev) => {
+      // Use the function to determine if we should group by destination config
+      const shouldGroupByConfig = shouldGroupByDestinationConfig(ev.destination);
+
+      // If we should group by destination config, include it in the grouping key
+      // Otherwise, use 'default' to group all events with the same destination ID together
+      let destConfigGroupKey = 'default';
+
+      if (shouldGroupByConfig && ev.destination?.Config) {
+        // Use fast-json-stable-stringify to ensure consistent ordering of keys
+        // This ensures that { a: 1, b: 2 } and { b: 2, a: 1 } are treated as the same config
+        destConfigGroupKey = stableStringify(ev.destination.Config);
+      }
+
+      return [
+        ev.destination?.ID || 'default',
+        ev.context?.sources?.job_id || 'default',
+        destConfigGroupKey,
+      ];
+    }),
   );
 
 /*

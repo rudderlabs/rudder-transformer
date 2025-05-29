@@ -19,6 +19,7 @@ export type Destination<DestinationConfig = Record<string, unknown>> = {
   RevisionID?: string;
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
+  hasDynamicConfig?: boolean; // Flag indicating whether the destination config contains dynamic config patterns
 };
 
 export type DestinationConnectionConfig<T> = {

@@ -1,5 +1,5 @@
 import { Context, Next } from 'koa';
-import { PlatformError } from '@rudderstack/integrations-lib';
+import { deepFreeze, PlatformError } from '@rudderstack/integrations-lib';
 import { ProcessorCompactedTransformationRequest, ProcessorTransformationRequest } from '../types';
 
 /**
@@ -20,6 +20,7 @@ export async function DestTransformCompactedPayloadV1Middleware(
       if (!destination && input.metadata.destinationId) {
         throw new PlatformError(`no destination found for id ${input.metadata.destinationId}`, 500);
       }
+      destination.Config = deepFreeze(destination.Config);
       const connectionKey = `${input.metadata.sourceId}:${input.metadata.destinationId}`;
       const connection = body.connections[connectionKey];
       if (!connection) {

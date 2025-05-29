@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/no-for-loop */
-import cloneDeep from 'lodash/cloneDeep';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
 import { shouldSkipDynamicConfigProcessing } from './utils';
 
@@ -11,6 +10,8 @@ export class DynamicConfigParser {
   // Pre-compiled regex patterns for better performance
   private static readonly QUOTE_REGEX = /"/g;
 
+  // Validates dot-notation paths like 'event.context.traits.email' or 'userId'
+  // Must start with letter/underscore, followed by word chars, with optional dot-separated segments
   private static readonly PATH_VALIDATION_REGEX = /^[A-Z_a-z]\w*(\.[A-Z_a-z]\w*)*$/;
 
   /**
@@ -154,7 +155,7 @@ export class DynamicConfigParser {
       ...event,
       destination: {
         ...event.destination,
-        Config: cloneDeep(event.destination.Config),
+        Config: structuredClone(event.destination.Config),
       },
     };
 

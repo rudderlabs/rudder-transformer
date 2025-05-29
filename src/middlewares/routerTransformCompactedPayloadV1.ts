@@ -1,5 +1,5 @@
 import { Context, Next } from 'koa';
-import { PlatformError } from '@rudderstack/integrations-lib';
+import { deepFreeze, PlatformError } from '@rudderstack/integrations-lib';
 import { RouterTransformationRequest, RouterCompactedTransformationRequest } from '../types';
 
 /**
@@ -24,6 +24,7 @@ export async function RouterTransformCompactedPayloadV1Middleware(
             500,
           );
         }
+        destination.Config = deepFreeze(destination.Config);
         const connectionKey = `${input.metadata.sourceId}:${input.metadata.destinationId}`;
         const connection = body.connections[connectionKey];
         if (!connection) {

@@ -4,10 +4,6 @@
 
 RETL (Real-time Extract, Transform, Load) functionality allows you to sync data from your data warehouse to Salesforce Marketing Cloud. This document outlines how RETL works with the SFMC destination.
 
-## VDM-v2 Support
-
-The SFMC destination supports VDM-v2 for RETL functionality. This is indicated by the presence of the "record" event type in the supported message types configuration.
-
 ## Connection Configuration
 
 To use RETL with SFMC, you need to configure the following:
@@ -127,31 +123,3 @@ Where:
 1. **Identifier Selection**: Choose an appropriate identifier type and value that uniquely identifies the row in the data extension
 2. **Data Structure**: Ensure that the traits in your RETL messages match the structure of your data extension
 3. **Rate Limit Management**: Be mindful of API rate limits when syncing large volumes of data
-
-## Example RETL Message
-
-```json
-{
-  "type": "record",
-  "destination_props": {
-    "external_id": "12345",
-    "object_type": "data extension",
-    "identifier_type": "Contact Key"
-  },
-  "traits": {
-    "email": "john.doe@example.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "phone": "123-456-7890",
-    "address": {
-      "street": "123 Main St",
-      "city": "San Francisco",
-      "state": "CA",
-      "postalCode": "94105"
-    }
-  },
-  "mappedToDestination": true
-}
-```
-
-This message would update the row with Contact Key "12345" in the specified data extension with the provided traits.

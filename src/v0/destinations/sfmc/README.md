@@ -51,88 +51,6 @@ Implementation in **Javascript**
 - **Supported**: No
 - **Message Types**: N/A
 
-### Intermediate Calls
-
-#### Identify Flow (with Create or Update Contacts enabled)
-- **Supported**: Yes
-- **Use Case**: Creating or updating contacts in Salesforce Marketing Cloud
-- **Endpoint**: `/contacts/v1/contacts`
-- This functionality creates or updates a contact before updating the data extension
-
-```javascript
-// The condition that leads to intermediate identify call:
-if (category.type === 'identify' && !createOrUpdateContacts) {
-  // first call to identify the contact
-  const identifyContactsPayload = responseBuilderForIdentifyContacts(
-    message,
-    subDomain,
-    authToken,
-  );
-  await handleHttpRequest(identifyContactsPayload, metadata);
-  // second call to update data extension
-  return responseBuilderForInsertData(
-    message,
-    externalKey,
-    subDomain,
-    category,
-    authToken,
-    'identify',
-  );
-}
-```
-
-### [Transformer Logic](docs/transformerlogic.md)
-
-### Proxy Delivery
-
-- **Supported**: No
-
-### User Deletion
-
-- **Supported**: No
-
-### Additional Functionalities
-
-#### Data Extension Updates
-
-- **Supported**: Yes
-- **How It Works**:
-  - For Identify events, user profile data is stored in a data extension specified by the External Key configuration
-  - For Track events, event data is stored in data extensions specified by the Event to External Key mapping
-  - Primary keys can be configured for each event type to determine how data is updated in the data extension
-
-#### Event Definition Triggers
-
-- **Supported**: Yes
-- **How It Works**:
-  - Track events can be mapped to event definition keys using the Event to Definition Mapping configuration
-  - When a track event is received with a matching event name, the corresponding event definition is triggered
-  - This can be used to trigger journeys in Salesforce Marketing Cloud
-
-## General Queries
-
-### Event Ordering
-
-#### Identify
-Identify events require strict event ordering as they update user profiles in data extensions. Processing events out of order could result in older data overwriting newer data.
-
-#### Track
-Track events that update data extensions also require strict event ordering to ensure data integrity. However, track events that trigger event definitions (journeys) are less sensitive to ordering as they typically represent discrete events.
-
-### Data Replay Feasibility
-
-#### Missing Data Replay
-
-- **Identify Events**: Not recommended. Replaying missing identify events could overwrite newer data with older data.
-- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
-- **Track Events (Event Definition Triggers)**: Feasible, as these typically represent discrete events that trigger journeys.
-
-#### Already Delivered Data Replay
-
-- **Identify Events**: Not recommended. Replaying already delivered identify events would update the same records again, potentially overwriting changes made after the original event.
-- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
-- **Track Events (Event Definition Triggers)**: Not recommended, as this would trigger the same journey multiple times.
-
 ### API Endpoints and Rate Limits
 
 The SFMC destination uses several REST API endpoints to handle different types of events and operations. Below is a detailed breakdown of each endpoint, its purpose, and associated limitations.
@@ -221,7 +139,7 @@ The SFMC destination uses several REST API endpoints to handle different types o
   - Contact must exist in Contact Builder
   - `contactId` must be provided in the event properties
 
-### Rate Limits and Batch Sizes
+#### Rate Limits and Batch Sizes
 
 Salesforce Marketing Cloud enforces API rate limits based on your subscription level:
 
@@ -233,7 +151,7 @@ Salesforce Marketing Cloud enforces API rate limits based on your subscription l
 
 There are no specific hourly or daily limits, but it's recommended to not exceed 2,000 SOAP API calls per minute.
 
-#### Endpoint-Specific Considerations
+##### Endpoint-Specific Considerations
 
 - **Authentication**: Token requests should be minimized through caching
 - **Contact Creation/Update**: High-volume operations should be batched through data extensions instead
@@ -243,6 +161,88 @@ There are no specific hourly or daily limits, but it's recommended to not exceed
 - **Event Definition Triggers**:
   - Each trigger potentially starts a journey
   - High volumes of triggers may impact journey performance
+
+### Intermediate Calls
+
+#### Identify Flow (with Create or Update Contacts enabled)
+- **Supported**: Yes
+- **Use Case**: Creating or updating contacts in Salesforce Marketing Cloud
+- **Endpoint**: `/contacts/v1/contacts`
+- This functionality creates or updates a contact before updating the data extension
+
+```javascript
+// The condition that leads to intermediate identify call:
+if (category.type === 'identify' && !createOrUpdateContacts) {
+  // first call to identify the contact
+  const identifyContactsPayload = responseBuilderForIdentifyContacts(
+    message,
+    subDomain,
+    authToken,
+  );
+  await handleHttpRequest(identifyContactsPayload, metadata);
+  // second call to update data extension
+  return responseBuilderForInsertData(
+    message,
+    externalKey,
+    subDomain,
+    category,
+    authToken,
+    'identify',
+  );
+}
+```
+
+### [Transformer Logic](docs/transformerlogic.md)
+
+### Proxy Delivery
+
+- **Supported**: No
+
+### User Deletion
+
+- **Supported**: No
+
+### Additional Functionalities
+
+#### Data Extension Updates
+
+- **Supported**: Yes
+- **How It Works**:
+  - For Identify events, user profile data is stored in a data extension specified by the External Key configuration
+  - For Track events, event data is stored in data extensions specified by the Event to External Key mapping
+  - Primary keys can be configured for each event type to determine how data is updated in the data extension
+
+#### Event Definition Triggers
+
+- **Supported**: Yes
+- **How It Works**:
+  - Track events can be mapped to event definition keys using the Event to Definition Mapping configuration
+  - When a track event is received with a matching event name, the corresponding event definition is triggered
+  - This can be used to trigger journeys in Salesforce Marketing Cloud
+
+## General Queries
+
+### Event Ordering
+
+#### Identify
+Identify events require strict event ordering as they update user profiles in data extensions. Processing events out of order could result in older data overwriting newer data.
+
+#### Track
+Track events that update data extensions also require strict event ordering to ensure data integrity. However, track events that trigger event definitions (journeys) are less sensitive to ordering as they typically represent discrete events.
+
+### Data Replay Feasibility
+
+#### Missing Data Replay
+
+- **Identify Events**: Not recommended. Replaying missing identify events could overwrite newer data with older data.
+- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
+- **Track Events (Event Definition Triggers)**: Feasible, as these typically represent discrete events that trigger journeys.
+
+#### Already Delivered Data Replay
+
+- **Identify Events**: Not recommended. Replaying already delivered identify events would update the same records again, potentially overwriting changes made after the original event.
+- **Track Events (Data Extension Updates)**: Not recommended for the same reason as identify events.
+- **Track Events (Event Definition Triggers)**: Not recommended, as this would trigger the same journey multiple times.
 
 ### Multiplexing
 

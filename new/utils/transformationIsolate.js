@@ -30,6 +30,7 @@ class TransformationIsolate {
     this.transformWrapperRef = null;
     this.transformationType = null;
     this.logs = [];
+    this.released = false;
   }
 
   async Build(
@@ -515,6 +516,10 @@ class TransformationIsolate {
   }
 
   async Release() {
+    if (this.released) {
+      return;
+    }
+    this.released = true;
     this.logs = [];
     this.transformWrapperRef.release();
     for (const funcName of this.availableFuncNames) {

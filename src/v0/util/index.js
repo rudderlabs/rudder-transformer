@@ -2197,7 +2197,7 @@ const findExistingBatch = (batch, metadataMap) => {
 };
 
 /**
- * Removes duplicate metadata within each merged batch object.
+ * Removes duplicate metadata within each merged batch object and sorts by jobId.
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
@@ -2211,6 +2211,10 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
+
+    // Sort metadata by jobId to ensure consistent ordering
+    // eslint-disable-next-line no-param-reassign
+    batch.metadata.sort((a, b) => a.jobId - b.jobId);
   });
 };
 
@@ -2261,7 +2265,16 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
   // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
   // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
-  return combineBatches(combineBatches(inputBatches));
+  const result = combineBatches(combineBatches(inputBatches));
+
+  // Sort the final result by the minimum jobId in each batch to ensure consistent ordering
+  result.sort((a, b) => {
+    const minJobIdA = Math.min(...a.metadata.map((m) => m.jobId));
+    const minJobIdB = Math.min(...b.metadata.map((m) => m.jobId));
+    return minJobIdA - minJobIdB;
+  });
+
+  return result;
 };
 
 /**

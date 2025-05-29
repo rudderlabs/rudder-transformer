@@ -293,10 +293,10 @@ describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
             jobId: 1,
           },
           {
-            jobId: 4,
+            jobId: 3,
           },
           {
-            jobId: 3,
+            jobId: 4,
           },
         ],
         batched: true,

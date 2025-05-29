@@ -1,4 +1,5 @@
 import { Middleware } from 'koa';
+import v8 from 'v8';
 import stats from '../util/stats';
 
 /**
@@ -29,14 +30,15 @@ interface MemoryFenceOptions {
  */
 export function memoryFenceMiddleware(options?: MemoryFenceOptions): Middleware {
   const { thresholdPercent = 80, statusCode = 503 } = options || {};
-
   if (thresholdPercent <= 0 || thresholdPercent >= 100) {
     throw new Error('thresholdPercent must be between 1 and 100');
   }
+  const limit = v8.getHeapStatistics().heap_size_limit;
+  stats.gauge('memory_heap_size_limit', limit);
 
   return async (ctx, next) => {
-    const { heapUsed, heapTotal } = process.memoryUsage();
-    const usagePercent = (heapUsed / heapTotal) * 100;
+    const { heapUsed } = process.memoryUsage();
+    const usagePercent = (heapUsed / limit) * 100;
 
     if (usagePercent > thresholdPercent) {
       stats.counter('memory_fenced_requests', 1);

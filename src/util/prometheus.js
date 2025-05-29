@@ -1053,6 +1053,12 @@ class Prometheus {
         type: 'gauge',
         labelNames: [],
       },
+      {
+        name: 'memory_heap_size_limit',
+        help: 'memory heap size limit',
+        type: 'gauge',
+        labelNames: [],
+      },
     ];
 
     metrics.forEach((metric) => {

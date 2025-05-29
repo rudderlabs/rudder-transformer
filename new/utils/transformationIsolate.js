@@ -14,9 +14,10 @@ const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
 // ControlPlane endpoints
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
+const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibraries`;
 
 class TransformationIsolate {
-  async constructor() { // TODO add types
+  constructor() { // TODO add types
     this.isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
     this.context = null;
     this.jail = null;
@@ -88,7 +89,7 @@ class TransformationIsolate {
 
     // This makes the global object available in the context as 'global'. We use 'derefInto()' here
     // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-    await this.jail.set('global', jail.derefInto());
+    await this.jail.set('global', this.jail.derefInto());
 
     // The entire ivm module is transferable! We transfer the module to the new isolate so that we
     // have access to the library from within the isolate.
@@ -607,6 +608,38 @@ function extractStackTraceUptoLastSubstringMatch(trace, stringLiterals) {
   return traceLines.slice(0, lastRelevantIndex + 1).join('\n');
 }
 
+/**
+ * Get Rudder library by import name
+ * @param {string} importName - The import name of the Rudder library (e.g., "@rs/hash/v1")
+ * @returns {Promise<Object>} - The Rudder library object
+ */
+async function getRudderLibByImportName(importName) {
+  try {
+    const [name, version] = importName.split('/').slice(-2);
+    const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
+
+    // TODO use proper logging
+    // console.log(`Fetching Rudder library from ${url}`);
+
+    // Use fetch with proxy if HTTPS_PROXY is set
+    let fetchOptions = {};
+    if (process.env.HTTPS_PROXY) {
+      const HttpsProxyAgent = require('https-proxy-agent');
+      fetchOptions.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
+    }
+
+    const response = await fetch(url, fetchOptions);
+    responseStatusHandler(response.status, 'Rudder Library', importName, url);
+    return await response.json();
+  } catch (error) {
+    console.error(
+      `Error fetching rudder library code for importName: ${importName}`,
+      error.message,
+    );
+    throw error;
+  }
+}
+
 // Error classes for handling response status
 class RespStatusError extends Error {
   constructor(message, statusCode) {
@@ -630,3 +663,7 @@ function responseStatusHandler(status, entity, id, url) {
     throw new RespStatusError(`${entity} not found at ${url}`, status);
   }
 }
+
+module.exports = {
+  TransformationIsolate,
+};

@@ -4,8 +4,8 @@ const { TransformationIsolate } = require('./transformationIsolate');
 // Environment variables for IVM cache configuration
 const IVM_CACHE_MAX = parseInt(process.env.IVM_CACHE_MAX || '10', 10);
 const IVM_CACHE_SECONDS = parseInt(process.env.IVM_CACHE_SECONDS || '300', 10); // Default: 5 minutes
-const SHARE_ISOLATE = process.env.SHARE_ISOLATE === "true";
-const IVM_CACHE = process.env.IVM_CACHE === "true";
+const SHARE_ISOLATE = process.env.SHARE_ISOLATE === 'true';
+const IVM_CACHE = process.env.IVM_CACHE === 'true';
 
 let globalSharedIsolate = null;
 
@@ -69,12 +69,20 @@ async function createIvm(
   eventsMetadata = {},
   workspaceId = '',
   libraryVersionIDs = [],
-  credentials = {}
+  credentials = {},
 ) {
   if (SHARE_ISOLATE) {
-    console.log("Sharing isolate between transformations.")
+    console.log('Sharing isolate between transformations.');
     if (!globalSharedIsolate) {
-      globalSharedIsolate = createNewIvm(code, secrets, eventsMetadata, transformationVersionId, workspaceId, libraryVersionIDs, credentials);
+      globalSharedIsolate = createNewIvm(
+        code,
+        secrets,
+        eventsMetadata,
+        transformationVersionId,
+        workspaceId,
+        libraryVersionIDs,
+        credentials,
+      );
     }
     return globalSharedIsolate;
   }
@@ -82,33 +90,73 @@ async function createIvm(
   // If caching is not enabled, create a new TransformationIsolate instance without caching
   if (!IVM_CACHE) {
     console.log('IVM_CACHE is disabled, creating new TransformationIsolate without caching');
-    return createNewIvm(code, secrets, eventsMetadata, transformationVersionId, workspaceId, libraryVersionIDs, credentials);
+    return createNewIvm(
+      code,
+      secrets,
+      eventsMetadata,
+      transformationVersionId,
+      workspaceId,
+      libraryVersionIDs,
+      credentials,
+    );
   }
 
   // Caching is enabled, proceed with normal caching logic
   if (!transformationVersionId) {
-    console.warn('No transformationVersionId provided, creating new TransformationIsolate without caching');
-    return createNewIvm(code, secrets, eventsMetadata, transformationVersionId, workspaceId, libraryVersionIDs, credentials);
+    console.warn(
+      'No transformationVersionId provided, creating new TransformationIsolate without caching',
+    );
+    return createNewIvm(
+      code,
+      secrets,
+      eventsMetadata,
+      transformationVersionId,
+      workspaceId,
+      libraryVersionIDs,
+      credentials,
+    );
   }
 
   // Check if we already have a cached TransformationIsolate for this transformation version
   const cachedIvm = ivmCache.get(transformationVersionId);
   if (cachedIvm) {
-    console.log(`Using cached TransformationIsolate for transformationVersionId: ${transformationVersionId}`);
+    // console.log(
+    //   `Using cached TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
+    // );
     return cachedIvm;
   }
 
   // Check if we've reached the maximum cache size
   const currentCacheSize = ivmCache.keys().length;
   if (currentCacheSize >= IVM_CACHE_MAX) {
-    console.warn(`IVM cache limit (${IVM_CACHE_MAX}) reached. Creating new TransformationIsolate without caching.`);
-    return createNewIvm(code, secrets, eventsMetadata, transformationVersionId, workspaceId, libraryVersionIDs, credentials);
+    console.warn(
+      `IVM cache limit (${IVM_CACHE_MAX}) reached. Creating new TransformationIsolate without caching.`,
+    );
+    return createNewIvm(
+      code,
+      secrets,
+      eventsMetadata,
+      transformationVersionId,
+      workspaceId,
+      libraryVersionIDs,
+      credentials,
+    );
   }
 
   // Create a new TransformationIsolate and cache it
-  const newIvm = await createNewIvm(code, secrets, eventsMetadata, transformationVersionId, workspaceId, libraryVersionIDs, credentials);
+  const newIvm = await createNewIvm(
+    code,
+    secrets,
+    eventsMetadata,
+    transformationVersionId,
+    workspaceId,
+    libraryVersionIDs,
+    credentials,
+  );
   ivmCache.set(transformationVersionId, newIvm);
-  console.log(`Created and cached new TransformationIsolate for transformationVersionId: ${transformationVersionId}`);
+  console.log(
+    `Created and cached new TransformationIsolate for transformationVersionId: ${transformationVersionId}`,
+  );
 
   return newIvm;
 }
@@ -131,11 +179,11 @@ async function createNewIvm(
   transformationId = '',
   workspaceId = '',
   libraryVersionIDs = [],
-  credentials = {}
+  credentials = {},
 ) {
   // Create a new TransformationIsolate instance
   const isolate = new TransformationIsolate();
-  
+
   // Build the TransformationIsolate with the provided parameters
   await isolate.Build(
     code,
@@ -144,9 +192,9 @@ async function createNewIvm(
     transformationId,
     workspaceId,
     libraryVersionIDs,
-    credentials
+    credentials,
   );
-  
+
   return isolate;
 }
 

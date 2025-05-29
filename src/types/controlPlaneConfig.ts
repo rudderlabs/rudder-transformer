@@ -8,7 +8,29 @@ export type DestinationDefinition = {
   Config: Record<string, unknown>;
 };
 
-export type Destination<DestinationConfig = Record<string, unknown>> = {
+export type AccountDefinitionConfig = { refreshOAuthToken?: string };
+
+export type AccountDefinition<Config = AccountDefinitionConfig> = {
+  Name: string;
+  Config: Config;
+  AuthenticationType: string;
+};
+export type Account<
+  OptionsT = Record<string, unknown>,
+  SecretT = Record<string, unknown>,
+  AccountDefinitionT = AccountDefinition,
+> = {
+  ID: string;
+  Options?: OptionsT;
+  Secret: SecretT;
+  AccountDefinition?: AccountDefinitionT;
+};
+
+export type Destination<
+  DestinationConfig = Record<string, unknown>,
+  DeliveryAccountT = Account,
+  DeleteAccountT = Account,
+> = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;
@@ -19,6 +41,9 @@ export type Destination<DestinationConfig = Record<string, unknown>> = {
   RevisionID?: string;
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
+  DeliveryAccount?: DeliveryAccountT;
+  DeleteAccount?: DeleteAccountT;
+  hasDynamicConfig?: boolean; // Flag indicating whether the destination config contains dynamic config patterns
 };
 
 export type DestinationConnectionConfig<T> = {

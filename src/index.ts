@@ -11,6 +11,8 @@ import { logProcessInfo } from './util/utils';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
+import { memoryFenceMiddleware } from './middlewares/memoryFencing';
+import { concurrentRequests } from './middlewares/concurrentRequests';
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
@@ -18,14 +20,27 @@ const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 const app = new Koa();
 addProfilingMiddleware(app);
-addStatMiddleware(app);
+addStatMiddleware(app); // Track request time and status codes
+// Memory fencing middleware needs to come early in the middleware stack,
+// before any other middleware that might allocate memory.
+// It is disabled by default
+if (process.env.MEMORY_FENCING_ENABLED === 'true') {
+  app.use(
+    memoryFenceMiddleware({
+      thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),
+      statusCode: parseInt(process.env.MEMORY_FENCING_STATUS_CODE || '503', 10),
+    }),
+  );
+}
+app.use(concurrentRequests()); // Track concurrent requests
 
 const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
 app.use(bodyParser({ jsonLimit: '200mb' }));
-addRequestSizeMiddleware(app);
+addRequestSizeMiddleware(app); // Track request and response sizes
+
 addSwaggerRoutes(app);
 
 applicationRoutes(app);

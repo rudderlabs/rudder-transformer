@@ -117,6 +117,13 @@ const commonOutputHeaders = {
   revision: '2024-06-15',
 };
 
+const commonOutputHeadersForOct2024 = {
+  Authorization: authHeader1,
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+  revision: '2024-10-15',
+};
+
 const anonymousId = '97c46c81-3140-456d-b2a9-690d70aaca35';
 const userId = 'user@1';
 const sentAt = '2021-01-03T17:02:53.195Z';
@@ -478,6 +485,101 @@ export const identifyData: ProcessorTestData[] = [
             }),
             statusCode: 200,
             metadata: generateMetadata(5),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-identify-150624-test-5',
+    name: 'klaviyo',
+    description:
+      '151024 -> Identify call with flattenProperties enabled in destination config and subscribe, ',
+    scenario: 'Business',
+    successCriteria:
+      'The profile response should contain the flattened properties of the friend object and one request object for subscribe',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: overrideDestination(destination, {
+              flattenProperties: true,
+              useNewKlaviyoRevisionVersion: true,
+            }),
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: {
+                  ...commonTraits,
+                  friend: {
+                    names: {
+                      first: 'Alice',
+                      last: 'Smith',
+                    },
+                    age: 25,
+                  },
+                },
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(2),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: userProfileCommonEndpoint,
+              headers: commonOutputHeadersForOct2024,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: {
+                    ...commonOutputUserProps,
+                    properties: {
+                      ...commonOutputUserProps.properties,
+                      'friend.age': 25,
+                      'friend.names.first': 'Alice',
+                      'friend.names.last': 'Smith',
+                    },
+                  },
+                  meta: {
+                    patch_properties: {},
+                  },
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: subscribeEndpoint,
+              headers: commonOutputHeadersForOct2024,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-create-job',
+                  attributes: commonOutputSubscriptionProps,
+                  relationships: subscriptionRelations,
+                },
+              },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },

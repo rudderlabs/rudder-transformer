@@ -20,6 +20,7 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   validateEventName,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
@@ -282,7 +283,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       );
     });
   }
-  return [...batchedResponseList.concat(trackResponseList), ...errorRespList];
+  return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));
 };
 
 module.exports = { process, processRouterDest };

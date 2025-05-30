@@ -154,7 +154,6 @@ const testRoute = async (route, tcData: TestCaseData) => {
       tcData.name != 'hs' &&
       tcData.name != 'iterable' &&
       tcData.name != 'klaviyo' &&
-      tcData.name != 'tiktok_ads' &&
       tcData.name != 'mailjet'
     ) {
       assertRouterOutput(response.body.output, tcData.input.request.body.input);

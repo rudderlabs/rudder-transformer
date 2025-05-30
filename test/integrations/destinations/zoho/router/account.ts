@@ -17,7 +17,7 @@ const commonDestinaitonConfig = {
 
 export const accountData = [
   {
-    name: 'zoho_dev',
+    name: 'zoho',
     description: 'Happy flow with deliveryAccount being passed with destination',
     feature: 'router',
     module: 'destination',

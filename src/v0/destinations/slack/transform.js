@@ -19,6 +19,9 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 
+// Register a custom Handlebars helper for newlines
+Handlebars.registerHelper('newline', () => '\n');
+
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
 // image currently served from prod CDN

@@ -104,8 +104,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
-    const response: RouterTransformationResponse[][] = await Promise.all(
-      groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
+    const response: RouterTransformationResponse[][] = await mapInBatches(
+      groupedEvents,
+      async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(
           destinationType,
           destInputArray[0].metadata?.destinationId,
@@ -131,7 +132,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
           );
           return [errorResp];
         }
-      }),
+      },
+      { sequentialProcessing: false }, // concurrent processing
     );
     return response.flat();
   }
@@ -251,8 +253,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {
-    const response = await Promise.all(
-      requests.map(async (request) => {
+    const response = await mapInBatches(
+      requests,
+      async (request) => {
         const startTime = new Date();
         const { destType } = request;
         const destUserDeletionHandler: any = FetchHandler.getDeletionHandler(
@@ -283,7 +286,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
             metaTO,
           );
         }
-      }),
+      },
+      { sequentialProcessing: false }, // concurrent processing
     );
     return response;
   }

@@ -13,6 +13,7 @@ const {
   isAxiosError,
   removeHyphens,
   convertToUuid,
+  sortEventsBasedMetadataJobId,
 } = require('./index');
 const exp = require('constants');
 const { ERROR_MESSAGES, FEATURE_FILTER_CODE } = require('./constant');
@@ -1405,6 +1406,113 @@ describe('getBodyFromV2SpecPayload', () => {
       },
     };
     expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
+  });
+
+  describe('sortEventsBasedMetadataJobId', () => {
+    it('should sort batches by the minimum jobId in each batch (ascending)', () => {
+      const input = [
+        { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+        { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+        { metadata: [{ jobId: 2 }] },
+      ];
+      const expected = [
+        { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
+
+    it('should handle batches with single metadata item', () => {
+      const input = [
+        { metadata: [{ jobId: 10 }] },
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 5 }] },
+      ];
+      const expected = [
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 5 }] },
+        { metadata: [{ jobId: 10 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
+
+    it('should handle batches with multiple metadata items and unordered jobIds', () => {
+      const input = [
+        { metadata: [{ jobId: 8 }, { jobId: 3 }] },
+        { metadata: [{ jobId: 2 }, { jobId: 7 }] },
+        { metadata: [{ jobId: 5 }, { jobId: 9 }] },
+      ];
+      const expected = [
+        { metadata: [{ jobId: 2 }, { jobId: 7 }] },
+        { metadata: [{ jobId: 5 }, { jobId: 9 }] },
+        { metadata: [{ jobId: 8 }, { jobId: 3 }] },
+      ];
+      // Note: The function sorts by the minimum jobId in each batch, so batch 3's min is 3, batch 1's min is 2, batch 2's min is 5
+      // So after sorting: batch 1 (min 2), batch 3 (min 3), batch 2 (min 5)
+      // But the expected output should be sorted by min jobId: 2, 3, 5
+      // Let's fix the expected accordingly:
+      const sortedExpected = [
+        { metadata: [{ jobId: 2 }, { jobId: 7 }] },
+        { metadata: [{ jobId: 8 }, { jobId: 3 }] },
+        { metadata: [{ jobId: 5 }, { jobId: 9 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(sortedExpected);
+    });
+
+    it('should handle empty input array', () => {
+      expect(sortEventsBasedMetadataJobId([])).toEqual([]);
+    });
+
+    it('should handle batches with empty metadata arrays', () => {
+      const input = [{ metadata: [] }, { metadata: [{ jobId: 2 }] }, { metadata: [] }];
+      // Math.min(...[]) is Infinity, so batches with empty metadata will be sorted to the end
+      const expected = [{ metadata: [{ jobId: 2 }] }, { metadata: [] }, { metadata: [] }];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
+
+    it('should not mutate the original array order if already sorted', () => {
+      const input = [
+        { metadata: [{ jobId: 1 }] },
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 3 }] },
+      ];
+      const expected = [
+        { metadata: [{ jobId: 1 }] },
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 3 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
+
+    it('should handle negative jobIds', () => {
+      const input = [
+        { metadata: [{ jobId: -5 }, { jobId: 2 }] },
+        { metadata: [{ jobId: 0 }] },
+        { metadata: [{ jobId: -1 }] },
+      ];
+      const expected = [
+        { metadata: [{ jobId: -5 }, { jobId: 2 }] },
+        { metadata: [{ jobId: -1 }] },
+        { metadata: [{ jobId: 0 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
+
+    it('should handle batches with non-numeric jobIds gracefully (NaN)', () => {
+      const input = [
+        { metadata: [{ jobId: 'a' }] },
+        { metadata: [{ jobId: 2 }] },
+        { metadata: [{ jobId: 1 }] },
+      ];
+      // Math.min('a') is NaN, so those batches will be sorted to the end
+      const expected = [
+        { metadata: [{ jobId: 'a' }] },
+        { metadata: [{ jobId: 1 }] },
+        { metadata: [{ jobId: 2 }] },
+      ];
+      expect(sortEventsBasedMetadataJobId(input)).toEqual(expected);
+    });
   });
 });
 

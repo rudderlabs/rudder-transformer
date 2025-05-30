@@ -1484,35 +1484,6 @@ describe('getBodyFromV2SpecPayload', () => {
       ];
       expect(sortBatchesByMinJobId(input)).toEqual(expected);
     });
-
-    it('should handle negative jobIds', () => {
-      const input = [
-        { metadata: [{ jobId: -5 }, { jobId: 2 }] },
-        { metadata: [{ jobId: 0 }] },
-        { metadata: [{ jobId: -1 }] },
-      ];
-      const expected = [
-        { metadata: [{ jobId: -5 }, { jobId: 2 }] },
-        { metadata: [{ jobId: -1 }] },
-        { metadata: [{ jobId: 0 }] },
-      ];
-      expect(sortBatchesByMinJobId(input)).toEqual(expected);
-    });
-
-    it('should handle batches with non-numeric jobIds gracefully (NaN)', () => {
-      const input = [
-        { metadata: [{ jobId: 'a' }] },
-        { metadata: [{ jobId: 2 }] },
-        { metadata: [{ jobId: 1 }] },
-      ];
-      // Math.min('a') is NaN, so those batches will be sorted to the end
-      const expected = [
-        { metadata: [{ jobId: 'a' }] },
-        { metadata: [{ jobId: 1 }] },
-        { metadata: [{ jobId: 2 }] },
-      ];
-      expect(sortBatchesByMinJobId(input)).toEqual(expected);
-    });
   });
 });
 

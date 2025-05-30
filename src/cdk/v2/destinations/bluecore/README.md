@@ -12,7 +12,7 @@ This integration enables retailers to sync customer profiles, track user behavio
 
 - **Current Version**: CDK v2 (Latest)
 - **Implementation Type**: CDK v2 (Component Development Kit v2)
-- **Last Updated**: 2025
+- **Last Updated**: 2024
 - **Maintainer**: RudderStack Team
 - **Status**: Beta
 
@@ -43,6 +43,54 @@ This integration enables retailers to sync customer profiles, track user behavio
 - **No OAuth Support**: Uses namespace-based authentication only
 - **No Proxy Delivery**: Direct API communication only
 - **Limited Message Types**: Only identify and track events are supported
+
+## Integration Functionalities
+
+### Implementation Details
+
+- **Implementation Type**: CDK v2
+- **Connection Mode**: Cloud mode only
+
+### Supported Message Types
+
+- **Identify**: Maps user traits to Bluecore customer properties
+- **Track**: Maps event data to Bluecore events
+
+### Batching Support
+
+- Bluecore integration does not support batching. Each event is sent individually to the Bluecore API.
+
+### Proxy Delivery
+
+- **Supported**: No
+
+### User Deletion
+
+- **Supported**: No
+
+### OAuth Support
+
+- **Supported**: No
+
+### Intermediate Calls
+
+- **Supported**: No
+- **Description**: The Bluecore integration does not make intermediate API calls. Each RudderStack event results in exactly one API call to Bluecore's tracking endpoint.
+
+### Additional Functionalities
+
+- **Event Mapping**: Custom event names can be mapped to Bluecore's standard events
+- **Subscription Event Handling**: Special handling for subscription-related events (optin, unsubscribe)
+
+### Validations
+
+- Email is required for proper user identification
+- Bluecore namespace is required in the destination configuration
+- Only identify and track event types are supported
+
+### Rate Limits
+
+- NEEDS REVIEW: Specific rate limits for Bluecore API not found in the provided information.
 
 ## Event Types
 
@@ -233,7 +281,6 @@ The integration maps RudderStack events to Bluecore's format using the following
 - **`bluecoreCommonConfig.json`**: Common properties for all events (customer data, device info)
 - **`bluecoreIdentifyConfig.json`**: Properties specific to identify events (action field)
 - **`bluecoreTrackConfig.json`**: Properties specific to track events (search_term, order_id, total, products)
-- **`bluecoreSubscriptionEventConfig.json`**: Properties specific to subscription events
 
 ### Field Exclusion Lists
 
@@ -392,6 +439,13 @@ The integration excludes certain fields from being sent to Bluecore to avoid red
 - **No Built-in Retry**: The integration does not implement custom retry logic
 - **RudderStack Retry**: Relies on RudderStack's standard retry mechanisms
 - **Error Propagation**: Errors are passed to RudderStack for handling according to configured retry policies
+
+#### Retry Strategy Details
+
+**Retryable Errors**: NEEDS REVIEW - Specific retryable error codes not documented
+**Max Retries**: Handled by RudderStack's global retry configuration
+**Backoff Strategy**: Uses RudderStack's default exponential backoff
+**Non-Retryable Errors**: Configuration errors, validation errors, malformed requests
 
 ## Testing
 
@@ -787,32 +841,47 @@ Suitable for organizations that need to:
 - Link anonymous users to identified profiles
 - Enrich customer data with behavioral insights
 
-## Data Replay and Event Ordering
+## General Queries
 
-### Event Ordering Requirements
-- **Identify Events**: Event ordering is recommended to ensure user profiles are updated with the most recent data
-- **Track Events**: Event ordering is not strictly required for discrete user actions
-- **Subscription Events**: Event ordering is recommended to maintain correct subscription status
+### Event Ordering Required?
+
+#### Identify Events
+- **Required**: Yes, event ordering is recommended for identify events
+- **Reason**: Identify events update customer profiles, and out-of-order events could result in older data overwriting newer customer information
+- **Impact**: Without proper ordering, customer profiles may contain stale or incorrect data
+
+#### Track Events
+- **Required**: Recommended but not strictly necessary for discrete user actions
+- **Reason**: Track events are typically timestamped and represent individual user actions
+- **Consideration**: For events that update user attributes alongside tracking, ordering becomes more important
+
+#### Subscription Events
+- **Required**: Yes, event ordering is recommended for subscription events
+- **Reason**: Subscription status changes need to be processed in the correct order to maintain accurate opt-in/opt-out status
+- **Impact**: Out-of-order subscription events could result in incorrect email subscription status
 
 ### Data Replay Feasibility
-- **Missing Data Replay**: Feasible for track events; use caution with identify events to avoid overwriting newer data
-- **Duplicate Event Handling**: NEEDS REVIEW - No information about Bluecore's duplicate event handling capabilities
-- **Historical Data**: Can replay historical events, but consider impact on campaign triggers and user profiles
 
-### Best Practices for Data Replay
-- Test replay with small data sets first
-- Consider temporal order when replaying events
-- Monitor for unexpected campaign triggers during replay
-- Coordinate with Bluecore team for large-scale replays
+#### Missing Data Replay
+- **Feasible**: Yes, for track events that don't update user profiles
+- **Considerations**:
+  - Identify events should be replayed carefully to avoid overwriting newer profile data
+  - Consider temporal order when replaying events
+  - Monitor for unexpected campaign triggers during replay
 
-## Multiplexing
+#### Already Delivered Data Replay
+- **NEEDS REVIEW**: No information about Bluecore's duplicate event handling capabilities
+- **Recommendation**: Test with small data sets first and coordinate with Bluecore team for large-scale replays
+- **Considerations**: May result in duplicate events and campaign triggers
 
-### Multiplexing Support
+### Multiplexing
+
+#### Multiplexing Support
 - **Supported**: No
 - **Description**: The Bluecore destination does not generate multiple API calls from a single input event
 - **Processing**: Each RudderStack event results in exactly one Bluecore API call
 
-### Event Processing
+#### Event Processing
 - **One-to-One Mapping**: Each RudderStack event maps to one Bluecore event
 - **No Event Splitting**: Events are not split into multiple Bluecore events
 - **No Event Combining**: Multiple RudderStack events are not combined into single Bluecore events
@@ -821,7 +890,6 @@ Suitable for organizations that need to:
 
 ### Official Documentation
 - **Bluecore Platform**: [https://www.bluecore.com/](https://www.bluecore.com/)
-- **Bluecore API Documentation**: [https://www.bluecore.com/api-docs](https://www.bluecore.com/api-docs)
 - **Bluecore Transactional API**: [https://www.bluecore.com/apis/transactional-api/](https://www.bluecore.com/apis/transactional-api/)
 
 ### RudderStack Documentation
@@ -837,6 +905,87 @@ Suitable for organizations that need to:
 - **Business Logic Documentation**: [./docs/businesslogic.md](./docs/businesslogic.md)
 - **RETL Functionality Documentation**: [./docs/retl.md](./docs/retl.md)
 - **GitHub Repository**: [RudderStack Transformer - Bluecore](https://github.com/rudderlabs/rudder-transformer/tree/main/src/cdk/v2/destinations/bluecore)
+
+## Performance Considerations
+
+### Batch Processing
+- **Not Supported**: Bluecore integration does not support batch processing
+- **Individual Events**: Each event is sent individually to the Bluecore API
+- **Real-time Processing**: Events are processed immediately upon receipt
+
+### Payload Size
+- **No Explicit Limits**: The integration does not enforce payload size limits
+- **API Restrictions**: NEEDS REVIEW - Bluecore API may have size restrictions
+- **Recommendation**: Keep payloads reasonable to ensure reliable processing
+
+### Rate Limiting
+- **API Rate Limits**: NEEDS REVIEW - Specific rate limits not documented
+- **Best Practices**:
+  - Implement reasonable delays between requests
+  - Monitor for rate limit responses
+  - Use event filtering to reduce volume
+
+### Caching
+- **No Caching**: The integration does not implement caching strategies
+- **Stateless Processing**: Each event is processed independently
+- **Memory Usage**: Minimal memory footprint due to stateless design
+
+## Debugging and Metrics
+
+### Logging
+- **Error Logging**: Detailed error messages with context
+- **Validation Logging**: Information about failed validations
+- **Processing Logging**: Event processing status and outcomes
+
+### Available Metrics
+- **Event Processing**: Success/failure rates for event processing
+- **Validation Errors**: Count and types of validation failures
+- **API Responses**: HTTP response codes and timing
+- **Configuration Errors**: Issues with destination setup
+
+### Debugging Steps
+1. **Check Configuration**: Verify namespace and event mappings
+2. **Validate Event Format**: Ensure events match expected structure
+3. **Monitor Logs**: Review transformation and API logs
+4. **Test with Simple Events**: Start with basic events before complex ones
+
+## FAQ
+
+### General Questions
+
+**Q: Why are my events not appearing in Bluecore?**
+A: Check that your Bluecore namespace is correctly configured and that events include proper user identification (email, userId, or external ID).
+
+**Q: Can I send custom events to Bluecore?**
+A: Yes, you can send custom events. They will be passed through to Bluecore as-is unless you configure custom event mappings.
+
+**Q: How do I handle subscription preferences?**
+A: Use the `subscription_event` event type with `channelConsents.email` set to `true` for opt-in or `false` for unsubscribe.
+
+**Q: What happens if I send duplicate events?**
+A: NEEDS REVIEW - Bluecore's duplicate event handling behavior is not documented. Test with small data sets first.
+
+### Technical Questions
+
+**Q: Why doesn't Bluecore support batching?**
+A: The integration prioritizes real-time processing over batch efficiency. Each event is sent individually for immediate processing.
+
+**Q: Can I use device mode with Bluecore?**
+A: No, Bluecore only supports cloud mode. All events must be processed through RudderStack's servers.
+
+**Q: How are product arrays handled?**
+A: Product arrays are normalized to ensure consistent structure. Product IDs are derived from `product_id`, `sku`, or `id` fields.
+
+### Configuration Questions
+
+**Q: Where do I find my Bluecore namespace?**
+A: Log into your Bluecore dashboard and go to Account > Integration Guide. The namespace is shown in the JavaScript code snippet.
+
+**Q: Can I map multiple RudderStack events to the same Bluecore event?**
+A: Yes, you can configure multiple source events to map to the same destination event in the event mapping configuration.
+
+**Q: What's the difference between identify and customer_patch events?**
+A: `customer_patch` is the Bluecore event type that identify events are mapped to. It's used for creating and updating customer profiles.
 
 ---
 

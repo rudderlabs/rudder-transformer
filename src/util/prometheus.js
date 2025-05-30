@@ -580,6 +580,12 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destination_id'],
       },
+      {
+        name: 'klaviyo_revision_oct2024_requests_total',
+        help: 'klaviyo_revision_oct2024_requests_total',
+        type: 'counter',
+        labelNames: ['requestType', 'destination_id'],
+      },
 
       // Histograms
       {

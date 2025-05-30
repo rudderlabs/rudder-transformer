@@ -1,6 +1,6 @@
 import { authHeader1, secret1, secret2 } from '../maskedSecrets';
 const mockFns = (_) => {
-  jest.spyOn(Date, 'now').mockReturnValueOnce(new Date('2023-10-14T00:00:00.000Z').valueOf());
+  jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-10-14T00:00:00.000Z').valueOf());
 };
 
 export const data = [

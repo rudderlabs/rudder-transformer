@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
-import { TransformationError } from '@rudderstack/integrations-lib';
+import { mapInBatches, TransformationError } from '@rudderstack/integrations-lib';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
@@ -57,8 +57,9 @@ export class CDKV2DestinationService implements DestinationService {
     requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
-    const respList: ProcessorTransformationResponse[][] = await Promise.all(
-      events.map(async (event) => {
+    const respList: ProcessorTransformationResponse[][] = await mapInBatches(
+      events,
+      async (event) => {
         const metaTo = this.getTags(
           destinationType,
           event.metadata?.destinationId,
@@ -101,7 +102,8 @@ export class CDKV2DestinationService implements DestinationService {
 
           return [erroredResp];
         }
-      }),
+      },
+      { sequentialProcessing: false }, // concurrent processing
     );
     return respList.flat();
   }

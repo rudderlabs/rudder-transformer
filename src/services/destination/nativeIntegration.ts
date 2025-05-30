@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { DestinationService } from '../../interfaces/DestinationService';
@@ -62,8 +63,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
     requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const respList: ProcessorTransformationResponse[][] = await Promise.all(
-      events.map(async (event) => {
+    const respList = await mapInBatches(
+      events,
+      async (event) => {
         const metaTO = this.getTags(
           destinationType,
           event.metadata?.destinationId,
@@ -88,7 +90,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
             );
           return [erroredResp];
         }
-      }),
+      },
+      { sequentialProcessing: false }, // concurrent processing
     );
     return respList.flat();
   }

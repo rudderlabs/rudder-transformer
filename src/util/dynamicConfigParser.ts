@@ -1,4 +1,5 @@
 /* eslint-disable unicorn/no-for-loop */
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
 import { shouldSkipDynamicConfigProcessing } from './utils';
 
@@ -146,9 +147,9 @@ export class DynamicConfigParser {
    * @param event The event to process
    * @returns A new event object with processed dynamic configuration
    */
-  private static getDynamicConfig(
-    event: ProcessorTransformationRequest | RouterTransformationRequestData,
-  ) {
+  private static getDynamicConfig<
+    T extends ProcessorTransformationRequest | RouterTransformationRequestData,
+  >(event: T): T {
     // Create a shallow copy of the event and deep copy only the destination config
     // This is more performant than cloning the entire event since only the config gets mutated
     const resultantEvent = {
@@ -157,7 +158,7 @@ export class DynamicConfigParser {
         ...event.destination,
         Config: structuredClone(event.destination.Config),
       },
-    };
+    } as T;
 
     // Process the Config and set it on the copied destination
     resultantEvent.destination.Config = DynamicConfigParser.configureVal(
@@ -168,24 +169,23 @@ export class DynamicConfigParser {
     return resultantEvent;
   }
 
-  public static process(
-    events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
-  ) {
-    // Optimized batch processing using traditional for loop for maximum performance
-    const { length } = events;
-    const eventRespArr = new Array(length);
-
-    for (let i = 0; i < length; i += 1) {
-      const event = events[i];
-      // Check if we should skip processing using the imported function
+  /**
+   * Processes dynamic configuration in an array of events
+   *
+   * @param events Array of events to process
+   * @returns Array of processed events with the same type as input
+   */
+  public static async process<
+    T extends ProcessorTransformationRequest[] | RouterTransformationRequestData[],
+  >(events: T): Promise<T> {
+    // Use type of first element to determine array type
+    const result = await mapInBatches(events, async (event) => {
       if (shouldSkipDynamicConfigProcessing(event.destination)) {
-        eventRespArr[i] = event;
-      } else {
-        // Process the event
-        eventRespArr[i] = DynamicConfigParser.getDynamicConfig(event);
+        return event;
       }
-    }
-
-    return eventRespArr;
+      // Process the event and preserve its type
+      return DynamicConfigParser.getDynamicConfig(event);
+    });
+    return result as unknown as T;
   }
 }

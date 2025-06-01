@@ -10,7 +10,7 @@ const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
-const { setValue: set } = require('@rudderstack/integrations-lib');
+const { setValue: set, groupByInBatches, mapInBatches } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
@@ -1809,8 +1809,9 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
+  const respList = mapInBatches(
+    inputs,
+    async (input) => {
       try {
         let resp = input.message;
         // transform if not already done
@@ -1822,7 +1823,8 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    }),
+    },
+    { sequentialProcessing: false }, // concurrent processing
   );
   return respList;
 };
@@ -2323,11 +2325,11 @@ const applyJSONStringTemplate = (message, template) =>
  * be present (only skips grouping by config when the flag is explicitly false).
  *
  * @param {*} events The events to be grouped.
- * @returns {array} The array of grouped events.
+ * @returns {Promise<array>} The array of grouped events.
  */
-const groupRouterTransformEvents = (events) =>
+const groupRouterTransformEvents = async (events) =>
   Object.values(
-    lodash.groupBy(events, (ev) => {
+    await groupByInBatches(events, (ev) => {
       // Use the function to determine if we should group by destination config
       const shouldGroupByConfig = shouldGroupByDestinationConfig(ev.destination);
 

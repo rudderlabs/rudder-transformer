@@ -142,7 +142,7 @@ describe('DynamicConfigParser', () => {
     // Run the table-driven tests
     test.each(testCases)(
       '$name',
-      ({ config, traits, expectedConfig, hasDynamicConfig, expectedSameReference }) => {
+      async ({ config, traits, expectedConfig, hasDynamicConfig, expectedSameReference }) => {
         // Arrange
         const event = createTestEvent(config, traits);
         // Set hasDynamicConfig if specified in the test case
@@ -152,7 +152,7 @@ describe('DynamicConfigParser', () => {
         const originalEvent = cloneDeep(event);
 
         // Act
-        const result = DynamicConfigParser.process([event]);
+        const result = await DynamicConfigParser.process([event]);
 
         // Assert
         expect(result).toHaveLength(1);
@@ -179,7 +179,7 @@ describe('DynamicConfigParser', () => {
       },
     );
 
-    it('should handle multiple events', () => {
+    it('should handle multiple events', async () => {
       // Arrange
       const events: ProcessorTransformationRequest[] = [
         createTestEvent(
@@ -194,7 +194,7 @@ describe('DynamicConfigParser', () => {
       const originalEvents = cloneDeep(events);
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       expect(result).toHaveLength(2);
@@ -244,7 +244,7 @@ describe('DynamicConfigParser', () => {
     // Run the message type table-driven tests
     test.each(messageTypeTestCases)(
       '$name',
-      ({
+      async ({
         messageType,
         config,
         traits,
@@ -261,7 +261,7 @@ describe('DynamicConfigParser', () => {
         const originalEvent = cloneDeep(event);
 
         // Act
-        const result = DynamicConfigParser.process([event]);
+        const result = await DynamicConfigParser.process([event]);
 
         // Assert
         expect(result).toHaveLength(1);
@@ -289,7 +289,7 @@ describe('DynamicConfigParser', () => {
       },
     );
 
-    it('should not modify shared destination objects', () => {
+    it('should not modify shared destination objects', async () => {
       // Arrange
       // Create a shared destination object
       const sharedDestination = {
@@ -364,7 +364,7 @@ describe('DynamicConfigParser', () => {
       const originalDestinationConfig = { ...sharedDestination.Config };
 
       // Act
-      const result = DynamicConfigParser.process([event1, event2]);
+      const result = await DynamicConfigParser.process([event1, event2]);
 
       // Assert
       expect(result).toHaveLength(2);
@@ -411,7 +411,7 @@ describe('DynamicConfigParser', () => {
     ];
 
     // Run the batch test cases
-    test.each(batchTestCases)('$name', ({ eventConfigs }) => {
+    test.each(batchTestCases)('$name', async ({ eventConfigs }) => {
       // Arrange
       const events = eventConfigs.map((eventConfig) => {
         const event = createTestEvent(eventConfig.config, eventConfig.traits);
@@ -425,7 +425,7 @@ describe('DynamicConfigParser', () => {
       const originalEvents = cloneDeep(events);
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       expect(result).toHaveLength(events.length);
@@ -458,7 +458,7 @@ describe('DynamicConfigParser', () => {
       });
     });
 
-    it('should unset fields from the processed event after extracting values', () => {
+    it('should unset fields from the processed event after extracting values', async () => {
       // Arrange
       const event = createTestEvent(
         { apiKey: '{{ message.traits.appId || "default-api-key" }}' },
@@ -466,7 +466,7 @@ describe('DynamicConfigParser', () => {
       );
 
       // Act
-      const result = DynamicConfigParser.process([event]);
+      const result = await DynamicConfigParser.process([event]);
 
       // Assert
       expect(result).toHaveLength(1);
@@ -495,7 +495,7 @@ describe('DynamicConfigParser', () => {
       }
     });
 
-    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', () => {
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', async () => {
       // Arrange
       process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
 
@@ -515,7 +515,7 @@ describe('DynamicConfigParser', () => {
       events[1].destination.hasDynamicConfig = true; // Should process
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
@@ -529,7 +529,7 @@ describe('DynamicConfigParser', () => {
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
-    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "true"', () => {
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "true"', async () => {
       // Arrange
       process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'true';
 
@@ -549,7 +549,7 @@ describe('DynamicConfigParser', () => {
       events[1].destination.hasDynamicConfig = true; // Should process
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
@@ -563,7 +563,7 @@ describe('DynamicConfigParser', () => {
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
-    it('should ignore hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "false"', () => {
+    it('should ignore hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "false"', async () => {
       // Arrange
       process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'false';
 
@@ -583,7 +583,7 @@ describe('DynamicConfigParser', () => {
       events[1].destination.hasDynamicConfig = true; // Should process
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       // Both events should be processed regardless of hasDynamicConfig flag
@@ -598,7 +598,7 @@ describe('DynamicConfigParser', () => {
       expect(result[1].destination.Config.apiKey).toBe('test-app-id-2');
     });
 
-    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to any other value', () => {
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to any other value', async () => {
       // Arrange
       process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'some-other-value';
 
@@ -613,7 +613,7 @@ describe('DynamicConfigParser', () => {
       events[0].destination.hasDynamicConfig = false; // Should skip processing
 
       // Act
-      const result = DynamicConfigParser.process(events);
+      const result = await DynamicConfigParser.process(events);
 
       // Assert
       expect(result[0]).toBe(events[0]); // Should be same reference (not processed)
@@ -683,19 +683,19 @@ describe('DynamicConfigParser', () => {
     ];
 
     // Run the edge case tests
-    test.each(edgeCaseTestCases)('$name', ({ config, traits, expectedConfig }) => {
+    test.each(edgeCaseTestCases)('$name', async ({ config, traits, expectedConfig }) => {
       // Arrange
       const event = createTestEvent(config, traits);
 
       // Act
-      const result = DynamicConfigParser.process([event]);
+      const result = await DynamicConfigParser.process([event]);
 
       // Assert
       expect(result).toHaveLength(1);
       expect(result[0].destination.Config).toEqual(expectedConfig);
     });
 
-    it('should handle arrays with mixed value types', () => {
+    it('should handle arrays with mixed value types', async () => {
       // Arrange
       const event = createTestEvent(
         {
@@ -712,7 +712,7 @@ describe('DynamicConfigParser', () => {
       );
 
       // Act
-      const result = DynamicConfigParser.process([event]);
+      const result = await DynamicConfigParser.process([event]);
 
       // Assert
       expect(result[0].destination.Config.mixedArray).toEqual([
@@ -725,7 +725,7 @@ describe('DynamicConfigParser', () => {
       ]);
     });
 
-    it('should handle deeply nested objects with various value types', () => {
+    it('should handle deeply nested objects with various value types', async () => {
       // Arrange
       const event = createTestEvent(
         {
@@ -743,7 +743,7 @@ describe('DynamicConfigParser', () => {
       );
 
       // Act
-      const result = DynamicConfigParser.process([event]);
+      const result = await DynamicConfigParser.process([event]);
 
       // Assert
       expect(result[0].destination.Config).toEqual({

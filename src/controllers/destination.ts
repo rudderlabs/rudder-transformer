@@ -38,9 +38,7 @@ export class DestinationController {
         ctx,
       ) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
-      events = DynamicConfigParser.process(
-        timestampCorrectEvents,
-      ) as ProcessorTransformationRequest[];
+      events = await DynamicConfigParser.process(timestampCorrectEvents);
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
@@ -108,11 +106,8 @@ export class DestinationController {
 
     try {
       const processedEvents = DestinationPreTransformationService.preProcess(events, ctx);
-
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(processedEvents);
-
-      events = DynamicConfigParser.process(timestampCorrectEvents);
-
+      events = await DynamicConfigParser.process(timestampCorrectEvents);
       resplist = await integrationService.doRouterTransformation(
         events,
         destination,

@@ -103,7 +103,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
+    const groupedEvents: RouterTransformationRequestData[][] =
+      await groupRouterTransformEvents(events);
     const response: RouterTransformationResponse[][] = await mapInBatches(
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {

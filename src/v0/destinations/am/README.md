@@ -1,6 +1,6 @@
 # Amplitude Destination
 
-Implementation in **Javascript**
+Implementation in **Javascript** (NOT a CDK v2 implementation)
 
 ## Overview
 
@@ -8,10 +8,7 @@ Amplitude is a product analytics platform that helps companies understand user b
 
 ## Version Information
 
-- **Current Version**: HTTP API v2
-- **Implementation Type**: v0 (JavaScript)
-- **Last Updated**: 2023
-- **Maintainer**: RudderStack Integration Team
+- **Current Version of Amplitude API used in integration**: HTTP API v2
 
 ## Configuration
 
@@ -30,6 +27,7 @@ Amplitude is a product analytics platform that helps companies understand user b
 - **Secret Key**: Required for user deletion functionality
   - Can be found in your Amplitude project settings under the General tab
   - Used for authentication when sending user deletion requests
+  - Required for compliance with privacy regulations (GDPR, CCPA)
 
 - **Group Type Trait**: Specifies the trait to use as the group type
   - Used for group analytics in Amplitude
@@ -82,6 +80,33 @@ Amplitude is a product analytics platform that helps companies understand user b
 - **Group**: Yes - Sets group properties and updates user properties
 - **Alias**: Yes - Maps to Amplitude's user mapping functionality
 
+#### Message Type and Connection Modes from `db-config.json`
+```json
+  "supportedMessageTypes": {
+      "cloud": ["alias", "group", "identify", "page", "screen", "track"],
+      "device": {
+        "web": ["identify", "track", "page", "group"],
+        "android": ["identify", "track", "screen"],
+        "ios": ["identify", "track", "screen"],
+        "reactnative": ["identify", "track", "screen"],
+        "flutter": ["identify", "track", "screen"]
+      }
+    },
+    "supportedConnectionModes": {
+      "web": ["cloud", "device"],
+      "android": ["cloud", "device"],
+      "ios": ["cloud", "device"],
+      "flutter": ["cloud", "device"],
+      "reactnative": ["cloud", "device"],
+      "unity": ["cloud"],
+      "amp": ["cloud"],
+      "cordova": ["cloud"],
+      "shopify": ["cloud"],
+      "cloud": ["cloud"],
+      "warehouse": ["cloud"]
+    }
+```
+
 ### Batching Support
 
 - **Supported**: Yes
@@ -90,6 +115,8 @@ Amplitude is a product analytics platform that helps companies understand user b
   - Maximum batch size: 20 MB
   - Maximum events per batch: 500
   - Events exceeding these limits are sent in multiple batches
+- **Batch Endpoint**: Uses `/batch` endpoint for improved performance
+- **Batching Logic**: Events are automatically batched when possible to optimize API usage
 
 ### Intermediate Calls
 
@@ -97,19 +124,27 @@ The Amplitude destination does not make any intermediate API calls. All events a
 
 ### Proxy Delivery
 
-- **Supported**: No
-- The Amplitude destination does not implement a custom network handler for proxy delivery.
+- **Supported**: Yes
+- **Source Code Path**: `src/v0/destinations/am/networkHandler.js`
+- **Implementation**: Custom network handler with error handling and retry logic
+- **Features**:
+  - Handles rate limiting (429 errors) with appropriate retry logic
+  - Processes throttled users and devices
+  - Supports both retryable and non-retryable error handling
 
 ### User Deletion
 
 - **Supported**: Yes
 - **Source Code Path**: `src/v0/destinations/am/deleteUsers.js`
 - **Endpoint**: `/api/2/deletions/users`
-- **Authentication**: Requires both API Key and Secret Key
+- **Authentication**: Requires both API Key and Secret Key (Basic Auth)
 - **Batch Size**: Up to 100 users per batch
+- **Rate Limit**: 1 request per second, up to 8 parallel requests per project
 - **Implementation**:
   - Users are deleted based on their user_id
   - Batches are processed in parallel
+  - Supports both US and EU data centers
+  - Includes `requester: "RudderStack"` and `ignore_invalid_id: "true"` in requests
 
 ### OAuth Support
 
@@ -145,21 +180,43 @@ The Amplitude destination does not make any intermediate API calls. All events a
   - For mobile events, device and OS information is extracted from the context
   - This information is included in the event payload
 
+#### Revenue Tracking
+
+- **Supported**: Yes
+- **How It Works**:
+  - Track events with revenue properties receive special handling
+  - Revenue amount, price, quantity, and product information are extracted
+  - Supports both single revenue events and per-product revenue tracking
+  - Revenue properties are moved to root level and removed from event_properties
+
+#### E-commerce Event Multiplexing
+
+- **Supported**: Yes
+- **Configuration**: Controlled by `trackProductsOnce` and `trackRevenuePerProduct` settings
+- **How It Works**:
+  - When `trackProductsOnce` is enabled, each product in an order generates a separate "Product Purchased" event
+  - Original order event is preserved alongside individual product events
+  - Supports revenue tracking per product when `trackRevenuePerProduct` is enabled
+
 ### Validations
 
 - **User ID or Device ID Required**: Either user_id or device_id must be specified for all events
 - **Event Type Required**: Event type is required for all events
 - **API Key Required**: API key must be provided in the destination configuration
+- **User ID Length**: User IDs must be at least 5 characters (configurable via min_id_length option)
+- **Device ID Length**: Device IDs must be at least 5 characters (configurable via min_id_length option)
 
 ### Rate Limits
 
 Amplitude enforces rate limits to ensure system stability:
 
-| Endpoint | Rate Limit | Description |
-|----------|------------|-------------|
-| `/2/httpapi` | 1000 requests/second | Main event tracking endpoint |
-| `/api/2/deletions/users` | 100 users per batch | User deletion endpoint |
-| `/groupidentify` | 1000 requests/second | Group identify endpoint |
+| Endpoint | Rate Limit | Payload & Batch Size Limits | Description |
+|----------|------------|--------------|-------------|
+| `/2/httpapi` | 30 events/second per user/device | 1 MB per request | Main event tracking endpoint |
+| `/batch` | 1000 events/second per user/device && 500,000 events per day | 20 MB per request, 2000 events per batch | Batch event upload endpoint |
+| `/api/2/deletions/users` | 1 request/second | 100 users per batch, 8 parallel requests per project | User deletion endpoint |
+| `/groupidentify` | No official documentation found | 1 MB per request & group identifies per request is 1024 & group properties per request is 1024 | Group identify endpoint |
+
 
 ## General Queries
 
@@ -196,16 +253,26 @@ Amplitude events include a timestamp field, which is populated with the event's 
 
 ### Multiplexing
 
-- **Track Events with Revenue**:
-  - **Multiplexing**: YES
-  - When a track event contains revenue, it can generate multiple events:
-    - The original track event
-    - A separate revenue event with special formatting
-
-- **Order Completed with Products**:
+- **Track Events with Revenue and Products**:
   - **Multiplexing**: YES (when trackProductsOnce is enabled)
-  - Each product in the order generates a separate "Product Purchased" event
-  - The original order event is still sent
+  - **Conditions**: When `trackProductsOnce` is enabled and the event contains a products array
+  - **Behavior**:
+    - The original track event is sent
+    - Each product in the products array generates a separate "Product Purchased" event
+    - If `trackRevenuePerProduct` is enabled, each product event includes revenue tracking
+  - **Example**: An "Order Completed" event with 3 products generates 4 total events (1 original + 3 product events)
+
+- **Group Events with Group Identify**:
+  - **Multiplexing**: YES
+  - **Behavior**:
+    - First API Call: `/2/httpapi` - To update user properties with group information
+    - Second API Call: `/groupidentify` - To update group properties
+  - **Note**: This is true multiplexing as both calls deliver different aspects of the same event to Amplitude
+
+- **Revenue Events (Single Product)**:
+  - **Multiplexing**: NO
+  - **Behavior**: Single API call to `/2/httpapi` with revenue properties at root level
+  - **Note**: Revenue properties are moved from event_properties to root level but it's still a single event
 
 ## Version Information
 
@@ -219,6 +286,10 @@ Amplitude HTTP API v2 is used for event tracking.
   - US: `https://api2.amplitude.com/2/httpapi`
   - EU: `https://api.eu.amplitude.com/2/httpapi`
 
+- **Batch Event Upload**:
+  - US: `https://api2.amplitude.com/batch`
+  - EU: `https://api.eu.amplitude.com/batch`
+
 - **User Deletion**:
   - US: `https://amplitude.com/api/2/deletions/users`
   - EU: `https://analytics.eu.amplitude.com/api/2/deletions/users`
@@ -227,18 +298,24 @@ Amplitude HTTP API v2 is used for event tracking.
   - US: `https://api2.amplitude.com/groupidentify`
   - EU: `https://api.eu.amplitude.com/groupidentify`
 
+- **User Mapping (Alias)**:
+  - US: `https://api2.amplitude.com/usermap`
+  - EU: `https://api.eu.amplitude.com/usermap`
+
 ### Version Deprecation
 
-Amplitude HTTP API v2 is the current version and there is no announced deprecation date. Amplitude maintains backward compatibility for their APIs and typically provides ample notice before deprecating any API version.
+Amplitude HTTP API v2 is the current version and there is no announced deprecation date. Amplitude maintains backward compatibility for their APIs and typically provides ample notice before deprecating any API version. The HTTP API v2 replaced the deprecated HTTP API v1.
 
 ## Documentation Links
 
 ### API Documentation
 
-- [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
-- [Amplitude Group Identify API](https://www.docs.developers.amplitude.com/analytics/apis/group-identify-api/)
-- [Amplitude User Privacy API](https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/)
-- [Amplitude API Reference](https://www.docs.developers.amplitude.com/analytics/apis/api-reference/)
+- [Amplitude HTTP API V2](https://amplitude.com/docs/apis/analytics/http-v2)
+- [Amplitude Batch Event Upload API](https://amplitude.com/docs/apis/analytics/batch-event-upload)
+- [Amplitude Group Identify API](https://amplitude.com/docs/apis/analytics/group-identify)
+- [Amplitude User Privacy API](https://amplitude.com/docs/apis/analytics/user-privacy)
+- [Amplitude User Mapping API](https://amplitude.com/docs/apis/analytics/user-mapping)
+- [Amplitude API Authentication](https://amplitude.com/docs/apis/authentication)
 
 ### RETL Functionality
 
@@ -252,7 +329,7 @@ For detailed information about business logic and mappings, please refer to [doc
 
 ### How does Amplitude handle duplicate events?
 
-Amplitude does not have built-in deduplication for events. Each event sent to Amplitude is treated as a unique occurrence, even if it has the same properties as a previously sent event. This means that if you replay data, you will create duplicate events in Amplitude.
+Amplitude does not have built-in deduplication for events. Each event sent to Amplitude is treated as a unique occurrence, even if it has the same properties as a previously sent event. This means that if you replay data, you will create duplicate events in Amplitude. To prevent duplicates, use the `insert_id` field which Amplitude uses for deduplication within a 7-day window.
 
 ### Can I update user properties without sending an event?
 
@@ -265,3 +342,23 @@ Amplitude uses the device_id field to track anonymous users. When you send event
 ### How are group properties updated in Amplitude?
 
 Group properties are updated using the Group call, which sets the group type and value in the `groups` object and also updates user properties with the group information. Additionally, a separate request is made to the `/groupidentify` endpoint to update group properties.
+
+### What happens when I exceed rate limits?
+
+When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by implementing retry logic with exponential backoff. The response includes information about which users/devices are throttled.
+
+### How does batching work in the Amplitude destination?
+
+The Amplitude destination automatically batches events to optimize API usage. Events are batched up to 20 MB or 500 events per batch when using the `/batch` endpoint. Individual events use the `/2/httpapi` endpoint with smaller limits (1 MB, 2000 events for Growth/Enterprise plans).
+
+### Can I use custom event names for page and screen events?
+
+Yes, you can configure custom event names for page and screen events using the `userProvidedPageEventString` and `userProvidedScreenEventString` settings. You can use template variables like `{{properties.name}}` to dynamically generate event names.
+
+### How does revenue tracking work?
+
+Revenue tracking is automatically enabled when a track event contains a `revenue` property. The destination extracts revenue information and moves it to the root level of the Amplitude payload. You can also enable per-product revenue tracking for e-commerce events.
+
+### What user property operations are supported?
+
+When Enhanced User Operations is enabled, the destination supports Amplitude's user property operations: `$set`, `$setOnce`, `$add`, `$append`, `$prepend`, and `$unset`. These are configured through the destination settings for traits to increment, set once, append, or prepend.

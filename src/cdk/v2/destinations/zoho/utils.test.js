@@ -410,7 +410,7 @@ describe('deduceModuleInfoV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = deduceModuleInfoV2(input.connectionConfig, input.destination);
+      const result = deduceModuleInfoV2(input.destination, input.connectionConfig);
       expect(result).toEqual(expected);
     });
   });

@@ -342,8 +342,8 @@ const processRecordInputsV2 = async (inputs, destination) => {
   };
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
-    connectionConfig,
     destination,
+    connectionConfig,
   );
 
   await Promise.all(

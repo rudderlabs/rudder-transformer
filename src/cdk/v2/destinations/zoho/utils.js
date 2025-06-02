@@ -14,7 +14,7 @@ const { CommonUtils } = require('../../../../util/common');
 const getRegion = (destination) =>
   destination?.deliveryAccount?.options?.region || destination?.Config?.region;
 
-const deduceModuleInfoV2 = (connectionConfig, destination) => {
+const deduceModuleInfoV2 = (destination, connectionConfig) => {
   const { object, identifierMappings } = connectionConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {

@@ -1,41 +1,57 @@
 # Mixpanel RETL Functionality
 
-## RETL-Specific Logic
+## RETL Support Status
 
-The Mixpanel destination implements special handling for events that come from RETL sources. These events are identified by the presence of the `context.mappedToDestination` flag (defined as `MappedToDestinationKey` in the codebase).
-
-### Key RETL-Specific Behaviors
-
-Based on the codebase analysis, the following RETL-specific behaviors are implemented:
-
-1. **Direct Property Passing**:
-   - When an event is marked with `context.mappedToDestination = true`, the transformer likely passes properties directly to Mixpanel without applying the standard mapping logic
-   - This allows RETL sources to provide pre-formatted properties that match Mixpanel's expected format
-
-2. **External ID Handling**:
-   - For events from RETL sources, there may be special logic to handle external IDs from the context
+**Current Status**: The Mixpanel destination does not have explicit RETL-specific implementation or special handling for events from RETL sources.
 
 ## VDM v2 Support
 
-Based on the configuration analysis, this destination doesn't appear to support VDM v2 as there's no explicit support for `record` event type in the supported message types.
+**VDM v2 Support**: No
 
-## Connection Configuration
+Based on the configuration analysis:
+- The destination does not support the `record` event type in `supportedMessageTypes`
+- No VDM v2-specific logic is implemented in the transformer code
+- The destination processes standard event types (identify, track, page, screen, group, alias) only
 
-RETL connections to Mixpanel would require the same configuration parameters as regular connections:
+## Standard Event Stream Processing
+
+The Mixpanel destination processes all events through the standard event stream logic, regardless of their source:
+
+### Supported Event Types
+- **Identify**: User profile updates via `/engage` endpoint
+- **Track**: Event tracking via `/track` or `/import` endpoints
+- **Page**: Page view events (converted to track events)
+- **Screen**: Screen view events (converted to track events)
+- **Group**: Group profile updates via `/groups` endpoint
+- **Alias**: User identity merging via `/import` endpoint with `$merge` event
+
+### Connection Configuration
+
+All connections to Mixpanel use the same configuration parameters:
 
 - **Token**: Required for authentication with Mixpanel API
-- **Data Residency**: Specifies the Mixpanel data center to use
-- **API Secret**: Required for using the Import API
+- **Data Residency**: Specifies the Mixpanel data center to use (US, EU, IN)
+- **API Secret**: Required for using the Import API (server-side implementations)
+- **Identity Merge API**: Choose between Original ID Merge and Simplified ID Merge
 
 ## Data Flow
 
-### RETL Data Flow
+### Standard Data Flow
 
-1. RudderStack receives events from RETL sources with `context.mappedToDestination = true`
-2. Properties are passed directly to Mixpanel without standard mapping
-3. The transformer sends the processed events to Mixpanel via the appropriate endpoints:
-   - `/import` for events
-   - `/engage` for user profiles
-   - `/groups` for group profiles
+1. RudderStack receives events from any source (SDK, cloud app, etc.)
+2. Events are processed through standard transformation logic
+3. Transformed events are sent to appropriate Mixpanel endpoints:
+   - `/import` for server-side event tracking
+   - `/track` for client-side event tracking
+   - `/engage` for user profile updates
+   - `/groups` for group profile updates
 
-NEEDS REVIEW: The exact RETL implementation details for Mixpanel should be verified as the codebase analysis doesn't show explicit RETL-specific code paths for this destination.
+### No RETL-Specific Logic
+
+The codebase analysis confirms that there is no special handling for:
+- `context.mappedToDestination` flag
+- `record` event types
+- RETL-specific property mapping
+- External ID handling from RETL context
+
+All events are processed using the same transformation and mapping logic regardless of their source.

@@ -1,6 +1,9 @@
 # Customer.io Destination
 
-Implementation in **JavaScript**
+## Implementation Details
+
+- **Implementation Type**: JavaScript (v0)
+- **CDK v2 Enabled**: No
 
 ## Configuration
 
@@ -26,6 +29,11 @@ Implementation in **JavaScript**
 - **Device Token Event Name**: Event name that triggers device token registration
   - When this event is fired, device tokens are sent to Customer.io immediately
   - Used for mobile push notification setup
+  - Configuration key: `deviceTokenEventName`
+
+- **Send Page Name in SDK**: Controls whether page names are sent in SDK mode
+  - Configuration key: `sendPageNameInSDK`
+  - Platform-specific setting for web SDK behavior
 
 ## Integration Functionalities
 
@@ -51,21 +59,34 @@ Implementation in **JavaScript**
 
 ### Rate Limits
 
-The Customer.io Track API enforces rate limits to ensure system stability. Here are the rate limits for the endpoints used by this destination:
+Customer.io's Track API has a **global rate limit** that applies to all endpoints:
 
-| Endpoint | Event Types | Rate Limit | Batch Limits | Description |
-|----------|-------------|------------|--------------|-------------|
-| `/api/v1/customers/:id` | Identify | 3,000 requests per 3 seconds | - | Used for identifying/updating user profiles |
-| `/api/v1/customers/:id/events` | Track, Page, Screen | 3,000 requests per 3 seconds | - | Used for sending events for identified users |
-| `/api/v1/events` | Track, Page, Screen (Anonymous) | 3,000 requests per 3 seconds | - | Used for sending anonymous events |
-| `/api/v1/merge_customers` | Alias | 3,000 requests per 3 seconds | - | Used for merging user profiles |
-| `/api/v2/batch` | Group | 3,000 requests per 3 seconds | 1000 events, 500KB per request | Used for batch operations with objects |
-| `/api/v1/customers/:id/devices` | Device Registration | 3,000 requests per 3 seconds | - | Used for device token management |
-| `/api/v1/customers/:id/devices/:device_id` | Device Deletion | 3,000 requests per 3 seconds | - | Used for device token removal |
+- **Rate Limit**: 3,000 requests per 3 seconds (applies to the entire Track API)
+- **Enforcement**: Not strictly enforced, but consistently exceeding this limit may lead to throttling or dropped data during high system load periods
+- **Scope**: This limit applies to all Track API endpoints collectively, not per individual endpoint
 
-#### Monitoring Rate Limits
+#### API Endpoints Used
 
-While the 3000 requests per 3 seconds rate limit is not strictly enforced, consistently exceeding it may lead to throttling or dropped data, especially during periods of high system load.
+This destination uses the following Customer.io Track API endpoints:
+
+| Endpoint | Event Types | Batch Support | Description |
+|----------|-------------|---------------|-------------|
+| `/api/v1/customers/:id` | Identify | No | Identify/update user profiles |
+| `/api/v1/customers/:id/events` | Track, Page, Screen | No | Send events for identified users |
+| `/api/v1/events` | Track, Page, Screen (Anonymous) | No | Send anonymous events |
+| `/api/v1/merge_customers` | Alias | No | Merge user profiles |
+| `/api/v2/batch` | Group | Yes (1000 events, 500KB max) | Batch operations with objects |
+| `/api/v1/customers/:id/devices` | Device Registration | No | Device token management |
+| `/api/v1/customers/:id/devices/:device_id` | Device Deletion | No | Device token removal |
+
+#### Additional API Limits
+
+- **v2 Single Request**: 32KB maximum payload size
+- **v2 Batch Request**: 500KB maximum payload size (each individual request within batch must be ≤32KB)
+- **Event Name**: 100 bytes maximum length
+- **Customer ID**: 150 bytes maximum length
+- **Attribute Names**: 150 bytes maximum length
+- **Attribute Values**: 1000 bytes maximum length
 
 [Docs Reference](https://docs.customer.io/integrations/api/track/#section/Track-API-limits)
 
@@ -97,6 +118,11 @@ Customer.io destination does not make intermediate calls for any event types. Al
 
 - **Supported**: No
 - Customer.io destination does not implement user deletion functionality via the suppression API
+
+### OAuth Support
+
+- **Supported**: No
+- Customer.io destination uses API Key authentication (Basic Auth) only
 
 ### Additional Functionalities
 
@@ -185,18 +211,26 @@ All Customer.io event types result in single API calls to their respective endpo
 
 ## Version Information
 
-### Current Version
+### Current API Versions
 
 Customer.io uses versioned APIs but does not have versioned releases with deprecation schedules:
 
 - **Track API v1**: Used for most operations (identify, track, alias, device management)
+  - Endpoints: `/api/v1/customers/:id`, `/api/v1/customers/:id/events`, `/api/v1/events`, `/api/v1/merge_customers`, `/api/v1/customers/:id/devices`
 - **Track API v2**: Used for batch operations (group events)
+  - Endpoints: `/api/v2/entity`, `/api/v2/batch`
+
+### Deprecation Information
+
 - **No Deprecation Timeline**: Customer.io maintains backward compatibility without announced deprecation dates
+- **Version Stability**: Both v1 and v2 APIs are stable and actively maintained
+- **Migration Path**: No migration required as both versions are supported indefinitely
 
-### API Endpoints Used
+### New Versions Available
 
-- **v1 API**: Primary API for individual operations
-- **v2 API**: Used specifically for batch operations with objects and relationships
+- **Current Status**: No newer API versions are available
+- **v2 API**: Represents the latest batch processing capabilities
+- **Feature Parity**: v1 and v2 APIs serve different purposes (individual vs batch operations)
 
 ## Documentation Links
 

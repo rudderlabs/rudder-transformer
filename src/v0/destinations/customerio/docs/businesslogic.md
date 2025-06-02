@@ -14,7 +14,6 @@ This document details the business logic, field mappings, and event processing f
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
@@ -24,7 +23,6 @@ const identifyResponseBuilder = (userId, message) => {
     throw new InstrumentationError('userId or email is not present');
   }
 ````
-</augment_code_snippet>
 
 **Required Fields**:
 - `userId` OR `email` (at least one must be present)
@@ -51,7 +49,6 @@ const identifyResponseBuilder = (userId, message) => {
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
   const rawPayload = {};
@@ -71,7 +68,6 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     rawPayload.anonymous_id = message.anonymousId;
   }
 ````
-</augment_code_snippet>
 
 **Required Fields**:
 - **Identified Events**: `userId` or `email`
@@ -98,14 +94,12 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/transform.js" mode="EXCERPT">
 ````javascript
 case EventType.PAGE:
   evType = 'page'; // customerio mandates sending 'page' for pageview events
   evName = message.name || message.properties?.url;
   break;
 ````
-</augment_code_snippet>
 
 **Field Mappings**:
 - **Event Type**: Set to `"page"`
@@ -118,14 +112,12 @@ case EventType.PAGE:
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/transform.js" mode="EXCERPT">
 ````javascript
 case EventType.SCREEN:
   evType = 'event';
   evName = `Viewed ${message.event || message.properties?.name} Screen`;
   break;
 ````
-</augment_code_snippet>
 
 **Field Mappings**:
 - **Event Type**: Set to `"event"`
@@ -143,7 +135,6 @@ case EventType.SCREEN:
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const groupResponseBuilder = (message) => {
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name]);
@@ -160,7 +151,6 @@ const groupResponseBuilder = (message) => {
     cio_relationships: [],
   };
 ````
-</augment_code_snippet>
 
 **Field Mappings** (from `customerIoGroup.json`):
 - **Object ID**: `groupId` → `object_id` (required)
@@ -189,7 +179,6 @@ const groupResponseBuilder = (message) => {
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const aliasResponseBuilder = (message, userId) => {
   if (!userId || !message.previousId) {
@@ -206,7 +195,6 @@ const aliasResponseBuilder = (message, userId) => {
     },
   };
 ````
-</augment_code_snippet>
 
 **Required Fields**:
 - `userId` (primary profile to keep)
@@ -237,7 +225,6 @@ const aliasResponseBuilder = (message, userId) => {
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
 if (isDeviceRelatedEvent && id && token) {
@@ -254,7 +241,6 @@ if (isDeviceRelatedEvent && id && token) {
   set(rawPayload, 'device', devProps);
 }
 ````
-</augment_code_snippet>
 
 **Required Fields**:
 - User ID or email
@@ -286,14 +272,12 @@ if (isDeviceRelatedEvent && id && token) {
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/transform.js" mode="EXCERPT">
 ````javascript
 // replace default domain with EU data center domain for EU based account
 if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU) {
   response.endpoint = response.endpoint.replace('track.customer.io', 'track-eu.customer.io');
 }
 ````
-</augment_code_snippet>
 
 **Endpoint Transformation**:
 - **US**: `track.customer.io` (default)
@@ -305,7 +289,6 @@ if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU)
 
 **Business Logic**:
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const getEventChunks = (groupEvents) => {
   const eventChunks = [];
@@ -326,7 +309,6 @@ const getEventChunks = (groupEvents) => {
     batchedData.push(events.message.body.JSON);
   });
 ````
-</augment_code_snippet>
 
 **Batching Rules**:
 - **Maximum Events**: 1000 events per batch
@@ -337,7 +319,6 @@ const getEventChunks = (groupEvents) => {
 
 ### Configuration Validation
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const validateConfigFields = (destination) => {
   const { Config } = destination;
@@ -348,7 +329,6 @@ const validateConfigFields = (destination) => {
   });
 };
 ````
-</augment_code_snippet>
 
 **Required Configuration**:
 - `siteID`
@@ -383,14 +363,12 @@ const validateConfigFields = (destination) => {
 
 ### Path Parameter Safety
 
-<augment_code_snippet path="src/v0/destinations/customerio/util.js" mode="EXCERPT">
 ````javascript
 const encodePathParameter = (param) => {
   if (typeof param !== 'string') return param;
   return param.includes('/') ? encodeURIComponent(param) : param;
 };
 ````
-</augment_code_snippet>
 
 **URL Encoding**: User IDs containing forward slashes are automatically URL encoded to prevent API endpoint path issues.
 

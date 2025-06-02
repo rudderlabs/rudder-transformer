@@ -23,9 +23,9 @@ const destResponseHandler = (responseParams) => {
   };
 };
 
-const prepareIntercomProxyRequest = (request) => {
+const prepareIntercomProxyRequest = async (request) => {
   const { metadata } = request;
-  const preparedRequest = prepareProxyRequest(request);
+  const preparedRequest = await prepareProxyRequest(request);
   preparedRequest.headers['User-Agent'] = process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack';
   return { ...preparedRequest, metadata };
 };
@@ -38,7 +38,7 @@ const prepareIntercomProxyRequest = (request) => {
  */
 const intercomProxyRequest = async (request) => {
   const { endpoint, data, method, params, headers, metadata } =
-    prepareIntercomProxyRequest(request);
+    await prepareIntercomProxyRequest(request);
 
   const requestOptions = {
     url: endpoint,

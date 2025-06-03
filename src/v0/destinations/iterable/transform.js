@@ -1,6 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, mapInBatches } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   getCatalogEndpoint,
@@ -169,10 +169,12 @@ const process = (event) => {
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const batchedEvents = batchEvents(inputs);
-  const response = await Promise.all(
-    batchedEvents.map(async (listOfEvents) => {
-      let transformedPayloads = await Promise.all(
-        listOfEvents.map(async (event) => {
+  const response = await mapInBatches(
+    batchedEvents,
+    async (listOfEvents) => {
+      let transformedPayloads = await mapInBatches(
+        listOfEvents,
+        async (event) => {
           try {
             if (event.message.statusCode) {
               // already transformed event
@@ -224,7 +226,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
           } catch (error) {
             return handleRtTfSingleEventError(event, error, reqMetadata);
           }
-        }),
+        },
+        { sequentialProcessing: false }, // concurrent processing
       );
 
       /**
@@ -233,7 +236,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
        */
       transformedPayloads = lodash.flatMap(transformedPayloads);
       return filterEventsAndPrepareBatchRequests(transformedPayloads);
-    }),
+    },
+    { sequentialProcessing: false }, // concurrent processing
   );
 
   // Flatten the response array containing batched events from multiple groups

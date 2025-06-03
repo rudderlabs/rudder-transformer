@@ -1,5 +1,8 @@
-const lodash = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  groupByInBatches,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   returnArrayOfSubarrays,
@@ -141,7 +144,9 @@ const process = async (event) => processEvent(event.metadata, event.message, eve
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = [];
-  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+  const groupedInputs = await groupByInBatches(inputs, (input) =>
+    input.message.type?.toLowerCase(),
+  );
   let transformedRecordEvent = [];
   let transformedAudienceEvent = [];
 

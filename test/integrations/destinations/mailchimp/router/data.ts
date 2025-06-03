@@ -465,10 +465,11 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [{ jobId: 6, userId: 'u1' }],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 400,
-              error: 'Missing required value from "event"',
+              error:
+                'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
               statTags: {
                 destType: 'MAILCHIMP',
                 errorCategory: 'dataValidation',
@@ -496,11 +497,10 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [{ jobId: 4, userId: 'u1' }],
+              metadata: [{ jobId: 6, userId: 'u1' }],
               batched: false,
               statusCode: 400,
-              error:
-                'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
+              error: 'Missing required value from "event"',
               statTags: {
                 destType: 'MAILCHIMP',
                 errorCategory: 'dataValidation',

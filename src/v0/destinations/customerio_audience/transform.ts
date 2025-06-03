@@ -1,3 +1,4 @@
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import {
   CustomerIOConnection,
   CustomerIODestination,
@@ -17,7 +18,7 @@ const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata:
   const customerIOConnection = connection as CustomerIOConnection;
 
   // Process events and separate valid and error cases
-  const processedEvents = inputs.map((event) => {
+  const processedEvents = await mapInBatches(inputs, (event) => {
     try {
       return {
         success: true,

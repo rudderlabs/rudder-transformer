@@ -342,7 +342,7 @@ describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
         },
       },
     ];
-    expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+    expect(await combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
   });
 
   it('Each batchRequest contains unique jobIds (no event multiplexing)', async () => {
@@ -460,7 +460,7 @@ describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
         },
       },
     ];
-    expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+    expect(await combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
   });
 });
 

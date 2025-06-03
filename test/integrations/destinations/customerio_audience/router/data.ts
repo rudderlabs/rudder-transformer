@@ -1,4 +1,4 @@
-import { generateMetadata, generateRecordPayload } from '../../../testUtils';
+import { generateMetadata, generateRecordPayload, overrideDestination } from '../../../testUtils';
 import { defaultMockFns } from '../mocks';
 import {
   destType,
@@ -304,7 +304,7 @@ export const data = [
               metadata: [generateMetadata(10)],
               batched: false,
               statusCode: 400,
-              error: 'identifiers: exactly one identifier is supported',
+              error: 'identifiers: cannot be empty',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },
@@ -312,7 +312,7 @@ export const data = [
               metadata: [generateMetadata(11)],
               batched: false,
               statusCode: 400,
-              error: 'identifiers: exactly one identifier is supported',
+              error: 'identifiers: only one identifier is supported',
               statTags: RouterInstrumentationErrorStatTags,
               destination,
             },

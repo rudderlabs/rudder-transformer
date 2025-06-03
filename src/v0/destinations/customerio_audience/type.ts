@@ -4,11 +4,10 @@ import {
   Connection,
   Destination,
   DestinationConnectionConfig,
+  MessageTypeSchema,
   Metadata,
   RouterTransformationRequestData,
-  RudderRecordV2Schema,
 } from '../../../types';
-import { RecordAction } from '../../../types/rudderEvents';
 
 import {
   BatchedRequest,
@@ -38,7 +37,11 @@ export type SegmentationHeaders = {
   Authorization: string;
 };
 
-// We use RudderRecordV2's action type directly
+export const SegmentAction = {
+  INSERT: 'insert',
+  UPDATE: 'update',
+  DELETE: 'delete',
+} as const;
 
 export const CustomerIODestinationConfigSchema = z
   .object({
@@ -60,18 +63,33 @@ export const CustomerIOConnectionConfigSchema = z
 
 export type CustomerIOConnectionConfig = z.infer<typeof CustomerIOConnectionConfigSchema>;
 
-// Message type specific to CustomerIO, based on RudderRecordV2Schema
-export const CustomerIOMessageSchema = RudderRecordV2Schema.extend({
-  // Override the identifiers field with CustomerIO-specific validation
-  // For CustomerIO, identifiers is required and must contain exactly one identifier
-  identifiers: z
-    .record(z.string().min(1), z.union([z.string(), z.number()]))
-    .refine((ids) => Object.keys(ids).length === 1, {
-      message: 'exactly one identifier is supported',
-    }),
-});
+const SegmentActionSchema = z.nativeEnum(SegmentAction);
 
-// CustomerIOMessage type derived directly from the schema
+// Message type specific to CustomerIO
+export const CustomerIOMessageSchema = z
+  .object({
+    type: z.literal(MessageTypeSchema.enum.record),
+    action: SegmentActionSchema,
+    identifiers: z
+      .record(z.string(), z.union([z.string(), z.number()]))
+      .superRefine((identifiers, ctx) => {
+        if (Object.keys(identifiers).length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'cannot be empty',
+          });
+        } else if (Object.keys(identifiers).length !== 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'only one identifier is supported',
+          });
+        }
+      }),
+  })
+  .passthrough();
+
+export type SegmentActionType = z.infer<typeof SegmentActionSchema>;
+
 export type CustomerIOMessage = z.infer<typeof CustomerIOMessageSchema>;
 
 // Final exported types using generics from base types
@@ -103,5 +121,5 @@ export type CustomerIOBatchedRequest = BatchedRequest<
 export type CustomerIOBatchedRequestBody = BatchedRequestBody<SegmentationPayload>;
 
 export type ProcessedEvent = RespList & {
-  eventAction: RecordAction;
+  eventAction: SegmentActionType;
 };

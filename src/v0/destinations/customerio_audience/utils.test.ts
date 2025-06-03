@@ -68,8 +68,6 @@ describe('utils', () => {
                 type: 'record',
                 action: 'insert',
                 identifiers: { email: 'test@test.com' },
-                rudderId: 'test-rudder-id',
-                messageId: 'test-message-id',
               },
               connection: {
                 config: {
@@ -94,8 +92,6 @@ describe('utils', () => {
                 type: 'record',
                 action: 'insert',
                 identifiers: { email: 'test@test.com' },
-                rudderId: 'test-rudder-id',
-                messageId: 'test-message-id',
               },
               connection: {
                 config: {
@@ -138,8 +134,6 @@ describe('utils', () => {
                 type: 'record',
                 action: 'insert',
                 identifiers: { email: 'test@test.com' },
-                rudderId: 'test-rudder-id',
-                messageId: 'test-message-id',
               },
               connection: {
                 config: {

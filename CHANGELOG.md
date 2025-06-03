@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.101.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.101.0...v1.101.1) (2025-06-02)
+
+
+### Bug Fixes
+
+* handle newline for slack ([#4357](https://github.com/rudderlabs/rudder-transformer/issues/4357)) ([b3f9a9b](https://github.com/rudderlabs/rudder-transformer/commit/b3f9a9bbe90c85cae8b2bf9226fd892bc2e31a10))
+
 ## [1.101.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.100.0...v1.101.0) (2025-05-26)
 
 

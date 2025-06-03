@@ -25,43 +25,43 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   const failedUserDeletions = [];
-  await Promise.all(
-    validUserIds.map(async (uId) => {
-      const endpointCategory = { endpoint: `users/byUserId/${uId}` };
-      const url = constructEndpoint(dataCenter, endpointCategory);
-      const requestOptions = {
-        headers: {
-          'Content-Type': JSON_MIME_TYPE,
-          api_key: apiKey,
-        },
-      };
-      const resp = await httpDELETE(url, requestOptions, {
-        destType: 'iterable',
-        feature: 'deleteUsers',
-        endpointPath: '/users/byUserId/uId',
-        requestMethod: 'DELETE',
-        module: 'deletion',
-      });
-      const handledDelResponse = processAxiosResponse(resp);
-      if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
-        if (handledDelResponse.status !== 400) {
-          // Generic errors such as invalid api key
-          throw new NetworkError(
-            `User deletion request failed : ${handledDelResponse.response.msg}`,
-            handledDelResponse.status,
-            {
-              [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
-              [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
-            },
-            handledDelResponse,
-          );
-        } else {
-          // Specific errors such as user is not found
-          failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
-        }
+  // eslint-disable-next-line no-restricted-syntax
+  for (const uId of validUserIds) {
+    const endpointCategory = { endpoint: `users/byUserId/${uId}` };
+    const url = constructEndpoint(dataCenter, endpointCategory);
+    const requestOptions = {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+        api_key: apiKey,
+      },
+    };
+    // eslint-disable-next-line no-await-in-loop
+    const resp = await httpDELETE(url, requestOptions, {
+      destType: 'iterable',
+      feature: 'deleteUsers',
+      endpointPath: '/users/byUserId/uId',
+      requestMethod: 'DELETE',
+      module: 'deletion',
+    });
+    const handledDelResponse = processAxiosResponse(resp);
+    if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
+      if (handledDelResponse.status !== 400) {
+        // Generic errors such as invalid api key
+        throw new NetworkError(
+          `User deletion request failed : ${handledDelResponse.response.msg}`,
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+            [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
+          },
+          handledDelResponse,
+        );
+      } else {
+        // Specific errors such as user is not found
+        failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
       }
-    }),
-  );
+    }
+  }
 
   if (failedUserDeletions.length > 0) {
     throw new NetworkError(

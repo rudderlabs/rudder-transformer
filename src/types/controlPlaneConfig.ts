@@ -21,9 +21,10 @@ export type Account<
   AccountDefinitionT = AccountDefinition,
 > = {
   ID: string;
-  Options?: OptionsT;
+  Options: OptionsT;
   Secret: SecretT;
   AccountDefinition?: AccountDefinitionT;
+  AccountDefinitionName: string;
 };
 
 export type Destination<
@@ -43,7 +44,6 @@ export type Destination<
   IsConnectionEnabled?: boolean;
   DeliveryAccount?: DeliveryAccountT;
   DeleteAccount?: DeleteAccountT;
-  hasDynamicConfig?: boolean; // Flag indicating whether the destination config contains dynamic config patterns
 };
 
 export type DestinationConnectionConfig<T> = {

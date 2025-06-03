@@ -2,6 +2,7 @@ const {
   getHashFromArray,
   isDefinedAndNotNull,
   ConfigurationError,
+  PlatformError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedNullEmptyExclBoolInt,
   ZOHO_SDK,
@@ -11,8 +12,15 @@ const { isHttpStatusSuccess } = require('../../../../v0/util');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
-const getRegion = (destination) =>
-  destination?.deliveryAccount?.options?.region || destination?.Config?.region;
+const getRegion = (destination) => {
+  if (destination.deliveryAccount && destination.deliveryAccount.accountDefinition) {
+    if (destination.deliveryAccount?.options?.region) {
+      return destination.deliveryAccount.options.region;
+    }
+    throw new PlatformError('Region is not defined in delivery account options', 500);
+  }
+  return destination.Config?.region;
+};
 
 const deduceModuleInfoV2 = (destination, connectionConfig) => {
   const { object, identifierMappings } = connectionConfig;

@@ -12,13 +12,13 @@ export type AccountDefinitionConfig = { refreshOAuthToken?: string };
 
 export type AccountDefinition<Config = AccountDefinitionConfig> = {
   Name: string;
-  Config: Config;
+  Config: Config | null;
   AuthenticationType: string;
 };
 export type Account<
-  OptionsT = Record<string, unknown>,
-  SecretT = Record<string, unknown>,
-  AccountDefinitionT = AccountDefinition,
+  OptionsT = Record<string, unknown> | null,
+  SecretT = Record<string, unknown> | null,
+  AccountDefinitionT = AccountDefinition | null,
 > = {
   ID: string;
   Options: OptionsT;
@@ -29,8 +29,8 @@ export type Account<
 
 export type Destination<
   DestinationConfig = Record<string, unknown>,
-  DeliveryAccountT = Account,
-  DeleteAccountT = Account,
+  DeliveryAccountT = Account | null,
+  DeleteAccountT = Account | null,
 > = {
   ID: string;
   Name: string;

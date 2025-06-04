@@ -203,7 +203,7 @@ describe('Component Test Suite', () => {
     test.skip('No test cases provided. Skipping tests.', () => {});
   } else {
     describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
-      beforeEach(() => {
+      afterEach(() => {
         jest.resetAllMocks();
         jest.clearAllMocks();
       });

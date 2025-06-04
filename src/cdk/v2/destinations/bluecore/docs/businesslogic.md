@@ -1,4 +1,4 @@
-# Bluecore Business Logic and Mappings
+# Bluecore Business Logic and Field Mappings
 
 ## Overview
 
@@ -12,7 +12,7 @@ The Bluecore integration uses a configuration-driven mapping approach with separ
 
 1. **`bluecoreCommonConfig.json`**: Common properties shared across all event types
 2. **`bluecoreIdentifyConfig.json`**: Properties specific to identify events
-3. **`bluecoreTrackConfig.json`**: Properties specific to track events (NEEDS REVIEW - file not found in codebase)
+3. **`bluecoreTrackConfig.json`**: Properties specific to track events
 4. **`bluecoreSubscriptionEventConfig.json`**: Properties specific to subscription events
 
 ## Event Processing Flows
@@ -82,41 +82,41 @@ RudderStack Track Event
 
 Based on `bluecoreCommonConfig.json`:
 
-| Source Path | Destination Path | Type | Required | Notes |
-|-------------|------------------|------|----------|-------|
-| `traits.name` | `properties.customer.name` | String | No | Customer full name |
-| `traits.firstName` | `properties.customer.first_name` | String | No | Customer first name |
-| `traits.lastName` | `properties.customer.last_name` | String | No | Customer last name |
-| `traits.age` | `properties.customer.age` | Number | No | Customer age |
-| `traits.gender` | `properties.customer.sex` | String | No | Customer gender |
-| `traits.address` | `properties.customer.address` | Object | No | Customer address |
-| `traits.email` | `properties.customer.email` | String | No | Customer email |
-| `context.app.version` | `properties.client` | String | No | Application version |
-| `context.device.model` | `properties.device` | String | No | Device model |
+| Source Path            | Destination Path                 | Type   | Required | Notes               |
+| ---------------------- | -------------------------------- | ------ | -------- | ------------------- |
+| `traits.name`          | `properties.customer.name`       | String | No       | Customer full name  |
+| `traits.firstName`     | `properties.customer.first_name` | String | No       | Customer first name |
+| `traits.lastName`      | `properties.customer.last_name`  | String | No       | Customer last name  |
+| `traits.age`           | `properties.customer.age`        | Number | No       | Customer age        |
+| `traits.gender`        | `properties.customer.sex`        | String | No       | Customer gender     |
+| `traits.address`       | `properties.customer.address`    | Object | No       | Customer address    |
+| `traits.email`         | `properties.customer.email`      | String | No       | Customer email      |
+| `context.app.version`  | `properties.client`              | String | No       | Application version |
+| `context.device.model` | `properties.device`              | String | No       | Device model        |
 
 ### Identify Event Specific Properties
 
 Based on `bluecoreIdentifyConfig.json`:
 
-| Source Path | Destination Path | Type | Required | Notes |
-|-------------|------------------|------|----------|-------|
-| `traits.action` | `event` | String | No | Action type for identify events |
-| `context.traits.action` | `event` | String | No | Fallback for action field |
+| Source Path             | Destination Path | Type   | Required | Notes                           |
+| ----------------------- | ---------------- | ------ | -------- | ------------------------------- |
+| `traits.action`         | `event`          | String | No       | Action type for identify events |
+| `context.traits.action` | `event`          | String | No       | Fallback for action field       |
 
 ### Subscription Event Properties
 
 Based on `bluecoreSubscriptionEventConfig.json`:
 
-| Source Path | Destination Path | Type | Required | Notes |
-|-------------|------------------|------|----------|-------|
-| `properties` | `properties` | Object | No | All properties (excluding channelConsents, list) |
-| `traits.name` | `properties.name` | String | No | Customer name |
-| `traits.firstName` | `properties.first_name` | String | No | Customer first name |
-| `traits.lastName` | `properties.last_name` | String | No | Customer last name |
-| `traits.age` | `properties.age` | Number | No | Customer age |
-| `traits.gender` | `properties.sex` | String | No | Customer gender |
-| `traits.address` | `properties.address` | Object | No | Customer address |
-| `traits.email` | `properties.email` | String | No | Customer email |
+| Source Path        | Destination Path        | Type   | Required | Notes                                            |
+| ------------------ | ----------------------- | ------ | -------- | ------------------------------------------------ |
+| `properties`       | `properties`            | Object | No       | All properties (excluding channelConsents, list) |
+| `traits.name`      | `properties.name`       | String | No       | Customer name                                    |
+| `traits.firstName` | `properties.first_name` | String | No       | Customer first name                              |
+| `traits.lastName`  | `properties.last_name`  | String | No       | Customer last name                               |
+| `traits.age`       | `properties.age`        | Number | No       | Customer age                                     |
+| `traits.gender`    | `properties.sex`        | String | No       | Customer gender                                  |
+| `traits.address`   | `properties.address`    | Object | No       | Customer address                                 |
+| `traits.email`     | `properties.email`      | String | No       | Customer email                                   |
 
 ## Business Logic Rules
 
@@ -125,15 +125,17 @@ Based on `bluecoreSubscriptionEventConfig.json`:
 The integration implements a priority-based system for determining the user identifier:
 
 #### For Identify Events:
+
 1. `userId` (highest priority)
-2. `email` 
+2. `email`
 3. `externalId.bluecoreExternalId`
 4. `anonymousId` (lowest priority)
 
 #### For Track Events:
+
 1. `email` (highest priority)
 2. `userId`
-3. `externalId.bluecoreExternalId` 
+3. `externalId.bluecoreExternalId`
 4. `anonymousId` (lowest priority)
 
 ### Event Name Mapping Logic
@@ -148,7 +150,7 @@ const EVENT_NAME_MAPPING = [
   { src: ['product added'], dest: 'add_to_cart' },
   { src: ['product removed'], dest: 'remove_from_cart' },
   { src: ['product added to wishlist'], dest: 'wishlist' },
-  { src: ['order completed'], dest: 'purchase' }
+  { src: ['order completed'], dest: 'purchase' },
 ];
 ```
 
@@ -181,20 +183,24 @@ For e-commerce events, the integration normalizes product arrays:
 ### Required Field Validations
 
 #### All Events:
+
 - Bluecore namespace must be present in destination configuration
 - Message type must be 'identify' or 'track'
 - Distinct ID must be determinable from available fields
 
 #### Identify Events:
+
 - No additional required fields beyond common validations
 
 #### Track Events:
+
 - Event name is required
 - For search events: `search_term` is required
 - For purchase events: `order_id`, `total`, and `products` array are required
 - For subscription events: `channelConsents.email` must be boolean
 
 #### E-commerce Events:
+
 - Products array is required for: viewed_product, add_to_cart, remove_from_cart, wishlist, purchase
 - Each product must have at least an `id` field
 
@@ -211,7 +217,7 @@ For e-commerce events, the integration normalizes product arrays:
 ### Validation Errors
 
 1. **Missing Namespace**: Throws ConfigurationError
-2. **Missing Distinct ID**: Throws InstrumentationError  
+2. **Missing Distinct ID**: Throws InstrumentationError
 3. **Invalid Event Type**: Throws InstrumentationError
 4. **Missing Required Fields**: Throws InstrumentationError with specific field information
 
@@ -224,24 +230,28 @@ For e-commerce events, the integration normalizes product arrays:
 ## Use Cases and Applications
 
 ### E-commerce Tracking
+
 - **Product Catalog Sync**: Track product views, searches, and interactions
 - **Shopping Cart Management**: Monitor add/remove cart actions
 - **Purchase Tracking**: Complete order and revenue tracking
 - **Recommendation Engine**: Provide data for personalized recommendations
 
 ### Customer Profile Management
+
 - **Profile Creation**: Create new customer profiles with demographic data
 - **Profile Updates**: Update existing customer information in real-time
 - **Identity Resolution**: Link anonymous users to identified profiles
 - **Segmentation**: Enable customer segmentation based on behavior and attributes
 
 ### Email Marketing Automation
+
 - **Subscription Management**: Handle opt-in and unsubscribe events
 - **Campaign Triggering**: Trigger automated campaigns based on user actions
 - **Personalization**: Provide customer data for personalized email content
 - **List Management**: Maintain accurate email subscription lists
 
 ### Analytics and Insights
+
 - **Behavioral Analytics**: Track user behavior patterns
 - **Conversion Tracking**: Monitor conversion funnels and rates
 - **Customer Journey**: Map complete customer journey across touchpoints

@@ -22,8 +22,8 @@ const getRegion = (destination) => {
   return destination.Config?.region;
 };
 
-const deduceModuleInfoV2 = (destination, connectionConfig) => {
-  const { object, identifierMappings } = connectionConfig;
+const deduceModuleInfoV2 = (destination, destConfig) => {
+  const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
@@ -53,9 +53,9 @@ function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   };
 }
 
-const formatMultiSelectFieldsV2 = (connectionConfig, fields) => {
+const formatMultiSelectFieldsV2 = (destConfig, fields) => {
   const multiSelectFields = getHashFromArray(
-    connectionConfig.multiSelectFieldLevelDecision,
+    destConfig.multiSelectFieldLevelDecision,
     'from',
     'to',
     false,
@@ -190,10 +190,10 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async ({ identifiers, metadata, destination, connectionConfig }) => {
+const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig }) => {
   try {
     const region = getRegion(destination);
-    const { object } = connectionConfig;
+    const { object } = destConfig;
 
     const selectQuery = generateSqlQuery(object, identifiers);
     const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);

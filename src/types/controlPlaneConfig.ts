@@ -11,20 +11,20 @@ export type DestinationDefinition = {
 export type AccountDefinitionConfig = { refreshOAuthToken?: string };
 
 export type AccountDefinition<Config = AccountDefinitionConfig> = {
-  Name: string;
-  Config: Config | null;
-  AuthenticationType: string;
+  name: string;
+  config: Config | null;
+  authenticationType: string;
 };
 export type Account<
   OptionsT = Record<string, unknown> | null,
   SecretT = Record<string, unknown> | null,
   AccountDefinitionT = AccountDefinition | null,
 > = {
-  ID: string;
-  Options: OptionsT;
-  Secret: SecretT;
-  AccountDefinition?: AccountDefinitionT;
-  AccountDefinitionName: string;
+  id: string;
+  options: OptionsT;
+  secret: SecretT;
+  accountDefinition?: AccountDefinitionT;
+  accountDefinitionName: string;
 };
 
 export type Destination<
@@ -42,8 +42,8 @@ export type Destination<
   RevisionID?: string;
   IsProcessorEnabled?: boolean;
   IsConnectionEnabled?: boolean;
-  DeliveryAccount?: DeliveryAccountT;
-  DeleteAccount?: DeleteAccountT;
+  deliveryAccount?: DeliveryAccountT;
+  deleteAccount?: DeleteAccountT;
 };
 
 export type DestinationConnectionConfig<T> = {

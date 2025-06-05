@@ -280,7 +280,7 @@ describe('searchRecordIdV2', () => {
         identifiers: fields,
         metadata: mockMetadata,
         destination: { Config: mockConfig },
-        connectionConfig: mockConConfig.destination,
+        destConfig: mockConConfig.destination,
       });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
@@ -338,7 +338,7 @@ describe('searchRecordIdV2', () => {
         identifiers: fields,
         metadata: mockMetadata,
         destination: { Config: mockConfig },
-        connectionConfig: mockConConfig.destination,
+        destConfig: mockConConfig.destination,
       });
       expect(result).toEqual(expected);
     });
@@ -351,7 +351,7 @@ describe('deduceModuleInfoV2', () => {
       name: 'should return operationModuleInfo, upsertEndPoint and identifierType when conConfig is present',
       input: {
         destination: { Config: { region: 'US' } },
-        connectionConfig: {
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -366,7 +366,7 @@ describe('deduceModuleInfoV2', () => {
       name: 'should handle different regions in config',
       input: {
         destination: { Config: { region: 'EU' } },
-        connectionConfig: {
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -381,7 +381,7 @@ describe('deduceModuleInfoV2', () => {
       name: 'should use default US region when config.region is null',
       input: {
         destination: { Config: {} },
-        connectionConfig: {
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -396,7 +396,7 @@ describe('deduceModuleInfoV2', () => {
       name: 'should use default US region when config.region is undefined',
       input: {
         destination: { Config: {} }, // region is undefined
-        connectionConfig: {
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -411,7 +411,7 @@ describe('deduceModuleInfoV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = deduceModuleInfoV2(input.destination, input.connectionConfig);
+      const result = deduceModuleInfoV2(input.destination, input.destConfig);
       expect(result).toEqual(expected);
     });
   });

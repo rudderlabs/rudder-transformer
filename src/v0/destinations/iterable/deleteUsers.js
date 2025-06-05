@@ -1,4 +1,8 @@
-const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  forEachInBatches,
+} = require('@rudderstack/integrations-lib');
 const { httpDELETE } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
@@ -25,8 +29,9 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   const failedUserDeletions = [];
-  await Promise.all(
-    validUserIds.map(async (uId) => {
+  await forEachInBatches(
+    validUserIds,
+    async (uId) => {
       const endpointCategory = { endpoint: `users/byUserId/${uId}` };
       const url = constructEndpoint(dataCenter, endpointCategory);
       const requestOptions = {
@@ -60,7 +65,11 @@ const userDeletionHandler = async (userAttributes, config) => {
           failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
         }
       }
-    }),
+    },
+    {
+      batchSize: 10,
+      sequentialProcessing: false,
+    },
   );
 
   if (failedUserDeletions.length > 0) {

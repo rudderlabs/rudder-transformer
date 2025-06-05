@@ -41,7 +41,7 @@ export const v1OauthScenarios = [
             headers,
             method: 'PATCH',
             endpoint:
-              'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
+              'https://api.criteo.com/2025-04/audiences/3485/contactlist/expiredAccessToken',
           },
           [generateMetadata(1)],
         ),
@@ -100,7 +100,7 @@ export const v1OauthScenarios = [
             headers,
             method: 'PATCH',
             endpoint:
-              'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
+              'https://api.criteo.com/2025-04/audiences/34895/contactlist/invalidAccessToken',
           },
           [generateMetadata(2)],
         ),

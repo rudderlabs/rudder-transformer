@@ -23,7 +23,7 @@ export const networkCallsData = [
   {
     description: 'Mock response depicting expired access token error',
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
+      url: 'https://api.criteo.com/2025-04/audiences/3485/contactlist/expiredAccessToken',
       data: commonData,
       params,
       headers,
@@ -37,7 +37,7 @@ export const networkCallsData = [
             traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
             type: 'authorization',
             code: 'authorization-token-expired',
-            instance: '/2022-10/audiences/123/contactlist',
+            instance: '/2025-04/audiences/123/contactlist',
             title: 'The authorization token has expired',
           },
         ],
@@ -48,7 +48,7 @@ export const networkCallsData = [
   {
     description: 'Mock response depicting invalid access token error',
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
+      url: 'https://api.criteo.com/2025-04/audiences/34895/contactlist/invalidAccessToken',
       data: commonData,
       params,
       headers,
@@ -62,7 +62,7 @@ export const networkCallsData = [
             traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
             type: 'authorization',
             code: 'authorization-token-invalid',
-            instance: '/2022-10/audiences/123/contactlist',
+            instance: '/2025-04/audiences/123/contactlist',
             title: 'The authorization header is invalid',
           },
         ],

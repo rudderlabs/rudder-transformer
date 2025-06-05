@@ -17,7 +17,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34894/contactlist',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/3485/contactlist/expiredAccessToken',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -125,7 +125,7 @@ const v0testCases = [
                   traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
                   type: 'authorization',
                   code: 'authorization-token-expired',
-                  instance: '/2022-10/audiences/123/contactlist',
+                  instance: '/2025-04/audiences/123/contactlist',
                   title: 'The authorization token has expired',
                 },
               ],
@@ -159,7 +159,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34895/contactlist/invalidAccessToken',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ const v0testCases = [
                   traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
                   type: 'authorization',
                   code: 'authorization-token-invalid',
-                  instance: '/2022-10/audiences/123/contactlist',
+                  instance: '/2025-04/audiences/123/contactlist',
                   title: 'The authorization header is invalid',
                 },
               ],
@@ -239,7 +239,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34896/contactlist',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34896/contactlist',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -319,7 +319,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34897/contactlist',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34897/contactlist',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -398,7 +398,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34898/contactlist',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34898/contactlist',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',
@@ -470,7 +470,7 @@ const v0testCases = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34899/contactlist',
+          endpoint: 'https://api.criteo.com/2025-04/audiences/34899/contactlist',
           headers: {
             Authorization: defaultAccessTokenAuthHeader,
             'Content-Type': 'application/json',

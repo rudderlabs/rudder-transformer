@@ -16,6 +16,8 @@ const {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
+  getUserIdentifiers,
+  hasMatchingAlias,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -41,6 +43,7 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
+  ENABLE_CONDITIONAL_BRAZE_IDENTIFY,
 } = require('./config');
 
 const logger = require('../../../logger');
@@ -48,6 +51,7 @@ const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const stats = require('../../../util/stats');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -502,11 +506,34 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
 
       const integrationsObj = getIntegrationsObj(message, 'BRAZE');
       const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
-
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        await processIdentify({ message, destination });
+        stats.increment('braze_identify_calls_total', {
+          destination_id: destination.ID,
+        });
+
+        if (ENABLE_CONDITIONAL_BRAZE_IDENTIFY) {
+          try {
+            // Get current user identifiers from message
+            const currentIdentifiers = getUserIdentifiers(message);
+            const existingUser = processParams.userStore.get(currentIdentifiers.external_id);
+
+            if (existingUser && hasMatchingAlias(existingUser, currentIdentifiers)) {
+              stats.increment('braze_identify_skipped_total', {
+                destination_id: destination.ID,
+              });
+            } else {
+              await processIdentify({ message, destination });
+            }
+          } catch (error) {
+            logger.error('Error in conditional braze identify logic:', error);
+            await processIdentify({ message, destination });
+          }
+        } else {
+          await processIdentify({ message, destination });
+        }
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }

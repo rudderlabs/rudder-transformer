@@ -1935,3 +1935,152 @@ describe('getEndpointFromConfig', () => {
     });
   });
 });
+
+describe('getUserIdentifiers', () => {
+  const { getUserIdentifiers } = require('./util');
+  const { InstrumentationError } = require('@rudderstack/integrations-lib');
+
+  describe('input validation', () => {
+    const invalidInputs = [
+      { name: 'null input', input: null },
+      { name: 'undefined input', input: undefined },
+      { name: 'string input', input: 'string' },
+      { name: 'number input', input: 123 },
+    ];
+
+    invalidInputs.forEach(({ name, input }) => {
+      it(`should throw an error for ${name}`, () => {
+        expect(() => getUserIdentifiers(input)).toThrow(InstrumentationError);
+      });
+    });
+  });
+
+  describe('identifier extraction', () => {
+    const testCases = [
+      {
+        name: 'should extract external_id from userId if no brazeExternalId is present',
+        message: {
+          userId: 'test-user-id',
+          anonymousId: 'test-anonymous-id',
+        },
+        expected: {
+          external_id: 'test-user-id',
+          alias_name: 'test-anonymous-id',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        name: 'should extract external_id from brazeExternalId if present',
+        message: {
+          userId: 'test-user-id',
+          anonymousId: 'test-anonymous-id',
+          context: {
+            externalId: [{ type: 'brazeExternalId', id: 'braze-external-id' }],
+          },
+        },
+        expected: {
+          external_id: 'braze-external-id',
+          alias_name: 'test-anonymous-id',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        name: 'should use custom alias from integrations if present',
+        message: {
+          userId: 'test-user-id',
+          anonymousId: 'test-anonymous-id',
+          integrations: {
+            BRAZE: {
+              alias: {
+                alias_name: 'custom-alias-name',
+                alias_label: 'custom-alias-label',
+              },
+            },
+          },
+        },
+        expected: {
+          external_id: 'test-user-id',
+          alias_name: 'custom-alias-name',
+          alias_label: 'custom-alias-label',
+        },
+      },
+    ];
+
+    testCases.forEach(({ name, message, expected }) => {
+      it(name, () => {
+        const result = getUserIdentifiers(message);
+        expect(result).toEqual(expected);
+      });
+    });
+  });
+});
+
+describe('hasMatchingAlias', () => {
+  const { hasMatchingAlias } = require('./util');
+
+  const testCases = [
+    {
+      name: 'should return false if existingUser has no user_aliases',
+      existingUser: {
+        external_id: 'test-user-id',
+      },
+      currentIdentifiers: {
+        external_id: 'test-user-id',
+        alias_name: 'test-alias-name',
+        alias_label: 'test-alias-label',
+      },
+      expected: false,
+    },
+    {
+      name: 'should return false if user_aliases is not an array',
+      existingUser: {
+        external_id: 'test-user-id',
+        user_aliases: 'not-an-array',
+      },
+      currentIdentifiers: {
+        external_id: 'test-user-id',
+        alias_name: 'test-alias-name',
+        alias_label: 'test-alias-label',
+      },
+      expected: false,
+    },
+    {
+      name: 'should return false if no matching alias is found',
+      existingUser: {
+        external_id: 'test-user-id',
+        user_aliases: [
+          { alias_name: 'other-alias-name', alias_label: 'test-alias-label' },
+          { alias_name: 'test-alias-name', alias_label: 'other-alias-label' },
+        ],
+      },
+      currentIdentifiers: {
+        external_id: 'test-user-id',
+        alias_name: 'test-alias-name',
+        alias_label: 'test-alias-label',
+      },
+      expected: false,
+    },
+    {
+      name: 'should return true if a matching alias is found',
+      existingUser: {
+        external_id: 'test-user-id',
+        user_aliases: [
+          { alias_name: 'other-alias-name', alias_label: 'other-alias-label' },
+          { alias_name: 'test-alias-name', alias_label: 'test-alias-label' },
+        ],
+      },
+      currentIdentifiers: {
+        external_id: 'test-user-id',
+        alias_name: 'test-alias-name',
+        alias_label: 'test-alias-label',
+      },
+      expected: true,
+    },
+  ];
+
+  testCases.forEach(({ name, existingUser, currentIdentifiers, expected }) => {
+    it(name, () => {
+      expect(hasMatchingAlias(existingUser, currentIdentifiers)).toBe(expected);
+    });
+  });
+});

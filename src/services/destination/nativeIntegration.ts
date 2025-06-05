@@ -100,7 +100,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events);
+    const groupedEvents: RouterTransformationRequestData[][] = groupRouterTransformEvents(events, destinationType);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(

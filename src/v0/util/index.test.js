@@ -293,10 +293,10 @@ describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
             jobId: 1,
           },
           {
-            jobId: 4,
+            jobId: 3,
           },
           {
-            jobId: 3,
+            jobId: 4,
           },
         ],
         batched: true,
@@ -699,7 +699,7 @@ describe('extractCustomFields', () => {
 });
 
 describe('groupRouterTransformEvents', () => {
-  it('should group events by destination.ID and context.sources.job_id', () => {
+  it('should group events by destination.ID and context.sources.job_id', async () => {
     const events = [
       {
         destination: { ID: 'dest1' },
@@ -714,7 +714,7 @@ describe('groupRouterTransformEvents', () => {
         context: { sources: { job_id: 'job1' } },
       },
     ];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result.length).toBe(3); // 3 unique groups
     expect(result).toEqual([
@@ -724,7 +724,7 @@ describe('groupRouterTransformEvents', () => {
     ]);
   });
 
-  it('should group events by default job_id if context.sources.job_id is missing', () => {
+  it('should group events by default job_id if context.sources.job_id is missing', async () => {
     const events = [
       {
         destination: { ID: 'dest1' },
@@ -735,7 +735,7 @@ describe('groupRouterTransformEvents', () => {
         context: { sources: { job_id: 'job1' } },
       },
     ];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result.length).toBe(2); // 2 unique groups
     expect(result).toEqual([
@@ -744,7 +744,7 @@ describe('groupRouterTransformEvents', () => {
     ]);
   });
 
-  it('should group events by default job_id if context or context.sources is missing', () => {
+  it('should group events by default job_id if context or context.sources is missing', async () => {
     const events = [
       {
         destination: { ID: 'dest1' },
@@ -754,7 +754,7 @@ describe('groupRouterTransformEvents', () => {
         context: { sources: { job_id: 'job1' } },
       },
     ];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result.length).toBe(2); // 2 unique groups
     expect(result).toEqual([
@@ -763,7 +763,7 @@ describe('groupRouterTransformEvents', () => {
     ]);
   });
 
-  it('should use "default" when destination.ID is missing', () => {
+  it('should use "default" when destination.ID is missing', async () => {
     const events = [
       {
         context: { sources: { job_id: 'job1' } },
@@ -773,7 +773,7 @@ describe('groupRouterTransformEvents', () => {
         context: { sources: { job_id: 'job1' } },
       },
     ];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result.length).toBe(2); // 2 unique groups
     expect(result).toEqual([
@@ -782,20 +782,20 @@ describe('groupRouterTransformEvents', () => {
     ]);
   });
 
-  it('should return an empty array when there are no events', () => {
+  it('should return an empty array when there are no events', async () => {
     const events = [];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result).toEqual([]);
   });
 
-  it('should handle events with completely missing context and destination', () => {
+  it('should handle events with completely missing context and destination', async () => {
     const events = [
       {},
       { destination: { ID: 'dest1' } },
       { context: { sources: { job_id: 'job1' } } },
     ];
-    const result = groupRouterTransformEvents(events);
+    const result = await groupRouterTransformEvents(events);
 
     expect(result.length).toBe(3); // 3 unique groups
     expect(result).toEqual([
@@ -803,6 +803,250 @@ describe('groupRouterTransformEvents', () => {
       [{ destination: { ID: 'dest1' } }],
       [{ context: { sources: { job_id: 'job1' } } }],
     ]);
+  });
+
+  it('should group events by destination config when hasDynamicConfig is true', async () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = await groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups due to different configs
+    expect(result[0][0].destination.Config.key1).toBe('value1');
+    expect(result[1][0].destination.Config.key1).toBe('value2');
+  });
+
+  it('should not group events by destination config when hasDynamicConfig is false', async () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: false,
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: false,
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = await groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(1); // 1 group because configs are ignored
+    expect(result[0].length).toBe(2); // Both events in the same group
+  });
+
+  it('should handle undefined hasDynamicConfig flag (backward compatibility)', async () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          // hasDynamicConfig is undefined (older server versions)
+          Config: { key1: 'value1' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          // hasDynamicConfig is undefined (older server versions)
+          Config: { key1: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = await groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(2); // 2 unique groups due to different configs
+    // Should group by config even when hasDynamicConfig is undefined
+    // This maintains backward compatibility with older server versions
+    expect(result[0][0].destination.Config.key1).toBe('value1');
+    expect(result[1][0].destination.Config.key1).toBe('value2');
+  });
+
+  it('should handle configs with different key orders as the same config', async () => {
+    const events = [
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key1: 'value1', key2: 'value2' },
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+      {
+        destination: {
+          ID: 'dest1',
+          hasDynamicConfig: true,
+          Config: { key2: 'value2', key1: 'value1' }, // Same values but different order
+        },
+        context: { sources: { job_id: 'job1' } },
+      },
+    ];
+    const result = await groupRouterTransformEvents(events);
+
+    expect(result.length).toBe(1); // 1 group because configs are equivalent
+    expect(result[0].length).toBe(2); // Both events in the same group
+  });
+
+  describe('USE_HAS_DYNAMIC_CONFIG_FLAG environment variable', () => {
+    const originalEnv = process.env.USE_HAS_DYNAMIC_CONFIG_FLAG;
+
+    afterEach(() => {
+      // Restore original environment variable
+      if (originalEnv === undefined) {
+        process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
+      } else {
+        process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = originalEnv;
+      }
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is not set (default behavior)', async () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = undefined;
+
+      const events = [
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false,
+            Config: { key1: 'value1' },
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false,
+            Config: { key1: 'value2' }, // Different config
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+      ];
+
+      // Act
+      const result = await groupRouterTransformEvents(events);
+
+      // Assert
+      expect(result.length).toBe(1); // Should be 1 group because hasDynamicConfig=false ignores config differences
+      expect(result[0].length).toBe(2); // Both events in the same group
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "true"', async () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'true';
+
+      const events = [
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: true,
+            Config: { key1: 'value1' },
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: true,
+            Config: { key1: 'value2' }, // Different config
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+      ];
+
+      // Act
+      const result = await groupRouterTransformEvents(events);
+
+      // Assert
+      expect(result.length).toBe(2); // Should be 2 groups because hasDynamicConfig=true groups by config
+      expect(result[0].length).toBe(1);
+      expect(result[1].length).toBe(1);
+    });
+
+    it('should ignore hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to "false"', async () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'false';
+
+      const events = [
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false, // This should be ignored
+            Config: { key1: 'value1' },
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false, // This should be ignored
+            Config: { key1: 'value2' }, // Different config
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+      ];
+
+      // Act
+      const result = await groupRouterTransformEvents(events);
+
+      // Assert
+      // Should group by config regardless of hasDynamicConfig flag
+      expect(result.length).toBe(2); // 2 groups because configs are different
+      expect(result[0].length).toBe(1);
+      expect(result[1].length).toBe(1);
+    });
+
+    it('should use hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG is set to any other value', async () => {
+      // Arrange
+      process.env.USE_HAS_DYNAMIC_CONFIG_FLAG = 'some-other-value';
+
+      const events = [
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false,
+            Config: { key1: 'value1' },
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+        {
+          destination: {
+            ID: 'dest1',
+            hasDynamicConfig: false,
+            Config: { key1: 'value2' }, // Different config
+          },
+          context: { sources: { job_id: 'job1' } },
+        },
+      ];
+
+      // Act
+      const result = await groupRouterTransformEvents(events);
+
+      // Assert
+      expect(result.length).toBe(1); // Should be 1 group because hasDynamicConfig=false ignores config differences
+      expect(result[0].length).toBe(2); // Both events in the same group
+    });
   });
 });
 

@@ -10,13 +10,14 @@ const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
-const { setValue: set } = require('@rudderstack/integrations-lib');
+const { setValue: set, groupByInBatches, mapInBatches } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
 const { v5 } = require('uuid');
+const stableStringify = require('fast-json-stable-stringify');
 const {
   InstrumentationError,
   BaseError,
@@ -27,6 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
+const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -1807,8 +1809,9 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
+  const respList = mapInBatches(
+    inputs,
+    async (input) => {
       try {
         let resp = input.message;
         // transform if not already done
@@ -1820,7 +1823,8 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    }),
+    },
+    { sequentialProcessing: false }, // concurrent processing
   );
   return respList;
 };
@@ -2195,7 +2199,7 @@ const findExistingBatch = (batch, metadataMap) => {
 };
 
 /**
- * Removes duplicate metadata within each merged batch object.
+ * Removes duplicate metadata within each merged batch object and sorts by jobId.
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
@@ -2209,6 +2213,10 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
+
+    // Sort metadata by jobId to ensure consistent ordering
+    // eslint-disable-next-line no-param-reassign
+    batch.metadata.sort((a, b) => a.jobId - b.jobId);
   });
 };
 
@@ -2259,7 +2267,16 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
   // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
   // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
-  return combineBatches(combineBatches(inputBatches));
+  const result = combineBatches(combineBatches(inputBatches));
+
+  // Sort the final result by the minimum jobId in each batch to ensure consistent ordering
+  result.sort((a, b) => {
+    const minJobIdA = Math.min(...a.metadata.map((m) => m.jobId));
+    const minJobIdB = Math.min(...b.metadata.map((m) => m.jobId));
+    return minJobIdA - minJobIdB;
+  });
+
+  return result;
 };
 
 /**
@@ -2296,14 +2313,42 @@ const applyJSONStringTemplate = (message, template) =>
   }).evaluate(message);
 
 /**
- * This groups the events by destination ID and source ID.
+ * This groups the events by destination ID, source ID, and optionally by destination config.
  * Note: sourceID is only used for rETL events.
+ *
+ * The function checks the hasDynamicConfig flag on the destination to determine if events
+ * should be grouped by destination config as well. This is important for destinations that
+ * use dynamic configuration where different events might need different config values.
+ *
+ * For backward compatibility with older server versions where the hasDynamicConfig flag
+ * might not be available, the function treats undefined flags as if dynamic config might
+ * be present (only skips grouping by config when the flag is explicitly false).
+ *
  * @param {*} events The events to be grouped.
- * @returns {array} The array of grouped events.
+ * @returns {Promise<array>} The array of grouped events.
  */
-const groupRouterTransformEvents = (events) =>
+const groupRouterTransformEvents = async (events) =>
   Object.values(
-    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+    await groupByInBatches(events, (ev) => {
+      // Use the function to determine if we should group by destination config
+      const shouldGroupByConfig = shouldGroupByDestinationConfig(ev.destination);
+
+      // If we should group by destination config, include it in the grouping key
+      // Otherwise, use 'default' to group all events with the same destination ID together
+      let destConfigGroupKey = 'default';
+
+      if (shouldGroupByConfig && ev.destination?.Config) {
+        // Use fast-json-stable-stringify to ensure consistent ordering of keys
+        // This ensures that { a: 1, b: 2 } and { b: 2, a: 1 } are treated as the same config
+        destConfigGroupKey = stableStringify(ev.destination.Config);
+      }
+
+      return [
+        ev.destination?.ID || 'default',
+        ev.context?.sources?.job_id || 'default',
+        destConfigGroupKey,
+      ];
+    }),
   );
 
 /*

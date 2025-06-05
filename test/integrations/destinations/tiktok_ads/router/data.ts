@@ -1,11 +1,18 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
+import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
-export const data = [
+import { overrideDestination } from '../../../testUtils';
+import { destinationConfig } from '../common';
+
+export const data: RouterTestData[] = [
   {
+    id: 'tiktok_ads-router-test-0',
     name: 'tiktok_ads',
     description: 'Test 0 -> Events 1.0 Multiple events in single batch',
     feature: FEATURES.ROUTER,
     module: 'destination',
+    successCriteria: 'Should pass successfully',
+    scenario: 'Default router scenario',
     version: 'v0',
     input: {
       request: {
@@ -72,13 +79,11 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -140,13 +145,11 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -211,13 +214,11 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -282,13 +283,11 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -490,13 +489,11 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
         },
@@ -504,6 +501,9 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-1',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 1 -> Events 1.0 Single Event inside batch',
     feature: FEATURES.ROUTER,
@@ -568,13 +568,11 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -640,13 +638,11 @@ export const data = [
                   version: '1',
                 },
               ],
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
               metadata: [
                 {
                   jobId: 3,
@@ -661,6 +657,9 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-2',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
       'Test 2 -> Events 2.0 Single event is mapped to multiple tiktok event in config and exceeding max batch size',
@@ -713,18 +712,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -765,18 +762,16 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -817,14 +812,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -865,14 +858,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1011,18 +1002,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: {
@@ -1119,18 +1108,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
           ],
         },
@@ -1139,6 +1126,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-3',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
       'Test 3 -> Events 2.0 Single event is mapped to single tiktok event in config and over the max batch limit',
@@ -1191,14 +1181,12 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1239,14 +1227,12 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1287,14 +1273,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1335,14 +1319,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1486,14 +1468,12 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               batchedRequest: {
@@ -1557,14 +1537,12 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },
@@ -1573,6 +1551,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-4',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 4 -> One input event is invalid with one event to multiple events',
     feature: FEATURES.ROUTER,
@@ -1624,18 +1605,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1676,18 +1655,16 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1728,14 +1705,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1776,14 +1751,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1927,33 +1900,29 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batched: false,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                  hashUserProperties: false,
-                  pixelCode: 'dummyPixelCode',
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+                hashUserProperties: false,
+                pixelCode: 'dummyPixelCode',
+                version: 'v2',
+              }),
               error: 'Event name (abc) is not valid, must be mapped to one of standard events',
               metadata: [
                 {
@@ -1978,6 +1947,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-5',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 5 -> Some input events are test events with one event to multiple events',
     feature: FEATURES.ROUTER,
@@ -2029,18 +2001,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2081,18 +2051,16 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2134,14 +2102,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -2182,14 +2148,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2328,18 +2292,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: {
@@ -2403,18 +2365,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2488,14 +2448,12 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },
@@ -2504,6 +2462,9 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-6',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description: 'Test 6 -> All input events are test events',
     feature: FEATURES.ROUTER,
@@ -2553,18 +2514,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2606,14 +2565,12 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2698,18 +2655,16 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2783,14 +2738,12 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },

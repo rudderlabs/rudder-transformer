@@ -7,9 +7,11 @@ import {
   Metadata,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProcessorCompactedTransformationRequest,
   ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationResponse,
+  RouterCompactedTransformationRequest,
   RudderMessage,
 } from '../../src/types';
 
@@ -105,7 +107,10 @@ export type ProcessorTestData = {
   input: {
     request: {
       method: string;
-      body: ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[];
+      headers?: Record<string, string>;
+      body:
+        | ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[]
+        | ProcessorCompactedTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
     };
   };
   output: {
@@ -128,8 +133,11 @@ export type RouterTestData = {
   version: string;
   input: {
     request: {
-      body: RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
       method: string;
+      headers?: Record<string, string>;
+      body:
+        | RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>
+        | RouterCompactedTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
     };
   };
   output: {

@@ -3,6 +3,7 @@ import MockAxiosAdapter from 'axios-mock-adapter';
 import lodash from 'lodash';
 import { V1BusinessTestScenarion } from './business';
 import { v1OtherScenarios } from './other';
+import { generateProxyV0Payload } from '../../../testUtils';
 
 const oldV0TestCases = [
   {
@@ -13,68 +14,60 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
             'test-dest-response-key': 'successResponse',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: '1077218',
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: '1197218',
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: '1077218',
                 },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: '1197218',
                 },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
+              ],
+              currency: 'USD',
+              value: 46,
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
           },
-          files: {},
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-        },
+        }),
         method: 'POST',
       },
     },
@@ -105,68 +98,60 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
             'test-dest-response-key': 'invalidDataTypeResponse',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: 1077218,
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: 1197218,
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: 1077218,
                 },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: 1197218,
                 },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
+              ],
+              currency: 'USD',
+              value: 46,
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
           },
-          files: {},
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-        },
+        }),
         method: 'POST',
       },
     },
@@ -187,8 +172,8 @@ const oldV0TestCases = [
             statTags: {
               destType: 'TIKTOK_ADS',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -207,68 +192,60 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
             'test-dest-response-key': 'invalidPermissionsResponse',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: 1077218,
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: 1197218,
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: 1077218,
                 },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: 1197218,
                 },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
+              ],
+              currency: 'USD',
+              value: 46,
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
           },
-          files: {},
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-        },
+        }),
         method: 'POST',
       },
     },
@@ -290,8 +267,8 @@ const oldV0TestCases = [
             statTags: {
               destType: 'TIKTOK_ADS',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -310,68 +287,60 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
             'test-dest-response-key': 'tooManyRequests',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: 1077218,
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: 1197218,
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: 1077218,
                 },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: 1197218,
                 },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
+              ],
+              currency: 'USD',
+              value: 46,
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
           },
-          files: {},
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-        },
+        }),
         method: 'POST',
       },
     },
@@ -392,8 +361,8 @@ const oldV0TestCases = [
             statTags: {
               destType: 'TIKTOK_ADS',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -412,68 +381,60 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
             'test-dest-response-key': '502-BadGateway',
           },
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: 1077218,
+                },
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: 1197218,
+                },
+              ],
+              currency: 'USD',
+              value: 46,
+            },
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
+          },
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: 1077218,
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: 1197218,
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
-                },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
-                },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
-            },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
-          },
-          files: {},
-        },
+        }),
         method: 'POST',
       },
     },
@@ -492,8 +453,8 @@ const oldV0TestCases = [
             statTags: {
               destType: 'TIKTOK_ADS',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'retryable',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -512,67 +473,59 @@ const oldV0TestCases = [
     version: 'v0',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+        body: generateProxyV0Payload({
           headers: {
             'Access-Token': 'dummyAccessToken',
             'Content-Type': 'application/json',
           },
+          JSON: {
+            pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+            partner_name: 'RudderStack',
+            event: 'CompletePayment',
+            event_id: '1616318632825_357',
+            timestamp: '2020-09-17T19:49:27Z',
+            properties: {
+              contents: [
+                {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: 1077218,
+                },
+                {
+                  price: 30,
+                  quantity: 1,
+                  content_type: 'dress',
+                  content_id: 1197218,
+                },
+              ],
+              currency: 'USD',
+              value: 46,
+            },
+            context: {
+              ad: {
+                callback: '123ATXSfe',
+              },
+              page: {
+                url: 'http://demo.mywebsite.com/purchase',
+                referrer: 'http://demo.mywebsite.com',
+              },
+              user: {
+                external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+              },
+              ip: '13.57.97.131',
+              user_agent:
+                'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+            },
+          },
+          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          method: 'POST',
           params: {
             destination: 'tiktok_ads',
           },
-          body: {
-            JSON: {
-              pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
-              partner_name: 'RudderStack',
-              event: 'CompletePayment',
-              event_id: '1616318632825_357',
-              timestamp: '2020-09-17T19:49:27Z',
-              properties: {
-                contents: [
-                  {
-                    price: 8,
-                    quantity: 2,
-                    content_type: 'socks',
-                    content_id: 1077218,
-                  },
-                  {
-                    price: 30,
-                    quantity: 1,
-                    content_type: 'dress',
-                    content_id: 1197218,
-                  },
-                ],
-                currency: 'USD',
-                value: 46,
-              },
-              context: {
-                ad: {
-                  callback: '123ATXSfe',
-                },
-                page: {
-                  url: 'http://demo.mywebsite.com/purchase',
-                  referrer: 'http://demo.mywebsite.com',
-                },
-                user: {
-                  external_id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                  phone_number: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                },
-                ip: '13.57.97.131',
-                user_agent:
-                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-              },
-            },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
-          },
-          files: {},
-        },
+        }),
         method: 'POST',
       },
     },
@@ -590,8 +543,8 @@ const oldV0TestCases = [
             statTags: {
               destType: 'TIKTOK_ADS',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'retryable',
               feature: 'dataDelivery',
               implementation: 'native',

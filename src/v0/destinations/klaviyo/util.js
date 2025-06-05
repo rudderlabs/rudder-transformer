@@ -32,6 +32,7 @@ const {
   revision,
   revisionOct2024,
 } = require('./config');
+const logger = require('../../../logger');
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -49,6 +50,7 @@ function isValidE164PhoneNumber(phoneNumber) {
     return parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
   } catch (error) {
     // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
+    logger.debug('Error parsing phone number', error);
     return false;
   }
 }

@@ -29,6 +29,8 @@ import { enhancedTestUtils } from '../test_reporter/allureReporter';
 // npm run test:ts -- component  --destination=adobe_analytics
 // npm run test:ts -- component  --destination=adobe_analytics --feature=router
 // npm run test:ts -- component  --destination=adobe_analytics --feature=dataDelivery --index=0
+// Use below command to see verbose results
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router --verbose=true
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true
@@ -41,6 +43,7 @@ command
   .option('-i, --index <number>', 'Enter Test index', parseInt)
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
+  .option('-verbose, --v <string>', 'Enter "true" If you want to see verbose test results')
   .option('-s, --source <string>', 'Enter Source Name')
   .parse();
 
@@ -65,6 +68,8 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'loops',
   'slack',
   'snapchat_conversion',
+  'rudder_test',
+  'tiktok_ads',
 ];
 
 beforeAll(async () => {
@@ -130,7 +135,7 @@ const testRoute = async (route, tcData: TestCaseData) => {
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateTestWithZOD(tcData, response)).toEqual(true);
     enhancedTestUtils.beforeTestRun(tcData);
-    enhancedTestUtils.afterTestRun(tcData, response.body);
+    enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
   }
 
   if (outputResp?.body) {
@@ -149,8 +154,7 @@ const testRoute = async (route, tcData: TestCaseData) => {
       tcData.name != 'iterable' &&
       tcData.name != 'klaviyo' &&
       tcData.name != 'tiktok_ads' &&
-      tcData.name != 'mailjet' &&
-      tcData.name != 'google_adwords_offline_conversions'
+      tcData.name != 'mailjet'
     ) {
       assertRouterOutput(response.body.output, tcData.input.request.body.input);
     }
@@ -199,7 +203,7 @@ describe('Component Test Suite', () => {
     test.skip('No test cases provided. Skipping tests.', () => {});
   } else {
     describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
-      beforeEach(() => {
+      afterEach(() => {
         jest.resetAllMocks();
         jest.clearAllMocks();
       });

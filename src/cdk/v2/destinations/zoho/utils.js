@@ -13,13 +13,18 @@ const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
 const getRegion = (destination) => {
-  if (destination.deliveryAccount && destination.deliveryAccount.accountDefinition) {
-    if (destination.deliveryAccount?.options?.region) {
-      return destination.deliveryAccount.options.region;
-    }
+  // Check if deliveryAccount or accountDefinition is missing; if so, return region from Config
+  if (!destination?.deliveryAccount?.accountDefinition) {
+    return destination?.Config?.region;
+  }
+  // Extract region from deliveryAccount options
+  const region = destination.deliveryAccount?.options?.region;
+  // Throw error if region is not defined in deliveryAccount options
+  if (!region) {
     throw new PlatformError('Region is not defined in delivery account options', 500);
   }
-  return destination.Config?.region;
+  // Return the region from deliveryAccount options
+  return region;
 };
 
 const deduceModuleInfoV2 = (destination, destConfig) => {

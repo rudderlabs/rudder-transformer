@@ -2,6 +2,7 @@ const {
   getHashFromArray,
   isDefinedAndNotNull,
   ConfigurationError,
+  PlatformError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedNullEmptyExclBoolInt,
   ZOHO_SDK,
@@ -11,13 +12,28 @@ const { isHttpStatusSuccess } = require('../../../../v0/util');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const { CommonUtils } = require('../../../../util/common');
 
-const deduceModuleInfoV2 = (Config, destConfig) => {
+const getRegion = (destination) => {
+  // Check if deliveryAccount or accountDefinition is missing; if so, return region from Config
+  if (!destination?.deliveryAccount?.accountDefinition) {
+    return destination?.Config?.region;
+  }
+  // Extract region from deliveryAccount options
+  const region = destination.deliveryAccount?.options?.region;
+  // Throw error if region is not defined in deliveryAccount options
+  if (!region) {
+    throw new PlatformError('Region is not defined in delivery account options', 500);
+  }
+  // Return the region from deliveryAccount options
+  return region;
+};
+
+const deduceModuleInfoV2 = (destination, destConfig) => {
   const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
     operationModuleType: object,
     upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
-      dataCenter: Config.region,
+      dataCenter: getRegion(destination),
       moduleName: object,
     }),
     identifierType,
@@ -179,9 +195,9 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async (identifiers, metadata, Config, destConfig) => {
+const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig }) => {
   try {
-    const { region } = Config;
+    const region = getRegion(destination);
     const { object } = destConfig;
 
     const selectQuery = generateSqlQuery(object, identifiers);
@@ -229,4 +245,5 @@ module.exports = {
   searchRecordIdV2,
   calculateTrigger,
   validateConfigurationIssue,
+  getRegion,
 };

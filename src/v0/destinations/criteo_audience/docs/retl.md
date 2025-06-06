@@ -47,12 +47,12 @@ This document outlines the Real-time Event Transformation Layer (RETL) implement
 
 | RudderStack Field                          | Criteo Field  | Notes                               |
 | ------------------------------------------ | ------------- | ----------------------------------- |
-| `properties.listData.add`                  | `identifiers` | Array of identifiers to add         |
-| `properties.listData.remove`               | `identifiers` | Array of identifiers to remove      |
 | `properties.listData.[op].[].email`        | `identifiers` | When audienceType is 'email'        |
 | `properties.listData.[op].[].maid`         | `identifiers` | When audienceType is 'maid'         |
 | `properties.listData.[op].[].gum`          | `identifiers` | When audienceType is 'gum'          |
 | `properties.listData.[op].[].identityLink` | `identifiers` | When audienceType is 'identityLink' |
+
+Where `[op]` can be either `add` or `remove` to specify the operation type.
 
 ### Custom Fields
 
@@ -85,13 +85,29 @@ This document outlines the Real-time Event Transformation Layer (RETL) implement
    - Chunking is handled by the `populateIdentifiers` function
 
 2. **Payload Structure**:
+
    ```javascript
+   // For adding users
    {
      data: {
        type: 'ContactlistAmendment',
        attributes: {
-         operation: 'add' | 'remove',
-         identifierType: 'email' | 'maid' | 'gum',
+         operation: 'add',
+         identifierType: 'email' | 'maid' | 'gum' | 'identityLink',
+         internalIdentifiers: false,
+         gumCallerId: 'your-gum-caller-id', // Only for GUM type
+         identifiers: ['identifier1', 'identifier2', ...]
+       }
+     }
+   }
+
+   // For removing users
+   {
+     data: {
+       type: 'ContactlistAmendment',
+       attributes: {
+         operation: 'remove',
+         identifierType: 'email' | 'maid' | 'gum' | 'identityLink',
          internalIdentifiers: false,
          gumCallerId: 'your-gum-caller-id', // Only for GUM type
          identifiers: ['identifier1', 'identifier2', ...]
@@ -99,6 +115,11 @@ This document outlines the Real-time Event Transformation Layer (RETL) implement
      }
    }
    ```
+
+3. **Operation Handling**:
+   - Each request can only perform one operation (add or remove)
+   - If both add and remove operations are present in the input, they are processed as separate requests
+   - The operation type is determined by the source of the identifiers (add or remove array)
 
 ## Error Handling
 

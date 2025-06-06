@@ -70,25 +70,58 @@ The Criteo Audience destination only supports the `audiencelist` event type. Thi
 
 ### Identifier Types
 
+The Criteo Audience destination supports the following identifier types for audience segment management:
+
 1. **Email**:
 
    - Used for email-based audience segment targeting
+   - Supports multiple formats:
+     - Plain text email
+     - MD5 hashed
+     - SHA256 hashed
+     - SHA256MD5 hashed
    - No additional configuration required
+   - Example: `user@example.com`
 
 2. **MAID (Mobile Advertising ID)**:
 
    - Used for mobile device-based audience segment targeting
+   - Also known as 'madid' in Criteo's API
    - No additional configuration required
+   - Example: `123e4567-e89b-12d3-a456-426614174000`
 
 3. **GUM (Criteo Universal Match)**:
 
    - Used for cross-device audience segment targeting
    - Requires `gumCallerId` in configuration
+   - Uses Criteo GUM cookie identifier
+   - Example: `gum-identifier-value`
 
 4. **IdentityLink**:
    - Used for custom identity-based audience segment targeting
+   - Represents a user's LiveRamp Identity Link
    - No additional configuration required
-   - Allows for custom domain-based identifiers
+   - Example: `custom-identifier-value`
+
+> Note: While Criteo's API supports additional identifier types, this integration specifically supports the above four types for audience segment management.
+
+#### Other Criteo-Supported Identifier Types
+
+Criteo's API also supports the following identifier types that are not currently implemented in this integration:
+
+1. **Customer ID**:
+
+   - Used for Retail Media Customer Lists
+   - Specific to Retail Media use cases
+   - Example: `customer-identifier-value`
+
+2. **Phone Number**:
+   - Used for phone number-based targeting
+   - Only supported for advertisers in India
+   - Supports both plain text and SHA256 hashed formats
+   - Example: `+1234567890`
+
+For more information about Criteo's audience segment capabilities and identifier types, refer to the [official Criteo Audience Segments documentation](https://developers.criteo.com/marketing-solutions/docs/audience-segments).
 
 ## Error Handling
 

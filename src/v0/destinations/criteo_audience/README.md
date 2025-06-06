@@ -49,12 +49,12 @@ Criteo Audience is a destination that enables you to manage user segments in Cri
 
 | RudderStack Field                          | Criteo Field  | Notes                               |
 | ------------------------------------------ | ------------- | ----------------------------------- |
-| `properties.listData.add`                  | `identifiers` | Array of identifiers to add         |
-| `properties.listData.remove`               | `identifiers` | Array of identifiers to remove      |
 | `properties.listData.[op].[].email`        | `identifiers` | When audienceType is 'email'        |
 | `properties.listData.[op].[].maid`         | `identifiers` | When audienceType is 'maid'         |
 | `properties.listData.[op].[].gum`          | `identifiers` | When audienceType is 'gum'          |
 | `properties.listData.[op].[].identityLink` | `identifiers` | When audienceType is 'identityLink' |
+
+Where `[op]` can be either `add` or `remove` to specify the operation type.
 
 ### Custom Fields
 
@@ -77,9 +77,14 @@ Criteo Audience is a destination that enables you to manage user segments in Cri
 
 ### Rate Limits
 
-- **Batch Size**: Maximum 50,000 identifiers per request
 - **Rate Limiting**: 429 status code indicates rate limit exceeded
+- **App Level Limit**: Maximum 250 requests per minute
+- **Response Headers**:
+  - `x-ratelimit-limit`: Number of calls your App can perform
+  - `x-ratelimit-remaining`: Number of calls remaining (resets to 250 every minute)
+  - `x-ratelimit-reset`: Timestamp for rate limit reset
 - **Handling Strategy**: Automatic retry with exponential backoff
+- **Batch Size**: Maximum 50,000 identifiers per request
 
 ## Error Handling
 
@@ -134,16 +139,10 @@ const criteoEvent = processEvent(event);
 
 ## Testing
 
-### Unit Tests
-
-- **Location**: `./src/v0/destinations/criteo_audience/__tests__/`
-- **Running Tests**: `npm run test:ts -- unit --destination=criteo_audience`
-
 ### Integration Tests
 
-- **Location**: `./src/v0/destinations/criteo_audience/__tests__/`
+- **Location**: `test/integrations/destinations/criteo_audience`
 - **Running Tests**: `npm run test:ts -- component --destination=criteo_audience`
-- **Test Environment**: Requires valid Criteo credentials and audience ID
 
 ## Troubleshooting
 

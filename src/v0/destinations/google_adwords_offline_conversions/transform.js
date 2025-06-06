@@ -1,5 +1,9 @@
 const { set, get } = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  forEachInBatches,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
@@ -154,7 +158,7 @@ const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   return { storeSalesEvents, clickCallEvents };
 };
 
-const batchEvents = (storeSalesEvents) => {
+const batchEvents = async (storeSalesEvents) => {
   const batchEventResponse = defaultBatchRequestConfig();
   batchEventResponse.metadatas = [];
   set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message.body.JSON);
@@ -166,7 +170,7 @@ const batchEvents = (storeSalesEvents) => {
   batchEventResponse.batchedRequest.params = params;
   batchEventResponse.batchedRequest.headers = headers;
   batchEventResponse.batchedRequest.endpoint = endpoint;
-  storeSalesEvents.forEach((storeSalesEvent, index) => {
+  await forEachInBatches(storeSalesEvents, async (storeSalesEvent, index) => {
     // we are discarding the first event as it is already added
     if (index === 0) {
       return;
@@ -191,34 +195,32 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(event, storeSalesEvents, clickCallEvents);
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination,
-            },
-            storeSalesEvents,
-            clickCallEvents,
-          );
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        errorRespList.push(errRespEvent);
+  await forEachInBatches(inputs, async (event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        getEventChunks(event, storeSalesEvents, clickCallEvents);
+      } else {
+        // if not transformed
+        getEventChunks(
+          {
+            message: await process(event),
+            metadata: event.metadata,
+            destination: event.destination,
+          },
+          storeSalesEvents,
+          clickCallEvents,
+        );
       }
-    }),
-  );
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      errorRespList.push(errRespEvent);
+    }
+  });
   let storeSalesEventsBatchedResponseList = [];
 
   if (storeSalesEvents.length > 0) {
-    storeSalesEventsBatchedResponseList = batchEvents(storeSalesEvents);
+    storeSalesEventsBatchedResponseList = await batchEvents(storeSalesEvents);
   }
 
   let batchedResponseList = [];

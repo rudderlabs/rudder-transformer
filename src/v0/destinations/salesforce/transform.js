@@ -383,25 +383,69 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return [{ ...respEvents, destination: inputs?.[0]?.destination }];
   }
 
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(input.message, [input.metadata], input.destination);
-        }
+  // Group similar inputs to reduce redundant processing
+  const groupedInputs = new Map();
 
-        // unprocessed payload
-        return getSuccessRespEvents(
-          await processSingleMessage(input, authInfo.authorizationData, authInfo.authorizationFlow),
-          [input.metadata],
-          input.destination,
-        );
+  inputs.forEach((input) => {
+    if (input.message.statusCode) {
+      // Already transformed events don't need grouping
+      return;
+    }
+
+    // Group by email or externalId if available
+    const email = getFieldValueFromMessage(input.message, 'email');
+    const externalId = get(input.message, 'context.externalId.0.id');
+    const key = externalId || email || JSON.stringify(input.message);
+
+    if (!groupedInputs.has(key)) {
+      groupedInputs.set(key, []);
+    }
+    groupedInputs.get(key).push(input);
+  });
+
+  const respList = [];
+
+  // Process each group of inputs
+  await Promise.all(
+    Array.from(groupedInputs.entries()).map(async ([, groupInputs]) => {
+      try {
+        const firstInput = groupInputs[0];
+        if (firstInput.message.statusCode) {
+          // Already transformed event
+          respList.push(
+            getSuccessRespEvents(firstInput.message, [firstInput.metadata], firstInput.destination),
+          );
+        } else {
+          // Process the first input
+          const processedResult = await processSingleMessage(
+            firstInput,
+            authInfo.authorizationData,
+            authInfo.authorizationFlow,
+          );
+
+          // Apply the result to all inputs in this group
+          groupInputs.forEach((input) => {
+            respList.push(
+              getSuccessRespEvents(processedResult, [input.metadata], input.destination),
+            );
+          });
+        }
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, reqMetadata);
+        // Handle errors for each input in the group individually
+        groupInputs.forEach((input) => {
+          respList.push(handleRtTfSingleEventError(input, error, reqMetadata));
+        });
       }
     }),
   );
+
+  // Process any remaining inputs that had statusCode
+  inputs
+    .filter((input) => input.message.statusCode)
+    .forEach((input) => {
+      respList.push(getSuccessRespEvents(input.message, [input.metadata], input.destination));
+    });
+
   return respList;
 };
 

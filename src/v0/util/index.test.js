@@ -13,6 +13,7 @@ const {
   isAxiosError,
   removeHyphens,
   convertToUuid,
+  sortBatchesByMinJobId,
 } = require('./index');
 const exp = require('constants');
 const { ERROR_MESSAGES, FEATURE_FILTER_CODE } = require('./constant');
@@ -1405,6 +1406,72 @@ describe('getBodyFromV2SpecPayload', () => {
       },
     };
     expect(utilities.getBodyFromV2SpecPayload(input)).toEqual([1, 2, 3]);
+  });
+
+  describe('sortBatchesByMinJobId', () => {
+    const testCases = [
+      {
+        description: 'should sort batches by the minimum jobId in each batch (ascending)',
+        input: [
+          { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+          { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+          { metadata: [{ jobId: 2 }] },
+        ],
+        expected: [
+          { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+          { metadata: [{ jobId: 2 }] },
+          { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+        ],
+      },
+      {
+        description: 'should handle batches with single metadata item',
+        input: [
+          { metadata: [{ jobId: 10 }] },
+          { metadata: [{ jobId: 2 }] },
+          { metadata: [{ jobId: 5 }] },
+        ],
+        expected: [
+          { metadata: [{ jobId: 2 }] },
+          { metadata: [{ jobId: 5 }] },
+          { metadata: [{ jobId: 10 }] },
+        ],
+      },
+      {
+        description: 'should handle batches with multiple metadata items and unordered jobIds',
+        input: [
+          { metadata: [{ jobId: 8 }, { jobId: 3 }] },
+          { metadata: [{ jobId: 2 }, { jobId: 7 }] },
+          { metadata: [{ jobId: 5 }, { jobId: 9 }] },
+        ],
+        expected: [
+          { metadata: [{ jobId: 2 }, { jobId: 7 }] },
+          { metadata: [{ jobId: 8 }, { jobId: 3 }] },
+          { metadata: [{ jobId: 5 }, { jobId: 9 }] },
+        ],
+      },
+      {
+        description: 'should handle empty input array',
+        input: [],
+        expected: [],
+      },
+      {
+        description: 'should not mutate the original array order if already sorted',
+        input: [
+          { metadata: [{ jobId: 1 }] },
+          { metadata: [{ jobId: 2 }] },
+          { metadata: [{ jobId: 3 }] },
+        ],
+        expected: [
+          { metadata: [{ jobId: 1 }] },
+          { metadata: [{ jobId: 2 }] },
+          { metadata: [{ jobId: 3 }] },
+        ],
+      },
+    ];
+
+    test.each(testCases)('$description', ({ input, expected }) => {
+      expect(sortBatchesByMinJobId(input)).toEqual(expected);
+    });
   });
 });
 

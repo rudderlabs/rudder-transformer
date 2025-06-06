@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
 const CONFIG_CATEGORIES = {

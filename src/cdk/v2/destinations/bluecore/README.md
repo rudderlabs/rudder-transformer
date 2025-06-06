@@ -282,9 +282,15 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 
 ## Testing
 
-The integration includes comprehensive unit tests covering utility functions, event processing, field mapping, and error scenarios. Test cases include standard e-commerce events, custom events, subscription events, and various edge cases.
+### Unit Tests
 
-For complete test scenarios and sample payloads, see the [Business Logic Documentation](./docs/businesslogic.md).
+- **Location**: `./src/cdk/v2/destinations/bluecore`
+- **Running Tests**: `npm run test:ts -- unit --destination=am`
+
+### Integration Tests
+
+- **Location**: `./test/integrations/destinations/bluecore`
+- **Running Tests**: `npm run test:ts -- component --destination=bluecore`
 
 ## Performance
 

@@ -121,7 +121,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'PATCH',
-                  endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
+                  endpoint: 'https://api.criteo.com/2025-04/audiences/34893/contactlist',
                   headers: {
                     Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'PATCH',
-                  endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
+                  endpoint: 'https://api.criteo.com/2025-04/audiences/34893/contactlist',
                   headers: {
                     Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
@@ -195,7 +195,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'PATCH',
-                  endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
+                  endpoint: 'https://api.criteo.com/2025-04/audiences/34893/contactlist',
                   headers: {
                     Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
@@ -390,7 +390,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'PATCH',
-                  endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
+                  endpoint: 'https://api.criteo.com/2025-04/audiences/34893/contactlist',
                   headers: {
                     Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',
@@ -444,7 +444,7 @@ export const data = [
                   type: 'REST',
                   method: 'PATCH',
                   endpoint:
-                    'https://api.criteo.com/2022-10/audiences/23848494844100489/contactlist',
+                    'https://api.criteo.com/2025-04/audiences/23848494844100489/contactlist',
                   headers: {
                     Authorization: defaultAccessTokenAuthHeader,
                     'Content-Type': 'application/json',

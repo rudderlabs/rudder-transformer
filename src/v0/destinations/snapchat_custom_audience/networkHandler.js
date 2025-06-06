@@ -10,10 +10,10 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
-const prepareProxyReq = (request) => {
+const prepareProxyReq = async (request) => {
   const { body } = request;
   // Build the destination request data using the generic method
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
 
   // Modify the data
   const { payloadFormat } = getPayloadData(body);
@@ -32,7 +32,7 @@ const prepareProxyReq = (request) => {
 
 const scAudienceProxyRequest = async (request) => {
   const { metadata } = request;
-  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+  const { endpoint, data, method, params, headers } = await prepareProxyReq(request);
 
   const requestOptions = {
     url: endpoint,

@@ -18,7 +18,7 @@ export class DeliveryTestService {
     try {
       const { networkHandler } = networkHandlerFactory.getNetworkHandler(destination, version);
 
-      const proxyDestReqPayload = networkHandler.prepareProxy(routerDeliveryPayload);
+      const proxyDestReqPayload = await networkHandler.prepareProxy(routerDeliveryPayload);
       response = {
         destinationRequestPayload: proxyDestReqPayload,
       };

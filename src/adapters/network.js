@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
-const { gzipSync } = require('node:zlib');
+const { gzip } = require('node:zlib');
 const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
@@ -332,14 +332,20 @@ function getFormData(payload = {}) {
   return data;
 }
 
-const getZippedPayload = (payload) => {
-  try {
-    return gzipSync(payload);
-  } catch (err) {
-    logger.error(`Failed to do GZIP compression: ${err}`);
-    throw new PlatformError(`Failed to do GZIP compression: ${err}`, 400);
-  }
-};
+const getZippedPayload = (payload) =>
+  new Promise((resolve, reject) => {
+    gzip(payload, (err, dataCompress) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(dataCompress);
+    });
+  })
+    .then((dataCompress) => dataCompress)
+    .catch((err) => {
+      throw new PlatformError(`Failed to do GZIP compression: ${err}`, 400);
+    });
 
 const extractPayloadForFormat = (payload, format) => {
   if (!payload) {
@@ -368,7 +374,7 @@ const extractPayloadForFormat = (payload, format) => {
  * @param {*} request
  * @returns
  */
-const prepareProxyRequest = (request) => {
+const prepareProxyRequest = async (request) => {
   const {
     body,
     method,
@@ -382,7 +388,7 @@ const prepareProxyRequest = (request) => {
   if (payloadFormat && payloadFormat === 'GZIP') {
     headers['Content-Encoding'] = 'gzip';
   }
-  const data = extractPayloadForFormat(payload, payloadFormat);
+  const data = await extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
   return removeUndefinedValues({ endpoint, data, params, headers, method, config });
@@ -444,7 +450,7 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
  */
 const proxyRequest = async (request, destType) => {
   const { metadata } = request;
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
     data,

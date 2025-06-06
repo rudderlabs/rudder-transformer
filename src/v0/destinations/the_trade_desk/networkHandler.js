@@ -11,7 +11,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const proxyRequest = async (request) => {
   const { metadata } = request;
-  const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers, config } = await prepareProxyRequest(request);
 
   if (!config?.advertiserSecretKey) {
     throw new PlatformError('Advertiser secret key is missing in destination config. Aborting');

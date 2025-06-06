@@ -35,6 +35,8 @@ jest.mock('@rudderstack/integrations-lib', () => {
   };
 });
 
+const { PlatformError } = require('@rudderstack/integrations-lib');
+
 // Mock the axios module
 jest.mock('axios', () => {
   const mockAxios = jest.fn(); // Mock the default axios function
@@ -894,31 +896,6 @@ describe('prepareProxyRequest tests', () => {
       },
     },
     {
-      name: 'should prepare proxy request when gzip payload is correct',
-      input: {
-        body: {
-          GZIP: {
-            payload: '{"key":"value"}',
-          },
-        },
-        method: 'POST',
-        endpoint: 'https://api.example.com/gzip',
-        headers: { 'Content-Type': 'application/json' },
-        destinationConfig: { apiKey: 'test-key' },
-      },
-      expected: {
-        endpoint: 'https://api.example.com/gzip',
-        data: getZippedPayload('{"key":"value"}'),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Encoding': 'gzip',
-          'User-Agent': 'RudderLabs',
-        },
-        config: { apiKey: 'test-key' },
-      },
-    },
-    {
       name: 'should prepare proxy request when body is empty',
       input: {
         body: {},
@@ -959,13 +936,13 @@ describe('prepareProxyRequest tests', () => {
   ];
 
   testCases.forEach(({ name, input, expected }) => {
-    test(name, () => {
-      const result = prepareProxyRequest(input);
+    test(name, async () => {
+      const result = await prepareProxyRequest(input);
       expect(result).toEqual(expected);
     });
   });
   // Special case for FORM payload string verification
-  test('should prepare proxy request when body contains FORM payload', () => {
+  test('should prepare proxy request when body contains FORM payload', async () => {
     const request = {
       body: {
         FORM: {
@@ -977,24 +954,76 @@ describe('prepareProxyRequest tests', () => {
       endpoint: 'https://example.com',
     };
 
-    const result = prepareProxyRequest(request);
+    const result = await prepareProxyRequest(request);
     const formData = result.data.toString();
 
     expect(formData).toContain('field1=value1');
     expect(formData).toContain('field2=value2');
   });
+});
 
-  test('should throw an platform error when gzip payload is not correct', () => {
-    const request = {
-      body: {
-        GZIP: {
-          payload: { key: 'value' },
+describe('prepareProxyRequest - GZIP payload', () => {
+  const testCases = [
+    {
+      name: 'should prepare proxy request when gzip payload is correct',
+      input: {
+        body: {
+          GZIP: {
+            payload: '{"key":"value"}',
+          },
         },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
       },
-      method: 'POST',
-      endpoint: 'https://api.example.com/gzip',
-    };
-    expect(() => prepareProxyRequest(request)).toThrow('Failed to do GZIP compression');
+      expected: {
+        endpoint: 'https://api.example.com/gzip',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Encoding': 'gzip',
+          'User-Agent': 'RudderLabs',
+        },
+        config: { apiKey: 'test-key' },
+      },
+    },
+    {
+      name: 'should throw an platform error when gzip payload is not correct',
+      input: {
+        body: {
+          GZIP: {
+            payload: { key: 'value' },
+          },
+        },
+        method: 'POST',
+        endpoint: 'https://api.example.com/gzip',
+        headers: { 'Content-Type': 'application/json' },
+        destinationConfig: { apiKey: 'test-key' },
+      },
+      expected: {
+        error:
+          'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object',
+      },
+    },
+  ];
+  testCases.forEach(({ name, input, expected }) => {
+    test(name, async () => {
+      if (expected.error) {
+        expect.assertions(3);
+        try {
+          await prepareProxyRequest(input);
+        } catch (error) {
+          expect(error).toBeInstanceOf(PlatformError);
+          expect(error.status).toEqual(400);
+          expect(error.message).toEqual(expected.error);
+        }
+      } else {
+        testCases[0].expected.data = await getZippedPayload('{"key":"value"}');
+        const result = await prepareProxyRequest(input);
+        expect(result).toEqual(expected);
+      }
+    });
   });
 });
 

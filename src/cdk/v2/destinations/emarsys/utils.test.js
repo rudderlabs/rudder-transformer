@@ -6,6 +6,8 @@ const {
   findRudderPropertyByEmersysProperty,
   createGroupBatches,
   deduceEventId,
+  batchResponseBuilder,
+  createPayloadObject, // Import the factory function for testing
 } = require('./utils');
 const {
   checkIfEventIsAbortableAndExtractErrorMessage,
@@ -13,6 +15,12 @@ const {
 const crypto = require('crypto');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { responses } = require('../../../../../test/testHelper');
+const stats = require('../../../../util/stats');
+const { EventType } = require('../../../../constants');
+
+jest.mock('../../../../util/stats', () => ({
+  gauge: jest.fn(),
+}));
 
 describe('Emarsys utils', () => {
   describe('base64Sha', () => {
@@ -543,6 +551,303 @@ describe('Emarsys utils', () => {
       expect(() => deduceEventId(message, destConfig)).toThrow(
         'validEvent is not mapped to any Emersys external event. Aborting',
       );
+    });
+  });
+
+  describe('createPayloadObject', () => {
+    it('should create a fresh object with the correct structure each time', () => {
+      const payload1 = createPayloadObject();
+      const payload2 = createPayloadObject();
+
+      // Verify the structure is correct
+      expect(payload1).toEqual({
+        identify: {
+          method: 'PUT',
+          batches: [],
+          count: 0,
+        },
+        group: {
+          method: 'POST',
+          batches: [],
+          count: 0,
+        },
+        track: {
+          method: 'POST',
+          batches: [],
+          count: 0,
+        },
+      });
+
+      // Verify that two calls return different objects (not the same reference)
+      expect(payload1).not.toBe(payload2);
+
+      // Modify one object and verify the other is not affected
+      payload1.identify.batches.push({ test: 'data' });
+      payload1.identify.count = 1;
+
+      expect(payload2.identify.batches).toEqual([]);
+      expect(payload2.identify.count).toBe(0);
+    });
+  });
+
+  describe('batchResponseBuilder', () => {
+    beforeEach(() => {
+      // Reset the mock before each test
+      stats.gauge.mockClear();
+    });
+
+    it('should call stats.gauge for identify events', () => {
+      const successfulEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.IDENTIFY,
+                  destinationPayload: {
+                    key_id: 'email',
+                    contact_list_id: 'clist1',
+                    contacts: [{ email: 'test@example.com' }],
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'dest1' },
+          metadata: {},
+        },
+      ];
+      batchResponseBuilder(successfulEvents);
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', 1, {
+        event_type: EventType.IDENTIFY,
+        destination_id: 'dest1',
+      });
+    });
+
+    it('should call stats.gauge for group events', () => {
+      const successfulEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.GROUP,
+                  destinationPayload: {
+                    payload: { key_id: 'email', external_ids: ['test@example.com'] },
+                    contactListId: 'clist1',
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'dest2' },
+          metadata: {},
+        },
+      ];
+      batchResponseBuilder(successfulEvents);
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', 1, {
+        event_type: EventType.GROUP,
+        destination_id: 'dest2',
+      });
+    });
+
+    it('should call stats.gauge for track events', () => {
+      const successfulEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.TRACK,
+                  destinationPayload: {
+                    payload: { key_id: 'email', external_id: 'test@example.com', data: {} },
+                    eventId: 'evt1',
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+              endpoint: 'track_endpoint',
+            },
+          ],
+          destination: { ID: 'dest3' },
+          metadata: {},
+        },
+      ];
+      batchResponseBuilder(successfulEvents);
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', 1, {
+        event_type: EventType.TRACK,
+        destination_id: 'dest3',
+      });
+    });
+
+    it('should not call stats.gauge if constants cannot be initialized (no successfulEvents)', () => {
+      batchResponseBuilder([]);
+      expect(stats.gauge).not.toHaveBeenCalled();
+    });
+
+    it('should correctly report counts for multiple event types in one call', () => {
+      const successfulEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.IDENTIFY,
+                  destinationPayload: {
+                    key_id: 'email',
+                    contact_list_id: 'clist1',
+                    contacts: [{ email: 'test1@example.com' }],
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'destMulti' },
+          metadata: {},
+        },
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.IDENTIFY,
+                  destinationPayload: {
+                    key_id: 'email',
+                    contact_list_id: 'clist1',
+                    contacts: [{ email: 'test2@example.com' }],
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'destMulti' },
+          metadata: {},
+        },
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.GROUP,
+                  destinationPayload: {
+                    payload: { key_id: 'email', external_ids: ['grp1@example.com'] },
+                    contactListId: 'clist2',
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'destMulti' },
+          metadata: {},
+        },
+      ];
+      batchResponseBuilder(successfulEvents);
+      // createIdentifyBatches creates 1 batch for 2 events here due to same key_id and contact_list_id
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', 1, {
+        event_type: EventType.IDENTIFY,
+        destination_id: 'destMulti',
+      });
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', 1, {
+        event_type: EventType.GROUP,
+        destination_id: 'destMulti',
+      });
+      expect(stats.gauge).toHaveBeenCalledTimes(2); // No track events
+    });
+
+    it('should ensure thread safety by creating a new payload object for each call', () => {
+      // First call with identify events
+      const identifyEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.IDENTIFY,
+                  destinationPayload: {
+                    key_id: 'email',
+                    contact_list_id: 'clist1',
+                    contacts: [{ email: 'test1@example.com' }],
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'dest1' },
+          metadata: {},
+        },
+      ];
+
+      // Second call with group events
+      const groupEvents = [
+        {
+          message: [
+            {
+              body: {
+                JSON: {
+                  eventType: EventType.GROUP,
+                  destinationPayload: {
+                    payload: { key_id: 'email', external_ids: ['grp1@example.com'] },
+                    contactListId: 'clist2',
+                  },
+                },
+              },
+              version: '1',
+              type: 'REST',
+              headers: {},
+            },
+          ],
+          destination: { ID: 'dest2' },
+          metadata: {},
+        },
+      ];
+
+      // Make two separate calls to batchResponseBuilder
+      const identifyResponse = batchResponseBuilder(identifyEvents);
+      const groupResponse = batchResponseBuilder(groupEvents);
+
+      // Verify that each call produced the expected output
+      expect(identifyResponse.length).toBeGreaterThan(0);
+      expect(groupResponse.length).toBeGreaterThan(0);
+
+      // Verify that the first call's output only contains identify events
+      identifyResponse.forEach((response) => {
+        expect(response.batchedRequest.endpoint).toContain('contact');
+      });
+
+      // Verify that the second call's output only contains group events
+      groupResponse.forEach((response) => {
+        expect(response.batchedRequest.endpoint).toContain('contactlist');
+      });
+
+      // Verify that stats were called correctly for each call
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', expect.any(Number), {
+        event_type: EventType.IDENTIFY,
+        destination_id: 'dest1',
+      });
+      expect(stats.gauge).toHaveBeenCalledWith('emarsys_batch_count', expect.any(Number), {
+        event_type: EventType.GROUP,
+        destination_id: 'dest2',
+      });
     });
   });
 });

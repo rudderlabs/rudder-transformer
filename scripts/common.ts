@@ -7,7 +7,7 @@ import { exec } from 'child_process';
 export function parseArgs() {
   const [filePath, dataString] = process.argv.slice(2);
   if (!filePath || !dataString) {
-    console.error('Usage: node createCurlRequest.ts <path-to-data-file> <data-string>');
+    console.error('Usage: node <script> <path-to-data-file> <data-string>');
     process.exit(1);
   }
   return { filePath, dataString };
@@ -67,7 +67,7 @@ export async function importDataModule(filePath: string): Promise<any[]> {
   }
 }
 
-export function runTestCommand(command) {
+export function runTestCommand(command: string): void {
   console.log(`Running command: ${command}`);
   const testCommand = exec(command);
   if (!testCommand.stdout || !testCommand.stderr) {

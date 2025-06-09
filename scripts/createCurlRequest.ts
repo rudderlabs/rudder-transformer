@@ -1,5 +1,6 @@
 /* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import { exec } from 'child_process';
+import * as os from 'os';
 import {
   parseArgs,
   extractField,
@@ -9,13 +10,15 @@ import {
   runTestCommand,
 } from './common';
 
+type SupportedFeature = 'processor' | 'router' | 'dataDelivery';
+
 // Build URL for the request
 // eslint-disable-next-line consistent-return
-function buildURL(feature: string, destination: string): string {
-  const urls = {
-    processor: `http://localhost:9090/v0/destinations/${destination}`,
+function buildURL(feature: string, destination: string, version): string {
+  const urls: Record<SupportedFeature, string> = {
+    processor: `http://localhost:9090/${version}/destinations/${destination}`,
     router: 'http://localhost:9090/routerTransform',
-    dataDelivery: `http://localhost:9090/v1/destinations/${destination}/proxy`,
+    dataDelivery: `http://localhost:9090/${version}/destinations/${destination}/proxy`,
   };
   if (urls[feature]) {
     return urls[feature];
@@ -38,6 +41,19 @@ function buildCurl(url: string, headers: Record<string, string>, body: unknown):
 
 // Copy string to clipboard using pbcopy
 function copyToClipboard(text: string) {
+  const platform = os.platform();
+  const copyCommandMap: Record<string, string> = {
+    darwin: 'pbcopy',
+    win32: 'clip',
+    linux: 'xclip',
+  };
+  const command = copyCommandMap[platform];
+  if (platform === 'linux' && !command) {
+    console.warn(
+      '⚠️  Clipboard copy requires xclip on Linux (install with: apt-get install xclip)',
+    );
+    return;
+  }
   const child = exec('pbcopy');
   if (child.stdin) {
     child.stdin.write(text);
@@ -64,8 +80,9 @@ async function main() {
 
   const description = extractField(dataString, 'description') || '';
   const feature = extractField(dataString, 'feature') || '';
+  const version = extractField(dataString, 'version') || 'v1';
   const destination = getDestination(filePath);
-  const url = buildURL(feature, destination);
+  const url = buildURL(feature, destination, version);
 
   const dataFile = await resolveDataFile(filePath);
   console.log(`Using data file: ${dataFile}`);

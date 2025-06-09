@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.102.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.101.2...v1.102.0) (2025-06-09)
+
+
+### Features
+
+* use account information on zoho ([1366764](https://github.com/rudderlabs/rudder-transformer/commit/1366764f6513f9b15889919f1034a49693c735b6))
+
+
+### Bug Fixes
+
+* handle empty oauth secret for multiple destination ([#4295](https://github.com/rudderlabs/rudder-transformer/issues/4295)) ([#4388](https://github.com/rudderlabs/rudder-transformer/issues/4388)) ([2a3e7cd](https://github.com/rudderlabs/rudder-transformer/commit/2a3e7cd1c5cf27d655d96e22fa7ccbafbf41cb1d))
+* improve gzip creation function ([#4389](https://github.com/rudderlabs/rudder-transformer/issues/4389)) ([5560984](https://github.com/rudderlabs/rudder-transformer/commit/5560984421ba03f5b7dd6231d19dd4b28a8f3a55))
+
 ### [1.101.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.101.1...v1.101.2) (2025-06-05)
 
 ### [1.101.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.101.0...v1.101.1) (2025-06-02)

@@ -10,7 +10,7 @@ import {
   runTestCommand,
 } from './common';
 
-type SupportedFeature = 'processor' | 'router' | 'dataDelivery';
+type SupportedFeature = 'processor' | 'router' | 'dataDelivery' | 'userDeletion';
 
 // Build URL for the request
 // eslint-disable-next-line consistent-return
@@ -19,6 +19,7 @@ function buildURL(feature: string, destination: string, version): string {
     processor: `http://localhost:9090/${version}/destinations/${destination}`,
     router: 'http://localhost:9090/routerTransform',
     dataDelivery: `http://localhost:9090/${version}/destinations/${destination}/proxy`,
+    userDeletion: `http://localhost:9090/deleteUsers`,
   };
   if (urls[feature]) {
     return urls[feature];

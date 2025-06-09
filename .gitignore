@@ -126,6 +126,9 @@ dist-test
 .vscode-test
 .vscode
 
+# ignore tasks.json in .vscode
+!.vscode/tasks.json
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged
@@ -152,6 +155,3 @@ allure-report/
 
 # git conflict files
 *.orig
-
-# ignore tasks.json in .vscode
-!.vscode/tasks.json

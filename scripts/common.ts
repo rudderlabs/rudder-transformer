@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import path from 'path';
 import fs from 'fs/promises';
 import { exec } from 'child_process';
@@ -24,6 +25,7 @@ export function extractField(data: string, key: string, required = true): string
 }
 
 // Get destination name from path
+// eslint-disable-next-line consistent-return
 export function getDestination(filePath: string): string {
   const match = filePath.match(/destinations\/([^/]+)/);
   if (match) return match[1];
@@ -35,18 +37,23 @@ export function getDestination(filePath: string): string {
 export async function resolveDataFile(basePath: string): Promise<string> {
   const dir = path.dirname(path.resolve(process.cwd(), basePath));
   const candidates = ['data.ts', 'data.js'];
-  for (const file of candidates) {
-    const fullPath = path.join(dir, file);
-    try {
-      await fs.access(fullPath);
-      return fullPath;
-    } catch {}
-  }
-  console.error(`Neither data.ts nor data.js found in: ${dir}`);
-  process.exit(1);
+  return (
+    candidates
+      .map(async (file) => {
+        const fullPath = path.join(dir, file);
+        try {
+          await fs.access(fullPath);
+          return fullPath;
+        } catch {
+          return '';
+        }
+      })
+      .find(Boolean) || ''
+  );
 }
 
 // Import the data module
+// eslint-disable-next-line consistent-return
 export async function importDataModule(filePath: string): Promise<any[]> {
   try {
     const mod = await import(filePath);

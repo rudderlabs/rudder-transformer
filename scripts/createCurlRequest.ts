@@ -1,3 +1,4 @@
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import { exec } from 'child_process';
 import {
   parseArgs,
@@ -9,6 +10,7 @@ import {
 } from './common';
 
 // Build URL for the request
+// eslint-disable-next-line consistent-return
 function buildURL(feature: string, destination: string): string {
   const urls = {
     processor: `http://localhost:9090/v0/destinations/${destination}`,
@@ -25,9 +27,9 @@ function buildURL(feature: string, destination: string): string {
 // Build curl command
 function buildCurl(url: string, headers: Record<string, string>, body: unknown): string {
   const curl = [`curl -X POST "${url}"`, `-H "Content-Type: application/json"`];
-  for (const [k, v] of Object.entries(headers || {})) {
+  Object.entries(headers || {}).forEach(([k, v]) => {
     curl.push(`-H "${k}: ${v}"`);
-  }
+  });
   if (body) {
     curl.push(`--data '${JSON.stringify(body)}'`);
   }
@@ -60,8 +62,8 @@ function copyToClipboard(text: string) {
 async function main() {
   const { filePath, dataString } = parseArgs();
 
-  const description = extractField(dataString, 'description')!;
-  const feature = extractField(dataString, 'feature')!;
+  const description = extractField(dataString, 'description') || '';
+  const feature = extractField(dataString, 'feature') || '';
   const destination = getDestination(filePath);
   const url = buildURL(feature, destination);
 

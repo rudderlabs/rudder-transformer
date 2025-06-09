@@ -1,4 +1,4 @@
-import { exec } from 'child_process';
+/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import {
   parseArgs,
   extractField,
@@ -12,8 +12,8 @@ async function main() {
   const { filePath, dataString } = parseArgs();
 
   let testcaseIndex = 0;
-  const description = extractField(dataString, 'description')!;
-  const feature = extractField(dataString, 'feature')!;
+  const description = extractField(dataString, 'description') || '';
+  const feature = extractField(dataString, 'feature') || '';
   const destination = getDestination(filePath);
 
   const dataFile = await resolveDataFile(filePath);

@@ -334,15 +334,15 @@ function getFormData(payload = {}) {
 
 const getZippedPayload = (payload) =>
   new Promise((resolve, reject) => {
-    gzip(payload, (err, dataCompress) => {
+    gzip(payload, (err, zippedPayload) => {
       if (err) {
         reject(err);
         return;
       }
-      resolve(dataCompress);
+      resolve(zippedPayload);
     });
   })
-    .then((dataCompress) => dataCompress)
+    .then((zippedPayload) => zippedPayload)
     .catch((err) => {
       throw new PlatformError(`Failed to do GZIP compression: ${err}`, 400);
     });

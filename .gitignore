@@ -152,3 +152,6 @@ allure-report/
 
 # git conflict files
 *.orig
+
+# vscode task json files remove ignore
+!.vscode/tasks.json

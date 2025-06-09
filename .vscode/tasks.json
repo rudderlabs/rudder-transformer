@@ -2,7 +2,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Run ts-node script",
+      "label": "Create curl request from selected test case",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/createCurlRequest.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the shell
+        "\"${input:transformedSelectedText}\""
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run selected component test case",
       "type": "shell",
       "command": "npx",
       "args": [

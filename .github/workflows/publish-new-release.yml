@@ -1,5 +1,8 @@
 name: Publish New GitHub Release
 
+# This workflow creates GitHub releases with Angular conventional commit style release notes
+# using a modern GitHub CLI approach instead of the deprecated conventional-github-releaser package
+
 on:
   pull_request:
     types:
@@ -50,17 +53,61 @@ jobs:
 
       - name: Tag & Create GitHub Release
         id: create_release
-        continue-on-error: true
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.PAT }}
-          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
+          echo "🏷️ Checking and creating tag v${{ steps.extract-version.outputs.release_version }}..."
           git fetch --tags origin
-          git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
-          git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
-          npm run release:github
+
+          # Check if tag already exists
+          if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
+            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} already exists, skipping tag creation"
+          else
+            echo "🏷️ Creating new tag v${{ steps.extract-version.outputs.release_version }}..."
+            git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
+            git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
+            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} created and pushed successfully"
+          fi
+
+          echo "🚀 Creating GitHub release with conventional commit notes..."
+          # Make the script executable
+          chmod +x scripts/create-github-release.js
+
+          # Create release using our modern script with Angular conventional commit style notes
+          node scripts/create-github-release.js
+
+          echo "✅ Release process completed successfully!"
           echo "DATE=$(date)" >> $GITHUB_ENV
+
+      - name: Verify Release Creation
+        id: verify_release
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          echo "🔍 Verifying that release v${{ steps.extract-version.outputs.release_version }} exists..."
+
+          # Wait a moment for GitHub API to sync
+          sleep 2
+
+          if gh release view v${{ steps.extract-version.outputs.release_version }} > /dev/null 2>&1; then
+            echo "✅ Release v${{ steps.extract-version.outputs.release_version }} verified successfully!"
+            echo "🔗 Release URL: https://github.com/rudderlabs/rudder-transformer/releases/tag/v${{ steps.extract-version.outputs.release_version }}"
+
+            # Show release info
+            echo "📋 Release details:"
+            gh release view v${{ steps.extract-version.outputs.release_version }} --json tagName,name,publishedAt,isLatest | jq -r '"Tag: \(.tagName), Published: \(.publishedAt), Latest: \(.isLatest)"'
+          else
+            echo "❌ Failed to verify release v${{ steps.extract-version.outputs.release_version }}"
+            echo "🔍 Checking if tag exists..."
+            if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
+              echo "✅ Tag exists but release not found - this might be a GitHub API delay"
+            else
+              echo "❌ Tag also missing - release creation completely failed"
+            fi
+            exit 1
+          fi
 
       - name: Pull Changes Into develop Branch
         run: |

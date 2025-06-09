@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run ts-node script",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/createCurlRequest.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the shell
+        "\"${input:transformedSelectedText}\""
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "transformedSelectedText",
+      "type": "command",
+      "command": "extension.commandvariable.transform",
+      "args": {
+        "text": "${selectedText}", // The input for transformation is the currently selected text
+        "type": "string",
+        "find": "\\n", // Regex to find newline characters
+        "replace": " ", // Replace newlines with a space
+        "flags": "g" // Global flag to replace all occurrences
+      }
+    }
+  ]
+}

@@ -151,7 +151,6 @@ const testRoute = async (route, tcData: TestCaseData) => {
     if (
       tcData.name != 'marketo_static_list' &&
       tcData.name != 'mailmodo' &&
-      tcData.name != 'hs' &&
       tcData.name != 'iterable' &&
       tcData.name != 'klaviyo' &&
       tcData.name != 'mailjet'

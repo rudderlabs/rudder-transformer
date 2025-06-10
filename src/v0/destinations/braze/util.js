@@ -257,13 +257,13 @@ const BrazeDedupUtility = {
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
     const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
     stats.timing('braze_lookup_time', lookupStartTime, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     stats.histogram('braze_lookup_count', chunkedUserData.length, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     stats.histogram('braze_lookup_user_count', externalIdsToQuery.length + aliasIdsToQuery.length, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     return _.flatMap(chunkedUserData);
   },

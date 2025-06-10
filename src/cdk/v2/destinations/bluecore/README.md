@@ -46,6 +46,33 @@ This integration enables retailers to sync customer profiles, track user behavio
 - **No Proxy Delivery**: Direct API communication only
 - **Limited Message Types**: Only identify and track events are supported
 
+## Configuration
+
+### Required Settings
+
+- **Bluecore Namespace**: Your unique Bluecore namespace/token (required for authentication)
+  - Found in Bluecore dashboard under Account > Integration Guide
+  - Used as the `token` parameter in API requests
+  - Must be kept secure as it's marked as a secret key
+  - Pattern validation: `(^\\{\\{.*\\|\\|(.*)\\}\\}$)|(^env[.].+)|^(.{1,100})$`
+  - Maximum length: 100 characters
+  
+### Connection Mode
+
+- **Supported**: Cloud mode only
+- **Device Mode**: Not supported
+- **Hybrid Mode**: Not supported
+
+### Supported Source Types
+
+- Android, iOS, Unity, AMP, React Native, Flutter, Cordova, Web, Cloud, Shopify, Warehouse
+
+### Authentication
+
+- **Method**: Namespace-based authentication
+- **No OAuth**: OAuth authentication is not supported
+- **Security**: Namespace is treated as a secret key and encrypted in storage
+
 ## Integration Functionalities
 
 ### Implementation Details
@@ -92,15 +119,14 @@ This integration enables retailers to sync customer profiles, track user behavio
 
 ### Rate Limits
 
-RudderStack uses Bluecore's Events/Tracking API with the following rate limiting considerations:
+| Endpoint | Event Types | Rate Limit | Batch Limits | Description |
+|----------|-------------|------------|--------------|-------------|
+| `https://api.bluecore.app/api/track/mobile/v1` | `customer_patch`, `viewed_product`, `search`, `add_to_cart`, `remove_from_cart`, `wishlist`, `purchase`, `optin`, `unsubscribe` | Not publicly documented | No batching support - events sent individually | Bluecore Events/Tracking API for customer data collection and event tracking. Uses namespace-based authentication. Standard HTTP payload limits apply. |
 
-- **API Used**: Events/Tracking API (endpoint: `https://api.bluecore.app/api/track/mobile/v1`)
-- **Rate Limit**: Specific rate limits for the Events/Tracking API are not publicly documented
-- **Payload Limits**: Standard HTTP payload limits apply
-- **Best Practices**:
-  - Implement reasonable delays between requests to avoid overwhelming the API
-  - Monitor response times and error rates to detect potential rate limiting
-  - Use event filtering to reduce unnecessary volume
+**Best Practices**:
+- Implement reasonable delays between requests to avoid overwhelming the API
+- Monitor response times and error rates to detect potential rate limiting
+- Use event filtering to reduce unnecessary volume
 
 **Note**: The rate limiting information differs from Bluecore's Transactional API, which has documented limits of 200 calls/second and 900 KB payloads. The Events/Tracking API that RudderStack uses may have different limitations that are not publicly documented.
 
@@ -179,39 +205,6 @@ RudderStack provides default mappings for common e-commerce events:
 | `unsubscribe`             | `unsubscribe`            | Direct subscription event                     |
 | `subscription_event`      | `optin` or `unsubscribe` | Mapped based on `channelConsents.email` value |
 
-## Configuration
-
-### Required Settings
-
-- **Bluecore Namespace**: Your unique Bluecore namespace/token (required for authentication)
-  - Found in Bluecore dashboard under Account > Integration Guide
-  - Used as the `token` parameter in API requests
-  - Must be kept secure as it's marked as a secret key
-  - Pattern validation: `(^\\{\\{.*\\|\\|(.*)\\}\\}$)|(^env[.].+)|^(.{1,100})$`
-  - Maximum length: 100 characters
-
-### Optional Settings
-
-- **Event Mappings**: Custom mappings from your event names to Bluecore standard events
-  - Supports mapping to: `viewed_product`, `search`, `add_to_cart`, `remove_from_cart`, `purchase`, `wishlist`
-  - Can be configured via the RudderStack dashboard
-  - Allows empty string mapping to disable specific events
-
-### Connection Mode
-
-- **Supported**: Cloud mode only
-- **Device Mode**: Not supported
-- **Hybrid Mode**: Not supported
-
-### Supported Source Types
-
-- Android, iOS, Unity, AMP, React Native, Flutter, Cordova, Web, Cloud, Shopify, Warehouse
-
-### Authentication
-
-- **Method**: Namespace-based authentication
-- **No OAuth**: OAuth authentication is not supported
-- **Security**: Namespace is treated as a secret key and encrypted in storage
 
 ## Event Mapping Configuration
 
@@ -285,7 +278,7 @@ For detailed error handling logic, see the [Business Logic Documentation](./docs
 ### Unit Tests
 
 - **Location**: `./src/cdk/v2/destinations/bluecore`
-- **Running Tests**: `npm run test:ts -- unit --destination=am`
+- **Running Tests**: `npm run test:ts -- unit --destination=bluecore`
 
 ### Integration Tests
 
@@ -721,28 +714,6 @@ Suitable for organizations that need to:
 - **No Caching**: The integration does not implement caching strategies
 - **Stateless Processing**: Each event is processed independently
 - **Memory Usage**: Minimal memory footprint due to stateless design
-
-## Debugging and Metrics
-
-### Logging
-
-- **Error Logging**: Detailed error messages with context
-- **Validation Logging**: Information about failed validations
-- **Processing Logging**: Event processing status and outcomes
-
-### Available Metrics
-
-- **Event Processing**: Success/failure rates for event processing
-- **Validation Errors**: Count and types of validation failures
-- **API Responses**: HTTP response codes and timing
-- **Configuration Errors**: Issues with destination setup
-
-### Debugging Steps
-
-1. **Check Configuration**: Verify namespace and event mappings
-2. **Validate Event Format**: Ensure events match expected structure
-3. **Monitor Logs**: Review transformation and API logs
-4. **Test with Simple Events**: Start with basic events before complex ones
 
 ## FAQ
 

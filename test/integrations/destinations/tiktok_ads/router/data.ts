@@ -576,11 +576,14 @@ export const data: RouterTestData[] = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId1' },
+                {
+                  accessToken: 'dummyAccessToken',
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                },
+              ),
             },
             {
               message: {
@@ -642,10 +645,13 @@ export const data: RouterTestData[] = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: overrideDestination(destinationConfig, {
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId2' },
+                {
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                },
+              ),
             },
             {
               message: {
@@ -708,17 +714,20 @@ export const data: RouterTestData[] = [
               },
               metadata: {
                 jobId: 3,
-                userId: 'u1',
+                userId: 'u2',
               },
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-                eventsToStandard: [
-                  { from: 'addToCart', to: 'CompletePayment' },
-                  { from: 'addToCart', to: 'download' },
-                ],
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId3' },
+                {
+                  accessToken: 'dummyAccessToken',
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                  eventsToStandard: [
+                    { from: 'addToCart', to: 'CompletePayment' },
+                    { from: 'addToCart', to: 'download' },
+                  ],
+                },
+              ),
             },
             {
               message: {
@@ -783,11 +792,14 @@ export const data: RouterTestData[] = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId1' },
+                {
+                  accessToken: 'dummyAccessToken',
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                },
+              ),
             },
           ],
           destType: 'tiktok_ads',
@@ -858,47 +870,6 @@ export const data: RouterTestData[] = [
                         type: 'track',
                       },
                       {
-                        event: 'Download',
-                        event_id: '1616318632825_357',
-                        timestamp: '2020-09-17T19:49:27Z',
-                        properties: {
-                          contents: [
-                            {
-                              price: 8,
-                              quantity: 2,
-                              content_type: 'socks',
-                              content_id: '1077218',
-                            },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        context: {
-                          page: {
-                            url: 'http://demo.mywebsite.com/purchase',
-                            referrer: 'http://demo.mywebsite.com',
-                          },
-                          user: {
-                            phone_number:
-                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                            email:
-                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                            external_id:
-                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          },
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                        },
-                        type: 'track',
-                      },
-                      {
                         event: 'Search',
                         event_id: '1616318632825_357',
                         timestamp: '2020-09-17T19:49:27Z',
@@ -949,16 +920,18 @@ export const data: RouterTestData[] = [
               },
               metadata: [
                 { jobId: 1, userId: 'u1' },
-                { jobId: 3, userId: 'u1' },
                 { jobId: 4, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId1' },
+                {
+                  accessToken: 'dummyAccessToken',
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                },
+              ),
             },
             {
               metadata: [{ jobId: 2, userId: 'u1' }],
@@ -973,10 +946,91 @@ export const data: RouterTestData[] = [
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
               },
-              destination: overrideDestination(destinationConfig, {
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-              }),
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId2' },
+                {
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                },
+              ),
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    pixel_code: 'dummyPixelCode',
+                    partner_name: 'RudderStack',
+                    batch: [
+                      {
+                        event: 'Download',
+                        event_id: '1616318632825_357',
+                        timestamp: '2020-09-17T19:49:27Z',
+                        properties: {
+                          contents: [
+                            {
+                              price: 8,
+                              quantity: 2,
+                              content_type: 'socks',
+                              content_id: '1077218',
+                            },
+                            {
+                              price: 30,
+                              quantity: 1,
+                              content_type: 'dress',
+                              content_id: '1197218',
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        context: {
+                          page: {
+                            url: 'http://demo.mywebsite.com/purchase',
+                            referrer: 'http://demo.mywebsite.com',
+                          },
+                          user: {
+                            phone_number:
+                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                            email:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                            external_id:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          },
+                          ip: '13.57.97.131',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                        type: 'track',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [{ jobId: 3, userId: 'u2' }],
+              batched: true,
+              statusCode: 200,
+              destination: overrideDestination(
+                { ...destinationConfig, ID: 'destId3' },
+                {
+                  accessToken: 'dummyAccessToken',
+                  pixelCode: 'dummyPixelCode',
+                  hashUserProperties: false,
+                  eventsToStandard: [
+                    { from: 'addToCart', to: 'CompletePayment' },
+                    { from: 'addToCart', to: 'download' },
+                  ],
+                },
+              ),
             },
           ],
         },

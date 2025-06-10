@@ -226,7 +226,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -234,11 +234,12 @@ export const data = [
                     inputs: [
                       {
                         properties: {
-                          firstname: 'Test Hubspot 1',
-                          anonymousId: '123451',
-                          country: 'India 1',
-                          email: 'testhubspot@email.com',
+                          firstname: 'Test Hubspot',
+                          anonymousId: '12345',
+                          country: 'India',
+                          email: 'testhubspot2@email.com',
                         },
+                        id: '103605',
                       },
                     ],
                   },
@@ -248,7 +249,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 3, userId: 'u1' }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -278,7 +279,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
                 headers: { 'Content-Type': 'application/json' },
                 params: { hapikey: 'dummy-apikey' },
                 body: {
@@ -286,12 +287,11 @@ export const data = [
                     inputs: [
                       {
                         properties: {
-                          firstname: 'Test Hubspot',
-                          anonymousId: '12345',
-                          country: 'India',
-                          email: 'testhubspot2@email.com',
+                          firstname: 'Test Hubspot 1',
+                          anonymousId: '123451',
+                          country: 'India 1',
+                          email: 'testhubspot@email.com',
                         },
-                        id: '103605',
                       },
                     ],
                   },
@@ -301,7 +301,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2, userId: 'u1' }],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1020,7 +1020,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -1031,22 +1031,11 @@ export const data = [
                     inputs: [
                       {
                         properties: {
-                          firstname: 'Test Hubspot 1',
-                          anonymousId: '123451',
-                          country: 'India 1',
-                          email: 'testhubspot@email.com',
-                        },
-                      },
-                      {
-                        properties: {
                           firstname: 'Test Hubspot',
-                          anonymousId: '123451',
+                          anonymousId: '12345',
                           country: 'India',
-                          email: 'testhubspotdatetime@email.com',
-                          date_closed: 1697587200000,
-                          date_created: 1680134400000,
-                          date_submitted: 1695600000000,
                         },
+                        id: '103605',
                       },
                     ],
                   },
@@ -1056,10 +1045,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 3, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1117,7 +1103,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -1128,11 +1114,22 @@ export const data = [
                     inputs: [
                       {
                         properties: {
-                          firstname: 'Test Hubspot',
-                          anonymousId: '12345',
-                          country: 'India',
+                          firstname: 'Test Hubspot 1',
+                          anonymousId: '123451',
+                          country: 'India 1',
+                          email: 'testhubspot@email.com',
                         },
-                        id: '103605',
+                      },
+                      {
+                        properties: {
+                          firstname: 'Test Hubspot',
+                          anonymousId: '123451',
+                          country: 'India',
+                          email: 'testhubspotdatetime@email.com',
+                          date_closed: 1697587200000,
+                          date_created: 1680134400000,
+                          date_submitted: 1695600000000,
+                        },
                       },
                     ],
                   },
@@ -1142,7 +1139,10 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2, userId: 'u1' }],
+              metadata: [
+                { jobId: 3, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
+              ],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1378,6 +1378,73 @@ export const data = [
             },
             {
               message: {
+                type: 'track',
+                traits: {},
+                context: {
+                  externalId: [
+                    {
+                      id: 'osvaldocostaferreira98@gmail.com',
+                      type: 'HS-contacts',
+                      identifierType: 'email',
+                    },
+                  ],
+                },
+                event: 'Purchase',
+                properties: { Revenue: 'name1' },
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'email',
+                  hubspotEvents: [
+                    {
+                      rsEventName: 'Purchase',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
+                      eventProperties: [
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
+                      ],
+                    },
+                    {
+                      rsEventName: 'Order Complete',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      eventProperties: [
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
+                      ],
+                    },
+                  ],
+                  eventFilteringOption: 'disable',
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              message: {
                 channel: 'web',
                 context: {
                   app: {
@@ -1542,73 +1609,6 @@ export const data = [
                 isProcessorEnabled: true,
               },
             },
-            {
-              message: {
-                type: 'track',
-                traits: {},
-                context: {
-                  externalId: [
-                    {
-                      id: 'osvaldocostaferreira98@gmail.com',
-                      type: 'HS-contacts',
-                      identifierType: 'email',
-                    },
-                  ],
-                },
-                event: 'Purchase',
-                properties: { Revenue: 'name1' },
-              },
-              metadata: { jobId: 3, userId: 'u1' },
-              destination: {
-                Config: {
-                  authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
-                  hubID: 'dummy-hubId',
-                  apiKey: 'dummy-apikey',
-                  apiVersion: 'newApi',
-                  lookupField: 'lookupField',
-                  hubspotEvents: [
-                    {
-                      rsEventName: 'Purchase',
-                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
-                      eventProperties: [
-                        { from: 'Revenue', to: 'value' },
-                        { from: 'Price', to: 'cost' },
-                      ],
-                    },
-                    {
-                      rsEventName: 'Order Complete',
-                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
-                      eventProperties: [
-                        { from: 'firstName', to: 'first_name' },
-                        { from: 'lastName', to: 'last_name' },
-                      ],
-                    },
-                  ],
-                  eventFilteringOption: 'disable',
-                  blacklistedEvents: [{ eventName: '' }],
-                  whitelistedEvents: [{ eventName: '' }],
-                },
-                secretConfig: {},
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                name: 'Hubspot',
-                enabled: true,
-                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                deleted: false,
-                createdAt: '2020-12-30T08:39:32.005Z',
-                updatedAt: '2021-02-03T16:22:31.374Z',
-                destinationDefinition: {
-                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  name: 'HS',
-                  displayName: 'Hubspot',
-                  createdAt: '2020-04-09T09:24:31.794Z',
-                  updatedAt: '2021-01-11T11:03:28.103Z',
-                },
-                transformations: [],
-                isConnectionEnabled: true,
-                isProcessorEnabled: true,
-              },
-            },
           ],
           destType: 'hs',
         },
@@ -1628,15 +1628,17 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: authHeader1,
+                  Authorization: 'Bearer hs1',
                 },
                 params: {},
                 body: {
                   JSON: {
                     inputs: [
-                      { properties: { email: 'noname@email.com', firstname: 'Test Hubspot44' } },
                       {
-                        properties: { email: 'testhubspot@email.com', firstname: 'Test Hubspot44' },
+                        properties: {
+                          email: 'noname@email.com',
+                          firstname: 'Test Hubspot44',
+                        },
                       },
                     ],
                   },
@@ -1647,17 +1649,21 @@ export const data = [
                 files: {},
               },
               metadata: [
-                { jobId: 1, userId: 'u1' },
-                { jobId: 2, userId: 'u1' },
-                { jobId: 4, userId: 'u1' },
-                { jobId: 5, userId: 'u1' },
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                },
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                },
               ],
               batched: true,
               statusCode: 200,
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
+                  accessToken: 'hs1',
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
@@ -1667,22 +1673,42 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        { from: 'Revenue', to: 'value' },
-                        { from: 'Price', to: 'cost' },
+                        {
+                          from: 'Revenue',
+                          to: 'value',
+                        },
+                        {
+                          from: 'Price',
+                          to: 'cost',
+                        },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        { from: 'firstName', to: 'first_name' },
-                        { from: 'lastName', to: 'last_name' },
+                        {
+                          from: 'firstName',
+                          to: 'first_name',
+                        },
+                        {
+                          from: 'lastName',
+                          to: 'last_name',
+                        },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [{ eventName: '' }],
-                  whitelistedEvents: [{ eventName: '' }],
+                  blacklistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                  whitelistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1712,14 +1738,16 @@ export const data = [
                 endpoint: 'https://api.hubapi.com/events/v3/send',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: authHeader1,
+                  Authorization: 'Bearer hs1',
                 },
                 params: {},
                 body: {
                   JSON: {
                     email: 'osvaldocostaferreira98@gmail.com',
                     eventName: 'pedummy-hubId_rs_hub_test',
-                    properties: { value: 'name1' },
+                    properties: {
+                      value: 'name1',
+                    },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -1727,38 +1755,173 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 3, userId: 'u1' }],
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                },
+              ],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
-                  accessToken: secret1,
+                  accessToken: 'hs1',
                   hubID: 'dummy-hubId',
                   apiKey: 'dummy-apikey',
                   apiVersion: 'newApi',
-                  lookupField: 'lookupField',
+                  lookupField: 'email',
                   hubspotEvents: [
                     {
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        { from: 'Revenue', to: 'value' },
-                        { from: 'Price', to: 'cost' },
+                        {
+                          from: 'Revenue',
+                          to: 'value',
+                        },
+                        {
+                          from: 'Price',
+                          to: 'cost',
+                        },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        { from: 'firstName', to: 'first_name' },
-                        { from: 'lastName', to: 'last_name' },
+                        {
+                          from: 'firstName',
+                          to: 'first_name',
+                        },
+                        {
+                          from: 'lastName',
+                          to: 'last_name',
+                        },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [{ eventName: '' }],
-                  whitelistedEvents: [{ eventName: '' }],
+                  blacklistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                  whitelistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer hs1',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: {
+                          email: 'testhubspot@email.com',
+                          firstname: 'Test Hubspot44',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                  userId: 'u1',
+                },
+                {
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: 'hs1',
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'email',
+                  hubspotEvents: [
+                    {
+                      rsEventName: 'Purchase',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
+                      eventProperties: [
+                        {
+                          from: 'Revenue',
+                          to: 'value',
+                        },
+                        {
+                          from: 'Price',
+                          to: 'cost',
+                        },
+                      ],
+                    },
+                    {
+                      rsEventName: 'Order Complete',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      eventProperties: [
+                        {
+                          from: 'firstName',
+                          to: 'first_name',
+                        },
+                        {
+                          from: 'lastName',
+                          to: 'last_name',
+                        },
+                      ],
+                    },
+                  ],
+                  eventFilteringOption: 'disable',
+                  blacklistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
+                  whitelistedEvents: [
+                    {
+                      eventName: '',
+                    },
+                  ],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',

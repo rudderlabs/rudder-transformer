@@ -3,6 +3,7 @@ const {
   ThrottledError,
   AbortedError,
   OAuthSecretError,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -141,6 +142,15 @@ const getAccessTokenOauth = (metadata) => {
   if (!isDefinedAndNotNull(metadata?.secret)) {
     throw new OAuthSecretError('secret is undefined/null');
   }
+
+  if (!isDefinedAndNotNullAndNotEmpty(metadata.secret?.access_token)) {
+    throw new OAuthSecretError('access_token is undefined/null');
+  }
+
+  if (!isDefinedAndNotNullAndNotEmpty(metadata.secret?.instance_url)) {
+    throw new OAuthSecretError('instance_url is undefined/null');
+  }
+
   return {
     token: metadata.secret?.access_token,
     instanceUrl: metadata.secret?.instance_url,

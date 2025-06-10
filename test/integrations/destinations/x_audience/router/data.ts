@@ -221,6 +221,7 @@ export const data = [
   ...tc,
   mockFns: (_) => {
     jest.mock('../../../../../src/v0/destinations/twitter_ads/util', () => ({
+      ...jest.requireActual('../../../../../src/v0/destinations/twitter_ads/util'),
       getAuthHeaderForRequest: (_a, _b) => {
         return { Authorization: authHeaderConstant };
       },

@@ -1,5 +1,5 @@
 import { Context, Next } from 'koa';
-import { deepFreeze, forEachInBatches, PlatformError } from '@rudderstack/integrations-lib';
+import { deepFreezeProperty, forEachInBatches, PlatformError } from '@rudderstack/integrations-lib';
 import { ProcessorCompactedTransformationRequest, ProcessorTransformationRequest } from '../types';
 
 /**
@@ -17,7 +17,7 @@ export async function DestTransformCompactedPayloadV1Middleware(
     const body = ctx.request.body as ProcessorCompactedTransformationRequest;
     await forEachInBatches(Object.values(body.destinations), (destination) => {
       // deep freeze destination configurations
-      deepFreeze(destination.Config);
+      deepFreezeProperty(destination, 'Config');
     });
     ctx.request.body = body.input.map((input) => {
       const destination = body.destinations[input.metadata.destinationId];

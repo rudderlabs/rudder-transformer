@@ -1065,4 +1065,138 @@ export const data: ProcessorTestData[] = [
       },
     },
   },
+  // Payload Compaction Mutation Test Case for Processor
+  {
+    id: 'rudder-test-processor-mutation-error',
+    name: 'rudder_test',
+    description: 'Test mutation of frozen destination config in compacted payload (processor)',
+    scenario: 'Mutation attempt should throw error when config is frozen (processor)',
+    successCriteria: 'Should return error about read-only/frozen config (processor)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    mutateDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              metadata: {
+                ...generateMetadata(200, 'u200'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            },
+          ],
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            metadata: {
+              ...generateMetadata(200, 'u200'),
+              destinationId: 'static-123',
+              sourceId: 'test-source-id',
+            },
+            error: expect.stringMatching(
+              /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+            ),
+            output: undefined,
+            statTags: {
+              errorCategory: 'transformation',
+            },
+          },
+        ],
+      },
+    },
+  },
+  // Payload Compaction Config Reference Replacement Test Case for Processor
+  {
+    id: 'rudder-test-processor-replace-config-error',
+    name: 'rudder_test',
+    description: 'Test replacing frozen destination config object in compacted payload (processor)',
+    scenario: 'Config reference replacement should throw error when config is frozen (processor)',
+    successCriteria: 'Should return error about assignment to read-only/frozen config (processor)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    replaceDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              metadata: {
+                ...generateMetadata(201, 'u201'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            },
+          ],
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            metadata: {
+              ...generateMetadata(201, 'u201'),
+              destinationId: 'static-123',
+              sourceId: 'test-source-id',
+            },
+            error: expect.stringMatching(
+              /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+            ),
+            output: undefined,
+            statTags: {
+              errorCategory: 'transformation',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

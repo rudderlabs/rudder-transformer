@@ -1,6 +1,4 @@
 /* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
-import { exec } from 'child_process';
-import * as os from 'os';
 import {
   parseArgs,
   extractField,
@@ -8,6 +6,8 @@ import {
   resolveDataFile,
   importDataModule,
   runTestCommand,
+  copyToClipboard,
+  buildCurl,
 } from './common';
 
 type SupportedFeature = 'processor' | 'router' | 'dataDelivery' | 'userDeletion';
@@ -26,54 +26,6 @@ function buildURL(feature: string, destination: string, version): string {
   }
   console.error(`Feature '${feature}' is not supported.`);
   process.exit(1);
-}
-
-// Build curl command
-function buildCurl(url: string, headers: Record<string, string>, body: unknown): string {
-  const curl = [`curl -X POST "${url}"`, `-H "Content-Type: application/json"`];
-  Object.entries(headers || {}).forEach(([k, v]) => {
-    curl.push(`-H "${k}: ${v}"`);
-  });
-  if (body) {
-    curl.push(`--data '${JSON.stringify(body)}'`);
-  }
-  return curl.join(' \\\n  ');
-}
-
-// Copy string to clipboard using pbcopy
-function copyToClipboard(text: string) {
-  const platform = os.platform();
-  const copyCommandMap: Record<string, string> = {
-    darwin: 'pbcopy',
-    win32: 'clip',
-    linux: 'xclip',
-  };
-  const command = copyCommandMap[platform];
-  if (platform === 'linux' && !command) {
-    console.warn(
-      '⚠️  Clipboard copy requires xclip on Linux (install with: apt-get install xclip)',
-    );
-    return;
-  }
-  const child = exec('pbcopy');
-  if (child.stdin) {
-    child.stdin.write(text);
-    child.stdin.end();
-  } else {
-    console.error('pbcopy: stdin is null');
-  }
-
-  child.on('error', (err) => {
-    console.error('pbcopy error:', err);
-  });
-
-  child.on('close', (code) => {
-    if (code === 0) {
-      console.log('✅ Copied curl command to clipboard.');
-    } else {
-      console.error(`pbcopy exited with code ${code}`);
-    }
-  });
 }
 
 async function main() {

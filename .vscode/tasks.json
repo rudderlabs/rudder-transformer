@@ -2,12 +2,28 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Create and run curl request for selected test case",
+      "label": "Create and run dt curl request for selected test case",
       "type": "shell",
       "command": "npx",
       "args": [
         "ts-node",
-        "scripts/createCurlRequest.ts",
+        "scripts/dtApiCurlCreation.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the shell
+        "\"${input:transformedSelectedText}\""
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create and run server curl request for selected test case",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/serverApiCurlCreation.ts",
         "${file}",
         // Ensure the entire input string is treated as a single argument by the shell
         "\"${input:transformedSelectedText}\""

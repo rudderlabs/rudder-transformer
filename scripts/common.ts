@@ -2,6 +2,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import { exec } from 'child_process';
+import os from 'os';
 
 // Extract CLI arguments
 export function parseArgs() {
@@ -85,5 +86,53 @@ export function runTestCommand(command: string): void {
 
   testCommand.on('close', (code) => {
     console.log(`Process exited with code ${code}`);
+  });
+}
+
+// Build curl command
+export function buildCurl(url: string, headers: Record<string, string>, body: unknown): string {
+  const curl = [`curl -X POST "${url}"`, `-H "Content-Type: application/json"`];
+  Object.entries(headers || {}).forEach(([k, v]) => {
+    curl.push(`-H "${k}: ${v}"`);
+  });
+  if (body) {
+    curl.push(`--data '${JSON.stringify(body)}'`);
+  }
+  return curl.join(' \\\n  ');
+}
+
+// Copy string to clipboard using pbcopy
+export function copyToClipboard(text: string) {
+  const platform = os.platform();
+  const copyCommandMap: Record<string, string> = {
+    darwin: 'pbcopy',
+    win32: 'clip',
+    linux: 'xclip',
+  };
+  const command = copyCommandMap[platform];
+  if (platform === 'linux' && !command) {
+    console.warn(
+      '⚠️  Clipboard copy requires xclip on Linux (install with: apt-get install xclip)',
+    );
+    return;
+  }
+  const child = exec('pbcopy');
+  if (child.stdin) {
+    child.stdin.write(text);
+    child.stdin.end();
+  } else {
+    console.error('pbcopy: stdin is null');
+  }
+
+  child.on('error', (err) => {
+    console.error('pbcopy error:', err);
+  });
+
+  child.on('close', (code) => {
+    if (code === 0) {
+      console.log('✅ Copied curl command to clipboard.');
+    } else {
+      console.error(`pbcopy exited with code ${code}`);
+    }
   });
 }

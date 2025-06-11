@@ -55,24 +55,6 @@ This integration enables retailers to sync customer profiles, track user behavio
 - **Custom Event Mapping**: Map custom events to Bluecore's standard e-commerce events
 - **Real-time Data Sync**: Send events individually for immediate processing
 
-### Key Features
-
-- Real-time customer data synchronization
-- Standard e-commerce event support (viewed_product, search, add_to_cart, etc.)
-- Custom event name mapping capabilities
-- Subscription event handling (optin/unsubscribe)
-- Customer identification via email, userId, or external ID
-- Product array normalization for e-commerce events
-
-### Limitations
-
-- **No Batching Support**: Events are sent individually, not in batches
-- **Cloud Mode Only**: Device mode and hybrid mode are not supported
-- **No User Deletion**: User deletion functionality is not available
-- **No OAuth Support**: Uses namespace-based authentication only
-- **No Proxy Delivery**: Direct API communication only
-- **Limited Message Types**: Only identify and track events are supported
-
 ## Integration Functionalities
 
 ### Implementation Details
@@ -129,42 +111,6 @@ This integration enables retailers to sync customer profiles, track user behavio
 - Use event filtering to reduce unnecessary volume
 
 **Note**: The rate limiting information differs from Bluecore's Transactional API, which has documented limits of 200 calls/second and 900 KB payloads. The Events/Tracking API that RudderStack uses may have different limitations that are not publicly documented.
-
-## Event Types
-
-### Supported Event Types
-
-#### Identify Events
-
-- **Purpose**: Create or update customer profiles in Bluecore
-- **Event Type**: `customer_patch`
-- **Required Fields**: Bluecore namespace
-- **Recommended Fields**: Email for proper user identification
-- **Use Cases**:
-  - Creating new customer profiles
-  - Updating existing customer information
-  - Linking email addresses to customer records
-
-#### Track Events
-
-- **Purpose**: Track user behavior and e-commerce activities
-- **Supported Events**:
-  - Standard e-commerce events (product views, searches, purchases)
-  - Custom events
-  - Subscription events (optin/unsubscribe)
-- **Required Fields**: Event name, Bluecore namespace
-- **Use Cases**:
-  - E-commerce tracking
-  - Custom behavior tracking
-  - Email subscription management
-
-### Unsupported Event Types
-
-- **Page**: Not supported
-- **Screen**: Not supported
-- **Group**: Not supported
-- **Alias**: Not supported
-- **Record**: Not supported (RETL functionality not available)
 
 ## Standard E-commerce Events
 

@@ -195,12 +195,6 @@ You can map your custom event names to Bluecore's standard events using the even
 - **Method**: POST
 - **Authentication**: Namespace token passed in request payload as `token` field
 
-### Rate Limits
-
-- **Rate Limit**: Specific rate limits for the Events/Tracking API are not publicly documented
-- **Payload Limits**: Standard HTTP payload limits apply
-- **Best Practices**: Monitor response times and error rates to detect potential rate limiting
-
 ## Data Mapping and Processing
 
 The integration uses configuration-driven field mapping for transforming RudderStack events to Bluecore's format. Events are processed in real-time with custom event name mapping and automatic product array normalization.

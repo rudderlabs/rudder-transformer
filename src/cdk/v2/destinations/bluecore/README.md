@@ -10,6 +10,33 @@ This integration enables retailers to sync customer profiles, track user behavio
 
 **Note**: This integration uses Bluecore's Events/Tracking API (endpoint: `https://api.bluecore.app/api/track/mobile/v1`) for customer data collection and event tracking, not the Transactional API which is used for sending transactional emails.
 
+## Configuration
+
+### Required Settings
+
+- **Bluecore Namespace**: Your unique Bluecore namespace/token (required for authentication)
+  - Found in Bluecore dashboard under Account > Integration Guide
+  - Used as the `token` parameter in API requests
+  - Must be kept secure as it's marked as a secret key
+  - Pattern validation: `(^\\{\\{.*\\|\\|(.*)\\}\\}$)|(^env[.].+)|^(.{1,100})$`
+  - Maximum length: 100 characters
+  
+### Connection Mode
+
+- **Supported**: Cloud mode only
+- **Device Mode**: Not supported
+- **Hybrid Mode**: Not supported
+
+### Supported Source Types
+
+- Android, iOS, Unity, AMP, React Native, Flutter, Cordova, Web, Cloud, Shopify, Warehouse
+
+### Authentication
+
+- **Method**: Namespace-based authentication
+- **No OAuth**: OAuth authentication is not supported
+- **Security**: Namespace is treated as a secret key and encrypted in storage
+
 ## Version Information
 
 - **Current Version**: CDK v2 (Latest)
@@ -45,33 +72,6 @@ This integration enables retailers to sync customer profiles, track user behavio
 - **No OAuth Support**: Uses namespace-based authentication only
 - **No Proxy Delivery**: Direct API communication only
 - **Limited Message Types**: Only identify and track events are supported
-
-## Configuration
-
-### Required Settings
-
-- **Bluecore Namespace**: Your unique Bluecore namespace/token (required for authentication)
-  - Found in Bluecore dashboard under Account > Integration Guide
-  - Used as the `token` parameter in API requests
-  - Must be kept secure as it's marked as a secret key
-  - Pattern validation: `(^\\{\\{.*\\|\\|(.*)\\}\\}$)|(^env[.].+)|^(.{1,100})$`
-  - Maximum length: 100 characters
-  
-### Connection Mode
-
-- **Supported**: Cloud mode only
-- **Device Mode**: Not supported
-- **Hybrid Mode**: Not supported
-
-### Supported Source Types
-
-- Android, iOS, Unity, AMP, React Native, Flutter, Cordova, Web, Cloud, Shopify, Warehouse
-
-### Authentication
-
-- **Method**: Namespace-based authentication
-- **No OAuth**: OAuth authentication is not supported
-- **Security**: Namespace is treated as a secret key and encrypted in storage
 
 ## Integration Functionalities
 

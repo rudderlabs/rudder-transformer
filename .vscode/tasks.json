@@ -3,14 +3,14 @@
   "tasks": [
     {
       "label": "Create and run dt curl request for selected test case",
-      "type": "shell",
+      "type": "process",
       "command": "npx",
       "args": [
         "ts-node",
         "scripts/dtApiCurlCreation.ts",
         "${file}",
-        // Ensure the entire input string is treated as a single argument by the shell
-        "\"${input:transformedSelectedText}\""
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -19,14 +19,14 @@
     },
     {
       "label": "Create and run server curl request for selected test case",
-      "type": "shell",
+      "type": "process",
       "command": "npx",
       "args": [
         "ts-node",
         "scripts/serverApiCurlCreation.ts",
         "${file}",
-        // Ensure the entire input string is treated as a single argument by the shell
-        "\"${input:transformedSelectedText}\""
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -35,14 +35,14 @@
     },
     {
       "label": "Run component test on selected test case",
-      "type": "shell",
+      "type": "process",
       "command": "npx",
       "args": [
         "ts-node",
         "scripts/runSingleTestCase.ts",
         "${file}",
-        // Ensure the entire input string is treated as a single argument by the shell
-        "\"${input:transformedSelectedText}\""
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

@@ -28,7 +28,8 @@ export function extractField(data: string, key: string, required = true): string
 // Get destination name from path
 // eslint-disable-next-line consistent-return
 export function getDestination(filePath: string): string {
-  const match = filePath.match(/destinations\/([^/]+)/);
+  const normalizedPath = filePath.replace(/\\/g, '/'); // Normalize for cross-platform compatibility
+  const match = normalizedPath.match(/destinations\/([^/]+)/);
   if (match) return match[1];
   console.error('Destination not found in the file path.');
   process.exit(1);
@@ -38,19 +39,18 @@ export function getDestination(filePath: string): string {
 export async function resolveDataFile(basePath: string): Promise<string> {
   const dir = path.dirname(path.resolve(process.cwd(), basePath));
   const candidates = ['data.ts', 'data.js'];
-  return (
-    candidates
-      .map(async (file) => {
-        const fullPath = path.join(dir, file);
-        try {
-          await fs.access(fullPath);
-          return fullPath;
-        } catch {
-          return '';
-        }
-      })
-      .find(Boolean) || ''
-  );
+  // eslint-disable-next-line no-restricted-syntax
+  for (const candidate of candidates) {
+    const fullPath = path.join(dir, candidate);
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await fs.access(fullPath);
+      return fullPath;
+    } catch {
+      // Ignore errors, continue to next candidate
+    }
+  }
+  return '';
 }
 
 // Import the data module
@@ -116,23 +116,23 @@ export function copyToClipboard(text: string) {
     );
     return;
   }
-  const child = exec('pbcopy');
+  const child = exec(command);
   if (child.stdin) {
     child.stdin.write(text);
     child.stdin.end();
   } else {
-    console.error('pbcopy: stdin is null');
+    console.error(`${command}: stdin is null`);
   }
 
   child.on('error', (err) => {
-    console.error('pbcopy error:', err);
+    console.error(`${command} error: ${err}`);
   });
 
   child.on('close', (code) => {
     if (code === 0) {
       console.log('✅ Copied curl command to clipboard.');
     } else {
-      console.error(`pbcopy exited with code ${code}`);
+      console.error(`${command} exited with code ${code}`);
     }
   });
 }

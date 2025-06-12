@@ -52,6 +52,7 @@ async function main() {
   const curlCmd = buildCurl(url, headers, body);
 
   console.log('\n--- Generated curl command ---\n');
+  console.log(curlCmd);
   console.log();
 
   copyToClipboard(curlCmd);

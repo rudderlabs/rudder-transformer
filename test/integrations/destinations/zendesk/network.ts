@@ -2356,7 +2356,7 @@ export const networkCallsData = [
   // network call to update primary email
   {
     httpReq: {
-      data: { identity: { type: 'email', value: 'example124@email.com' } },
+      data: { identity: { type: 'email', value: 'example124@email.com', verified: true } },
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
@@ -2377,7 +2377,6 @@ export const networkCallsData = [
           name: 'test-user-name',
           external_id: 'test-user-id',
           user_fields: { id: 'test-user-id' },
-          verified: true,
         },
       },
       headers: {
@@ -2404,7 +2403,7 @@ export const networkCallsData = [
   // network call to update primary email
   {
     httpReq: {
-      data: { identity: { type: 'email', value: 'example@email.com' } },
+      data: { identity: { type: 'email', value: 'example@email.com', verified: false } },
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
@@ -2532,7 +2531,7 @@ export const networkCallsData = [
   // network call to update primary email
   {
     httpReq: {
-      data: { identity: { type: 'email', value: 'example115@email.com' } },
+      data: { identity: { type: 'email', value: 'example115@email.com', verified: true } },
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',

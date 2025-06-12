@@ -80,6 +80,7 @@ const responseBuilderToUpdatePrimaryAccount = async (
   email,
   baseEndpoint,
   metadata,
+  destinationConfig,
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
@@ -93,6 +94,7 @@ const responseBuilderToUpdatePrimaryAccount = async (
     identity: {
       type: 'email',
       value: `${email}`,
+      verified: !!destinationConfig.createUsersAsVerified,
     },
   };
   // API call to update primary email of the user
@@ -147,6 +149,7 @@ const payloadBuilderforUpdatingEmail = async (
   newEmail,
   baseEndpoint,
   metadata,
+  destinationConfig,
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
@@ -192,6 +195,7 @@ const payloadBuilderforUpdatingEmail = async (
       newEmail,
       baseEndpoint,
       metadata,
+      destinationConfig,
     );
     respLists.push(response);
   }
@@ -560,6 +564,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       userEmail,
       baseEndpoint,
       metadata,
+      destinationConfig,
     );
     if (payloadsForUpdatingEmail?.length > 0) returnList.push(...payloadsForUpdatingEmail);
   }

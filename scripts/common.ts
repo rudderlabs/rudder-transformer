@@ -122,18 +122,18 @@ export function copyToClipboard(text: string) {
     child.stdin.write(text);
     child.stdin.end();
   } else {
-    console.error('pbcopy: stdin is null');
+    console.error(`${command}: stdin is null`);
   }
 
   child.on('error', (err) => {
-    console.error('pbcopy error:', err);
+    console.error(`${command} error: ${err}`);
   });
 
   child.on('close', (code) => {
     if (code === 0) {
       console.log('✅ Copied curl command to clipboard.');
     } else {
-      console.error(`pbcopy exited with code ${code}`);
+      console.error(`${command} exited with code ${code}`);
     }
   });
 }

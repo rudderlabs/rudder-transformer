@@ -28,7 +28,8 @@ export function extractField(data: string, key: string, required = true): string
 // Get destination name from path
 // eslint-disable-next-line consistent-return
 export function getDestination(filePath: string): string {
-  const match = filePath.match(/destinations\/([^/]+)/);
+  const normalizedPath = filePath.replace(/\\/g, '/'); // Normalize for cross-platform compatibility
+  const match = normalizedPath.match(/destinations\/([^/]+)/);
   if (match) return match[1];
   console.error('Destination not found in the file path.');
   process.exit(1);
@@ -116,7 +117,7 @@ export function copyToClipboard(text: string) {
     );
     return;
   }
-  const child = exec('pbcopy');
+  const child = exec(command);
   if (child.stdin) {
     child.stdin.write(text);
     child.stdin.end();

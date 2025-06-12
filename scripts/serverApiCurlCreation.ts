@@ -14,7 +14,7 @@ import {
 function buildURL(messageType: string): string {
   const baseEndPoint = 'http://localhost:8080/v1/';
   const serverUrlMap = {
-    identity: 'identity',
+    identify: 'identify',
     track: 'track',
     page: 'page',
     screen: 'screen',
@@ -64,6 +64,7 @@ async function main() {
   const url = buildURL(messageType);
   const curlCmd = buildCurl(url, headers, body[0].message);
   console.log('\n--- Generated curl command ---\n');
+  console.log(curlCmd);
   console.log();
 
   copyToClipboard(curlCmd);

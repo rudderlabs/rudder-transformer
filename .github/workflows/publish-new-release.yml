@@ -88,26 +88,51 @@ jobs:
         run: |
           echo "🔍 Verifying that release v${{ steps.extract-version.outputs.release_version }} exists..."
 
-          # Wait a moment for GitHub API to sync
-          sleep 2
+          # Retry configuration
+          MAX_RETRIES=${GITHUB_API_MAX_RETRIES:-10}
+          RETRY_DELAY=${GITHUB_API_RETRY_DELAY:-3}
+          RETRY_COUNT=0
 
-          if gh release view v${{ steps.extract-version.outputs.release_version }} > /dev/null 2>&1; then
-            echo "✅ Release v${{ steps.extract-version.outputs.release_version }} verified successfully!"
-            echo "🔗 Release URL: https://github.com/rudderlabs/rudder-transformer/releases/tag/v${{ steps.extract-version.outputs.release_version }}"
+          # Function to check if release exists
+          check_release() {
+            gh release view v${{ steps.extract-version.outputs.release_version }} > /dev/null 2>&1
+          }
 
-            # Show release info
-            echo "📋 Release details:"
-            gh release view v${{ steps.extract-version.outputs.release_version }} --json tagName,name,publishedAt,isLatest | jq -r '"Tag: \(.tagName), Published: \(.publishedAt), Latest: \(.isLatest)"'
-          else
-            echo "❌ Failed to verify release v${{ steps.extract-version.outputs.release_version }}"
-            echo "🔍 Checking if tag exists..."
-            if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
-              echo "✅ Tag exists but release not found - this might be a GitHub API delay"
-            else
-              echo "❌ Tag also missing - release creation completely failed"
+          # Retry loop with exponential backoff
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            echo "🔄 Attempt $((RETRY_COUNT + 1))/$MAX_RETRIES: Checking for release..."
+
+            if check_release; then
+              echo "✅ Release v${{ steps.extract-version.outputs.release_version }} verified successfully!"
+              echo "🔗 Release URL: https://github.com/rudderlabs/rudder-transformer/releases/tag/v${{ steps.extract-version.outputs.release_version }}"
+
+              # Show release info
+              echo "📋 Release details:"
+              gh release view v${{ steps.extract-version.outputs.release_version }} --json tagName,name,publishedAt,isLatest | jq -r '"Tag: \(.tagName), Published: \(.publishedAt), Latest: \(.isLatest)"'
+              exit 0
             fi
-            exit 1
+
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+
+            if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+              # Exponential backoff: delay increases with each retry
+              CURRENT_DELAY=$((RETRY_DELAY * RETRY_COUNT))
+              echo "⏳ Release not found yet, waiting ${CURRENT_DELAY}s before retry $((RETRY_COUNT + 1))..."
+              sleep $CURRENT_DELAY
+            fi
+          done
+
+          # All retries exhausted
+          echo "❌ Failed to verify release v${{ steps.extract-version.outputs.release_version }} after $MAX_RETRIES attempts"
+          echo "🔍 Final diagnostic check..."
+
+          if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
+            echo "✅ Tag exists but release not found - this indicates a GitHub API issue or release creation failure"
+            echo "💡 You may need to manually check the GitHub releases page or re-run the workflow"
+          else
+            echo "❌ Tag also missing - release creation completely failed"
           fi
+          exit 1
 
       - name: Pull Changes Into develop Branch
         run: |

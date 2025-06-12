@@ -15,6 +15,9 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const crypto = require('crypto');
 
 // Configuration
 const CONFIG = {
@@ -23,6 +26,11 @@ const CONFIG = {
   latest: true,
   debug: process.env.DEBUG === 'true' || process.env.DEBUG === 'conventional-github-releaser'
 };
+
+// Repository URL configuration
+const REPO_URL = process.env.GITHUB_REPOSITORY
+  ? `https://github.com/${process.env.GITHUB_REPOSITORY}`
+  : 'https://github.com/rudderlabs/rudder-transformer';
 
 function log(message, level = 'info') {
   const timestamp = new Date().toISOString();
@@ -50,14 +58,7 @@ function execCommand(command, options = {}) {
   }
 }
 
-function getLatestTag() {
-  const result = execCommand('git describe --tags --abbrev=0');
-  if (result.success) {
-    return result.output.trim();
-  }
-  log('Could not find latest tag, using v0.0.0', 'warn');
-  return 'v0.0.0';
-}
+
 
 function getPreviousTag(currentTag) {
   // Get all tags sorted by version
@@ -114,9 +115,9 @@ function generateConventionalReleaseNotes(version) {
   const other = [];
 
   commits.forEach(commit => {
-    const match = commit.match(/^(\w+)(\(.+\))?\!?:\s*(.+)$/);
+    const match = commit.match(/^(?<type>\w+)(?<scope>\(.+\))?\!?:\s*(?<description>.+)$/);
     if (match) {
-      const [, type, scope, description] = match;
+      const { type, scope, description } = match.groups;
       const isBreaking = commit.includes('!:');
 
       if (isBreaking) {
@@ -152,7 +153,7 @@ function generateConventionalReleaseNotes(version) {
     releaseNotes += `## 🔧 Other Changes\n\n${other.join('\n')}\n\n`;
   }
 
-  releaseNotes += `**Full Changelog**: https://github.com/rudderlabs/rudder-transformer/compare/${previousTag}...v${version}`;
+  releaseNotes += `**Full Changelog**: ${REPO_URL}/compare/${previousTag}...v${version}`;
 
   return releaseNotes;
 }
@@ -164,10 +165,14 @@ function createReleaseWithGitHubCLI(version) {
   const releaseNotes = generateConventionalReleaseNotes(version);
 
   let command;
+  let tempFile = null;
+  let tempDir = null;
+
   if (releaseNotes) {
-    // Write release notes to temporary file
-    const tempFile = `/tmp/release-notes-${version}.md`;
+    // Create secure temporary file
     try {
+      tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'release-notes-'));
+      tempFile = path.join(tempDir, `${version}-${crypto.randomBytes(4).toString('hex')}.md`);
       fs.writeFileSync(tempFile, releaseNotes);
       command = [
         'gh', 'release', 'create', `v${version}`,
@@ -198,8 +203,19 @@ function createReleaseWithGitHubCLI(version) {
 
   const result = execCommand(command.join(' '));
 
+  // Clean up temporary files
+  if (tempFile && tempDir) {
+    try {
+      fs.unlinkSync(tempFile);
+      fs.rmdirSync(tempDir);
+    } catch (e) {
+      // Log but don't fail
+      log(`Failed to clean up temp file: ${e.message}`, 'warn');
+    }
+  }
+
   if (result.success) {
-    log(`✅ Release v${version} created successfully with GitHub CLI`);
+    log(`Release v${version} created successfully with GitHub CLI`);
     return true;
   } else {
     log(`❌ GitHub CLI failed: ${result.error}`, 'error');
@@ -217,7 +233,7 @@ function createReleaseWithConventionalReleaser(version) {
   const result = execCommand(command);
   
   if (result.success) {
-    log(`✅ Release v${version} created successfully with conventional-github-releaser`);
+    log(`Release v${version} created successfully with conventional-github-releaser`);
     return true;
   } else {
     log(`❌ conventional-github-releaser failed: ${result.error}`, 'error');
@@ -281,6 +297,5 @@ module.exports = {
   createReleaseWithConventionalReleaser,
   generateConventionalReleaseNotes,
   getPreviousTag,
-  getVersion,
-  getLatestTag
+  getVersion
 };

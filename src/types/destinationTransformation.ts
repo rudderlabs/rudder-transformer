@@ -15,12 +15,17 @@ export type ProcessorCompactedTransformationRequest<M = RudderMessage, MD = Meta
 /**
  * Processor transformation request/response structures
  */
-export type ProcessorTransformationRequest<M = RudderMessage, MD = Metadata> = {
+export type ProcessorTransformationRequest<
+  M = RudderMessage,
+  MD = Metadata,
+  D = Destination,
+  C = Connection,
+> = {
   request?: object;
   message: M;
   metadata: MD;
-  destination: Destination;
-  connection?: Connection;
+  destination: D;
+  connection?: C;
   libraries?: UserTransformationLibrary[];
   credentials?: Credential[];
 };

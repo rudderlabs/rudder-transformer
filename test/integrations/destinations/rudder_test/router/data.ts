@@ -865,4 +865,159 @@ export const data: RouterTestData[] = [
       },
     },
   },
+  // Payload Compaction Test Cases
+  {
+    id: 'rudder-test-router-mutation-error',
+    name: 'rudder_test',
+    description: 'Test mutation of frozen destination config in compacted payload',
+    scenario: 'Mutation attempt should throw error when config is frozen',
+    successCriteria: 'Should return error about read-only/frozen config',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            buildCompactedRouterInput(
+              buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    mutateDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              {
+                ...generateMetadata(100, 'u100'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            ),
+          ],
+          destType: 'rudder_test',
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  ...generateMetadata(100, 'u100'),
+                  destinationId: 'static-123',
+                  sourceId: 'test-source-id',
+                },
+              ],
+              statusCode: 500,
+              destination: destinationWithoutDynamicConfig,
+              batched: false,
+              error: 'Cannot add property mutatedByTest, object is not extensible',
+              statTags: {
+                destType: 'RUDDER_TEST',
+                destinationId: 'static-123',
+                errorCategory: 'transformation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-replace-config-error',
+    name: 'rudder_test',
+    description: 'Test replacing frozen destination config object in compacted payload',
+    scenario: 'Config reference replacement should throw error when config is frozen',
+    successCriteria: 'Should return error about assignment to read-only/frozen config',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            buildCompactedRouterInput(
+              buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    replaceDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              {
+                ...generateMetadata(101, 'u101'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            ),
+          ],
+          destType: 'rudder_test',
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  ...generateMetadata(101, 'u101'),
+                  destinationId: 'static-123',
+                  sourceId: 'test-source-id',
+                },
+              ],
+              statusCode: 500,
+              destination: destinationWithoutDynamicConfig,
+              batched: false,
+              error: expect.stringMatching(
+                /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+              ),
+              statTags: {
+                destType: 'RUDDER_TEST',
+                destinationId: 'static-123',
+                errorCategory: 'transformation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

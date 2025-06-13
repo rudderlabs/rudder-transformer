@@ -116,9 +116,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.ROUTER,
         );
         try {
-          const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
+          const doRouterTransformationResponse: RouterTransformationResponse[] =
+            await destHandler.processRouterDest(destInputArray, requestMetadata);
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
             destHandler,

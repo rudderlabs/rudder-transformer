@@ -114,7 +114,7 @@ const commonOutputHeaders = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
   Accept: 'application/json',
-  revision: '2024-06-15',
+  revision: '2024-10-15',
 };
 
 const commonOutputHeadersForOct2024 = {

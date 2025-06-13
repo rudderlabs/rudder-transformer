@@ -14,7 +14,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 
-//  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
+// https://developers.criteo.com/marketing-solutions/docs/api-error-types#error-structure
 // Following fucntion tells us if there is a particular error code in the response.
 const matchErrorCode = (errorCode, response) =>
   response &&

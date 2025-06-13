@@ -157,7 +157,7 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
                 },
               },
             },
-            endpoint: 'https://api.criteo.com/2022-10/audiences/34899/contactlist',
+            endpoint: 'https://api.criteo.com/2025-04/audiences/34899/contactlist',
           },
           [generateMetadata(3)],
         ),

@@ -8,10 +8,10 @@ const { TAG_NAMES } = require('../../util/tags');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const DESTINATION = 'RAKUTEN';
-const prepareProxyRequest = (request) => request;
+const prepareProxyRequest = async (request) => request;
 const proxyRequest = async (request, destType) => {
   const { metadata } = request;
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = await prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
     data,

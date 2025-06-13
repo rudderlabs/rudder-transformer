@@ -151,10 +151,8 @@ const testRoute = async (route, tcData: TestCaseData) => {
     if (
       tcData.name != 'marketo_static_list' &&
       tcData.name != 'mailmodo' &&
-      tcData.name != 'hs' &&
       tcData.name != 'iterable' &&
       tcData.name != 'klaviyo' &&
-      tcData.name != 'tiktok_ads' &&
       tcData.name != 'mailjet'
     ) {
       assertRouterOutput(response.body.output, tcData.input.request.body.input);

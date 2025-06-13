@@ -20,6 +20,7 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const stats = require('../../../util/stats');
 const {
@@ -500,7 +501,7 @@ const batchEvents = (destEvents) => {
     );
   }
 
-  return batchedResponseList.concat(trackResponseList);
+  return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList));
 };
 
 module.exports = { processIdentify, processTrack, batchEvents };

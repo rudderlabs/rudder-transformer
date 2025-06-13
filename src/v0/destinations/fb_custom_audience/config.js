@@ -20,6 +20,7 @@ const schemaFields = [
   'ZIP',
   'MADID',
   'COUNTRY',
+  'LOOKALIKE_VALUE',
 ];
 
 const typeFields = [

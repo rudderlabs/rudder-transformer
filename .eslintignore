@@ -22,6 +22,7 @@ src/v0/destinations/personalize/scripts/
 test/integrations/destinations/testTypes.d.ts
 *.config*.js
 scripts/skipPrepareScript.js
+scripts/create-github-release.js
 *.yaml
 *.yml
 .eslintignore

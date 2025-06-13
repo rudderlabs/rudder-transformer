@@ -1,6 +1,10 @@
 const lodash = require('lodash');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  mapInBatches,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   base64Convertor,
@@ -525,10 +529,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
   };
 
   const groupedEvents = groupEventsByType(inputs);
-  const response = await Promise.all(
-    groupedEvents.map(async (listOfEvents) => {
-      let transformedPayloads = await Promise.all(
-        listOfEvents.map(async (event) => {
+  const response = await mapInBatches(
+    groupedEvents,
+    async (listOfEvents) => {
+      let transformedPayloads = await mapInBatches(
+        listOfEvents,
+        async (event) => {
           try {
             if (event.message.statusCode) {
               // already transformed event
@@ -548,7 +554,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
           } catch (error) {
             return handleRtTfSingleEventError(event, error, reqMetadata);
           }
-        }),
+        },
+        { sequentialProcessing: false }, // concurrent processing
       );
 
       transformedPayloads = lodash.flatMap(transformedPayloads);
@@ -565,7 +572,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
       batchSize.import += importRespList.length;
 
       return [...batchSuccessRespList, ...batchErrorRespList];
-    }),
+    },
+    { sequentialProcessing: false }, // concurrent processing
   );
 
   // Flatten the response array containing batched events from multiple groups

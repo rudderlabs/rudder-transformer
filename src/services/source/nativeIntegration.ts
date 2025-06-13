@@ -1,4 +1,8 @@
-import { JsonSchemaGenerator, TransformationError } from '@rudderstack/integrations-lib';
+import {
+  JsonSchemaGenerator,
+  mapInBatches,
+  TransformationError,
+} from '@rudderstack/integrations-lib';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import { SourceService } from '../../interfaces/SourceService';
 import {
@@ -8,6 +12,7 @@ import {
   RudderMessage,
   SourceInputV2,
   SourceTransformationResponse,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   FixMe,
 } from '../../types';
 import stats from '../../util/stats';
@@ -42,8 +47,9 @@ export class NativeIntegrationSourceService implements SourceService {
     }
     const sourceHandler = FetchHandler.getSourceHandler(sourceType);
     const metaTO = this.getTags({ srcType: sourceType });
-    const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
-      sourceEvents.map(async (sourceEvent) => {
+    const respList: SourceTransformationResponse[] = await mapInBatches(
+      sourceEvents,
+      async (sourceEvent) => {
         try {
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
@@ -70,7 +76,8 @@ export class NativeIntegrationSourceService implements SourceService {
 
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);
         }
-      }),
+      },
+      { sequentialProcessing: false }, // concurrent processing
     );
     return respList;
   }

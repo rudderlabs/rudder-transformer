@@ -1,5 +1,9 @@
 const lodash = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  forEachInBatches,
+} = require('@rudderstack/integrations-lib');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
@@ -166,34 +170,32 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const identifyRespList = [];
   const trackRespList = [];
   const { destination } = inputs[0];
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(
-            { message: event.message, metadata: event.metadata, destination },
-            identifyRespList,
-            trackRespList,
-          );
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination,
-            },
-            identifyRespList,
-            trackRespList,
-          );
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        batchErrorRespList.push(errRespEvent);
+  await forEachInBatches(inputs, async (event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        getEventChunks(
+          { message: event.message, metadata: event.metadata, destination },
+          identifyRespList,
+          trackRespList,
+        );
+      } else {
+        // if not transformed
+        getEventChunks(
+          {
+            message: await process(event),
+            metadata: event.metadata,
+            destination,
+          },
+          identifyRespList,
+          trackRespList,
+        );
       }
-    }),
-  );
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      batchErrorRespList.push(errRespEvent);
+    }
+  });
   let batchedIdentifyResponseList = [];
   if (identifyRespList.length > 0) {
     batchedIdentifyResponseList = batchEvents(identifyRespList);

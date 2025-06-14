@@ -1,4 +1,4 @@
-const { getAuthToken } = require('./util');
+const { getAuthToken, getResponseHandlerData } = require('./util');
 const { httpGET } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const {
@@ -6,6 +6,9 @@ const {
   filter,
   UnhandledStatusCodeError,
   ThrottledError,
+  NetworkError,
+  AbortedError,
+  InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 
 jest.mock('../../../adapters/network');
@@ -151,6 +154,209 @@ describe('getAuthToken', () => {
             expectedStats.increment.tags,
           );
         }
+      });
+      describe('getResponseHandlerData', () => {
+        const mockAuthCache = {
+          del: jest.fn(),
+        };
+
+        const mockFormattedDestination = {
+          ID: 'test-dest-id',
+        };
+
+        const mockLookupMessage = '[Marketo Transformer]: During test operation';
+
+        beforeEach(() => {
+          jest.clearAllMocks();
+        });
+
+        const testCases = [
+          {
+            name: 'should handle successful response',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: true,
+                result: [{ id: '123', status: 'created' }],
+              },
+            },
+            expectedResult: {
+              success: true,
+              result: [{ id: '123', status: 'created' }],
+            },
+          },
+          {
+            name: 'should handle authentication response',
+            mockResponse: {
+              status: 200,
+              response: {
+                access_token: 'test-token',
+                expires_in: 3600,
+              },
+            },
+            expectedResult: {
+              access_token: 'test-token',
+              expires_in: 3600,
+            },
+          },
+          {
+            name: 'should handle non-success HTTP status',
+            mockResponse: {
+              status: 404,
+              response: {
+                message: 'Not found',
+              },
+            },
+            expectedError: new NetworkError('Request failed  with status: 404', 404),
+          },
+          {
+            name: 'should handle abortable error code',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: false,
+                errors: [
+                  {
+                    code: '600',
+                    message: 'Abortable error',
+                  },
+                ],
+              },
+            },
+            expectedError: new AbortedError(
+              'Request Failed for marketo, Abortable error (Aborted).[Marketo Transformer]: During test operation',
+              400,
+            ),
+          },
+          {
+            name: 'should handle throttled error code',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: false,
+                errors: [
+                  {
+                    code: '606',
+                    message: 'Throttled error',
+                  },
+                ],
+              },
+            },
+            expectedError: new ThrottledError(
+              'Request Failed for marketo, Throttled error (Throttled).[Marketo Transformer]: During test operation',
+            ),
+          },
+          {
+            name: 'should handle retryable error code',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: false,
+                errors: [
+                  {
+                    code: '601',
+                    message: 'Retryable error',
+                  },
+                ],
+              },
+            },
+            expectedError: new RetryableError(
+              'Request Failed for marketo, Retryable error (Retryable).[Marketo Transformer]: During test operation',
+              500,
+            ),
+          },
+          {
+            name: 'should handle unhandled error code',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: false,
+                errors: [
+                  {
+                    code: 'unknown',
+                    message: 'Unknown error',
+                  },
+                ],
+              },
+            },
+            expectedError: new UnhandledStatusCodeError(
+              'Error occurred [Marketo Transformer]: During test operation -> Unknown error',
+            ),
+          },
+          {
+            name: 'should handle invalid status in nested response',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: true,
+                result: [
+                  {
+                    status: 'skipped',
+                    reasons: [
+                      {
+                        code: '1001',
+                        message: 'Invalid status',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+            expectedError: new InstrumentationError(
+              'Request failed during: [Marketo Transformer]: During test operation, error: [{"code":"1001","message":"Invalid status"}]',
+              400,
+            ),
+          },
+          {
+            name: 'should evict cache for invalid token errors',
+            mockResponse: {
+              status: 200,
+              response: {
+                success: false,
+                errors: [
+                  {
+                    code: '601',
+                    message: 'Access token invalid',
+                  },
+                ],
+              },
+            },
+            expectedError: new RetryableError(
+              'Request Failed for marketo, Access token invalid (Retryable).[Marketo Transformer]: During test operation',
+              500,
+            ),
+            expectCacheEviction: true,
+          },
+        ];
+
+        filter(testCases).forEach(
+          ({ name, mockResponse, expectedResult, expectedError, expectCacheEviction }) => {
+            it(name, () => {
+              if (expectedError) {
+                expect(() =>
+                  getResponseHandlerData(
+                    mockResponse,
+                    mockLookupMessage,
+                    mockFormattedDestination,
+                    mockAuthCache,
+                  ),
+                ).toThrow(expectedError);
+
+                if (expectCacheEviction) {
+                  expect(mockAuthCache.del).toHaveBeenCalledWith(mockFormattedDestination.ID);
+                }
+              } else {
+                const result = getResponseHandlerData(
+                  mockResponse,
+                  mockLookupMessage,
+                  mockFormattedDestination,
+                  mockAuthCache,
+                );
+                expect(result).toEqual(expectedResult);
+              }
+            });
+          },
+        );
       });
     },
   );

@@ -18,6 +18,7 @@ const {
   removeUndefinedAndNullValues,
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const {
   BATCH_CONTACT_ENDPOINT,
@@ -386,7 +387,7 @@ const legacyBatchEvents = (destEvents) => {
     );
   });
 
-  return batchedResponseList.concat(trackResponseList);
+  return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList));
 };
 
 module.exports = {

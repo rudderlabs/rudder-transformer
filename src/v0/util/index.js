@@ -2060,36 +2060,61 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
 };
 
 /**
- * Groups events with the same message type together in batches.
- * Each batch contains events that have the same message type and are from different users.
+ * Groups events with the same message type together in batches, while maintaining the order of events per userId.
+ * As a side-effect of this event ordering constraint, it is possible to produce more than one batch for the same message type
+ * if this is required for retaining proper event ordering for events from the same userId.
+ *
  * @param {*} inputs - An array of events
  * @returns {*} - An array of batches
  */
-const groupEventsByType = (inputs) => {
-  const batches = [];
-  let currentInputsArray = inputs;
-  while (currentInputsArray.length > 0) {
-    const remainingInputsArray = [];
-    const userOrderTracker = {};
-    const event = currentInputsArray.shift();
-    const messageType = event.message.type;
-    const batch = [event];
-    currentInputsArray.forEach((currentInput) => {
-      const currentMessageType = currentInput.message.type;
-      const currentUser = currentInput.metadata.userId;
-      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
-        batch.push(currentInput);
-      } else {
-        remainingInputsArray.push(currentInput);
-        userOrderTracker[currentUser] = true;
-      }
-    });
-    batches.push(batch);
-    currentInputsArray = remainingInputsArray;
+function groupEventsByType(inputs) {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    return [];
   }
 
-  return batches;
-};
+  // This will store our chunk objects, which include the type for matching.
+  const chunks = [];
+  // This map stores for each user, the index of the chunk their last message went into.
+  const userLastChunkIndex = new Map();
+
+  inputs.forEach((input) => {
+    const { type: messageType } = input.message;
+    const { userId } = input.metadata;
+
+    // Get the index of the chunk where this user's last message was placed.
+    // If the user hasn't been seen, this will be 0, allowing them to be placed anywhere.
+    const minChunkIndex = userLastChunkIndex.get(userId) ?? 0;
+
+    let targetChunkIndex = -1;
+
+    // Find the oldest, suitable chunk.
+    for (let i = minChunkIndex; i < chunks.length; i += 1) {
+      if (chunks[i].type === messageType) {
+        targetChunkIndex = i;
+        break;
+      }
+    }
+
+    if (targetChunkIndex !== -1) {
+      // We found a suitable existing chunk. Add the message to it.
+      chunks[targetChunkIndex].inputs.push(input);
+      // Update this user's last seen position.
+      userLastChunkIndex.set(userId, targetChunkIndex);
+    } else {
+      // No suitable chunk was found. We must create a new one.
+      const newChunkIndex = chunks.length;
+      chunks.push({
+        type: messageType,
+        inputs: [input],
+      });
+      // Update this user's last seen position to this new chunk.
+      userLastChunkIndex.set(userId, newChunkIndex);
+    }
+  });
+
+  // The final result is just the 'inputs' array from each chunk object.
+  return chunks.map((chunk) => chunk.inputs);
+}
 
 /**
  * This function helps to detarmine type of error occured. According to the response

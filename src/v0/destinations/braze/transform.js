@@ -44,29 +44,10 @@ const {
 } = require('./config');
 
 const logger = require('../../../logger');
-const { getEndpointFromConfig } = require('./util');
+const { getEndpointFromConfig, formatGender } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-function formatGender(gender) {
-  // few possible cases of woman
-  if (['woman', 'female', 'w', 'f'].includes(gender?.toLowerCase())) {
-    return 'F';
-  }
-
-  // few possible cases of man
-  if (['man', 'male', 'm'].includes(gender?.toLowerCase())) {
-    return 'M';
-  }
-
-  // few possible cases of other
-  if (['other', 'o'].includes(gender?.toLowerCase())) {
-    return 'O';
-  }
-
-  return null;
-}
 
 function buildResponse(message, destination, properties, endpoint) {
   const response = defaultRequestConfig();

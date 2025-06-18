@@ -5,6 +5,7 @@ const {
   InstrumentationError,
   NetworkError,
   isDefinedAndNotNull,
+  mapInBatches,
 } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
@@ -80,6 +81,7 @@ const responseBuilderToUpdatePrimaryAccount = async (
   email,
   baseEndpoint,
   metadata,
+  destinationConfig,
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
@@ -93,6 +95,7 @@ const responseBuilderToUpdatePrimaryAccount = async (
     identity: {
       type: 'email',
       value: `${email}`,
+      verified: !!destinationConfig.createUsersAsVerified,
     },
   };
   // API call to update primary email of the user
@@ -147,6 +150,7 @@ const payloadBuilderforUpdatingEmail = async (
   newEmail,
   baseEndpoint,
   metadata,
+  destinationConfig,
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
@@ -192,6 +196,7 @@ const payloadBuilderforUpdatingEmail = async (
       newEmail,
       baseEndpoint,
       metadata,
+      destinationConfig,
     );
     respLists.push(response);
   }
@@ -560,6 +565,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       userEmail,
       baseEndpoint,
       metadata,
+      destinationConfig,
     );
     if (payloadsForUpdatingEmail?.length > 0) returnList.push(...payloadsForUpdatingEmail);
   }
@@ -775,8 +781,9 @@ async function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
+  const respList = await mapInBatches(
+    inputs,
+    async (input) => {
       try {
         let resp = input.message;
         // transform if not already done
@@ -794,7 +801,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    }),
+    },
+    { sequentialProcessing: true },
   );
   return respList;
 };

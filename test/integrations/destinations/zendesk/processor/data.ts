@@ -2146,7 +2146,9 @@ export const data = [
               body: {
                 XML: {},
                 FORM: {},
-                JSON: { identity: { type: 'email', value: 'example124@email.com' } },
+                JSON: {
+                  identity: { type: 'email', value: 'example124@email.com', verified: true },
+                },
                 JSON_ARRAY: {},
               },
               type: 'REST',
@@ -2480,7 +2482,6 @@ export const data = [
             destination: {
               Config: {
                 apiToken: secret1,
-                createUsersAsVerified: true,
                 domain: 'rudderlabshelp',
                 email: 'myDummyUserName1',
                 password: 'myDummyPwd1',
@@ -2536,7 +2537,7 @@ export const data = [
               body: {
                 XML: {},
                 FORM: {},
-                JSON: { identity: { type: 'email', value: 'example@email.com' } },
+                JSON: { identity: { type: 'email', value: 'example@email.com', verified: false } },
                 JSON_ARRAY: {},
               },
               type: 'REST',
@@ -2578,7 +2579,6 @@ export const data = [
                     name: 'test-user-name',
                     external_id: 'test-user-id',
                     user_fields: { id: 'test-user-id' },
-                    verified: true,
                   },
                 },
                 JSON_ARRAY: {},
@@ -2893,7 +2893,9 @@ export const data = [
               body: {
                 XML: {},
                 FORM: {},
-                JSON: { identity: { type: 'email', value: 'example115@email.com' } },
+                JSON: {
+                  identity: { type: 'email', value: 'example115@email.com', verified: true },
+                },
                 JSON_ARRAY: {},
               },
               type: 'REST',

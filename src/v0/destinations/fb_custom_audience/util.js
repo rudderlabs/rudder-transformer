@@ -6,6 +6,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   isDefinedAndNotNull,
+  convertToString,
 } = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const { typeFields, subTypeFields, getEndPoint } = require('./config');
@@ -68,7 +69,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
   if (isDefinedAndNotNull(userInformation)) {
-    const stringifiedUserInformation = userInformation.toString();
+    const stringifiedUserInformation = convertToString(userInformation);
     switch (userProperty) {
       case 'EMAIL':
         updatedProperty = stringifiedUserInformation.trim().toLowerCase();

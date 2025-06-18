@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.102.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.1...v1.102.2) (2025-06-18)
+
+
+### Bug Fixes
+
+* **braze:** add type checking for gender string in formatGender ([65a7bdb](https://github.com/rudderlabs/rudder-transformer/commit/65a7bdb7dfd0fc16de99d868cb4c0124e86d9837))
+* snapchat track mapping ([eb424d2](https://github.com/rudderlabs/rudder-transformer/commit/eb424d2ea35e29aca262b41a06ca574ddbf7fb84))
+
 ### [1.102.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.0...v1.102.1) (2025-06-17)
 
 ## [1.102.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.101.2...v1.102.0) (2025-06-10)

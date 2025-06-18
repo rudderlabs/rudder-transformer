@@ -1064,7 +1064,7 @@ export const dataV3: ProcessorTestData[] = [
               type: 'track',
               event: 'Order Completed',
               properties: {
-                brands: ['brand01', 'brand02'],
+                brand: ['brand01', 'brand02'],
                 products: [
                   {
                     product_id: '123',
@@ -1118,7 +1118,7 @@ export const dataV3: ProcessorTestData[] = [
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_ids: ['123', '124'],
                         value: '56',
                       },
@@ -3708,7 +3708,7 @@ export const dataV3: ProcessorTestData[] = [
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_category: 'shoes',
                         content_ids: ['123', '124'],
                         value: '56',
@@ -3860,7 +3860,7 @@ export const dataV3: ProcessorTestData[] = [
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_category: 'glass',
                         content_ids: ['123', '124'],
                         value: '56',

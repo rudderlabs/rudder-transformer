@@ -5,6 +5,7 @@ const {
   InstrumentationError,
   NetworkError,
   isDefinedAndNotNull,
+  mapInBatches,
 } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
@@ -780,8 +781,9 @@ async function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
+  const respList = await mapInBatches(
+    inputs,
+    async (input) => {
       try {
         let resp = input.message;
         // transform if not already done
@@ -799,7 +801,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    }),
+    },
+    { sequentialProcessing: true },
   );
   return respList;
 };

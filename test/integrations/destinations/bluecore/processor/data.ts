@@ -3,7 +3,7 @@
  * Generated on: 2025-05-21T05:11:32.254Z
  */
 
-import { ProcessorTestData } from '../../testTypes';
+import { ProcessorTestData } from '../../../testTypes';
 import { identifyData } from './identifyTestData';
 import { trackTestData } from './trackTestData';
 import { ecomTestData } from './ecommTestData';

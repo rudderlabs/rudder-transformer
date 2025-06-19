@@ -24,6 +24,7 @@ import { assertRouterOutput, responses } from '../testHelper';
 import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
+import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -75,6 +76,12 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
 
 beforeAll(async () => {
   initaliseReport();
+  // Setting batch processing defaults to lower values to make the tests use the batch processing
+  configureBatchProcessingDefaults({
+    batchSize: 1,
+    yieldThreshold: 1,
+    sequentialProcessing: true,
+  });
   const app = new Koa();
   app.use(
     bodyParser({

@@ -3,6 +3,7 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const {
   BrazeDedupUtility,
   addAppId,
+  formatGender,
   getPurchaseObjs,
   setAliasObject,
   handleReservedProperties,
@@ -1933,5 +1934,44 @@ describe('getEndpointFromConfig', () => {
         expect(getEndpointFromConfig(input)).toBe(expected);
       }
     });
+  });
+});
+
+describe('formatGender', () => {
+  it('should return "F" for female variations', () => {
+    expect(formatGender('woman')).toBe('F');
+    expect(formatGender('female')).toBe('F');
+    expect(formatGender('w')).toBe('F');
+    expect(formatGender('f')).toBe('F');
+    expect(formatGender('WOMAN')).toBe('F');
+    expect(formatGender('FEMALE')).toBe('F');
+    expect(formatGender('W')).toBe('F');
+    expect(formatGender('F')).toBe('F');
+  });
+
+  it('should return "M" for male variations', () => {
+    expect(formatGender('man')).toBe('M');
+    expect(formatGender('male')).toBe('M');
+    expect(formatGender('m')).toBe('M');
+    expect(formatGender('MAN')).toBe('M');
+    expect(formatGender('MALE')).toBe('M');
+    expect(formatGender('M')).toBe('M');
+  });
+
+  it('should return "O" for other variations', () => {
+    expect(formatGender('other')).toBe('O');
+    expect(formatGender('o')).toBe('O');
+    expect(formatGender('OTHER')).toBe('O');
+    expect(formatGender('O')).toBe('O');
+  });
+
+  it('should return null for invalid inputs', () => {
+    expect(formatGender('invalid')).toBeNull();
+    expect(formatGender('')).toBeNull();
+    expect(formatGender(null)).toBeNull();
+    expect(formatGender(undefined)).toBeNull();
+    expect(formatGender(123)).toBeNull();
+    expect(formatGender({})).toBeNull();
+    expect(formatGender([])).toBeNull();
   });
 });

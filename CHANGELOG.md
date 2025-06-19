@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.102.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.2...v1.102.3) (2025-06-19)
+
+
+### Bug Fixes
+
+* snapchat track mapping ([7a6b8f7](https://github.com/rudderlabs/rudder-transformer/commit/7a6b8f7c47c3730c01881887785232bc79bfba1b))
+
 ### [1.102.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.1...v1.102.2) (2025-06-19)
 
 

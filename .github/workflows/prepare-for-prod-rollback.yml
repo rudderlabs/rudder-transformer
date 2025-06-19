@@ -95,3 +95,20 @@ jobs:
           git push -u origin dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           gh pr create --fill
+
+      - name: Update helm charts and raise pull request for dedicated transformer from operator
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudderstack-operator
+          git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+
+          cd operator-helm/valuefiles
+          yq eval -i ".transformer.image.version=\"${{ steps.target-version.outputs.tag_name }}\"" values.yaml
+          yq eval -i ".transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.yaml
+          git add values.yaml
+
+          git commit -m "chore: rollback dedicated transformers to ${{ steps.target-version.outputs.tag_name }}"
+          git push -u origin dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+
+          gh pr create --fill

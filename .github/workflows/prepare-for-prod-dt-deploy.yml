@@ -190,7 +190,7 @@ jobs:
           yq eval -i ".transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.yaml
           git add values.yaml
 
-          git commit -m "chore: upgrade dedicated transformer to $TAG_NAME"
+          git commit -m "chore: upgrade dedicated transformer default version to $TAG_NAME"
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill

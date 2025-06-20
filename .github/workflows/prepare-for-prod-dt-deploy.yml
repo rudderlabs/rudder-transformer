@@ -179,3 +179,18 @@ jobs:
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill
+
+      - name: Update helm charts and raise pull request for dedicated transformer from operator
+        run: |
+          cd rudderstack-operator
+          git checkout -b dedicated-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
+
+          cd operator-helm/valuefiles
+          yq eval -i ".transformer.image.version=\"$TAG_NAME\"" values.yaml
+          yq eval -i ".transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.yaml
+          git add values.yaml
+
+          git commit -m "chore: upgrade dedicated transformer default version to $TAG_NAME"
+          git push -u origin dedicated-transformer-$TAG_NAME
+
+          gh pr create --fill

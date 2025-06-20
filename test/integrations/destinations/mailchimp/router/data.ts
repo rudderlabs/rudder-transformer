@@ -848,7 +848,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: { jobId: 2, userId: 'u1' },
+              metadata: { jobId: 2, userId: 'u2' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
@@ -1070,7 +1070,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 2,
-                  userId: 'u1',
+                  userId: 'u2',
                 },
               ],
               batched: true,

@@ -1,6 +1,6 @@
-import { ProcessorTestData } from '../../testTypes';
-import { MessageType } from '../../../../src/types';
-import { baseMetadata, baseDestinationDefinition } from './common';
+import { ProcessorTestData } from '../../../testTypes';
+import { MessageType } from '../../../../../src/types';
+import { baseMetadata, baseDestinationDefinition } from '../common';
 
 const outputStatTags = {
   destType: 'BLUECORE',

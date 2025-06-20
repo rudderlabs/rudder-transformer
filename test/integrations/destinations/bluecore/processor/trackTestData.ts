@@ -1,6 +1,6 @@
-import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../testUtils';
-import { ProcessorTestData } from '../../testTypes';
-import { baseMetadata, baseDestinationDefinition } from './common';
+import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+import { baseMetadata, baseDestinationDefinition } from '../common';
 
 const destination = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',

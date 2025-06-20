@@ -1,4 +1,4 @@
-import { authHeader1, secret1 } from './maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 export const data = [
   {
     name: 'factorsai',

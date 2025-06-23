@@ -276,7 +276,8 @@ export const data = [
               dontBatch: false,
             },
             statusCode: 500,
-            error: '[X Audience]:: OAuth - secret not found',
+            error:
+              '[X Audience]:: OAuth - secret not found. This might be a platform issue. Please contact RudderStack support for assistance.',
             statTags: {
               errorCategory: 'platform',
               destinationId: 'default-destinationId',

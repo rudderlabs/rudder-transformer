@@ -7,11 +7,191 @@ import {
   testConnection,
   buildMessage,
   buildDynamicConfigMessage,
+  buildProcessorOutput,
   baseSources,
   baseTestBehavior,
 } from '../common';
 
 export const data: ProcessorTestData[] = [
+  // Environment Variable Override Examples
+  {
+    id: 'rudder-test-processor-env-override-1',
+    name: 'rudder_test',
+    description: 'Test with API endpoint override via environment variables',
+    scenario: 'Test API endpoint configuration through environment variables',
+    successCriteria: 'Should use endpoint from environment variable in request',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      RUDDER_TEST_API_ENDPOINT: 'https://staging.rudderstack.com/v1/record',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'staging@example.com',
+                name: 'Staging User',
+                environment: 'staging',
+              },
+            }),
+            metadata: generateMetadata(1, 'env-test-1'),
+            destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(1, 'env-test-1'), {
+            endpoint: 'https://staging.rudderstack.com/v1/record',
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'staging@example.com',
+                  name: 'Staging User',
+                  environment: 'staging',
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    id: 'rudder-test-processor-env-override-2',
+    name: 'rudder_test',
+    description: 'Test with debug mode enabled via environment variables',
+    scenario: 'Test debug mode configuration through environment variables',
+    successCriteria: 'Should process events with debug mode enabled',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      RUDDER_TEST_DEBUG: 'true',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'debug@example.com',
+                name: 'Debug User',
+                debugTest: true,
+              },
+            }),
+            metadata: generateMetadata(2, 'env-debug-test'),
+            destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(2, 'env-debug-test'), {
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'debug@example.com',
+                  name: 'Debug User',
+                  debugTest: true,
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+                debugMode: true,
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    id: 'rudder-test-processor-env-override-3',
+    name: 'rudder_test',
+    description: 'Test with USE_HAS_DYNAMIC_CONFIG_FLAG override',
+    scenario: 'Test disabling dynamic config processing via environment variable',
+    successCriteria: 'Should ignore hasDynamicConfig flag when USE_HAS_DYNAMIC_CONFIG_FLAG=false',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      USE_HAS_DYNAMIC_CONFIG_FLAG: 'false', // This will force legacy behavior
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildDynamicConfigMessage(
+              'https://should-be-processed.com',
+              'should-be-processed',
+            ),
+            metadata: generateMetadata(3, 'common-env-test'),
+            destination: destinationWithDynamicConfig, // This has hasDynamicConfig: true, but should be ignored
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(3, 'common-env-test'), {
+            endpoint: 'https://should-be-processed.com', // This proves dynamic config was processed
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': 'should-be-processed', // API key from dynamic config
+            },
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'test@example.com',
+                  name: 'Test User',
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  // Original test cases
   {
     id: 'rudder-test-processor-1',
     name: 'rudder_test',

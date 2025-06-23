@@ -21,6 +21,139 @@ import {
 } from '../common';
 
 export const data: RouterTestData[] = [
+  // Environment Variable Override Examples for Router
+  {
+    id: 'rudder-test-router-env-override-1',
+    name: 'rudder_test',
+    description: 'Test router with API configuration via environment variables',
+    scenario: 'Test router processing with custom API configuration from env vars',
+    successCriteria: 'Should process events with environment-specific API settings',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      RUDDER_TEST_API_BASE_URL: 'https://router.staging.rudderstack.com',
+      ROUTER_BATCH_SIZE: '50',
+      ROUTER_TIMEOUT: '15000',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'router@staging.com',
+                  name: 'Router Test User',
+                  batchId: 'batch-001',
+                },
+              }),
+              metadata: generateMetadata(1, 'router-env-1'),
+              destination,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(generateMetadata(1, 'router-env-1'), destination, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'router@staging.com',
+                    name: 'Router Test User',
+                    batchId: 'batch-001',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-env-override-2',
+    name: 'rudder_test',
+    description: 'Test router with multiple environment configurations',
+    scenario: 'Test router with combined environment variable overrides',
+    successCriteria: 'Should handle multiple env var combinations in router mode',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    envOverrides: {
+      ENVIRONMENT: 'testing',
+      DEBUG_ROUTER: 'true',
+      FEATURE_ENHANCED_BATCHING: 'enabled',
+      RUDDER_TEST_ROUTER_MODE: 'advanced',
+    },
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'multi-env@example.com',
+                  name: 'Multi Environment User',
+                  testType: 'router-multi-env',
+                },
+              }),
+              metadata: generateMetadata(2, 'router-env-2'),
+              destination,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(generateMetadata(2, 'router-env-2'), destination, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'multi-env@example.com',
+                    name: 'Multi Environment User',
+                    testType: 'router-multi-env',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+          ],
+        },
+      },
+    },
+  },
+  // Original test cases
   {
     id: 'rudder-test-router-1',
     name: 'rudder_test',

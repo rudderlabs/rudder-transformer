@@ -252,6 +252,240 @@ The rudder_test destination follows RudderStack's standard destination architect
 
 The destination demonstrates proper RudderStack destination patterns including dynamic config resolution, making it an excellent reference for destination development and a powerful tool for testing platform features.
 
+### Component Testing with Environment Variable Overrides
+
+Component tests support per-test environment variable overrides, allowing you to test different configurations and combinations without affecting other tests.
+
+#### Basic Usage
+
+Add the `envOverrides` property to any test case to override environment variables for that specific test:
+
+```typescript
+{
+  name: 'my_destination',
+  description: 'Test with production API endpoint',
+  feature: 'processor',
+  module: 'destination',
+  envOverrides: {
+    API_BASE_URL: 'https://api.production.com/v1',
+    API_ENVIRONMENT: 'production',
+    RATE_LIMIT: '1000'
+  },
+  input: {
+    // ... test input
+  },
+  output: {
+    // ... expected output
+  }
+}
+```
+
+#### Features
+
+- **Test Isolation**: Environment variables are automatically restored after each test
+- **Variable Deletion**: Use `undefined` to delete environment variables
+- **Multiple Combinations**: Test different environment combinations easily
+- **Backward Compatible**: Existing tests continue to work unchanged
+
+#### Examples
+
+**Testing Different API Endpoints:**
+
+```typescript
+// Production environment test
+{
+  envOverrides: {
+    API_BASE_URL: 'https://api.production.com',
+    ENVIRONMENT: 'production'
+  }
+}
+
+// Staging environment test
+{
+  envOverrides: {
+    API_BASE_URL: 'https://staging.api.com',
+    ENVIRONMENT: 'staging'
+  }
+}
+```
+
+**Testing Feature Flags:**
+
+```typescript
+// Feature enabled
+{
+  envOverrides: {
+    FEATURE_NEW_API: 'true',
+    DEBUG: 'false'
+  }
+}
+
+// Feature disabled (delete environment variable)
+{
+  envOverrides: {
+    FEATURE_NEW_API: undefined, // This deletes the env var
+    FEATURE_LEGACY_SUPPORT: 'true'
+  }
+}
+```
+
+**Testing Common System Variables:**
+
+```typescript
+// Override system-wide configuration flags
+{
+  envOverrides: {
+    USE_HAS_DYNAMIC_CONFIG_FLAG: 'false', // Disable dynamic config processing
+    LOG_LEVEL: 'debug',                   // Change log level for this test
+    NODE_ENV: 'test',                     // Set environment
+    BATCH_SIZE: '100',                    // Override batch processing settings
+  }
+}
+```
+
+**Important**: Environment variables must be read **dynamically** (at runtime) for overrides to work. Static constants evaluated at module load time won't be affected by test overrides.
+
+#### Best Practices for Environment Variables in New Code
+
+When adding new environment variables to the codebase, follow these patterns to ensure compatibility with the environment variable override system:
+
+**✅ DO: Use Dynamic Functions**
+
+```typescript
+// config.ts - Use functions that read at runtime
+export const getApiEndpoint = (): string => process.env.API_ENDPOINT || 'https://default.api.com';
+
+export const isDebugMode = (): boolean => process.env.DEBUG_MODE === 'true';
+
+export const getBatchSize = (): number => parseInt(process.env.BATCH_SIZE || '50', 10);
+
+// utils.ts - Call functions when needed
+import { getApiEndpoint, isDebugMode } from './config';
+
+export const buildRequest = () => {
+  const endpoint = getApiEndpoint(); // ✅ Read at runtime
+  const debug = isDebugMode(); // ✅ Read at runtime
+
+  return {
+    url: endpoint,
+    debug,
+    // ...
+  };
+};
+```
+
+**❌ DON'T: Use Static Constants**
+
+```typescript
+// config.ts - Avoid static constants
+export const API_ENDPOINT = process.env.API_ENDPOINT || 'https://default.api.com'; // ❌ Read at module load
+export const DEBUG_MODE = process.env.DEBUG_MODE === 'true'; // ❌ Read at module load
+
+// utils.ts - These won't work with overrides
+import { API_ENDPOINT, DEBUG_MODE } from './config';
+
+export const buildRequest = () => {
+  return {
+    url: API_ENDPOINT, // ❌ Uses cached value from module load time
+    debug: DEBUG_MODE, // ❌ Uses cached value from module load time
+  };
+};
+```
+
+**✅ Pattern for Complex Configuration**
+
+```typescript
+// config.ts - Centralized dynamic configuration
+export class Config {
+  static getApiConfig() {
+    return {
+      endpoint: process.env.API_ENDPOINT || 'https://default.api.com',
+      timeout: parseInt(process.env.API_TIMEOUT || '5000', 10),
+      retries: parseInt(process.env.API_RETRIES || '3', 10),
+      apiKey: process.env.API_KEY,
+    };
+  }
+
+  static getFeatureFlags() {
+    return {
+      enableNewFeature: process.env.ENABLE_NEW_FEATURE === 'true',
+      useLegacyMode: process.env.USE_LEGACY_MODE !== 'false',
+      debugMode: process.env.DEBUG_MODE === 'true',
+    };
+  }
+}
+
+// usage.ts
+import { Config } from './config';
+
+export const processRequest = () => {
+  const apiConfig = Config.getApiConfig(); // ✅ Fresh values every time
+  const features = Config.getFeatureFlags(); // ✅ Fresh values every time
+
+  // Use config...
+};
+```
+
+**✅ Lazy Initialization Pattern**
+
+```typescript
+// For expensive computations that depend on env vars
+let _cachedConfig: ApiConfig | null = null;
+
+export const getApiConfig = (): ApiConfig => {
+  // Re-read env vars every time (for test compatibility)
+  // Cache can be added later with invalidation if needed
+  return {
+    endpoint: process.env.API_ENDPOINT || 'https://default.api.com',
+    timeout: parseInt(process.env.API_TIMEOUT || '5000', 10),
+    // ...
+  };
+};
+```
+
+**✅ Testing Your Environment Variables**
+
+Always add test cases when introducing new environment variables:
+
+```typescript
+// In your component test data
+{
+  id: 'test-new-env-var',
+  description: 'Test new environment variable override',
+  envOverrides: {
+    YOUR_NEW_ENV_VAR: 'test-value',
+    ANOTHER_ENV_VAR: 'different-value'
+  },
+  // ... test case
+}
+```
+
+**Key Principles:**
+
+1. **Always read `process.env` at runtime**, never at module load time
+2. **Use functions or methods** that return fresh values
+3. **Avoid caching** environment variable values (or implement cache invalidation)
+4. **Test your environment variables** with override test cases
+5. **Document** what environment variables your code uses
+6. **Provide sensible defaults** for all environment variables
+
+Following these patterns ensures your code works seamlessly with the component test environment variable override system and provides better testability overall.
+
+**Running Component Tests:**
+
+```bash
+# Run all component tests
+npm run test:ts -- component
+
+# Run tests for specific destination
+npm run test:ts -- component --destination=my_destination
+
+# Run specific feature tests
+npm run test:ts -- component --destination=my_destination --feature=processor
+```
+
+The environment variable override system ensures complete test isolation while providing flexibility to test various configuration combinations.
+
 ### Test Migration Utilities
 
 The repository includes utilities for managing and migrating tests to a new, optimized format. For detailed information about test migration strategies, utilities, and case studies, see the [Test Scripts README](test/scripts/README.md).

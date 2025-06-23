@@ -1,5 +1,5 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { BASE_ENDPOINT } from './config';
+import { getBaseEndpoint, isDebugMode } from './config';
 import { RudderTestMessage, RudderTestDestination } from './type';
 import { Metadata } from '../../../types';
 
@@ -13,21 +13,30 @@ export const validateMessageType = (message: RudderTestMessage): void => {
 };
 
 // Helper function to build JSON payload
-export const buildJsonPayload = (message: RudderTestMessage) => ({
-  action: message.action,
-  fields: message.fields || {},
-  identifiers: message.identifiers || {},
-  recordId: message.recordId,
-  timestamp: message.timestamp || new Date().toISOString(),
-});
+export const buildJsonPayload = (message: RudderTestMessage) => {
+  const payload: any = {
+    action: message.action,
+    fields: message.fields ?? {},
+    identifiers: message.identifiers ?? {},
+    recordId: message.recordId,
+    timestamp: message.timestamp ?? new Date().toISOString(),
+  };
+
+  // Add debug information if debug mode is enabled
+  if (isDebugMode()) {
+    payload.debugMode = true;
+  }
+
+  return payload;
+};
 
 // Helper function to build request configuration
 export const buildRequestConfig = (
   message: RudderTestMessage,
   destination?: RudderTestDestination,
 ) => {
-  // Use destination config endpoint if available, otherwise fall back to BASE_ENDPOINT
-  const endpoint = destination?.Config?.endpoint || BASE_ENDPOINT;
+  // Use destination config endpoint if available, otherwise fall back to getBaseEndpoint()
+  const endpoint = destination?.Config?.endpoint ?? getBaseEndpoint();
 
   return {
     version: '1',

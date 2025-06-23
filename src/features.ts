@@ -86,7 +86,6 @@ const defaultFeaturesConfig: FeaturesConfig = {
     WUNDERKIND: true,
     CLICKSEND: true,
     ZOHO: true,
-    ZOHO_DEV: true,
     CORDIAL: true,
     X_AUDIENCE: true,
     BLOOMREACH_CATALOG: true,

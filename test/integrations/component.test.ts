@@ -25,6 +25,7 @@ import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
+import { EnvManager } from './utils/envUtils';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -58,6 +59,8 @@ if (opts.generate === 'true') {
 }
 
 let server: Server;
+
+const envManager = new EnvManager();
 
 const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'active_campaign',
@@ -94,6 +97,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await createHttpTerminator({ server }).terminate();
+  envManager.cleanup(); // Clean up any remaining snapshots
   if (opts.generate === 'true') {
     const callsDataStr = responses.join('\n');
     const calls = `
@@ -113,56 +117,74 @@ const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {
-  const inputReq = tcData.input.request;
-  const { headers, params, body } = inputReq;
-  let testRequest: request.Test;
-  switch (inputReq.method) {
-    case 'GET':
-      testRequest = request(server).get(route);
-      break;
-    case 'PUT':
-      testRequest = request(server).put(route);
-      break;
-    case 'DELETE':
-      testRequest = request(server).delete(route);
-      break;
+  let envSnapshotId: string | undefined;
 
-    default:
-      testRequest = request(server).post(route);
-      break;
-  }
+  try {
+    // Handle environment variable overrides - always restore after test
+    if (tcData.envOverrides) {
+      envSnapshotId = `test-${Date.now()}-${Math.random()}`;
+      const envKeys = Object.keys(tcData.envOverrides);
 
-  const response = await testRequest
-    .set(headers || {})
-    .query(params || {})
-    .send(body);
-  const outputResp = tcData.output.response || ({} as any);
+      envManager.takeSnapshot(envSnapshotId, envKeys);
+      envManager.applyOverrides(tcData.envOverrides);
+    }
 
-  expect(response.status).toEqual(outputResp.status);
+    const inputReq = tcData.input.request;
+    const { headers, params, body } = inputReq;
+    let testRequest: request.Test;
+    switch (inputReq.method) {
+      case 'GET':
+        testRequest = request(server).get(route);
+        break;
+      case 'PUT':
+        testRequest = request(server).put(route);
+        break;
+      case 'DELETE':
+        testRequest = request(server).delete(route);
+        break;
 
-  if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
-    expect(validateTestWithZOD(tcData, response)).toEqual(true);
-    enhancedTestUtils.beforeTestRun(tcData);
-    enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
-  }
+      default:
+        testRequest = request(server).post(route);
+        break;
+    }
 
-  if (outputResp?.body) {
-    expect(response.body).toEqual(outputResp.body);
-  }
+    const response = await testRequest
+      .set(headers || {})
+      .query(params || {})
+      .send(body);
+    const outputResp = tcData.output.response || ({} as any);
 
-  if (outputResp.headers !== undefined) {
-    expect(response.headers).toEqual(outputResp.headers);
-  }
-  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
-    //TODO get rid of these skipped destinations after they are fixed
-    if (
-      tcData.name != 'marketo_static_list' &&
-      tcData.name != 'mailmodo' &&
-      tcData.name != 'iterable' &&
-      tcData.name != 'klaviyo' &&
-      tcData.name != 'mailjet'
-    ) {
-      assertRouterOutput(response.body.output, tcData.input.request.body.input);
+    expect(response.status).toEqual(outputResp.status);
+
+    if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
+      expect(validateTestWithZOD(tcData, response)).toEqual(true);
+      enhancedTestUtils.beforeTestRun(tcData);
+      enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
+    }
+
+    if (outputResp?.body) {
+      expect(response.body).toEqual(outputResp.body);
+    }
+
+    if (outputResp.headers !== undefined) {
+      expect(response.headers).toEqual(outputResp.headers);
+    }
+    if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
+      //TODO get rid of these skipped destinations after they are fixed
+      if (
+        tcData.name != 'marketo_static_list' &&
+        tcData.name != 'mailmodo' &&
+        tcData.name != 'iterable' &&
+        tcData.name != 'klaviyo' &&
+        tcData.name != 'mailjet'
+      ) {
+        assertRouterOutput(response.body.output, tcData.input.request.body.input);
+      }
+    }
+  } finally {
+    // Always restore environment variables to ensure test isolation
+    if (envSnapshotId) {
+      envManager.restoreSnapshot(envSnapshotId);
     }
   }
 };

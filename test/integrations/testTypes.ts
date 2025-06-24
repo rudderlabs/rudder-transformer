@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { BaseTestCase } from '@rudderstack/integrations-lib';
+import { EnvOverride } from './utils/envUtils';
 
 import {
   DeliveryV1Response,
@@ -62,6 +63,7 @@ export interface TestCaseData extends BaseTestCase {
   overrideReceivedAt?: string;
   overrideRequestIP?: string;
   mockFns?: (mockAdapter: MockAdapter) => {};
+  envOverrides?: EnvOverride;
 }
 
 export interface ExtendedTestCaseData {
@@ -120,6 +122,7 @@ export type ProcessorTestData = {
     };
   };
   mockFns?: (mockAdapter: MockAdapter) => void;
+  envOverrides?: EnvOverride;
 };
 export type RouterTestData = {
   id: string;
@@ -149,6 +152,7 @@ export type RouterTestData = {
     };
   };
   mockFns?: (mockAdapter: MockAdapter) => void;
+  envOverrides?: EnvOverride;
 };
 
 export type ProxyV1TestData = BaseTestCase & {

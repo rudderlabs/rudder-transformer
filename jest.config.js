@@ -156,7 +156,10 @@ module.exports = {
   testMatch: ['**/*.test.[tj]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: ['/node_modules/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/test/integrations/destinations/rudder_test/integration/', // Exclude integration tests - these require a running service and should be run separately
+  ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

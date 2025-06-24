@@ -1,0 +1,14 @@
+bindings:
+  - name: process
+    path: ../../../../v0/destinations/rudder_test/transform
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+
+  - name: processEvent
+    template: |
+      $.process(^)

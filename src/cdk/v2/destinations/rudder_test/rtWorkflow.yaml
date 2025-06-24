@@ -1,0 +1,12 @@
+bindings:
+  - name: processRouterDest
+    path: ../../../../v0/destinations/rudder_test/transform
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: processRouterEvents
+    template: |
+      $.processRouterDest(^, {})

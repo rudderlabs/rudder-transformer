@@ -2,7 +2,7 @@
 
 This directory contains a complete working example of the integration test framework applied to the `rudder_test` destination. This serves as both a functional test suite and a reference implementation for creating integration tests for other destinations.
 
-> **📖 For framework documentation**, see the main [Integration Test Framework README](../../README.md)
+> **📖 For framework documentation**, see the [Integration Test Framework Guide](../../Integration_Test_Framework_Guide.md)
 
 ## What This Example Demonstrates
 

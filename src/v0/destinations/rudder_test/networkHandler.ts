@@ -3,6 +3,35 @@ import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { TAG_NAMES } from '../../util/tags';
 import { TestBehavior } from './type';
 
+// Type definitions for network handler
+interface DestinationRequest {
+  body?: {
+    JSON?: {
+      testBehavior?: TestBehavior;
+      recordId?: string;
+      [key: string]: unknown;
+    };
+  };
+  headers?: Record<string, string>;
+}
+
+interface MockResponse {
+  success: boolean;
+  response: {
+    status: number;
+    statusText: string;
+    data: unknown;
+  };
+}
+
+interface ResponseParams {
+  destinationResponse: {
+    status?: number;
+    [key: string]: unknown;
+  };
+  destinationRequest: DestinationRequest;
+}
+
 const DESTINATION = 'RUDDER_TEST';
 
 /**
@@ -63,12 +92,18 @@ const mockPrepareProxyRequest = (destinationRequest: DestinationRequest): Destin
  * Mock process axios response function
  * Processes the mock response to extract relevant data
  */
-const mockProcessAxiosResponse = (response: MockResponse | unknown): unknown => {
+const mockProcessAxiosResponse = (
+  response: MockResponse,
+):
+  | {
+      response: unknown;
+      status: number;
+    }
+  | MockResponse => {
   if (response && typeof response === 'object' && 'response' in response) {
-    const mockResponse = response as MockResponse;
     return {
-      response: mockResponse.response.data,
-      status: mockResponse.response.status,
+      response: response.response.data,
+      status: response.response.status,
     };
   }
   return response;
@@ -79,12 +114,18 @@ const mockProcessAxiosResponse = (response: MockResponse | unknown): unknown => 
  * This is a test destination that simulates various response scenarios
  * based on the request payload for testing purposes
  */
-const responseHandler = (responseParams: ResponseParams): unknown => {
+const responseHandler = (
+  responseParams: ResponseParams,
+): {
+  status: number;
+  message: string;
+  destinationResponse: unknown;
+} => {
   const { destinationResponse, destinationRequest } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
 
   // Get status from the mock response
-  const status = destinationResponse?.status || 200;
+  const status = destinationResponse?.status ?? 200;
 
   // Check for test behavior in the request to simulate different responses
   const testBehavior = getTestBehaviorFromRequest(destinationRequest);

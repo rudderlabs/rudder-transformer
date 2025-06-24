@@ -172,16 +172,16 @@ jobs:
           timestamp=$(date +%Y%m%d-%H%M%S)
           output_file="test/integrations/destinations/rudder_test/integration/results/integration-test-${timestamp}.json"
           
-          # Build test command
-          test_cmd="npm run test:integration -- --config ${{ steps.test-config.outputs.config }} --output \"$output_file\""
+          # Build test command safely using arrays to avoid shell injection
+          test_cmd=(npm run test:integration -- --config "${{ steps.test-config.outputs.config }}" --output "$output_file")
           
           # Add scenarios if specified
           if [ -n "${{ steps.test-config.outputs.scenarios }}" ]; then
-            test_cmd="$test_cmd --scenarios \"${{ steps.test-config.outputs.scenarios }}\""
+            test_cmd+=(--scenarios "${{ steps.test-config.outputs.scenarios }}")
           fi
           
-          echo "Running: $test_cmd"
-          eval $test_cmd
+          echo "Running: ${test_cmd[*]}"
+          "${test_cmd[@]}"
           
           # Store the output file path for later use
           echo "output_file=$output_file" >> $GITHUB_OUTPUT

@@ -1,17 +1,18 @@
-# Rudder Transformer Integration Tests
+# Rudder Test Integration Example
 
-This directory contains a comprehensive integration testing framework for the Rudder Transformer service. Unlike the component tests that run against the service in-memory, these tests start a real transformer service instance and test against it with realistic payloads and scenarios.
+This directory contains a complete working example of the integration test framework applied to the `rudder_test` destination. This serves as both a functional test suite and a reference implementation for creating integration tests for other destinations.
 
-## Overview
+> **📖 For framework documentation**, see the main [Integration Test Framework README](../../README.md)
 
-The integration test framework consists of several key components:
+## What This Example Demonstrates
 
-- **Service Manager** (`serviceManager.ts`): Manages starting/stopping the transformer service with different environment configurations
-- **Data Generator** (`rudderTestDataGenerator.ts`): Generates realistic test data based on actual rudder_test component test scenarios
-- **Integration Test Runner** (`integrationTest.ts`): Orchestrates the test execution, load generation, and result collection
-- **CLI Interface** (`run.ts`): Command-line interface for running tests with various configurations
+This implementation showcases all the framework capabilities:
 
-## Key Features
+- **Real Service Testing**: Starts actual transformer service instances
+- **Environment Variable Management**: Dynamic service configuration and restarts
+- **Load Testing**: Configurable concurrency, batch sizes, and stress testing
+- **CDK v2 Integration**: Complete CDK v2 vs native performance comparison
+- **Comprehensive Scenarios**: 40+ test scenarios covering all use cases
 
 ### 🎯 **Real-World Scenarios Based on rudder_test Components**
 

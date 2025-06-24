@@ -148,45 +148,33 @@ envManager.applyOverrides({ API_ENDPOINT: 'http://test-api' });
 envManager.restoreSnapshot();
 ```
 
-## Complete Example: Rudder Test Integration
+## Complete Working Example
 
-The `test/integrations/destinations/rudder_test/integration/` directory contains a complete example of how to use the integration test framework:
+The `test/integrations/destinations/rudder_test/integration/` directory contains a **complete working example** that demonstrates all framework capabilities:
 
-### Structure
-```
-integration/
-├── run.ts              # CLI entry point
-├── integrationTest.ts  # Main test implementation
-├── dataGenerator.ts    # Test data generation
-├── contextGenerator.ts # Context generation
-├── fieldGenerator.ts   # Field generation utilities
-├── types.ts           # Type definitions
-└── README.md          # Detailed documentation
-```
+- **40+ Test Scenarios**: Real-world scenarios based on component tests
+- **CDK v2 Integration**: Performance comparison between CDK v2 and native
+- **CLI Interface**: Full command-line interface with multiple configurations
+- **Load Testing**: Stress testing with configurable parameters
+- **Environment Management**: Dynamic service configuration
 
-### Running the Example
+### Quick Start
 
 ```bash
 # Run all scenarios
 npm run test:integration
 
-# Run specific configuration
+# Run quick test (30 seconds per scenario)
 npm run test:integration:quick
 
-# List available scenarios
+# List all 40+ available scenarios
 npm run test:integration:list
 
 # Validate test setup
 npm run test:integration:validate
 ```
 
-### Key Features Demonstrated
-
-1. **Performance Analysis**: CDK v2 vs native transformation comparison
-2. **Load Testing**: Configurable load test scenarios
-3. **Service Management**: Automatic service startup/shutdown
-4. **Comprehensive Logging**: Detailed test execution logs
-5. **Result Aggregation**: Performance metrics and analysis
+> **📖 For detailed usage and all available scenarios**, see the [Rudder Test Integration Example README](./destinations/rudder_test/integration/README.md)
 
 ## Creating Your Own Integration Tests
 

@@ -10,7 +10,7 @@ The integration test framework consists of several key components:
 2. **Service Manager** (`transformerServiceManager.ts`) - Lifecycle management for transformer services
 3. **Base Integration Test** (`baseIntegrationTest.ts`) - Abstract base class for integration tests
 4. **Test Utilities** (`testUtils.ts`) - Comprehensive test data generation and validation utilities
-5. **Environment Utilities** (`utils/envUtils.ts`) - Environment variable management for tests
+5. **Environment Utilities** (`envUtils.ts`) - Environment variable management for tests
 
 ## Quick Start
 
@@ -128,7 +128,7 @@ validateTestWithZOD(testPayload, response);
 const proxyV0Payload = generateProxyV0Payload(parameters, metadata);
 ```
 
-### 5. Environment Utilities (`utils/envUtils.ts`)
+### 5. Environment Utilities (`envUtils.ts`)
 
 Provides environment variable management:
 - **Snapshot Management**: Save and restore environment states
@@ -137,7 +137,7 @@ Provides environment variable management:
 
 Example usage:
 ```typescript
-import { EnvManager } from './utils/envUtils';
+import { EnvManager } from './envUtils';
 
 const envManager = new EnvManager();
 

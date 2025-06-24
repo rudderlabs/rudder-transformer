@@ -29,7 +29,7 @@ interface ResponseParams {
     status?: number;
     [key: string]: unknown;
   };
-  destinationRequest: DestinationRequest;
+  destinationRequest: DestinationRequest | null;
 }
 
 const DESTINATION = 'RUDDER_TEST';
@@ -128,7 +128,9 @@ const responseHandler = (
   const status = destinationResponse?.status ?? 200;
 
   // Check for test behavior in the request to simulate different responses
-  const testBehavior = getTestBehaviorFromRequest(destinationRequest);
+  const testBehavior = destinationRequest
+    ? getTestBehaviorFromRequest(destinationRequest)
+    : undefined;
 
   // Simulate errors based on test behavior using existing statusCode and errorMessage
   if (testBehavior?.statusCode && testBehavior.statusCode !== 200) {

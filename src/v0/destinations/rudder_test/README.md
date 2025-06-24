@@ -15,12 +15,12 @@ The proxy implementations reuse the existing `TestBehavior` interface properties
 
 ```typescript
 interface TestBehavior {
-  statusCode: number;                    // Controls response status code
-  errorMessage?: string;                 // Custom error message
-  batchScenario?: string;               // v1 batch processing scenarios
-  preventFutureBatching?: boolean;      // Sets dontBatch flag for failed events
-  mutateDestinationConfig?: boolean;    // Config mutation testing
-  replaceDestinationConfig?: boolean;   // Config replacement testing
+  statusCode: number; // Controls response status code
+  errorMessage?: string; // Custom error message
+  batchScenario?: string; // v1 batch processing scenarios
+  preventFutureBatching?: boolean; // Sets dontBatch flag for failed events
+  mutateDestinationConfig?: boolean; // Config mutation testing
+  replaceDestinationConfig?: boolean; // Config replacement testing
 }
 ```
 
@@ -32,19 +32,19 @@ interface TestBehavior {
 // Simulate a 400 error
 const testBehavior = {
   statusCode: 400,
-  errorMessage: "Bad Request - Invalid data format"
+  errorMessage: 'Bad Request - Invalid data format',
 };
 
 // Simulate a 401 authentication error
 const testBehavior = {
   statusCode: 401,
-  errorMessage: "Authentication failed - Invalid API key"
+  errorMessage: 'Authentication failed - Invalid API key',
 };
 
 // Simulate a 500 server error (retryable)
 const testBehavior = {
   statusCode: 500,
-  errorMessage: "Internal server error"
+  errorMessage: 'Internal server error',
 };
 ```
 
@@ -74,55 +74,60 @@ Include test behavior in the JSON body of your request:
 Proxy v1 supports several batch processing scenarios:
 
 #### 1. Partial Failure (`partial_failure`)
+
 Some events succeed, some fail (alternating pattern):
 
 ```javascript
 const testBehavior = {
-  statusCode: 400,                    // Status for failed events
-  errorMessage: "Validation failed", // Message for failed events
-  batchScenario: "partial_failure",
-  preventFutureBatching: true        // Set dontBatch flag
+  statusCode: 400, // Status for failed events
+  errorMessage: 'Validation failed', // Message for failed events
+  batchScenario: 'partial_failure',
+  preventFutureBatching: true, // Set dontBatch flag
 };
 ```
 
 #### 2. Complete Failure (`all_failure`)
+
 All events in the batch fail:
 
 ```javascript
 const testBehavior = {
   statusCode: 422,
-  errorMessage: "Unprocessable entity",
-  batchScenario: "all_failure",
-  preventFutureBatching: true
+  errorMessage: 'Unprocessable entity',
+  batchScenario: 'all_failure',
+  preventFutureBatching: true,
 };
 ```
 
 #### 3. Authentication Error (`auth_error`)
+
 Authentication failure affecting all events:
 
 ```javascript
 const testBehavior = {
   statusCode: 401,
-  errorMessage: "Invalid credentials",
-  batchScenario: "auth_error"
+  errorMessage: 'Invalid credentials',
+  batchScenario: 'auth_error',
 };
 ```
 
 #### 4. Mixed Status Codes (`mixed_status`)
+
 Events get different status codes (200, 400, 500 rotation):
 
 ```javascript
 const testBehavior = {
-  batchScenario: "mixed_status"
+  batchScenario: 'mixed_status',
 };
 ```
 
 #### 5. All Success (`all_success` or default)
+
 All events succeed (default behavior):
 
 ```javascript
 const testBehavior = {
-  batchScenario: "all_success"
+  batchScenario: 'all_success',
 };
 ```
 
@@ -154,51 +159,57 @@ const testBehavior = {
 ## Testing Different Scenarios
 
 ### 1. Success Cases
+
 ```javascript
 // All succeed (default)
 const testBehavior = null; // or { statusCode: 200 }
 ```
 
 ### 2. Client Errors (4xx) - Non-retryable
+
 ```javascript
 const testBehavior = {
   statusCode: 400,
-  errorMessage: "Bad request"
+  errorMessage: 'Bad request',
 };
 ```
 
 ### 3. Server Errors (5xx) - Retryable
+
 ```javascript
 const testBehavior = {
   statusCode: 500,
-  errorMessage: "Internal server error"
+  errorMessage: 'Internal server error',
 };
 ```
 
 ### 4. Authentication Errors
+
 ```javascript
 const testBehavior = {
   statusCode: 401,
-  errorMessage: "Unauthorized"
+  errorMessage: 'Unauthorized',
 };
 // or
 const testBehavior = {
   statusCode: 403,
-  errorMessage: "Forbidden"
+  errorMessage: 'Forbidden',
 };
 ```
 
 ### 5. Rate Limiting
+
 ```javascript
 const testBehavior = {
   statusCode: 429,
-  errorMessage: "Too many requests"
+  errorMessage: 'Too many requests',
 };
 ```
 
 ## Error Response Format
 
 ### Proxy v0 Response
+
 ```javascript
 {
   "status": 400,
@@ -208,6 +219,7 @@ const testBehavior = {
 ```
 
 ### Proxy v1 Response
+
 ```javascript
 {
   "status": 207, // or appropriate batch status
@@ -244,13 +256,15 @@ export const PROXY_ENDPOINTS = {
 ## Testing Proxy Endpoints
 
 ### v0 Proxy Endpoint
+
 ```
 POST /v0/destinations/rudder_test/proxy
 ```
 
-### v1 Proxy Endpoint  
+### v1 Proxy Endpoint
+
 ```
 POST /v1/destinations/rudder_test/proxy
 ```
 
-Both endpoints will automatically use the appropriate network handler and provide the expected response format for comprehensive proxy testing. 
+Both endpoints will automatically use the appropriate network handler and provide the expected response format for comprehensive proxy testing.

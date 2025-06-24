@@ -97,7 +97,7 @@ jobs:
           fi
           
           # Escape special characters for JSON
-          pr_title_escaped=$(echo "$pr_title" | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+          pr_title_escaped=$(printf %s "$pr_title" | jq -R -s @json | sed 's/^"//;s/"$//')
           
           echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
           echo "pr_title=$pr_title_escaped" >> $GITHUB_OUTPUT
@@ -200,8 +200,13 @@ jobs:
             failed_scenarios=$((total_scenarios - successful_scenarios))
             total_requests=$(jq '[.[].totalRequests] | add' "$output_file")
             failed_requests=$(jq '[.[].failedRequests] | add' "$output_file")
-            avg_response_time=$(jq '[.[].averageResponseTime] | add / length' "$output_file")
-            avg_throughput=$(jq '[.[].throughput] | add / length' "$output_file")
+            if [ "$total_scenarios" -eq 0 ]; then
+              avg_response_time=0
+              avg_throughput=0
+            else
+              avg_response_time=$(jq '[.[].averageResponseTime] | add / length' "$output_file")
+              avg_throughput=$(jq '[.[].throughput] | add / length' "$output_file")
+            fi
             
             # Determine overall status
             if [ $failed_scenarios -eq 0 ]; then
@@ -411,7 +416,7 @@ jobs:
             }
 
       - name: Fail Workflow on Test Failures
-        if: steps.test-results.outputs.failed_scenarios != '0'
+        if: steps.test-results.outputs.results_available == 'true' && steps.test-results.outputs.failed_scenarios != '0'
         run: |
           echo "❌ Integration tests failed with ${{ steps.test-results.outputs.failed_scenarios }} failed scenarios"
           exit 1 

@@ -73,7 +73,7 @@ export const checkTestBehaviorAndThrow = (message: RudderTestMessage): void => {
   const testBehavior = getTestBehavior(message);
 
   if (testBehavior?.statusCode && testBehavior.statusCode !== 200) {
-    throw new InstrumentationError(testBehavior.errorMessage || 'Test error');
+    throw new InstrumentationError(testBehavior.errorMessage ?? 'Test error');
   }
 };
 
@@ -86,8 +86,8 @@ export const buildTestBehaviorErrorResponse = (
   const testBehavior = getTestBehavior(message);
 
   return {
-    statusCode: testBehavior?.statusCode || 400,
-    error: testBehavior?.errorMessage || 'Test error',
+    statusCode: testBehavior?.statusCode ?? 400,
+    error: testBehavior?.errorMessage ?? 'Test error',
     metadata: [metadata],
     destination,
     batched: false,

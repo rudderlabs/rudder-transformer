@@ -2,8 +2,11 @@ import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 import {
   destination,
+  destinationV2,
   destinationWithDynamicConfig,
+  destinationWithDynamicConfigV2,
   destinationWithoutDynamicConfig,
+  destinationWithoutDynamicConfigV2,
   testConnection,
   buildMessage,
   buildDynamicConfigMessage,
@@ -1267,7 +1270,6 @@ export const data: ProcessorTestData[] = [
               message: buildMessage({
                 context: {
                   testBehavior: {
-                    statusCode: 200,
                     mutateDestinationConfig: true,
                   },
                   sources: baseSources,
@@ -1334,7 +1336,6 @@ export const data: ProcessorTestData[] = [
               message: buildMessage({
                 context: {
                   testBehavior: {
-                    statusCode: 200,
                     replaceDestinationConfig: true,
                   },
                   sources: baseSources,
@@ -1373,6 +1374,240 @@ export const data: ProcessorTestData[] = [
             output: undefined,
             statTags: {
               errorCategory: 'transformation',
+            },
+          },
+        ],
+      },
+    },
+  },
+  // CDK v2 Test Cases
+  {
+    id: 'rudder-test-processor-cdk-v2-basic',
+    name: 'rudder_test',
+    description: 'Test basic CDK v2 processor workflow',
+    scenario: 'CDK v2 basic record event processing',
+    successCriteria: 'Should return 200 with event data processed via CDK v2',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'cdkv2@example.com',
+                name: 'CDK v2 User',
+                testType: 'cdkv2-basic',
+              },
+            }),
+            metadata: generateMetadata(500, 'cdkv2-basic'),
+            destination: destinationV2,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(500, 'cdkv2-basic'), {
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'cdkv2@example.com',
+                  name: 'CDK v2 User',
+                  testType: 'cdkv2-basic',
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    id: 'rudder-test-processor-cdk-v2-dynamic-config',
+    name: 'rudder_test',
+    description: 'Test CDK v2 processor with dynamic config',
+    scenario: 'CDK v2 dynamic config processing',
+    successCriteria: 'Should process dynamic config via CDK v2 workflow',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildDynamicConfigMessage('https://cdkv2.endpoint.com', 'cdkv2-app-key'),
+            metadata: generateMetadata(501, 'cdkv2-dynamic'),
+            destination: destinationWithDynamicConfigV2,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(501, 'cdkv2-dynamic'), {
+            endpoint: 'https://cdkv2.endpoint.com',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': 'cdkv2-app-key',
+            },
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'test@example.com',
+                  name: 'Test User',
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    id: 'rudder-test-processor-cdk-v2-env-override',
+    name: 'rudder_test',
+    description: 'Test CDK v2 processor without environment variable override',
+    scenario: 'CDK v2 basic processing (environment variables not used in CDK v2)',
+    successCriteria: 'Should process via CDK v2 without environment variable effects',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'cdkv2-env@example.com',
+                name: 'CDK v2 Env User',
+                testType: 'cdkv2-env',
+              },
+            }),
+            metadata: generateMetadata(502, 'cdkv2-env'),
+            destination: destinationV2,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          buildProcessorOutput(generateMetadata(502, 'cdkv2-env'), {
+            body: {
+              JSON: {
+                action: 'insert',
+                recordId: 'record123',
+                fields: {
+                  email: 'cdkv2-env@example.com',
+                  name: 'CDK v2 Env User',
+                  testType: 'cdkv2-env',
+                },
+                identifiers: {
+                  userId: 'user123',
+                },
+                timestamp: '2023-01-01T00:00:00.000Z',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+          }),
+        ],
+      },
+    },
+  },
+  {
+    id: 'rudder-test-processor-cdk-v2-mutation-error',
+    name: 'rudder_test',
+    description: 'Test CDK v2 processor with mutation error handling',
+    scenario: 'CDK v2 mutation attempt should throw error when config is frozen',
+    successCriteria: 'Should return error about read-only/frozen config via CDK v2',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                context: {
+                  testBehavior: {
+                    mutateDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              metadata: {
+                ...generateMetadata(503, 'cdkv2-mutation'),
+                destinationId: 'static-123-v2',
+                sourceId: 'test-source-id',
+              },
+            },
+          ],
+          destinations: {
+            'static-123-v2': destinationWithoutDynamicConfigV2,
+          },
+          connections: {
+            'test-source-id:static-123-v2': testConnection,
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            metadata: {
+              ...generateMetadata(503, 'cdkv2-mutation'),
+              destinationId: 'static-123-v2',
+              sourceId: 'test-source-id',
+            },
+            error: expect.stringMatching(
+              /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+            ),
+            statTags: {
+              destType: 'RUDDER_TEST',
+              destinationId: 'static-123-v2',
+              errorCategory: 'transformation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
             },
           },
         ],

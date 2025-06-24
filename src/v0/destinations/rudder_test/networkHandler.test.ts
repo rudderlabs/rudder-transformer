@@ -26,7 +26,7 @@ describe('rudder_test networkHandler', () => {
       expect(result.destinationResponse).toEqual(mockDestinationResponse);
     });
 
-    it('should throw NetworkError when destination response status is not successful', () => {
+    it('should throw NetworkError when destination response status is >= 400', () => {
       const failedResponse = {
         ...mockDestinationResponse,
         status: 500,
@@ -120,6 +120,16 @@ describe('rudder_test networkHandler', () => {
       expect(result.status).toBe(200);
       expect(result.message).toBe('Request for RUDDER_TEST Processed Successfully');
     });
+
+    it('should handle missing status in destinationResponse', () => {
+      const responseParams = {
+        destinationResponse: { response: { success: true } }, // no status
+        destinationRequest: mockDestinationRequest,
+      };
+
+      const result = responseHandler(responseParams);
+      expect(result.status).toBe(200); // should default to 200
+    });
   });
 
   describe('networkHandler constructor', () => {
@@ -134,6 +144,81 @@ describe('rudder_test networkHandler', () => {
       expect(typeof handler.proxy).toBe('function');
       expect(typeof handler.prepareProxy).toBe('function');
       expect(typeof handler.processAxiosResponse).toBe('function');
+    });
+  });
+
+  describe('mock proxy functions', () => {
+    it('should mock proxy request with success response', async () => {
+      const handler = new networkHandler();
+      const mockRequest = {
+        body: {
+          JSON: {
+            recordId: 'test123',
+            action: 'insert',
+          },
+        },
+      };
+
+      const result = await handler.proxy(mockRequest);
+
+      expect(result.success).toBe(true);
+      expect(result.response.status).toBe(200);
+      expect(result.response.data.recordId).toBe('test123');
+    });
+
+    it('should mock proxy request with error response based on testBehavior', async () => {
+      const handler = new networkHandler();
+      const mockRequest = {
+        body: {
+          JSON: {
+            recordId: 'test123',
+            action: 'insert',
+            testBehavior: {
+              statusCode: 400,
+              errorMessage: 'Test error',
+            },
+          },
+        },
+      };
+
+      const result = await handler.proxy(mockRequest);
+
+      expect(result.success).toBe(false);
+      expect(result.response.status).toBe(400);
+      expect(result.response.data.error).toBe('Test error');
+    });
+
+    it('should mock prepareProxy by returning request as-is', () => {
+      const handler = new networkHandler();
+      const mockRequest = { test: 'data' };
+
+      const result = handler.prepareProxy(mockRequest);
+
+      expect(result).toEqual(mockRequest);
+    });
+
+    it('should mock processAxiosResponse correctly', () => {
+      const handler = new networkHandler();
+      const mockResponse = {
+        response: {
+          status: 200,
+          data: { message: 'success' },
+        },
+      };
+
+      const result = handler.processAxiosResponse(mockResponse);
+
+      expect(result.status).toBe(200);
+      expect(result.response).toEqual({ message: 'success' });
+    });
+
+    it('should handle processAxiosResponse with no nested response', () => {
+      const handler = new networkHandler();
+      const mockResponse = { status: 200, data: 'direct' };
+
+      const result = handler.processAxiosResponse(mockResponse);
+
+      expect(result).toEqual(mockResponse);
     });
   });
 
@@ -155,6 +240,15 @@ describe('rudder_test networkHandler', () => {
       const request = {
         body: { JSON: {} },
         headers: {},
+      };
+
+      const result = getTestBehaviorFromRequest(request);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when request structure is invalid', () => {
+      const request = {
+        body: {},
       };
 
       const result = getTestBehaviorFromRequest(request);

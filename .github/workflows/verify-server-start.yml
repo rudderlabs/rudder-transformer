@@ -27,12 +27,33 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Build application
+        run: npm run build
+
       - name: Start server
-        run: npm run build:start &
+        run: npm start &
 
-      - name: Wait for server to start
-        run: sleep 10 # Adjust the time as necessary for your server to start
-
-      - name: Check server health
+      - name: Check server health with retry
         run: |
-          curl --fail http://localhost:9090/health || exit 1
+          echo "Checking server health with retry logic..."
+          for i in {1..5}; do
+            echo "Attempt $i/5..."
+            if curl --fail --silent --max-time 5 http://localhost:9090/health; then
+              echo "✅ Server is healthy!"
+              exit 0
+            else
+              echo "❌ Health check failed on attempt $i"
+              if [ $i -lt 5 ]; then
+                sleep_time=$((2 ** i))
+                echo "Waiting ${sleep_time}s before retry..."
+                sleep $sleep_time
+              fi
+            fi
+          done
+          echo "❌ Server failed to start after 5 attempts"
+          echo "Debugging info:"
+          echo "Checking if server process is running..."
+          ps aux | grep -E "(node|npm)" | grep -v grep || echo "No node processes found"
+          echo "Checking what's listening on port 9090..."
+          netstat -tlnp 2>/dev/null | grep :9090 || echo "Nothing listening on port 9090"
+          exit 1

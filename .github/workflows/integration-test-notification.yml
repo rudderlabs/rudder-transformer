@@ -1,0 +1,417 @@
+name: Integration Test & Notification
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+    inputs:
+      branch_or_tag:
+        description: 'Branch or tag to test (leave empty for current branch)'
+        required: false
+        type: string
+      test_config:
+        description: 'Test configuration to run'
+        required: true
+        default: 'quick'
+        type: choice
+        options:
+          - quick
+          - comprehensive
+          - stress
+          - cdkV2
+          - comparison
+      scenarios:
+        description: 'Specific scenarios to run (comma-separated, leave empty for all)'
+        required: false
+        type: string
+      notify_slack:
+        description: 'Send Slack notifications'
+        required: true
+        default: false
+        type: boolean
+      slack_channel:
+        description: 'Slack channel for notifications'
+        required: false
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - release
+
+jobs:
+  integration-tests:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    # Only trigger for merged pull requests OR manual dispatch
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+        with:
+          ref: ${{ inputs.branch_or_tag || github.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        env:
+          HUSKY: 0
+        run: |
+          npm ci
+
+      - name: Extract Information
+        id: info
+        run: |
+          # For PR events
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pr_number="${{ github.event.pull_request.number }}"
+            pr_title="${{ github.event.pull_request.title }}"
+            pr_author="${{ github.event.pull_request.user.login }}"
+            pr_url="${{ github.event.pull_request.html_url }}"
+            target_branch="${{ github.event.pull_request.base.ref }}"
+            source_branch="${{ github.event.pull_request.head.ref }}"
+            merge_commit="${{ github.event.pull_request.merge_commit_sha }}"
+            trigger_type="PR Merge"
+          else
+            # For manual dispatch
+            pr_number="N/A"
+            pr_title="Manual Integration Test"
+            pr_author="${{ github.actor }}"
+            pr_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            target_branch="${{ github.ref_name }}"
+            source_branch="${{ inputs.branch_or_tag || github.ref_name }}"
+            merge_commit="${{ github.sha }}"
+            trigger_type="Manual Dispatch"
+          fi
+          
+          # Escape special characters for JSON
+          pr_title_escaped=$(echo "$pr_title" | sed 's/"/\\"/g' | sed "s/'/\\'/g")
+          
+          echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+          echo "pr_title=$pr_title_escaped" >> $GITHUB_OUTPUT
+          echo "pr_author=$pr_author" >> $GITHUB_OUTPUT
+          echo "pr_url=$pr_url" >> $GITHUB_OUTPUT
+          echo "target_branch=$target_branch" >> $GITHUB_OUTPUT
+          echo "source_branch=$source_branch" >> $GITHUB_OUTPUT
+          echo "merge_commit=${merge_commit:0:7}" >> $GITHUB_OUTPUT
+          echo "trigger_type=$trigger_type" >> $GITHUB_OUTPUT
+
+      - name: Determine Test Configuration
+        id: test-config
+        run: |
+          # For manual dispatch, use input parameters
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            config="${{ inputs.test_config }}"
+            scenarios="${{ inputs.scenarios }}"
+            notify_slack="${{ inputs.notify_slack }}"
+            slack_channel="${{ inputs.slack_channel }}"
+            
+            if [ "$slack_channel" = "release" ]; then
+              channel_id="${{ secrets.SLACK_RELEASE_CHANNEL_ID }}"
+              environment="Release/Production"
+              emoji="🚀"
+              mentions="<!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D>"
+            else
+              channel_id="${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}"
+              environment="Development"
+              emoji="⚙️"
+              mentions="<!subteam^S02AEQL26CT>"
+            fi
+          else
+            # For PR events, determine based on target branch
+            target_branch="${{ steps.info.outputs.target_branch }}"
+            notify_slack="true"
+            
+            if [ "$target_branch" = "main" ]; then
+              config="comprehensive"
+              environment="Production"
+              channel_id="${{ secrets.SLACK_RELEASE_CHANNEL_ID }}"
+              emoji="🚀"
+              mentions="<!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D>"
+            elif [ "$target_branch" = "develop" ]; then
+              config="quick"
+              environment="Development"
+              channel_id="${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}"
+              emoji="⚙️"
+              mentions="<!subteam^S02AEQL26CT>"
+            fi
+            scenarios=""
+          fi
+          
+          echo "config=$config" >> $GITHUB_OUTPUT
+          echo "scenarios=$scenarios" >> $GITHUB_OUTPUT
+          echo "environment=$environment" >> $GITHUB_OUTPUT
+          echo "channel_id=$channel_id" >> $GITHUB_OUTPUT
+          echo "emoji=$emoji" >> $GITHUB_OUTPUT
+          echo "mentions=$mentions" >> $GITHUB_OUTPUT
+          echo "notify_slack=$notify_slack" >> $GITHUB_OUTPUT
+
+      - name: Run Integration Tests
+        id: integration-tests
+        run: |
+          echo "🧪 Starting integration tests for ${{ steps.test-config.outputs.environment }} environment..."
+          echo "Trigger: ${{ steps.info.outputs.trigger_type }}"
+          echo "Config: ${{ steps.test-config.outputs.config }}"
+          
+          # Create results directory
+          mkdir -p test/integrations/destinations/rudder_test/integration/results
+          
+          # Set output file with timestamp
+          timestamp=$(date +%Y%m%d-%H%M%S)
+          output_file="test/integrations/destinations/rudder_test/integration/results/integration-test-${timestamp}.json"
+          
+          # Build test command
+          test_cmd="npm run test:integration -- --config ${{ steps.test-config.outputs.config }} --output \"$output_file\""
+          
+          # Add scenarios if specified
+          if [ -n "${{ steps.test-config.outputs.scenarios }}" ]; then
+            test_cmd="$test_cmd --scenarios \"${{ steps.test-config.outputs.scenarios }}\""
+          fi
+          
+          echo "Running: $test_cmd"
+          eval $test_cmd
+          
+          # Store the output file path for later use
+          echo "output_file=$output_file" >> $GITHUB_OUTPUT
+          echo "timestamp=$timestamp" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Parse Test Results
+        id: test-results
+        run: |
+          output_file="${{ steps.integration-tests.outputs.output_file }}"
+          
+          if [ -f "$output_file" ]; then
+            # Parse JSON results
+            total_scenarios=$(jq length "$output_file")
+            successful_scenarios=$(jq '[.[] | select(.failedRequests == 0)] | length' "$output_file")
+            failed_scenarios=$((total_scenarios - successful_scenarios))
+            total_requests=$(jq '[.[].totalRequests] | add' "$output_file")
+            failed_requests=$(jq '[.[].failedRequests] | add' "$output_file")
+            avg_response_time=$(jq '[.[].averageResponseTime] | add / length' "$output_file")
+            avg_throughput=$(jq '[.[].throughput] | add / length' "$output_file")
+            
+            # Determine overall status
+            if [ $failed_scenarios -eq 0 ]; then
+              status="✅ PASSED"
+              status_emoji="✅"
+            else
+              status="❌ FAILED"
+              status_emoji="❌"
+            fi
+            
+            echo "total_scenarios=$total_scenarios" >> $GITHUB_OUTPUT
+            echo "successful_scenarios=$successful_scenarios" >> $GITHUB_OUTPUT
+            echo "failed_scenarios=$failed_scenarios" >> $GITHUB_OUTPUT
+            echo "total_requests=$total_requests" >> $GITHUB_OUTPUT
+            echo "failed_requests=$failed_requests" >> $GITHUB_OUTPUT
+            echo "avg_response_time=$(printf "%.2f" $avg_response_time)" >> $GITHUB_OUTPUT
+            echo "avg_throughput=$(printf "%.2f" $avg_throughput)" >> $GITHUB_OUTPUT
+            echo "status=$status" >> $GITHUB_OUTPUT
+            echo "status_emoji=$status_emoji" >> $GITHUB_OUTPUT
+            echo "results_available=true" >> $GITHUB_OUTPUT
+          else
+            echo "status=❌ FAILED" >> $GITHUB_OUTPUT
+            echo "status_emoji=❌" >> $GITHUB_OUTPUT
+            echo "results_available=false" >> $GITHUB_OUTPUT
+            echo "error_message=Test results file not found" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Test Results as Artifact
+        if: steps.test-results.outputs.results_available == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results-${{ steps.info.outputs.target_branch }}-${{ steps.integration-tests.outputs.timestamp }}
+          path: ${{ steps.integration-tests.outputs.output_file }}
+          retention-days: 30
+
+      - name: Send Slack Notification - Test Results
+        if: steps.test-config.outputs.notify_slack == 'true'
+        uses: slackapi/slack-github-action@v2.1.0
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ steps.test-config.outputs.channel_id }}
+          payload: |
+            {
+              "text": "${{ steps.test-config.outputs.emoji }} Integration Tests ${{ steps.test-results.outputs.status }} - ${{ steps.info.outputs.trigger_type }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ steps.test-results.outputs.status_emoji }} Integration Tests - ${{ steps.test-config.outputs.environment }}"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Trigger:* ${{ steps.info.outputs.trigger_type }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:* ${{ steps.info.outputs.pr_author }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch:* ${{ steps.info.outputs.target_branch }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:* ${{ steps.test-results.outputs.status }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Config:* ${{ steps.test-config.outputs.config }} | *Title:* ${{ steps.info.outputs.pr_title }}"
+                  }
+                }
+              ]
+            }
+
+      - name: Send Slack Notification - Detailed Results
+        if: steps.test-config.outputs.notify_slack == 'true' && steps.test-results.outputs.results_available == 'true'
+        uses: slackapi/slack-github-action@v2.1.0
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ steps.test-config.outputs.channel_id }}
+          payload: |
+            {
+              "text": "📊 Integration Test Results Details",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "📊 *Test Results Summary*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Total Scenarios:* ${{ steps.test-results.outputs.total_scenarios }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Successful:* ${{ steps.test-results.outputs.successful_scenarios }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Failed:* ${{ steps.test-results.outputs.failed_scenarios }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Total Requests:* ${{ steps.test-results.outputs.total_requests }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Failed Requests:* ${{ steps.test-results.outputs.failed_requests }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Avg Response Time:* ${{ steps.test-results.outputs.avg_response_time }}ms"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Avg Throughput:* ${{ steps.test-results.outputs.avg_throughput }} req/s"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Scenarios:* ${{ steps.test-config.outputs.scenarios || 'All' }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ steps.test-config.outputs.mentions }} | <https://github.com/rudderlabs/rudder-transformer/actions/runs/${{ github.run_id }}|View Full Results> | Rudder Transformer"
+                    }
+                  ]
+                }
+              ]
+            }
+
+      - name: Send Slack Notification - Error Details
+        if: steps.test-config.outputs.notify_slack == 'true' && steps.test-results.outputs.results_available == 'false'
+        uses: slackapi/slack-github-action@v2.1.0
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ steps.test-config.outputs.channel_id }}
+          payload: |
+            {
+              "text": "❌ Integration Test Execution Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "❌ *Integration Test Execution Failed*\n\nThe integration tests could not complete successfully. Please check the workflow logs for details."
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Error:* ${{ steps.test-results.outputs.error_message || 'Unknown error occurred' }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Environment:* ${{ steps.test-config.outputs.environment }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Trigger:* ${{ steps.info.outputs.trigger_type }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Config:* ${{ steps.test-config.outputs.config }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ steps.test-config.outputs.mentions }} | <https://github.com/rudderlabs/rudder-transformer/actions/runs/${{ github.run_id }}|View Workflow Logs> | Rudder Transformer"
+                    }
+                  ]
+                }
+              ]
+            }
+
+      - name: Fail Workflow on Test Failures
+        if: steps.test-results.outputs.failed_scenarios != '0'
+        run: |
+          echo "❌ Integration tests failed with ${{ steps.test-results.outputs.failed_scenarios }} failed scenarios"
+          exit 1 

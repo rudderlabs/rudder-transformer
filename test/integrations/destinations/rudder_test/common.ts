@@ -21,6 +21,26 @@ export const destination: Destination = {
   WorkspaceID: 'test-workspace-id',
 };
 
+// CDK v2 destination for testing CDK v2 workflows
+export const destinationV2: Destination = {
+  Config: {
+    // Empty for now - just for platform testing
+  },
+  DestinationDefinition: {
+    DisplayName: displayName,
+    ID: '123-v2',
+    Name: destTypeInUpperCase,
+    Config: {
+      cdkV2Enabled: true,
+    },
+  },
+  Enabled: true,
+  ID: '123-v2',
+  Name: destTypeInUpperCase,
+  Transformations: [],
+  WorkspaceID: 'test-workspace-id',
+};
+
 // Destination with dynamic config for testing dynamic config processing
 export const destinationWithDynamicConfig: Destination = {
   Config: {
@@ -42,6 +62,29 @@ export const destinationWithDynamicConfig: Destination = {
   hasDynamicConfig: true,
 };
 
+// CDK v2 destination with dynamic config
+export const destinationWithDynamicConfigV2: Destination = {
+  Config: {
+    apiKey: '{{ message.traits.appId || "default-api-key" }}',
+    endpoint: '{{ message.context.endpoint || "https://default.endpoint.com" }}',
+    staticValue: 'static-value',
+  },
+  DestinationDefinition: {
+    DisplayName: displayName,
+    ID: 'dynamic-123-v2',
+    Name: destTypeInUpperCase,
+    Config: {
+      cdkV2Enabled: true,
+    },
+  },
+  Enabled: true,
+  ID: 'dynamic-123-v2',
+  Name: destTypeInUpperCase,
+  Transformations: [],
+  WorkspaceID: 'test-workspace-id',
+  hasDynamicConfig: true,
+};
+
 // Destination without dynamic config (no templates, static config only)
 export const destinationWithoutDynamicConfig: Destination = {
   Config: {
@@ -57,6 +100,29 @@ export const destinationWithoutDynamicConfig: Destination = {
   },
   Enabled: true,
   ID: 'static-123',
+  Name: destTypeInUpperCase,
+  Transformations: [],
+  WorkspaceID: 'test-workspace-id',
+  hasDynamicConfig: false,
+};
+
+// CDK v2 destination without dynamic config
+export const destinationWithoutDynamicConfigV2: Destination = {
+  Config: {
+    apiKey: 'static-api-key',
+    endpoint: 'https://static.endpoint.com',
+    staticValue: 'static-value',
+  },
+  DestinationDefinition: {
+    DisplayName: displayName,
+    ID: 'static-123-v2',
+    Name: destTypeInUpperCase,
+    Config: {
+      cdkV2Enabled: true,
+    },
+  },
+  Enabled: true,
+  ID: 'static-123-v2',
   Name: destTypeInUpperCase,
   Transformations: [],
   WorkspaceID: 'test-workspace-id',

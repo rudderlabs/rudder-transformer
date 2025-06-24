@@ -8,8 +8,11 @@ import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 import {
   destination,
+  destinationV2,
   destinationWithDynamicConfig,
+  destinationWithDynamicConfigV2,
   destinationWithoutDynamicConfig,
+  destinationWithoutDynamicConfigV2,
   testConnection,
   buildMessage,
   buildDynamicConfigMessage,
@@ -1019,7 +1022,6 @@ export const data: RouterTestData[] = [
               buildMessage({
                 context: {
                   testBehavior: {
-                    statusCode: 200,
                     mutateDestinationConfig: true,
                   },
                   sources: baseSources,
@@ -1095,7 +1097,6 @@ export const data: RouterTestData[] = [
               buildMessage({
                 context: {
                   testBehavior: {
-                    statusCode: 200,
                     replaceDestinationConfig: true,
                   },
                   sources: baseSources,
@@ -1144,6 +1145,367 @@ export const data: RouterTestData[] = [
                 errorCategory: 'transformation',
                 feature: 'router',
                 implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  // CDK v2 Router Test Cases
+  {
+    id: 'rudder-test-router-cdk-v2-basic',
+    name: 'rudder_test',
+    description: 'Test basic CDK v2 router workflow',
+    scenario: 'CDK v2 basic router event processing',
+    successCriteria: 'Should return 200 with event data processed via CDK v2 router',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'cdkv2-router@example.com',
+                  name: 'CDK v2 Router User',
+                  testType: 'cdkv2-router',
+                },
+              }),
+              metadata: generateMetadata(600, 'cdkv2-router'),
+              destination: destinationV2,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(generateMetadata(600, 'cdkv2-router'), destinationV2, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'cdkv2-router@example.com',
+                    name: 'CDK v2 Router User',
+                    testType: 'cdkv2-router',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-cdk-v2-batch',
+    name: 'rudder_test',
+    description: 'Test CDK v2 router batch processing',
+    scenario: 'CDK v2 batch processing multiple events',
+    successCriteria: 'Should process multiple events via CDK v2 router',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'cdkv2-batch1@example.com',
+                  name: 'CDK v2 Batch User 1',
+                  testType: 'cdkv2-batch',
+                },
+              }),
+              metadata: generateMetadata(601, 'cdkv2-batch-1'),
+              destination: destinationV2,
+            },
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'cdkv2-batch2@example.com',
+                  name: 'CDK v2 Batch User 2',
+                  testType: 'cdkv2-batch',
+                },
+              }),
+              metadata: generateMetadata(602, 'cdkv2-batch-2'),
+              destination: destinationV2,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(generateMetadata(601, 'cdkv2-batch-1'), destinationV2, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'cdkv2-batch1@example.com',
+                    name: 'CDK v2 Batch User 1',
+                    testType: 'cdkv2-batch',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+            buildRouterOutput(generateMetadata(602, 'cdkv2-batch-2'), destinationV2, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'cdkv2-batch2@example.com',
+                    name: 'CDK v2 Batch User 2',
+                    testType: 'cdkv2-batch',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-cdk-v2-dynamic-config',
+    name: 'rudder_test',
+    description: 'Test CDK v2 router with dynamic config',
+    scenario: 'CDK v2 router dynamic config processing',
+    successCriteria: 'Should process dynamic config via CDK v2 router workflow',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildDynamicConfigMessage(
+                'https://cdkv2-router.endpoint.com',
+                'cdkv2-router-key',
+              ),
+              metadata: generateMetadata(603, 'cdkv2-router-dynamic'),
+              destination: destinationWithDynamicConfigV2,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(
+              generateMetadata(603, 'cdkv2-router-dynamic'),
+              {
+                ...destinationWithDynamicConfigV2,
+                Config: {
+                  apiKey: 'cdkv2-router-key',
+                  endpoint: 'https://cdkv2-router.endpoint.com',
+                  staticValue: 'static-value',
+                },
+              },
+              {
+                endpoint: 'https://cdkv2-router.endpoint.com',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-API-Key': 'cdkv2-router-key',
+                },
+                body: {
+                  JSON: {
+                    action: 'insert',
+                    recordId: 'record123',
+                    fields: {
+                      email: 'test@example.com',
+                      name: 'Test User',
+                    },
+                    identifiers: {
+                      userId: 'user123',
+                    },
+                    timestamp: '2023-01-01T00:00:00.000Z',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+              },
+            ),
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-cdk-v2-env-override',
+    name: 'rudder_test',
+    description: 'Test CDK v2 router without environment variable override',
+    scenario: 'CDK v2 router basic processing (environment variables not used in CDK v2)',
+    successCriteria: 'Should process via CDK v2 router without environment variable effects',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                fields: {
+                  email: 'cdkv2-router-env@example.com',
+                  name: 'CDK v2 Router Env User',
+                  testType: 'cdkv2-router-env',
+                },
+              }),
+              metadata: generateMetadata(604, 'cdkv2-router-env'),
+              destination: destinationV2,
+            },
+          ],
+          destType: 'rudder_test',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            buildRouterOutput(generateMetadata(604, 'cdkv2-router-env'), destinationV2, {
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'cdkv2-router-env@example.com',
+                    name: 'CDK v2 Router Env User',
+                    testType: 'cdkv2-router-env',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+            }),
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'rudder-test-router-cdk-v2-mutation-error',
+    name: 'rudder_test',
+    description: 'Test CDK v2 router with mutation error handling',
+    scenario: 'CDK v2 router mutation attempt should throw error when config is frozen',
+    successCriteria: 'Should return error about read-only/frozen config via CDK v2 router',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            buildCompactedRouterInput(
+              buildMessage({
+                context: {
+                  testBehavior: {
+                    mutateDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              {
+                ...generateMetadata(605, 'cdkv2-router-mutation'),
+                destinationId: 'static-123-v2',
+                sourceId: 'test-source-id',
+              },
+            ),
+          ],
+          destType: 'rudder_test',
+          destinations: {
+            'static-123-v2': destinationWithoutDynamicConfigV2,
+          },
+          connections: {
+            'test-source-id:static-123-v2': testConnection,
+          },
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  ...generateMetadata(605, 'cdkv2-router-mutation'),
+                  destinationId: 'static-123-v2',
+                  sourceId: 'test-source-id',
+                },
+              ],
+              statusCode: 500,
+              destination: destinationWithoutDynamicConfigV2,
+              batched: false,
+              error: expect.stringMatching(
+                /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+              ),
+              statTags: {
+                destType: 'RUDDER_TEST',
+                destinationId: 'static-123-v2',
+                errorCategory: 'transformation',
+                feature: 'router',
+                implementation: 'cdkV2',
                 module: 'destination',
                 workspaceId: 'default-workspaceId',
               },

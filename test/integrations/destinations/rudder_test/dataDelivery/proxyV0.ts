@@ -42,8 +42,9 @@ export const testScenariosForV0API = [
             message: 'Request for RUDDER_TEST Processed Successfully',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                message: 'Mock response for RUDDER_TEST',
+                recordId: 'rec123',
+                timestamp: expect.any(String),
               },
               status: 200,
             },
@@ -92,10 +93,9 @@ export const testScenariosForV0API = [
             message: 'Bad Request - Invalid data format',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                error: 'Bad Request - Invalid data format',
               },
-              status: 200,
+              status: 400,
             },
             statTags: {
               destType: 'RUDDER_TEST',
@@ -152,10 +152,9 @@ export const testScenariosForV0API = [
             message: 'Authentication failed - Invalid API key',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                error: 'Authentication failed - Invalid API key',
               },
-              status: 200,
+              status: 401,
             },
             statTags: {
               destType: 'RUDDER_TEST',
@@ -212,10 +211,9 @@ export const testScenariosForV0API = [
             message: 'Internal server error - please retry',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                error: 'Internal server error - please retry',
               },
-              status: 200,
+              status: 500,
             },
             statTags: {
               destType: 'RUDDER_TEST',
@@ -272,10 +270,9 @@ export const testScenariosForV0API = [
             message: 'Too many requests - rate limit exceeded',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                error: 'Too many requests - rate limit exceeded',
               },
-              status: 200,
+              status: 429,
             },
             statTags: {
               destType: 'RUDDER_TEST',
@@ -333,8 +330,8 @@ export const testScenariosForV0API = [
             message: 'Request for RUDDER_TEST Processed Successfully',
             destinationResponse: {
               response: {
-                message: 'Request processed successfully',
-                success: true,
+                message: 'Mock response for RUDDER_TEST',
+                timestamp: expect.any(String),
               },
               status: 200,
             },

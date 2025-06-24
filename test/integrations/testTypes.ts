@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { BaseTestCase } from '@rudderstack/integrations-lib';
-import { EnvOverride } from './utils/envUtils';
+import { EnvOverride } from './envUtils';
 
 import {
   DeliveryV1Response,

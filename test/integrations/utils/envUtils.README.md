@@ -23,31 +23,41 @@ const testCase: ProcessorTestData = {
 
 ## Examples
 
+See `test/integrations/destinations/rudder_test/processor/envOverrideExamples.ts` for complete working examples.
+
 ### API Endpoint Override
 
 ```typescript
 envOverrides: {
-  API_ENDPOINT: 'https://staging.api.example.com/v1/events',
-  API_ENVIRONMENT: 'staging',
+  RUDDER_TEST_API_ENDPOINT: 'https://staging.rudderstack.com/v1/record',
 }
 ```
 
-### Feature Flag Testing
+### Debug Mode Override
 
 ```typescript
 envOverrides: {
-  DEBUG_MODE: 'true',
+  RUDDER_TEST_DEBUG: 'true',
+}
+```
+
+### System Flag Override
+
+```typescript
+envOverrides: {
+  USE_HAS_DYNAMIC_CONFIG_FLAG: 'false', // Force legacy behavior
+}
+```
+
+### Multiple Environment Variables
+
+```typescript
+envOverrides: {
+  RUDDER_TEST_API_ENDPOINT: 'https://multi-env.example.com/api',
+  RUDDER_TEST_DEBUG: 'true',
   LOG_LEVEL: 'debug',
-}
-```
-
-### Disabling Features
-
-```typescript
-envOverrides: {
-  ENABLE_NEW_FEATURE: 'false',
-  USE_LEGACY_PROCESSING: 'true',
-  FEATURE_FLAG_BATCHING: undefined, // Remove this env var
+  BATCH_SIZE: '50',
+  FEATURE_ENHANCED_PROCESSING: undefined, // Delete this env var
 }
 ```
 

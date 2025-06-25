@@ -35,7 +35,9 @@ interface PostscriptAuthHeaders {
 }
 
 interface PostscriptRequestHeaders extends PostscriptAuthHeaders {
+  [key: string]: string | undefined;
   'content-type': string;
+  Authorization: string;
 }
 
 // Headers with proper typing
@@ -170,4 +172,4 @@ export const errorMessages = {
   invalidEventType: 'Event type not supported',
   missingRequiredFields: 'Missing required fields',
   invalidCredentials: 'Invalid API credentials',
-} as const;
+};

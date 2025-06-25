@@ -1,9 +1,13 @@
 import { generateTestMetadata, postPatchHeader, destination, destType } from '../common';
-
-export const mixedEventsTestData = [
+import { RouterTestData } from '../../../testTypes';
+export const mixedEventsTestData: RouterTestData[] = [
   {
+    id: 'postscript-router-mixed-events-test',
     name: destType,
     description: 'Mixed batch with identify and track events',
+    scenario: 'Business',
+    successCriteria:
+      'Should create a new subscriber and fire custom events for the subscriber. Status 200.',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -55,6 +59,7 @@ export const mixedEventsTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {

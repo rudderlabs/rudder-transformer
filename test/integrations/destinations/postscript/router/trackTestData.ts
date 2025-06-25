@@ -1,8 +1,8 @@
-import { RouterTransformationRequest } from '../../../../../src/types';
+import { RouterTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 import { destType, destination, channel, postPatchHeader } from '../common';
 
-export const trackTestData = [
+export const trackTestData: RouterTestData[] = [
   {
     id: 'postscript-router-track-custom-events-test',
     name: destType,
@@ -79,7 +79,8 @@ export const trackTestData = [
             },
           ],
           destType,
-        } as RouterTransformationRequest,
+        },
+        method: 'POST',
       },
     },
     output: {
@@ -217,7 +218,8 @@ export const trackTestData = [
             },
           ],
           destType,
-        } as RouterTransformationRequest,
+        },
+        method: 'POST',
       },
     },
     output: {

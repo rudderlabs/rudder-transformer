@@ -1,9 +1,13 @@
 import { generateTestMetadata, destination, destType } from '../common';
+import { RouterTestData } from '../../../testTypes';
 
-export const errorHandlingTestData = [
+export const errorHandlingTestData: RouterTestData[] = [
   {
+    id: 'postscript-router-error-handling-missing-phone',
     name: destType,
     description: 'Error: [Identify] Handling for missing required fields: phone',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 error for missing phone number',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -34,6 +38,7 @@ export const errorHandlingTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -54,6 +59,7 @@ export const errorHandlingTestData = [
               statusCode: 400,
               metadata: [generateTestMetadata(1)],
               destination: destination,
+              batched: false,
             },
           ],
         },
@@ -61,8 +67,11 @@ export const errorHandlingTestData = [
     },
   },
   {
+    id: 'postscript-router-error-handling-unsupported-event-type',
     name: destType,
     description: 'Error: Handling for unsupported RudderStack event type',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 error for unsupported event type',
     feature: 'router',
     module: 'destination',
     skip: true,
@@ -90,6 +99,7 @@ export const errorHandlingTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -111,6 +121,7 @@ export const errorHandlingTestData = [
               statusCode: 400,
               metadata: [generateTestMetadata(1)],
               destination: destination,
+              batched: false,
             },
           ],
         },
@@ -118,8 +129,11 @@ export const errorHandlingTestData = [
     },
   },
   {
+    id: 'postscript-router-error-handling-missing-keyword',
     name: destType,
     description: 'Error: [Identify] Handling for missing required fields: keyword OR keyword_id',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 error for missing keyword or keyword_id',
     feature: 'router',
     module: 'destination',
     skip: true,
@@ -151,6 +165,7 @@ export const errorHandlingTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -171,6 +186,7 @@ export const errorHandlingTestData = [
               statusCode: 400,
               metadata: [generateTestMetadata(1)],
               destination: destination,
+              batched: false,
             },
           ],
         },
@@ -178,8 +194,11 @@ export const errorHandlingTestData = [
     },
   },
   {
+    id: 'postscript-router-error-handling-missing-event-name',
     name: destType,
     description: 'Error: [Track] Missing required fields: event name',
+    scenario: 'Business',
+    successCriteria: 'Should return 400 error for missing event name',
     feature: 'router',
     module: 'destination',
     skip: true,
@@ -216,6 +235,7 @@ export const errorHandlingTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -236,6 +256,7 @@ export const errorHandlingTestData = [
               statusCode: 400,
               metadata: [generateTestMetadata(1)],
               destination: destination,
+              batched: false,
             },
           ],
         },

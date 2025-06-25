@@ -1,11 +1,15 @@
 import { generateTestMetadata, postPatchHeader, destination, destType } from '../common';
+import { RouterTestData } from '../../../testTypes';
 import { envMock } from '../mocks';
 
 envMock();
-export const identifyTestData = [
+export const identifyTestData: RouterTestData[] = [
   {
+    id: 'postscript-router-identify-new-subscriber-test',
     name: destType,
     description: 'Identify Call: New Subscriber creation with custom properties',
+    scenario: 'Business',
+    successCriteria: 'Should create a new subscriber with custom properties. Status 200.',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -43,6 +47,7 @@ export const identifyTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -87,8 +92,11 @@ export const identifyTestData = [
     },
   },
   {
+    id: 'postscript-router-identify-existing-subscriber-test',
     name: destType,
     description: 'Identify Call: Existing Subscriber update with existing subscriber ID',
+    scenario: 'Business',
+    successCriteria: 'Should update the existing subscriber with new traits. Status 200.',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -121,6 +129,7 @@ export const identifyTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {
@@ -157,9 +166,12 @@ export const identifyTestData = [
     },
   },
   {
+    id: 'postscript-router-identify-minimal-required-fields-test',
     name: destType,
     description:
       'Identify Call: New subscriber with minimal required traits (phone number and keyword id only)',
+    scenario: 'Business',
+    successCriteria: 'Should create a new subscriber with minimal required traits. Status 200.',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -190,6 +202,7 @@ export const identifyTestData = [
           ],
           destType: 'postscript',
         },
+        method: 'POST',
       },
     },
     output: {

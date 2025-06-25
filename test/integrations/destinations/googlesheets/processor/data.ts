@@ -1,79 +1,77 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-06-25T10:32:27.883Z
+ */
+
+import { ProcessorTestData } from '../../../testTypes';
+import { ProcessorTransformationResponse } from '../../../../../src/types/destinationTransformation';
+import { generateMetadata, overrideDestination } from '../../../testUtils';
+
+type ProcessorBatchTestData = Omit<ProcessorTestData, 'output'> & {
+  output: {
+    response: {
+      status: number;
+      body: Array<
+        Omit<ProcessorTransformationResponse, 'output'> & {
+          output?: Record<string, unknown>;
+        }
+      >;
+    };
+  };
+};
+
+const commonDestination = {
+  ID: 'default-destination-id',
+  Name: 'Default Destination',
+  DestinationDefinition: {
+    ID: 'default-dest-def-id',
+    Name: 'Default Destination Definition',
+    DisplayName: 'Default Display Name',
+    Config: {},
+  },
+  Config: {
+    credentials: '{ sheets credentials }',
+    eventKeyMap: [
+      { from: 'firstName', to: 'First Name' },
+      { from: 'lastName', to: 'Last Name' },
+      { from: 'birthday', to: 'Birthday' },
+      { from: 'address.city', to: 'City' },
+      { from: 'address.country', to: 'Country' },
+      { from: 'revenue', to: 'Revenue' },
+      { from: 'offer', to: 'Offer' },
+      { from: 'title', to: 'Title Page' },
+      { from: 'Cart Value', to: 'Cart Value' },
+      { from: 'revenue', to: 'Revenue' },
+      { from: 'context.app.build', to: 'App Build' },
+      { from: 'context.app.name', to: 'App Name' },
+      { from: 'context.library.name', to: 'Library Name' },
+      { from: 'context.ip', to: 'IP' },
+    ],
+    sheetId: 'rudder_sheet_id',
+  },
+  Enabled: true,
+  WorkspaceID: 'default-workspace',
+  Transformations: [],
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
+};
+
+export const data: ProcessorBatchTestData[] = [
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-                sheetName: 'rudder_sheet',
-              },
-            },
             message: {
               channel: 'web',
               context: {
@@ -145,6 +143,8 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { sheetName: 'rudder_sheet' }),
           },
         ],
       },
@@ -223,6 +223,7 @@ export const data = [
               spreadSheetId: 'rudder_sheet_id',
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -230,80 +231,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 1',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-                sheetName: 'rudder_sheet',
-              },
-            },
             message: {
               type: 'track',
               userId: 'userTest004',
@@ -354,6 +294,8 @@ export const data = [
               },
               timestamp: '2020-02-02T00:23:09.544Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { sheetName: 'rudder_sheet' }),
           },
         ],
       },
@@ -432,6 +374,7 @@ export const data = [
               spreadSheetId: 'rudder_sheet_id',
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -439,80 +382,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 2',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-                sheetName: 'rudder_sheet',
-              },
-            },
             message: {
               type: 'page',
               userId: 'userTest004',
@@ -532,6 +414,8 @@ export const data = [
               },
               timestamp: '2020-02-02T00:23:09.544Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { sheetName: 'rudder_sheet' }),
           },
         ],
       },
@@ -610,6 +494,7 @@ export const data = [
               spreadSheetId: 'rudder_sheet_id',
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -617,80 +502,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 3',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-                sheetName: 'rudder_sheet',
-              },
-            },
             message: {
               type: 'page',
               userId: 'userTest005',
@@ -708,6 +532,8 @@ export const data = [
               },
               timestamp: '2020-02-02T00:23:09.544Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { sheetName: 'rudder_sheet' }),
           },
         ],
       },
@@ -786,6 +612,7 @@ export const data = [
               spreadSheetId: 'rudder_sheet_id',
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -793,80 +620,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 4',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-                sheetName: 'rudder_sheet',
-              },
-            },
             message: {
               type: 'screen',
               name: 'Trello home Screen',
@@ -878,6 +644,8 @@ export const data = [
               },
               timestamp: '2020-02-02T00:23:09.544Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { sheetName: 'rudder_sheet' }),
           },
         ],
       },
@@ -956,6 +724,7 @@ export const data = [
               spreadSheetId: 'rudder_sheet_id',
               userId: '',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -963,79 +732,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1750847547880',
     name: 'googlesheets',
     description: 'Test 5',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              Config: {
-                credentials: '{ sheets credentials }',
-                eventKeyMap: [
-                  {
-                    from: 'firstName',
-                    to: 'First Name',
-                  },
-                  {
-                    from: 'lastName',
-                    to: 'Last Name',
-                  },
-                  {
-                    from: 'birthday',
-                    to: 'Birthday',
-                  },
-                  {
-                    from: 'address.city',
-                    to: 'City',
-                  },
-                  {
-                    from: 'address.country',
-                    to: 'Country',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'offer',
-                    to: 'Offer',
-                  },
-                  {
-                    from: 'title',
-                    to: 'Title Page',
-                  },
-                  {
-                    from: 'Cart Value',
-                    to: 'Cart Value',
-                  },
-                  {
-                    from: 'revenue',
-                    to: 'Revenue',
-                  },
-                  {
-                    from: 'context.app.build',
-                    to: 'App Build',
-                  },
-                  {
-                    from: 'context.app.name',
-                    to: 'App Name',
-                  },
-                  {
-                    from: 'context.library.name',
-                    to: 'Library Name',
-                  },
-                  {
-                    from: 'context.ip',
-                    to: 'IP',
-                  },
-                ],
-                sheetId: 'rudder_sheet_id',
-              },
-            },
             message: {
               type: 'screen',
               name: 'Trello home Screen',
@@ -1047,6 +756,8 @@ export const data = [
               },
               timestamp: '2020-02-02T00:23:09.544Z',
             },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {}),
           },
         ],
       },
@@ -1056,16 +767,19 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: generateMetadata(1),
+            statusCode: 400,
             error: 'No Spread Sheet set for this event',
             statTags: {
+              destinationId: 'default-destinationId',
               destType: 'GOOGLESHEETS',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
               implementation: 'native',
+              workspaceId: 'default-workspaceId',
               module: 'destination',
             },
-            statusCode: 400,
           },
         ],
       },

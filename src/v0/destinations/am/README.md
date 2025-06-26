@@ -107,6 +107,18 @@ Amplitude is a product analytics platform that helps companies understand user b
     }
 ```
 
+### Rate Limits
+
+Amplitude enforces rate limits to ensure system stability:
+
+| Endpoint | Rate Limit | Payload & Batch Size Limits | Description |
+|----------|------------|--------------|-------------|
+| `/2/httpapi` | 30 events/second per user/device | 1 MB per request | Main event tracking endpoint |
+| `/batch` | 1000 events/second per user/device && 500,000 events per day | 20 MB per request, 2000 events per batch | Batch event upload endpoint |
+| `/api/2/deletions/users` | 1 request/second | 100 users per batch, 8 parallel requests per project | User deletion endpoint |
+| `/groupidentify` | No official documentation found | 1 MB per request & group identifies per request is 1024 & group properties per request is 1024 | Group identify endpoint |
+
+
 ### Batching Support
 
 - **Supported**: Yes
@@ -124,7 +136,7 @@ The Amplitude destination does not make any intermediate API calls. All events a
 
 ### Proxy Delivery
 
-- **Supported**: Yes
+- **Supported**: No - *This is not yet enabled & still in testing phase*
 - **Source Code Path**: `src/v0/destinations/am/networkHandler.js`
 - **Implementation**: Custom network handler with error handling and retry logic
 - **Features**:
@@ -205,18 +217,6 @@ The Amplitude destination does not make any intermediate API calls. All events a
 - **API Key Required**: API key must be provided in the destination configuration
 - **User ID Length**: User IDs must be at least 5 characters (configurable via min_id_length option)
 - **Device ID Length**: Device IDs must be at least 5 characters (configurable via min_id_length option)
-
-### Rate Limits
-
-Amplitude enforces rate limits to ensure system stability:
-
-| Endpoint | Rate Limit | Payload & Batch Size Limits | Description |
-|----------|------------|--------------|-------------|
-| `/2/httpapi` | 30 events/second per user/device | 1 MB per request | Main event tracking endpoint |
-| `/batch` | 1000 events/second per user/device && 500,000 events per day | 20 MB per request, 2000 events per batch | Batch event upload endpoint |
-| `/api/2/deletions/users` | 1 request/second | 100 users per batch, 8 parallel requests per project | User deletion endpoint |
-| `/groupidentify` | No official documentation found | 1 MB per request & group identifies per request is 1024 & group properties per request is 1024 | Group identify endpoint |
-
 
 ## General Queries
 

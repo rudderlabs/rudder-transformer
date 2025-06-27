@@ -87,36 +87,118 @@ describe('FB_custom_audience utils test', () => {
   });
 
   describe('getUpdatedDataElement function tests', () => {
-    it('Should hash field if isHashRequired is set to true', () => {
-      const expectedDataElement = [
-        '59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda',
-      ];
-      let dataElement = [];
-      dataElement = getUpdatedDataElement(dataElement, true, 'FN', 'some-name');
-      expect(dataElement).toEqual(expectedDataElement);
-    });
+    const testCases = [
+      {
+        name: 'Should hash field if isHashRequired is set to true',
+        initialData: [],
+        isHashRequired: true,
+        field: 'FN',
+        value: 'some-name',
+        expected: ['59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda'],
+      },
+      {
+        name: 'Should not hash field if isHashRequired is set to false',
+        initialData: [],
+        isHashRequired: false,
+        field: 'FN',
+        value: 'some-name',
+        expected: ['some-name'],
+      },
+      {
+        name: 'Should not hash MADID and just pass value',
+        initialData: [],
+        isHashRequired: true,
+        field: 'MADID',
+        value: 'some-id',
+        expected: ['some-id'],
+      },
+      {
+        name: 'Should not hash EXTERN_ID and just pass value',
+        initialData: ['some-id'],
+        isHashRequired: true,
+        field: 'EXTERN_ID',
+        value: 'some-ext-id',
+        expected: ['some-id', 'some-ext-id'],
+      },
+      {
+        name: 'Should not hash MADID and just pass empty value if value does not exist',
+        initialData: [],
+        isHashRequired: true,
+        field: 'MADID',
+        value: '',
+        expected: [''],
+      },
+      {
+        name: 'Should not hash EXTERN_ID and just pass empty value if value does not exist',
+        initialData: [''],
+        isHashRequired: true,
+        field: 'EXTERN_ID',
+        value: '',
+        expected: ['', ''],
+      },
+      {
+        name: 'Should correctly parse LOOKALIKE_VALUE to given string number value',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: '5',
+        expected: [5],
+      },
+      {
+        name: 'Should default LOOKALIKE_VALUE to 0 when value is negative',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: '-5',
+        expected: [0],
+      },
+      {
+        name: 'Should default LOOKALIKE_VALUE to 0 when value is NaN',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: 'not-a-number',
+        expected: [0],
+      },
+      {
+        name: 'Should default LOOKALIKE_VALUE to 0 when value is Infinity',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: Infinity,
+        expected: [0],
+      },
+      {
+        name: 'Should default LOOKALIKE_VALUE to 0 when value is null',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: null,
+        expected: [0],
+      },
+      {
+        name: 'Should default LOOKALIKE_VALUE to 0 when value is undefined',
+        initialData: [],
+        isHashRequired: true,
+        field: 'LOOKALIKE_VALUE',
+        value: undefined,
+        expected: [0],
+      },
+      {
+        name: 'Should correctly parse small float LOOKALIKE_VALUE',
+        initialData: [],
+        isHashRequired: false,
+        field: 'LOOKALIKE_VALUE',
+        value: '0.0001',
+        expected: [0.0001],
+      },
+    ];
 
-    it('Should not hash field if isHashRequired is set to false', () => {
-      const expectedDataElement = ['some-name'];
-      let dataElement = [];
-      dataElement = getUpdatedDataElement(dataElement, false, 'FN', 'some-name');
-      expect(dataElement).toEqual(expectedDataElement);
-    });
-
-    it('Should not hash MADID or EXTERN_ID and just pass value', () => {
-      const expectedDataElement = ['some-id', 'some-ext-id'];
-      let dataElement = [];
-      dataElement = getUpdatedDataElement(dataElement, true, 'MADID', 'some-id');
-      dataElement = getUpdatedDataElement(dataElement, true, 'EXTERN_ID', 'some-ext-id');
-      expect(dataElement).toEqual(expectedDataElement);
-    });
-
-    it('Should not hash MADID or EXTERN_ID and just pass empty value if value does not exist', () => {
-      const expectedDataElement = ['', ''];
-      let dataElement = [];
-      dataElement = getUpdatedDataElement(dataElement, true, 'MADID', '');
-      dataElement = getUpdatedDataElement(dataElement, true, 'EXTERN_ID', '');
-      expect(dataElement).toEqual(expectedDataElement);
+    testCases.forEach(({ name, initialData, isHashRequired, field, value, expected }) => {
+      it(name, () => {
+        const result = getUpdatedDataElement([...initialData], isHashRequired, field, value);
+        expect(result).toEqual(expected);
+      });
     });
   });
 });

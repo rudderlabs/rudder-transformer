@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file. See [standa
 * **marketo:** remove auth key from logs ([#4399](https://github.com/rudderlabs/rudder-transformer/issues/4399)) ([78662e5](https://github.com/rudderlabs/rudder-transformer/commit/78662e536837f07c5cfe5cb11f4f7ecf47c5b6fa))
 * rt event ordering for hs ([#4397](https://github.com/rudderlabs/rudder-transformer/issues/4397)) ([be985a7](https://github.com/rudderlabs/rudder-transformer/commit/be985a72c1ddb0b698a3e85457ff9ed87f8efca5))
 * test folder structure for destinations ([#4414](https://github.com/rudderlabs/rudder-transformer/issues/4414)) ([2955c4a](https://github.com/rudderlabs/rudder-transformer/commit/2955c4a3c31f48bc7d5846817dcba091792f1ac5))
+* enhance config object in ga4 v2 instead of mutating it ([#4436](https://github.com/rudderlabs/rudder-transformer/issues/4436)) ([d34ec3c](https://github.com/rudderlabs/rudder-transformer/pull/4436/commits/d34ec3c3890f4e749cc9ec42cc732e048d0cbb9b))
 
 ### [1.102.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.1...v1.102.2) (2025-06-19)
 

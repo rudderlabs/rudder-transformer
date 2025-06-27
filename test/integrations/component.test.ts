@@ -16,6 +16,7 @@ import {
   getTestData,
   registerAxiosMocks,
   validateTestWithZOD,
+  validateStreamTestWithZOD,
   getTestMockData,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
@@ -74,6 +75,8 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'tiktok_ads',
   'bluecore',
 ];
+
+const INTEGARTIONS_STREAMING_TEST_STRUCTURE = ['googlesheets'];
 
 beforeAll(async () => {
   initaliseReport();
@@ -143,6 +146,12 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateTestWithZOD(tcData, response)).toEqual(true);
+    enhancedTestUtils.beforeTestRun(tcData);
+    enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
+  }
+
+  if (INTEGARTIONS_STREAMING_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
+    expect(validateStreamTestWithZOD(tcData, response)).toEqual(true);
     enhancedTestUtils.beforeTestRun(tcData);
     enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
   }

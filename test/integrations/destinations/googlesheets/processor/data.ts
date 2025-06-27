@@ -3,22 +3,8 @@
  * Generated on: 2025-06-25T10:32:27.883Z
  */
 
-import { ProcessorTestData } from '../../../testTypes';
-import { ProcessorTransformationResponse } from '../../../../../src/types/destinationTransformation';
+import { ProcessorStreamTestData } from '../../../testTypes';
 import { generateMetadata, overrideDestination } from '../../../testUtils';
-
-type ProcessorBatchTestData = Omit<ProcessorTestData, 'output'> & {
-  output: {
-    response: {
-      status: number;
-      body: Array<
-        Omit<ProcessorTransformationResponse, 'output'> & {
-          output?: Record<string, unknown>;
-        }
-      >;
-    };
-  };
-};
 
 const commonDestination = {
   ID: 'default-destination-id',
@@ -57,7 +43,7 @@ const commonDestination = {
   IsConnectionEnabled: true,
 };
 
-export const data: ProcessorBatchTestData[] = [
+export const data: ProcessorStreamTestData[] = [
   {
     id: 'processor-1750847547880',
     name: 'googlesheets',

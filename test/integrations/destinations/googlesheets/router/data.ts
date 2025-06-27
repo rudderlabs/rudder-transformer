@@ -3,26 +3,10 @@
  * Generated on: 2025-06-25T12:04:21.653Z
  */
 
-import { RouterTestData } from '../../../testTypes';
-import { RouterTransformationResponse } from '../../../../../src/types/destinationTransformation';
+import { RouterStreamTestData } from '../../../testTypes';
 import { generateMetadata } from '../../../testUtils';
 
-type RouterBatchTestData = Omit<RouterTestData, 'output'> & {
-  output: {
-    response: {
-      status: number;
-      body: {
-        output: Array<
-          Omit<RouterTransformationResponse, 'batchedRequest'> & {
-            batchedRequest: Record<string, unknown>;
-          }
-        >;
-      };
-    };
-  };
-};
-
-export const data: RouterBatchTestData[] = [
+export const data: RouterStreamTestData[] = [
   {
     id: 'router-1750853061652',
     name: 'googlesheets',

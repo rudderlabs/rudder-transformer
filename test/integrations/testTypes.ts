@@ -201,13 +201,15 @@ export type RouterStreamTestData = Omit<RouterTestData, 'output'> & {
   output: {
     response: {
       status: number;
-      body: {
-        output: Array<
-          Omit<RouterTransformationResponse, 'batchedRequest'> & {
-            batchedRequest?: Record<string, unknown>;
+      body:
+        | {
+            output?: Array<
+              Omit<RouterTransformationResponse, 'batchedRequest'> & {
+                batchedRequest: Record<string, unknown>;
+              }
+            >;
           }
-        >;
-      };
+        | Array<Record<string, unknown>>;
     };
   };
 };

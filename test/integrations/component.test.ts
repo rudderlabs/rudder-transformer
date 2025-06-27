@@ -76,7 +76,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'bluecore',
 ];
 
-const INTEGARTIONS_STREAMING_TEST_STRUCTURE = ['googlesheets'];
+const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = ['googlesheets'];
 
 beforeAll(async () => {
   initaliseReport();
@@ -150,7 +150,7 @@ const testRoute = async (route, tcData: TestCaseData) => {
     enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
   }
 
-  if (INTEGARTIONS_STREAMING_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
+  if (STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateStreamTestWithZOD(tcData, response)).toEqual(true);
     enhancedTestUtils.beforeTestRun(tcData);
     enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');

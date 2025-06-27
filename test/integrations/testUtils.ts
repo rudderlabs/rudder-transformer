@@ -17,7 +17,7 @@ import {
   ProxyV0RequestSchema,
   ProxyV1RequestSchema,
   RouterTransformationResponseListSchema,
-  ProcesssorStreamingResponseListSchema,
+  ProcessorStreamingResponseListSchema,
   RouterStreamingResponseListSchema,
 } from '../../src/types/zodTypes';
 import { defaultAccessToken } from './common/secrets';
@@ -636,7 +636,7 @@ export const validateStreamTestWithZOD = (testPayload: TestCaseData, response: a
       RouterStreamingResponseListSchema.parse(response.body.output);
       break;
     case 'processor':
-      ProcesssorStreamingResponseListSchema.parse(response.body);
+      ProcessorStreamingResponseListSchema.parse(response.body);
       break;
     default:
       break;

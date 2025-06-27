@@ -21,6 +21,8 @@ const ProcessorTransformationOutputSchema = z.object({
   files: z.record(z.unknown()).optional(),
 });
 
+const STAT_TAGS_ERROR_MESSAGE = "statTags and error can't be empty when status is not a 2XX";
+
 export const ProcessorTransformationResponseSchema = z
   .object({
     output: ProcessorTransformationOutputSchema.optional(),
@@ -40,7 +42,7 @@ export const ProcessorTransformationResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )
@@ -85,7 +87,7 @@ export const RouterTransformationResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )
@@ -241,7 +243,7 @@ export const DeliveryV1ResponseSchemaForOauth = z
     path: ['authErrorCategory'], // Pointing out which field is invalid
   });
 
-export const ProcesssorStreamingResponseSchema = z
+export const ProcessorStreamingResponseSchema = z
   .object({
     output: z.record(z.unknown()).optional(),
     message: z.record(z.unknown()).optional(),
@@ -261,7 +263,7 @@ export const ProcesssorStreamingResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )
@@ -278,7 +280,7 @@ export const ProcesssorStreamingResponseSchema = z
     },
   );
 
-export const ProcesssorStreamingResponseListSchema = z.array(ProcesssorStreamingResponseSchema);
+export const ProcessorStreamingResponseListSchema = z.array(ProcessorStreamingResponseSchema);
 
 export const RouterStreamingResponseSchema = z
   .object({
@@ -301,7 +303,7 @@ export const RouterStreamingResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )

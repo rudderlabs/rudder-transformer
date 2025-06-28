@@ -34,7 +34,7 @@
           "traits": {
             "userId": "google-oauth2|123456"
           },
-          "request_ip": "35.160.3.103",
+          "ip": "35.160.3.103",
           "integration": {
             "name": "Auth0"
           }

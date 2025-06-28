@@ -39,7 +39,7 @@
             "version": "unknown"
           },
           "userAgent": "unknown",
-          "request_ip": "35.166.202.113",
+          "ip": "35.166.202.113",
           "integration": {
             "name": "Auth0"
           }

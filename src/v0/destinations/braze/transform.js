@@ -31,6 +31,7 @@ const {
   isNewStatusCodesAccepted,
   getDestinationExternalID,
   getIntegrationsObj,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -41,7 +42,10 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
 } = require('./config');
+
+const config = require('./config');
 
 const logger = require('../../../logger');
 const { getEndpointFromConfig, formatGender } = require('./util');
@@ -178,6 +182,89 @@ function getUserAttributesObject(message, mappingJson, destination) {
   return data;
 }
 
+async function processBatchedIdentify(identifyCallsArray) {
+  if (identifyCallsArray.length === 0) {
+    return null;
+  }
+
+  const { destination } = identifyCallsArray[0];
+  const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
+
+  const identifyCallsArrayChunks = lodash.chunk(identifyCallsArray, IDENTIFY_BRAZE_MAX_REQ_COUNT);
+
+  const allRequests = identifyCallsArrayChunks.map(async (identifyCallsChunk) => {
+    const aliasesToIdentify = identifyCallsChunk.flatMap(
+      (identifyCall) => identifyCall.identifyPayload.aliases_to_identify,
+    );
+
+    let brazeIdentifyResp;
+    try {
+      const { processedResponse } = await handleHttpRequest(
+        'post',
+        identifyEndpoint,
+        { aliases_to_identify: aliasesToIdentify, merge_behavior: 'merge' },
+        {
+          headers: {
+            // eslint-disable-next-line sonarjs/no-duplicate-string
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${destination.Config.restApiKey}`,
+          },
+        },
+        {
+          destType: 'braze',
+          feature: 'transformation',
+          requestMethod: 'POST',
+          module: 'router',
+          endpointPath: '/users/identify',
+        },
+      );
+      brazeIdentifyResp = processedResponse;
+    } catch (networkError) {
+      logger.error(
+        'Braze identity resolution request failed with possible network error',
+        networkError,
+      );
+      return new NetworkError(
+        `Braze identify failed - ${JSON.stringify(networkError.response)}`,
+        networkError.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(networkError.status),
+        },
+        networkError.response,
+      );
+    }
+
+    if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
+      logger.error('Braze identity resolution failed', JSON.stringify(brazeIdentifyResp.response));
+      collectStatsForAliasFailure(brazeIdentifyResp.response, destination.ID);
+      return new NetworkError(
+        `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
+        brazeIdentifyResp.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),
+        },
+        brazeIdentifyResp.response,
+      );
+    }
+
+    if (brazeIdentifyResp.response?.errors?.length > 0) {
+      // We want this scenario to throw bugsnag error so that we can fix the issue
+      logger.error(
+        'Unhandled Identify Resolution Error',
+        JSON.stringify(brazeIdentifyResp.response),
+      );
+      throw new Error(
+        `[Unhandled Identify Resolution Error] ${brazeIdentifyResp.response?.errors[0]?.type}`,
+      );
+    }
+
+    return null; // Success
+  });
+
+  return Promise.all(allRequests);
+}
+
 /**
  * makes a call to braze identify endpoint to merge the alias (anonymousId) user with the
  * identified user with external_id (userId) [Identity resolution]
@@ -186,8 +273,21 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify({ message, destination, metadata }) {
+async function processIdentify({ message, destination, metadata, identifyCallsArray }) {
   const identifyPayload = getIdentifyPayload(message);
+  if (
+    identifyCallsArray !== undefined &&
+    identifyCallsArray !== null &&
+    Array.isArray(identifyCallsArray)
+  ) {
+    identifyCallsArray.push({
+      identifyPayload,
+      destination,
+      messageId: message.messageId,
+      metadata, // Include metadata for proper error tracking
+    });
+    return;
+  }
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
     'post',
@@ -487,7 +587,11 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        await processIdentify({ message, destination });
+        await processIdentify({
+          message,
+          destination,
+          identifyCallsArray: processParams.identifyCallsArray,
+        });
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }
@@ -532,20 +636,36 @@ const processRouterDest = async (inputs, reqMetadata) => {
     (input) => input.message.userId || input.message.anonymousId,
   );
 
+  const identifyCallsArray = [];
+
   // process each group of events for userId or anonymousId
   // if deduplication is enabled process each group of events for a user (userId or anonymousId)
   // synchronously (slower) else process asynchronously (faster)
   const allResps = Object.keys(groupedInputs).map(async (id) => {
-    const respList = destination.Config.supportDedup
-      ? await simpleProcessRouterDestSync(groupedInputs[id], process, reqMetadata, {
-          userStore,
-        })
-      : await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata);
+    const simpleProcessRouterDestFunc = destination.Config.supportDedup
+      ? simpleProcessRouterDestSync
+      : simpleProcessRouterDest;
+    const respList = await simpleProcessRouterDestFunc(groupedInputs[id], process, reqMetadata, {
+      userStore,
+      identifyCallsArray: config.BRAZE_BATCH_IDENTIFY_RESOLUTION ? identifyCallsArray : undefined,
+    });
     return respList;
   });
 
-  const output = await Promise.all(allResps);
+  // console.log("identifyCallsArray", identifyCallsArray);
+  if (identifyCallsArray && identifyCallsArray.length > 0) {
+    const batchedIdentifyError = await processBatchedIdentify(identifyCallsArray);
+    // console.log("batchedIdentifyError", batchedIdentifyError);
+    if (batchedIdentifyError.some((error) => error !== null)) {
+      // fail the entire batch incase of batched identify failure -> expected to never fail
+      const oneOfBatchedIdentifyError = batchedIdentifyError.find((error) => error !== null);
+      return inputs.map((event) =>
+        handleRtTfSingleEventError(event, oneOfBatchedIdentifyError, reqMetadata),
+      );
+    }
+  }
 
+  const output = await Promise.all(allResps);
   const allTransfomredEvents = lodash.flatMap(output);
   return processBatch(allTransfomredEvents);
 };

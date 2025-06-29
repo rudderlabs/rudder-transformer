@@ -63,6 +63,7 @@ export const identifyTestData: RouterTestData[] = [
                 endpoint: 'https://api.postscript.io/api/v2/subscribers',
                 headers: postPatchHeader,
                 params: {},
+                files: {},
                 body: {
                   JSON: {
                     email: 'john.doe@example.com',
@@ -145,6 +146,7 @@ export const identifyTestData: RouterTestData[] = [
                 endpoint: 'https://api.postscript.io/api/v2/subscribers/sub_existing_123',
                 headers: postPatchHeader,
                 params: {},
+                files: {},
                 body: {
                   JSON: {
                     phone_number: '+9876543210',
@@ -218,6 +220,7 @@ export const identifyTestData: RouterTestData[] = [
                 endpoint: 'https://api.postscript.io/api/v2/subscribers',
                 headers: postPatchHeader,
                 params: {},
+                files: {},
                 body: {
                   JSON: {
                     phone_number: '+1555555555',

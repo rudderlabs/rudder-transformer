@@ -28,7 +28,6 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
-import { DestHandleMapForCDKV2 } from '../../constants/destinationCanonicalNames';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -187,7 +186,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {
-      const originalDestName = DestHandleMapForCDKV2[destinationType] ?? destinationType;
+      const originalDestName = destinationType;
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         originalDestName,
         version,

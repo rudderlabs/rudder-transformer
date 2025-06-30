@@ -24,7 +24,9 @@ function getAuthHeaderForRequest(request, oAuthObject) {
 
 function getOAuthFields({ secret }, destinationType) {
   if (!secret) {
-    throw new OAuthSecretError(`[${destinationType}]:: OAuth - secret not found`);
+    throw new OAuthSecretError(
+      `[${destinationType}]:: OAuth - secret not found. This might be a platform issue. Please contact RudderStack support for assistance.`,
+    );
   }
   const requiredFields = ['consumerKey', 'consumerSecret', 'accessToken', 'accessTokenSecret'];
 

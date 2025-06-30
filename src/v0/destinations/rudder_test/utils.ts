@@ -1,5 +1,5 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { BASE_ENDPOINT } from './config';
+import { getBaseEndpoint } from './config';
 import { RudderTestMessage, RudderTestDestination } from './type';
 import { Metadata } from '../../../types';
 
@@ -26,8 +26,8 @@ export const buildRequestConfig = (
   message: RudderTestMessage,
   destination?: RudderTestDestination,
 ) => {
-  // Use destination config endpoint if available, otherwise fall back to BASE_ENDPOINT
-  const endpoint = destination?.Config?.endpoint || BASE_ENDPOINT;
+  // Use destination config endpoint if available, otherwise fall back to base endpoint
+  const endpoint = destination?.Config?.endpoint || getBaseEndpoint();
 
   return {
     version: '1',

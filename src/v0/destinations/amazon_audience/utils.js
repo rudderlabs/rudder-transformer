@@ -8,6 +8,7 @@ const {
   defaultPostRequestConfig,
   getSuccessRespEvents,
   removeUndefinedAndNullAndEmptyValues,
+  getAccessToken,
 } = require('../../util');
 
 const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
@@ -15,11 +16,11 @@ const buildResponseWithUsers = (users, action, config, jobIdList, secret) => {
   if (!audienceId) {
     throw new ConfigurationError('[AMAZON AUDIENCE]: Audience Id not found');
   }
-  if (!secret?.accessToken) {
-    throw new OAuthSecretError('OAuth - access token not found');
-  }
+  getAccessToken({ secret }, 'accessToken');
   if (!secret?.clientId) {
-    throw new OAuthSecretError('OAuth - Client Id not found');
+    throw new OAuthSecretError(
+      'OAuth - Client Id not found. This might be a platform issue. Please contact RudderStack support for assistance.',
+    );
   }
   const jobIdHash = sha256(String(jobIdList));
   const externalId = `Rudderstack_${jobIdHash}`;

@@ -70,7 +70,7 @@ steps:
       )[];
   - name: buildResponse
     template: |
-      $.assertThrow((.metadata.secret && .metadata.secret.accessToken), new $.OAuthSecretError("Secret or accessToken is not present in the metadata"))
+      $.assertThrow((.metadata.secret && .metadata.secret.accessToken), new $.OAuthSecretError("Secret or accessToken is not present in the metadata. This might be a platform issue. Please contact RudderStack support for assistance."))
       const accessToken = .metadata.secret.accessToken
       const response = $.defaultRequestConfig();
       response.body.JSON = {elements: $.context.payloads};

@@ -60,7 +60,7 @@ The Braze API enforces rate limits to ensure system stability. Here are the rate
 | `/users/track` | Identify, Track, Page, Screen, Group | 3,000 requests per 3 seconds | 75 events, 75 purchases, 75 attributes per request | Used for sending track events, user attributes, and purchases |
 | `/users/identify` | Identify (with both userId and anonymousId) | 20,000 requests per minute | - | Used for identity resolution (merging anonymous and identified users) |
 | `/users/delete` | User Deletion (via Suppression API) | 20,000 requests per minute | 50 users per batch | Used for user deletion |
-| `/users/export/ids` | Any event when deduplication is enabled | 2,500 requests per minute* | - | Used for fetching user profiles (for deduplication) |
+| `/users/export/ids` | Any event when deduplication is enabled | 2,500 requests per minute* | 50 identifiers per batch | Used for fetching user profiles (for deduplication) |
 | `/users/merge` | Alias | 20,000 requests per minute | - | Used for merging user profiles |
 | `/subscription/status/set` | Group (with subscription groups enabled) | 5,000 requests per minute | - | Used for updating subscription group status |
 

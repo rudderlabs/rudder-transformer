@@ -4,10 +4,6 @@ const DestHandlerMap = {
   salesforce_oauth_sandbox: 'salesforce',
 };
 
-const DestHandleMapForCDKV2 = {
-  zoho_dev: 'zoho',
-};
-
 const DestCanonicalNames = {
   facebook_conversions: [
     'fb_conversions',
@@ -194,4 +190,4 @@ const DestCanonicalNames = {
   airship: ['airship', 'Airship', 'AIRSHIP'],
 };
 
-module.exports = { DestHandlerMap, DestCanonicalNames, DestHandleMapForCDKV2 };
+module.exports = { DestHandlerMap, DestCanonicalNames };

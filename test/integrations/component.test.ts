@@ -10,6 +10,7 @@ import { createHttpTerminator } from 'http-terminator';
 import { ExtendedTestCaseData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
+import { EnvManager } from './envUtils';
 import {
   getTestDataFilePaths,
   getTestData,
@@ -232,22 +233,40 @@ describe('Component Test Suite', () => {
           test.each(extendedTestData)(
             '$tcData.feature -> $tcData.description$descriptionSuffix (index: $#)',
             async ({ tcData }) => {
-              tcData?.mockFns?.(mockAdapter);
+              const envManager = new EnvManager();
+              const testId = `${tcData.id || tcData.name}-${Date.now()}`;
 
-              switch (tcData.module) {
-                case tags.MODULES.DESTINATION:
-                  await destinationTestHandler(tcData);
-                  break;
-                case tags.MODULES.SOURCE:
-                  FetchHandler['sourceHandlerMap'] = new Map();
-                  tcData?.mockFns?.(mockAdapter);
-                  await sourceTestHandler(tcData);
-                  break;
-                default:
-                  console.log('Invalid module');
-                  // Intentionally fail the test case
-                  expect(true).toEqual(false);
-                  break;
+              try {
+                // Handle environment variable overrides if present
+                if (tcData.envOverrides) {
+                  const envKeys = Object.keys(tcData.envOverrides);
+                  envManager.takeSnapshot(testId, envKeys);
+                  envManager.applyOverrides(tcData.envOverrides);
+                }
+
+                tcData?.mockFns?.(mockAdapter);
+
+                switch (tcData.module) {
+                  case tags.MODULES.DESTINATION:
+                    await destinationTestHandler(tcData);
+                    break;
+                  case tags.MODULES.SOURCE:
+                    FetchHandler['sourceHandlerMap'] = new Map();
+                    tcData?.mockFns?.(mockAdapter);
+                    await sourceTestHandler(tcData);
+                    break;
+                  default:
+                    console.log('Invalid module');
+                    // Intentionally fail the test case
+                    expect(true).toEqual(false);
+                    break;
+                }
+              } finally {
+                // Always restore environment variables after the test
+                if (tcData.envOverrides) {
+                  envManager.restoreSnapshot(testId);
+                }
+                envManager.cleanup();
               }
             },
           );

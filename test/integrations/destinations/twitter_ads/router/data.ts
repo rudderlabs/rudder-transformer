@@ -326,7 +326,8 @@ export const data = [
                 },
               },
               statusCode: 500,
-              error: '[TWITTER ADS]:: OAuth - secret not found',
+              error:
+                '[TWITTER ADS]:: OAuth - secret not found. This might be a platform issue. Please contact RudderStack support for assistance.',
               metadata: [{}],
               statTags: {
                 errorCategory: 'platform',

@@ -1555,7 +1555,8 @@ export const data = [
         body: [
           {
             statusCode: 500,
-            error: 'secret is undefined/null',
+            error:
+              'Secret is undefined/null. This might be a platform issue. Please contact RudderStack support for assistance.',
             metadata: {
               jobId: 1,
             },
@@ -1628,7 +1629,8 @@ export const data = [
         body: [
           {
             statusCode: 500,
-            error: 'access_token is undefined/null',
+            error:
+              'access_token is undefined/null. This might be a platform issue. Please contact RudderStack support for assistance.',
             metadata: {
               jobId: 1,
               secret: {},
@@ -1704,7 +1706,8 @@ export const data = [
         body: [
           {
             statusCode: 500,
-            error: 'instance_url is undefined/null',
+            error:
+              'instance_url is undefined/null. This might be a platform issue. Please contact RudderStack support for assistance.',
             metadata: {
               jobId: 1,
               secret: {

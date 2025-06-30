@@ -908,7 +908,8 @@ export const data = [
               metadata: [{ jobId: 5, secret: null, userId: 'u1' }],
               batched: false,
               statusCode: 500,
-              error: 'OAuth - access token not found',
+              error:
+                'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
               statTags: {
                 destType: 'PARDOT',
                 feature: 'router',

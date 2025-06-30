@@ -1,5 +1,9 @@
-const lodash = require('lodash');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  groupByInBatches,
+  mapInBatches,
+  reduceInBatches,
+} = require('@rudderstack/integrations-lib');
 const {
   getValueFromMessage,
   getAccessToken,
@@ -18,7 +22,7 @@ const {
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 
-const processRecordEventArray = (records, context, operationType) => {
+const processRecordEventArray = async (records, context, operationType) => {
   const {
     message,
     destination,
@@ -32,8 +36,8 @@ const processRecordEventArray = (records, context, operationType) => {
     personalizationConsent,
   } = context;
 
-  const fieldsArray = records.map((record) => record.message.fields);
-  const metadata = records.map((record) => record.metadata);
+  const fieldsArray = await mapInBatches(records, (record) => record.message.fields);
+  const metadata = await mapInBatches(records, (record) => record.metadata);
 
   const userIdentifiersList = populateIdentifiersForRecordEvent(
     fieldsArray,
@@ -45,7 +49,7 @@ const processRecordEventArray = (records, context, operationType) => {
   const outputPayload = constructPayload(message, offlineDataJobsMapping);
 
   const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
-  outputPayload.operations = userIdentifierChunks.map((chunk) => ({
+  outputPayload.operations = await mapInBatches(userIdentifierChunks, (chunk) => ({
     [operationType]: { userIdentifiers: chunk },
   }));
 
@@ -61,7 +65,7 @@ const processRecordEventArray = (records, context, operationType) => {
   return getSuccessRespEvents(toSendEvents, metadata, destination, true);
 };
 
-function preparePayload(events, config) {
+async function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
   const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
@@ -74,20 +78,28 @@ function preparePayload(events, config) {
     ...config,
   };
 
-  const groupedRecordsByAction = lodash.groupBy(events, (record) =>
+  const groupedRecordsByAction = await groupByInBatches(events, (record) =>
     record.message.action?.toLowerCase(),
   );
 
-  const actionResponses = ['delete', 'insert', 'update'].reduce((responses, action) => {
-    const operationType = action === 'delete' ? 'remove' : 'create';
-    if (groupedRecordsByAction[action]) {
-      return {
-        ...responses,
-        [action]: processRecordEventArray(groupedRecordsByAction[action], context, operationType),
-      };
-    }
-    return responses;
-  }, {});
+  const actionResponses = await reduceInBatches(
+    ['delete', 'insert', 'update'],
+    async (responses, action) => {
+      const operationType = action === 'delete' ? 'remove' : 'create';
+      if (groupedRecordsByAction[action]) {
+        return {
+          ...responses,
+          [action]: await processRecordEventArray(
+            groupedRecordsByAction[action],
+            context,
+            operationType,
+          ),
+        };
+      }
+      return responses;
+    },
+    {},
+  );
 
   const errorResponse = getErrorResponse(groupedRecordsByAction);
   const finalResponse = createFinalResponse(
@@ -106,7 +118,7 @@ function preparePayload(events, config) {
   return finalResponse;
 }
 
-function processEventStreamRecordV1Events(groupedRecordInputs) {
+async function processEventStreamRecordV1Events(groupedRecordInputs) {
   const { destination } = groupedRecordInputs[0];
   const {
     audienceId,
@@ -129,7 +141,7 @@ function processEventStreamRecordV1Events(groupedRecordInputs) {
   return preparePayload(groupedRecordInputs, config);
 }
 
-function processVDMV1RecordEvents(groupedRecordInputs) {
+async function processVDMV1RecordEvents(groupedRecordInputs) {
   const { destination, message } = groupedRecordInputs[0];
   const {
     audienceId,
@@ -152,14 +164,14 @@ function processVDMV1RecordEvents(groupedRecordInputs) {
   return preparePayload(groupedRecordInputs, config);
 }
 
-function processVDMV2RecordEvents(groupedRecordInputs) {
+async function processVDMV2RecordEvents(groupedRecordInputs) {
   const { connection, message } = groupedRecordInputs[0];
   const { audienceId, typeOfList, isHashRequired, userDataConsent, personalizationConsent } =
     connection.config.destination;
 
   const userSchema = message?.identifiers ? Object.keys(message.identifiers) : undefined;
 
-  const events = groupedRecordInputs.map((record) => ({
+  const events = await mapInBatches(groupedRecordInputs, (record) => ({
     ...record,
     message: {
       ...record.message,
@@ -179,7 +191,7 @@ function processVDMV2RecordEvents(groupedRecordInputs) {
   return preparePayload(events, config);
 }
 
-function processRecordInputs(groupedRecordInputs) {
+async function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
 
   if (isEventSentByVDMV1Flow(event)) {

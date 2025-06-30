@@ -212,9 +212,7 @@ export const validationTestData: ProcessorTestData[] = [
       },
     },
     mockFns: (_) => {
-      return jest
-        .spyOn(Date, 'now')
-        .mockReturnValueOnce(new Date('2012-04-29T05:17:09Z').valueOf());
+      return jest.spyOn(Date, 'now').mockReturnValue(new Date('2012-04-29T05:17:09Z').valueOf());
     },
   },
   {
@@ -775,9 +773,7 @@ export const validationTestData: ProcessorTestData[] = [
       },
     },
     mockFns: (_) => {
-      return jest
-        .spyOn(Date, 'now')
-        .mockReturnValueOnce(new Date('2023-04-29T05:17:09Z').valueOf());
+      return jest.spyOn(Date, 'now').mockReturnValue(new Date('2023-04-29T05:17:09Z').valueOf());
     },
   },
   {
@@ -826,9 +822,7 @@ export const validationTestData: ProcessorTestData[] = [
       },
     },
     mockFns: (_) => {
-      return jest
-        .spyOn(Date, 'now')
-        .mockReturnValueOnce(new Date('2021-04-29T05:17:09Z').valueOf());
+      return jest.spyOn(Date, 'now').mockReturnValue(new Date('2021-04-29T05:17:09Z').valueOf());
     },
   },
   {

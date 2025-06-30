@@ -465,10 +465,11 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [{ jobId: 6, userId: 'u1' }],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 400,
-              error: 'Missing required value from "event"',
+              error:
+                'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
               statTags: {
                 destType: 'MAILCHIMP',
                 errorCategory: 'dataValidation',
@@ -496,11 +497,10 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [{ jobId: 4, userId: 'u1' }],
+              metadata: [{ jobId: 6, userId: 'u1' }],
               batched: false,
               statusCode: 400,
-              error:
-                'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
+              error: 'Missing required value from "event"',
               statTags: {
                 destType: 'MAILCHIMP',
                 errorCategory: 'dataValidation',
@@ -814,6 +814,379 @@ export const data = [
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'mailchimp',
+    description: 'events batching with combination two different destinations',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrK6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: secret1,
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { jobId: 2, userId: 'u2' },
+              message: {
+                anonymousId: 'userId12345',
+                channel: 'web',
+                context: {
+                  mappedToDestination: true,
+                  externalId: [
+                    {
+                      identifierType: 'email_address',
+                      id: 'bob.dole@initech.com',
+                      type: 'audience',
+                    },
+                  ],
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  ip: '0.0.0.0',
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  locale: 'en-US',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
+                },
+                integrations: { All: true },
+                traits: { merge_fields: { FIRSTNAME: 'Bob' }, status: 'subscribed' },
+                messageId: '21e475b2-3694-477b-afb6-5b94a81aac21',
+                originalTimestamp: '2019-11-15T10:22:32Z',
+                receivedAt: '2019-11-15T15:52:37+05:30',
+                request_ip: '[::1]:62921',
+                sentAt: '2019-11-15T10:22:37Z',
+                source_id: '1TdhTcwsUVOeEMWyPUpQIgF3pYr',
+                timestamp: '2019-11-15T15:52:32+05:30',
+                type: 'identify',
+                userId: 'userId12345',
+              },
+            },
+            {
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: secret1,
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { jobId: 3, userId: 'u1' },
+              message: {
+                type: 'identify',
+                traits: { status: 'subscribed' },
+                userId: 'emrichardson820+22822@gmail.com',
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                  externalId: [
+                    {
+                      id: 'emrichardson820+22822@gmail.com',
+                      type: 'MAILCHIMP-92e1f1ad2c',
+                      identifierType: 'email_address',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                },
+                recordId: '1',
+                rudderId: '4d5d0ed0-9db8-41cc-9bb0-a032f6bfa97a',
+                messageId: 'b3bee036-fc26-4f6d-9867-c17f85708a82',
+              },
+            },
+            {
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: secret1,
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { jobId: 4, userId: 'u1' },
+              message: {
+                type: 'identify',
+                traits: { status: 'subscribed' },
+                userId: 'emrichardson820+22822@gmail.com',
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                  externalId: [
+                    {
+                      id: 'emrichardson820+22822@gmail.com',
+                      type: 'MAILCHIMP-92e1f1ad2c',
+                      identifierType: 'email_address',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                },
+                recordId: '1',
+                rudderId: '4d5d0ed0-9db8-41cc-9bb0-a032f6bfa97a',
+                messageId: 'b3bee036-fc26-4f6d-9867-c17f85708a82',
+              },
+            },
+            {
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: secret1,
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+              metadata: { jobId: 5, userId: 'u1' },
+              message: {
+                type: 'identify',
+                traits: { status: 'subscrib' },
+                userId: 'emrichardson820+22822@gmail.com',
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                  externalId: [
+                    {
+                      id: 'emrichardson820+22822@gmail.com',
+                      type: 'MAILCHIMP-92e1f1ad2c',
+                      identifierType: 'email_address',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                },
+                recordId: '1',
+                rudderId: '4d5d0ed0-9db8-41cc-9bb0-a032f6bfa97a',
+                messageId: 'b3bee036-fc26-4f6d-9867-c17f85708a82',
+              },
+            },
+          ],
+          destType: 'mailchimp',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    members: [
+                      {
+                        merge_fields: {
+                          FIRSTNAME: 'Bob',
+                        },
+                        status: 'subscribed',
+                        email_address: 'bob.dole@initech.com',
+                      },
+                    ],
+                    update_existing: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrK6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: 'mailchimp1',
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    members: [
+                      {
+                        status: 'subscribed',
+                        email_address: 'emrichardson820+22822@gmail.com',
+                      },
+                      {
+                        status: 'subscribed',
+                        email_address: 'emrichardson820+22822@gmail.com',
+                      },
+                    ],
+                    update_existing: true,
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: 'u1',
+                },
+                {
+                  jobId: 4,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: 'mailchimp1',
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'MAILCHIMP',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+              destination: {
+                ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
+                Name: 'test-mc',
+                DestinationDefinition: {
+                  ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
+                  Name: 'MC',
+                  DisplayName: 'MailChimp',
+                },
+                Config: {
+                  apiKey: 'mailchimp1',
+                  audienceId: '1232yyqw22',
+                  datacenterId: 'us20',
+                },
+                Enabled: true,
+                Transformations: [],
               },
             },
           ],

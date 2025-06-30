@@ -35,6 +35,7 @@ const commonDeletionDestConfig: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',
@@ -69,6 +70,7 @@ const commonDeletionDestConfig2: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',
@@ -195,6 +197,7 @@ const commonUpsertDestConfig: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',
@@ -229,6 +232,7 @@ const commonUpsertDestConfig2: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',
@@ -263,6 +267,7 @@ const commonUpsertDestConfig2CustomModule: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',
@@ -297,6 +302,7 @@ const commonUpsertDestConfig3: Destination = {
   Enabled: true,
   WorkspaceID: '',
   Transformations: [],
+  hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
     Name: 'Test',

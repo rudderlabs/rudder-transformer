@@ -1,10 +1,11 @@
+import { mapInBatches } from '@rudderstack/integrations-lib';
 import {
-  SegmentAction,
   CustomerIOConnection,
   CustomerIODestination,
   CustomerIORouterRequest,
   ProcessedEvent,
 } from './type';
+import { RecordAction } from '../../../types/rudderEvents';
 import { batchResponseBuilder, createEventChunk } from './utils';
 import { handleRtTfSingleEventError } from '../../util';
 
@@ -17,7 +18,7 @@ const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata:
   const customerIOConnection = connection as CustomerIOConnection;
 
   // Process events and separate valid and error cases
-  const processedEvents = inputs.map((event) => {
+  const processedEvents = await mapInBatches(inputs, (event) => {
     try {
       return {
         success: true,
@@ -42,11 +43,11 @@ const processRouterDest = async (inputs: CustomerIORouterRequest[], reqMetadata:
 
   // Split successful events into delete and insert/update lists
   const deleteRespList = successfulEvents
-    .filter((event) => event.eventAction === SegmentAction.DELETE)
+    .filter((event) => event.eventAction === RecordAction.DELETE)
     .map(({ payload, metadata }) => ({ payload, metadata }));
 
   const insertOrUpdateRespList = successfulEvents
-    .filter((event) => event.eventAction !== SegmentAction.DELETE)
+    .filter((event) => event.eventAction !== RecordAction.DELETE)
     .map(({ payload, metadata }) => ({ payload, metadata }));
 
   const batchSuccessfulRespList = batchResponseBuilder(

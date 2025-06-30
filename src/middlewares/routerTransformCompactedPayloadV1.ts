@@ -1,5 +1,5 @@
 import { Context, Next } from 'koa';
-import { PlatformError } from '@rudderstack/integrations-lib';
+import { deepFreezeProperty, forEachInBatches, PlatformError } from '@rudderstack/integrations-lib';
 import { RouterTransformationRequest, RouterCompactedTransformationRequest } from '../types';
 
 /**
@@ -15,6 +15,10 @@ export async function RouterTransformCompactedPayloadV1Middleware(
 ): Promise<void> {
   if (ctx.get('x-content-format') === 'json+compactedv1') {
     const body = ctx.request.body as RouterCompactedTransformationRequest;
+    await forEachInBatches(Object.values(body.destinations), (destination) => {
+      // deep freeze destination configurations
+      deepFreezeProperty(destination, 'Config');
+    });
     ctx.request.body = {
       input: body.input.map((input) => {
         const destination = body.destinations[input.metadata.destinationId];

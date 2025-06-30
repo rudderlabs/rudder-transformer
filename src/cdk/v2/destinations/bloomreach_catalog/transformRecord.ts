@@ -1,4 +1,4 @@
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { forEachInBatches, InstrumentationError } from '@rudderstack/integrations-lib';
 import { CatalogAction } from './config';
 import { batchResponseBuilder } from './utils';
 
@@ -56,7 +56,7 @@ const getEventChunks = (
   }
 };
 
-export const processRecordInputs = (inputs: any[], destination: any) => {
+export const processRecordInputs = async (inputs: any[], destination: any) => {
   const insertItemRespList: any[] = [];
   const updateItemRespList: any[] = [];
   const deleteItemRespList: any[] = [];
@@ -66,7 +66,7 @@ export const processRecordInputs = (inputs: any[], destination: any) => {
     return [];
   }
 
-  inputs.forEach((input) => {
+  await forEachInBatches(inputs, async (input) => {
     try {
       getEventChunks(
         {

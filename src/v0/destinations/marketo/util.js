@@ -223,7 +223,7 @@ const marketoResponseHandler = (
           response.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
         ) {
           logger.info(
-            `${destination} Cache token evicting due to invalid/expired access_token for destinationId (${authKey})`,
+            `${destination} Cache token evicting due to invalid/expired access_token for destinationId`,
           );
           authCache.del(authKey);
         }

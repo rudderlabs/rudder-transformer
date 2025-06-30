@@ -15,6 +15,7 @@ const {
   getHashFromArrayWithDuplicate,
   handleRtTfSingleEventError,
   validateEventName,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
 const config = require('./config');
@@ -757,7 +758,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
       );
     });
   }
-  return [...batchedResponseList.concat(trackResponseList), ...errorRespList];
+  // Sort the events based on job id
+  // Event may get out of order due testEventCode properties this function ensure that events are in order
+  return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));
 };
 
 module.exports = { process, processRouterDest };

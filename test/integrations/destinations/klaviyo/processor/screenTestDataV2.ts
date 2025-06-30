@@ -90,7 +90,7 @@ export const screenTestData: ProcessorTestData[] = [
                 Accept: 'application/json',
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                revision: '2024-06-15',
+                revision: '2024-10-15',
               },
               JSON: {
                 data: {

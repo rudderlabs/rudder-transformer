@@ -10,13 +10,14 @@ const Handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
 const lodash = require('lodash');
-const { setValue: set } = require('@rudderstack/integrations-lib');
+const { setValue: set, groupByInBatches, mapInBatches } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
 const { v5 } = require('uuid');
+const stableStringify = require('fast-json-stable-stringify');
 const {
   InstrumentationError,
   BaseError,
@@ -27,6 +28,7 @@ const {
 
 const { JsonTemplateEngine, PathType } = require('@rudderstack/json-template-engine');
 const isString = require('lodash/isString');
+const { shouldGroupByDestinationConfig } = require('../../util/utils');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames } = require('../../constants/destinationCanonicalNames');
@@ -1807,8 +1809,9 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
+  const respList = mapInBatches(
+    inputs,
+    async (input) => {
       try {
         let resp = input.message;
         // transform if not already done
@@ -1820,7 +1823,8 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    }),
+    },
+    { sequentialProcessing: false }, // concurrent processing
   );
   return respList;
 };
@@ -2056,36 +2060,61 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
 };
 
 /**
- * Groups events with the same message type together in batches.
- * Each batch contains events that have the same message type and are from different users.
+ * Groups events with the same message type together in batches, while maintaining the order of events per userId.
+ * As a side-effect of this event ordering constraint, it is possible to produce more than one batch for the same message type
+ * if this is required for retaining proper event ordering for events from the same userId.
+ *
  * @param {*} inputs - An array of events
  * @returns {*} - An array of batches
  */
-const groupEventsByType = (inputs) => {
-  const batches = [];
-  let currentInputsArray = inputs;
-  while (currentInputsArray.length > 0) {
-    const remainingInputsArray = [];
-    const userOrderTracker = {};
-    const event = currentInputsArray.shift();
-    const messageType = event.message.type;
-    const batch = [event];
-    currentInputsArray.forEach((currentInput) => {
-      const currentMessageType = currentInput.message.type;
-      const currentUser = currentInput.metadata.userId;
-      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
-        batch.push(currentInput);
-      } else {
-        remainingInputsArray.push(currentInput);
-        userOrderTracker[currentUser] = true;
-      }
-    });
-    batches.push(batch);
-    currentInputsArray = remainingInputsArray;
+function groupEventsByType(inputs) {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    return [];
   }
 
-  return batches;
-};
+  // This will store our chunk objects, which include the type for matching.
+  const chunks = [];
+  // This map stores for each user, the index of the chunk their last message went into.
+  const userLastChunkIndex = new Map();
+
+  inputs.forEach((input) => {
+    const { type: messageType } = input.message;
+    const { userId } = input.metadata;
+
+    // Get the index of the chunk where this user's last message was placed.
+    // If the user hasn't been seen, this will be 0, allowing them to be placed anywhere.
+    const minChunkIndex = userLastChunkIndex.get(userId) ?? 0;
+
+    let targetChunkIndex = -1;
+
+    // Find the oldest, suitable chunk.
+    for (let i = minChunkIndex; i < chunks.length; i += 1) {
+      if (chunks[i].type === messageType) {
+        targetChunkIndex = i;
+        break;
+      }
+    }
+
+    if (targetChunkIndex !== -1) {
+      // We found a suitable existing chunk. Add the message to it.
+      chunks[targetChunkIndex].inputs.push(input);
+      // Update this user's last seen position.
+      userLastChunkIndex.set(userId, targetChunkIndex);
+    } else {
+      // No suitable chunk was found. We must create a new one.
+      const newChunkIndex = chunks.length;
+      chunks.push({
+        type: messageType,
+        inputs: [input],
+      });
+      // Update this user's last seen position to this new chunk.
+      userLastChunkIndex.set(userId, newChunkIndex);
+    }
+  });
+
+  // The final result is just the 'inputs' array from each chunk object.
+  return chunks.map((chunk) => chunk.inputs);
+}
 
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -2195,7 +2224,7 @@ const findExistingBatch = (batch, metadataMap) => {
 };
 
 /**
- * Removes duplicate metadata within each merged batch object.
+ * Removes duplicate metadata within each merged batch object and sorts by jobId.
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
@@ -2209,8 +2238,34 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
+
+    // Sort metadata by jobId to ensure consistent ordering
+    batch.metadata.sort((a, b) => a.jobId - b.jobId);
   });
 };
+
+/*
+  Sort the final result by the minimum jobId in each batch to ensure consistent ordering
+  @param {*} result The array of batched request objects.
+  eg:
+    [
+      { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+      { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+      { metadata: [{ jobId: 2 }] },
+    ];
+    output: [
+      { metadata: [{ jobId: 1 }, { jobId: 5 }] },
+      { metadata: [{ jobId: 2 }] },
+      { metadata: [{ jobId: 3 }, { jobId: 4 }] },
+    ];
+*/
+
+const sortBatchesByMinJobId = (result) =>
+  result.sort((a, b) => {
+    const minJobIdA = Math.min(...a.metadata.map((m) => m.jobId));
+    const minJobIdB = Math.min(...b.metadata.map((m) => m.jobId));
+    return minJobIdA - minJobIdB;
+  });
 
 /**
  * Combines batched requests with the same JobIds.
@@ -2259,7 +2314,8 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
   // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
   // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
-  return combineBatches(combineBatches(inputBatches));
+  const result = combineBatches(combineBatches(inputBatches));
+  return sortBatchesByMinJobId(result);
 };
 
 /**
@@ -2296,14 +2352,42 @@ const applyJSONStringTemplate = (message, template) =>
   }).evaluate(message);
 
 /**
- * This groups the events by destination ID and source ID.
+ * This groups the events by destination ID, source ID, and optionally by destination config.
  * Note: sourceID is only used for rETL events.
+ *
+ * The function checks the hasDynamicConfig flag on the destination to determine if events
+ * should be grouped by destination config as well. This is important for destinations that
+ * use dynamic configuration where different events might need different config values.
+ *
+ * For backward compatibility with older server versions where the hasDynamicConfig flag
+ * might not be available, the function treats undefined flags as if dynamic config might
+ * be present (only skips grouping by config when the flag is explicitly false).
+ *
  * @param {*} events The events to be grouped.
- * @returns {array} The array of grouped events.
+ * @returns {Promise<array>} The array of grouped events.
  */
-const groupRouterTransformEvents = (events) =>
+const groupRouterTransformEvents = async (events) =>
   Object.values(
-    lodash.groupBy(events, (ev) => [ev.destination?.ID, ev.context?.sources?.job_id || 'default']),
+    await groupByInBatches(events, (ev) => {
+      // Use the function to determine if we should group by destination config
+      const shouldGroupByConfig = shouldGroupByDestinationConfig(ev.destination);
+
+      // If we should group by destination config, include it in the grouping key
+      // Otherwise, use 'default' to group all events with the same destination ID together
+      let destConfigGroupKey = 'default';
+
+      if (shouldGroupByConfig && ev.destination?.Config) {
+        // Use fast-json-stable-stringify to ensure consistent ordering of keys
+        // This ensures that { a: 1, b: 2 } and { b: 2, a: 1 } are treated as the same config
+        destConfigGroupKey = stableStringify(ev.destination.Config);
+      }
+
+      return [
+        ev.destination?.ID || 'default',
+        ev.context?.sources?.job_id || 'default',
+        destConfigGroupKey,
+      ];
+    }),
   );
 
 /*
@@ -2489,4 +2573,5 @@ module.exports = {
   isAxiosError,
   convertToUuid,
   handleMetadataForValue,
+  sortBatchesByMinJobId,
 };

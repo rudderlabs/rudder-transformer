@@ -1,9 +1,6 @@
-const metadata = {
-  sourceType: '',
-  destinationType: '',
-  namespace: '',
-  destinationId: '',
-};
+import { ProcessorTestData } from '../../../testTypes';
+import { MessageType } from '../../../../../src/types';
+import { baseMetadata, baseDestinationDefinition } from '../common';
 
 const outputStatTags = {
   destType: 'BLUECORE',
@@ -13,9 +10,10 @@ const outputStatTags = {
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',
+  workspaceId: 'default-workspace',
 };
 
-export const validationTestData = [
+export const validationTestData: ProcessorTestData[] = [
   {
     id: 'bluecore-validation-test-1',
     name: 'bluecore',
@@ -28,28 +26,12 @@ export const validationTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'BLUECORE',
-              Config: {
-                bluecoreNamespace: 'dummy_sandbox',
-                eventsMapping: [
-                  {
-                    from: 'ABC Searched',
-                    to: 'search',
-                  },
-                ],
-              },
-              Enabled: true,
-              Transformations: [],
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
-            },
-            metadata,
             message: {
               userId: 'user123',
-              type: 'random',
+              type: 'random' as MessageType,
               groupId: 'XUepkK',
               traits: {
                 subscribe: true,
@@ -63,6 +45,27 @@ export const validationTestData = [
               },
               timestamp: '2020-01-21T00:21:34.208Z',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'BLUECORE',
+              DestinationDefinition: baseDestinationDefinition,
+              Config: {
+                bluecoreNamespace: 'dummy_sandbox',
+                eventsMapping: [
+                  {
+                    from: 'ABC Searched',
+                    to: 'search',
+                  },
+                ],
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -72,11 +75,11 @@ export const validationTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
-            metadata,
             statTags: outputStatTags,
-            statusCode: 400,
           },
         ],
       },
@@ -94,27 +97,12 @@ export const validationTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'BLUECORE',
-              Config: {
-                eventsMapping: [
-                  {
-                    from: 'ABC Searched',
-                    to: 'search',
-                  },
-                ],
-              },
-              Enabled: true,
-              Transformations: [],
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
-            },
-            metadata: metadata,
             message: {
               userId: 'user123',
-              type: 'random',
+              type: 'random' as MessageType,
               groupId: 'XUepkK',
               traits: {
                 subscribe: true,
@@ -128,6 +116,26 @@ export const validationTestData = [
               },
               timestamp: '2020-01-21T00:21:34.208Z',
             },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'BLUECORE',
+              DestinationDefinition: baseDestinationDefinition,
+              Config: {
+                eventsMapping: [
+                  {
+                    from: 'ABC Searched',
+                    to: 'search',
+                  },
+                ],
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
+            },
           },
         ],
       },
@@ -137,11 +145,11 @@ export const validationTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
-            metadata,
             statTags: outputStatTags,
-            statusCode: 400,
           },
         ],
       },
@@ -159,25 +167,9 @@ export const validationTestData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'BLUECORE',
-              Config: {
-                bluecoreNamespace: 'dummy_sandbox',
-                eventsMapping: [
-                  {
-                    from: 'ABC Searched',
-                    to: 'search',
-                  },
-                ],
-              },
-              Enabled: true,
-              Transformations: [],
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
-            },
-            metadata,
             message: {
               type: 'track',
               event: 'subscription_event',
@@ -188,9 +180,33 @@ export const validationTestData = [
                   phone: '9112340375',
                 },
               },
-              properties: { p: 1, channel_consents: {} },
+              properties: {
+                p: 1,
+                channel_consents: {},
+              },
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
+            },
+            metadata: baseMetadata,
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'BLUECORE',
+              DestinationDefinition: baseDestinationDefinition,
+              Config: {
+                bluecoreNamespace: 'dummy_sandbox',
+                eventsMapping: [
+                  {
+                    from: 'ABC Searched',
+                    to: 'search',
+                  },
+                ],
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -201,11 +217,11 @@ export const validationTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore]:: email consent is required for subscription event: Workflow: procWorkflow, Step: handleSubscriptionEvent, ChildStep: preparePayload, OriginalError: [Bluecore]:: email consent is required for subscription event',
             statTags: outputStatTags,
-            metadata,
-            statusCode: 400,
           },
         ],
       },

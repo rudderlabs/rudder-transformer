@@ -92,9 +92,7 @@ const WhiteListedTraitsV2 = [
 ];
 const destType = 'klaviyo';
 // api version used
-const revision = '2024-06-15';
-// add revision for 2024-10-25
-const revisionOct2024 = '2024-10-15';
+const revision = '2024-10-15';
 
 module.exports = {
   BASE_ENDPOINT,
@@ -108,7 +106,6 @@ module.exports = {
   jsonNameMapping,
   destType,
   revision,
-  revisionOct2024,
   WhiteListedTraitsV2,
   useUpdatedKlaviyoAPI,
 };

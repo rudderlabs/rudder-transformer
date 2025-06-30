@@ -1,11 +1,18 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
+import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
-export const data = [
+import { overrideDestination } from '../../../testUtils';
+import { destinationConfig } from '../common';
+
+export const data: RouterTestData[] = [
   {
+    id: 'tiktok_ads-router-test-0',
     name: 'tiktok_ads',
     description: 'Test 0 -> Events 1.0 Multiple events in single batch',
     feature: FEATURES.ROUTER,
     module: 'destination',
+    successCriteria: 'Should pass successfully',
+    scenario: 'Default router scenario',
     version: 'v0',
     input: {
       request: {
@@ -72,13 +79,11 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -140,13 +145,11 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -211,13 +214,11 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
             {
               message: {
@@ -282,13 +283,11 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -490,13 +489,11 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
             },
           ],
         },
@@ -504,8 +501,494 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-1',
     name: 'tiktok_ads',
-    description: 'Test 1 -> Events 1.0 Single Event inside batch',
+    description: 'Test 1 -> Events 1.0 Multiple events and contains multiple batch requests',
+    feature: FEATURES.ROUTER,
+    module: 'destination',
+    successCriteria:
+      'Should pass the request successfully, with 3 events in one batch and 1 batch with 1 event',
+    scenario: 'Default router scenario',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  ip: '13.57.97.131',
+                  locale: 'en-US',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  externalId: [
+                    {
+                      type: 'tiktokExternalId',
+                      id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  ],
+                },
+                messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                timestamp: '2020-09-17T19:49:27Z',
+                type: 'track',
+                test_event_code: 'sample rudder test_event_code',
+                event: 'checkout step completed',
+                properties: {
+                  eventId: '1616318632825_357',
+                  clickId: 'dummyClickId',
+                  contents: [
+                    { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                    { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
+                  ],
+                  currency: 'USD',
+                  value: 46.0,
+                  context: {
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  },
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
+            },
+            {
+              message: {
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  locale: 'en-US',
+                  ip: '13.57.97.131',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  externalId: [
+                    {
+                      type: 'tiktokExternalId',
+                      id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  ],
+                },
+                messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                timestamp: '2020-09-17T19:49:27Z',
+                type: 'track',
+                event: 'checkout started',
+                properties: {
+                  eventId: '1616318632825_357',
+                  context: {
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  },
+                  contents: [
+                    { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                    { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
+                  ],
+                  currency: 'USD',
+                  value: 46.0,
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+              },
+              destination: overrideDestination(destinationConfig, {
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
+            },
+            {
+              message: {
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  locale: 'en-US',
+                  ip: '13.57.97.131',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  externalId: [
+                    {
+                      type: 'tiktokExternalId',
+                      id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  ],
+                },
+                messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                timestamp: '2020-09-17T19:49:27Z',
+                type: 'track',
+                event: 'download',
+                properties: {
+                  eventId: '1616318632825_357',
+                  context: {
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                    ip: '13.57.97.131',
+                  },
+                  contents: [
+                    { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                    { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
+                  ],
+                  currency: 'USD',
+                  value: 46.0,
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 3,
+                userId: 'u1',
+              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
+            },
+            {
+              message: {
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  userAgent:
+                    'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  locale: 'en-US',
+                  ip: '13.57.97.131',
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  externalId: [
+                    {
+                      type: 'tiktokExternalId',
+                      id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                  ],
+                },
+                messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                timestamp: '2020-09-17T19:49:27Z',
+                type: 'track',
+                event: 'search',
+                properties: {
+                  eventId: '1616318632825_357',
+                  context: {
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                    ip: '13.57.97.131',
+                  },
+                  contents: [
+                    { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                    { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
+                  ],
+                  currency: 'USD',
+                  value: 46.0,
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              metadata: {
+                jobId: 4,
+                userId: 'u1',
+              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
+            },
+          ],
+          destType: 'tiktok_ads',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    pixel_code: 'dummyPixelCode',
+                    partner_name: 'RudderStack',
+                    batch: [
+                      {
+                        event: 'CompletePayment',
+                        event_id: '1616318632825_357',
+                        timestamp: '2020-09-17T19:49:27Z',
+                        properties: {
+                          contents: [
+                            {
+                              price: 8,
+                              quantity: 2,
+                              content_type: 'socks',
+                              content_id: '1077218',
+                            },
+                            {
+                              price: 30,
+                              quantity: 1,
+                              content_type: 'dress',
+                              content_id: '1197218',
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        context: {
+                          ad: {
+                            callback: 'dummyClickId',
+                          },
+                          page: {
+                            url: 'http://demo.mywebsite.com/purchase',
+                            referrer: 'http://demo.mywebsite.com',
+                          },
+                          user: {
+                            phone_number:
+                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                            email:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                            external_id:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          },
+                          ip: '13.57.97.131',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                        type: 'track',
+                      },
+                      {
+                        event: 'Download',
+                        event_id: '1616318632825_357',
+                        timestamp: '2020-09-17T19:49:27Z',
+                        properties: {
+                          contents: [
+                            {
+                              price: 8,
+                              quantity: 2,
+                              content_type: 'socks',
+                              content_id: '1077218',
+                            },
+                            {
+                              price: 30,
+                              quantity: 1,
+                              content_type: 'dress',
+                              content_id: '1197218',
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        context: {
+                          page: {
+                            url: 'http://demo.mywebsite.com/purchase',
+                            referrer: 'http://demo.mywebsite.com',
+                          },
+                          user: {
+                            phone_number:
+                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                            email:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                            external_id:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          },
+                          ip: '13.57.97.131',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                        type: 'track',
+                      },
+                      {
+                        event: 'Search',
+                        event_id: '1616318632825_357',
+                        timestamp: '2020-09-17T19:49:27Z',
+                        properties: {
+                          contents: [
+                            {
+                              price: 8,
+                              quantity: 2,
+                              content_type: 'socks',
+                              content_id: '1077218',
+                            },
+                            {
+                              price: 30,
+                              quantity: 1,
+                              content_type: 'dress',
+                              content_id: '1197218',
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        context: {
+                          page: {
+                            url: 'http://demo.mywebsite.com/purchase',
+                            referrer: 'http://demo.mywebsite.com',
+                          },
+                          user: {
+                            phone_number:
+                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                            email:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                            external_id:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          },
+                          ip: '13.57.97.131',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                        type: 'track',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
+            },
+            {
+              metadata: [{ jobId: 2, userId: 'u1' }],
+              batched: false,
+              statusCode: 400,
+              error: 'Access Token not found. Aborting ',
+              statTags: {
+                destType: 'TIKTOK_ADS',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+              },
+              destination: overrideDestination(destinationConfig, {
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+              }),
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'tiktok_ads-router-test-2',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
+    name: 'tiktok_ads',
+    description: 'Test 2 -> Events 1.0 Single Event inside batch',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -568,13 +1051,11 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -640,13 +1121,11 @@ export const data = [
                   version: '1',
                 },
               ],
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: true,
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: true,
+              }),
               metadata: [
                 {
                   jobId: 3,
@@ -661,9 +1140,12 @@ export const data = [
     },
   },
   {
+    id: 'tiktok_ads-router-test-3',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
-      'Test 2 -> Events 2.0 Single event is mapped to multiple tiktok event in config and exceeding max batch size',
+      'Test 3 -> Events 2.0 Single event is mapped to multiple tiktok event in config and exceeding max batch size',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -713,18 +1195,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -765,18 +1245,16 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -817,14 +1295,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -865,14 +1341,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1011,18 +1485,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: {
@@ -1119,18 +1591,16 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
           ],
         },
@@ -1139,9 +1609,12 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-4',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
     description:
-      'Test 3 -> Events 2.0 Single event is mapped to single tiktok event in config and over the max batch limit',
+      'Test 4 -> Events 2.0 Single event is mapped to single tiktok event in config and over the max batch limit',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -1191,14 +1664,12 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1239,14 +1710,12 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1287,14 +1756,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1335,14 +1802,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1486,14 +1951,12 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               batchedRequest: {
@@ -1557,14 +2020,12 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },
@@ -1573,8 +2034,11 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-5',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
-    description: 'Test 4 -> One input event is invalid with one event to multiple events',
+    description: 'Test 5 -> One input event is invalid with one event to multiple events',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -1624,18 +2088,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1676,18 +2138,16 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -1728,14 +2188,12 @@ export const data = [
                 jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -1776,14 +2234,12 @@ export const data = [
                 jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -1927,33 +2383,29 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batched: false,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                  hashUserProperties: false,
-                  pixelCode: 'dummyPixelCode',
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+                hashUserProperties: false,
+                pixelCode: 'dummyPixelCode',
+                version: 'v2',
+              }),
               error: 'Event name (abc) is not valid, must be mapped to one of standard events',
               metadata: [
                 {
@@ -1978,8 +2430,11 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-6',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
-    description: 'Test 5 -> Some input events are test events with one event to multiple events',
+    description: 'Test 6 -> Some input events are test events with one event to multiple events',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -2029,18 +2484,68 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
+            },
+            {
+              message: {
+                anonymousId: '21e13f4bc7ceddad',
+                channel: 'web',
+                context: {
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  ip: '13.57.97.131',
+                  locale: 'en-US',
+                  externalId: [{ type: 'tiktokExternalId', id: 'id5' }],
                 },
+                messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                timestamp: '2020-09-17T19:49:27Z',
+                type: 'track',
+                event: 'checkout step completed',
+                properties: {
+                  eventId: '1616318632825_357',
+                  clickId: 'dummyClickId',
+                  contents: [
+                    { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                    { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
+                  ],
+                  currency: 'USD',
+                  value: 46,
+                  phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                  email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T09:03:22.563Z',
               },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+              },
+              destination: overrideDestination(destinationConfig, {
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2078,21 +2583,19 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 2,
+                jobId: 3,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2131,17 +2634,15 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 3,
+                jobId: 4,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
             {
               message: {
@@ -2179,17 +2680,15 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 4,
+                jobId: 5,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2322,99 +2821,50 @@ export const data = [
                   userId: 'u1',
                 },
                 {
+                  jobId: 3,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
+            },
+            {
+              metadata: [
+                {
                   jobId: 2,
                   userId: 'u1',
                 },
               ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
+              batched: false,
+              statusCode: 400,
+              statTags: {
+                destType: 'TIKTOK_ADS',
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
               },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
-                headers: {
-                  'Access-Token': 'dummyAccessToken',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
-                    partner_name: 'RudderStack',
-                    data: [
-                      {
-                        event_id: '1616318632825_357',
-                        event_time: 1600372167,
-                        properties: {
-                          contents: [
-                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          content_type: 'product',
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        page: { url: 'http://demo.mywebsite.com/purchase' },
-                        user: {
-                          locale: 'en-US',
-                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                          external_id: 'id4',
-                        },
-                        event: 'CompletePayment',
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [
-                {
-                  jobId: 4,
-                  userId: 'u1',
-                },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              error: 'Access Token not found. Aborting',
+              destination: overrideDestination(destinationConfig, {
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2482,20 +2932,91 @@ export const data = [
               ],
               metadata: [
                 {
-                  jobId: 3,
+                  jobId: 4,
                   userId: 'u1',
                 },
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
                 },
+                params: {},
+                body: {
+                  JSON: {
+                    event_source_id: 'dummyPixelCode',
+                    event_source: 'web',
+                    partner_name: 'RudderStack',
+                    data: [
+                      {
+                        event_id: '1616318632825_357',
+                        event_time: 1600372167,
+                        properties: {
+                          contents: [
+                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
+                            {
+                              price: 30,
+                              quantity: 1,
+                              content_type: 'dress',
+                              content_id: '1197218',
+                            },
+                          ],
+                          content_type: 'product',
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        page: { url: 'http://demo.mywebsite.com/purchase' },
+                        user: {
+                          locale: 'en-US',
+                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                          ip: '13.57.97.131',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                          external_id: 'id4',
+                        },
+                        event: 'CompletePayment',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
               },
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
           ],
         },
@@ -2504,8 +3025,11 @@ export const data = [
     mockFns: defaultMockFns,
   },
   {
+    id: 'tiktok_ads-router-test-7',
+    scenario: 'Default router scenario',
+    successCriteria: 'Should pass successfully',
     name: 'tiktok_ads',
-    description: 'Test 6 -> All input events are test events',
+    description: 'Test 7 -> All input events are test events',
     feature: FEATURES.ROUTER,
     module: 'destination',
     version: 'v0',
@@ -2553,18 +3077,16 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               message: {
@@ -2606,14 +3128,12 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
               },
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
           destType: 'tiktok_ads',
@@ -2698,18 +3218,16 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                  eventsToStandard: [
-                    { from: 'addToCart', to: 'CompletePayment' },
-                    { from: 'addToCart', to: 'download' },
-                  ],
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
+              }),
             },
             {
               batchedRequest: [
@@ -2783,14 +3301,12 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  pixelCode: 'dummyPixelCode',
-                  hashUserProperties: false,
-                  version: 'v2',
-                },
-              },
+              destination: overrideDestination(destinationConfig, {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'dummyPixelCode',
+                hashUserProperties: false,
+                version: 'v2',
+              }),
             },
           ],
         },

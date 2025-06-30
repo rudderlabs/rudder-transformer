@@ -41,10 +41,10 @@ Implementation in **Javascript**
 
 ### Batching Support
 
-- **Supported**: Yes
-- **Message Types**: All message types (Identify, Track, Alias)
-- **Implementation**: Uses standard RudderStack batching via `simpleProcessRouterDest`
-- **Batch Limits**: No specific limits implemented in the destination code
+- **Supported**: No
+- **Message Types**: N/A
+- **Implementation**: Uses `simpleProcessRouterDest` which processes events individually with concurrent processing, not actual batching
+- **Batch Limits**: N/A - Each event is processed as a separate API call
 
 ### Rate Limits
 
@@ -76,7 +76,7 @@ When rate limits are exceeded, MoEngage returns a `429 Too Many Requests` status
 
 - **Exponential Backoff**: Implement exponential backoff when receiving 429 errors to reduce data loss
 - **Request Spacing**: Space out requests to avoid hitting rate limits
-- **Batch Processing**: Use batching to reduce the number of API calls
+- **Individual Processing**: Each event is processed as a separate API call
 
 **Note**: Specific rate limit values need to be confirmed from MoEngage's official API documentation. The FAQ section mentions reducing "5xx errors because of too many requests per second/minute" suggesting there are per-second and per-minute limits.
 
@@ -116,6 +116,54 @@ if (message?.context?.device?.type && message?.context?.device?.token) {
 
 - **Supported**: No
 - **Authentication**: Basic Authentication using API ID and API Key
+
+### Field Mappings
+
+#### Identify Events
+
+**Standard Fields**:
+- `name` ← `traits.name`, `context.traits.name` (converted to string)
+- `first_name` ← `traits.firstname`, `traits.first_name`, `traits.firstName`, `context.traits.*` (converted to string)
+- `last_name` ← `traits.lastname`, `traits.last_name`, `traits.lastName`, `context.traits.*` (converted to string)
+- `email` ← `traits.email`, `context.traits.email` (converted to string)
+- `age` ← `traits.age`, `context.traits.age` (converted to number)
+- `gender` ← `traits.gender`, `context.traits.gender` (converted to string)
+- `mobile` ← `traits.mobile`, `context.traits.mobile` (converted to string)
+- `source` ← `traits.source`, `context.traits.source` (converted to string)
+- `created_time` ← `traits.createdAt`, `context.traits.createdAt`
+- `last_seen` ← `traits.last_seen`, `context.traits.last_seen`, `traits.lastSeen`, `context.traits.lastSeen`
+- `transactions` ← `traits.transactions`, `context.traits.transactions` (converted to number)
+- `revenue` ← `traits.revenue`, `context.traits.revenue` (converted to number)
+- `moe_unsubscribe` ← `traits.moe_unsubscribe`, `context.traits.moe_unsubscribe`, `traits.moeUnsubscribe`, `context.traits.moeUnsubscribe`
+
+**Custom Attributes**: All other fields from `traits` and `context.traits` are included, excluding the standard fields listed above.
+
+#### Track Events
+
+**Standard Fields**:
+- `action` ← `event` (required)
+- `attributes` ← `properties` (flattened or merged based on `useObjectData`)
+- `platform` ← `context.device.type`, `channel`
+- `app_version` ← `context.app.version`
+- `current_time` ← `timestamp`, `originalTimestamp`
+- `user_timezone_offset` ← `context.timezone` (converted using `getOffsetInSec`)
+
+#### Device Information (Identify Sub-flow)
+
+**Standard Fields**:
+- `platform` ← `context.device.type`, `channel`
+- `push_id` ← `context.device.token`
+- `model` ← `context.device.model`
+- `push_preference` ← `properties.push_preference`, `properties.pushPreference`
+- `app_version` ← `context.app.version`
+- `os_version` ← `context.os.version`
+- `active` ← `properties.active`
+
+#### Alias Events
+
+**Standard Fields**:
+- `merge_data[0].retained_user` ← `userId` (required)
+- `merge_data[0].merged_user` ← `previousId` (required)
 
 ### Additional Functionalities
 
@@ -157,6 +205,50 @@ if (message?.context?.device?.type && message?.context?.device?.token) {
 - **Supported**: Yes
 - **Configuration**: Via `region` setting
 - **Automatic Endpoint Selection**: Based on configured region
+
+### Error Handling
+
+The destination implements comprehensive error handling for various scenarios:
+
+#### Error Types
+
+1. **ConfigurationError**: Thrown when required configuration is missing or invalid
+   - Invalid region values (must be 'US', 'EU', or 'IND')
+   - Missing API ID or API Key
+
+2. **TransformationError**: Thrown when payload construction fails
+   - Base payload could not be constructed
+   - Payload could not be constructed due to missing required fields
+
+3. **InstrumentationError**: Thrown for unsupported operations
+   - Unsupported event types (only 'identify', 'track', 'alias' are supported)
+   - Missing event type in message
+
+#### Validation Rules
+
+**General Validations**:
+- Event type must be present and supported
+- At least one user identifier must be available
+
+**Identify Event Validations**:
+- Customer ID must be derivable from `userId`, `traits.userId`, `traits.id`, `context.traits.userId`, `context.traits.id`, or `anonymousId`
+- For device tracking: Both `context.device.type` and `context.device.token` are required
+
+**Track Event Validations**:
+- Event name (`event` field) is required
+- Customer ID must be available from the same sources as Identify events
+
+**Alias Event Validations**:
+- Both `userId` and `previousId` are required
+- `userId` and `previousId` must be different values
+
+### Data Type Conversions
+
+The destination performs automatic data type conversions:
+
+- **toString**: Applied to name, first_name, last_name, email, gender, mobile, source fields
+- **toNumber**: Applied to age, transactions, revenue fields
+- **getOffsetInSec**: Applied to timezone offset conversion for Track events
 
 ## General Queries
 

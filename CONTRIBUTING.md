@@ -128,8 +128,9 @@ Understand the code structure
 
 
 * `src/v0/destinations` - Destination integrations
+* `src/v1/destinations` - Destination integrations (used for network handlers)
+* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
 * `src/v1/sources` - Source integrations
-* `src/v0` and `src/v1` - Older integrations. If you're fixing bugs in one of the older integrations, you might find your integration in these folders if it is an older integration.
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 
@@ -452,8 +453,9 @@ Understand the code structure
 
 
 * `src/v0/destinations` - Destination integrations
+* `src/v1/destinations` - Destination integrations (used for network handlers)
+* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
 * `src/v1/sources` - Source integrations
-* `src/v0` and `src/v1` - Older integrations. If you're fixing bugs in one of the older integrations, you might find your integration in these folders if it is an older integration.
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 

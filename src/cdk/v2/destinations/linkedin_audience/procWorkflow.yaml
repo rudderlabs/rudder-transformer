@@ -14,7 +14,7 @@ steps:
       const secret = .metadata.secret;
       let messageType = .message.type;
       $.assertConfig(config.audienceId, "Audience Id is not present. Aborting");
-      $.assertConfig(secret.accessToken, "Access Token is not present. Aborting");
+      $.assertConfig(secret.accessToken, "Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.");
       $.assertConfig(config.audienceType, "audienceType is not present. Aborting");
       $.assert(messageType, "Message Type is not present. Aborting message.");
       $.assert(messageType.toLowerCase() === $.SUPPORTED_EVENT_TYPE, `Event type ${.message.type.toLowerCase()} is not supported. Aborting message.`);

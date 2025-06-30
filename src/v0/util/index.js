@@ -1977,7 +1977,9 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret?.[accessTokenKey]) {
-    throw new OAuthSecretError('OAuth - access token not found');
+    throw new OAuthSecretError(
+      'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
+    );
   }
   return secret[accessTokenKey];
 };

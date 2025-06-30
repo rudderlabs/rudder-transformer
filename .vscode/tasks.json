@@ -1,0 +1,67 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Create and run dt curl request for selected test case",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/dtApiCurlCreation.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Create and run server curl request for selected test case",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/serverApiCurlCreation.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run component test on selected test case",
+      "type": "process",
+      "command": "npx",
+      "args": [
+        "ts-node",
+        "scripts/runSingleTestCase.ts",
+        "${file}",
+        // Ensure the entire input string is treated as a single argument by the process
+        "${input:transformedSelectedText}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ],
+  "inputs": [
+    {
+      "id": "transformedSelectedText",
+      "type": "command",
+      "command": "extension.commandvariable.transform",
+      "args": {
+        "text": "${selectedText}", // The input for transformation is the currently selected text
+        "type": "string",
+        "find": "\\n", // Regex to find newline characters
+        "replace": " ", // Replace newlines with a space
+        "flags": "g" // Global flag to replace all occurrences
+      }
+    }
+  ]
+}

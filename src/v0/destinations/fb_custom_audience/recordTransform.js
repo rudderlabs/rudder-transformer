@@ -1,6 +1,12 @@
 /* eslint-disable no-const-assign */
 const lodash = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  groupByInBatches,
+  forEachInBatches,
+  mapInBatches,
+} = require('@rudderstack/integrations-lib');
 const { schemaFields, MAX_USER_COUNT } = require('./config');
 const stats = require('../../../util/stats');
 const {
@@ -70,13 +76,19 @@ const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
  * @param {string} audienceId - The audience ID.
  * @returns {Array} - The response events to send.
  */
-const processRecordEventArray = (recordChunksArray, config, destination, operation, audienceId) => {
+const processRecordEventArray = async (
+  recordChunksArray,
+  config,
+  destination,
+  operation,
+  audienceId,
+) => {
   const { userSchema, isHashRequired, disableFormat, paramsPayload, prepareParams } = config;
   const toSendEvents = [];
   const metadata = [];
 
-  recordChunksArray.forEach((recordArray) => {
-    const data = recordArray.map((input) => {
+  await forEachInBatches(recordChunksArray, async (recordArray) => {
+    const data = await mapInBatches(recordArray, async (input) => {
       const { dataElement, metadata: recordMetadata } = processRecord(
         input,
         userSchema,
@@ -117,8 +129,17 @@ const processRecordEventArray = (recordChunksArray, config, destination, operati
  * @param {Object} config - The configuration object.
  * @returns {Array} - The final response payload.
  */
-function preparePayload(events, config) {
-  const { audienceId, userSchema, isRaw, type, subType, isHashRequired, disableFormat } = config;
+async function preparePayload(events, config) {
+  const {
+    audienceId,
+    userSchema,
+    isRaw,
+    type,
+    subType,
+    isHashRequired,
+    disableFormat,
+    isValueBasedAudience,
+  } = config;
   const { destination } = events[0];
   const { accessToken, appSecret } = destination.Config;
   const prepareParams = {
@@ -139,6 +160,11 @@ function preparePayload(events, config) {
   if (!checkSubsetOfArray(schemaFields, cleanUserSchema)) {
     throw new ConfigurationError('One or more of the schema fields are not supported');
   }
+  if (!isValueBasedAudience && cleanUserSchema.includes('LOOKALIKE_VALUE')) {
+    throw new ConfigurationError(
+      'LOOKALIKE_VALUE field can only be used for Value-Based Custom Audiences.',
+    );
+  }
 
   const paramsPayload = {};
 
@@ -151,12 +177,21 @@ function preparePayload(events, config) {
     paramsPayload.data_source = dataSource;
   }
 
-  const groupedRecordsByAction = lodash.groupBy(events, (record) =>
+  const groupedRecordsByAction = await groupByInBatches(events, (record) =>
     record.message.action?.toLowerCase(),
   );
 
-  const processAction = (action, operation) => {
+  const processAction = async (action, operation) => {
     if (groupedRecordsByAction[action]) {
+      if (
+        isValueBasedAudience &&
+        !cleanUserSchema.includes('LOOKALIKE_VALUE') &&
+        operation === 'add'
+      ) {
+        throw new ConfigurationError(
+          'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+        );
+      }
       const recordChunksArray = returnArrayOfSubarrays(
         groupedRecordsByAction[action],
         MAX_USER_COUNT,
@@ -178,9 +213,9 @@ function preparePayload(events, config) {
     return null;
   };
 
-  const deleteResponse = processAction('delete', 'remove');
-  const insertResponse = processAction('insert', 'add');
-  const updateResponse = processAction('update', 'add');
+  const deleteResponse = await processAction('delete', 'remove');
+  const insertResponse = await processAction('insert', 'add');
+  const updateResponse = await processAction('update', 'add');
 
   const errorResponse = getErrorResponse(groupedRecordsByAction);
 
@@ -203,7 +238,7 @@ function preparePayload(events, config) {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-function processRecordInputsV1(groupedRecordInputs) {
+async function processRecordInputsV1(groupedRecordInputs) {
   const { destination } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, userSchema } =
@@ -233,9 +268,9 @@ function processRecordInputsV1(groupedRecordInputs) {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-const processRecordInputsV2 = (groupedRecordInputs) => {
+const processRecordInputsV2 = async (groupedRecordInputs) => {
   const { connection, message } = groupedRecordInputs[0];
-  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId } =
+  const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, isValueBasedAudience } =
     connection.config.destination;
   const identifiers = message?.identifiers;
   let userSchema;
@@ -257,6 +292,7 @@ const processRecordInputsV2 = (groupedRecordInputs) => {
     subType,
     isHashRequired,
     disableFormat,
+    isValueBasedAudience,
   });
 };
 
@@ -265,7 +301,7 @@ const processRecordInputsV2 = (groupedRecordInputs) => {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-function processRecordInputs(groupedRecordInputs) {
+async function processRecordInputs(groupedRecordInputs) {
   const event = groupedRecordInputs[0];
   // First check for rETL flow and second check for ES flow
   if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {

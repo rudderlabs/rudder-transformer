@@ -8,9 +8,13 @@ import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
   rETLRecordV2RouterInvalidRequest,
+  rETLRecordV2RouterRequestWithValueBasedAudience,
+  rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
+  rETLRecordV2RouterInvalidRequestWithLookalikeValue,
 } from './rETL';
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
+import { generateMetadata } from '../../../testUtils';
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -1022,6 +1026,200 @@ export const data = [
               batched: false,
               statusCode: 400,
               error: 'Audience ID is a mandatory field',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 with LOOKALIKE_VALUE in normal audience',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterInvalidRequestWithLookalikeValue,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'LOOKALIKE_VALUE field can only be used for Value-Based Custom Audiences.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 tests with value based audience',
+    scenario: 'Framework',
+    successCriteria:
+      'all record events should be transformed correctly including records with null values',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterRequestWithValueBasedAudience,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    payload: {
+                      schema: ['EMAIL', 'FI', 'LOOKALIKE_VALUE'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          0,
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          100.1,
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          100,
+                        ],
+                        ['', '', 0.1],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          100,
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          0,
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                          0,
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                generateMetadata(1),
+                generateMetadata(2),
+                generateMetadata(3),
+                generateMetadata(4),
+                generateMetadata(5),
+                generateMetadata(6),
+                generateMetadata(7),
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                },
+                Name: 'FB_CUSTOM_AUDIENCE',
+                Enabled: true,
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'FB_CUSTOM_AUDIENCE',
+                },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                Transformations: [],
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 invalid connection tests with value based audience',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',

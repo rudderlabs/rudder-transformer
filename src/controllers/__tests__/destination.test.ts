@@ -80,7 +80,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 
@@ -128,7 +128,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 
@@ -181,7 +181,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 
@@ -213,7 +213,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 
@@ -275,7 +275,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 
@@ -307,7 +307,7 @@ describe('Destination controller tests', () => {
           return mockDestinationService;
         });
 
-      DynamicConfigParser.process = jest.fn().mockImplementation((events) => {
+      DynamicConfigParser.process = jest.fn().mockImplementation(async (events) => {
         return events;
       });
 

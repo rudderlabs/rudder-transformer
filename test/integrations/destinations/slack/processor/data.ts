@@ -164,4 +164,80 @@ export const data: ProcessorTestData[] = [
       return {};
     },
   },
+  {
+    id: 'slack-identify-with-newline-helper',
+    name: 'slack',
+    description: 'Identify call with newline Handlebars helper in template',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'Sending identify call with a template that uses {{newline}}',
+    successCriteria: 'The resulting Slack message should contain a newline character',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            destination: overrideDestination(baseDestination, {
+              identifyTemplate:
+                'Hello {{name}}{{newline}}Your traits: name: {{name}} and role: {{role}}',
+            }),
+            message: generateCommonMessage(
+              'identify',
+              '12345',
+              '4de817fb-7f8e-4e23-b9be-f6736dbda20f',
+              '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
+              {
+                context: {
+                  traits: {
+                    name: 'Jane Doe',
+                    role: 'Developer',
+                  },
+                },
+              },
+            ),
+            metadata: generateCommonMetadata(777, '12345', '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780'),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  payload: JSON.stringify({
+                    text: 'Hello Jane Doe\nYour traits: name: Jane Doe and role: Developer',
+                    username: 'RudderStack',
+                    icon_url: 'https://cdn.rudderlabs.com/rudderstack.png',
+                  }),
+                },
+              },
+              files: {},
+              userId: '12345',
+            },
+            metadata: generateCommonMetadata(777, '12345', '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780'),
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: () => {
+      return {};
+    },
+  },
 ];

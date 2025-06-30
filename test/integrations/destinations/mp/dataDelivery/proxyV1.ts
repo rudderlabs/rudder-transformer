@@ -492,7 +492,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+              'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object',
             response: [
               {
                 statusCode: 400,
@@ -500,7 +500,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   jobId: 1,
                 }),
                 error:
-                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object',
               },
               {
                 statusCode: 400,
@@ -508,7 +508,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                   jobId: 2,
                 }),
                 error:
-                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"buffer\" argument must be of type string or an instance of Buffer, TypedArray, DataView, or ArrayBuffer. Received an instance of Object',
+                  'Failed to do GZIP compression: TypeError [ERR_INVALID_ARG_TYPE]: The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object',
               },
             ],
             statTags: {

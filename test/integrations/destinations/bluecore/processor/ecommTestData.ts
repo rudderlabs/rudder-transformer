@@ -1,15 +1,11 @@
-import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../testUtils';
-
-const metadata = {
-  sourceType: '',
-  destinationType: '',
-  namespace: '',
-  destinationId: '',
-};
+import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+import { baseMetadata, baseDestinationDefinition } from '../common';
 
 const destination = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
   Name: 'BLUECORE',
+  DestinationDefinition: baseDestinationDefinition,
   Config: {
     bluecoreNamespace: 'dummy_sandbox',
     eventsMapping: [
@@ -32,8 +28,11 @@ const destination = {
     ],
   },
   Enabled: true,
+  WorkspaceID: 'default-workspace',
   Transformations: [],
-  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
 };
 
 const commonTraits = {
@@ -75,22 +74,24 @@ const commonOutputHeaders = {
 
 const eventEndPoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
-export const ecomTestData = [
+export const ecomTestData: ProcessorTestData[] = [
   {
     id: 'bluecore-track-test-1',
     name: 'bluecore',
     description:
       'Track event call with custom event mapped in destination config to purchase event. This will fail as order_id is not present in the payload',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: destination,
-            metadata,
+            destination,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'testPurchase',
@@ -115,9 +116,10 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore] property:: order_id is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: order_id is required for purchase event',
-            metadata,
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -126,8 +128,8 @@ export const ecomTestData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },
@@ -139,15 +141,17 @@ export const ecomTestData = [
     description:
       'Track event call with custom event mapped in destination config to purchase event. This will fail as total is not present in the payload',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'testPurchase',
@@ -172,9 +176,10 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore] property:: total is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: total is required for purchase event',
-            metadata,
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -183,8 +188,8 @@ export const ecomTestData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },
@@ -196,15 +201,17 @@ export const ecomTestData = [
     description:
       'Track event call with products searched event not mapped in destination config. This will fail as search_query is not present in the payload',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'Products Searched',
@@ -229,9 +236,10 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore] property:: search_query is required for search event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: search_query is required for search event',
-            metadata,
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -240,8 +248,8 @@ export const ecomTestData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },
@@ -253,15 +261,17 @@ export const ecomTestData = [
     description:
       'Track event call with Product Viewed event not mapped in destination config. This will be sent with viewed_product name. This event without properties.products will add entire property object as products as this event type is recommended to sent with products',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'product viewed',
@@ -316,7 +326,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -329,11 +339,13 @@ export const ecomTestData = [
     description:
       'Track event call with custom event mapped with two standard ecomm events in destination config. Both of the two corresponding standard events will be sent ',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -367,7 +379,7 @@ export const ecomTestData = [
                 All: true,
               },
             },
-            metadata,
+            metadata: baseMetadata,
             destination,
           },
         ],
@@ -406,7 +418,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
           {
@@ -438,7 +450,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
-            metadata,
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -451,15 +463,17 @@ export const ecomTestData = [
     description:
       'Track event call with Order Completed event without product array and not mapped in destination config. This will be sent with purchase name. This event without properties.products will generate error as products array is required for purchase event and ordered completed is a standard ecomm event',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination: destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'Order Completed',
@@ -484,9 +498,10 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore]:: products array is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore]:: products array is required for purchase event',
-            metadata,
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -495,8 +510,8 @@ export const ecomTestData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },

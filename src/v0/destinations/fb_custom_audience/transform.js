@@ -1,5 +1,9 @@
 const lodash = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  groupByInBatches,
+} = require('@rudderstack/integrations-lib');
 const {
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
@@ -214,7 +218,9 @@ const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = [];
-  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+  const groupedInputs = await groupByInBatches(inputs, (input) =>
+    input.message.type?.toLowerCase(),
+  );
   let transformedRecordEvent = [];
   let transformedAudienceEvent = [];
 
@@ -226,7 +232,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   if (groupedInputs.record) {
-    transformedRecordEvent = processRecordInputs(groupedInputs.record);
+    transformedRecordEvent = await processRecordInputs(groupedInputs.record);
   }
 
   if (groupedInputs.audiencelist) {

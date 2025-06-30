@@ -208,12 +208,17 @@ const handleSearchError = (searchResponse) => {
 const handleDeletion = async (
   input,
   identifiers,
-  Config,
+  destination,
   destConfig,
   transformedResponseToBeBatched,
   errorResponseList,
 ) => {
-  const searchResponse = await searchRecordIdV2(identifiers, input.metadata, Config, destConfig);
+  const searchResponse = await searchRecordIdV2({
+    identifiers,
+    metadata: input.metadata,
+    destination,
+    destConfig,
+  });
 
   if (searchResponse.erroneous) {
     const error = handleSearchError(searchResponse);
@@ -240,7 +245,7 @@ const handleDeletion = async (
 const processInput = async (
   input,
   operationModuleType,
-  Config,
+  destination,
   transformedResponseToBeBatched,
   errorResponseList,
   destConfig,
@@ -273,7 +278,7 @@ const processInput = async (
     await handleDeletion(
       input,
       identifiers,
-      Config,
+      destination,
       destConfig,
       transformedResponseToBeBatched,
       errorResponseList,
@@ -334,7 +339,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
   };
 
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
-    Config,
+    destination,
     destConfig,
   );
 
@@ -343,7 +348,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
       processInput(
         input,
         operationModuleType,
-        Config,
+        destination,
         transformedResponseToBeBatched,
         errorResponseList,
         destConfig,

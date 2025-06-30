@@ -1,15 +1,18 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { BaseTestCase } from '@rudderstack/integrations-lib';
+import { EnvOverride } from './envUtils';
 
 import {
   DeliveryV1Response,
   Metadata,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProcessorCompactedTransformationRequest,
   ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationResponse,
+  RouterCompactedTransformationRequest,
   RudderMessage,
 } from '../../src/types';
 
@@ -60,6 +63,7 @@ export interface TestCaseData extends BaseTestCase {
   overrideReceivedAt?: string;
   overrideRequestIP?: string;
   mockFns?: (mockAdapter: MockAdapter) => {};
+  envOverrides?: EnvOverride;
 }
 
 export interface ExtendedTestCaseData {
@@ -105,7 +109,10 @@ export type ProcessorTestData = {
   input: {
     request: {
       method: string;
-      body: ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[];
+      headers?: Record<string, string>;
+      body:
+        | ProcessorTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>[]
+        | ProcessorCompactedTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
     };
   };
   output: {
@@ -115,6 +122,7 @@ export type ProcessorTestData = {
     };
   };
   mockFns?: (mockAdapter: MockAdapter) => void;
+  envOverrides?: EnvOverride;
 };
 export type RouterTestData = {
   id: string;
@@ -128,8 +136,11 @@ export type RouterTestData = {
   version: string;
   input: {
     request: {
-      body: RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
       method: string;
+      headers?: Record<string, string>;
+      body:
+        | RouterTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>
+        | RouterCompactedTransformationRequest<Partial<RudderMessage>, Partial<Metadata>>;
     };
   };
   output: {
@@ -141,6 +152,7 @@ export type RouterTestData = {
     };
   };
   mockFns?: (mockAdapter: MockAdapter) => void;
+  envOverrides?: EnvOverride;
 };
 
 export type ProxyV1TestData = BaseTestCase & {

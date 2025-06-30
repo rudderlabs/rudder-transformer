@@ -24,7 +24,7 @@ steps:
 
   - name: processRecordEvents
     template: |
-      $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
+      await $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
 
   - name: failOtherEvents
     template: |

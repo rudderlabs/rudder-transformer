@@ -1,12 +1,12 @@
-import {
-  overrideDestination,
-  transformResultBuilder,
-  generateSimplifiedIdentifyPayload,
-} from '../../testUtils';
+import { transformResultBuilder, generateSimplifiedIdentifyPayload } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+
+import { baseMetadata, baseDestinationDefinition } from '../common';
 
 const destination = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
   Name: 'BLUECORE',
+  DestinationDefinition: baseDestinationDefinition,
   Config: {
     bluecoreNamespace: 'dummy_sandbox',
     eventsMapping: [
@@ -17,15 +17,11 @@ const destination = {
     ],
   },
   Enabled: true,
+  WorkspaceID: 'default-workspace',
   Transformations: [],
-  DestinationDefinition: { Config: { cdkV2Enabled: true } },
-};
-
-const metadata = {
-  sourceType: '',
-  destinationType: '',
-  namespace: '',
-  destinationId: '',
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
 };
 
 const commonTraits = {
@@ -77,7 +73,7 @@ const sentAt = '2021-01-03T17:02:53.195Z';
 const originalTimestamp = '2021-01-03T17:02:53.193Z';
 const commonEndpoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
-export const identifyData = [
+export const identifyData: ProcessorTestData[] = [
   {
     id: 'bluecore-identify-test-1',
     name: 'bluecore',
@@ -91,10 +87,11 @@ export const identifyData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: { ...commonTraits, email: 'abc@gmail.com' },
@@ -127,12 +124,7 @@ export const identifyData = [
                 event: 'customer_patch',
               },
             }),
-            metadata: {
-              sourceType: '',
-              destinationType: '',
-              namespace: '',
-              destinationId: '',
-            },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -145,15 +137,17 @@ export const identifyData = [
     description:
       '[Success]: Identify call with all properties,along with action as identify that mandatorily needs email to link distict_id with customer in bluecore',
     scenario: 'Business',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: commonTraits,
@@ -175,14 +169,10 @@ export const identifyData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               '[Bluecore] property:: email is required for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: email is required for identify action',
-            metadata: {
-              destinationId: '',
-              destinationType: '',
-              namespace: '',
-              sourceType: '',
-            },
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -191,8 +181,8 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },
@@ -211,10 +201,11 @@ export const identifyData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: commonTraits,
@@ -236,14 +227,10 @@ export const identifyData = [
         status: 200,
         body: [
           {
+            metadata: baseMetadata,
+            statusCode: 400,
             error:
               "[Bluecore] traits.action must be 'identify' for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] traits.action must be 'identify' for identify action",
-            metadata: {
-              destinationId: '',
-              destinationType: '',
-              namespace: '',
-              sourceType: '',
-            },
             statTags: {
               destType: 'BLUECORE',
               destinationId: '',
@@ -252,8 +239,8 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
+              workspaceId: 'default-workspace',
             },
-            statusCode: 400,
           },
         ],
       },
@@ -272,10 +259,11 @@ export const identifyData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: { ...commonTraits, email: 'abc@gmail.com' },
@@ -312,12 +300,7 @@ export const identifyData = [
                 event: 'identify',
               },
             }),
-            metadata: {
-              destinationId: '',
-              destinationType: '',
-              namespace: '',
-              sourceType: '',
-            },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],
@@ -337,10 +320,11 @@ export const identifyData = [
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             destination,
-            metadata,
+            metadata: baseMetadata,
             message: generateSimplifiedIdentifyPayload({
               context: contextWithExternalId,
               anonymousId,
@@ -371,12 +355,7 @@ export const identifyData = [
                 event: 'customer_patch',
               },
             }),
-            metadata: {
-              sourceType: '',
-              destinationType: '',
-              namespace: '',
-              destinationId: '',
-            },
+            metadata: baseMetadata,
             statusCode: 200,
           },
         ],

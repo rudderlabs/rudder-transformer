@@ -110,7 +110,7 @@ export const createSuccessResponse = (
  */
 export const handleNonSuccessResponse = (responseParams: ResponseHandlerParams): never => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
-  const { status } = destinationResponse;
+  const { status, response } = destinationResponse;
 
   // Ensure rudderJobMetadata is an array
   const metadata = Array.isArray(rudderJobMetadata) ? rudderJobMetadata : [rudderJobMetadata];
@@ -122,7 +122,7 @@ export const handleNonSuccessResponse = (responseParams: ResponseHandlerParams):
   );
 
   throw new TransformerProxyError(
-    `MIXPANEL: Error encountered in transformer proxy V1 with status: ${status}`,
+    `MIXPANEL: Error encountered in transformer proxy V1 with status: ${status}: response: ${JSON.stringify(response)}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

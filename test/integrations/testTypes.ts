@@ -134,6 +134,7 @@ export type RouterTestData = {
   feature: string;
   module: string;
   version: string;
+  skip?: boolean;
   input: {
     request: {
       method: string;

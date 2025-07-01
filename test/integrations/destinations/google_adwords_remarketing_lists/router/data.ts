@@ -8,7 +8,7 @@ import {
   rETLRecordRouterRequestVDMv1,
 } from './record';
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 export const data = [
   {

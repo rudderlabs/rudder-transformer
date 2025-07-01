@@ -539,6 +539,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_batched_identify_func_calls_count',
+        help: 'braze_batched_identify_func_calls_count will count the number of times the batched identify function is called',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
         name: 'braze_batch_subscription_size',
         help: 'braze_batch_subscription_size',
         type: 'gauge',

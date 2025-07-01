@@ -204,6 +204,9 @@ export const identityResolution = [
         },
       },
     },
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
+    },
   },
   {
     id: 'batchedIdentify_disabled',
@@ -338,6 +341,9 @@ export const identityResolution = [
           ],
         },
       },
+    },
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },
   {
@@ -537,6 +543,9 @@ export const identityResolution = [
           ],
         },
       },
+    },
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
     },
   },
   {
@@ -738,6 +747,9 @@ export const identityResolution = [
           ],
         },
       },
+    },
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
     },
   },
 ];

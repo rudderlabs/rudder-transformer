@@ -1,5 +1,4 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
-import { enableBatchedIdentifyResolution, disableBatchedIdentifyResolution } from '../mocks';
 import { identityResolution } from './identityResolution';
 
 const basicRouterTests = [
@@ -422,7 +421,9 @@ const basicRouterTests = [
         },
       },
     },
-    mockFns: disableBatchedIdentifyResolution,
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
+    }
   },
   {
     name: 'braze',
@@ -899,14 +900,18 @@ const basicRouterTests = [
         },
       },
     },
-    mockFns: disableBatchedIdentifyResolution,
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
+    }
   },
 ];
 
 const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map((test) => {
   return {
     ...test,
-    mockFns: enableBatchedIdentifyResolution,
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
+    }
   };
 });
 

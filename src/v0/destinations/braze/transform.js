@@ -17,6 +17,7 @@ const {
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
 } = require('./util');
+const stats = require('../../../util/stats');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -43,9 +44,9 @@ const {
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  shouldBatchBrazeIdentifyResolution,
 } = require('./config');
 
-const config = require('./config');
 
 const logger = require('../../../logger');
 const { getEndpointFromConfig, formatGender } = require('./util');
@@ -182,10 +183,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
   return data;
 }
 
-async function processBatchedIdentify(identifyCallsArray) {
-  if (identifyCallsArray.length === 0) {
-    return null;
-  }
+async function processBatchedIdentify(identifyCallsArray, destinationId) {
+
+  stats.increment('braze_batched_identify_func_calls_count', { destination_id: destinationId });
 
   const { destination } = identifyCallsArray[0];
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
@@ -647,14 +647,14 @@ const processRouterDest = async (inputs, reqMetadata) => {
       : simpleProcessRouterDest;
     const respList = await simpleProcessRouterDestFunc(groupedInputs[id], process, reqMetadata, {
       userStore,
-      identifyCallsArray: config.BRAZE_BATCH_IDENTIFY_RESOLUTION ? identifyCallsArray : undefined,
+      identifyCallsArray: shouldBatchBrazeIdentifyResolution() ? identifyCallsArray : undefined,
     });
     return respList;
   });
 
   // console.log("identifyCallsArray", identifyCallsArray);
   if (identifyCallsArray && identifyCallsArray.length > 0) {
-    const batchedIdentifyError = await processBatchedIdentify(identifyCallsArray);
+    const batchedIdentifyError = await processBatchedIdentify(identifyCallsArray, destination.ID);
     // console.log("batchedIdentifyError", batchedIdentifyError);
     if (batchedIdentifyError.some((error) => error !== null)) {
       // fail the entire batch incase of batched identify failure -> expected to never fail

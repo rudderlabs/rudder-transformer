@@ -58,8 +58,8 @@ const BRAZE_NON_BILLABLE_ATTRIBUTES = [
 
 const BRAZE_PURCHASE_STANDARD_PROPERTIES = ['product_id', 'sku', 'price', 'quantity', 'currency'];
 
-// const BRAZE_BATCH_IDENTIFY_RESOLUTION = process.env.BRAZE_BATCH_IDENTIFY_RESOLUTION === 'true';
-const BRAZE_BATCH_IDENTIFY_RESOLUTION = true;
+const shouldBatchBrazeIdentifyResolution = () => process.env.BRAZE_BATCH_IDENTIFY_RESOLUTION === 'true';
+
 
 module.exports = {
   ConfigCategory,
@@ -78,5 +78,5 @@ module.exports = {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
-  BRAZE_BATCH_IDENTIFY_RESOLUTION,
+  shouldBatchBrazeIdentifyResolution,
 };

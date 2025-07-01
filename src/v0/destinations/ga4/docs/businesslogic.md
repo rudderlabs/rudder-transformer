@@ -206,12 +206,18 @@ non_personalized_ads: !context.device.adTrackingEnabled
 - Maximum 36 characters
 - UTF-8 encoded strings
 
+**Special Parameter Value Limits:**
+- `page_title`: Maximum 300 characters
+- `page_referrer`: Maximum 420 characters
+- `page_location`: Maximum 1,000 characters
+
 ### Request Validation
 
 **Payload Limits:**
 - Maximum 25 events per request
 - Maximum 25 parameters per event
 - Maximum 25 user properties per request
+- Maximum 10 custom parameters per item
 - Maximum 130 KB total payload size
 
 ## Configuration-Based Logic

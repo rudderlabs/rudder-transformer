@@ -1,6 +1,6 @@
 # Google Analytics 4 (GA4) Destination
 
-Implementation in **Javascript**
+Implementation in **JavaScript**
 
 ## Configuration
 
@@ -29,6 +29,9 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - **Debug Mode**: Enable to send events to GA4 debug validation server for testing
+  - Uses debug endpoint: `https://www.google-analytics.com/debug/mp/collect`
+  - Returns validation messages for payload verification
+  - Recommended for development and testing environments
 - **Event Filtering Option**: Control which events are sent to GA4
   - **disable**: Send all events (default)
   - **whitelistedEvents**: Only send specified events
@@ -37,21 +40,48 @@ Implementation in **Javascript**
 - **Blacklisted Events**: List of events to block when filtering is enabled
 - **PII Properties to Ignore**: List of properties to exclude from user properties to comply with privacy requirements
 
+### Device Mode Settings (Web, Android, iOS)
+
+- **SDK Base URL**: Custom SDK base URL for device mode implementations
+- **Server Container URL**: Custom server container URL for server-side tagging
+- **Use Native SDK**: Enable native SDK usage for device mode
+- **Capture Page View**: Automatically capture page view events in device mode
+- **Extend Page View Params**: Include additional parameters in page view events
+- **Override Client and Session ID**: Allow overriding client and session identifiers
+
+### Consent Management
+
+- **Consent Management Provider**: Choose from OneTrust, Ketch, Custom, or Iubenda
+- **OneTrust Cookie Categories**: Configure OneTrust cookie categories for consent
+- **Ketch Consent Purposes**: Configure Ketch consent purposes
+
 ## Integration Functionalities
 
 > GA4 supports **Cloud mode**, **Device mode**, and **Hybrid mode**
 
 ### Supported Message Types
 
-#### Cloud Mode
+#### GA4 (Standard)
+
+**Cloud Mode:**
 - Track
-- Group  
+- Group
 - Page
 
-#### Device Mode
+**Device Mode:**
 - **Web**: Identify, Track, Page, Group
 - **Android**: Identify, Track, Screen
 - **iOS**: Identify, Track, Screen
+
+#### GA4_V2 (OAuth)
+
+**Cloud Mode:**
+- Track
+- Group
+- Page
+
+**Device Mode:**
+- **Web**: Identify, Page (limited device mode support)
 
 ### Batching Support
 
@@ -72,7 +102,15 @@ The GA4 Measurement Protocol API has the following characteristics:
 | Event name length | 40 characters | Maximum length for event names |
 | Parameter name length | 40 characters | Maximum length for parameter names |
 | Parameter value length | 100 characters (Standard GA4)<br>500 characters (GA4 360) | Maximum length for parameter values |
+| User property name length | 24 characters | Maximum length for user property names |
+| User property value length | 36 characters | Maximum length for user property values |
+| Item parameters | 10 custom parameters | Maximum custom parameters per item |
 | Request payload size | 130 KB | Maximum size of the POST request body |
+
+**Special Parameter Exceptions:**
+- `page_title`: 300 characters maximum
+- `page_referrer`: 420 characters maximum
+- `page_location`: 1,000 characters maximum
 
 **Note**: Google Analytics does not publish specific rate limits for the Measurement Protocol API. The API returns a `2xx` status code if the HTTP request is received, regardless of whether the payload is processed successfully.
 
@@ -98,10 +136,15 @@ The GA4 Measurement Protocol API has the following characteristics:
 ### OAuth Support
 
 - **GA4 (Standard)**: No OAuth support
+  - Uses API Secret for authentication
+  - Manual configuration of Measurement ID and API Secret required
+
 - **GA4_V2**: Yes, OAuth is supported
   - **Type**: OAuth
   - **Role**: google_analytics_4
   - **Scopes**: delivery
+  - **Configuration**: Automatic configuration via OAuth flow
+  - **Benefits**: Simplified setup, automatic property and stream detection
 
 ### Additional Functionalities
 
@@ -164,10 +207,11 @@ The GA4 Measurement Protocol API has the following characteristics:
 
 #### Missing Data Replay
 
-- **Feasible**: Yes, with considerations
+- **Feasible**: Yes, with limitations
 - **Timestamp Support**: GA4 Measurement Protocol supports backdating events up to 3 calendar days based on the property's timezone
 - **Implementation**: Events can be replayed by setting the `timestamp_micros` parameter
 - **Limitation**: Only recent historical data (within 3 days) can be replayed
+- **Use Case**: Suitable for recovering from short-term data collection outages
 
 #### Already Delivered Data Replay
 
@@ -175,8 +219,9 @@ The GA4 Measurement Protocol API has the following characteristics:
 - **Duplicate Handling**: Each event sent to GA4 is treated as a unique occurrence
 - **Impact**: Replaying already delivered data will create duplicate events in GA4
 - **Recommendation**: Implement deduplication logic at the source before sending to GA4
+- **Alternative**: Use GA4's Data Import feature for historical data corrections
 
-**Reference**: According to Google's documentation, each event is treated as a unique occurrence with its own event ID, so duplicate events are treated as separate, unique events.
+**Reference**: According to Google's Measurement Protocol documentation, each event is processed independently without deduplication, making replay of already delivered data inadvisable for production use.
 
 ### Multiplexing
 
@@ -212,6 +257,8 @@ GA4 uses the Google Analytics Measurement Protocol, which does not have versione
 - **Production**: `https://www.google-analytics.com/mp/collect`
 - **Debug/Validation**: `https://www.google-analytics.com/debug/mp/collect`
 - **EU Data Processing**: `https://region1.google-analytics.com/mp/collect`
+  - Use this endpoint if you want your data to be processed in the EU
+  - Automatically used when EU data processing is configured
 
 ## Documentation Links
 

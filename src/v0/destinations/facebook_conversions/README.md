@@ -8,8 +8,9 @@ Implementation in **JavaScript**
 
 - **Dataset ID**: The unique identifier for your Facebook dataset
   - Format: Numeric string (e.g., `1234567898765`)
-  - Obtained from the Facebook Dataset creation page
+  - Obtained from the Facebook Dataset creation page in Events Manager
   - Used to construct the API endpoint for sending events
+  - **Important**: Your dataset ID will be the same as your existing pixel ID if an existing pixel is connected to the dataset
 
 - **Access Token**: System user access token for authentication
   - Must have appropriate permissions for the Conversions API
@@ -97,14 +98,11 @@ Implementation in **JavaScript**
 
 ### Batching Support
 
-- **Supported**: Yes, for all message types
-- **Implementation**: Uses RudderStack's standard router batching (`simpleProcessRouterDest`)
-- **Batch Limits**:
-  - No specific batch size limits implemented in RudderStack
-  - Facebook Graph API batch requests limited to 50 requests per batch
-  - Individual request payload size limits apply (typically ~1MB)
-- **Method**: Events are batched automatically by the router transformer
-- **Format**: Each event is sent as a separate form data entry in the batch request
+- **Supported**: No true batching, but concurrent processing is available
+- **Implementation**: Uses RudderStack's concurrent processing (`simpleProcessRouterDest`)
+- **Processing Method**: Events are processed concurrently for better performance, but each event results in a separate API call
+- **Note**: While Facebook Graph API supports batch requests (limited to 50 requests per batch), the current RudderStack implementation does not utilize this batching capability
+- **Individual Request Limits**: Each request is limited to ~1MB payload size
 
 ### API Endpoints
 
@@ -214,16 +212,16 @@ For mobile app events (when `action_source` is `app`), the destination includes 
 
 ## Rate Limits
 
-Based on Facebook's documentation:
+Based on Facebook's official documentation:
 
-- **Conversions API**: No specific rate limits documented
-- **Graph API Limits**: General Graph API rate limits apply to the underlying infrastructure
-- **Batch Requests**: Limited to 50 requests per batch (Facebook Graph API limit)
+- **Conversions API**: No specific rate limits for the Conversions API
+- **Graph API Limits**: General Graph API rate limits do not apply to Conversions API calls
+- **Marketing API Separation**: Conversions API calls are separate from Marketing API rate limits
 - **Request Size**: Individual requests limited to ~1MB payload size
 - **Best Practices**:
   - Implement exponential backoff for error handling
-  - Monitor response headers for rate limit information
-  - Use batching to optimize API usage
+  - Monitor response headers for any rate limit information
+  - Use concurrent processing for better throughput
 
 ## Event Ordering and Replayability
 
@@ -251,28 +249,36 @@ Based on Facebook's documentation:
 
 ### Current Version
 
-- **Facebook Graph API**: v22.0
-- **Implementation**: JavaScript (v0)
-- **Last Updated**: 2024
+- **Facebook Graph API**: v23.0 (Latest)
+- **Implementation**: JavaScript (v0) - **NEEDS UPDATE**
+- **Current Implementation Uses**: v22.0 (Outdated)
+- **v23.0 Release Date**: May 29, 2025
 - **Deprecation**: Facebook typically maintains API versions for 2+ years
 
-### Version Features (v22.0)
+### Version Update Required
 
-- Enhanced privacy controls
-- Improved attribution modeling
+**⚠️ IMPORTANT**: The current implementation uses v22.0, but v23.0 is now available and should be updated.
+
+### Version Features (v23.0)
+
+- Latest privacy controls and compliance features
+- Enhanced attribution modeling
 - Updated data processing options
-- Enhanced debugging capabilities
+- Improved debugging and monitoring capabilities
+- Performance optimizations
 
-**NEEDS REVIEW**: Specific v22.0 features and deprecation timeline require verification from Facebook's official documentation.
+**Recommendation**: Update the implementation to use v23.0 for latest features and long-term support.
 
 ## Documentation Links
 
 ### Facebook API Documentation
 
 - [Facebook Conversions API Overview](https://developers.facebook.com/docs/marketing-api/conversions-api/)
-- [Graph API v22.0 Documentation](https://developers.facebook.com/docs/graph-api/)
+- [Graph API v23.0 Documentation](https://developers.facebook.com/docs/graph-api/)
 - [Server Events API](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
 - [Data Processing Options](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/data-processing-options/)
+- [Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)
+- [Rate Limiting Information](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
 
 ### RudderStack Documentation
 
@@ -288,6 +294,26 @@ This destination does not support RETL (Real-time Extract, Transform, Load) func
 1. **Alternative Approaches**: Use Facebook's bulk import capabilities
 2. **Custom ETL**: Implement custom processes using Facebook's APIs
 3. **Real-time Streaming**: Use standard cloud mode for real-time data
+
+## Known Issues and Recommendations
+
+### API Version Update Required
+
+**Current Status**: The implementation uses Facebook Graph API v22.0, but v23.0 is now available (released May 29, 2025).
+
+**Impact**:
+- Missing latest features and improvements
+- Potential future compatibility issues
+- Not using the most current API capabilities
+
+**Recommendation**: Update the implementation to use v23.0 for:
+- Latest privacy and compliance features
+- Enhanced performance optimizations
+- Long-term API support
+
+**Files to Update**:
+- `src/v0/destinations/facebook_conversions/config.js` - Update ENDPOINT URL
+- Test files and documentation references
 
 ## Troubleshooting
 
@@ -322,7 +348,7 @@ This destination does not support RETL (Real-time Extract, Transform, Load) func
 
 ### Performance Optimization
 
-- **Use Batching**: Enable router batching for better throughput
+- **Use Concurrent Processing**: RudderStack processes events concurrently for better throughput
 - **Optimize User Data**: Include multiple user identifiers for better matching
 - **Event Deduplication**: Use unique event IDs to prevent duplicates
 - **Monitor Attribution**: Track conversion attribution in Facebook Ads Manager

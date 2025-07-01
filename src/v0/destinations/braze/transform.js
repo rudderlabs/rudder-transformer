@@ -47,7 +47,6 @@ const {
   shouldBatchBrazeIdentifyResolution,
 } = require('./config');
 
-
 const logger = require('../../../logger');
 const { getEndpointFromConfig, formatGender } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -183,8 +182,36 @@ function getUserAttributesObject(message, mappingJson, destination) {
   return data;
 }
 
+/**
+ * Processes batched identity resolution calls to Braze's /users/identify endpoint.
+ *
+ * @param {Array} identifyCallsArray - Array of identity resolution call objects
+ * @param {Object} identifyCallsArray[].identifyPayload - The payload containing aliases_to_identify
+ * @param {Object} identifyCallsArray[].destination - Destination configuration object
+ * @param {string} identifyCallsArray[].messageId - Message ID for tracking
+ * @param {Object} identifyCallsArray[].metadata - Job metadata for error tracking
+ * @param {string} destinationId - The destination ID for stats tracking
+ *
+ * @returns {Promise<Array>} Promise that resolves to an array of results:
+ *   - null for successful batches
+ *   - NetworkError objects for failed batches
+ *
+ * @description
+ * The function performs the following operations:
+ * 1. Increments stats counter for batched identify function calls
+ * 2. Chunks the identity calls array into batches of IDENTIFY_BRAZE_MAX_REQ_COUNT (50)
+ * 3. For each chunk, flattens all aliases_to_identify into a single array
+ * 4. Makes a batched HTTP request to Braze's /users/identify endpoint
+ * 5. Handles various error scenarios:
+ *    - Network errors: Returns NetworkError with appropriate error type
+ *    - HTTP status errors: Returns NetworkError with status-specific error type
+ *    - Response errors: Throws Error for unhandled scenarios (triggers Bugsnag)
+ * 6. Returns null for successful batches
+ *
+ * @throws {Error} Throws error for unhandled identify resolution errors to trigger Bugsnag
+ *
+ */
 async function processBatchedIdentify(identifyCallsArray, destinationId) {
-
   stats.increment('braze_batched_identify_func_calls_count', { destination_id: destinationId });
 
   const { destination } = identifyCallsArray[0];
@@ -652,10 +679,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return respList;
   });
 
-  // console.log("identifyCallsArray", identifyCallsArray);
   if (identifyCallsArray && identifyCallsArray.length > 0) {
     const batchedIdentifyError = await processBatchedIdentify(identifyCallsArray, destination.ID);
-    // console.log("batchedIdentifyError", batchedIdentifyError);
     if (batchedIdentifyError.some((error) => error !== null)) {
       // fail the entire batch incase of batched identify failure -> expected to never fail
       const oneOfBatchedIdentifyError = batchedIdentifyError.find((error) => error !== null);

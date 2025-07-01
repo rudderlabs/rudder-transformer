@@ -66,6 +66,24 @@ Implementation in **Javascript** (v0, v1 -> for network proxy)
 - Group
 - Alias (only with Original ID Merge)
 
+### Event Type to Endpoint Mapping
+
+| Event Type | Endpoints Used | Lowest Rate Limit | Limiting Endpoint |
+|------------|----------------|-------------------|-------------------|
+| **Identify** | `/engage` | No explicit rate limit specified | `/engage` |
+| **Track** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Page** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Screen** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Group** | `/import` (or `/track`) + `/groups` | No explicit rate limit specified | `/groups` |
+| **Alias (Original ID Merge)** | `/import` with `$merge` event | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` |
+
+**Notes:**
+- Track, Page, and Screen events may also trigger additional `/engage` calls when People properties are enabled
+- Group events generate both a tracking event and a group profile update
+- Identify events with Original ID Merge may generate additional `/import` calls for identity merging
+- Rate limits for `/engage` and `/groups` endpoints are not explicitly specified by Mixpanel
+- All endpoints share the same Ingestion API rate limit of 2GB uncompressed JSON/minute when specified
+
 ### Batching Support
 
 - **Supported**: Yes

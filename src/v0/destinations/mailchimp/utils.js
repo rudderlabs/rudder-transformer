@@ -174,7 +174,7 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metada
     },
   );
   if (!httpResponse.success) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${httpResponse.response?.message}`);
+    logger.info(`[Mailchimp] :: Email does not exists.`);
     return userStatus;
   }
   if (processedResponse.response.contact_id) {

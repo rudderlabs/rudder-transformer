@@ -1,5 +1,5 @@
 jest.mock('../../../../adapters/network');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError, PlatformError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../../adapters/network');
 const {
   deduceModuleInfoV2,
@@ -7,6 +7,7 @@ const {
   formatMultiSelectFieldsV2,
   calculateTrigger,
   searchRecordIdV2,
+  getRegion,
 } = require('./utils');
 
 describe('formatMultiSelectFieldsV2', () => {
@@ -275,12 +276,12 @@ describe('searchRecordIdV2', () => {
         handleHttpRequest.mockResolvedValueOnce(response);
       }
 
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        destination: { Config: mockConfig },
+        destConfig: mockConConfig.destination,
+      });
       expect(handleHttpRequest).toHaveBeenCalledWith(
         'post',
         'https://www.zohoapis.com/crm/v6/coql',
@@ -333,12 +334,12 @@ describe('searchRecordIdV2', () => {
 
   testCases2.forEach(({ name, expected, fields }) => {
     it(name, async () => {
-      const result = await searchRecordIdV2(
-        fields,
-        mockMetadata,
-        mockConfig,
-        mockConConfig.destination,
-      );
+      const result = await searchRecordIdV2({
+        identifiers: fields,
+        metadata: mockMetadata,
+        destination: { Config: mockConfig },
+        destConfig: mockConConfig.destination,
+      });
       expect(result).toEqual(expected);
     });
   });
@@ -349,8 +350,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should return operationModuleInfo, upsertEndPoint and identifierType when conConfig is present',
       input: {
-        config: { region: 'US' },
-        destination: {
+        destination: { Config: { region: 'US' } },
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -364,8 +365,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should handle different regions in config',
       input: {
-        config: { region: 'EU' },
-        destination: {
+        destination: { Config: { region: 'EU' } },
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -379,8 +380,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should use default US region when config.region is null',
       input: {
-        config: {},
-        destination: {
+        destination: { Config: {} },
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -394,8 +395,8 @@ describe('deduceModuleInfoV2', () => {
     {
       name: 'should use default US region when config.region is undefined',
       input: {
-        config: {}, // region is undefined
-        destination: {
+        destination: { Config: {} }, // region is undefined
+        destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
         },
@@ -410,7 +411,7 @@ describe('deduceModuleInfoV2', () => {
 
   testCases.forEach(({ name, input, expected }) => {
     it(name, () => {
-      const result = deduceModuleInfoV2(input.config, input.destination);
+      const result = deduceModuleInfoV2(input.destination, input.destConfig);
       expect(result).toEqual(expected);
     });
   });
@@ -511,4 +512,160 @@ describe('validateConfigurationIssue', () => {
       }
     });
   });
+});
+
+describe('getRegion', () => {
+  const testCases = [
+    {
+      name: 'should return region from delivery account options when delivery account exists with account definition',
+      input: {
+        deliveryAccount: {
+          accountDefinition: {},
+          options: {
+            region: 'EU',
+          },
+        },
+        Config: {
+          region: 'US',
+        },
+      },
+      expected: 'EU',
+    },
+    {
+      name: 'should return region from delivery account options when delivery account exists with account definition and Config region is undefined',
+      input: {
+        deliveryAccount: {
+          accountDefinition: {},
+          options: {
+            region: 'AU',
+          },
+        },
+        Config: {},
+      },
+      expected: 'AU',
+    },
+    {
+      name: 'should throw PlatformError when delivery account exists with account definition but options.region is undefined',
+      input: {
+        deliveryAccount: {
+          accountDefinition: {},
+          options: {},
+        },
+        Config: {
+          region: 'US',
+        },
+      },
+      expectError: true,
+      errorType: PlatformError,
+      errorMessage: 'Region is not defined in delivery account options',
+      errorStatus: 500,
+    },
+    {
+      name: 'should throw PlatformError when delivery account exists with account definition but options.region is null',
+      input: {
+        deliveryAccount: {
+          accountDefinition: {},
+          options: {
+            region: null,
+          },
+        },
+        Config: {
+          region: 'US',
+        },
+      },
+      expectError: true,
+      errorType: PlatformError,
+      errorMessage: 'Region is not defined in delivery account options',
+      errorStatus: 500,
+    },
+    {
+      name: 'should throw PlatformError when delivery account exists with account definition but options is undefined',
+      input: {
+        deliveryAccount: {
+          accountDefinition: {},
+        },
+        Config: {
+          region: 'US',
+        },
+      },
+      expectError: true,
+      errorType: PlatformError,
+      errorMessage: 'Region is not defined in delivery account options',
+      errorStatus: 500,
+    },
+    {
+      name: 'should return region from Config when delivery account exists but no account definition',
+      input: {
+        deliveryAccount: {
+          options: {
+            region: 'EU',
+          },
+        },
+        Config: {
+          region: 'US',
+        },
+      },
+      expected: 'US',
+    },
+    {
+      name: 'should return region from Config when delivery account is undefined',
+      input: {
+        Config: {
+          region: 'US',
+        },
+      },
+      expected: 'US',
+    },
+    {
+      name: 'should return region from Config when delivery account is null',
+      input: {
+        deliveryAccount: null,
+        Config: {
+          region: 'EU',
+        },
+      },
+      expected: 'EU',
+    },
+    {
+      name: 'should return undefined when no delivery account and Config.region is undefined',
+      input: {
+        Config: {},
+      },
+      expected: undefined,
+    },
+    {
+      name: 'should return undefined when no delivery account and Config is undefined',
+      input: {},
+      expected: undefined,
+    },
+    {
+      name: 'should return null when no delivery account and Config.region is null',
+      input: {
+        Config: {
+          region: null,
+        },
+      },
+      expected: null,
+    },
+  ];
+
+  testCases.forEach(
+    ({ name, input, expected, expectError, errorType, errorMessage, errorStatus }) => {
+      it(name, () => {
+        if (expectError) {
+          expect(() => getRegion(input)).toThrow(errorType);
+          expect(() => getRegion(input)).toThrow(errorMessage);
+
+          // Test the error status code
+          try {
+            getRegion(input);
+          } catch (error) {
+            expect(error.status).toBe(errorStatus);
+          }
+        } else {
+          expect(getRegion(input)).toBe(expected);
+        }
+      });
+    },
+  );
 });

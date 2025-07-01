@@ -30,6 +30,7 @@ const {
   WhiteListedTraitsV2,
   revision,
 } = require('./config');
+const logger = require('../../../logger');
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -47,6 +48,7 @@ function isValidE164PhoneNumber(phoneNumber) {
     return parsedNumber && parsedNumber.format('E.164') === sanitizedPhoneNumber;
   } catch (error) {
     // If parsing fails, it's not a valid E.164 number, i.e doesn't start with '+' and country code
+    logger.debug('Error parsing phone number', error);
     return false;
   }
 }
@@ -336,6 +338,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
 const buildRequest = (payload, destination, category) => {
   const { privateApiKey } = destination.Config;
   const response = defaultRequestConfig();
+
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
@@ -345,6 +348,7 @@ const buildRequest = (payload, destination, category) => {
     revision,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
+
   return response;
 };
 
@@ -579,10 +583,11 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
  */
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
+  const { privateApiKey } = destination.Config;
   response.endpoint = `${BASE_ENDPOINT}${CONFIG_CATEGORIES[subscription.operation.toUpperCase()].apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     Accept: JSON_MIME_TYPE,
     'Content-Type': JSON_MIME_TYPE,
     revision,
@@ -592,6 +597,7 @@ const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => 
     subscription.profile,
     subscription.operation,
   );
+
   return response;
 };
 

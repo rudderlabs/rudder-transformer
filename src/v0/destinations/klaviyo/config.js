@@ -92,7 +92,8 @@ const WhiteListedTraitsV2 = [
 ];
 const destType = 'klaviyo';
 // api version used
-const revision = '2024-06-15';
+const revision = '2024-10-15';
+
 module.exports = {
   BASE_ENDPOINT,
   MAX_BATCH_SIZE,

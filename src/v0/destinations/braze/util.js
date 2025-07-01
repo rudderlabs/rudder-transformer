@@ -29,6 +29,29 @@ const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
 const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
+const formatGender = (gender) => {
+  if (typeof gender !== 'string') {
+    return null;
+  }
+
+  // few possible cases of woman
+  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+    return 'F';
+  }
+
+  // few possible cases of man
+  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+    return 'M';
+  }
+
+  // few possible cases of other
+  if (['other', 'o'].includes(gender.toLowerCase())) {
+    return 'O';
+  }
+
+  return null;
+};
+
 const getEndpointFromConfig = (destination) => {
   if (!destination.Config?.dataCenter || typeof destination.Config.dataCenter !== 'string') {
     throw new InstrumentationError('Invalid Data Center: valid values are EU, US, AU');
@@ -257,13 +280,13 @@ const BrazeDedupUtility = {
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
     const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
     stats.timing('braze_lookup_time', lookupStartTime, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     stats.histogram('braze_lookup_count', chunkedUserData.length, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     stats.histogram('braze_lookup_user_count', externalIdsToQuery.length + aliasIdsToQuery.length, {
-      destination_id: destination.Config.destinationId,
+      destination_id: destination.ID,
     });
     return _.flatMap(chunkedUserData);
   },
@@ -807,6 +830,7 @@ module.exports = {
   processDeduplication,
   processBatch,
   addAppId,
+  formatGender,
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,

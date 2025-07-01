@@ -4,6 +4,7 @@ import {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
   Metadata,
+  ProcessorTransformationRequest,
 } from '../../../types';
 import { RecordAction } from '../../../types/rudderEvents';
 
@@ -11,6 +12,8 @@ import { RecordAction } from '../../../types/rudderEvents';
 export interface TestBehavior {
   statusCode: number;
   errorMessage?: string;
+  mutateDestinationConfig?: boolean; // For mutation test
+  replaceDestinationConfig?: boolean; // For config reference replacement test
 }
 
 // Extended message type that includes testBehavior in context
@@ -25,9 +28,16 @@ export interface RudderTestConfig {
   endpoint?: string;
   apiKey?: string;
   staticValue?: string;
+  mutatedByTest?: boolean; // For mutation test
 }
 
 export type RudderTestDestination = Destination<RudderTestConfig>;
+
+export type RudderTestProcessorRequest = ProcessorTransformationRequest<
+  RudderTestMessage,
+  Metadata,
+  RudderTestDestination
+>;
 
 // Router request type for our destination
 export type RudderTestRouterRequest = RouterTransformationRequestData<

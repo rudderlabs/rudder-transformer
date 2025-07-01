@@ -37,8 +37,9 @@ export async function getWorkflowPath(destDir, feature) {
 
 export function getRootPathForDestination(destName) {
   // TODO: Resolve the CDK v2 destination directory
+  const originalDestName = destName;
   // path from the root directory
-  return path.join(CDK_V2_ROOT_DIR, 'destinations', destName);
+  return path.join(CDK_V2_ROOT_DIR, 'destinations', originalDestName);
 }
 
 export async function getPlatformBindingsPaths() {

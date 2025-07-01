@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.101.0",
+  "version": "1.102.2",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -51,7 +51,8 @@
     "commit-msg": "commitlint --edit",
     "prepare": "node ./scripts/skipPrepareScript.js || husky install",
     "release": "npx standard-version",
-    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
+    "release:github": "echo '⚠️  DEPRECATED: Use release:github:modern instead' && DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
+    "release:github:modern": "node scripts/create-github-release.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
     "generate:testcases": "ts-node ./test/scripts/generateJson.ts --location testcases"
@@ -66,7 +67,7 @@
     "@datadog/pprof": "^5.5.1",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@rudderstack/integrations-lib": "^0.2.34",
+    "@rudderstack/integrations-lib": "^0.2.36",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
     "@rudderstack/workflow-engine": "^0.8.13",

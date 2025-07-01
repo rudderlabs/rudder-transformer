@@ -1065,4 +1065,218 @@ export const data: ProcessorTestData[] = [
       },
     },
   },
+  // Payload Compaction Mutation Test Case for Processor
+  {
+    id: 'rudder-test-processor-mutation-error',
+    name: 'rudder_test',
+    description: 'Test mutation of frozen destination config in compacted payload (processor)',
+    scenario: 'Mutation attempt should throw error when config is frozen (processor)',
+    successCriteria: 'Should return error about read-only/frozen config (processor)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    mutateDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              metadata: {
+                ...generateMetadata(200, 'u200'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            },
+          ],
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            metadata: {
+              ...generateMetadata(200, 'u200'),
+              destinationId: 'static-123',
+              sourceId: 'test-source-id',
+            },
+            error: expect.stringMatching(
+              /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+            ),
+            output: undefined,
+            statTags: {
+              errorCategory: 'transformation',
+            },
+          },
+        ],
+      },
+    },
+  },
+  // Payload Compaction Config Reference Replacement Test Case for Processor
+  {
+    id: 'rudder-test-processor-replace-config-error',
+    name: 'rudder_test',
+    description: 'Test replacing frozen destination config object in compacted payload (processor)',
+    scenario: 'Config reference replacement should throw error when config is frozen (processor)',
+    successCriteria: 'Should return error about assignment to read-only/frozen config (processor)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        headers: {
+          'x-content-format': 'json+compactedv1',
+        },
+        body: {
+          input: [
+            {
+              message: buildMessage({
+                context: {
+                  testBehavior: {
+                    statusCode: 200,
+                    replaceDestinationConfig: true,
+                  },
+                  sources: baseSources,
+                },
+              }),
+              metadata: {
+                ...generateMetadata(201, 'u201'),
+                destinationId: 'static-123',
+                sourceId: 'test-source-id',
+              },
+            },
+          ],
+          destinations: {
+            'static-123': destinationWithoutDynamicConfig,
+          },
+          connections: {
+            'test-source-id:static-123': testConnection,
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 500,
+            metadata: {
+              ...generateMetadata(201, 'u201'),
+              destinationId: 'static-123',
+              sourceId: 'test-source-id',
+            },
+            error: expect.stringMatching(
+              /(Cannot assign to read only property|frozen|read[- ]?only|object is not extensible|Cannot set property)/i,
+            ),
+            output: undefined,
+            statTags: {
+              errorCategory: 'transformation',
+            },
+          },
+        ],
+      },
+    },
+  },
+  // Environment Variable Override Example
+  {
+    id: 'rudder-test-processor-env-override-example',
+    name: 'rudder_test',
+    description: 'Test with environment variable override for API endpoint',
+    scenario: 'Environment variable override functionality demonstration',
+    successCriteria: 'Should use endpoint from environment variable override',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    // Environment variable override - this overrides the API endpoint for this test only
+    envOverrides: {
+      RUDDER_TEST_API_ENDPOINT: 'https://staging.example.com/v1/events',
+      DEBUG_MODE: 'true',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'env-test@example.com',
+                name: 'Environment Test User',
+              },
+              context: {
+                testBehavior: {
+                  statusCode: 200,
+                },
+                sources: baseSources,
+              },
+            }),
+            metadata: generateMetadata(999, 'env-test'),
+            destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              // This endpoint comes from the environment variable override
+              endpoint: 'https://staging.example.com/v1/events',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'env-test@example.com',
+                    name: 'Environment Test User',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: generateMetadata(999, 'env-test'),
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -23,7 +23,7 @@ const commonData = {
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34894/contactlist',
       data: {
         data: {
           type: 'ContactlistAmendment',
@@ -44,7 +44,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34894/contactlist',
       data: {
         data: {
           type: 'ContactlistAmendment',
@@ -71,7 +71,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34893/contactlist',
       data: {
         data: {
           type: 'ContactlistAmendment',
@@ -99,7 +99,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34896/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34896/contactlist',
       data: commonData,
       params,
       headers,
@@ -121,7 +121,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34897/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34897/contactlist',
       data: commonData,
       params,
       headers,
@@ -143,7 +143,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34898/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34898/contactlist',
       data: commonData,
       params,
       headers,
@@ -153,7 +153,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34899/contactlist',
+      url: 'https://api.criteo.com/2025-04/audiences/34899/contactlist',
       data: commonData,
       params,
       headers,

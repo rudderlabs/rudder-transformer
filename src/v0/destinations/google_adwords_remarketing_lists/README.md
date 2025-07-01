@@ -27,6 +27,10 @@ Implementation in **Javascript**
 - **List ID**: Target user list ID (required for cloud mode)
   - Can be provided via destination config or event properties
 
+- **Audience ID**: Alternative parameter name for List ID
+  - Used in VDM v2 flows and some configurations
+  - Functionally equivalent to List ID
+
 - **User Schema**: Defines which user identifiers to use
   - Options: `email`, `phone`, `addressInfo`
   - Default: `["email"]`
@@ -61,9 +65,10 @@ Implementation in **Javascript**
 - **Supported**: Yes
 - **Message Types**: Both Audience List and Record events
 - **Batch Limits**:
-  - User identifiers: 20 per operation
-  - Operations: No explicit limit, but subject to API quotas
-  - The destination automatically chunks user identifiers into groups of 20
+  - User identifiers: 20 per operation (automatically chunked)
+  - Operations: Multiple operations per job, subject to API quotas
+  - Total user identifiers: 100,000 per offline user data job
+  - The destination automatically chunks user identifiers into groups of 20, with each chunk becoming a separate operation within the same job
 
 ### Rate Limits
 
@@ -155,7 +160,7 @@ The Google Ads API enforces the following limits for offline user data jobs:
 
 #### Data Processing
 
-- **Chunking**: User identifiers automatically chunked into groups of 20
+- **Chunking**: User identifiers automatically chunked into groups of 20 per operation
 - **Deduplication**: Google Ads handles duplicate user identifiers
 - **Normalization**: Email addresses converted to lowercase, phone numbers normalized
 - **Error Handling**: Partial failures supported, invalid identifiers logged and skipped
@@ -191,15 +196,16 @@ The destination processes operations in batches, and Google Ads applies the fina
 
 ### Multiplexing
 
-- **Supported**: No
-- **Description**: Each input event generates exactly one output operation to Google Ads
+- **Supported**: Yes (limited scenarios)
+- **Description**: Single input events can generate multiple output API calls in specific cases
 
 #### Multiplexing Scenarios
 
 1. **Audience List Events**:
-   - **Multiplexing**: NO
-   - Single event with add/remove operations creates one offline user data job
-   - Multiple operations within the same event are batched into a single job
+   - **Multiplexing**: YES (when both add and remove operations are present)
+   - Single event with both add AND remove operations creates two separate offline user data jobs
+   - Single event with only add OR only remove operations creates one offline user data job
+   - Multiple operations of the same type within an event are batched into a single job
 
 2. **Record Events**:
    - **Multiplexing**: NO
@@ -216,7 +222,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 - Google Ads API follows a regular deprecation cycle
 - Typically maintains 3-4 versions simultaneously
 - Older versions are deprecated approximately 12 months after new version release
-- **Current Status**: v19 is the latest stable version
+- **Current Status**: v20 is the latest stable version (as of July 2025)
 - **Upgrade Path**: When new versions are released, update the `API_VERSION` constant in `config.js`
 
 ### Breaking Changes

@@ -1,6 +1,6 @@
 # TikTok Ads Destination
 
-Implementation in **Javascript**
+Implementation in **JavaScript** (ES6+)
 
 ## Configuration
 
@@ -18,7 +18,8 @@ Implementation in **Javascript**
   - TikTok Long Term Access Token for server-side event tracking
   - Example format: `1234ac663758946dfeXXXX20b394bbac611b371f7`
   - Must have appropriate permissions for the operations you want to perform
-  - Required: false (but needed for cloud mode functionality)
+  - **Configuration**: Optional in schema but required for cloud mode functionality
+  - **Validation**: The destination will throw a `ConfigurationError` if missing when processing cloud mode events
 
 - **Event Version**: Choose between Events 1.0 and Events 2.0
   - **Events 2.0** (v2): Recommended, default option with enhanced features
@@ -90,7 +91,10 @@ Implementation in **Javascript**
     - Endpoint: `https://business-api.tiktok.com/open_api/v1.3/pixel/batch/`
   - **Events 2.0 (v2)**: 1000 events per batch
     - Endpoint: `https://business-api.tiktok.com/open_api/v1.3/event/track/`
-- **Implementation**: Uses `batchMultiplexedEvents` utility for optimal batching
+- **Implementation**:
+  - **Events 1.0**: Uses `batchMultiplexedEvents` utility with separate batch endpoint
+  - **Events 2.0**: Uses custom batching logic with the same endpoint for single and batch requests
+- **Test Events**: Events with `test_event_code` are not batched and are sent individually
 
 ### API Endpoints
 
@@ -99,9 +103,11 @@ Implementation in **Javascript**
 | Events 1.0 (v1) | `/open_api/v1.3/pixel/track/` | `/open_api/v1.3/pixel/batch/` | 50 |
 | Events 2.0 (v2) | `/open_api/v1.3/event/track/` | `/open_api/v1.3/event/track/` | 1000 |
 
+**Note**: Events 2.0 uses the same endpoint for both single events and batch requests. The API automatically handles batching based on the request payload structure.
+
 ### Rate Limits
 
-NEEDS REVIEW - Specific rate limit numbers need to be researched from official TikTok Business API documentation.
+**NEEDS REVIEW** - Specific rate limit numbers need to be researched from official TikTok Business API documentation.
 
 The TikTok Ads destination implements rate limit handling through specific error codes:
 
@@ -162,12 +168,11 @@ The TikTok Ads destination implements rate limit handling through specific error
 
 - **Automatic Hashing**: SHA-256 hashing of sensitive user data
   - Email addresses (trimmed and lowercased before hashing)
-  - Phone numbers
-  - External IDs
-  - First name and last name (v2 only)
-  - Zip codes (v2 only, spaces and dashes removed)
-- **Configurable**: Can be disabled via `hashUserProperties` setting
-- **Version Differences**: v2 supports more fields for hashing
+  - Phone numbers (trimmed before hashing)
+  - External IDs (trimmed before hashing)
+  - **Note**: Additional fields like first name, last name, and zip codes are handled by the mapping configuration but use the same hashing logic
+- **Configurable**: Can be disabled via `hashUserProperties` setting (default: enabled)
+- **Implementation**: Uses the same hashing function for both v1 and v2, with field availability determined by the mapping configuration
 
 #### Event Filtering
 
@@ -179,7 +184,10 @@ The TikTok Ads destination implements rate limit handling through specific error
 
 - **Product Arrays**: Supports product content arrays for e-commerce events
 - **Auto Content Type**: Automatically sets `content_type` for product arrays
-- **Fallback**: Uses `product_group` as default content type when not specified
+- **Version-Specific Defaults**:
+  - **Events 1.0 (v1)**: Uses `product_group` as default content type
+  - **Events 2.0 (v2)**: Uses `product` as default content type
+- **Priority Order**: `product.contentType` > `properties.contentType` > `properties.content_type` > version-specific default
 
 #### Version-Specific Features
 
@@ -248,7 +256,7 @@ The TikTok Ads destination implements rate limit handling through specific error
   - **Events 1.0 (v1)**: Uses `timestamp` field in ISO format
   - **Events 2.0 (v2)**: Uses `event_time` field as Unix timestamp (seconds), marked as required
 - **Implementation**: RudderStack ensures event ordering through `sortBatchesByMinJobId` function
-- **Note**: Events may get out of order due to `testEventCode` properties, but the destination ensures proper ordering before sending to TikTok
+- **Note**: Events may get out of order due to `test_event_code` properties (since test events bypass batching), but the destination ensures proper ordering for regular events before sending to TikTok
 
 #### Deduplication Support
 - **Event ID**: TikTok supports event deduplication using `event_id` parameter
@@ -282,12 +290,12 @@ The TikTok Ads destination implements rate limit handling through specific error
    - **Condition**: When a single event is mapped to multiple TikTok standard events via `eventsToStandard` configuration
    - **Example**: One `addToCart` event mapped to both `CompletePayment` and `Download` events
    - **Implementation**: Each mapped event generates a separate API call to TikTok
-   - **Code Reference**: `standardEventsMap[event].forEach((eventName) => { responseList.push(getTrackResponse(message, Config, eventName)); })`
+   - **Code Reference**: `standardEventsMap[event].forEach((eventName) => { responseList.push(...); })`
 
 2. **Test Events**:
    - **Multiplexing**: NO
    - **Condition**: Events with `test_event_code` are handled separately but don't create multiple API calls
-   - **Note**: Test events are processed individually and don't go through batching
+   - **Note**: Test events are processed individually and bypass batching to ensure immediate delivery for testing purposes
 
 ## Version Information
 
@@ -319,6 +327,8 @@ The TikTok Ads destination implements rate limit handling through specific error
   - Migrate existing Events 1.0 integrations to Events 2.0
   - Events 2.0 offers better performance, higher batch limits, and more user data fields
 
+**NEEDS REVIEW** - The H2'2024 deprecation timeline should be verified against current TikTok official announcements for accuracy.
+
 ### Breaking Changes Between Versions
 
 **When migrating from Events 1.0 to Events 2.0:**
@@ -341,7 +351,7 @@ The TikTok Ads destination implements rate limit handling through specific error
    - v1: Maximum 50 events per batch
    - v2: Maximum 1000 events per batch
 
-NEEDS REVIEW - Official TikTok documentation should be consulted for the most current deprecation timeline and migration guidelines.
+**NEEDS REVIEW** - Official TikTok documentation should be consulted for the most current deprecation timeline and migration guidelines.
 
 ## Documentation Links
 
@@ -352,7 +362,7 @@ NEEDS REVIEW - Official TikTok documentation should be consulted for the most cu
 - [TikTok Standard Events Parameters](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
 - [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
 
-NEEDS REVIEW - Additional official TikTok Business API documentation links should be verified and added as needed.
+**NEEDS REVIEW** - Additional official TikTok Business API documentation links should be verified and added as needed.
 
 ### RETL Functionality
 

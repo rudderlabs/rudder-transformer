@@ -182,10 +182,10 @@ When `hashUserProperties` is enabled (default: true):
    - Apply SHA-256 hashing
    - Supports both single values and arrays
 
-4. **Additional Fields (v2 only)**:
-   - First name: trim, lowercase, hash
-   - Last name: trim, lowercase, hash
-   - Zip code: remove spaces and dashes, hash
+4. **Additional Fields**:
+   - **Note**: Additional fields like first name, last name, and zip code are handled by the mapping configuration
+   - All fields use the same hashing logic: trim whitespace, then apply SHA-256 hashing
+   - Field availability depends on the version-specific mapping configuration
 
 ## Validation Requirements
 

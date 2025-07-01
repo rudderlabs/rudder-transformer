@@ -36,29 +36,31 @@ Implementation in **JavaScript**
 
 ### Batching Support
 
-- **Supported**: No
-- **Reason**: Split.io destination uses individual API calls for each event
+- **Supported**: No (current implementation)
+- **Reason**: Current implementation uses individual API calls for each event
 - **Implementation**: Uses `simpleProcessRouterDest` for processing events individually
+- **Available Alternative**: Split.io provides a bulk events API endpoint (`/api/events/bulk`) that supports batching, but the current RudderStack implementation does not utilize it
 
 ### Rate Limits
 
-The Split.io Events API enforces rate limits to ensure system stability:
+The Split.io Events API does not enforce rate limits:
 
 | Endpoint | Event Types | Rate Limit | Description |
 |----------|-------------|------------|-------------|
-| `/api/events` | All supported event types | **NEEDS REVIEW** - Rate limit details not publicly documented | Used for sending all event types to Split.io |
+| `/api/events` | All supported event types | **No rate limit** | Used for sending individual events to Split.io |
+| `/api/events/bulk` | All supported event types | **No rate limit** | Used for sending bulk events to Split.io |
 
-#### Monitoring Rate Limits
+According to Split.io's official documentation: "There is no rate limit on the events API. It can handle any volume of load of events."
 
-Split.io API responses include rate limiting headers:
-- `X-RateLimit-Remaining-Org`: Number of requests remaining for the organization
-- `X-RateLimit-Remaining-IP`: Number of requests remaining for the IP address
-- `X-RateLimit-Reset-Seconds-Org`: Seconds until organization rate limit resets
-- `X-RateLimit-Reset-Seconds-IP`: Seconds until IP rate limit resets
+#### Payload Size Recommendations
 
-#### Handling Rate Limit Errors
+While there are no rate limits, Split.io recommends:
+- Keep individual payload sizes under **1 megabyte** for optimal performance
+- Use bulk events endpoint for high-volume event ingestion
 
-If you exceed rate limits, Split.io will return a `429 Too Many Requests` status code. The destination does not implement custom retry logic for rate limiting.
+#### Rate Limiting for Other APIs
+
+Note that rate limiting applies to Split.io's Admin API (used for feature flag management) but does not affect the Events API used by this destination.
 
 ### Intermediate Calls
 
@@ -79,12 +81,14 @@ If you exceed rate limits, Split.io will return a `429 Too Many Requests` status
 
 #### Event Type ID Validation
 
-- **Validation Rule**: Event Type ID must match the regex pattern `/^[\dA-Za-z][\w.-]{0,79}$/`
+- **Validation Rule**: Event Type ID must match the regex pattern `/^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,62}$/`
 - **Requirements**:
-  - 80 characters or less
+  - **63 characters or fewer** (as per Split.io official documentation)
   - Starts with a letter or number
   - Contains only letters, numbers, hyphen, underscore, or period
 - **Automatic Processing**: Spaces in event names are automatically replaced with underscores
+
+> **Note**: The current implementation uses a slightly different regex pattern (`/^[\dA-Za-z][\w.-]{0,79}$/`) which allows up to 80 characters. This discrepancy exists between the code implementation and Split.io's official documentation.
 
 #### Property Flattening
 
@@ -112,12 +116,15 @@ If you exceed rate limits, Split.io will return a `429 Too Many Requests` status
 #### Missing Data Replay
 - **Feasible**: Yes
 - **Reason**: Events can be replayed with historical timestamps as Split.io accepts timestamp field in event payload
+- **Implementation**: Split.io processes events based on the provided timestamp, allowing for historical data ingestion
 
 #### Already Delivered Data Replay
-- **Feasible**: Yes with considerations
+- **Feasible**: Yes, but creates duplicates
+- **Behavior**: Split.io treats all events as unique and does not deduplicate based on event content or IDs
 - **Considerations**:
-  - Split.io may treat replayed events as new events
-  - **NEEDS REVIEW** - Split.io's duplicate event handling behavior needs verification
+  - Replayed events will be processed as new events, potentially affecting metrics calculations
+  - No built-in deduplication mechanism in Split.io Events API
+  - Consider the impact on experiment results and metrics when replaying data
 
 ### Multiplexing
 
@@ -130,13 +137,16 @@ If you exceed rate limits, Split.io will return a `429 Too Many Requests` status
 ### Current Version
 
 - **API Version**: Split.io Events API does not use versioned endpoints
-- **Endpoint**: `https://events.split.io/api/events`
-- **Deprecation**: **NEEDS REVIEW** - No public information available about API deprecation schedule
+- **Endpoints Used**:
+  - `https://events.split.io/api/events` - Single event endpoint (currently implemented)
+  - `https://events.split.io/api/events/bulk` - Bulk events endpoint (available but not implemented)
+- **Deprecation**: No deprecation schedule announced for Events API
 
 ### Version Compatibility
 
-- **Current Implementation**: Uses the standard Split.io Events API
-- **Future Versions**: **NEEDS REVIEW** - No information available about upcoming API versions
+- **Current Implementation**: Uses the standard Split.io Events API (single event endpoint)
+- **Available Enhancements**: Bulk events endpoint available for potential batching implementation
+- **Future Versions**: Split.io Events API is stable with no announced breaking changes
 
 ## Documentation Links
 
@@ -175,9 +185,10 @@ For detailed business logic and field mappings information, please refer to [doc
 
 #### Event Type ID
 - **Format**: Must start with letter or number
-- **Length**: Maximum 80 characters
+- **Length**: Maximum 63 characters (as per Split.io official documentation)
 - **Characters**: Letters, numbers, hyphens, underscores, periods only
 - **Processing**: Spaces automatically replaced with underscores
+- **Implementation Note**: Current code allows up to 80 characters, creating a discrepancy with official Split.io requirements
 
 #### Traffic Type Name
 - **Source**: Can be provided in traits, context.traits, or properties
@@ -196,6 +207,10 @@ For detailed business logic and field mappings information, please refer to [doc
 
 ### Property Restrictions
 
+- **Property Limits**:
+  - Maximum **300 properties** per event type
+  - Each property has a **256 character limit**
+  - Supported property types: strings, numbers, and booleans
 - **Reserved Fields**: Excluded from event properties
   - `eventTypeId`, `environmentName`, `trafficTypeName`
   - `key`, `timestamp`, `value`, `revenue`, `total`
@@ -227,15 +242,30 @@ For detailed business logic and field mappings information, please refer to [doc
 
 1. **Authentication Errors**
    - **Status Code**: 401 Unauthorized
+   - **Cause**: Invalid or missing API key
    - **Solution**: Verify API key is valid and has events tracking permissions
 
-2. **Rate Limiting**
-   - **Status Code**: 429 Too Many Requests
-   - **Solution**: Implement request throttling or retry logic
-
-3. **Invalid Payload**
+2. **Invalid Payload**
    - **Status Code**: 400 Bad Request
+   - **Cause**: Malformed JSON, missing required fields, or invalid field values
    - **Solution**: Verify event payload matches Split.io Events API schema
+
+3. **Payload Too Large**
+   - **Status Code**: 413 Payload Too Large
+   - **Cause**: Event payload exceeds 1MB recommended limit
+   - **Solution**: Reduce payload size or split into multiple requests
+
+4. **Server Errors**
+   - **Status Code**: 500 Internal Server Error
+   - **Cause**: Split.io service issues
+   - **Solution**: Retry with exponential backoff
+
+5. **Service Unavailable**
+   - **Status Code**: 503 Service Unavailable
+   - **Cause**: Split.io service temporarily unavailable
+   - **Solution**: Retry with exponential backoff
+
+**Note**: Split.io Events API does not return 429 (Rate Limiting) errors as there are no rate limits enforced.
 
 ## FAQ
 
@@ -252,7 +282,10 @@ For detailed business logic and field mappings information, please refer to [doc
 **A**: Yes, you can include a `timestamp` field in your events to send historical data. Split.io will process events based on their timestamp.
 
 ### Q: Are there any limits on property names or values?
-**A**: **NEEDS REVIEW** - Split.io's specific limits on property names and values are not documented in their public API documentation.
+**A**: Yes, Split.io enforces the following limits:
+- Maximum 300 properties per event type
+- Each property has a 256 character limit
+- Supported property types: strings, numbers, and booleans
 
 ### Q: How do I track revenue or conversion values?
 **A**: Include `revenue`, `value`, or `total` in your event properties. These will be mapped to Split.io's `value` field for metrics calculation.

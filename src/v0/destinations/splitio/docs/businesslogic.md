@@ -45,67 +45,27 @@ case EventType.IDENTIFY:
 - `revenue`
 - `total`
 
-#### Track Events
+#### Track, Page, and Screen Events
 
-**Purpose**: Track custom events and user actions
+**Purpose**:
+- **Track Events**: Track custom events and user actions
+- **Page Events**: Track page views and navigation
+- **Screen Events**: Track screen views in mobile applications
 
 **Field Mappings**:
-- `eventTypeId`: Extracted from `event` field (required)
+- `eventTypeId`:
+  - **Track**: Extracted from `event` field (no prefix modification)
+  - **Page**: Extracted from `name` field, prefixed with `Viewed_` and suffixed with `_page`
+  - **Screen**: Extracted from `name` field, prefixed with `Viewed_` and suffixed with `_screen`
 - `key`: Mapped from `userId` (required)
 - `value`: Extracted from `properties.revenue`, `properties.value`, or `properties.total`
 - `trafficTypeName`: Extracted from `properties.trafficTypeName`
 - `properties`: All event properties except reserved fields
 
-**Business Logic**:
+**Business Logic** (Shared Implementation):
 ```javascript
 case EventType.TRACK:
-  if (properties) {
-    bufferProperty = populateOutputProperty(properties);
-  }
-  if (message.category) {
-    bufferProperty.category = message.category;
-  }
-  // No prefix modification for track events
-  break;
-```
-
-#### Page Events
-
-**Purpose**: Track page views and navigation
-
-**Field Mappings**:
-- `eventTypeId`: Extracted from `name` field, prefixed with `Viewed_` and suffixed with `_page`
-- `key`: Mapped from `userId` (required)
-- `properties`: All page properties except reserved fields
-
-**Business Logic**:
-```javascript
 case EventType.PAGE:
-  if (properties) {
-    bufferProperty = populateOutputProperty(properties);
-  }
-  if (message.category) {
-    bufferProperty.category = message.category;
-  }
-  outputPayload.eventTypeId = `Viewed_${outputPayload.eventTypeId}_page`;
-  break;
-```
-
-**Example Transformation**:
-- Input: `name: "Home Page"`
-- Output: `eventTypeId: "Viewed_Home_Page_page"`
-
-#### Screen Events
-
-**Purpose**: Track screen views in mobile applications
-
-**Field Mappings**:
-- `eventTypeId`: Extracted from `name` field, prefixed with `Viewed_` and suffixed with `_screen`
-- `key`: Mapped from `userId` (required)
-- `properties`: All screen properties except reserved fields
-
-**Business Logic**:
-```javascript
 case EventType.SCREEN:
   if (properties) {
     bufferProperty = populateOutputProperty(properties);
@@ -113,13 +73,22 @@ case EventType.SCREEN:
   if (message.category) {
     bufferProperty.category = message.category;
   }
-  outputPayload.eventTypeId = `Viewed_${outputPayload.eventTypeId}_screen`;
+  if (type !== 'track') {
+    outputPayload.eventTypeId = `Viewed_${outputPayload.eventTypeId}_${type}`;
+  }
   break;
 ```
 
-**Example Transformation**:
-- Input: `name: "Product Details"`
-- Output: `eventTypeId: "Viewed_Product_Details_screen"`
+**Example Transformations**:
+- **Track Event**:
+  - Input: `event: "button_click"`
+  - Output: `eventTypeId: "button_click"` (no modification)
+- **Page Event**:
+  - Input: `name: "Home Page"`
+  - Output: `eventTypeId: "Viewed_Home_Page_page"`
+- **Screen Event**:
+  - Input: `name: "Product Details"`
+  - Output: `eventTypeId: "Viewed_Product_Details_screen"`
 
 #### Group Events
 
@@ -237,17 +206,22 @@ function populateOutputProperty(inputObject) {
 
 ### Event Type ID Validation
 
-**Regex Pattern**: `/^[\dA-Za-z][\w.-]{0,79}$/`
+**Implementation Regex Pattern**: `/^[\dA-Za-z][\w.-]{0,79}$/` (allows up to 80 characters)
+
+**Split.io Official Requirements**: `/^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,62}$/` (allows up to 63 characters)
 
 **Rules**:
 - Must start with a letter or number
 - Can contain letters, numbers, hyphens, underscores, or periods
-- Maximum length of 80 characters
+- **Official Limit**: Maximum length of 63 characters (per Split.io documentation)
+- **Implementation Limit**: Maximum length of 80 characters (current code implementation)
 - Spaces are automatically replaced with underscores
 
 **Examples**:
 - ✅ Valid: `user_signup`, `page_view`, `button.click`
-- ❌ Invalid: `_invalid_start`, `toolongofaneventtypeidthatexceedsthemaximumlengthof80charactersallowed`
+- ❌ Invalid: `_invalid_start`, `toolongofaneventtypeidthatexceedsthemaximumlengthof63charactersallowed`
+
+**Note**: There is a discrepancy between the current implementation (80 characters) and Split.io's official documentation (63 characters).
 
 ### Required Fields
 

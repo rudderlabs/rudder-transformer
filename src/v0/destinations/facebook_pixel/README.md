@@ -49,6 +49,25 @@ Implementation in **Javascript**
 - **Event Filtering**: Filter events based on whitelist or blacklist
   - Options: disable, whitelistedEvents, blacklistedEvents
 
+- **Category to Content Mapping**: Map product categories to content types
+  - Allows mapping product categories to Facebook content types for better event categorization
+
+- **Use Updated Mapping**: Enable updated field mapping configurations
+  - When enabled, uses newer mapping configurations for better compatibility
+
+- **Legacy Conversion Pixel ID**: Legacy pixel ID for backward compatibility (web mode only)
+  - Used for maintaining compatibility with older Facebook Pixel implementations
+
+- **Use Native SDK**: Enable native SDK usage (web mode only)
+  - When enabled, uses Facebook's native SDK for web implementations
+
+- **Consent Management**: Configure consent management settings
+  - Supports OneTrust and Ketch consent management platforms
+  - Includes cookie categories and consent purposes configuration
+
+- **Auto Config**: Enable automatic configuration (web mode only)
+  - When enabled, automatically configures certain settings based on detected environment
+
 ## Integration Functionalities
 
 > Facebook Pixel supports **Device mode** (web only) and **Cloud mode** (all platforms)
@@ -66,12 +85,15 @@ Implementation in **Javascript**
 
 ### Rate Limits
 
-**NEEDS REVIEW**: Specific rate limits for Facebook Conversions API need to be researched from official Facebook documentation.
+**No Specific Rate Limits**: According to Facebook's official documentation, there is no specific rate limit for the Conversions API.
 
 The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 - **Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
 - **Method**: POST
-- **Batch Limits**: **NEEDS REVIEW** - Facebook API documentation should be consulted for current batch size limits
+- **Rate Limiting**: Conversions API calls are not calculated into the Graph API throttling
+- **Reference**: [Facebook Conversions API Documentation](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
+
+**Note**: While there are no specific rate limits for Conversions API, the underlying Marketing API has rate limiting based on your app's access tier. Standard access enables lower rate limiting compared to development access.
 
 ### Intermediate Calls
 
@@ -108,8 +130,10 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 
 #### Event Duration Validation
 
-- **Validation**: Events must be sent within 7 days of their occurrence or up to 1 minute in the future
-- **Implementation**: The `verifyEventDuration` function validates event timestamps
+- **Standard Events**: Events must be sent within 7 days of their occurrence or up to 1 minute in the future
+- **Physical Store Events**: Events with `action_source` set to `physical_store` must be sent within 62 days of their occurrence
+- **Future Events**: All events can be sent up to 1 minute in the future
+- **Implementation**: The `verifyEventDuration` function validates event timestamps based on action source
 
 #### Standard Event Mapping
 
@@ -200,26 +224,33 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 ### Current Version
 
 - **API Version**: v22.0 (Facebook Graph API)
+- **Release Date**: January 21, 2025
 - **Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
+
+### Available Versions
+
+- **Latest Version**: v23.0 (Released May 29, 2025)
+- **Current Implementation**: v22.0 (January 21, 2025)
+- **Previous Versions**: v21.0, v20.0, v19.0, etc.
 
 ### Version Deprecation
 
-**NEEDS REVIEW**: Facebook's API versioning and deprecation schedule should be researched from official Facebook documentation to provide accurate information about:
-- Current supported versions
-- Deprecation timeline for v22.0
-- Available newer versions
-- Breaking changes between versions
+- **Deprecation Schedule**: Facebook typically maintains API versions for approximately 2 years
+- **v22.0 Status**: Currently active and supported
+- **Upgrade Recommendation**: Consider upgrading to v23.0 for latest features and improvements
+- **Breaking Changes**: Review Facebook's changelog when upgrading between versions
 
 ## Documentation Links
 
 ### Facebook API Documentation
 
-**NEEDS REVIEW**: Official Facebook documentation links should be added:
-- Facebook Conversions API Overview
-- Events API Reference
-- Rate Limits Documentation
-- PII Hashing Guidelines
-- Standard Events Reference
+- **[Facebook Conversions API Overview](https://developers.facebook.com/docs/marketing-api/conversions-api/)**: Main documentation for Conversions API
+- **[Using the Conversions API](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)**: Implementation guide and API usage
+- **[Events API Reference](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/)**: Complete parameter reference for events
+- **[Rate Limits Documentation](https://developers.facebook.com/docs/marketing-api/overview/rate-limiting/)**: Marketing API rate limiting information
+- **[PII Hashing Guidelines](https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters/)**: Customer information and hashing requirements
+- **[Standard Events Reference](https://developers.facebook.com/docs/meta-pixel/reference/)**: Facebook standard events documentation
+- **[Graph API Changelog](https://developers.facebook.com/docs/graph-api/changelog/)**: Version updates and deprecation information
 
 ### RETL Functionality
 

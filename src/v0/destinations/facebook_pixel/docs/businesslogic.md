@@ -10,7 +10,7 @@ This document outlines the business logic and mappings used in the Facebook Pixe
 
 **Primary Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
 **Method**: POST
-**Documentation**: Facebook Conversions API Events Endpoint
+**Documentation**: [Facebook Conversions API Events Endpoint](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/)
 
 **Request Flow**:
 All event types (Identify, Track, Page, Screen) are sent to the same endpoint with different payload structures:
@@ -137,18 +137,27 @@ whitelistPiiProperties: [
 
 ### Event Duration Validation
 
-**Validation Rule**: Events must be sent within 7 days of their occurrence or up to 1 minute in the future
+**Validation Rules**:
+- **Standard Events**: Events must be sent within 7 days of their occurrence or up to 1 minute in the future
+- **Physical Store Events**: Events with `action_source` set to `physical_store` must be sent within 62 days of their occurrence
 
 **Implementation**:
 ```javascript
 const verifyEventDuration = (message, destination, timeStamp) => {
-  const defaultSupportedDelta = 7; // days
-  const currentTime = new Date();
-  const eventTime = new Date(timeStamp);
-  
-  const deltaDay = Math.ceil((currentTime.getTime() - eventTime.getTime()) / (1000 * 3600 * 24));
-  const deltaMin = Math.ceil((eventTime.getTime() - currentTime.getTime()) / (1000 * 60));
-  
+  const actionSource = get(message, 'traits.action_source') ||
+                      get(message, 'context.traits.action_source') ||
+                      get(message, 'properties.action_source');
+
+  const start = moment.unix(moment(timeStamp).format('X'));
+  const current = moment.unix(moment().format('X'));
+  const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+  const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
+
+  let defaultSupportedDelta = 7;
+  if (actionSource === 'physical_store') {
+    defaultSupportedDelta = 62;
+  }
+
   if (deltaDay > defaultSupportedDelta || deltaMin > 1) {
     throw new InstrumentationError(
       `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`

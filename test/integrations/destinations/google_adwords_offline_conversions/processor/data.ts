@@ -1,7 +1,7 @@
 import { authHeader1, secret1, secret3 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 export const data = [
   {

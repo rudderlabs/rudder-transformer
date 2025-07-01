@@ -8,7 +8,7 @@ const {
   getAddConversionPayload,
 } = require('./utils');
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 const getTestMessage = () => {
   let message = {

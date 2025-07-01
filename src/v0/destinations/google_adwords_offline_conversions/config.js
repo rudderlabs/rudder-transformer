@@ -1,16 +1,16 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers/:customerId`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadClickConversions
 const CLICK_CONVERSION = `${BASE_ENDPOINT}:uploadClickConversions`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadCallConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadCallConversions
 const CALL_CONVERSION = `${BASE_ENDPOINT}:uploadCallConversions`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers.googleAds/searchStream
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers.googleAds/searchStream
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:searchStream`;
 
 const STORE_CONVERSION_CONFIG = `${BASE_ENDPOINT}/offlineUserDataJobs`;

@@ -5,7 +5,6 @@ import { PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
-import { DestHandleMapForCDKV2 } from '../../constants/destinationCanonicalNames';
 import { CatchErr } from '../../types';
 
 const CDK_V2_ROOT_DIR = __dirname;
@@ -38,7 +37,7 @@ export async function getWorkflowPath(destDir, feature) {
 
 export function getRootPathForDestination(destName) {
   // TODO: Resolve the CDK v2 destination directory
-  const originalDestName = DestHandleMapForCDKV2[destName] ?? destName;
+  const originalDestName = destName;
   // path from the root directory
   return path.join(CDK_V2_ROOT_DIR, 'destinations', originalDestName);
 }

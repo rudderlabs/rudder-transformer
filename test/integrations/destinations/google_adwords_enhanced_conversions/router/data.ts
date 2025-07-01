@@ -771,7 +771,8 @@ export const data = [
                   subAccount: true,
                 },
               },
-              error: 'OAuth - access token not found',
+              error:
+                'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
               metadata: [
                 {
                   jobId: 3,

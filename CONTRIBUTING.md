@@ -102,7 +102,7 @@ Before starting to work on your first RudderStack integration, it is highly reco
 
 
 
-1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/v1/sources` or `src/v0/destinations` folder \
+1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/sources` or `src/v0/destinations` folder \
 This is the codebase that controls how raw event data (received from the source) is transformed to RudderStack Event Data Specification and then finally to the destination specific data format
 2. Add RudderStack UI configurations in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) `src/configurations/sources` or `src/configurations/destinations` folder \
 This enables your integration users to setup/configure the integration via RudderStack Dashboard
@@ -130,7 +130,7 @@ Understand the code structure
 * `src/v0/destinations` - Destination integrations
 * `src/v1/destinations` - Destination integrations (used for network handlers)
 * `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
-* `src/v1/sources` - Source integrations
+* `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 
@@ -149,7 +149,7 @@ A simple example of `process` function and `transform.js` file looks like this
 
 ```javascript
 /**
- * src/v0/sources/slack/transform.js
+ * src/sources/slack/transform.js
  * An example transform.js file for Slack integration with v0 integration method
  */
 
@@ -239,7 +239,7 @@ You'll need some API request client (e.g. Postman, Bruno, etc.) to make a POST t
 
 
 
-* Request endpoint example for Slack source developed under v0 folder - `POST /v0/sources/slack`
+* Request endpoint example for Slack source - `POST /v0/sources/slack`
 * Body - An array of event data object received from the source i.e. `[{ …eventData }]`
 * Headers - `Content-Type: application/json`
 
@@ -429,7 +429,7 @@ In this tutorial, we will specifically focus on developing a destination integra
 ### Overview of integration development journey
 
 
-1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/v1/sources` or `src/v0/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
+1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/sources` or `src/v0/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
 2. Add RudderStack UI configurations in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) `src/configurations/destinations` folder \
 This enables your integration users to setup/configure the integration via RudderStack Dashboard
 3. Write the documentation for your integration (or share the [integration plan document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25) with the RudderStack team)
@@ -455,7 +455,7 @@ Understand the code structure
 * `src/v0/destinations` - Destination integrations
 * `src/v1/destinations` - Destination integrations (used for network handlers)
 * `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
-* `src/v1/sources` - Source integrations
+* `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 

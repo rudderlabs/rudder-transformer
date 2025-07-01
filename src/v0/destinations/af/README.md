@@ -21,10 +21,12 @@ Implementation in **Javascript**
 - **Android App ID**: Required if sending events from Android devices
   - Format: Package name (e.g., `com.mypackage.example`)
   - Required when `context.os.name` is set to "android"
+  - Included in destination configuration for all connection modes
 
 - **Apple App ID**: Required if sending events from iOS devices
   - Format: App Store ID (e.g., `123456789`)
   - Required when `context.os.name` is set to "ios" or other Apple family OS
+  - Included in destination configuration for all connection modes
 
 ### Optional Settings
 
@@ -52,20 +54,30 @@ Implementation in **Javascript**
 
 ## Integration Functionalities
 
-> AppsFlyer supports **Cloud mode** only
+> AppsFlyer supports both **Cloud mode** and **Device mode** connections
 
 ### Supported Message Types
 
+#### Cloud Mode
 - Track
-- Page  
+- Page
 - Screen
+
+#### Device Mode
+- Track
+- Screen
+- Identify
+
+**Supported Platforms for Device Mode**: Android, iOS, React Native, Flutter, Cordova
+
+**Note**: Device mode uses the AppsFlyer native SDK and is only available for mobile platforms. Web, Unity, AMP, and server-side sources only support cloud mode.
 
 ### Batching Support
 
-- **Supported**: Yes (via router)
-- **Message Types**: All supported message types
+- **Supported**: Yes (cloud mode only)
+- **Message Types**: Track, Page, Screen events in cloud mode
 - **Implementation**: Uses `simpleProcessRouterDest` for concurrent processing
-- **Note**: This provides individual event processing with concurrency, not actual request batching
+- **Note**: This provides individual event processing with concurrency, not actual request batching. Device mode events are processed individually by the native SDK.
 
 ### Rate Limits
 
@@ -271,7 +283,7 @@ A: Yes, for missing data replay. However, replaying already delivered events wil
 A: AppsFlyer limits JSON payload size to 1KB per event. Ensure your event data stays within this limit.
 
 **Q: Does AppsFlyer support batching?**
-A: The destination uses router-level concurrency but sends individual HTTP requests to AppsFlyer. There's no API-level batching support.
+A: The destination uses router-level concurrency for cloud mode events but sends individual HTTP requests to AppsFlyer. There's no API-level batching support. Device mode events are processed individually by the native SDK.
 
 **Q: How do I handle multi-product events?**
 A: For e-commerce events with a `products` array, the destination automatically extracts product information and creates AppsFlyer-compatible arrays for `af_content_id`, `af_quantity`, and `af_price`.
@@ -295,30 +307,26 @@ A: For e-commerce events with a `products` array, the destination automatically 
 
 ### ⚠️ Sections Requiring Review
 
-1. **RETL Support** - Confirmed not supported, documented in separate file
-2. **API Deprecation Timeline** - No official deprecation dates found for API v2
-3. **Proxy Delivery** - Confirmed not supported (no networkHandler.js)
-4. **OAuth Support** - Not applicable (uses API key authentication)
-5. **Intermediate Calls** - Confirmed none are made
+1. **API Deprecation Timeline** - No official deprecation dates found for API v2. AppsFlyer continues to support both v2 and v3 endpoints without announced end-of-life dates.
 
 ### 📋 Guide Requirements Compliance
 
 - ✅ Destination config functionalities from schema.json
 - ✅ Implementation language (JavaScript) identified
-- ✅ Supported message types from db-config.json
+- ✅ Supported message types from db-config.json (cloud and device modes)
 - ✅ Batching capabilities analyzed from source code
-- ✅ Intermediate calls analysis completed
-- ✅ Proxy delivery support checked
+- ✅ Intermediate calls analysis completed (none)
+- ✅ Proxy delivery support checked (not supported)
 - ✅ User deletion implementation documented
-- ✅ OAuth support verified (not applicable)
+- ✅ OAuth support verified (not applicable - uses API key authentication)
 - ✅ Additional functionalities documented
 - ✅ Validation requirements from source code
 - ✅ Rate limits researched from internet sources
 - ✅ Event ordering requirements analyzed
 - ✅ Data replay feasibility documented
-- ✅ Multiplexing scenarios analyzed
+- ✅ Multiplexing scenarios analyzed (none)
 - ✅ Version information and deprecation research
-- ✅ RETL documentation in separate file
+- ✅ RETL documentation in separate file (not supported)
 - ✅ Business logic documentation in separate file
 
 All major requirements from the integration documentation guide have been thoroughly addressed.

@@ -60,25 +60,25 @@ Iterable supports batching for the following message types to optimize performan
 #### Identify Events
 - **Endpoint**: `/api/users/bulkUpdate`
 - **Batch Size**: Up to 4MB request size (~1000 users)
-- **Rate Limit**: 50 requests/second per API key
+- **Rate Limit**: 5 requests/second per API key
 
 #### Track Events
 - **Endpoint**: `/api/events/trackBulk`
 - **Batch Size**: Up to 4MB request size (~1000 events)
-- **Rate Limit**: 50 requests/second per API key
+- **Rate Limit**: 10 requests/second per project
 
 ### API Endpoints and Rate Limits
 
 | Endpoint | Event Types | Rate Limit | Batch Limits | Description |
 |----------|-------------|------------|--------------|-------------|
-| `/users/bulkUpdate` | Identify | 50 requests/second | 4MB request size (~1000 users) | Bulk user profile updates |
-| `/events/trackBulk` | Track, Page, Screen | 50 requests/second | 4MB request size (~1000 events) | Bulk event tracking |
-| `/events/track` | Track, Page, Screen | 5 requests/second | Single event | Individual event tracking |
+| `/users/bulkUpdate` | Identify | 5 requests/second per API key | 4MB request size (~1000 users) | Bulk user profile updates |
+| `/events/trackBulk` | Track, Page, Screen | 10 requests/second per project | 4MB request size (~1000 events) | Bulk event tracking |
+| `/events/track` | Track, Page, Screen | 2000 requests/second per project | Single event | Individual event tracking |
 | `/users/update` | Identify | 5 requests/second | Single user | Individual user updates |
 | `/commerce/trackPurchase` | Track (Order Completed) | 5 requests/second | Single purchase | Purchase tracking |
 | `/commerce/updateCart` | Track (Product Added/Removed) | 5 requests/second | Single cart update | Shopping cart updates |
 | `/users/updateEmail` | Alias | 5 requests/second | Single user | Email address updates |
-| `/users/registerDeviceToken` | Device Registration | 5 requests/second | Single device | Mobile push token registration |
+| `/users/registerDeviceToken` | Device Registration | 500 requests/second per project | Single device | Mobile push token registration |
 | `/users/registerBrowserToken` | Browser Registration | 5 requests/second | Single browser | Web push token registration |
 | `/users/byUserId/{userId}` | User Deletion | 5 requests/second | Single user | User data deletion |
 | `/catalogs/{objectType}/items` | RETL Catalog | 5 requests/second | 1000 items | Catalog item management |
@@ -280,9 +280,10 @@ A: Events may not be batched if they:
 
 **Q: What are the rate limits for Iterable API?**
 A: Rate limits vary by endpoint:
-- Bulk endpoints: 50 requests/second
-- Individual endpoints: 5 requests/second
-- All limits are per API key
+- Bulk endpoints: 5-10 requests/second (per API key or project)
+- Individual endpoints: 5-2000 requests/second (varies by endpoint)
+- Device token registration: 500 requests/second per project
+- Limits are per API key or per project depending on the endpoint
 
 ### E-commerce and Special Events
 

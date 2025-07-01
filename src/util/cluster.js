@@ -28,6 +28,8 @@ async function shutdownWorkers() {
 }
 
 function start(port, app, metricsApp) {
+  // Enable diagnostic reporting on SIGUSR2 signal for debugging stuck processes
+  process.report.reportOnSignal = true;
 
   if (cluster.isMaster) {
     logger.info(`Master (pid: ${process.pid}) has started`);

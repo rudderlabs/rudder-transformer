@@ -212,8 +212,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
  *
  */
 async function processBatchedIdentify(identifyCallsArray, destinationId) {
-  stats.increment('braze_batched_identify_func_calls_count', { destination_id: destinationId });
-
   const { destination } = identifyCallsArray[0];
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
 
@@ -252,6 +250,11 @@ async function processBatchedIdentify(identifyCallsArray, destinationId) {
         'Braze identity resolution request failed with possible network error',
         networkError,
       );
+      stats.increment('braze_batched_identify_func_calls_count', {
+        destination_id: destinationId,
+        status: '5xx',
+        error: 'request_error',
+      });
       return new NetworkError(
         `Braze identify failed - ${JSON.stringify(networkError.response)}`,
         networkError.status,
@@ -265,6 +268,11 @@ async function processBatchedIdentify(identifyCallsArray, destinationId) {
     if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
       logger.error('Braze identity resolution failed', JSON.stringify(brazeIdentifyResp.response));
       collectStatsForAliasFailure(brazeIdentifyResp.response, destination.ID);
+      stats.increment('braze_batched_identify_func_calls_count', {
+        destination_id: destinationId,
+        status: brazeIdentifyResp.status,
+        error: 'non_2xx_status',
+      });
       return new NetworkError(
         `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
         brazeIdentifyResp.status,
@@ -281,6 +289,11 @@ async function processBatchedIdentify(identifyCallsArray, destinationId) {
         'Unhandled Identify Resolution Error',
         JSON.stringify(brazeIdentifyResp.response),
       );
+      stats.increment('braze_batched_identify_func_calls_count', {
+        destination_id: destinationId,
+        status: brazeIdentifyResp.status,
+        error: 'unhandled_error',
+      });
       throw new Error(
         `[Unhandled Identify Resolution Error] ${brazeIdentifyResp.response?.errors[0]?.type}`,
       );
@@ -288,7 +301,6 @@ async function processBatchedIdentify(identifyCallsArray, destinationId) {
 
     return null; // Success
   });
-
   return Promise.all(allRequests);
 }
 
@@ -688,6 +700,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
         handleRtTfSingleEventError(event, oneOfBatchedIdentifyError, reqMetadata),
       );
     }
+    stats.increment('braze_batched_identify_func_calls_count', {
+      destination_id: destination.ID,
+      status: '2xx',
+      error: 'none',
+    });
   }
 
   const output = await Promise.all(allResps);

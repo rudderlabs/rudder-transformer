@@ -39,8 +39,8 @@ const subscriberMapping = require('./data/postscriptSubscriberConfig.json');
  * @returns PostScript API headers object
  */
 export const buildHeaders = (apiKey: string): PostscriptHeaders => ({
-  'content-type': 'application/json',
-  accept: 'application/json',
+  'Content-type': 'application/json',
+  Accept: 'application/json',
   Authorization: `Bearer ${apiKey}`,
   'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
 });
@@ -105,12 +105,29 @@ export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscr
   );
 
   // Include external_id and shopify_customer_id in payload (but not subscriber_id for updates)
-  if (externalId) payload.external_id = externalId;
-  if (shopifyCustomerId) payload.shopify_customer_id = Number(shopifyCustomerId);
+  if (externalId) {
+    payload.external_id = externalId;
+  }
+  if (shopifyCustomerId) {
+    payload.shopify_customer_id = Number(shopifyCustomerId);
+  }
 
   // Extract custom properties from traits (excluding mapped fields)
   const customProperties: Record<string, any> = {};
-  const mappedSourceKeys = new Set(subscriberMapping.map((mapping: any) => mapping.sourceKeys));
+  const mappedSourceKeys = new Set<string>();
+
+  // Collect all mapped source keys (handling both string and array sourceKeys)
+  subscriberMapping.forEach((mapping: any) => {
+    if (Array.isArray(mapping.sourceKeys)) {
+      mapping.sourceKeys.forEach((key: string) => {
+        // Extract the trait key from paths like "traits.keyword" or "context.traits.keyword"
+        const traitKey = key.replace(/^(traits\.|context\.traits\.)/, '');
+        mappedSourceKeys.add(traitKey);
+      });
+    } else if (typeof mapping.sourceKeys === 'string') {
+      mappedSourceKeys.add(mapping.sourceKeys);
+    }
+  });
 
   Object.entries(allTraits).forEach(([key, value]) => {
     if (!mappedSourceKeys.has(key) && value !== undefined && value !== null) {
@@ -150,12 +167,19 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   const contextTraits = (message.context as any)?.traits ?? {};
   const { email, phone } = contextTraits;
 
-  if (subscriberId) payload.subscriber_id = subscriberId;
-  if (externalId) payload.external_id = externalId;
+  // Add subscriber identification (prefer subscriber_id, then external_id, then userId as fallback)
+  if (subscriberId) {
+    payload.subscriber_id = subscriberId;
+  } else if (externalId) {
+    payload.external_id = externalId;
+  } else if (message.userId) {
+    payload.subscriber_id = message.userId;
+  }
+
   if (email) payload.email = email;
   if (phone) payload.phone = phone;
 
-  // Handle timestamp conversion
+  // Handle timestamp conversion (prefer originalTimestamp, then timestamp)
   if (message.originalTimestamp) {
     payload.occurred_at = new Date(message.originalTimestamp).toISOString();
   } else if (message.timestamp) {

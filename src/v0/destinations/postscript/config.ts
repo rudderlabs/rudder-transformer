@@ -21,7 +21,7 @@ export const EXTERNAL_ID_TYPES = {
   SUBSCRIBER_ID: 'subscriber_id',
   EXTERNAL_ID: 'external_id',
   SHOPIFY_CUSTOMER_ID: 'shopify_customer_id',
-} as const;
+};
 
 // Destination name constant
 export const DESTINATION_NAME = 'POSTSCRIPT';

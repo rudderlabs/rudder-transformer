@@ -71,7 +71,7 @@ See the project's [README](README.md) for further information about working in t
    - For key entities like **Destination** and **Connection**, prioritize using generic common types and customize them as needed for each integration.
 
 3. **Adopt Zod for Type Definitions**  
-   - Use **Zod schemas** to define types, enabling both runtime validation and TypeScript type inference via Zod’s `infer` feature.
+   - Use **Zod schemas** to define types, enabling both runtime validation and TypeScript type inference via Zod's `infer` feature.
 
 4. **Follow Recommended Structure**  
    - Refer to this [example](./src/v0/destinations/customerio_audience/) and maintain a similar project structure for consistency.
@@ -94,22 +94,22 @@ Before starting to work on your first RudderStack integration, it is highly reco
 
 
 
-* When developing a **source integration**, you’ll be transforming your events data received from the source to this specification.
-* When developing a **destination integration**, you’ll be parsing the event data according to this event spec and transforming it to your destination’s data spec.
+* When developing a **source integration**, you'll be transforming your events data received from the source to this specification.
+* When developing a **destination integration**, you'll be parsing the event data according to this event spec and transforming it to your destination's data spec.
 
 
 ### Overview of integration development journey
 
 
 
-1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/v1/sources` or `src/cdk/v2/destinations` folder \
+1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/sources` or `src/v0/destinations` folder \
 This is the codebase that controls how raw event data (received from the source) is transformed to RudderStack Event Data Specification and then finally to the destination specific data format
 2. Add RudderStack UI configurations in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) `src/configurations/sources` or `src/configurations/destinations` folder \
 This enables your integration users to setup/configure the integration via RudderStack Dashboard
 3. Write the documentation for your integration (or share the [integration plan document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25) with the RudderStack team)
 4. RudderStack team will deploy your integration to production and post an announcement in the [Release Notes](https://www.rudderstack.com/docs/releases/)
 
-RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here’s an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
+RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here's an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
 
 
 ### 1. Setup rudder-transformer and understand the code structure
@@ -127,9 +127,10 @@ Understand the code structure
 
 
 
-* `src/v1/sources` - Source integrations
-* `src/cdk/v2/destinations` - Destination integrations
-* `src/v0` and `src/v1` have older integrations, will be useful only if you’re fixing a bug or adding feature in older integrations
+* `src/v0/destinations` - Destination integrations
+* `src/v1/destinations` - Destination integrations (used for network handlers)
+* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
+* `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 
@@ -148,7 +149,7 @@ A simple example of `process` function and `transform.js` file looks like this
 
 ```javascript
 /**
- * src/v0/sources/slack/transform.js
+ * src/sources/slack/transform.js
  * An example transform.js file for Slack integration with v0 integration method
  */
 
@@ -232,13 +233,13 @@ exports.process = process;
 
 #### Manual testing
 
-You’ll need some API request client (e.g. Postman, Bruno, etc.) to make a POST test request to 
+You'll need some API request client (e.g. Postman, Bruno, etc.) to make a POST test request to 
 
 `/{$integration-version-type e.g. v0 or v1}/{$integration-type e.g. sources or destinations}/{$integration-name e.g. slack}`
 
 
 
-* Request endpoint example for Slack source developed under v0 folder - `POST /v0/sources/slack`
+* Request endpoint example for Slack source - `POST /v0/sources/slack`
 * Body - An array of event data object received from the source i.e. `[{ …eventData }]`
 * Headers - `Content-Type: application/json`
 
@@ -247,7 +248,7 @@ Depending upon your integration behavior for different types of event, you can g
 
 ##### Testing standard event response
 
-This is what you’d want to do most of the time. The standard case, when you only transform the incoming event and hand it over to RudderStack to deliver to the destination.
+This is what you'd want to do most of the time. The standard case, when you only transform the incoming event and hand it over to RudderStack to deliver to the destination.
 
 For a successful event processing in such case, you should receive HTTP 200 OK response status with data in the following structure
 
@@ -278,7 +279,7 @@ In this case, a successful event response should match the following structure
 [
   { 
      outputToSource: {
-       body: ...base64EncodedResponseBody, // e.g. eyJjaGFsbG2UiOiIzZVpicncxYUIxMEZFTUFHQVpkNEZ5RlEifQ (base64 encoding of the response body)
+       body: ...base64EncodedResponseBody, // e.g. eyJjaGFsb2UiOiIzZVpicncxYUIxMEZFTUFHQVpkNEZ5RlEifQ== (base64 encoding of the response body)
        contentType: ...contentType // e.g. application/json
      },
      statusCode: ...httpStatusCode, // e.g. 200
@@ -292,7 +293,7 @@ Follow the test structure similar to other integrations in `test/integrations/so
 
 You may reuse the same request data from the manual tests i.e. use them in place of `replaceThisWithYourEventPayloadProps` and `replaceThisWithYourTransformedEventOutput` (including the enclosing `[{ }]`). But make sure to redact any personal or secret information.
 
-Here’s an example
+Here's an example
 
 ```javascript
 /** test/sources/slack/data.ts **/
@@ -321,7 +322,7 @@ export const data = [
         status: 200,
         body: [
           {
-            output: {
+    output: {
               batch: ...replaceThisWithYourTransformedEventOutput
             },
           },
@@ -376,10 +377,14 @@ You can run tests only for the specific integration, for example
 
 These tests will automatically be run on each commit, making sure that any new development does not break the existing integrations.
 
+**Note:** After creating your test files, make sure to add your destination entry in the `INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE` list in `component.test.ts` to ensure your tests are included in the test suite.
+
+**Reference:** Take a look at existing destinations like `tiktok_ads`, `loops`, `klaviyo`, etc. in the `test/integrations/destinations/` folder for reference on how to structure your tests.
+
 
 ### 5. Add RudderStack UI configurations in integrations-config
 
-Add configuration for your integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src/configurations/sources/` or `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/sources/slack/db-config.json) of the same for Slack source. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
+Add configuration for your integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src/configurations/sources/` or `src.configurations/destinations`. At bare minimum, a db-config file is needed, here's [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/sources/slack/db-config.json) of the same for Slack source. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
 Alternatively, the easier path to do this is by running a script which will generate these files for you. For this, first create a copy of this `[test/configData/inputData.json](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json)` and adjust it to what you want to see in the RudderStack dashboard ui. And use that placeholder file in the following command
 
@@ -415,8 +420,8 @@ npm run build:start
 
 Before diving into this tutorial, it is highly recommended to get a high-level overview of [RudderStack Event Specification](https://www.rudderstack.com/docs/event-spec/standard-events/).
 
-* When developing a **destination integration**, you’ll be transforming the data from RudderStack Event Specification to your target destination’s data specification.
-* When developing a **source integration**, you’ll be transforming your events data received from the source to RudderStack Event Specification.
+* When developing a **destination integration**, you'll be transforming the data from RudderStack Event Specification to your target destination's data specification.
+* When developing a **source integration**, you'll be transforming your events data received from the source to RudderStack Event Specification.
 
 In this tutorial, we will specifically focus on developing a destination integration.
 
@@ -424,13 +429,13 @@ In this tutorial, we will specifically focus on developing a destination integra
 ### Overview of integration development journey
 
 
-1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/cdk/v2/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
+1. Add integration code to [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) `src/sources` or `src/v0/destinations` folder. This is the codebase that controls how raw event data from [RudderStack Event Data Specification](https://www.rudderstack.com/docs/event-spec/standard-events/) to destination specific data format
 2. Add RudderStack UI configurations in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) `src/configurations/destinations` folder \
 This enables your integration users to setup/configure the integration via RudderStack Dashboard
 3. Write the documentation for your integration (or share the [integration plan document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25) with the RudderStack team)
 4. RudderStack team will deploy your integration to production and post an announcement in the [Release Notes](https://www.rudderstack.com/docs/releases/)
 
-RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here’s an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
+RudderStack team will be available to help you by giving feedback and answering questions either directly on your GitHub PR or the [RudderStack Slack community](https://www.rudderstack.com/join-rudderstack-slack-community/). Before diving into code, writing an integration plan document helps a lot, here's an [example document](https://rudderstacks.notion.site/Integration-planning-document-example-Slack-Source-integration-46863d6041ec48258f9c5433eab93b28?pvs=25).
 
 
 ### 1. Setup rudder-transformer and understand the code structure
@@ -447,9 +452,10 @@ Setup [rudder-transformer](https://github.com/rudderlabs/rudder-transformer) on 
 Understand the code structure
 
 
-* `src/cdk/v2/destinations` - Destination integrations
-* `src/v1/sources` - Source integrations
-* `src/v0` and `src/v1` - Older integrations. If you’re fixing bugs in one of the older integrations, you might find your integration in these folders if it is an older integration.
+* `src/v0/destinations` - Destination integrations
+* `src/v1/destinations` - Destination integrations (used for network handlers)
+* `src/cdk/v2/destinations` - Destination Integrations that are written in CDK (no longer being developed now)
+* `src/sources` - Source integrations
 * `test/integrations/sources` - Integration tests for source integrations
 * `test/integrations/destinations` - Integration tests for destination integrations
 
@@ -458,165 +464,485 @@ Understand the code structure
 
 Here, we will explain the code for a destination integration for single event processing as well as batch events processing.
 
-Before diving into the code, we recommend exploring the code for different destinations under the `src/cdk/v2/destinations` folder. This is the same structure you'll follow for your integration. This is a high-level overview of the code structure which you’ll be creating
+Before diving into the code, we recommend exploring the code for different destinations under the `src/v0/destinations` folder. This is the same structure you'll follow for your integration. This is a high-level overview of the code structure which you'll be creating
 
 
 
-* `src/cdk/v2/destinations/**my_destination**` (follow the snake_case naming convention) - Your integration code for `my_destination`
-* `src/cdk/v2/destinations/**my_destination/procWorkflow.yaml**` (processor workflow) - This is where you write the `yaml` configuration specifying how to transform an event from standard RudderStack format to destination format. This `yaml` code will later automatically get converted to javascript code using our RudderStack Workflow Engine. You will need to familiarize yourself with [RudderStack Workflow Engine](https://github.com/rudderlabs/rudder-workflow-engine) to understand what key/value you should be using. We will cover a quickstart for the same in this tutorial but whenever in doubt, refer to the [RudderStack Workflow Engine docs/readme](https://github.com/rudderlabs/rudder-workflow-engine).
-* `src/cdk/v2/destinations/**my_destination/rtWorflow.yaml**` (router workflow) - For batch events integration code. This will call the processor workflow to process individual events.
-* `src/cdk/v2/destinations/**my_destination/config.js**` - Configurations for the integration
+* `src/v0/destinations/**my_destination**` (follow the snake_case naming convention) - Your integration code for `my_destination`
+* `src/v0/destinations/**my_destination/transform.ts**` - Main transformation logic with router and processor functions
+* `src/v0/destinations/**my_destination/types.ts**` - TypeScript types with Zod schemas for validation
+* `src/v0/destinations/**my_destination/config.ts**` - Configuration constants and endpoints
+* `src/v0/destinations/**my_destination/utils.ts**` - Utility functions (optional, only if needed)
+* `src/v0/destinations/**my_destination/utils.test.ts**` - Unit tests for utilities (optional, only if needed)
 
-Before we dive into the code for a simple transformation for a destination, let’s address the potential questions you might have at this point
+Before we dive into the code for a simple transformation for a destination, let's address the potential questions you might have at this point
 
-**Why is the integration code for destination transformation written in `yaml` instead of `javascript`?**
+**Why is the integration code for destination transformation written in TypeScript instead of JavaScript?**
 
-`yaml` is a great language for data serialization. It also makes the code short and consistent to read. This is why we moved from `javascript` to `yaml` for the data transformation code. It helped us move to a config-driven approach.
+TypeScript provides better type safety, improved developer experience, and better maintainability. It helps catch errors at compile time and provides better IntelliSense support. This is why we moved from JavaScript to TypeScript for the data transformation code.
 
-**Does using `yaml` limit our flexibility to write complex transformation logic?**
+**Does using TypeScript limit our flexibility to write complex transformation logic?**
 
-No. We use a templating language to support any kind of complex transformation logic in `yaml`, so we have the extensibility as well as the key benefit - concise and simple `yaml` for common transformation requirements. This was made possible by the RudderStack Workflow Engine.
+No. TypeScript is a superset of JavaScript, so you have all the flexibility of JavaScript plus the benefits of static typing. You can write any kind of complex transformation logic while maintaining type safety and better code organization.
 
-**What exactly is RudderStack Workflow Engine?**
+**What exactly is the TypeScript transformation approach?**
 
-In the [rudder-transformer](https://github.com/rudderlabs/rudder-transformer/) service, we handle data transformation from customer events to destination events. The rudder-transformer service uses the [RudderStack Workflow Engine](https://github.com/rudderlabs/rudder-workflow-engine) to organize this transformation process into clear, manageable steps. This includes validation, data mapping, enriching with API calls, and handling various event types. These steps were earlier implemented in JavaScript, which, while flexible, was challenging to maintain and standardize. To improve readability, testability, and development speed, we transitioned to a config-driven workflow engine using template languages like JSONata and JsonTemplate, with the capability to extend to additional languages. In short, this is what helped us move transformation code from `javascript` to `yaml`.
+In the [rudder-transformer](https://github.com/rudderlabs/rudder-transformer/) service, we handle data transformation from customer events to destination events. The rudder-transformer service uses TypeScript with Zod schemas to organize this transformation process into clear, manageable functions. This includes validation, data mapping, enriching with API calls, and handling various event types. These steps were earlier implemented in JavaScript, which, while flexible, was challenging to maintain and standardize. To improve readability, testability, and development speed, we transitioned to a TypeScript-first approach with Zod schemas for runtime validation and type inference.
 
-**To develop an integration, how much do I need to understand about RudderStack Workflow Engine?**
+**To develop an integration, how much do I need to understand about TypeScript?**
 
-Not more than what can not be covered in 10 mins. The RudderStack Workflow Engine will convert the `yaml` file to `javascript` for transformation. The key question is - how to write this `yaml` file? And the answer lies in the `keys` you can use in the `yaml`. Get familiar following keys, and you should be able to write your first integration
+Basic TypeScript knowledge is sufficient. The key concepts you'll need are:
+1. **Type definitions** - Using interfaces and types
+2. **Zod schemas** - For runtime validation and type inference
+3. **Function signatures** - Understanding input/output types
+4. **Error handling** - Using try-catch blocks and proper error types
 
+A simple example of `transform.ts` looks like this:
 
+```typescript
+/**
+ * src/v0/destinations/my_destination/transform.ts
+ * A simple transform.ts example for My Destination integration
+ * 
+ * This file contains the core transformation logic for converting events
+ * to destination-specific format and building HTTP responses.
+ */
 
-1. `bindings` - To import external javascript functions and data
-    1. `path` - The file path where we want to import from e.g. `./config` (can omit the extension `.js`)
-    2. `name` - The name by which we want import e.g. `Config` (can be accessed as `$Config` or `$Config.something`)
-    3. `exportAll` - If `true`, imports everything from the file. Default: `false` i.e. imports only the object matching the `name`
-2. **`steps` - To express the destination transformation logic as a series of steps. If you have used GitHub action, this will sound familiar.**
-    4. `name` (mandatory) - A name to track outputs
-    5. `description` - Mention what does this step do
-    6. `functionName` - The function we want to execute in this step. This function must be defined in the bindings and must have following definition \
-        ```javascript
-            (input: any, bindings: Record&lt;string, any>) => {
-            error?: any,
-            output?: any
-          }
-        ```
+import { z } from 'zod';
+import { Destination, Metadata } from '../../../types';
+import { 
+  ProcessorTransformationRequest, 
+  ProcessorTransformationResponse,
+  RouterTransformationRequest,
+  RouterTransformationResponse
+} from '../../../types/destinationTransformation';
+import { constructPayload, defaultRequestConfig } from '../../util';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
+import { MappingConfig, ConfigCategory, API_CONFIG, ENDPOINT_CONFIG } from './config';
 
-    7. `condition` - The step will get executed only when this condition is satisfied
-    8. `inputTemplate` - To customize the input. Passed while executing the step. By default, all steps receive the same input as the workflow input, but when we want to modify the input before executing the step, we can use this feature.
-    9. `contextTemplate` - By default, all steps receive the current context, but we can use this feature when we want to modify the context before executing the step. This is useful when using external workflows, workflow steps, or template paths.
-    10. `loopOverInput` - We can use this feature when the input is an array, and we want to execute the step logic for each element independently. This is mainly used for batch processing.
-    11. `steps` - You may define a series of steps inside a step. We will call such a step a `WorkflowStep` as opposed to `SimpleStep`.
-    12. `workflowStepPath` - We can import the steps from another `yaml` file
-    13. `batches` - To batch the inputs using filter and by length
-        1. `key` - The input name e.g. “heroes”
-        2. `filter` - The filter logic e.g. `.type === “hero”`
-        3. `size` - The size of the batch
+/**
+ * Transform identify event
+ * 
+ * This function converts identify events to destination-specific format
+ * using the mapping configuration defined in the JSON files.
+ * 
+ * @param message - The message object containing user identification data
+ * @param destination - The destination configuration object
+ * @returns Transformed payload ready for the destination API
+ */
+const transformIdentifyPayload = (message: MyDestinationMessage, destination: MyDestinationDestination): MyDestinationIdentifyPayload  => {
+  // Get the identify category configuration for mapping
+  const category = ConfigCategory.IDENTIFY;
+  
+  // Use the mapping configuration to transform the message
+  // This applies the rules defined in MyDestinationIdentifyConfig.json
+  const payload = constructPayload(message, MappingConfig[category.name]);
+  
+  // any additional transformation logic
+  if (!payload.user_id && message.anonymousId) {
+    payload.user_id = message.anonymousId;
+  }
+  
+  return payload;
+};
 
-A simple example of `procWorkflow.yaml` looks like this:
+/**
+ * Transform track event
+ * 
+ * This function converts track events to destination-specific format
+ * using the mapping configuration defined in the JSON files.
+ * 
+ * @param message - The message object containing event tracking data
+ * @param destination - The destination configuration object
+ * @returns Transformed payload ready for the destination API
+ */
+const transformTrackPayload = (message: MyDestinationMessage, destination: MyDestinationDestination): MyDestinationTrackPayload => {
+  // Get the track category configuration for mapping
+  const category = ConfigCategory.TRACK;
+  
+  // Use the mapping configuration to transform the message
+  // This applies the rules defined in MyDestinationTrackConfig.json
+  const payload = constructPayload(message, MappingConfig[category.name]);
+  
+  // any additional transformation logic
+  if (!payload.user_id && message.anonymousId) {
+    payload.user_id = message.anonymousId;
+  }
+  
+  return payload;
+};
 
-```yaml
-bindings:
-  - name: EventType
-    path: ../../../../constants
-  - path: ../../bindings/jsontemplate
-    exportAll: true
-  - name: removeUndefinedAndNullValues
-    path: ../../../../v0/util
+/**
+ * Common response handler
+ * 
+ * This function creates a standardized HTTP response
+ * 
+ * @param endpoint - The API endpoint URL
+ * @param method - HTTP method (GET, POST, etc.)
+ * @param headers - HTTP headers including authorization and content type
+ * @param payload - The transformed payload to send
+ * @returns Properly formatted response object for processing
+ */
+const responseHandler = (
+  endpoint: string,
+  method: string,
+  headers: MyDestinationHeaders,
+  payload: MyDestinationPayload,
+): MyDestinationProcessorResponse => {
+  // Create a new response object using the utility
+  const response = defaultRequestConfig();
+  
+  // Set the endpoint URL
+  response.endpoint = endpoint;
+  
+  // Set the HTTP method
+  response.method = method;
+  
+  // Set the headers (Authorization, Content-Type, etc.)
+  response.headers = headers;
+  
+  // Set the request body as JSON
+  response.body.JSON = payload;
+  
+  return response;
+};
 
-steps:
-  - name: validateInput
-    template: |
-      $.assert(.message.type, "message Type is not present. Aborting message.");
-      $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, 
-        "message type " + .message.type + " is not supported");
-  - name: prepareContext
-    template: |
-      $.context.messageType = .message.type.toLowerCase();
-      $.context.payload = {};
-      $.context.finalHeaders = {
-          "authorization": "Basic " + .destination.Config.apiKey,
-          "content-type": "application/json"
-        };
-  - name: identifyPayload
-    condition: $.context.messageType == "identify"
-    template: |
-      $.context.endpoint = "https://api.fullstory.com/v2/users";
-      $.context.payload.properties = .message.traits ?? .message.context.traits;
-      $.context.payload.uid = .message.userId;
-      $.context.payload.email = .message.context.traits.email;
-      $.context.payload.display_name = .message.context.traits.name;
+/**
+ * Build identify response
+ * 
+ * Creates a complete HTTP response for identify events by:
+ * 1. Transforming the message payload
+ * 2. Using the endpoint configuration for identify events
+ * 3. Adding proper headers and authentication
+ * 
+ * @param input - The processor request containing message and destination config
+ * @returns Complete HTTP response ready for the destination API
+ */
+const constructIdentifyResponse = (input: MyDestinationProcessorRequest): MyDestinationProcessorResponse => {
+  const { message, destination } = input;
+  
+  // Transform the message to destination-specific format
+  const payload = transformIdentifyPayload(message, destination);
+  
+  // Build the response using the identify endpoint configuration
+  return responseHandler(
+    ENDPOINT_CONFIG.IDENTIFY.url,
+    ENDPOINT_CONFIG.IDENTIFY.method,
+    {
+      'Authorization': `Bearer ${destination.Config.apiKey}`,
+      'Content-Type': ENDPOINT_CONFIG.IDENTIFY.contentType
+    },
+    payload
+  );
+};
 
-  - name: trackPayload
-    condition: $.context.messageType == "track"
-    template: |
-      $.context.endpoint = "https://api.fullstory.com/v2/events";
-      $.context.payload.name = .message.event;
-      $.context.payload.properties = .message.properties;
-      $.context.payload.timestamp = .message.originalTimestamp;
-      $.context.payload.context = {};
+/**
+ * Build track response
+ * 
+ * Creates a complete HTTP response for track events by:
+ * 1. Transforming the message payload
+ * 2. Using the endpoint configuration for track events
+ * 3. Adding proper headers and authentication
+ * 
+ * @param input - The processor request containing message and destination config
+ * @returns Complete HTTP response ready for the destination API
+ */
+const constructTrackResponse = (input: MyDestinationProcessorRequest): MyDestinationProcessorResponse => {
+  const { message, destination } = input;
+  
+  // Transform the message to destination-specific format
+  const payload = transformTrackPayload(message, destination);
+  
+  // Build the response using the track endpoint configuration
+  return responseHandler(
+    ENDPOINT_CONFIG.TRACK.url,
+    ENDPOINT_CONFIG.TRACK.method,
+    {
+      'Authorization': `Bearer ${destination.Config.apiKey}`,
+      'Content-Type': ENDPOINT_CONFIG.TRACK.contentType
+    },
+    payload
+  );
+};
 
-  - name: validateEventName
-    condition: $.context.messageType == "track"
-    template: |
-      $.assert(.message.event, "event is required for track call")
+/**
+ * Process single event
+ * 
+ * This is the main entry point for processing individual events.
+ * It validates the configuration and routes the event to the appropriate
+ * handler based on the event type.
+ * 
+ * @param input - The processor request containing message and destination config
+ * @returns Processed response for the event
+ * @throws ConfigurationError if API key is missing
+ * @throws Error if event type is not supported
+ */
+const processEvent = (input: MyDestinationProcessorRequest) : MyDestinationProcessorResponse => {
+  const { message, destination } = input;
+  
+  // any other validation
+  if (!destination.Config.apiKey) {
+    throw new ConfigurationError('API key is required');
+  }
 
-  - name: mapContextFieldsForTrack
-    condition: $.context.messageType == "track"
-    template: |
-      $.context.payload.context.browser = {
-        "url": .message.context.page.url,
-        "user_agent": .message.context.userAgent,
-        "initial_referrer": .message.context.page.initial_referrer,
-      };
-      $.context.payload.context.mobile = {
-        "app_name": .message.context.app.name,
-        "app_version": .message.context.app.version,
-      };
-      $.context.payload.context.device = {
-        "manufacturer": .message.context.device.manufacturer,
-        "model": .message.context.device.model,
-      };
-      $.context.payload.context.location = {
-        "ip_address": .message.context.ip,
-        "latitude": .message.properties.latitude,
-        "longitude": .message.properties.longitude,
-        "city": .message.properties.city,
-        "region": .message.properties.region,
-        "country": .message.properties.country,
-      };
+  // Route the event to the appropriate handler based on event type
+  switch (message.type) {
+    case 'identify':
+      return constructIdentifyResponse(input);
+    case 'track':
+      return constructTrackResponse(input);
+    default:
+      throw new Error(`Unsupported message type: ${message.type}`);
+  }
+};
 
-  - name: mapIdsForTrack
-    condition: $.context.messageType == "track"
-    template: |
-      $.context.payload.session = {
-        "id": .message.properties.sessionId,
-        "use_most_recent": .message.properties.useMostRecent,
-      };
-      $.context.payload.user = {
-        "uid": .message.properties.userId ?? .message.userId,
-      }
+/**
+ * Process single events
+ * 
+ * This function is called for single event processing.
+ * It's the main export that handles individual events.
+ * 
+ * @param input - The processor request containing message and destination config
+ * @returns Promise resolving to the processed response
+ */
+export const process = async (
+  input: MyDestinationProcessorRequest
+): Promise<MyDestinationProcessorResponse> => {
+  const processedEvent = await processEvent(event);
+  return processedEvent;
+};
 
-  - name: cleanPayload
-    template: |
-      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
-  - name: buildResponseForProcessTransformation
-    template: |
-      $.context.payload.({
-         "body": {
-           "JSON": .,
-           "JSON_ARRAY": {},
-           "XML": {},
-           "FORM": {}
-         },
-         "version": "1",
-         "type": "REST",
-         "method": "POST",
-         "endpoint": $.context.endpoint,
-         "headers": $.context.finalHeaders,
-         "params": {},
-         "files": {}
-       })
+/**
+ * Process batch events
+ * 
+ * This function is called for batch event processing.
+ * It uses the utility function to handle multiple events efficiently.
+ * 
+ * @param inputs - Array of router requests for batch processing
+ * @returns Promise resolving to array of processed responses
+ */
+export const processRouterDest = async (
+  inputs: MyDestinationRouterRequest[]
+): Promise<MyDestinationRouterResponse[]> => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
+};
+```
+
+And here's the corresponding `types.ts` file with Zod schemas:
+
+```typescript
+/**
+ * src/v0/destinations/my_destination/types.ts
+ * TypeScript types for My Destination integration
+ * 
+ * This file defines all the TypeScript types and Zod schemas for runtime validation.
+ * Zod schemas provide both compile-time type safety and runtime validation.
+ */
+
+import { z } from 'zod';
+import { Destination, Metadata } from '../../../types';
+import { 
+  ProcessorTransformationRequest, 
+  ProcessorTransformationResponse,
+  RouterTransformationRequest,
+  RouterTransformationResponse
+} from '../../../types/destinationTransformation';
+
+// Configuration schema - defines the structure of destination configuration
+// This validates the API key and any other config parameters
+export const MyDestinationDestinationConfigSchema = z
+  .object({
+    apiKey: z.string().min(1, 'API key is required'), // Ensures API key is not empty
+  })
+  .passthrough(); // Allows additional properties beyond the defined schema
+
+// Message schema - defines the structure of incoming RudderStack events
+// This validates the event data before processing
+export const MyDestinationMessageSchema = z
+  .object({
+    type: z.enum(['identify', 'track']), // Only allow these event types
+    userId: z.string().optional(), // User identifier (optional)
+    anonymousId: z.string().optional(), // Anonymous user identifier (optional)
+    event: z.string().optional(), // Event name for track events (optional)
+    properties: z.record(z.any()).optional(), // Event properties (optional)
+    traits: z.record(z.any()).optional(), // User traits for identify events (optional)
+    originalTimestamp: z.string().optional(), // Original event timestamp (optional)
+  })
+  .passthrough(); // Allows additional properties beyond the defined schema
+
+// TypeScript types derived from Zod schemas using 'infer'
+// This provides compile-time type safety
+export type MyDestinationDestinationConfig = z.infer<typeof MyDestinationDestinationConfigSchema>;
+export type MyDestinationMessage = z.infer<typeof MyDestinationMessageSchema>;
+export type MyDestinationDestination = Destination<MyDestinationDestinationConfig>;
+
+// Request/response types for processor (single event processing)
+// These types define the input/output structure for the main processing functions
+export type MyDestinationProcessorRequest = ProcessorTransformationRequest<
+  MyDestinationMessage,
+  Metadata,
+  MyDestinationDestination
+>;
+
+export type MyDestinationProcessorResponse = ProcessorTransformationResponse;
+
+// Request/response types for router (batch event processing)
+// These types define the input/output structure for batch processing
+export type MyDestinationRouterRequest = RouterTransformationRequest<
+  MyDestinationMessage,
+  MyDestinationDestination
+>;
+
+export type MyDestinationRouterResponse = RouterTransformationResponse;
+
+// Type definitions for headers and payloads
+// These define the structure of HTTP requests to the destination API
+export type MyDestinationHeaders = {
+  'Authorization': string; // Bearer token or API key
+  'Content-Type': string; // Usually 'application/json'
+};
+
+// Union type for all possible payload types
+export type MyDestinationPayload = MyDestinationIdentifyPayload | MyDestinationTrackPayload;
+
+// Identify event payload structure
+// Define the exact fields your destination expects for user identification
+export type MyDestinationIdentifyPayload = {
+  // Define identify payload structure based on your destination's requirements
+  // Example: user_id, email, name, properties, etc.
+}
+
+// Track event payload structure
+// Define the exact fields your destination expects for event tracking
+export type MyDestinationTrackPayload = {
+  // Define track payload structure based on your destination's requirements
+  // Example: user_id, event, properties, timestamp, etc.
+}
+```
+
+And here's the corresponding `config.ts` file:
+
+```typescript
+/**
+ * src/v0/destinations/my_destination/config.ts
+ * Configuration for My Destination integration
+ * 
+ * This file contains all configuration constants, API endpoints, and mapping setup.
+ * It centralizes all configuration to make the integration easy to maintain.
+ */
+
+import { getMappingConfig } from '../../util';
+
+// Destination type identifier - used for logging and error tracking
+const destType = 'MY_DESTINATION';
+
+// API configuration - defines the base URL, endpoints, and HTTP methods
+// This makes it easy to change API endpoints or add new ones
+const API_CONFIG = {
+  BASE_URL: 'https://api.mydestination.com', // Base URL for all API calls
+  ENDPOINTS: {
+    USERS: '/users', // Endpoint for user identification
+    EVENTS: '/events' // Endpoint for event tracking
+  },
+  METHODS: {
+    POST: 'POST' // HTTP method for sending data
+  },
+  HEADERS: {
+    CONTENT_TYPE_JSON: 'application/json', // Content type for JSON payloads
+    // CONTENT_TYPE_FORM: 'application/x-www-form-urlencoded' // Alternative for form data
+  }
+} as const; // 'as const' makes the object immutable and provides better type inference
+
+// Simplified endpoint configuration - combines base URL with specific endpoints
+// This creates complete URLs for each event type
+const ENDPOINT_CONFIG = {
+  IDENTIFY: {
+    url: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.USERS}`, // Full URL for identify events
+    method: API_CONFIG.METHODS.POST, // HTTP method for identify events
+    contentType: API_CONFIG.HEADERS.CONTENT_TYPE_JSON // Content type for identify events
+  },
+  TRACK: {
+    url: `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.EVENTS}`, // Full URL for track events
+    method: API_CONFIG.METHODS.POST, // HTTP method for track events
+    contentType: API_CONFIG.HEADERS.CONTENT_TYPE_JSON // Content type for track events
+  }
+} as const; // 'as const' makes the object immutable and provides better type inference
+
+// Configuration categories - defines the mapping configuration files for each event type
+// This tells the system which JSON files to use for field mapping
+const ConfigCategory = {
+  IDENTIFY: {
+    name: 'MyDestinationIdentifyConfig', // Maps to MyDestinationIdentifyConfig.json
+  },
+  TRACK: {
+    name: 'MyDestinationTrackConfig', // Maps to MyDestinationTrackConfig.json
+  },
+};
+
+// Load mapping configuration from JSON files
+// This reads the mapping rules from the data/ folder
+const MappingConfig = getMappingConfig(ConfigCategory, __dirname);
+
+// Export all configuration for use in other files
+export {
+  destType,
+  ConfigCategory,
+  MappingConfig,
+  API_CONFIG,
+  ENDPOINT_CONFIG
+};
+```
+
+And here's an example of the mapping configuration files:
+
+```json
+// src/v0/destinations/my_destination/data/MyDestinationIdentifyConfig.json
+// This file defines how to map RudderStack identify event fields to destination fields
+[
+  {
+    "destKey": "user_id", // Destination field name
+    "sourceKeys": "userIdOnly", // RudderStack field name (special mapping)
+    "sourceFromGenericMap": true // Use generic mapping utility
+  },
+  {
+    "destKey": "email", // Destination field name
+    "sourceKeys": "email", // RudderStack field name
+    "sourceFromGenericMap": true // Use generic mapping utility
+  },
+  {
+    "destKey": "name", // Destination field name
+    "sourceKeys": ["traits.name", "context.traits.name"] // Multiple possible source fields
+  },
+  {
+    "destKey": "properties", // Destination field name
+    "sourceKeys": ["traits", "context.traits"] // Map all traits as properties
+  }
+]
+```
+
+```json
+// src/v0/destinations/my_destination/data/MyDestinationTrackConfig.json
+// This file defines how to map RudderStack track event fields to destination fields
+[
+  {
+    "destKey": "user_id", // Destination field name
+    "sourceKeys": "userIdOnly", // RudderStack field name (special mapping)
+    "sourceFromGenericMap": true // Use generic mapping utility
+  },
+  {
+    "destKey": "event", // Destination field name
+    "sourceKeys": "event" // RudderStack event name
+  },
+  {
+    "destKey": "properties", // Destination field name
+    "sourceKeys": "properties" // RudderStack event properties
+  },
+  {
+    "destKey": "timestamp", // Destination field name
+    "sourceKeys": "originalTimestamp" // RudderStack original timestamp
+  }
+]
 ```
 
 ### 3. Test your destination integration
@@ -624,11 +950,11 @@ steps:
 
 #### Manual testing
 
-You’ll need some API request client (e.g. Postman, Bruno, curl, etc.) for manual testing. 
+You'll need some API request client (e.g. Postman, Bruno, curl, etc.) for manual testing. 
 
 
 
-* Make a `POST` request to this endpoint - `POST /v1/destinations/my_integration`
+* Make a `POST` request to this endpoint - `POST /v1/destinations/my_destination`
 * Body - An array of event data object received from the source i.e. `[{ …eventData }]`
 * Headers - `Content-Type: application/json`
 
@@ -637,7 +963,7 @@ Depending upon your integration behavior for different types of event, you can g
 
 ##### Testing standard event response
 
-This is what you’d want to do most of the time. The standard case, when you only transform the incoming event and hand it over to RudderStack to deliver to the destination.
+This is what you'd want to do most of the time. The standard case, when you only transform the incoming event and hand it over to RudderStack to deliver to the destination.
 
 For a successful event processing in such case, you should receive HTTP 200 OK response status with data in the following structure
 
@@ -663,25 +989,27 @@ You can customize the response to the HTTP request from the source beyond the st
 
 ### 4. Write automated tests for your destination integration {#4-write-automated-tests-for-your-destination-integration}
 
-Follow the test structure similar to other integrations in `test/integrations/destinations`. Here’s an overview of the test code structure which you will be creating
+Follow the test structure similar to other integrations in `test/integrations/destinations`. Here's an overview of the test code structure which you will be creating
 
 
 
 * `test/integrations/destinations/my_destination` - To contain all your test code for `my_destination`
-* `test/integrations/destinations/my_destination/processor` - Test code for single event processing logic
+* `test/integrations/destinations/my_destination/processor` - Test code for single event processing logic using `ProcessorTestData` type
     * `data.ts`
     * `identify.ts` - Test for [`identify`](https://www.rudderstack.com/docs/event-spec/standard-events/identify/) event
     * `track.ts` - Test for [`track`](https://www.rudderstack.com/docs/event-spec/standard-events/track/) event
-* `test/integrations/destinations/my_destination/router` - Test code for batch events processing logic
+* `test/integrations/destinations/my_destination/router` - Test code for batch events processing logic using `RouterTestData` type
 
 You may reuse the same request data from the manual tests i.e. use them in place of `replaceThisWithYourEventPayloadProps` and `replaceThisWithYourTransformedEventOutput` (including the enclosing `[{ }]`). But make sure to redact any personal or secret information.
 
-Here’s an example
+Here's an example
 
-```javascript
-export const data = [
+```typescript
+import { ProcessorTestData } from '../../../types/testTypes';
+
+export const data: ProcessorTestData[] = [
   {
-    name: 'fullstory',
+    name: 'my_destination',
     description: 'Complete track event',
     feature: 'processor',
     module: 'destination',
@@ -759,14 +1087,12 @@ export const data = [
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'Fullstory',
+              Name: 'My Destination',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
-                apiKey: 'dummyfullstoryAPIKey',
+                apiKey: 'dummyMyDestinationAPIKey',
               },
               Enabled: true,
               Transformations: [],
@@ -786,8 +1112,9 @@ export const data = [
           {
             output: {
               body: {
-                JSON: {
-                  name: 'Product Reviewed',
+              JSON: {
+                  event: 'Product Reviewed',
+                  user_id: 'u001',
                   properties: {
                     userId: 'u001',
                     sessionId: 's001',
@@ -840,9 +1167,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.fullstory.com/v2/events',
+              endpoint: 'https://api.mydestination.com/events',
               headers: {
-                authorization: 'Basic dummyfullstoryAPIKey',
+                authorization: 'Bearer dummyMyDestinationAPIKey',
                 'content-type': 'application/json',
               },
               params: {},
@@ -860,7 +1187,7 @@ export const data = [
     },
   },
   {
-    name: 'fullstory',
+    name: 'my_destination',
     description: 'Missing event name',
     feature: 'processor',
     module: 'destination',
@@ -896,14 +1223,12 @@ export const data = [
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'Fullstory',
+              Name: 'My Destination',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
-                apiKey: 'dummyfullstoryAPIKey',
+                apiKey: 'dummyMyDestinationAPIKey',
               },
               Enabled: true,
               Transformations: [],
@@ -927,12 +1252,11 @@ export const data = [
             },
             statusCode: 400,
             error:
-              'event is required for track call: Workflow: procWorkflow, Step: validateEventName, ChildStep: undefined, OriginalError: event is required for track call',
+              'event is required for track call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
-              implementation: 'cdkV2',
-              destType: 'FULLSTORY',
+              destType: 'MY_DESTINATION',
               module: 'destination',
               feature: 'processor',
               destinationId: 'destId',
@@ -944,7 +1268,7 @@ export const data = [
     },
   },
   {
-    name: 'fullstory',
+    name: 'my_destination',
     description: 'Complete identify event',
     feature: 'processor',
     module: 'destination',
@@ -983,14 +1307,12 @@ export const data = [
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'Fullstory',
+              Name: 'My Destination',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
-                apiKey: 'fullstoryAPIKey',
+                apiKey: 'dummyMyDestinationAPIKey',
               },
               Enabled: true,
               Transformations: [],
@@ -1011,7 +1333,7 @@ export const data = [
             output: {
               body: {
                 JSON: {
-                  properties: {
+              properties: {
                     company: 'Initech',
                     address: {
                       country: 'USA',
@@ -1033,9 +1355,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.fullstory.com/v2/users',
+              endpoint: 'https://api.mydestination.com/v2/users',
               headers: {
-                authorization: 'Basic fullstoryAPIKey',
+                authorization: 'Basic dummyMyDestinationAPIKey',
                 'content-type': 'application/json',
               },
               params: {},
@@ -1053,7 +1375,7 @@ export const data = [
     },
   },
   {
-    name: 'fullstory',
+    name: 'my_destination',
     description: 'Identify event with needed traits',
     feature: 'processor',
     module: 'destination',
@@ -1077,14 +1399,12 @@ export const data = [
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              Name: 'Fullstory',
+              Name: 'My Destination',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
-                apiKey: 'fullstoryAPIKey',
+                apiKey: 'dummyMyDestinationAPIKey',
               },
               Enabled: true,
               Transformations: [],
@@ -1104,8 +1424,8 @@ export const data = [
           {
             output: {
               body: {
-                JSON: {
-                  properties: {
+              JSON: {
+                properties: {
                     email: 'dummyuser@domain.com',
                     name: 'dummy user',
                     phone: '099-999-9999',
@@ -1121,9 +1441,9 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.fullstory.com/v2/users',
+              endpoint: 'https://api.mydestination.com/v2/users',
               headers: {
-                authorization: 'Basic fullstoryAPIKey',
+                authorization: 'Basic dummyMyDestinationAPIKey',
                 'content-type': 'application/json',
               },
               params: {},
@@ -1149,14 +1469,18 @@ You can run tests only for the specific integration, for example
 
 
 
-* To test Slack destination -  `npm run test:ts -- component --destination=my_destination`
+* To test destination -  `npm run test:ts -- component --destination=my_destination`
 
 These tests will automatically be run on each commit, making sure that any new development does not break the existing integrations.
+
+**Note:** After creating your test files, make sure to add your destination entry in the `INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE` list in `component.test.ts` to ensure your tests are included in the test suite.
+
+**Reference:** Take a look at existing destinations like `tiktok_ads`, `loops`, `klaviyo`, etc. in the `test/integrations/destinations/` folder for reference on how to structure your tests.
 
 
 ### 5. Add RudderStack UI configurations in integrations-config
 
-Add configuration for your destination integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a db-config file is needed, here’s [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
+Add configuration for your destination integration in [rudder-integrations-config](https://github.com/rudderlabs/rudder-integrations-config) repo under `src.configurations/destinations`. At bare minimum, a db-config file is needed, here's [an example](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/src/configurations/destinations/fullstory/db-config.json) of the same for FullStory destination. Duplicate it in the directory for your integration config folder and change the relevant values for your integration.
 
 Alternatively, the easier path to do this is by running a script which will generate these files for you. For this, first create a copy of this `[test/configData/inputData.json](https://github.com/rudderlabs/rudder-integrations-config/blob/develop/test/configData/inputData.json)` and adjust it to what you want to see in the RudderStack dashboard ui. And use that placeholder file in the following command
 

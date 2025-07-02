@@ -192,11 +192,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
  */
 async function processIdentify({ message, destination, metadata, identifyCallsArray }) {
   const identifyPayload = getIdentifyPayload(message);
-  if (
-    identifyCallsArray !== undefined &&
-    identifyCallsArray !== null &&
-    Array.isArray(identifyCallsArray)
-  ) {
+  if (Array.isArray(identifyCallsArray)) {
     identifyCallsArray.push({
       identifyPayload,
       destination,

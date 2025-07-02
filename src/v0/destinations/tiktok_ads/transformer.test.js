@@ -1,6 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
-const { trackResponseBuilder } = require('./transformV2');
+const { trackResponseBuilder } = require('./transform');
 
 describe('trackResponseBuilder', () => {
   const baseConfig = {
@@ -23,7 +23,7 @@ describe('trackResponseBuilder', () => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+    endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
   };
 
   const testCases = [
@@ -58,8 +58,7 @@ describe('trackResponseBuilder', () => {
       expectedResponse: {
         ...baseOutputMessage,
         body: {
-          event_source: 'web',
-          event_source_id: 'dummyPixelCode',
+          pixel_code: 'dummyPixelCode',
           partner_name: 'RudderStack',
           test_event_code: 'test123',
           eventName: 'CompletePayment',
@@ -81,8 +80,7 @@ describe('trackResponseBuilder', () => {
       expectedResponse: {
         ...baseOutputMessage,
         body: {
-          event_source: 'web',
-          event_source_id: 'dummyPixelCode',
+          pixel_code: 'dummyPixelCode',
           partner_name: 'RudderStack',
           eventName: 'StartTrial',
         },
@@ -103,8 +101,7 @@ describe('trackResponseBuilder', () => {
       expectedResponse: {
         ...baseOutputMessage,
         body: {
-          event_source: 'web',
-          event_source_id: 'dummyPixelCode',
+          pixel_code: 'dummyPixelCode',
           partner_name: 'RudderStack',
           eventName: 'SubmitApplication',
         },
@@ -119,19 +116,17 @@ describe('trackResponseBuilder', () => {
           expectedError,
         );
       } else {
-        const resp = await trackResponseBuilder(message, { Config: config });
+        const resp = (await trackResponseBuilder(message, { Config: config }))[0];
         expect(resp.headers['Access-Token']).toBe(expectedResponse.headers['Access-Token']);
         expect(resp.headers['Content-Type']).toBe(expectedResponse.headers['Content-Type']);
         expect(resp.method).toBe(expectedResponse.method);
         expect(resp.endpoint).toBe(expectedResponse.endpoint);
-        expect(resp.body.JSON.event_source).toBe(expectedResponse.body.event_source);
-        expect(resp.body.JSON.event_source_id).toBe(expectedResponse.body.event_source_id);
+        expect(resp.body.JSON.pixel_code).toBe(expectedResponse.body.pixel_code);
         expect(resp.body.JSON.partner_name).toBe(expectedResponse.body.partner_name);
         if (expectedResponse.body.test_event_code) {
           expect(resp.body.JSON.test_event_code).toBe(expectedResponse.body.test_event_code);
         }
-        expect(Array.isArray(resp.body.JSON.data)).toBe(true);
-        expect(resp.body.JSON.data[0].event).toBe(expectedResponse.body.eventName);
+        expect(resp.body.JSON.event).toBe(expectedResponse.body.eventName);
       }
     });
   });

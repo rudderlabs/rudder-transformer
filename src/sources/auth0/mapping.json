@@ -29,7 +29,7 @@
   },
   {
     "sourceKeys": "ip",
-    "destKeys": "context.request_ip"
+    "destKeys": ["context.ip", "context.request_ip"]
   },
   {
     "sourceKeys": "details.auth.user.email",

@@ -2,7 +2,7 @@ import { authHeader2, secret2, secret1 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { commonHeaders, commonParams, validRequestPayload1 } from './business';
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 const commonStatTags = {
   destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',

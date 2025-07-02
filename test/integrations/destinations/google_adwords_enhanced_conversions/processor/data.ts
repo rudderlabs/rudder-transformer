@@ -19,7 +19,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '123-456-7890',
@@ -224,7 +224,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -372,7 +372,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -512,7 +512,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -714,7 +714,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -860,7 +860,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -951,7 +951,7 @@ export const data = [
               secret: null,
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '1234567890',
@@ -1062,7 +1062,8 @@ export const data = [
               secret: null,
             },
             statusCode: 500,
-            error: 'OAuth - access token not found',
+            error:
+              'Failed to get access token for authentication. This might be a platform issue. Please contact RudderStack support for assistance.',
             statTags: {
               errorCategory: 'platform',
               errorType: 'oAuthSecret',
@@ -1094,7 +1095,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '123-456-7890',
@@ -1243,7 +1244,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 requireHash: true,
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
@@ -1438,7 +1439,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 requireHash: false,
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
@@ -1629,7 +1630,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 requireHash: false,
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
@@ -1766,7 +1767,7 @@ export const data = [
               },
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
                 customerId: '123-456-7890',

@@ -6,7 +6,7 @@ import {
 } from '../../../testUtils';
 import { defaultAccessToken } from '../../../common/secrets';
 
-const API_VERSION = 'v18';
+const API_VERSION = 'v19';
 
 const commonHeaders = {
   Authorization: authHeader1,

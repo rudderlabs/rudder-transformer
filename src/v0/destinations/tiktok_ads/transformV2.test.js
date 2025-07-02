@@ -1,6 +1,7 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const { trackResponseBuilder } = require('./transformV2');
+const { eventNames } = require('process');
 
 describe('trackResponseBuilder', () => {
   const baseConfig = {
@@ -120,18 +121,23 @@ describe('trackResponseBuilder', () => {
         );
       } else {
         const resp = await trackResponseBuilder(message, { Config: config });
-        expect(resp.headers['Access-Token']).toBe(expectedResponse.headers['Access-Token']);
-        expect(resp.headers['Content-Type']).toBe(expectedResponse.headers['Content-Type']);
+        expect(resp.headers).toMatchObject(expectedResponse.headers);
         expect(resp.method).toBe(expectedResponse.method);
         expect(resp.endpoint).toBe(expectedResponse.endpoint);
-        expect(resp.body.JSON.event_source).toBe(expectedResponse.body.event_source);
-        expect(resp.body.JSON.event_source_id).toBe(expectedResponse.body.event_source_id);
-        expect(resp.body.JSON.partner_name).toBe(expectedResponse.body.partner_name);
-        if (expectedResponse.body.test_event_code) {
-          expect(resp.body.JSON.test_event_code).toBe(expectedResponse.body.test_event_code);
-        }
-        expect(Array.isArray(resp.body.JSON.data)).toBe(true);
-        expect(resp.body.JSON.data[0].event).toBe(expectedResponse.body.eventName);
+        expect(resp.body.JSON).toMatchObject({
+          event_source: expectedResponse.body.event_source,
+          event_source_id: expectedResponse.body.event_source_id,
+          partner_name: expectedResponse.body.partner_name,
+          data: [
+            {
+              event: expectedResponse.body.eventName,
+              event_time: 1696118400,
+            },
+          ],
+          ...(expectedResponse.body.test_event_code && {
+            test_event_code: expectedResponse.body.test_event_code,
+          }),
+        });
       }
     });
   });

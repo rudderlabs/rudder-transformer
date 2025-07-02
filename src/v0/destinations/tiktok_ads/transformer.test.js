@@ -117,16 +117,18 @@ describe('trackResponseBuilder', () => {
         );
       } else {
         const resp = (await trackResponseBuilder(message, { Config: config }))[0];
-        expect(resp.headers['Access-Token']).toBe(expectedResponse.headers['Access-Token']);
-        expect(resp.headers['Content-Type']).toBe(expectedResponse.headers['Content-Type']);
+        expect(Array.isArray(await trackResponseBuilder(message, { Config: config }))).toBe(true);
+        expect(resp.headers).toMatchObject(expectedResponse.headers);
         expect(resp.method).toBe(expectedResponse.method);
         expect(resp.endpoint).toBe(expectedResponse.endpoint);
-        expect(resp.body.JSON.pixel_code).toBe(expectedResponse.body.pixel_code);
-        expect(resp.body.JSON.partner_name).toBe(expectedResponse.body.partner_name);
-        if (expectedResponse.body.test_event_code) {
-          expect(resp.body.JSON.test_event_code).toBe(expectedResponse.body.test_event_code);
-        }
-        expect(resp.body.JSON.event).toBe(expectedResponse.body.eventName);
+        expect(resp.body.JSON).toMatchObject({
+          pixel_code: expectedResponse.body.pixel_code,
+          partner_name: expectedResponse.body.partner_name,
+          event: expectedResponse.body.eventName,
+          ...(expectedResponse.body.test_event_code && {
+            test_event_code: expectedResponse.body.test_event_code,
+          }),
+        });
       }
     });
   });

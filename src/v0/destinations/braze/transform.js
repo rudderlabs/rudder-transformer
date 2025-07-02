@@ -32,7 +32,6 @@ const {
   isNewStatusCodesAccepted,
   getDestinationExternalID,
   getIntegrationsObj,
-  handleRtTfSingleEventError,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -256,12 +255,11 @@ async function processBatchedIdentify(identifyCallsArray, destinationId) {
         error: 'request_error',
       });
       return new NetworkError(
-        `Braze identify failed - ${JSON.stringify(networkError.response)}`,
-        networkError.status,
+        `Braze identify failed - ${networkError.message || 'Network request failed'}`,
+        500,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(networkError.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
         },
-        networkError.response,
       );
     }
 
@@ -692,19 +690,14 @@ const processRouterDest = async (inputs, reqMetadata) => {
   });
 
   if (identifyCallsArray && identifyCallsArray.length > 0) {
-    const batchedIdentifyError = await processBatchedIdentify(identifyCallsArray, destination.ID);
-    if (batchedIdentifyError.some((error) => error !== null)) {
-      // fail the entire batch incase of batched identify failure -> expected to never fail
-      const oneOfBatchedIdentifyError = batchedIdentifyError.find((error) => error !== null);
-      return inputs.map((event) =>
-        handleRtTfSingleEventError(event, oneOfBatchedIdentifyError, reqMetadata),
-      );
+    const batchedIdentifyErrors = await processBatchedIdentify(identifyCallsArray, destination.ID);
+    if (batchedIdentifyErrors.every((error) => error === null)) {
+      // none of the requests failed
+      stats.increment('braze_batched_identify_func_calls_count', {
+        destination_id: destination.ID,
+        status: '2xx',
+      });
     }
-    stats.increment('braze_batched_identify_func_calls_count', {
-      destination_id: destination.ID,
-      status: '2xx',
-      error: 'none',
-    });
   }
 
   const output = await Promise.all(allResps);

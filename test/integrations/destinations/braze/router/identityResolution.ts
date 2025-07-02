@@ -477,50 +477,49 @@ export const identityResolution = [
         body: {
           output: [
             {
-              statusCode: 500,
-              error: 'Braze identify failed - ""',
-              statTags: {
-                destType: 'BRAZE',
-                errorCategory: 'network',
-                errorType: 'retryable',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
-              destination: {
-                hasDynamicConfig: false,
-                Config: {
-                  restApiKey: secret1,
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  dataCenter: 'eu-01',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: authHeader1,
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      partner: 'RudderStack',
+                      attributes: [
+                        {
+                          external_id: 'user123',
+                          email: 'test@example.com',
+                          first_name: 'John',
+                          last_name: 'Doe',
+                        },
+                        {
+                          external_id: 'user456',
+                          email: 'test2@example.com',
+                          first_name: 'Jane',
+                          last_name: 'Smith',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                DestinationDefinition: {
-                  DisplayName: 'Braze',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'BRAZE',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Braze',
-                Transformations: [],
-              },
-            },
-            {
-              statusCode: 500,
-              error: 'Braze identify failed - ""',
-              statTags: {
-                destType: 'BRAZE',
-                errorCategory: 'network',
-                errorType: 'retryable',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              metadata: [{ jobId: 2, userId: 'u2' }],
-              batched: false,
+              ],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u2' },
+              ],
+              batched: true,
+              statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {
@@ -679,52 +678,49 @@ export const identityResolution = [
         body: {
           output: [
             {
-              statusCode: 500,
-              error:
-                '{"message":"Braze identify failed - {\\"message\\":\\"Internal Server Error\\",\\"errors\\":[{\\"type\\":\\"server_error\\",\\"input_array\\":\\"aliases_to_identify\\",\\"index\\":0}]}","destinationResponse":{"message":"Internal Server Error","errors":[{"type":"server_error","input_array":"aliases_to_identify","index":0}]}}',
-              statTags: {
-                destType: 'BRAZE',
-                errorCategory: 'network',
-                errorType: 'retryable',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
-              destination: {
-                hasDynamicConfig: false,
-                Config: {
-                  restApiKey: secret1,
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  dataCenter: 'eu-01',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: authHeader1,
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      partner: 'RudderStack',
+                      attributes: [
+                        {
+                          external_id: 'user123',
+                          email: 'test@example.com',
+                          first_name: 'John',
+                          last_name: 'Doe',
+                        },
+                        {
+                          external_id: 'user456',
+                          email: 'test2@example.com',
+                          first_name: 'Jane',
+                          last_name: 'Smith',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                DestinationDefinition: {
-                  DisplayName: 'Braze',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'BRAZE',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Braze',
-                Transformations: [],
-              },
-            },
-            {
-              statusCode: 500,
-              error:
-                '{"message":"Braze identify failed - {\\"message\\":\\"Internal Server Error\\",\\"errors\\":[{\\"type\\":\\"server_error\\",\\"input_array\\":\\"aliases_to_identify\\",\\"index\\":0}]}","destinationResponse":{"message":"Internal Server Error","errors":[{"type":"server_error","input_array":"aliases_to_identify","index":0}]}}',
-              statTags: {
-                destType: 'BRAZE',
-                errorCategory: 'network',
-                errorType: 'retryable',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              metadata: [{ jobId: 2, userId: 'u2' }],
-              batched: false,
+              ],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u2' },
+              ],
+              batched: true,
+              statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
                 Config: {

@@ -53,8 +53,12 @@ const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent =>
 
   // Extract and validate required fields for subscriber creation/update
   const contextTraits = (message.context as any)?.traits ?? {};
-  const { keyword, keywordId } = contextTraits;
-  const phone = contextTraits.phone ?? getFieldValueFromMessage(message, 'phone');
+  const messageTraits = message.traits ?? {};
+
+  // Combine traits with context.traits taking priority
+  const allTraits = { ...messageTraits, ...contextTraits };
+  const { keyword, keywordId } = allTraits;
+  const phone = allTraits.phone ?? getFieldValueFromMessage(message, 'phone');
 
   // Phone number is always required for PostScript API
   if (!phone) {
@@ -63,8 +67,7 @@ const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent =>
 
   // Check for subscriber ID from external identifiers for update operations
   const subscriberId =
-    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ??
-    contextTraits.subscriberId;
+    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ?? allTraits.subscriberId;
   const externalId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.EXTERNAL_ID);
 
   // Either keyword or keywordId is required for new subscriber creation (but not for updates)

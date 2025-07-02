@@ -12,7 +12,6 @@ export const trackTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -56,7 +55,7 @@ export const trackTestData: RouterTestData[] = [
                 },
                 originalTimestamp: '2025-06-20T00:00:00.000Z',
               },
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(2),
             },
             {
               destination,
@@ -75,7 +74,7 @@ export const trackTestData: RouterTestData[] = [
                 },
                 originalTimestamp: '2025-06-20T00:00:00.000Z',
               },
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(3),
             },
           ],
           destType,
@@ -143,7 +142,7 @@ export const trackTestData: RouterTestData[] = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(1)],
+              metadata: [generateMetadata(2)],
               statusCode: 200,
             },
             {
@@ -172,7 +171,7 @@ export const trackTestData: RouterTestData[] = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(1)],
+              metadata: [generateMetadata(3)],
               statusCode: 200,
             },
           ],
@@ -189,7 +188,6 @@ export const trackTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {

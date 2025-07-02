@@ -62,8 +62,8 @@ export interface PostscriptExternalId {
  * Postscript API headers structure
  */
 export interface PostscriptHeaders {
-  'content-type': string;
-  accept: string;
+  'Content-type': string;
+  Accept: string;
   Authorization: string;
   'X-Postscript-Partner-Key'?: string;
 }
@@ -83,7 +83,7 @@ export interface PostscriptSubscriberPayload {
   shopify_customer_id?: number;
   tags?: string[];
   origin?: 'email' | 'sms' | 'web' | 'api' | 'other';
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
 }
 
 /**
@@ -96,7 +96,7 @@ export interface PostscriptCustomEventPayload {
   email?: string;
   phone?: string;
   occurred_at?: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
 }
 
 /**
@@ -202,7 +202,7 @@ export type PostscriptRouterRequest = RouterTransformationRequestData<
 export type PostscriptBatchedRequest = BatchedRequest<
   PostscriptSubscriberPayload | PostscriptCustomEventPayload,
   PostscriptHeaders,
-  Record<string, any> // params
+  Record<string, unknown> // params
 >;
 
 /**
@@ -224,7 +224,7 @@ export interface PostscriptErrorResponse {
   error?: {
     message: string;
     code?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   };
   errors?: Array<{
     field: string;

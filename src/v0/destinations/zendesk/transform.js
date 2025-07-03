@@ -172,7 +172,7 @@ const payloadBuilderforUpdatingEmail = async (
     }
   } catch (error) {
     logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
-    return {};
+    return [];
   }
 
   // Remove duplicate email if it exists

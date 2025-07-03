@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { NetworkError, BaseError } from '@rudderstack/integrations-lib';
+import { NetworkError, BaseError, mapInBatches } from '@rudderstack/integrations-lib';
 import { handleHttpRequest } from '../../../adapters/network';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { isHttpStatusSuccess } from '../../util';
@@ -11,9 +11,9 @@ import * as logger from '../../../logger';
 import { Destination } from '../../../types';
 
 interface AliasToIdentify {
-  external_id?: string;
-  alias_name?: string;
-  alias_label?: string;
+  external_id: string;
+  alias_name: string;
+  alias_label: string;
 }
 
 interface IdentifyPayload {
@@ -160,11 +160,9 @@ async function processBatchedIdentify(
 
   const identifyCallsArrayChunks = _.chunk(identifyCallsArray, IDENTIFY_BRAZE_MAX_REQ_COUNT);
 
-  const allResponses = identifyCallsArrayChunks.map(async (identifyCallsChunk) =>
+  const results = await mapInBatches(identifyCallsArrayChunks, async (identifyCallsChunk) =>
     processSingleBatch(identifyCallsChunk, destinationId),
   );
-
-  const results = await Promise.all(allResponses);
 
   // Check if all requests succeeded
   const allSucceeded = results.every((result) => result.success);

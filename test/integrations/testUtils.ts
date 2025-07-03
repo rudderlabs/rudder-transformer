@@ -20,6 +20,8 @@ import {
 } from '../../src/types/zodTypes';
 import { defaultAccessToken } from './common/secrets';
 import { randomBytes } from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const generateAlphanumericId = (size = 36) => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

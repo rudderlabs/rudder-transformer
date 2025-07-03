@@ -174,7 +174,7 @@ envOverrides: {
 
 ```typescript
 envOverrides: {
-  USE_HAS_DYNAMIC_CONFIG_FLAG: 'false', // Force legacy behavior
+  // Add your environment variable overrides here
 }
 ```
 
@@ -224,7 +224,6 @@ The system automatically:
 - `API_ENDPOINT` / `API_BASE_URL` - Override API endpoints
 - `DEBUG_MODE` - Enable debug mode
 - `LOG_LEVEL` - Set logging level
-- `USE_HAS_DYNAMIC_CONFIG_FLAG` - Control dynamic config processing
 - `NODE_ENV` - Set environment (test, development, production)
 - `BATCH_SIZE` - Override batch processing settings
 

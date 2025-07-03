@@ -350,10 +350,7 @@ async function getUserId(message, headers, baseEndpoint, type, metadata) {
     const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
-    // logger.debug(
-    //   `Cannot get userId for externalId : ${externalId}`,
-    //   error.response
-    // );
+    logger.debug(`${NAME}:: Cannot get userId : ${error.response}`);
     return undefined;
   }
 }

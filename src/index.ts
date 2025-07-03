@@ -67,7 +67,7 @@ if (clusterEnabled) {
     const metricsServer = metricsApp.listen(metricsPort);
 
     gracefulShutdown(metricsServer, {
-      signals: 'SIGINT SIGTERM SIGSEGV',
+      signals: 'SIGINT SIGTERM',
       timeout: 30000, // timeout: 30 secs
       forceExit: false, // Don't force exit. Let graceful shutdown of server handle it.
     });
@@ -83,12 +83,8 @@ if (clusterEnabled) {
     logger.error(`SIGINT signal received`);
   });
 
-  process.on('SIGSEGV', () => {
-    logger.error(`SIGSEGV - JavaScript memory error occurred`);
-  });
-
   gracefulShutdown(server, {
-    signals: 'SIGINT SIGTERM SIGSEGV',
+    signals: 'SIGINT SIGTERM',
     timeout: 30000, // timeout: 30 secs
     forceExit: true, // triggers process.exit() at the end of shutdown process
     finally: finalFunction,

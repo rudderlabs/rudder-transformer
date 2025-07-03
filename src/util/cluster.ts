@@ -9,15 +9,15 @@ import { shutdownMetricsClient } from './stats';
  * workerShutdownFn is called during worker shutdown.
  * It will log the process info, shutdown the http server, shutdown the metrics client,
  * and disconnect the Redis client.
- * @param {*} server the http server instance
+ * @param {() => any} serverFn a function that returns the http server instance
  * @returns an async function that will be called during worker shutdown
  */
-export function workerShutdownFn(server: any): (signal?: string) => Promise<void> {
+export function workerShutdownFn(serverFn: () => any): (signal?: string) => Promise<void> {
   return async () => {
     // This function runs on each worker process during shutdown
     logProcessInfo();
     logger.info(`Shutting down http server for worker (pid: ${process.pid})`);
-    const shutdownServer = gracefulShutdown(server, {
+    const shutdownServer = gracefulShutdown(serverFn(), {
       signals: '', // no signals to listen for
       timeout: 30000, // timeout: 30 secs
     });
@@ -124,7 +124,7 @@ export async function start(port: any, app: any, metricsApp: any) {
       // This function runs on each worker process
       server = app.listen(port);
     },
-    workerShutdownFn: workerShutdownFn(server),
+    workerShutdownFn: workerShutdownFn(() => server),
   });
 
   await clusterManager.start();

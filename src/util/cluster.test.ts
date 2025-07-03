@@ -63,7 +63,7 @@ describe('cluster test', () => {
 
   it('should be able to provide a proper workerShutdownFn', async () => {
     const server = new Koa().listen(0);
-    const fn = workerShutdownFn(server);
+    const fn = workerShutdownFn(() => server);
     expect(fn).toBeDefined();
     await expect(fn()).resolves.toBeUndefined;
     expect(server.listening).toBe(false);

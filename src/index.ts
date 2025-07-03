@@ -6,7 +6,7 @@ import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib'
 import { addRequestSizeMiddleware, addStatMiddleware, addProfilingMiddleware } from './middleware';
 import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
-import cluster from './util/cluster';
+import * as cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
 

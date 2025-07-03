@@ -41,6 +41,9 @@ const eventNameMapping = {
   customizeproduct: 'CustomizeProduct',
   findlocation: 'FindLocation',
   schedule: 'Schedule',
+  'application approval': 'ApplicationApproval',
+  'submit application': 'SubmitApplication',
+  'start trial': 'StartTrial',
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

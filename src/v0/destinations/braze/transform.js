@@ -564,11 +564,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return respList;
   });
 
+  const output = await Promise.all(allResps);
+
   if (identifyCallsArray && identifyCallsArray.length > 0) {
     await processBatchedIdentify(identifyCallsArray, destination.ID);
   }
 
-  const output = await Promise.all(allResps);
   const allTransfomredEvents = lodash.flatMap(output);
   return processBatch(allTransfomredEvents);
 };

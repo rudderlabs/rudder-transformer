@@ -1,11 +1,5 @@
 # MoEngage Destination
 
-## Overview
-
-MoEngage is a customer engagement platform that provides insights into customer behavior and helps companies create omnichannel experiences. The RudderStack MoEngage destination sends event data to MoEngage's Data API for user tracking, event analytics, and customer engagement.
-
-This destination supports user identification, event tracking, and user profile merging through MoEngage's server-to-server Data API. It handles multiple data centers, object data types, and device information tracking.
-
 Implementation in **Javascript**
 
 ## Configuration

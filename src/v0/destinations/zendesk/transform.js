@@ -5,6 +5,7 @@ const {
   InstrumentationError,
   NetworkError,
   isDefinedAndNotNull,
+  mapInBatches,
 } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
@@ -24,21 +25,28 @@ const {
   defaultDeleteRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  simpleProcessRouterDest,
   defaultPutRequestConfig,
-  isEmptyObject,
   getEventType,
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
-const { getSourceName } = require('./util');
+const {
+  getSourceName,
+  createOrUpdateUser,
+  getUserIdentities,
+  deleteEmailFromUser,
+  updatePrimaryEmailOfUser,
+  getStatusCode,
+  removeUserFromOrganizationMembership,
+} = require('./util');
 const logger = require('../../../logger');
-const { httpGET } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
 const endpointPath = '/users/search.json';
-function responseBuilder(message, headers, payload, endpoint) {
+const responseBuilder = (message, headers, payload, endpoint) => {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
@@ -53,22 +61,27 @@ function responseBuilder(message, headers, payload, endpoint) {
   response.body.JSON = payload;
 
   return response;
-}
+};
 
 /**
- * Returns the payload for updating primary email of users.
+ * It makes an API call to update the user's primary email.
+ * And it returns the payload for updating primary email of user
  * @param {*} userIdentityId -> userIdentity Id
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
  * @param {*} email -> email of user
+ * @param {*} baseEndpoint
+ * @param {*} metadata
  * @returns
  */
-const responseBuilderToUpdatePrimaryAccount = (
+const responseBuilderToUpdatePrimaryAccount = async (
   userIdentityId,
   userId,
   headers,
   email,
   baseEndpoint,
+  metadata,
+  destinationConfig,
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
@@ -82,63 +95,113 @@ const responseBuilderToUpdatePrimaryAccount = (
     identity: {
       type: 'email',
       value: `${email}`,
+      verified: !!destinationConfig.createUsersAsVerified,
     },
   };
+  // API call to update primary email of the user
+  await updatePrimaryEmailOfUser(response.endpoint, response.body.JSON, response.headers, metadata);
+  return response;
+};
+
+/**
+ * It makes an API call to remove email from the user's account.
+ * And it returns the payload for updating primary email of user
+ * @param {*} userIdentityId -> userIdentity Id
+ * @param {*} userId -> userId of users
+ * @param {*} headers -> Authorizations for API's call
+ * @param {*} baseEndpoint
+ * @param {*} metadata
+ * @returns
+ */
+const responseBuilderToRemoveEmailFromUser = async (
+  userIdentityId,
+  userId,
+  headers,
+  baseEndpoint,
+  metadata,
+) => {
+  const response = defaultRequestConfig();
+  const updatedHeaders = {
+    ...headers,
+    ...DEFAULT_HEADERS,
+  };
+  response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
+  response.method = defaultDeleteRequestConfig.requestMethod;
+  response.headers = updatedHeaders;
+  // API call to remove email from user
+  await deleteEmailFromUser(response.endpoint, response.headers, metadata);
   return response;
 };
 
 /**
  * ref: https://developer.zendesk.com/api-reference/ticketing/users/user_identities/#list-identities
  * This function search id of primary email from userId and fetch its details.
- * @param {*} message -> message
+ * It also removes duplicate email if found, and updates the new email as the primary email.
  * @param {*} userId -> userId of users
  * @param {*} headers -> Authorizations for API's call
- * @returns it return payloadbuilder for updating email
+ * @param {*} newEmail -> new email of the user
+ * @param baseEndpoint
+ * @param metadata
+ * @returns it returns needed payloads for updating email
  */
 const payloadBuilderforUpdatingEmail = async (
   userId,
   headers,
-  userEmail,
+  newEmail,
   baseEndpoint,
   metadata,
+  destinationConfig,
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
-  const config = { headers };
+  const respLists = [];
+  let duplicateEmailIdentity;
+  let currentPrimaryEmailIdentity;
+
   try {
-    const res = await httpGET(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath: 'users/userId/identities',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    });
-    if (res?.response?.data?.count > 0) {
-      const { identities } = res.response.data;
-      if (identities && Array.isArray(identities)) {
-        const identitiesDetails = identities.find(
-          (identitieslist) =>
-            identitieslist.primary === true &&
-            identitieslist.type === 'email' &&
-            identitieslist.value !== userEmail,
-        );
-        if (identitiesDetails?.id && userEmail) {
-          return responseBuilderToUpdatePrimaryAccount(
-            identitiesDetails.id,
-            userId,
-            headers,
-            userEmail,
-            baseEndpoint,
-          );
-        }
-      }
+    const identities = await getUserIdentities(url, headers, metadata);
+    if (identities && Array.isArray(identities)) {
+      duplicateEmailIdentity = identities.find(
+        (identity) =>
+          identity.type === 'email' && identity.value === newEmail && identity.primary !== true,
+      );
+      currentPrimaryEmailIdentity = identities.find(
+        (identity) =>
+          identity.type === 'email' && identity.value !== newEmail && identity.primary === true,
+      );
     }
-    logger.debug(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
     logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
+    return [];
   }
-  return {};
+
+  // Remove duplicate email if it exists
+  if (duplicateEmailIdentity?.id) {
+    const response = await responseBuilderToRemoveEmailFromUser(
+      duplicateEmailIdentity.id,
+      userId,
+      headers,
+      baseEndpoint,
+      metadata,
+    );
+    respLists.push(response);
+  }
+
+  // update primary email if needed
+  if (currentPrimaryEmailIdentity?.id) {
+    const response = await responseBuilderToUpdatePrimaryAccount(
+      currentPrimaryEmailIdentity.id,
+      userId,
+      headers,
+      newEmail,
+      baseEndpoint,
+      metadata,
+      destinationConfig,
+    );
+    respLists.push(response);
+  }
+
+  return respLists;
 };
 
 async function createUserFields(url, config, newFields, fieldJson, metadata) {
@@ -256,41 +319,6 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
 
   return payload;
 }
-/**
- * ref: https://developer.zendesk.com/api-reference/ticketing/users/users/#search-users
- * @param {*} message message
- * @param {*} headers headers for authorizations
- * @returns
- */
-const getUserIdByExternalId = async (message, headers, baseEndpoint, metadata) => {
-  const externalId = getFieldValueFromMessage(message, 'userIdOnly');
-  if (!externalId) {
-    logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
-    return undefined;
-  }
-  const url = `${baseEndpoint}users/search.json?query=${externalId}`;
-  const config = { headers };
-
-  try {
-    const resp = await httpGET(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
-
-    if (resp?.response?.data?.count > 0) {
-      const zendeskUserId = get(resp, 'response.data.users.0.id');
-      return zendeskUserId;
-    }
-    logger.debug(`${NAME}:: Failed in fetching User details`);
-  } catch (error) {
-    logger.debug(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
-  }
-  return undefined;
-};
 
 async function getUserId(message, headers, baseEndpoint, type, metadata) {
   const traits =
@@ -322,10 +350,7 @@ async function getUserId(message, headers, baseEndpoint, type, metadata) {
     const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
-    // logger.debug(
-    //   `Cannot get userId for externalId : ${externalId}`,
-    //   error.response
-    // );
+    logger.debug(`${NAME}:: Cannot get userId : ${error.response}`);
     return undefined;
   }
 }
@@ -491,7 +516,9 @@ async function createOrganization(
     const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
+    logger.debug(
+      `${NAME}:: Couldn't create Organization: ${message.traits.name} and error: ${error}`,
+    );
     return undefined;
   }
 }
@@ -521,24 +548,23 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
   const url = baseEndpoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
-  if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(
-      message,
+  // create or update the user
+  const userIdByZendesk = await createOrUpdateUser(payload, url, headers, metadata);
+
+  // handle primary email update if required
+  const userEmail = traits?.email;
+  const shouldUpdateUsersPrimaryEmail =
+    destinationConfig.searchByExternalId && userIdByZendesk && userEmail;
+  if (shouldUpdateUsersPrimaryEmail) {
+    const payloadsForUpdatingEmail = await payloadBuilderforUpdatingEmail(
+      userIdByZendesk,
       headers,
+      userEmail,
       baseEndpoint,
       metadata,
+      destinationConfig,
     );
-    const userEmail = traits?.email;
-    if (userIdByExternalId && userEmail) {
-      const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
-        userIdByExternalId,
-        headers,
-        userEmail,
-        baseEndpoint,
-        metadata,
-      );
-      if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
-    }
+    if (payloadsForUpdatingEmail?.length > 0) returnList.push(...payloadsForUpdatingEmail);
   }
 
   if (
@@ -577,6 +603,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
             ...DEFAULT_HEADERS,
           };
           deleteResponse.userId = message.anonymousId;
+          await removeUserFromOrganizationMembership(deleteResponse.endpoint, headers, metadata);
           returnList.push(deleteResponse);
         }
       } catch (error) {
@@ -751,7 +778,29 @@ async function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = await mapInBatches(
+    inputs,
+    async (input) => {
+      try {
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await process(input);
+        }
+
+        return getSuccessRespEvents(
+          resp,
+          [input.metadata],
+          input.destination,
+          false,
+          getStatusCode(input),
+        );
+      } catch (error) {
+        return handleRtTfSingleEventError(input, error, reqMetadata);
+      }
+    },
+    { sequentialProcessing: true },
+  );
   return respList;
 };
 

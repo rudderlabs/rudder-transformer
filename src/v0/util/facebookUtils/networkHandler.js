@@ -8,6 +8,7 @@ const {
   TAG_NAMES,
   METADATA,
 } = require('@rudderstack/integrations-lib');
+const logger = require('../../../logger');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -297,9 +298,12 @@ const destResponseHandler = (responseParams) => {
 
   // check If the response is in html format
   if (isHtmlFormat(destinationResponse.response) || isHtmlFormat(destinationResponse)) {
+    logger.error(
+      `Invalid response format (HTML) during response transformation: statusCode: ${destinationResponse?.status} header: ${destinationResponse?.headers}`,
+    );
     throw new NetworkError(
       'Invalid response format (HTML) during response transformation',
-      500,
+      destinationResponse.status ?? 500,
       {
         [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destinationResponse.status),
       },

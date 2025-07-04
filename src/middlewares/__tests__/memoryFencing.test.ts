@@ -145,4 +145,33 @@ describe('memoryFenceMiddleware', () => {
     // Gauge should still only be called once during initialization, not on each request
     expect(stats.gauge).toHaveBeenCalledTimes(1);
   });
+
+  it('checks memory usage periodically', async () => {
+    jest.clearAllMocks();
+    let mockNow = Date.now();
+    jest.spyOn(Date, 'now').mockImplementation(() => mockNow);
+
+    const mockMemoryUsage = jest.fn(() => ({
+      heapUsed: 400,
+    })) as any;
+    process.memoryUsage = mockMemoryUsage;
+
+    const middleware = memoryFenceMiddleware({ thresholdPercent: 80 });
+    expect(stats.gauge).toHaveBeenCalledWith('memory_heap_size_limit', 1000);
+    expect(stats.gauge).toHaveBeenCalledTimes(1);
+    expect(mockMemoryUsage).toHaveBeenCalledTimes(1);
+
+    // call the middleware
+    await middleware(mockCtx(), jest.fn());
+    expect(mockMemoryUsage).toHaveBeenCalledTimes(1);
+    // Simulate passage of time
+    mockNow += 99;
+    await middleware(mockCtx(), jest.fn());
+    expect(mockMemoryUsage).toHaveBeenCalledTimes(1);
+
+    // Simulate passage of time
+    mockNow += 1;
+    await middleware(mockCtx(), jest.fn());
+    expect(mockMemoryUsage).toHaveBeenCalledTimes(2);
+  });
 });

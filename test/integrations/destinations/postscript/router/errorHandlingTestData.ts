@@ -11,7 +11,6 @@ export const errorHandlingTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -76,7 +75,6 @@ export const errorHandlingTestData: RouterTestData[] = [
     successCriteria: 'Should return 400 error for unsupported event type',
     feature: 'router',
     module: 'destination',
-    skip: true,
     version: 'v0',
     input: {
       request: {
@@ -140,7 +138,6 @@ export const errorHandlingTestData: RouterTestData[] = [
     successCriteria: 'Should return 400 error for missing keyword or keyword_id',
     feature: 'router',
     module: 'destination',
-    skip: true,
     version: 'v0',
     input: {
       request: {
@@ -207,7 +204,6 @@ export const errorHandlingTestData: RouterTestData[] = [
     successCriteria: 'Should return 400 error for missing event name',
     feature: 'router',
     module: 'destination',
-    skip: true,
     version: 'v0',
     input: {
       request: {

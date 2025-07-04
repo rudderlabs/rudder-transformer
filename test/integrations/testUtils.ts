@@ -17,6 +17,8 @@ import {
   ProxyV0RequestSchema,
   ProxyV1RequestSchema,
   RouterTransformationResponseListSchema,
+  ProcessorStreamingResponseListSchema,
+  RouterStreamingResponseListSchema,
 } from '../../src/types/zodTypes';
 import { defaultAccessToken } from './common/secrets';
 import { randomBytes } from 'crypto';
@@ -620,6 +622,21 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
           DeliveryV1ResponseSchema.parse(response.body.output);
         }
       }
+      break;
+    default:
+      break;
+  }
+  return true;
+};
+
+export const validateStreamTestWithZOD = (testPayload: TestCaseData, response: any) => {
+  // Validate the resquest payload
+  switch (testPayload.feature) {
+    case 'router':
+      RouterStreamingResponseListSchema.parse(response.body.output);
+      break;
+    case 'processor':
+      ProcessorStreamingResponseListSchema.parse(response.body);
       break;
     default:
       break;

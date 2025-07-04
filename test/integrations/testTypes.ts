@@ -181,3 +181,32 @@ export type ProxyV1TestData = BaseTestCase & {
     };
   };
 };
+
+export type ProcessorStreamTestData = Omit<ProcessorTestData, 'output'> & {
+  output: {
+    response: {
+      status: number;
+      body: Array<
+        Omit<ProcessorTransformationResponse, 'output'> & {
+          output?: Record<string, unknown>;
+          message?: Record<string, unknown>;
+        }
+      >;
+    };
+  };
+};
+
+export type RouterStreamTestData = Omit<RouterTestData, 'output'> & {
+  output: {
+    response: {
+      status: number;
+      body: {
+        output: Array<
+          Omit<RouterTransformationResponse, 'batchedRequest'> & {
+            batchedRequest: Record<string, unknown>;
+          }
+        >;
+      };
+    };
+  };
+};

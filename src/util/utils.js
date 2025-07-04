@@ -219,41 +219,25 @@ const extractStackTraceUptoLastSubstringMatch = (trace, stringLiterals) => {
 };
 
 /**
- * Gets the current value of the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable.
- * This is a getter function to allow for easier testing by reading the env var each time.
- *
- * @returns true if the hasDynamicConfig flag should be used, false for legacy behavior
- */
-function getUseHasDynamicConfigFlag() {
-  return process.env.USE_HAS_DYNAMIC_CONFIG_FLAG !== 'false';
-}
-
-/**
  * Utility function to check if dynamic config processing should be skipped
- * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
+ * based on the hasDynamicConfig flag.
  *
  * @param destination - The destination object containing the hasDynamicConfig flag
  * @returns true if processing should be skipped, false otherwise
  */
 function shouldSkipDynamicConfigProcessing(destination) {
-  // Only skip processing if we're using the hasDynamicConfig flag and it's explicitly false
-  return getUseHasDynamicConfigFlag() && destination?.hasDynamicConfig === false;
+  // Only skip processing if hasDynamicConfig is explicitly false
+  return destination?.hasDynamicConfig === false;
 }
 
 /**
  * Utility function to check if events should be grouped by destination config
- * based on the USE_HAS_DYNAMIC_CONFIG_FLAG environment variable and the hasDynamicConfig flag.
+ * based on the hasDynamicConfig flag.
  *
  * @param destination - The destination object containing the hasDynamicConfig flag
  * @returns true if events should be grouped by destination config, false otherwise
  */
 function shouldGroupByDestinationConfig(destination) {
-  if (!getUseHasDynamicConfigFlag()) {
-    // If not using the flag, always group by config (legacy behavior)
-    return true;
-  }
-
-  // If using the flag, check the hasDynamicConfig value
   // If undefined (older server versions), process all events as if they might have dynamic config
   // Only skip grouping by config if the flag is explicitly false
   return destination?.hasDynamicConfig !== false;
@@ -270,7 +254,6 @@ module.exports = {
   extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
   staticLookup,
-  getUseHasDynamicConfigFlag,
   shouldSkipDynamicConfigProcessing,
   shouldGroupByDestinationConfig,
 };

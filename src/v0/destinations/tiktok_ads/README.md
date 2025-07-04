@@ -2,6 +2,19 @@
 
 Implementation in **JavaScript** (ES6+)
 
+## Overview
+
+TikTok Ads destination enables you to send event data from RudderStack to TikTok's Business API for advertising optimization, conversion tracking, and audience targeting. This integration supports both Events 1.0 and Events 2.0 APIs, with real-time event tracking, batch processing, and comprehensive user data hashing for privacy compliance.
+
+## Version Information
+
+- **Current Version**: v1.3 (TikTok Business API)
+- **Implementation Type**: v0
+- **Events API Support**: Events 1.0 (v1) and Events 2.0 (v2)
+- **Default Version**: Events 2.0 (v2)
+- **Last Updated**: July 2025
+- **Maintainer**: RudderStack Integration Team
+
 ## Configuration
 
 ### Required Settings
@@ -42,11 +55,9 @@ Implementation in **JavaScript** (ES6+)
 - **Events to Standard**: Map custom event names to TikTok standard events
   - Allows mapping your custom event names to TikTok's predefined standard events
   - Supported standard events:
-    - AddPaymentInfo, AddToCart, AddToWishlist, ClickButton
-    - CompletePayment, CompleteRegistration, Contact, Download
-    - InitiateCheckout, PlaceAnOrder, Search, SubmitForm
-    - Subscribe, ViewContent, CustomizeProduct, FindLocation
-    - Schedule, Purchase (Beta), Lead (Beta)
+    - AddPaymentInfo, AddToCart, AddToWishlist, ClickButton, CompletePayment, CompleteRegistration, Contact, Download, InitiateCheckout, PlaceAnOrder, Search, SubmitForm, Subscribe, ViewContent, CustomizeProduct, FindLocation, Schedule, Purchase, Lead, ApplicationApproval, SubmitApplication, StartTrial
+  - **Format**: Each event name should be mapped exactly as listed above
+  - **Reference**: [TikTok Standard Events Documentation](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
 
 ### Event Filtering (Device Mode Only)
 
@@ -105,11 +116,41 @@ Implementation in **JavaScript** (ES6+)
 
 **Note**: Events 2.0 uses the same endpoint for both single events and batch requests. The API automatically handles batching based on the request payload structure.
 
+
 ### Rate Limits
 
-**NEEDS REVIEW** - Specific rate limit numbers need to be researched from official TikTok Business API documentation.
+The TikTok Business API enforces rate limits on all endpoints. The following table shows the official rate limits for both Events 1.0 and Events 2.0 endpoints across all subscription plans:
 
-The TikTok Ads destination implements rate limit handling through specific error codes:
+| Endpoint        | Plan     | QPS    | QPM      | QPD         |
+|----------------|----------|--------|----------|-------------|
+| `/event/track/` | Basic    | 1,000  | 600,000  | 86,400,000  |
+| (Events 2.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
+|                | Premium  | 1,000  | 600,000  | 86,400,000  |
+|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
+| `/pixel/track/` | Basic    | 1,000  | 600,000  | 86,400,000  |
+| (Events 1.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
+|                | Premium  | 1,000  | 600,000  | 86,400,000  |
+|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
+| `/pixel/batch/` | Basic    | 1,000  | 600,000  | 86,400,000  |
+| (Events 1.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
+|                | Premium  | 1,000  | 600,000  | 86,400,000  |
+|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
+
+**Legend**: 
+- **QPS**: Queries Per Second
+- **QPM**: Queries Per Minute  
+- **QPD**: Queries Per Day
+
+#### Rate Limit Implementation
+
+TikTok's rate limiting is applied at multiple levels:
+- **Per App ID**: Rate limits are enforced per TikTok app ID
+- **Per Access Token**: Limits may vary based on access token permissions
+- **Dynamic Limits**: Actual limits may vary based on system load and usage patterns
+
+#### Rate Limit Error Handling
+
+The destination implements rate limit handling through specific error codes:
 
 | Error Code | Description | Handling |
 |------------|-------------|----------|
@@ -118,13 +159,19 @@ The TikTok Ads destination implements rate limit handling through specific error
 | 40002 | Request validation error | Throws `AbortedError` (non-retryable) |
 | 0, 20001 | Success codes | Request processed successfully |
 
+When the API returns error code `40100`, the destination automatically triggers retry logic with exponential backoff to handle temporary rate limit violations.
+
 #### Rate Limit Best Practices
 
-- The destination automatically handles rate limit errors with exponential backoff
-- Use batching to reduce the number of API calls:
+- **Use Batching**: Reduce API calls by leveraging batch endpoints:
   - Events 1.0: Batch up to 50 events per request
   - Events 2.0: Batch up to 1000 events per request
-- Monitor response headers for rate limit information (if provided by TikTok)
+- **Automatic Retry**: The destination handles rate limit errors with exponential backoff
+- **Monitor Error Logs**: Watch for `40100` error codes in logs to identify rate limit issues
+- **Spread Traffic**: Distribute event sending across time to avoid hitting rate limits
+- **Implement Client-Side Throttling**: Consider implementing client-side rate limiting to stay within bounds
+
+**Reference**: [TikTok Business API Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482)
 
 ### Intermediate Calls
 
@@ -162,7 +209,8 @@ The TikTok Ads destination implements rate limit handling through specific error
   - And more standard mappings
 
 - **Custom Mappings**: Configure custom event name mappings via `eventsToStandard`
-- **Standard Events**: AddPaymentInfo, AddToCart, AddToWishlist, ClickButton, CompletePayment, CompleteRegistration, Contact, Download, InitiateCheckout, PlaceAnOrder, Search, SubmitForm, Subscribe, ViewContent, CustomizeProduct, FindLocation, Schedule, Purchase (Beta), Lead (Beta)
+- **Standard Events**: All TikTok standard events supported in the destination:
+  - AddPaymentInfo, AddToCart, AddToWishlist, ClickButton, CompletePayment, CompleteRegistration, Contact, Download, InitiateCheckout, PlaceAnOrder, Search, SubmitForm, Subscribe, ViewContent, CustomizeProduct, FindLocation, Schedule, Purchase, Lead, ApplicationApproval, SubmitApplication, StartTrial
 
 #### User Data Hashing
 
@@ -357,12 +405,13 @@ The TikTok Ads destination implements rate limit handling through specific error
 
 ### TikTok Business API Documentation
 
-- [TikTok Business API Overview](https://business-api.tiktok.com/portal/docs)
-- [TikTok Events API Documentation](https://ads.tiktok.com/help/article/events-api)
-- [TikTok Standard Events Parameters](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
-- [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
-
-**NEEDS REVIEW** - Additional official TikTok Business API documentation links should be verified and added as needed.
+- **Official Documentation**: [TikTok Business API Overview](https://business-api.tiktok.com/portal/docs)
+- **Events API Overview**: [TikTok Events API Overview](https://ads.tiktok.com/help/article/events-api)
+- **Events 2.0 API usage**  [TikTok Events API usage](https://business-api.tiktok.com/portal/docs?id=1771100779668482)
+- **Standard Events**: [TikTok Standard Events Parameters](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
+- **Pixel Setup**: [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
+- **Rate Limits**: [TikTok API Limits Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482#item-link-API%20limits)
+- **Support Channels**: [TikTok Business Help Center](https://ads.tiktok.com/help/)
 
 ### RETL Functionality
 

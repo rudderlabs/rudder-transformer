@@ -1,13 +1,23 @@
 # syntax=docker/dockerfile:1.4
-FROM node:20.19.2-alpine3.21 AS base
-ENV HUSKY 0
+FROM ubuntu:22.04 AS base
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HUSKY=0
 
-RUN apk update
-RUN apk upgrade
+# copy healthcheck script and make it executable
+COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 
-RUN apk add --no-cache tini make g++ python3
-
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+# install prerequisites and Node.js 20.x (ensuring same 20.19.2 runtime)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    build-essential curl gnupg2 python3 python3-pip \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod +x /usr/local/bin/healthcheck.sh \
+    && groupadd -r node \
+    && useradd -r -g node -d /home/node node \
+    && mkdir -p /home/node/app/node_modules \
+    && chown -R node:node /home/node/app
 
 FROM base AS development
 ENV HUSKY 0
@@ -33,13 +43,13 @@ RUN npm run setup:swagger
 ENTRYPOINT ["/sbin/tini", "--"]
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
-    CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+    CMD ["/usr/local/bin/healthcheck.sh"]
 
 CMD [ "npm", "start" ]
 
 EXPOSE 9090/tcp
 
-FROM base AS prodDepsBuilder
+FROM base AS PRODDEPSBUILDER
 
 WORKDIR /home/node/app
 USER node
@@ -51,7 +61,7 @@ ENV SKIP_PREPARE_SCRIPT='true'
 RUN npm ci --omit=dev --no-audit --cache .npm
 RUN npm run clean:node
 
-FROM base as production
+FROM base AS production
 ENV HUSKY 0
 
 ARG version
@@ -63,16 +73,16 @@ WORKDIR /home/node/app
 
 USER node
 
-COPY --chown=node:node --from=prodDepsBuilder /home/node/app/package.json ./
+COPY --chown=node:node --from=PRODDEPSBUILDER /home/node/app/package.json ./
 
-COPY --chown=node:node --from=prodDepsBuilder /home/node/app/node_modules ./node_modules
+COPY --chown=node:node --from=PRODDEPSBUILDER /home/node/app/node_modules ./node_modules
 
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
-    CMD wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+    CMD ["/usr/local/bin/healthcheck.sh"]
 
 CMD [ "npm", "start" ]
 

@@ -6,6 +6,7 @@ export type DestinationDefinition = {
   Name: string;
   DisplayName: string;
   Config: Record<string, unknown>;
+  ResponseRules?: Record<string, unknown> | null;
 };
 
 export type AccountDefinitionConfig = { refreshOAuthToken?: string };

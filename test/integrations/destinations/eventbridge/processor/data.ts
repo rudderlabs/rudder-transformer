@@ -1,12 +1,24 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-06-27T07:23:49.519Z
+ */
+
+import { ProcessorStreamTestData } from '../../../testTypes';
+import { generateMetadata } from '../../../testUtils';
+
+export const data: ProcessorStreamTestData[] = [
   {
+    id: 'processor-1751009029517',
     name: 'eventbridge',
     description: 'Test 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -112,7 +124,16 @@ export const data = [
               },
               sentAt: '2020-06-24T12:05:19.395Z',
             },
+            metadata: generateMetadata(1),
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 region: '*****',
                 accessKeyID: '*****',
@@ -129,10 +150,14 @@ export const data = [
                 ],
               },
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -241,6 +266,7 @@ export const data = [
               Source: 'rudderstack',
               userId: '123',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -248,13 +274,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751009029517',
     name: 'eventbridge',
     description: 'Test 1',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -359,7 +389,16 @@ export const data = [
               },
               sentAt: '2020-06-24T12:05:19.395Z',
             },
+            metadata: generateMetadata(1),
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 region: '*****',
                 accessKeyID: '*****',
@@ -376,10 +415,14 @@ export const data = [
                 ],
               },
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -487,6 +530,7 @@ export const data = [
               Source: 'rudderstack',
               userId: '38e169a1-3234-46f7-9ceb-c1a6a69005fe',
             },
+            metadata: generateMetadata(1),
             statusCode: 200,
           },
         ],
@@ -494,13 +538,17 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751009029517',
     name: 'eventbridge',
     description: 'Test 2',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
             message: {
@@ -606,12 +654,26 @@ export const data = [
               },
               sentAt: '2020-06-24T12:05:19.395Z',
             },
+            metadata: generateMetadata(1),
             destination: {
+              ID: 'default-destination-id',
+              Name: 'Default Destination',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {},
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -619,16 +681,19 @@ export const data = [
         status: 200,
         body: [
           {
+            metadata: generateMetadata(1),
+            statusCode: 400,
             error: 'EventBridge: received empty config, dropping event',
             statTags: {
               destType: 'EVENTBRIDGE',
+              destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'default-workspaceId',
             },
-            statusCode: 400,
           },
         ],
       },

@@ -36,6 +36,10 @@ if (process.env.MEMORY_FENCING_ENABLED === 'true') {
     memoryFenceMiddleware({
       thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),
       statusCode: parseInt(process.env.MEMORY_FENCING_STATUS_CODE || '503', 10),
+      memoryUsageRefreshPeriod: parseInt(
+        process.env.MEMORY_FENCING_MEMORY_USAGE_REFRESH_PERIOD || '100',
+        10,
+      ), // default 100ms
     }),
   );
 }

@@ -306,7 +306,7 @@ The destination performs automatic data type conversions:
 
 ### Unit Tests
 
-- **Location**: `./src/v0/destinations/moengage/__tests__/`
+- **Location**: `./src/v0/destinations/moengage`
 - **Running Tests**: `npm run test src/v0/destinations/moengage`
 - **Test Coverage**: Includes tests for all event types, data transformations, and error handling
 
@@ -338,22 +338,6 @@ The destination performs automatic data type conversions:
   - **Solution**: Verify both `userId` and `previousId` are present and different
 - **Events Not Appearing**: Events sent but not visible in MoEngage
   - **Solution**: Check customer_id format and ensure it's not in blacklisted values
-
-### Debugging
-
-- **Logs**: Enable debug logging to see request/response details
-  - Set `LOG_LEVEL=debug` in environment variables
-- **Network Inspection**: Monitor HTTP requests to MoEngage APIs
-  - Check request headers, authentication, and payload structure
-- **Error Responses**: Review MoEngage API error responses for specific issues
-  - Common errors include authentication, validation, and rate limiting
-
-### Best Practices
-
-- **Event Ordering**: Maintain strict event ordering for data integrity
-- **Data Validation**: Validate event data before sending to prevent errors
-- **Rate Limiting**: Monitor API usage to stay within rate limits
-- **Error Handling**: Implement proper error handling and retry logic
 
 ## General Queries
 

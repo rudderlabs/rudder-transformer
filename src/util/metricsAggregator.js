@@ -9,23 +9,30 @@ const MESSAGE_TYPES = {
   AGGREGATE_METRICS_REQ: 'rudder-transformer:aggregateMetricsReq',
   AGGREGATE_METRICS_RES: 'rudder-transformer:aggregateMetricsRes',
   RESET_METRICS_REQ: 'rudder-transformer:resetMetricsReq',
+  GET_UPDATED_METRICS_REQ: 'rudder-transformer:getUpdatedMetricsReq',
+  GET_UPDATED_METRICS_RES: 'rudder-transformer:getUpdatedMetricsRes',
 };
 
-const config = {
-  requestTimeout: process.env.METRICS_AGGREGATOR_REQUEST_TIMEOUT_SECONDS
+const config = {};
+
+const initializeConfig = () => {
+  config.requestTimeout = process.env.METRICS_AGGREGATOR_REQUEST_TIMEOUT_SECONDS
     ? parseInt(process.env.METRICS_AGGREGATOR_REQUEST_TIMEOUT_SECONDS, 10) * 1000
-    : 10 * 1000, // default to 10 seconds
-  isPeriodicResetEnabled: process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true',
-  periodicResetInterval: process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS
+    : 10 * 1000; // default to 10 seconds
+  config.isPeriodicResetEnabled = process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED === 'true';
+  config.periodicResetInterval = process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS
     ? parseInt(process.env.METRICS_AGGREGATOR_PERIODIC_RESET_INTERVAL_SECONDS, 10)
-    : 30 * 60,
+    : 30 * 60;
+  config.enableIncrementalUpdates = process.env.METRICS_AGGREGATOR_INCREMENTAL_UPDATES !== 'false'; // default to true
 };
 
+initializeConfig();
 class MetricsAggregator {
   constructor(prometheusInstance) {
     this.requestTimeout = config.requestTimeout;
     this.isPeriodicResetEnabled = config.isPeriodicResetEnabled;
     this.periodicResetInterval = config.periodicResetInterval;
+    this.enableIncrementalUpdates = config.enableIncrementalUpdates;
     this.shuttingDown = false;
     this.metricsBuffer = [];
     this.pendingMetricRequests = 0;
@@ -43,6 +50,9 @@ class MetricsAggregator {
     if (message.type === MESSAGE_TYPES.GET_METRICS_RES) {
       logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
       this.handleMetricsResponse(message);
+    } else if (message.type === MESSAGE_TYPES.GET_UPDATED_METRICS_RES) {
+      logger.debug(`[MetricsAggregator] Master received updated metrics from worker ${worker.id}`);
+      this.handleUpdatedMetricsResponse(worker.id, message);
     }
   }
 
@@ -87,9 +97,44 @@ class MetricsAggregator {
           requestId: message.requestId,
         });
       }
+    } else if (message.type === MESSAGE_TYPES.GET_UPDATED_METRICS_REQ) {
+      logger.debug(
+        `[MetricsAggregator] Worker ${cluster.worker.id} received updated metrics request`,
+      );
+      try {
+        const changedMetrics = await this.prometheusInstance.getChangedMetricsAsJSON();
+        const hasChanged = changedMetrics.length > 0;
+
+        if (hasChanged) {
+          logger.debug(
+            `[MetricsAggregator] Worker ${cluster.worker.id} sending ${changedMetrics.length} changed metrics`,
+          );
+          cluster.worker.send({
+            type: MESSAGE_TYPES.GET_UPDATED_METRICS_RES,
+            metrics: changedMetrics,
+            requestId: message.requestId,
+            hasChanged: true,
+          });
+        } else {
+          logger.debug(
+            `[MetricsAggregator] Worker ${cluster.worker.id} no metrics changed, skipping`,
+          );
+          cluster.worker.send({
+            type: MESSAGE_TYPES.GET_UPDATED_METRICS_RES,
+            hasChanged: false,
+            requestId: message.requestId,
+          });
+        }
+      } catch (error) {
+        cluster.worker.send({
+          type: MESSAGE_TYPES.GET_UPDATED_METRICS_RES,
+          error: error.message,
+          requestId: message.requestId,
+        });
+      }
     } else if (message.type === MESSAGE_TYPES.RESET_METRICS_REQ) {
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`);
-      this.prometheusInstance.prometheusRegistry.resetMetrics();
+      this.prometheusInstance.clearMetrics();
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
     }
   }
@@ -185,13 +230,19 @@ class MetricsAggregator {
       }, config.requestTimeout);
 
       this.pendingMetricRequests = 0; // Reset pending requests count
+      const messageType = this.enableIncrementalUpdates
+        ? MESSAGE_TYPES.GET_UPDATED_METRICS_REQ
+        : MESSAGE_TYPES.GET_METRICS_REQ;
+
       for (const id in cluster.workers) {
         if (cluster.workers[id].isConnected()) {
           // only aggregate metrics from connected workers
-          logger.debug(`[MetricsAggregator] Requesting metrics from worker ${id}`);
+          logger.debug(
+            `[MetricsAggregator] Requesting ${this.enableIncrementalUpdates ? 'updated ' : ''}metrics from worker ${id}`,
+          );
           try {
             cluster.workers[id].send({
-              type: MESSAGE_TYPES.GET_METRICS_REQ,
+              type: messageType,
               requestId: currentRequestId,
             });
             this.pendingMetricRequests += 1;
@@ -245,6 +296,32 @@ class MetricsAggregator {
     }
   }
 
+  handleUpdatedMetricsResponse(workerId, message) {
+    // Ignore responses from old requests
+    if (message.requestId !== this.requestId) {
+      logger.info(`[MetricsAggregator] Ignoring response from old request ${message.requestId}`);
+      return;
+    }
+    // Check if we still have an active request
+    if (!this.resolveFunc) {
+      logger.info('[MetricsAggregator] No active request, ignoring updated metrics response');
+      return;
+    }
+    if (message.error) {
+      logger.error(`[MetricsAggregator] Worker get updated metrics error: ${message.error}`);
+      this.rejectFunc(new Error(message.error));
+      this.resetAggregator();
+      return;
+    }
+    if (message.hasChanged) {
+      this.metricsBuffer.push(message.metrics);
+    }
+    this.pendingMetricRequests--;
+    if (this.pendingMetricRequests === 0) {
+      this.aggregateMetricsInWorkerThread();
+    }
+  }
+
   async terminateWorkerThread() {
     logger.info(
       `[MetricsAggregator] Worker thread terminated with exit code ${await this.workerThread.terminate()}`,
@@ -281,6 +358,7 @@ class MetricsAggregator {
 }
 
 module.exports = {
+  initializeConfig,
   MetricsAggregator,
   MESSAGE_TYPES,
 };

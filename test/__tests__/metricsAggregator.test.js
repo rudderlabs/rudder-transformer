@@ -35,22 +35,21 @@ describe('MetricsAggregator', () => {
 
   it('should collect metrics from all workers and aggregate them', async () => {
     // mock the getMetricsAsJSON method to return a single metric
-    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
-      return [{
-        help: "Total user CPU time spent in seconds.",
-        name: "process_cpu_user_seconds_total",
-        type: "counter",
-        values: [
-          {
-            value: 1,
-            labels: {
-              instanceName: "localhost",
-            },
+    const mockMetrics = [{
+      help: "Total user CPU time spent in seconds.",
+      name: "process_cpu_user_seconds_total",
+      type: "counter",
+      values: [
+        {
+          value: 1,
+          labels: {
+            instanceName: "localhost",
           },
-        ],
-        aggregator: "sum",
-      }];
-    });
+        },
+      ],
+      aggregator: "sum",
+    }];
+    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => mockMetrics);
     
     // mock master's send - this functions simulates worker -> master communication
     // mockMasterSend(workerId) returns a function that simulates sending a message from a worker to the master
@@ -78,7 +77,11 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON},
+      getChangedMetricsAsJSON: jest.fn().mockResolvedValue(mockMetrics),
+      clearMetrics: jest.fn()
+    });
     // start metric aggregation
     const metrics = await metricsAggregator.aggregateMetrics();
     // check if the metrics are aggregated correctly
@@ -120,7 +123,11 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON},
+      getChangedMetricsAsJSON: jest.fn().mockRejectedValue(new Error('Get metrics error')),
+      clearMetrics: jest.fn()
+    });
     const metrics = metricsAggregator.aggregateMetrics();
     await expect(metrics).rejects.toBeInstanceOf(Error);
 
@@ -133,22 +140,21 @@ describe('MetricsAggregator', () => {
     jest.useFakeTimers();
     const mockResetMetrics = jest.fn()
     // mock the getMetricsAsJSON method to return a single metric
-    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
-      return [{
-        help: "Total user CPU time spent in seconds.",
-        name: "process_cpu_user_seconds_total",
-        type: "counter",
-        values: [
-          {
-            value: 1,
-            labels: {
-              instanceName: "localhost",
-            },
+    const mockMetrics = [{
+      help: "Total user CPU time spent in seconds.",
+      name: "process_cpu_user_seconds_total",
+      type: "counter",
+      values: [
+        {
+          value: 1,
+          labels: {
+            instanceName: "localhost",
           },
-        ],
-        aggregator: "sum",
-      }];
-    });
+        },
+      ],
+      aggregator: "sum",
+    }];
+    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => mockMetrics);
     
     // mock master's send - this functions simulates worker -> master communication
     // mockMasterSend(workerId) returns a function that simulates sending a message from a worker to the master
@@ -191,7 +197,11 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON, resetMetrics: mockResetMetrics}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON, resetMetrics: mockResetMetrics},
+      getChangedMetricsAsJSON: jest.fn().mockResolvedValue(mockMetrics),
+      clearMetrics: jest.fn()
+    });
     // first request should timeout after 10 seconds
     const metrics1 = metricsAggregator.aggregateMetrics();
 
@@ -222,22 +232,21 @@ describe('MetricsAggregator', () => {
     logger.setLogLevel('info');
     jest.useFakeTimers();
     // mock the getMetricsAsJSON method to return a single metric
-    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
-      return [{
-        help: "Total user CPU time spent in seconds.",
-        name: "process_cpu_user_seconds_total",
-        type: "counter",
-        values: [
-          {
-            value: 1,
-            labels: {
-              instanceName: "localhost",
-            },
+    const mockMetrics = [{
+      help: "Total user CPU time spent in seconds.",
+      name: "process_cpu_user_seconds_total",
+      type: "counter",
+      values: [
+        {
+          value: 1,
+          labels: {
+            instanceName: "localhost",
           },
-        ],
-        aggregator: "sum",
-      }];
-    });
+        },
+      ],
+      aggregator: "sum",
+    }];
+    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => mockMetrics);
     
     // mock master's send - this functions simulates worker -> master communication
     // mockMasterSend(workerId) returns a function that simulates sending a message from a worker to the master
@@ -260,7 +269,11 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON},
+      getChangedMetricsAsJSON: jest.fn().mockResolvedValue(mockMetrics),
+      clearMetrics: jest.fn()
+    });
     // first request should timeout after 10 seconds
     const metrics1 = await metricsAggregator.aggregateMetrics();
     expect(metrics1).toMatch(`process_cpu_user_seconds_total\{instanceName="localhost"\} 1`);
@@ -281,7 +294,11 @@ describe('MetricsAggregator', () => {
     logger.setLogLevel('info');
     
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {},
+      getChangedMetricsAsJSON: jest.fn().mockResolvedValue([]),
+      clearMetrics: jest.fn()
+    });
     // it should ignore messages for different request IDs
     metricsAggregator.onWorkerThreadMessage({
       type: 'rudder-transformer:aggregateMetricsRes', 
@@ -312,22 +329,21 @@ describe('MetricsAggregator', () => {
     logger.setLogLevel('info');
     jest.useFakeTimers();
     // mock the getMetricsAsJSON method to return a single metric
-    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
-      return [{
-        help: "Total user CPU time spent in seconds.",
-        name: "process_cpu_user_seconds_total",
-        type: "counter",
-        values: [
-          {
-            value: 1,
-            labels: {
-              instanceName: "localhost",
-            },
+    const mockMetrics = [{
+      help: "Total user CPU time spent in seconds.",
+      name: "process_cpu_user_seconds_total",
+      type: "counter",
+      values: [
+        {
+          value: 1,
+          labels: {
+            instanceName: "localhost",
           },
-        ],
-        aggregator: "sum",
-      }];
-    });
+        },
+      ],
+      aggregator: "sum",
+    }];
+    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => mockMetrics);
     
     // mock master's send - this functions simulates worker -> master communication
     // mockMasterSend(workerId) returns a function that simulates sending a message from a worker to the master
@@ -350,7 +366,11 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON}});
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON},
+      getChangedMetricsAsJSON: jest.fn().mockResolvedValue(mockMetrics),
+      clearMetrics: jest.fn()
+    });
     // first request should timeout after 10 seconds
     const metrics1 = await metricsAggregator.aggregateMetrics();
     expect(metrics1).toMatch(`process_cpu_user_seconds_total\{instanceName="localhost"\} 1`);

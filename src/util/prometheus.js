@@ -1,4 +1,5 @@
 const prometheusClient = require('prom-client');
+const stableStringify = require('fast-json-stable-stringify');
 const logger = require('../logger');
 const { MetricsAggregator } = require('./metricsAggregator');
 
@@ -27,6 +28,31 @@ class Prometheus {
     this.aggregatorRegistry = new prometheusClient.AggregatorRegistry();
 
     this.createMetrics(enableSummaryMetrics);
+    // Store last sent values for each metric/label
+    this.lastSentMetrics = {}; // { 'metricName|label1=val1|label2=val2': value }
+  }
+
+  // Helper to create a unique key for each metric/label set
+  getMetricKey(metricName, labels) {
+    return stableStringify({ name: metricName, labels: labels || {} });
+  }
+
+  // Returns only changed metrics since last call, and updates the snapshot
+  async getChangedMetricsAsJSON() {
+    const allMetrics = await this.prometheusRegistry.getMetricsAsJSON();
+    return allMetrics
+      .map((metric) => {
+        const changedValues = metric.values.filter((val) => {
+          const key = this.getMetricKey(metric.name, val.labels);
+          if (this.lastSentMetrics[key] !== val.value) {
+            this.lastSentMetrics[key] = val.value;
+            return true;
+          }
+          return false;
+        });
+        return changedValues.length > 0 ? { ...metric, values: changedValues } : null;
+      })
+      .filter(Boolean);
   }
 
   async metricsController(ctx) {
@@ -53,6 +79,19 @@ class Prometheus {
     }
     ctx.body = 'Metrics reset';
     return ctx.body;
+  }
+
+  clearMetrics() {
+    try {
+      const metrics = this.prometheusRegistry.getMetricsAsArray();
+      metrics.forEach((metric) => {
+        metric.clear?.();
+      });
+      this.lastSentMetrics = {}; // Reset snapshot on clear
+      logger.info('Prometheus: Metrics label sets cleared successfully');
+    } catch (e) {
+      logger.error(`Prometheus: Failed to clear metrics label sets: ${e}`);
+    }
   }
 
   newCounterStat(name, help, labelNames) {

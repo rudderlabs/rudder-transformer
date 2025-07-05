@@ -17,6 +17,7 @@ const {
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
 } = require('./util');
+
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -41,12 +42,15 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
+
+  shouldBatchBrazeIdentifyResolution,
 } = require('./config');
 
 const logger = require('../../../logger');
 const { getEndpointFromConfig, formatGender } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { processBatchedIdentify } = require('./identityResolutionUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function buildResponse(message, destination, properties, endpoint) {
@@ -186,8 +190,16 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify({ message, destination, metadata }) {
+async function processIdentify({ message, destination, metadata, identifyCallsArray }) {
   const identifyPayload = getIdentifyPayload(message);
+  if (Array.isArray(identifyCallsArray)) {
+    identifyCallsArray.push({
+      identifyPayload,
+      destination,
+      metadata, // Include metadata for proper error tracking
+    });
+    return;
+  }
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
     'post',
@@ -487,7 +499,11 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
       const brazeExternalID =
         getDestinationExternalID(message, 'brazeExternalId') || message.userId;
       if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
-        await processIdentify({ message, destination });
+        await processIdentify({
+          message,
+          destination,
+          identifyCallsArray: processParams.identifyCallsArray,
+        });
       } else {
         collectStatsForAliasMissConfigurations(destination.ID);
       }
@@ -532,19 +548,27 @@ const processRouterDest = async (inputs, reqMetadata) => {
     (input) => input.message.userId || input.message.anonymousId,
   );
 
+  const identifyCallsArray = [];
+
   // process each group of events for userId or anonymousId
   // if deduplication is enabled process each group of events for a user (userId or anonymousId)
   // synchronously (slower) else process asynchronously (faster)
   const allResps = Object.keys(groupedInputs).map(async (id) => {
-    const respList = destination.Config.supportDedup
-      ? await simpleProcessRouterDestSync(groupedInputs[id], process, reqMetadata, {
-          userStore,
-        })
-      : await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata);
+    const simpleProcessRouterDestFunc = destination.Config.supportDedup
+      ? simpleProcessRouterDestSync
+      : simpleProcessRouterDest;
+    const respList = await simpleProcessRouterDestFunc(groupedInputs[id], process, reqMetadata, {
+      userStore,
+      identifyCallsArray: shouldBatchBrazeIdentifyResolution() ? identifyCallsArray : undefined,
+    });
     return respList;
   });
 
   const output = await Promise.all(allResps);
+
+  if (identifyCallsArray && identifyCallsArray.length > 0) {
+    await processBatchedIdentify(identifyCallsArray, destination.ID);
+  }
 
   const allTransfomredEvents = lodash.flatMap(output);
   return processBatch(allTransfomredEvents);

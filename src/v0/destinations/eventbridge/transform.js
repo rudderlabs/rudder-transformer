@@ -1,5 +1,9 @@
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const { removeUndefinedAndNullValues, simpleProcessRouterDest } = require('../../util');
+const {
+  removeUndefinedAndNullValues,
+  simpleProcessRouterDest,
+  isEmptyObject,
+} = require('../../util');
 
 function getResouceList(config) {
   let resource;
@@ -18,7 +22,7 @@ function getResouceList(config) {
 
 function process(event) {
   // TODO: Use JSON mapping
-  if (event.destination?.Config) {
+  if (event.destination?.Config && !isEmptyObject(event.destination.Config)) {
     return removeUndefinedAndNullValues({
       DetailType: event.destination.Config.detailType,
       Detail: JSON.stringify(event.message),

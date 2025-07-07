@@ -1,31 +1,47 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-06-27T06:58:23.676Z
+ */
+
+import { ProcessorStreamTestData } from '../../../testTypes';
+import { Destination } from '../../../../../src/types';
+
+const baseDestination: Destination = {
+  ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+  Name: 'Kinesis',
+  DestinationDefinition: {
+    ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
+    Name: 'KINESIS',
+    DisplayName: 'Amazon Kinesis',
+    Config: {
+      excludeKeys: [],
+      includeKeys: [],
+    },
+  },
+  Config: {},
+  Enabled: true,
+  WorkspaceID: 'default-workspace',
+  Transformations: [],
+  RevisionID: 'default-revision',
+  IsProcessorEnabled: true,
+  IsConnectionEnabled: true,
+};
+
+export const data: ProcessorStreamTestData[] = [
   {
+    id: 'processor-1751007503674',
     name: 'kinesis',
     description: 'Test 0',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              Name: 'Kinesis',
-              DestinationDefinition: {
-                ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
-                Name: 'KINESIS',
-                DisplayName: 'Amazon Kinesis',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: null,
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
               channel: 'web',
@@ -88,9 +104,9 @@ export const data = [
               messageId: '09a85770-e2ab-47ae-8fd7-5770080fd4ab',
               sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -98,14 +114,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
-              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              destinationType: 'KINESIS',
-              jobId: 1,
-              messageId: '09a85770-e2ab-47ae-8fd7-5770080fd4ab',
-              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
-            },
             output: {
               message: {
                 anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
@@ -163,6 +171,14 @@ export const data = [
               },
               userId: 'user12345',
             },
+            metadata: {
+              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
+              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+              destinationType: 'KINESIS',
+              jobId: 1,
+              messageId: '09a85770-e2ab-47ae-8fd7-5770080fd4ab',
+              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+            },
             statusCode: 200,
           },
         ],
@@ -170,32 +186,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751007503674',
     name: 'kinesis',
     description: 'Test 1',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              Name: 'Kinesis',
-              DestinationDefinition: {
-                ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
-                Name: 'KINESIS',
-                DisplayName: 'Amazon Kinesis',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: null,
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
               channel: 'web',
@@ -261,9 +264,9 @@ export const data = [
               messageId: '9e4aad09-7611-4162-9f5b-1150e53e0267',
               sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -271,14 +274,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
-              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              destinationType: 'KINESIS',
-              jobId: 2,
-              messageId: '9e4aad09-7611-4162-9f5b-1150e53e0267',
-              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
-            },
             output: {
               message: {
                 anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
@@ -339,6 +334,14 @@ export const data = [
               },
               userId: 'user12345',
             },
+            metadata: {
+              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
+              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+              destinationType: 'KINESIS',
+              jobId: 2,
+              messageId: '9e4aad09-7611-4162-9f5b-1150e53e0267',
+              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+            },
             statusCode: 200,
           },
         ],
@@ -346,32 +349,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751007503674',
     name: 'kinesis',
     description: 'Test 2',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              Name: 'Kinesis',
-              DestinationDefinition: {
-                ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
-                Name: 'KINESIS',
-                DisplayName: 'Amazon Kinesis',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: null,
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
               channel: 'web',
@@ -429,9 +419,9 @@ export const data = [
               messageId: '89031a1e-29a9-40fd-82b5-37dab7190699',
               sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -439,14 +429,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
-              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              destinationType: 'KINESIS',
-              jobId: 3,
-              messageId: '89031a1e-29a9-40fd-82b5-37dab7190699',
-              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
-            },
             output: {
               message: {
                 anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
@@ -499,6 +481,14 @@ export const data = [
               },
               userId: 'user12345',
             },
+            metadata: {
+              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
+              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+              destinationType: 'KINESIS',
+              jobId: 3,
+              messageId: '89031a1e-29a9-40fd-82b5-37dab7190699',
+              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+            },
             statusCode: 200,
           },
         ],
@@ -506,32 +496,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751007503674',
     name: 'kinesis',
     description: 'Test 3',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              Name: 'Kinesis',
-              DestinationDefinition: {
-                ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
-                Name: 'KINESIS',
-                DisplayName: 'Amazon Kinesis',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: null,
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
               channel: 'web',
@@ -591,9 +568,9 @@ export const data = [
               messageId: '2d165402-c301-4c4f-8f17-c3c2f5a83725',
               sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -601,14 +578,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
-              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              destinationType: 'KINESIS',
-              jobId: 4,
-              messageId: '2d165402-c301-4c4f-8f17-c3c2f5a83725',
-              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
-            },
             output: {
               message: {
                 anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
@@ -663,6 +632,14 @@ export const data = [
               },
               userId: 'user12345',
             },
+            metadata: {
+              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
+              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+              destinationType: 'KINESIS',
+              jobId: 4,
+              messageId: '2d165402-c301-4c4f-8f17-c3c2f5a83725',
+              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+            },
             statusCode: 200,
           },
         ],
@@ -670,32 +647,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751007503674',
     name: 'kinesis',
     description: 'Test 4',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              Name: 'Kinesis',
-              DestinationDefinition: {
-                ID: '1aA9lTsbB5ZZs4Lj2uIqCSYxYn4',
-                Name: 'KINESIS',
-                DisplayName: 'Amazon Kinesis',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: null,
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
               channel: 'web',
@@ -758,9 +722,9 @@ export const data = [
               messageId: 'c122dbd5-43cc-4636-9baf-b724be86ad10',
               sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
+            destination: baseDestination,
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -768,14 +732,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
-              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
-              destinationType: 'KINESIS',
-              jobId: 5,
-              messageId: 'c122dbd5-43cc-4636-9baf-b724be86ad10',
-              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
-            },
             output: {
               message: {
                 anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
@@ -832,6 +788,14 @@ export const data = [
                 userId: 'user12345',
               },
               userId: 'user12345',
+            },
+            metadata: {
+              anonymousId: 'c063778b-8477-4c28-a07d-cae9ab3f8e7b',
+              destinationId: '1aAAvbZ2FMoxM0LuxXdqimZ9HEp',
+              destinationType: 'KINESIS',
+              jobId: 5,
+              messageId: 'c122dbd5-43cc-4636-9baf-b724be86ad10',
+              sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
             },
             statusCode: 200,
           },

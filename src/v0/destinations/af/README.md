@@ -11,11 +11,9 @@ Implementation in **Javascript**
   - **v2**: Uses AppsFlyer Server-to-Server API Key for authentication (recommended for server-side integrations)
 
 - **AppsFlyer Dev Key** (Required for v1 authorization): Your AppsFlyer application's dev key
-  - Must be 1-100 characters long
   - Used for authentication with AppsFlyer's v1 API
 
 - **AppsFlyer Server-to-Server API Key** (Required for v2 authorization): Your AppsFlyer S2S API key
-  - Must be 1-200 characters long
   - Used for authentication with AppsFlyer's v3 API (recommended)
 
 - **Android App ID**: Required if sending events from Android devices
@@ -123,6 +121,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
   - `android_advertising_id` (requires Android App ID)
 - **Request Type**: Erasure requests following OpenDSR protocol
 - **Rate Limit**: 350 requests per minute
+- Checking the status of a request from more than 60 days ago returns "request not found".
 
 ### Additional Functionalities
 
@@ -254,7 +253,7 @@ The destination automatically selects the appropriate API version based on confi
 
 ### RETL Functionality
 
-For RETL (Real-time Extract, Transform, Load) functionality, please refer to [docs/retl.md](docs/retl.md)
+The AppsFlyer destination does not currently support RETL functionality.
 
 ### Business Logic and Mappings
 
@@ -308,25 +307,3 @@ A: For e-commerce events with a `products` array, the destination automatically 
 ### ⚠️ Sections Requiring Review
 
 1. **API Deprecation Timeline** - No official deprecation dates found for API v2. AppsFlyer continues to support both v2 and v3 endpoints without announced end-of-life dates.
-
-### 📋 Guide Requirements Compliance
-
-- ✅ Destination config functionalities from schema.json
-- ✅ Implementation language (JavaScript) identified
-- ✅ Supported message types from db-config.json (cloud and device modes)
-- ✅ Batching capabilities analyzed from source code
-- ✅ Intermediate calls analysis completed (none)
-- ✅ Proxy delivery support checked (not supported)
-- ✅ User deletion implementation documented
-- ✅ OAuth support verified (not applicable - uses API key authentication)
-- ✅ Additional functionalities documented
-- ✅ Validation requirements from source code
-- ✅ Rate limits researched from internet sources
-- ✅ Event ordering requirements analyzed
-- ✅ Data replay feasibility documented
-- ✅ Multiplexing scenarios analyzed (none)
-- ✅ Version information and deprecation research
-- ✅ RETL documentation in separate file (not supported)
-- ✅ Business logic documentation in separate file
-
-All major requirements from the integration documentation guide have been thoroughly addressed.

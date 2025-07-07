@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.104.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.103.0...v1.104.0) (2025-07-07)
+
+
+### Features
+
+* add new mapping for tiktok ads ([#4430](https://github.com/rudderlabs/rudder-transformer/issues/4430)) ([b066bdc](https://github.com/rudderlabs/rudder-transformer/commit/b066bdc98f1833b1fcce9e63623dc41186241ee5))
+* add value based audience to facebook custom audience destination ([#4322](https://github.com/rudderlabs/rudder-transformer/issues/4322)) ([8ae6bf6](https://github.com/rudderlabs/rudder-transformer/commit/8ae6bf667a2f47bc6fe716d59ae89eb2bcdf106d))
+
+
+### Bug Fixes
+
+* cluster node getting stuck and cluster left running in degraded mode ([8292c79](https://github.com/rudderlabs/rudder-transformer/commit/8292c794dfddd856390ba626dc696e5049a71a00))
+* cluster node getting stuck and cluster left running in degraded mode ([#4447](https://github.com/rudderlabs/rudder-transformer/issues/4447)) ([7a62d45](https://github.com/rudderlabs/rudder-transformer/commit/7a62d454924d7ff94b85663deeed0b1cf3c78c58))
+* enhance config object in ga4 v2 instead of mutating it ([#4436](https://github.com/rudderlabs/rudder-transformer/issues/4436)) ([dd685a6](https://github.com/rudderlabs/rudder-transformer/commit/dd685a6e313e996d55665a11417535bd1af23907))
+* metrics aggregator stops collecting metrics ([#4441](https://github.com/rudderlabs/rudder-transformer/issues/4441)) ([ac514bd](https://github.com/rudderlabs/rudder-transformer/commit/ac514bd1bd8ff7e16370d166cc2b3d2c4f2ae9e6))
+* process memory usage method high cpu utilization ([#4455](https://github.com/rudderlabs/rudder-transformer/issues/4455)) ([d2bc6e7](https://github.com/rudderlabs/rudder-transformer/commit/d2bc6e788ea79e6e8243df8396776be347cbe5d0))
+* **snapchat:** mapping for brand ([7504587](https://github.com/rudderlabs/rudder-transformer/commit/7504587f149ab9636ebadcb8bf997843d5bcc35a))
+* **snapchat:** mapping for brand ([#4454](https://github.com/rudderlabs/rudder-transformer/issues/4454)) ([639aec3](https://github.com/rudderlabs/rudder-transformer/commit/639aec376ddeb8928e14a70220cf41293b7f62f3))
+* update ip mapping inside context in auth0 source ([#4437](https://github.com/rudderlabs/rudder-transformer/issues/4437)) ([579d04b](https://github.com/rudderlabs/rudder-transformer/commit/579d04b0796c80ad13597a16f0ae86f3ddd995f3))
+* update mailchimp logger to include metadata ([#4458](https://github.com/rudderlabs/rudder-transformer/issues/4458)) ([9ff65d7](https://github.com/rudderlabs/rudder-transformer/commit/9ff65d7ad3708ece73cd7ce3ff2e25468531d5e4))
+* zendesk identify flow ([#4450](https://github.com/rudderlabs/rudder-transformer/issues/4450)) ([6dc3b84](https://github.com/rudderlabs/rudder-transformer/commit/6dc3b842514bcd80486d00d7c787e05a1c1faca9)), closes [#4288](https://github.com/rudderlabs/rudder-transformer/issues/4288) [#4400](https://github.com/rudderlabs/rudder-transformer/issues/4400)
+
 ## [1.103.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.2...v1.103.0) (2025-06-23)
 
 

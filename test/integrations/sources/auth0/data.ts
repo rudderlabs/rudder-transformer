@@ -145,6 +145,7 @@ export const data = [
                     },
                     library: { name: 'unknown', version: 'unknown' },
                     userAgent: 'unknown',
+                    ip: '35.166.202.113',
                     request_ip: '35.166.202.113',
                     integration: { name: 'Auth0' },
                   },
@@ -184,6 +185,7 @@ export const data = [
                     traits: { userId: 'auth0|dummyPassword' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+                    ip: '35.166.202.113',
                     request_ip: '35.166.202.113',
                     integration: { name: 'Auth0' },
                   },
@@ -327,6 +329,7 @@ export const data = [
                     traits: { userId: 'google-oauth2|123456' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+                    ip: '35.167.74.121',
                     request_ip: '35.167.74.121',
                     integration: { name: 'Auth0' },
                   },
@@ -516,6 +519,7 @@ export const data = [
                     traits: { userId: 'google-oauth2|123456' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+                    ip: '35.160.3.103',
                     request_ip: '35.160.3.103',
                     integration: { name: 'Auth0' },
                   },
@@ -596,6 +600,7 @@ export const data = [
                   context: {
                     library: { name: 'unknown', version: 'unknown' },
                     traits: { userId: 'google-oauth2|123456' },
+                    ip: '35.160.3.103',
                     request_ip: '35.160.3.103',
                     integration: { name: 'Auth0' },
                   },
@@ -710,6 +715,7 @@ export const data = [
                     },
                     library: { name: 'unknown', version: 'unknown' },
                     userAgent: 'unknown',
+                    ip: '35.166.202.113',
                     request_ip: '35.166.202.113',
                     integration: { name: 'Auth0' },
                   },
@@ -828,6 +834,7 @@ export const data = [
                     },
                     library: { name: 'unknown', version: 'unknown' },
                     userAgent: 'unknown',
+                    ip: '35.166.202.113',
                     request_ip: '35.166.202.113',
                     integration: { name: 'Auth0' },
                   },
@@ -865,6 +872,7 @@ export const data = [
                     library: { name: 'unknown', version: 'unknown' },
                     userAgent:
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+                    ip: '35.166.202.113',
                     request_ip: '35.166.202.113',
                     integration: { name: 'Auth0' },
                   },

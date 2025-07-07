@@ -1,0 +1,349 @@
+/**
+ * Unit tests for PostScript destination transform functions
+ * Tests all exported functions from transform.ts to ensure 100% code coverage
+ */
+
+import { processRouterDest } from './transform';
+import {
+  PostscriptRouterRequest,
+  ProcessedEvent,
+  PostscriptDestination,
+  PostscriptBatchResponse,
+} from './types';
+import { RudderMessage } from '../../../types';
+import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import { EventType } from '../../../constants';
+
+// Mock external dependencies
+jest.mock('../../util', () => ({
+  handleRtTfSingleEventError: jest.fn(),
+  getFieldValueFromMessage: jest.fn(),
+  getDestinationExternalID: jest.fn(),
+}));
+
+jest.mock('./utils', () => ({
+  performSubscriberLookup: jest.fn(),
+  buildSubscriberPayload: jest.fn(),
+  buildCustomEventPayload: jest.fn(),
+  batchResponseBuilder: jest.fn(),
+}));
+
+// Mock implementations
+const mockHandleRtTfSingleEventError = jest.fn();
+const mockGetFieldValueFromMessage = jest.fn();
+const mockGetDestinationExternalID = jest.fn();
+const mockPerformSubscriberLookup = jest.fn();
+const mockBuildSubscriberPayload = jest.fn();
+const mockBuildCustomEventPayload = jest.fn();
+const mockBatchResponseBuilder = jest.fn();
+
+// Apply mocks
+require('../../util').handleRtTfSingleEventError = mockHandleRtTfSingleEventError;
+require('../../util').getFieldValueFromMessage = mockGetFieldValueFromMessage;
+require('../../util').getDestinationExternalID = mockGetDestinationExternalID;
+require('./utils').performSubscriberLookup = mockPerformSubscriberLookup;
+require('./utils').buildSubscriberPayload = mockBuildSubscriberPayload;
+require('./utils').buildCustomEventPayload = mockBuildCustomEventPayload;
+require('./utils').batchResponseBuilder = mockBatchResponseBuilder;
+
+describe('PostScript Transform', () => {
+  // Reset mocks before each test
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // Helper function to create mock destination
+  const createMockDestination = (): PostscriptDestination => ({
+    ID: 'test_destination_id',
+    Name: 'Test Destination',
+    DestinationDefinition: {
+      ID: 'test_destination_definition_id',
+      Name: 'PostScript',
+      DisplayName: 'PostScript',
+      Config: {},
+    },
+    Config: {
+      apiKey: 'test_api_key',
+    },
+    Enabled: true,
+    Transformations: [],
+    RevisionID: 'test_revision_id',
+    WorkspaceID: 'test_workspace_id',
+  });
+
+  // Helper function to create mock router request
+  const createMockRouterRequest = (
+    message: Partial<RudderMessage>,
+    destination?: PostscriptDestination,
+  ): PostscriptRouterRequest => ({
+    message: message as RudderMessage,
+    metadata: {
+      jobId: 1,
+      sourceId: 'source_123',
+      workspaceId: 'workspace_123',
+      sourceType: 'http',
+      sourceCategory: 'web',
+      destinationId: 'dest_123',
+      destinationType: 'postscript',
+      messageId: 'msg_123',
+    },
+    destination: destination || createMockDestination(),
+  });
+
+  // Helper function to create mock connection
+  const createMockConnection = () => ({
+    connection: {
+      apiKey: 'test_api_key',
+    },
+  });
+
+  // Helper function to create mock batched response
+  const createMockBatchedResponse = (): PostscriptBatchResponse => ({
+    batchedRequest: {
+      body: {
+        JSON: {},
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      version: '1',
+      type: 'REST',
+      method: 'POST',
+      endpoint: 'https://api.postscript.io/api/v2/subscribers',
+      headers: {
+        'Content-type': 'application/json',
+        Accept: 'application/json',
+        Authorization: 'Bearer test_api_key',
+      },
+      params: {},
+      files: {},
+    },
+    metadata: [{}],
+    batched: false,
+    statusCode: 200,
+    destination: createMockDestination(),
+  });
+
+  // Helper function to create mock error response
+  const createMockErrorResponse = (error: string) => ({
+    destination: createMockDestination(),
+    metadata: {
+      jobId: 1,
+      sourceId: 'source_123',
+      workspaceId: 'workspace_123',
+      sourceType: 'http',
+      sourceCategory: 'web',
+      destinationId: 'dest_123',
+      destinationType: 'postscript',
+      messageId: 'msg_123',
+    },
+    batched: false,
+    statusCode: 400,
+    error,
+    statTags: {},
+  });
+
+  describe('processRouterDest', () => {
+    it('should return empty array for empty input', async () => {
+      const result = await processRouterDest([], {});
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array for null/undefined input', async () => {
+      const result = await processRouterDest(null as any, {});
+      expect(result).toEqual([]);
+    });
+
+    it('should throw ConfigurationError when API key is not provided', async () => {
+      const destination = {
+        ...createMockDestination(),
+        Config: {},
+      } as PostscriptDestination;
+      const inputs = [createMockRouterRequest({ type: 'identify' }, destination)];
+      await expect(processRouterDest(inputs, {})).rejects.toThrow(ConfigurationError);
+    });
+
+    describe('Identify Events', () => {
+      beforeEach(() => {
+        mockBuildSubscriberPayload.mockReturnValue({
+          phone_number: '+1234567890',
+          email: 'test@example.com',
+          first_name: 'John',
+          last_name: 'Doe',
+        });
+      });
+
+      it('should process identify event for subscriber creation', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            phone: '+1234567890',
+            email: 'test@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+            keyword: 'WELCOME',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetDestinationExternalID.mockReturnValue(null);
+        mockPerformSubscriberLookup.mockResolvedValue([
+          { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
+        ]);
+        mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockBuildSubscriberPayload).toHaveBeenCalledWith(message);
+        expect(mockPerformSubscriberLookup).toHaveBeenCalled();
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+      });
+
+      it('should handle phone missing error', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            email: 'test@example.com',
+            keyword: 'WELCOME',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockGetFieldValueFromMessage.mockReturnValue(null);
+        mockHandleRtTfSingleEventError.mockReturnValue(
+          createMockErrorResponse('Phone is required'),
+        );
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
+        expect(result).toEqual([createMockErrorResponse('Phone is required')]);
+      });
+    });
+
+    describe('Track Events', () => {
+      beforeEach(() => {
+        mockBuildCustomEventPayload.mockReturnValue({
+          name: 'custom_event',
+          subscriber_id: 'sub_123',
+          occurred_at: '2023-01-01T00:00:00Z',
+          properties: {},
+        });
+      });
+
+      it('should process track event', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'track',
+          userId: 'user_123',
+          event: 'Product Viewed',
+          properties: {
+            product_id: '123',
+            product_name: 'Test Product',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockBuildCustomEventPayload).toHaveBeenCalledWith(message);
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+      });
+
+      it('should handle missing event name error', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'track',
+          userId: 'user_123',
+          properties: {
+            product_id: '123',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockHandleRtTfSingleEventError.mockReturnValue(
+          createMockErrorResponse('Event name is required'),
+        );
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
+        expect(result).toEqual([createMockErrorResponse('Event name is required')]);
+      });
+    });
+
+    describe('Unsupported Events', () => {
+      it('should handle unsupported event type', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'alias',
+          userId: 'user_123',
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockHandleRtTfSingleEventError.mockReturnValue(
+          createMockErrorResponse('Unsupported event type'),
+        );
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
+        expect(result).toEqual([createMockErrorResponse('Unsupported event type')]);
+      });
+    });
+
+    describe('Batch Processing', () => {
+      it('should handle mixed event types', async () => {
+        const identifyMessage: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            phone: '+1234567890',
+            keyword: 'WELCOME',
+          },
+        };
+
+        const trackMessage: Partial<RudderMessage> = {
+          type: 'track',
+          userId: 'user_123',
+          event: 'Product Viewed',
+          properties: {
+            product_id: '123',
+          },
+        };
+
+        const inputs = [
+          createMockRouterRequest(identifyMessage),
+          createMockRouterRequest(trackMessage),
+        ];
+
+        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetDestinationExternalID.mockReturnValue(null);
+        mockPerformSubscriberLookup.mockResolvedValue([
+          { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
+        ]);
+
+        mockBatchResponseBuilder.mockReturnValue([
+          createMockBatchedResponse(),
+          createMockBatchedResponse(),
+        ]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockBuildSubscriberPayload).toHaveBeenCalledWith(identifyMessage);
+        expect(mockBuildCustomEventPayload).toHaveBeenCalledWith(trackMessage);
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(2);
+      });
+    });
+  });
+});

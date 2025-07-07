@@ -248,6 +248,87 @@ describe('PostScript Transform', () => {
         // Verify that it uses PATCH for an update and doesn't require phone lookup
         expect(result[0].batchedRequest.method).toBe('PATCH');
       });
+
+      it('should handle missing keyword and keywordId for create operation', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            phone: '+1234567890',
+            email: 'test@example.com',
+            // Missing keyword and keywordId for create operation
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetDestinationExternalID.mockReturnValue(null); // No subscriber ID, so it's a create operation
+        mockHandleRtTfSingleEventError.mockReturnValue(
+          createMockErrorResponse(
+            'Either keyword or keyword_id is required for subscriber creation',
+          ),
+        );
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
+        expect(result).toEqual([
+          createMockErrorResponse(
+            'Either keyword or keyword_id is required for subscriber creation',
+          ),
+        ]);
+      });
+
+      it('should process identify event for subscriber update when lookup finds existing subscriber', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            phone: '+1234567890',
+            email: 'updated@example.com',
+            keyword: 'WELCOME',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetDestinationExternalID.mockReturnValue(null);
+        // Mock lookup finding an existing subscriber
+        mockPerformSubscriberLookup.mockResolvedValue([
+          {
+            exists: true,
+            subscriberId: 'sub_found_123',
+            identifierValue: '+1234567890',
+            identifierType: 'phone',
+          },
+        ]);
+
+        // Create a mock response with PATCH method for the existing subscriber update
+        const mockPatchResponse = {
+          ...createMockBatchedResponse(),
+          batchedRequest: {
+            ...createMockBatchedResponse().batchedRequest,
+            method: 'PATCH',
+            endpoint: 'https://api.postscript.io/api/v2/subscribers/sub_found_123',
+          },
+        };
+
+        mockBatchResponseBuilder.mockReturnValue([mockPatchResponse]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockBuildSubscriberPayload).toHaveBeenCalledWith(message);
+        expect(mockPerformSubscriberLookup).toHaveBeenCalled();
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+        // Verify that it uses PATCH for updating the found subscriber
+        expect(result[0].batchedRequest.method).toBe('PATCH');
+        expect(result[0].batchedRequest.endpoint).toBe(
+          'https://api.postscript.io/api/v2/subscribers/sub_found_123',
+        );
+      });
     });
 
     describe('Track Events', () => {
@@ -366,6 +447,39 @@ describe('PostScript Transform', () => {
         expect(mockBuildCustomEventPayload).toHaveBeenCalledWith(trackMessage);
         expect(mockBatchResponseBuilder).toHaveBeenCalled();
         expect(result).toHaveLength(2);
+      });
+
+      it('should handle subscriber lookup failure and modify error message', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            phone: '+1234567890',
+            keyword: 'WELCOME',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetDestinationExternalID.mockReturnValue(null);
+
+        // Create a specific error to test error message modification
+        const originalError = new Error('API timeout');
+        mockPerformSubscriberLookup.mockRejectedValue(originalError);
+        mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockPerformSubscriberLookup).toHaveBeenCalled();
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+
+        // Verify that error message was modified
+        expect(originalError.message).toBe('Subscriber lookup failed: API timeout');
+
+        // Verify that it falls back to a create operation (POST)
+        expect(result[0].batchedRequest.method).toBe('POST');
       });
     });
   });

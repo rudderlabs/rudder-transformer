@@ -4,15 +4,9 @@
  */
 
 import { processRouterDest } from './transform';
-import {
-  PostscriptRouterRequest,
-  ProcessedEvent,
-  PostscriptDestination,
-  PostscriptBatchResponse,
-} from './types';
+import { PostscriptRouterRequest, PostscriptDestination, PostscriptBatchResponse } from './types';
 import { RudderMessage } from '../../../types';
-import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
-import { EventType } from '../../../constants';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
 
 // Mock external dependencies
 jest.mock('../../util', () => ({
@@ -88,13 +82,6 @@ describe('PostScript Transform', () => {
       messageId: 'msg_123',
     },
     destination: destination || createMockDestination(),
-  });
-
-  // Helper function to create mock connection
-  const createMockConnection = () => ({
-    connection: {
-      apiKey: 'test_api_key',
-    },
   });
 
   // Helper function to create mock batched response
@@ -224,6 +211,42 @@ describe('PostScript Transform', () => {
 
         expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
         expect(result).toEqual([createMockErrorResponse('Phone is required')]);
+      });
+
+      it('should process identify event for subscriber update without phone number', async () => {
+        const message: Partial<RudderMessage> = {
+          type: 'identify',
+          userId: 'user_123',
+          traits: {
+            email: 'updated@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+          },
+        };
+
+        const inputs = [createMockRouterRequest(message)];
+
+        // Mock subscriber ID to indicate this is an update operation
+        mockGetDestinationExternalID.mockReturnValue('sub_existing_123');
+
+        // Create a mock response with PATCH method for update
+        const mockPatchResponse = {
+          ...createMockBatchedResponse(),
+          batchedRequest: {
+            ...createMockBatchedResponse().batchedRequest,
+            method: 'PATCH',
+          },
+        };
+
+        mockBatchResponseBuilder.mockReturnValue([mockPatchResponse]);
+
+        const result = await processRouterDest(inputs, {});
+
+        expect(mockGetDestinationExternalID).toHaveBeenCalled();
+        expect(mockBatchResponseBuilder).toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+        // Verify that it uses PATCH for an update and doesn't require phone lookup
+        expect(result[0].batchedRequest.method).toBe('PATCH');
       });
     });
 

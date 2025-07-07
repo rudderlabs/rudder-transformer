@@ -59,18 +59,20 @@ const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent =>
   const { keyword, keywordId } = allTraits;
   const phone = allTraits.phone ?? getFieldValueFromMessage(message, 'phone');
 
-  // Phone number is always required for PostScript API
-  if (!phone) {
-    throw new InstrumentationError('Phone is required for subscriber identification');
-  }
-
   // Check for subscriber ID from external identifiers for update operations
   const subscriberId =
     getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ?? allTraits.subscriberId;
   const externalId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.EXTERNAL_ID);
 
-  // Either keyword or keywordId is required for new subscriber creation (but not for updates)
+  // Determine if this is an update operation (subscriber ID or external ID present)
   const isUpdateOperation = !!subscriberId || !!externalId;
+
+  // Phone number is required for create operations, but optional for updates when subscriber ID is present
+  if (!phone && !isUpdateOperation) {
+    throw new InstrumentationError('Phone is required for subscriber creation');
+  }
+
+  // Either keyword or keywordId is required for new subscriber creation (but not for updates)
   if (!isUpdateOperation && !keyword && !keywordId) {
     throw new InstrumentationError(
       'Either keyword or keyword_id is required for subscriber creation',
@@ -93,8 +95,8 @@ const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent =>
     endpoint,
     method: isUpdateOperation ? 'PATCH' : 'POST',
     subscriberLookupNeeded: !isUpdateOperation, // Need lookup only for potential create operations
-    identifierValue: phone,
-    identifierType: 'phone',
+    identifierValue: phone ?? subscriberId, // Use phone for lookups, subscriberId for updates without phone
+    identifierType: phone ? 'phone' : 'subscriber_id',
   };
 };
 

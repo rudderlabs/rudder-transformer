@@ -46,7 +46,7 @@ export const errorHandlingTestData: RouterTestData[] = [
         body: {
           output: [
             {
-              error: 'Phone is required for subscriber identification',
+              error: 'Phone is required for subscriber creation',
               statTags: {
                 destType: 'POSTSCRIPT',
                 destinationId: 'default-destinationId',

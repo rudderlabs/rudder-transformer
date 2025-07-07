@@ -1,5 +1,5 @@
 /**
- * PostScript Network Handler Tests
+ * PostScript Network Handler V1 Tests
  *
  * Tests the network handler's response processing and error handling capabilities.
  * Covers various HTTP status codes and their corresponding error types.
@@ -7,9 +7,9 @@
 
 import { NetworkError, RetryableError, ThrottledError } from '@rudderstack/integrations-lib';
 import { networkHandler } from './networkHandler';
-import { DESTINATION_NAME } from './config';
+import { DESTINATION_NAME } from '../../../v0/destinations/postscript/config';
 
-describe('PostScript Network Handler', () => {
+describe('PostScript Network Handler V1', () => {
   let handler: any;
 
   beforeEach(() => {
@@ -349,7 +349,7 @@ describe('PostScript Network Handler', () => {
           response: { error: 'Server error' },
         },
       };
-
+      expect.assertions(1);
       try {
         handler.responseHandler(responseParams);
       } catch (error: any) {

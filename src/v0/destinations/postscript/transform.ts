@@ -15,7 +15,11 @@
  * - Router transform pattern for efficient bulk processing
  */
 
-import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
+import {
+  InstrumentationError,
+  ConfigurationError,
+  mapInBatches,
+} from '@rudderstack/integrations-lib';
 import { EventType } from '../../../constants';
 import { PostscriptRouterRequest, ProcessedEvent, SubscriberLookupResult } from './types';
 import { SUBSCRIBERS_ENDPOINT, CUSTOM_EVENTS_ENDPOINT, EXTERNAL_ID_TYPES } from './config';
@@ -45,11 +49,6 @@ import {
  */
 const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
   const { message, metadata } = event;
-
-  // Validate message type
-  if (!message.type || message.type.toLowerCase() !== EventType.IDENTIFY) {
-    throw new InstrumentationError('Invalid event type for identify processing');
-  }
 
   // Extract and validate required fields for subscriber creation/update
   const contextTraits = (message.context as any)?.traits ?? {};
@@ -114,11 +113,6 @@ const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent =>
 const processTrackEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
   const { message, metadata } = event;
 
-  // Validate message type
-  if (!message.type || message.type.toLowerCase() !== EventType.TRACK) {
-    throw new InstrumentationError('Invalid event type for track processing');
-  }
-
   // Event name is required for track events
   if (!message.event) {
     throw new InstrumentationError('Event name is required for track events');
@@ -177,11 +171,7 @@ const processRouterDest = async (
   }
 
   // Process events and separate successful transformations from errors
-  const processedEvents: ProcessedEvent[] = [];
-  const errorEvents: any[] = [];
-
-  // Transform each input event, handling errors individually
-  const processedEventResults = inputs.map((event) => {
+  const processedEventResults = await mapInBatches(inputs, (event) => {
     try {
       let processedEvent: ProcessedEvent;
 
@@ -211,6 +201,9 @@ const processRouterDest = async (
   });
 
   // Separate successful and failed events
+  const processedEvents: ProcessedEvent[] = [];
+  const errorEvents: any[] = [];
+
   processedEventResults.forEach((result) => {
     if (result.success && result.data) {
       processedEvents.push(result.data);

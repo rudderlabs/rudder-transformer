@@ -26,13 +26,23 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+      
+      - name: Build Project
+        run: npm run build
 
-      - name: Start server
-        run: npm run build:start &
+      - name: Verify Server Startup (no cluster)
+        working-directory: ./dist  
+        run: ../.github/scripts/verifyServerStart.sh
+        env:
+          CLUSTER_ENABLED: 'false'
+          STATS_CLIENT: 'prometheus'
+      
+      - name: Verify Server Startup (cluster with 4 workers)
+        working-directory: ./dist
+        run: ../.github/scripts/verifyServerStart.sh
+        env:
+          CLUSTER_ENABLED: 'true'
+          NUM_PROCS: '4'
+          STATS_CLIENT: 'prometheus'
+          CLUSTER_MANAGER_SHUTDOWN_TIMEOUT: '5000'
 
-      - name: Wait for server to start
-        run: sleep 10 # Adjust the time as necessary for your server to start
-
-      - name: Check server health
-        run: |
-          curl --fail http://localhost:9090/health || exit 1

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.103.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.2...v1.103.0) (2025-06-23)
+
+
+### Features
+
+* implement hasDynamicConfig flag support ([#4321](https://github.com/rudderlabs/rudder-transformer/issues/4321)) ([93dbc44](https://github.com/rudderlabs/rudder-transformer/commit/93dbc44acdf7980a66594436335227796610f991))
+* implement rudder-test destination with migrated tests ([#4352](https://github.com/rudderlabs/rudder-transformer/issues/4352)) ([c535626](https://github.com/rudderlabs/rudder-transformer/commit/c53562639f5ea759dc45bd3a2d514aca3cd68208))
+* testing tool ([#4391](https://github.com/rudderlabs/rudder-transformer/issues/4391)) ([ebfdda0](https://github.com/rudderlabs/rudder-transformer/commit/ebfdda081df5209f6a76755d1b06ee73bf1a47ab))
+* update workflow to raise pr for dedicated transformer from operator ([#4413](https://github.com/rudderlabs/rudder-transformer/issues/4413)) ([4613f94](https://github.com/rudderlabs/rudder-transformer/commit/4613f9481a741dddea5281cef74b41afbb4cfee0))
+* use account information on zoho ([#4361](https://github.com/rudderlabs/rudder-transformer/issues/4361)) ([752e1e1](https://github.com/rudderlabs/rudder-transformer/commit/752e1e1fa6201e3b4348f6df633607664b9a8826))
+
+
+### Bug Fixes
+
+* deep freeze in compaction middleware ([71c33b2](https://github.com/rudderlabs/rudder-transformer/commit/71c33b2daaf59c6f8b946178ce0aa65fa30aacc8))
+* deep freeze in compaction middleware ([#4396](https://github.com/rudderlabs/rudder-transformer/issues/4396)) ([fdf0527](https://github.com/rudderlabs/rudder-transformer/commit/fdf0527f1dd6025217116c94ae40575cc7a702de))
+* ensure consistent ordering in batch processing for google adwords offline conversions ([#4359](https://github.com/rudderlabs/rudder-transformer/issues/4359)) ([37d6d74](https://github.com/rudderlabs/rudder-transformer/commit/37d6d74968d0a3fded8ee7150eb2525d059750b2))
+* ensure the testing tool is cross-platform compatible ([#4401](https://github.com/rudderlabs/rudder-transformer/issues/4401)) ([d871d2e](https://github.com/rudderlabs/rudder-transformer/commit/d871d2e0bf5d4dfe6d42a413277528c923c225bf))
+* handle empty oauth secret for multiple destination ([#4295](https://github.com/rudderlabs/rudder-transformer/issues/4295)) ([5f86c32](https://github.com/rudderlabs/rudder-transformer/commit/5f86c3288ace4ebff1bb755bdde6a9350133dd43))
+* klaviyo error logging ([7fc5e4e](https://github.com/rudderlabs/rudder-transformer/commit/7fc5e4e33d1a5fcd6998133cfae6d1666c5bb7df))
+* **marketo:** remove auth key from logs ([1e5b3f0](https://github.com/rudderlabs/rudder-transformer/commit/1e5b3f02465c16f6b9b5e26079e1ec0dc608b05b))
+* **marketo:** remove auth key from logs ([#4399](https://github.com/rudderlabs/rudder-transformer/issues/4399)) ([78662e5](https://github.com/rudderlabs/rudder-transformer/commit/78662e536837f07c5cfe5cb11f4f7ecf47c5b6fa))
+* rt event ordering for hs ([#4397](https://github.com/rudderlabs/rudder-transformer/issues/4397)) ([be985a7](https://github.com/rudderlabs/rudder-transformer/commit/be985a72c1ddb0b698a3e85457ff9ed87f8efca5))
+* test folder structure for destinations ([#4414](https://github.com/rudderlabs/rudder-transformer/issues/4414)) ([2955c4a](https://github.com/rudderlabs/rudder-transformer/commit/2955c4a3c31f48bc7d5846817dcba091792f1ac5))
+* enhance config object in ga4 v2 instead of mutating it ([#4436](https://github.com/rudderlabs/rudder-transformer/issues/4436)) ([d34ec3c](https://github.com/rudderlabs/rudder-transformer/pull/4436/commits/d34ec3c3890f4e749cc9ec42cc732e048d0cbb9b))
+
 ### [1.102.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.102.1...v1.102.2) (2025-06-19)
 
 

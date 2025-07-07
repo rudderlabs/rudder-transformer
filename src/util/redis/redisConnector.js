@@ -128,7 +128,9 @@ const RedisDB = {
   },
   async disconnect() {
     logger.info(`Disconnecting from redis at ${this.host}:${this.port}`);
-    this.client.disconnect();
+    if (this.client) {
+      this.client.disconnect();
+    }
   },
 };
 

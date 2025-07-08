@@ -299,11 +299,6 @@ async function createIvm(
     return credentials[key];
   });
 
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
-  });
-
   await jail.set('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -367,14 +362,6 @@ async function createIvm(
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
-      };
-      
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
       };
 
       let getCredential = _getCredential;

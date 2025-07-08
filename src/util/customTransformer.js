@@ -104,11 +104,6 @@ async function runUserTransform(
     }),
   );
 
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
-  });
-
   jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -206,15 +201,7 @@ async function runUserTransform(
           ]);
         });
       };
-
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
-      };
-
+      
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,

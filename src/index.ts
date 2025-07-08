@@ -9,6 +9,7 @@ import { metricsRouter } from './routes/metricsRouter';
 import * as cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
+import { initializeFeatureFlags, shutdownFeatureFlags } from './featureFlags';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
@@ -23,6 +24,11 @@ configureBatchProcessingDefaults({
   batchSize: parseInt(process.env.BATCH_PROCESSING_BATCH_SIZE || '50', 10), // TODO: we should decrease the default value to 20 after we have enough confidence in the performance of the batch processing
   yieldThreshold: parseInt(process.env.BATCH_PROCESSING_YIELD_THRESHOLD || '5', 10), // Yield control back to the event loop every 5ms by default
   sequentialProcessing: true, // wherever concurrent processing is needed, it should be enabled explicitly in the respective call
+});
+
+// Initialize feature flags service
+initializeFeatureFlags().catch((error) => {
+  logger.error('Failed to initialize feature flags during startup:', error);
 });
 
 const app = new Koa();
@@ -52,7 +58,10 @@ addSwaggerRoutes(app);
 
 applicationRoutes(app);
 
-function finalFunction() {
+async function finalFunction() {
+  // Shutdown feature flags service
+  await shutdownFeatureFlags();
+
   RedisDB.disconnect();
   logger.info('Redis client disconnected');
   logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);

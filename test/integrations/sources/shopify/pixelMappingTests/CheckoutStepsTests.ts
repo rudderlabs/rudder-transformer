@@ -5,7 +5,7 @@ export const newpixelCheckoutStepsScenarios = [
     name: 'shopify',
     description: 'Track Call -> address_info_submitted event from web pixel',
     module: 'source',
-    skip: true,
+    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -434,7 +434,7 @@ export const newpixelCheckoutStepsScenarios = [
     name: 'shopify',
     description: 'Track Call -> contact_info_submitted event from web pixel',
     module: 'source',
-    skip: true,
+    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -831,7 +831,7 @@ export const newpixelCheckoutStepsScenarios = [
     name: 'shopify',
     description: 'Track Call -> shipping_info_submitted event from web pixel',
     module: 'source',
-    skip: true,
+    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -1260,7 +1260,7 @@ export const newpixelCheckoutStepsScenarios = [
     name: 'shopify',
     description: 'Track Call -> payment_info_submitted event from web pixel',
     module: 'source',
-    skip: true,
+    skip: false,
     version: 'v2',
     input: {
       request: {

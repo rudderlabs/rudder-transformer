@@ -10,11 +10,13 @@ import { createHttpTerminator } from 'http-terminator';
 import { ExtendedTestCaseData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
+import { EnvManager } from './envUtils';
 import {
   getTestDataFilePaths,
   getTestData,
   registerAxiosMocks,
   validateTestWithZOD,
+  validateStreamTestWithZOD,
   getTestMockData,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
@@ -73,6 +75,8 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'tiktok_ads',
   'bluecore',
 ];
+
+const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = ['googlesheets'];
 
 beforeAll(async () => {
   initaliseReport();
@@ -142,6 +146,12 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
     expect(validateTestWithZOD(tcData, response)).toEqual(true);
+    enhancedTestUtils.beforeTestRun(tcData);
+    enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
+  }
+
+  if (STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
+    expect(validateStreamTestWithZOD(tcData, response)).toEqual(true);
     enhancedTestUtils.beforeTestRun(tcData);
     enhancedTestUtils.afterTestRun(tcData, response.body, opts.verbose === 'true');
   }
@@ -232,22 +242,40 @@ describe('Component Test Suite', () => {
           test.each(extendedTestData)(
             '$tcData.feature -> $tcData.description$descriptionSuffix (index: $#)',
             async ({ tcData }) => {
-              tcData?.mockFns?.(mockAdapter);
+              const envManager = new EnvManager();
+              const testId = `${tcData.id || tcData.name}-${Date.now()}`;
 
-              switch (tcData.module) {
-                case tags.MODULES.DESTINATION:
-                  await destinationTestHandler(tcData);
-                  break;
-                case tags.MODULES.SOURCE:
-                  FetchHandler['sourceHandlerMap'] = new Map();
-                  tcData?.mockFns?.(mockAdapter);
-                  await sourceTestHandler(tcData);
-                  break;
-                default:
-                  console.log('Invalid module');
-                  // Intentionally fail the test case
-                  expect(true).toEqual(false);
-                  break;
+              try {
+                // Handle environment variable overrides if present
+                if (tcData.envOverrides) {
+                  const envKeys = Object.keys(tcData.envOverrides);
+                  envManager.takeSnapshot(testId, envKeys);
+                  envManager.applyOverrides(tcData.envOverrides);
+                }
+
+                tcData?.mockFns?.(mockAdapter);
+
+                switch (tcData.module) {
+                  case tags.MODULES.DESTINATION:
+                    await destinationTestHandler(tcData);
+                    break;
+                  case tags.MODULES.SOURCE:
+                    FetchHandler['sourceHandlerMap'] = new Map();
+                    tcData?.mockFns?.(mockAdapter);
+                    await sourceTestHandler(tcData);
+                    break;
+                  default:
+                    console.log('Invalid module');
+                    // Intentionally fail the test case
+                    expect(true).toEqual(false);
+                    break;
+                }
+              } finally {
+                // Always restore environment variables after the test
+                if (tcData.envOverrides) {
+                  envManager.restoreSnapshot(testId);
+                }
+                envManager.cleanup();
               }
             },
           );

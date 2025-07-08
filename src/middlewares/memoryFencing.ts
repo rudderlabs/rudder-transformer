@@ -11,6 +11,7 @@ import stats from '../util/stats';
  *   Defaults to 503 (Service Unavailable).
  */
 interface MemoryFenceOptions {
+  memoryUsageRefreshPeriod?: number; // default 100ms
   thresholdPercent?: number; // default 80 means 80% of max heap usage
   statusCode?: number; // default 503
 }
@@ -29,17 +30,21 @@ interface MemoryFenceOptions {
  * - Responds with the specified status code and a message indicating high memory load.
  */
 export function memoryFenceMiddleware(options?: MemoryFenceOptions): Middleware {
-  const { thresholdPercent = 80, statusCode = 503 } = options || {};
+  const { thresholdPercent = 80, statusCode = 503, memoryUsageRefreshPeriod = 100 } = options || {};
   if (thresholdPercent <= 0 || thresholdPercent >= 100) {
     throw new Error('thresholdPercent must be between 1 and 100');
   }
   const limit = v8.getHeapStatistics().heap_size_limit;
   stats.gauge('memory_heap_size_limit', limit);
-
+  let { heapUsed }: { heapUsed: number } = process.memoryUsage();
+  let lastMemoryCheck = Date.now();
   return async (ctx, next) => {
-    const { heapUsed } = process.memoryUsage();
+    // Check memory usage periodically
+    if (Date.now() - lastMemoryCheck >= memoryUsageRefreshPeriod) {
+      ({ heapUsed } = process.memoryUsage());
+      lastMemoryCheck = Date.now();
+    }
     const usagePercent = (heapUsed / limit) * 100;
-
     if (usagePercent > thresholdPercent) {
       stats.counter('memory_fenced_requests', 1);
       ctx.set('X-Rudder-Should-Retry', 'true');

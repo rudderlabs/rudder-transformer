@@ -763,4 +763,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, trackResponseBuilder };

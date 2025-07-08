@@ -21,14 +21,17 @@ const ProcessorTransformationOutputSchema = z.object({
   files: z.record(z.unknown()).optional(),
 });
 
-export const ProcessorTransformationResponseSchema = z
-  .object({
-    output: ProcessorTransformationOutputSchema.optional(),
-    metadata: z.record(z.unknown()),
-    statusCode: z.number(),
-    error: z.string().optional(),
-    statTags: z.record(z.unknown()).optional(),
-  })
+const STAT_TAGS_ERROR_MESSAGE = "statTags and error can't be empty when status is not a 2XX";
+
+const commonProcessorSchema = z.object({
+  output: ProcessorTransformationOutputSchema.optional(),
+  metadata: z.record(z.unknown()),
+  statusCode: z.number(),
+  error: z.string().optional(),
+  statTags: z.record(z.unknown()).optional(),
+});
+
+export const ProcessorTransformationResponseSchema = commonProcessorSchema
   .refine(
     (data) => {
       if (!isHttpStatusSuccess(data.statusCode)) {
@@ -40,7 +43,7 @@ export const ProcessorTransformationResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )
@@ -61,19 +64,20 @@ export const ProcessorTransformationResponseListSchema = z.array(
   ProcessorTransformationResponseSchema,
 );
 
-export const RouterTransformationResponseSchema = z
-  .object({
-    batchedRequest: z
-      .array(ProcessorTransformationOutputSchema)
-      .or(ProcessorTransformationOutputSchema)
-      .optional(),
-    metadata: z.array(z.record(z.unknown())), // array of metadata
-    destination: z.record(z.unknown()),
-    batched: z.boolean(),
-    statusCode: z.number(),
-    error: z.string().optional(),
-    statTags: z.record(z.unknown()).optional(),
-  })
+const commonRouterSchema = z.object({
+  batchedRequest: z
+    .array(ProcessorTransformationOutputSchema)
+    .or(ProcessorTransformationOutputSchema)
+    .optional(),
+  metadata: z.array(z.record(z.unknown())), // array of metadata
+  destination: z.record(z.unknown()),
+  batched: z.boolean(),
+  statusCode: z.number(),
+  error: z.string().optional(),
+  statTags: z.record(z.unknown()).optional(),
+});
+
+export const RouterTransformationResponseSchema = commonRouterSchema
   .refine(
     (data) => {
       if (!isHttpStatusSuccess(data.statusCode)) {
@@ -85,7 +89,7 @@ export const RouterTransformationResponseSchema = z
       return true;
     },
     {
-      message: "statTags and error can't be empty when status is not a 2XX",
+      message: STAT_TAGS_ERROR_MESSAGE,
       path: ['statTags', 'error'], // Pointing out which field is invalid
     },
   )
@@ -240,3 +244,71 @@ export const DeliveryV1ResponseSchemaForOauth = z
     message: "authErrorCategory can't be empty when status is not a 2XX",
     path: ['authErrorCategory'], // Pointing out which field is invalid
   });
+
+export const ProcessorStreamingResponseSchema = commonProcessorSchema
+  .extend({
+    output: z.record(z.unknown()).optional(),
+  })
+  .refine(
+    (data) => {
+      if (!isHttpStatusSuccess(data.statusCode)) {
+        return (
+          isDefinedAndNotNullAndNotEmpty(data.statTags) ||
+          isDefinedAndNotNullAndNotEmpty(data.error)
+        );
+      }
+      return true;
+    },
+    {
+      message: STAT_TAGS_ERROR_MESSAGE,
+      path: ['statTags', 'error'], // Pointing out which field is invalid
+    },
+  )
+  .refine(
+    (data) => {
+      if (isHttpStatusSuccess(data.statusCode)) {
+        return isDefinedAndNotNullAndNotEmpty(data.output);
+      }
+      return true;
+    },
+    {
+      message: "output can't be empty when status is 2XX",
+      path: ['output'], // Pointing out which field is invalid
+    },
+  );
+
+export const ProcessorStreamingResponseListSchema = z.array(ProcessorStreamingResponseSchema);
+
+export const RouterStreamingResponseSchema = commonRouterSchema
+  .extend({
+    batchedRequest: z.record(z.unknown()).optional(),
+  })
+  .refine(
+    (data) => {
+      if (!isHttpStatusSuccess(data.statusCode)) {
+        return (
+          isDefinedAndNotNullAndNotEmpty(data.statTags) ||
+          isDefinedAndNotNullAndNotEmpty(data.error)
+        );
+      }
+      return true;
+    },
+    {
+      message: STAT_TAGS_ERROR_MESSAGE,
+      path: ['statTags', 'error'], // Pointing out which field is invalid
+    },
+  )
+  .refine(
+    (data) => {
+      if (isHttpStatusSuccess(data.statusCode)) {
+        return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
+      }
+      return true;
+    },
+    {
+      message: "batchedRequest can't be empty when status is 2XX",
+      path: ['batchedRequest'], // Pointing out which field is invalid
+    },
+  );
+
+export const RouterStreamingResponseListSchema = z.array(RouterStreamingResponseSchema);

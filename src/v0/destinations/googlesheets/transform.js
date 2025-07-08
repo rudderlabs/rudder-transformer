@@ -110,33 +110,41 @@ const process = (event) => {
 const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
+  const successMetadata = [];
+
   await Promise.all(
     inputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event
           successRespList.push(input.message);
+          successMetadata.push(input.metadata);
+        } else {
+          // if not transformed
+          successRespList.push(processSingleMessage(input));
+          successMetadata.push(input.metadata);
         }
-        // if not transformed
-        successRespList.push(processSingleMessage(input));
       } catch (error) {
         const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);
       }
     }),
   );
-  const batchedResponse = batch(successRespList);
-  batchedResponse.spreadSheetId = inputs[0].destination.Config.sheetId;
-  batchedResponse.spreadSheet = inputs[0].destination.Config.sheetName;
-  return [
-    getSuccessRespEvents(
-      batchedResponse,
-      inputs.map((input) => input.metadata),
-      inputs[0].destination,
-      true,
-    ),
-    ...errorRespList,
-  ];
+
+  const responses = [];
+
+  // Only create success response if there are successful events
+  if (successRespList.length > 0) {
+    const batchedResponse = batch(successRespList);
+    batchedResponse.spreadSheetId = inputs[0].destination.Config.sheetId;
+    batchedResponse.spreadSheet = inputs[0].destination.Config.sheetName;
+
+    responses.push(
+      getSuccessRespEvents(batchedResponse, successMetadata, inputs[0].destination, true),
+    );
+  }
+
+  return [...responses, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

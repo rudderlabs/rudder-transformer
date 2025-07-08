@@ -1065,6 +1065,12 @@ export const dataV3: ProcessorTestData[] = [
               event: 'Order Completed',
               properties: {
                 brands: ['brand01', 'brand02'],
+                contents: [{
+                  id: "12",
+                  quantity: 23,
+                  item_price: 6778,
+                  delivery_category: "mobile"
+                }],
                 products: [
                   {
                     product_id: '123',
@@ -1121,6 +1127,12 @@ export const dataV3: ProcessorTestData[] = [
                         brand: ['brand01', 'brand02'],
                         content_ids: ['123', '124'],
                         value: '56',
+                        contents: [{
+                          id: "12",
+                          quantity: 23,
+                          item_price: 6778,
+                          delivery_category: "mobile"
+                        }]
                       },
                       event_name: 'PURCHASE',
                       event_time: '1650625078',

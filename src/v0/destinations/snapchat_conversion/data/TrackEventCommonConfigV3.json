@@ -8,6 +8,11 @@
     }
   },
   {
+    "destKey": "custom_data.contents",
+    "sourceKeys": "properties.contents",
+    "required": false
+  },
+  {
     "destKey": "user_data.sc_click_id",
     "sourceKeys": "properties.click_id",
     "required": false

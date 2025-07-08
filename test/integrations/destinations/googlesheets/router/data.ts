@@ -540,6 +540,9 @@ export const data: RouterStreamTestData[] = [
     },
   },
   {
+    id: 'router-17508530616522323',
+    scenario: 'Event with error scenario - missing sheetName configuration',
+    successCriteria: 'Router tests should pass successfully',
     name: 'googlesheets',
     description: 'Event with error scenario - missing sheetName configuration',
     feature: 'router',
@@ -550,29 +553,6 @@ export const data: RouterStreamTestData[] = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  credentials: '{ sheets credentials }',
-                  eventKeyMap: [
-                    { from: 'firstName', to: 'First Name' },
-                    { from: 'lastName', to: 'Last Name' },
-                    { from: 'birthday', to: 'Birthday' },
-                    { from: 'address.city', to: 'City' },
-                    { from: 'address.country', to: 'Country' },
-                    { from: 'revenue', to: 'Revenue' },
-                    { from: 'offer', to: 'Offer' },
-                    { from: 'title', to: 'Title Page' },
-                    { from: 'Cart Value', to: 'Cart Value' },
-                    { from: 'revenue', to: 'Revenue' },
-                    { from: 'context.app.build', to: 'App Build' },
-                    { from: 'context.app.name', to: 'App Name' },
-                    { from: 'context.library.name', to: 'Library Name' },
-                    { from: 'context.ip', to: 'IP' },
-                  ],
-                  sheetId: 'rudder_sheet_id',
-                  // sheetName: 'rudder_sheet',
-                },
-              },
               message: {
                 channel: 'web',
                 context: {
@@ -582,13 +562,21 @@ export const data: RouterStreamTestData[] = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: { name: 'OS-X', version: '19.02.3' },
-                  screen: { density: 2 },
+                  os: {
+                    name: 'OS-X',
+                    version: '19.02.3',
+                  },
+                  screen: {
+                    density: 2,
+                  },
                   traits: {
                     userId: 'sheetuser001',
                     firstName: 'James',
@@ -619,7 +607,10 @@ export const data: RouterStreamTestData[] = [
                   married: true,
                   customerType: 'Prime',
                   custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
-                  custom_mappings: { Office: 'Trastkiv', Country: 'Russia' },
+                  custom_mappings: {
+                    Office: 'Trastkiv',
+                    Country: 'Russia',
+                  },
                   address: {
                     city: 'kolkata',
                     country: 'India',
@@ -628,101 +619,21 @@ export const data: RouterStreamTestData[] = [
                     street: '',
                   },
                 },
-                integrations: { All: true },
+                integrations: {
+                  All: true,
+                },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: { jobId: 1, userId: 'u1' },
-            },
-            {
+              metadata: generateMetadata(1, 'u1'),
               destination: {
-                Config: {
-                  credentials: '{ sheets credentials }',
-                  eventKeyMap: [
-                    { from: 'firstName', to: 'First Name' },
-                    { from: 'lastName', to: 'Last Name' },
-                    { from: 'birthday', to: 'Birthday' },
-                    { from: 'address.city', to: 'City' },
-                    { from: 'address.country', to: 'Country' },
-                    { from: 'revenue', to: 'Revenue' },
-                    { from: 'offer', to: 'Offer' },
-                    { from: 'title', to: 'Title Page' },
-                    { from: 'Cart Value', to: 'Cart Value' },
-                    { from: 'revenue', to: 'Revenue' },
-                    { from: 'context.app.build', to: 'App Build' },
-                    { from: 'context.app.name', to: 'App Name' },
-                    { from: 'context.library.name', to: 'Library Name' },
-                    { from: 'context.ip', to: 'IP' },
-                  ],
-                  sheetId: 'rudder_sheet_id',
-                  sheetName: 'rudder_sheet',
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
                 },
-              },
-              message: {
-                type: 'track',
-                userId: 'userTest004',
-                event: 'Added to Cart',
-                properties: {
-                  name: 'HomePage',
-                  revenue: 5.99,
-                  value: 5.5,
-                  offer: 'Discount',
-                  Sale: false,
-                },
-                context: {
-                  ip: '14.5.67.21',
-                  app: {
-                    build: '1',
-                    name: 'RudderAndroidClient',
-                    namespace: 'com.rudderstack.demo.android',
-                    version: '1.0',
-                  },
-                  device: {
-                    id: '7e32188a4dab669f',
-                    manufacturer: 'Google',
-                    model: 'Android SDK built for x86',
-                    name: 'generic_x86',
-                    type: 'android',
-                  },
-                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
-                  locale: 'en-US',
-                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
-                  os: { name: 'Android', version: '9' },
-                  screen: { density: 420, height: 1794, width: 1080 },
-                  timezone: 'Asia/Kolkata',
-                },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-              metadata: { jobId: 2, userId: 'u1' },
-            },
-          ],
-          destType: 'googlesheets',
-        },
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: [
-            {
-              metadata: [
-                {
-                  jobId: 1,
-                  userId: 'u1',
-                },
-              ],
-              batched: false,
-              statusCode: 400,
-              error: 'No Spread Sheet set for this event',
-              statTags: {
-                errorCategory: 'dataValidation',
-                errorType: 'configuration',
-                destType: 'GOOGLESHEETS',
-                module: 'destination',
-                implementation: 'native',
-                feature: 'router',
-              },
-              destination: {
                 Config: {
                   credentials: '{ sheets credentials }',
                   eventKeyMap: [
@@ -784,7 +695,252 @@ export const data: RouterStreamTestData[] = [
                     },
                   ],
                   sheetId: 'rudder_sheet_id',
+                  // sheetName: 'rudder_sheet',
                 },
+                Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                userId: 'userTest004',
+                event: 'Added to Cart',
+                properties: {
+                  name: 'HomePage',
+                  revenue: 5.99,
+                  value: 5.5,
+                  offer: 'Discount',
+                  Sale: false,
+                },
+                context: {
+                  ip: '14.5.67.21',
+                  app: {
+                    build: '1',
+                    name: 'RudderAndroidClient',
+                    namespace: 'com.rudderstack.demo.android',
+                    version: '1.0',
+                  },
+                  device: {
+                    id: '7e32188a4dab669f',
+                    manufacturer: 'Google',
+                    model: 'Android SDK built for x86',
+                    name: 'generic_x86',
+                    type: 'android',
+                  },
+                  library: {
+                    name: 'com.rudderstack.android.sdk.core',
+                    version: '0.1.4',
+                  },
+                  locale: 'en-US',
+                  network: {
+                    carrier: 'Android',
+                    bluetooth: false,
+                    cellular: true,
+                    wifi: true,
+                  },
+                  os: {
+                    name: 'Android',
+                    version: '9',
+                  },
+                  screen: {
+                    density: 420,
+                    height: 1794,
+                    width: 1080,
+                  },
+                  timezone: 'Asia/Kolkata',
+                },
+                timestamp: '2020-02-02T00:23:09.544Z',
+              },
+              metadata: generateMetadata(2, 'u1'),
+              destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  credentials: '{ sheets credentials }',
+                  eventKeyMap: [
+                    {
+                      from: 'firstName',
+                      to: 'First Name',
+                    },
+                    {
+                      from: 'lastName',
+                      to: 'Last Name',
+                    },
+                    {
+                      from: 'birthday',
+                      to: 'Birthday',
+                    },
+                    {
+                      from: 'address.city',
+                      to: 'City',
+                    },
+                    {
+                      from: 'address.country',
+                      to: 'Country',
+                    },
+                    {
+                      from: 'revenue',
+                      to: 'Revenue',
+                    },
+                    {
+                      from: 'offer',
+                      to: 'Offer',
+                    },
+                    {
+                      from: 'title',
+                      to: 'Title Page',
+                    },
+                    {
+                      from: 'Cart Value',
+                      to: 'Cart Value',
+                    },
+                    {
+                      from: 'revenue',
+                      to: 'Revenue',
+                    },
+                    {
+                      from: 'context.app.build',
+                      to: 'App Build',
+                    },
+                    {
+                      from: 'context.app.name',
+                      to: 'App Name',
+                    },
+                    {
+                      from: 'context.library.name',
+                      to: 'Library Name',
+                    },
+                    {
+                      from: 'context.ip',
+                      to: 'IP',
+                    },
+                  ],
+                  sheetId: 'rudder_sheet_id',
+                  sheetName: 'rudder_sheet',
+                },
+                Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
+              },
+            },
+          ],
+          destType: 'googlesheets',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1, 'u1')],
+              batched: false,
+              statusCode: 400,
+              error: 'No Spread Sheet set for this event',
+              statTags: {
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'GOOGLESHEETS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+              destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
+                Config: {
+                  credentials: '{ sheets credentials }',
+                  eventKeyMap: [
+                    {
+                      from: 'firstName',
+                      to: 'First Name',
+                    },
+                    {
+                      from: 'lastName',
+                      to: 'Last Name',
+                    },
+                    {
+                      from: 'birthday',
+                      to: 'Birthday',
+                    },
+                    {
+                      from: 'address.city',
+                      to: 'City',
+                    },
+                    {
+                      from: 'address.country',
+                      to: 'Country',
+                    },
+                    {
+                      from: 'revenue',
+                      to: 'Revenue',
+                    },
+                    {
+                      from: 'offer',
+                      to: 'Offer',
+                    },
+                    {
+                      from: 'title',
+                      to: 'Title Page',
+                    },
+                    {
+                      from: 'Cart Value',
+                      to: 'Cart Value',
+                    },
+                    {
+                      from: 'revenue',
+                      to: 'Revenue',
+                    },
+                    {
+                      from: 'context.app.build',
+                      to: 'App Build',
+                    },
+                    {
+                      from: 'context.app.name',
+                      to: 'App Name',
+                    },
+                    {
+                      from: 'context.library.name',
+                      to: 'Library Name',
+                    },
+                    {
+                      from: 'context.ip',
+                      to: 'IP',
+                    },
+                  ],
+                  sheetId: 'rudder_sheet_id',
+                  // sheetName: 'rudder_sheet',
+                },
+                Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
             {
@@ -858,15 +1014,18 @@ export const data: RouterStreamTestData[] = [
                 spreadSheetId: 'rudder_sheet_id',
                 spreadSheet: 'rudder_sheet',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                  userId: 'u1',
-                },
-              ],
+              metadata: [generateMetadata(2, 'u1')],
               batched: true,
               statusCode: 200,
               destination: {
+                ID: 'default-destination-id',
+                Name: 'Default Destination',
+                DestinationDefinition: {
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                  DisplayName: 'Default Display Name',
+                  Config: {},
+                },
                 Config: {
                   credentials: '{ sheets credentials }',
                   eventKeyMap: [
@@ -930,6 +1089,12 @@ export const data: RouterStreamTestData[] = [
                   sheetId: 'rudder_sheet_id',
                   sheetName: 'rudder_sheet',
                 },
+                Enabled: true,
+                WorkspaceID: 'default-workspace',
+                Transformations: [],
+                RevisionID: 'default-revision',
+                IsProcessorEnabled: true,
+                IsConnectionEnabled: true,
               },
             },
           ],

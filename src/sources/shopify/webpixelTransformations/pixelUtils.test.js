@@ -238,7 +238,7 @@ describe('utilV2.js', () => {
             image: {
               src: '//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
             },
-            sku: '',
+            sku: 'sku-tcs-liquid',
             title: 'Default Title',
             untranslatedTitle: 'Default Title',
           },
@@ -254,6 +254,7 @@ describe('utilV2.js', () => {
         name: 'The Collection Snowboard: Liquid',
         price: 749.95,
         product_id: '7234590834801',
+        sku: 'sku-tcs-liquid',
         url: '/products/the-collection-snowboard-liquid',
         variant: 'The Collection Snowboard: Liquid',
       });

@@ -345,4 +345,387 @@ export const identifyTestData: ProcessorTestData[] = [
     },
     mockFns,
   },
+  {
+    id: 'attentive-tag-identify-processor-test-4',
+    name: 'attentive_tag',
+    description: 'Identify event with enableNewIdentifyFlow enabled',
+    scenario: "User identification using Attentive's Identity and User Attribute APIs",
+    successCriteria:
+      'Should successfully create user profile using new identify flow with Identity and User Attribute APIs',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+              channel: 'web',
+              context: {
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: '144',
+                  },
+                  {
+                    type: 'shopifyId',
+                    id: '224',
+                  },
+                  {
+                    type: 'klaviyoId',
+                    id: '132',
+                  },
+                ],
+                traits: {
+                  email: 'test@gmail.com',
+                  phone: '+10000000000',
+                  firstName: 'John',
+                  lastName: 'Doe',
+                  city: 'New York City',
+                  country: 'USA',
+                  customIdentifiers: [
+                    {
+                      name: 'customIdentifier-1',
+                      value: 'customValue-1',
+                    },
+                  ],
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+              messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
+              receivedAt: '2023-10-14T13:56:14.945+05:30',
+              type: 'identify',
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  phone: '+10000000000',
+                  email: 'test@gmail.com',
+                  shopifyId: '224',
+                  klaviyoId: '132',
+                  clientUserId: '144',
+                  customIdentifiers: [
+                    {
+                      name: 'customIdentifier-1',
+                      value: 'customValue-1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    phone: '+10000000000',
+                    email: 'test@gmail.com',
+                    externalIdentifiers: {
+                      clientUserId: '144',
+                      customIdentifiers: [
+                        {
+                          name: 'customIdentifier-1',
+                          value: 'customValue-1',
+                        },
+                      ],
+                    },
+                  },
+                  properties: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    city: 'New York City',
+                    country: 'USA',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-identify-processor-test-5',
+    name: 'attentive_tag',
+    description: 'Identify event with enableNewIdentifyFlow enabled - minimal data',
+    scenario:
+      "User identification with only email/phone using Attentive's Identity and User Attribute APIs",
+    successCriteria:
+      'Should successfully create user profile using new identify flow without user attributes',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+              channel: 'web',
+              context: {
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: '144',
+                  },
+                  {
+                    type: 'shopifyId',
+                    id: '224',
+                  },
+                  {
+                    type: 'klaviyoId',
+                    id: '132',
+                  },
+                ],
+                traits: {
+                  email: 'test@gmail.com',
+                  phone: '+10000000000',
+                  customIdentifiers: [
+                    {
+                      name: 'customIdentifier-1',
+                      value: 'customValue-1',
+                    },
+                  ],
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+              messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
+              receivedAt: '2023-10-14T13:56:14.945+05:30',
+              type: 'identify',
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  phone: '+10000000000',
+                  email: 'test@gmail.com',
+                  clientUserId: '144',
+                  shopifyId: '224',
+                  klaviyoId: '132',
+                  customIdentifiers: [
+                    {
+                      name: 'customIdentifier-1',
+                      value: 'customValue-1',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-identify-processor-test-6',
+    name: 'attentive_tag',
+    description: 'Identify event with enableNewIdentifyFlow enabled - no email/phone',
+    scenario:
+      "User identification with only clientUserId and traits using Attentive's User Attribute API",
+    successCriteria:
+      'Should successfully add user attributes to existing user profile with clientUserId only',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+              channel: 'web',
+              context: {
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'user123',
+                  },
+                ],
+                traits: {
+                  firstName: 'Jane',
+                  lastName: 'Smith',
+                  city: 'Los Angeles',
+                  country: 'USA',
+                  age: 28,
+                  gender: 'female',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+              messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
+              receivedAt: '2023-10-14T13:56:14.945+05:30',
+              type: 'identify',
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    externalIdentifiers: {
+                      clientUserId: 'user123',
+                    },
+                  },
+                  properties: {
+                    firstName: 'Jane',
+                    lastName: 'Smith',
+                    city: 'Los Angeles',
+                    country: 'USA',
+                    age: 28,
+                    gender: 'female',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
 ];

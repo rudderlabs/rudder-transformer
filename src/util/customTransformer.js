@@ -6,6 +6,7 @@ const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
+const logger = require('../logger');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
@@ -44,6 +45,7 @@ async function runUserTransform(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+        logger.info(error);
       }
     }),
   );
@@ -67,7 +69,9 @@ async function runUserTransform(
 
         try {
           data.body = JSON.parse(data.body);
-        } catch (e) {}
+        } catch (e) {
+          logger.info(e);
+        }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -126,7 +130,6 @@ async function runUserTransform(
       destinationId: eventMetadata.destinationId,
       destinationType: eventMetadata.destinationType,
       destinationName: eventMetadata.destinationName,
-      // TODO: remove non required fields
       namespace: eventMetadata.namespace,
       trackingPlanId: eventMetadata.trackingPlanId,
       trackingPlanVersion: eventMetadata.trackingPlanVersion,
@@ -201,7 +204,7 @@ async function runUserTransform(
           ]);
         });
       };
-      
+
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,

@@ -1,29 +1,73 @@
-# RETL Functionality - Google Ads Remarketing Lists
+# Google Ads Remarketing Lists RETL Functionality
 
-## VDM v2 Support
+## Is RETL supported at all?
 
-- **Supported**: Yes
-- **Evidence**: 
-  - `record` event type is present in `supportedMessageTypes` in `db-config.json`
-  - `recordTransform.js` implements comprehensive record event handling
-  - Support for both VDM v1 and VDM v2 flows
+**RETL (Reverse ETL) Support**: **Yes**
 
-## Record Event Handling
+The Google Ads Remarketing Lists destination supports full RETL functionality. Evidence:
+- `supportedSourceTypes` includes `warehouse` which indicates RETL support
+- `supportsVisualMapper: true` indicates VDM v1 support
+- `supportedMessageTypes` includes `record` which indicates VDM v2 support
+- `disableJsonMapper: true` (JSON mapper disabled, only VDM supported)
+- Comprehensive record event handling in transformer code
+
+## RETL Support Analysis
+
+### Which type of retl support does it have?
+- **JSON Mapper**: Not supported (`disableJsonMapper: true`)
+- **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
+- **VDM V2**: Supported (`record` in `supportedMessageTypes`)
+
+### Does it have vdm support?
+**Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support.
+
+### Does it have vdm v2 support?
+**Yes** - Both requirements met:
+- `supportedMessageTypes > record` in `db-config.json`
+- `recordTransform.js` implements comprehensive record event handling
+
+### Connection config
+Standard Google Ads Remarketing Lists configuration applies:
+- **Developer Token**: Google Ads API developer token
+- **Customer ID**: Google Ads customer account ID
+- **Audience ID**: Target remarketing list ID
+- **Type of List**: List type configuration (userID, mobileDeviceID, General)
+
+## RETL Flow Implementation
+
+### Warehouse Integration
+
+Google Ads Remarketing Lists supports RETL through warehouse sources with VDM v1 and VDM v2 functionality:
+
+- **Supported**: Yes, warehouse sources can send data to Google Ads via RETL
+- **Connection Mode**: Cloud mode only
+- **Message Types**: Audiencelist and record events
+- **Data Flow**: Warehouse/Database → RudderStack → Google Ads (via Customer Match API)
+- **Mapping**: VDM v1 and VDM v2 transform warehouse data to Google Ads format
+
+### Supported Message Types for RETL
+```json
+"supportedMessageTypes": {
+  "cloud": ["audiencelist", "record"]
+}
+```
+
+### Record Event Handling
 
 The destination supports three types of record event flows:
 
-### 1. Event Stream Record Events (V1)
+#### 1. Event Stream Record Events (V1)
 - **Flow Detection**: Default flow when no VDM flags are present
 - **Configuration Source**: `destination.Config`
 - **Audience ID**: Uses configured `audienceId` from destination config
 
-### 2. VDM v1 Record Events
+#### 2. VDM v1 Record Events
 - **Flow Detection**: `isEventSentByVDMV1Flow(event)` returns true
 - **Configuration Source**: `destination.Config`
 - **Audience ID**: Dynamic resolution using `getOperationAudienceId(audienceId, message)`
 - **Special Handling**: Supports audience ID from message properties for dynamic targeting
 
-### 3. VDM v2 Record Events
+#### 3. VDM v2 Record Events
 - **Flow Detection**: `isEventSentByVDMV2Flow(event)` returns true
 - **Configuration Source**: `connection.config.destination`
 - **User Schema**: Dynamically derived from `message.identifiers` keys
@@ -93,7 +137,9 @@ VDM v2 events inherit configuration from the connection object:
 - `userDataConsent`: Consent settings
 - `personalizationConsent`: Personalization consent
 
-### Data Flow Summary
+## Data Flow
+
+### RETL Data Processing
 
 1. **Record Ingestion**: Records received with action and identifiers
 2. **Flow Detection**: Determine VDM v1, VDM v2, or event stream flow
@@ -103,9 +149,53 @@ VDM v2 events inherit configuration from the connection object:
 6. **API Calls**: Execute three-step offline user data job process
 7. **Response Handling**: Map results back to original records
 
-## Limitations
+### Example RETL Event
 
+```javascript
+// VDM v2 record event for audience management
+{
+  "type": "record",
+  "action": "insert",
+  "identifiers": {
+    "email": "user@example.com",
+    "phone": "+1234567890"
+  },
+  "fields": {
+    "email": "user@example.com",
+    "phone": "+1234567890"
+  }
+}
+```
+
+## Rate Limits and Constraints
+
+### Google Ads API Limits
 - **Job Processing Time**: Offline user data jobs may take 6+ hours to complete
 - **Rate Limits**: Subject to Google Ads API daily operation limits
 - **Identifier Limits**: Maximum 100,000 user identifiers per job
+- **Batch Size**: 20 user identifiers per operation
+
+### RETL Processing Constraints
+- **Message Types**: Limited to audiencelist and record events
+- **VDM Only**: JSON mapper disabled (`disableJsonMapper: true`)
+- **Cloud Mode Only**: Device mode not supported for RETL
 - **Consent Requirements**: Must comply with Google's user consent policies
+
+## Summary
+
+The Google Ads Remarketing Lists destination supports full RETL functionality through:
+
+- **RETL Support**: Yes, via warehouse source type support
+- **JSON Mapper**: Not supported (`disableJsonMapper: true`)
+- **VDM v1**: Supported (`supportsVisualMapper: true`)
+- **VDM v2**: Supported (`record` in `supportedMessageTypes`)
+- **Supported Events**: Audiencelist and record events
+- **API Integration**: Google Ads Customer Match API for audience management
+- **Flow Types**: Supports event stream, VDM v1, and VDM v2 flows
+
+**Key Features**:
+- Comprehensive record event handling with insert/update/delete actions
+- Dynamic audience ID resolution for VDM flows
+- Batch processing with 20 identifiers per operation
+- Support for multiple user identifier types (email, phone, mobile ID, etc.)
+- Partial failure handling and response mapping

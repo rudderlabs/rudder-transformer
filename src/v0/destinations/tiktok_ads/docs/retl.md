@@ -1,58 +1,79 @@
 # TikTok Ads RETL Functionality
 
-## RETL Support Status
+## Is RETL supported at all?
 
-**RETL (Real-time Extract, Transform, Load) Support**: **Not Supported**
+**RETL (Reverse ETL) Support**: **Yes**
 
-## VDM v2 Support
+The TikTok Ads destination supports RETL functionality. Evidence:
+- `supportedSourceTypes` includes `warehouse` which indicates RETL support
+- JSON mapper is supported by default (no `disableJsonMapper: true` in config)
+- Supports data flow from warehouses/databases to TikTok Ads
 
-**VDM v2 Support**: **No**
+## RETL Support Analysis
 
-The TikTok Ads destination does not support VDM v2 (Warehouse Destinations v2) functionality. This is evidenced by:
+### Which type of retl support does it have?
+- **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
+- **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
-1. **Missing Record Message Type**: The `supportedMessageTypes` configuration does not include the `record` message type, which is required for VDM v2 support.
+### Does it have vdm support?
+**No** - `supportsVisualMapper` is not present in `db-config.json`
 
-2. **Current Supported Message Types**:
-   ```json
-   "supportedMessageTypes": {
-     "cloud": ["track"],
-     "device": {
-       "web": ["identify", "track", "page"]
-     }
-   }
-   ```
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
 
-3. **No Record Event Handling**: The transformer code (`transform.js` and `transformV2.js`) only handles `track` events and does not include logic for processing `record` events.
+### Connection config
+Standard TikTok Ads configuration applies:
+- **Access Token**: Same access token used for event stream functionality
+- **Pixel Code**: Required for Events API
+- **Test Event Code**: Optional, for testing events
 
-## Warehouse Integration
+## RETL Flow Implementation
 
-While TikTok Ads lists `warehouse` as a supported source type, this refers to the ability to send data from warehouse sources through RudderStack's event stream functionality, not RETL-specific features.
+### Warehouse Integration
 
-### Warehouse Source Support
+TikTok Ads supports RETL through warehouse sources with JSON mapper functionality:
 
-- **Supported**: Yes, warehouse sources can send events to TikTok Ads
+- **Supported**: Yes, warehouse sources can send data to TikTok Ads via RETL
 - **Connection Mode**: Cloud mode only
 - **Message Types**: Track events only
-- **Data Flow**: Warehouse → RudderStack → TikTok Ads (via Events API)
+- **Data Flow**: Warehouse/Database → RudderStack → TikTok Ads (via Events API)
+- **Mapping**: JSON mapper transforms warehouse data to TikTok Ads event format
 
-## Alternative Approaches
+### Supported Message Types for RETL
+```json
+"supportedMessageTypes": {
+  "cloud": ["track"]
+}
+```
 
-For warehouse-based data activation to TikTok Ads, consider these alternatives:
+### RETL Event Processing
 
-### 1. Event Stream from Warehouse
+The TikTok Ads destination processes RETL events through the same logic as event stream, supporting only track events.
 
-Use RudderStack's warehouse sources to send track events:
+## Data Flow
+
+### RETL Data Processing
+
+1. **Data Extraction**: Warehouse/database data extracted by RudderStack
+2. **JSON Mapping**: Data transformed using JSON mapper configuration
+3. **Event Construction**: Warehouse records converted to TikTok Ads track events
+4. **API Delivery**: Events sent to TikTok Ads via Events API
+
+### Example RETL Event
 
 ```javascript
-// Example: Sending e-commerce events from warehouse
+// Warehouse record transformed to TikTok Ads track event
 {
   "type": "track",
-  "event": "order completed",
+  "event": "CompletePayment",
   "properties": {
     "order_id": "12345",
     "value": 99.99,
     "currency": "USD",
-    "products": [...]
+    "contents": [...]
   },
   "context": {
     "traits": {
@@ -62,13 +83,17 @@ Use RudderStack's warehouse sources to send track events:
 }
 ```
 
-### 2. Custom Audiences (Separate Integration)
+## Rate Limits and Constraints
 
-For audience-based targeting, consider using TikTok's Custom Audiences API through other integrations or direct API calls.
+### TikTok Ads API Limits
+- **Events API**: 1000 requests per minute per access token
+- **Event Batch Size**: Up to 1000 events per request
+- **Event Properties**: Standard TikTok Ads event parameters
 
-### 3. Batch Processing
-
-Implement batch processing of warehouse data to generate track events that can be sent through the standard event stream flow.
+### RETL Processing Constraints
+- **Message Types**: Limited to track events only
+- **JSON Mapper Only**: No visual mapper or VDM v2 support
+- **Cloud Mode Only**: Device mode not supported for RETL
 
 ## Technical Limitations
 
@@ -118,4 +143,16 @@ However, any such extensions would require:
 
 ## Summary
 
-The TikTok Ads destination is optimized for real-time event tracking and does not support RETL functionality. For warehouse-based data activation, use the event stream approach by transforming warehouse data into track events that can be processed through the standard TikTok Ads integration flow.
+The TikTok Ads destination supports RETL functionality through:
+
+- **RETL Support**: Yes, via warehouse source type support
+- **JSON Mapper**: Supported by default for data transformation
+- **VDM v1**: Not supported (no `supportsVisualMapper`)
+- **VDM v2**: Not supported (no `record` message type)
+- **Supported Events**: Track events only
+- **API Integration**: TikTok Ads Events API for event delivery
+
+**Limitations**:
+- No VDM v1 or VDM v2 support (JSON mapper only)
+- Limited to track events only
+- No identify, page, screen, group, or alias event support for RETL

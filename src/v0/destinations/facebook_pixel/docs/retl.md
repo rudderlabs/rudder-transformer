@@ -1,51 +1,94 @@
 # Facebook Pixel RETL Functionality
 
-## RETL-Specific Logic
+## Is RETL supported at all?
 
-The Facebook Pixel destination does not implement any special handling for events that come from RETL sources. Unlike some other destinations that have specific logic for events marked with `context.mappedToDestination = true`, the Facebook Pixel destination treats all events uniformly regardless of their source.
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-### Key RETL Behaviors
+The Facebook Pixel destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
 
-1. **No Special RETL Handling**:
-   - The Facebook Pixel destination does not check for the `MappedToDestinationKey` flag
-   - All events follow the same transformation and processing logic
-   - No special user attribute handling for RETL events
+## RETL Support Analysis
 
-2. **Standard Event Processing**:
-   - RETL events are processed using the same logic as regular event stream events
-   - User data mapping follows the standard configuration mappings
-   - No bypass of validation or transformation logic for RETL events
+Since RETL is not supported (no warehouse source type), the following analysis applies:
 
-3. **Uniform Data Flow**:
-   - Both RETL and event stream events use the same API endpoint: `/events`
-   - Same authentication and header requirements apply
-   - Identical payload structure for both event types
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
-## VDM v2 Support
+### Does it have vdm support?
+**No** - `supportsVisualMapper` is not present in `db-config.json`
 
-**Not Supported**: The Facebook Pixel destination does not support VDM v2.
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
 
-### Evidence of No VDM v2 Support
+### Connection config
+Not applicable as RETL is not supported.
 
-1. **No Record Event Type**: The `supportedMessageTypes` in `db-config.json` does not include `record` event type
-2. **No Record Handling**: The transformer code does not include any handling for `record` event type in the switch statement
-3. **Supported Message Types**:
-   - Cloud mode: `identify`, `page`, `screen`, `track`
-   - Device mode (web): `track`, `page`
+## Alternative Approaches for Warehouse Data
 
-## Connection Configuration
+Since RETL is not supported, consider these alternatives for warehouse-based data activation:
 
-The Facebook Pixel destination uses the same configuration for both RETL and event stream sources:
+### 1. Event Stream from Other Sources
 
-- **Required**: Pixel ID, Access Token (for cloud mode)
-- **Optional**: All standard configuration options apply equally to RETL events
-- **No RETL-specific configuration**: No additional settings are required or available for RETL sources
+Transform warehouse data into events using other tools and send through supported sources:
+
+```javascript
+// Example: Sending conversion events
+{
+  "type": "track",
+  "event": "Purchase",
+  "properties": {
+    "value": 99.99,
+    "currency": "USD",
+    "content_ids": ["product123"]
+  },
+  "context": {
+    "traits": {
+      "email": "user@example.com"
+    }
+  }
+}
+```
+
+### 2. Direct API Integration
+
+Use Facebook's Conversions API directly from your warehouse:
+- **Conversions API**: For server-side event tracking
+- **Offline Events API**: For offline conversion tracking
+- **Custom Audiences API**: For audience management
+
+### 3. Custom ETL Solutions
+
+Implement custom solutions to extract data from warehouse and send to Facebook APIs.
+
+## Standard Event Stream Processing
+
+The Facebook Pixel destination processes all events through the standard event stream logic:
+
+### Supported Event Types
+- **Identify**: User identification via Conversions API
+- **Track**: Event tracking via Conversions API
+- **Page**: Page view events (converted to track events)
+- **Screen**: Screen view events (converted to track events)
+
+### Connection Configuration
+
+Standard Facebook Pixel configuration parameters:
+
+- **Pixel ID**: Facebook Pixel ID
+- **Access Token**: Facebook access token (for cloud mode)
+- **Test Event Code**: Optional, for testing events
 
 ## Data Flow
 
-### Standard Data Flow (Both RETL and Event Stream)
+### Standard Event Stream Data Flow
 
-1. **Event Reception**: RudderStack receives events from any source (RETL or event stream)
+1. **Event Reception**: RudderStack receives events from supported sources (SDK, cloud app, etc.)
 2. **Validation**: Events are validated for required fields and proper format
 3. **Transformation**: Events are transformed using the standard mapping configuration
 4. **API Call**: Transformed events are sent to Facebook Conversions API `/events` endpoint
@@ -54,7 +97,7 @@ The Facebook Pixel destination uses the same configuration for both RETL and eve
 ### Event Processing Pipeline
 
 ```
-Input Event (RETL or Event Stream)
+Input Event (Event Stream)
          ↓
 Event Type Validation (identify/track/page/screen)
          ↓
@@ -71,39 +114,38 @@ API Request to Facebook Conversions API
 Response Processing
 ```
 
-### No RETL-Specific Branching
+## Summary
 
-Unlike destinations such as Braze or CustomerIO that have conditional logic based on `mappedToDestination`, the Facebook Pixel destination follows a single code path for all events:
+The Facebook Pixel destination does not support RETL functionality. The destination:
 
-```javascript
-// No conditional logic like this exists in Facebook Pixel:
-// if (get(message, MappedToDestinationKey)) {
-//   // RETL-specific logic
-// } else {
-//   // Event stream logic
-// }
+- **Does not support RETL**: No warehouse source type support
+- **Does not support VDM v1**: No `supportsVisualMapper` configuration
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
+
+**Note**: For warehouse-based data activation, consider using Facebook's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+
+### Supported Source Types
+```json
+"supportedSourceTypes": [
+  "android", "ios", "web", "unity", "amp", "cloud",
+  "reactnative", "flutter", "cordova", "shopify"
+]
 ```
 
-## Limitations for RETL Use Cases
+**Note**: `warehouse` is not included in supported source types, confirming no RETL support.
 
-1. **No Pre-formatted Data Support**: RETL sources cannot send pre-formatted Facebook Pixel data that bypasses transformation
-2. **Standard Validation**: All RETL events must conform to RudderStack's standard event schema
-3. **No Bulk Operations**: RETL events are processed individually, same as event stream events
-4. **No Record Type Support**: Cannot handle VDM v2 record events for warehouse-to-destination syncing
+### Supported Message Types
+```json
+"supportedMessageTypes": {
+  "cloud": ["identify", "page", "screen", "track"],
+  "device": {
+    "web": ["track", "page"]
+  }
+}
+```
 
-## Recommendations for RETL Implementation
-
-Since the Facebook Pixel destination treats RETL events the same as event stream events:
-
-1. **Use Standard Event Types**: Ensure RETL sources send events as `identify`, `track`, `page`, or `screen` types
-2. **Follow Standard Schema**: RETL events should follow RudderStack's standard event schema
-3. **Configure Mapping**: Use the standard destination configuration for field mapping
-4. **Consider Event Volume**: Since there's no batching, high-volume RETL sources may result in many individual API calls
-
-## Future RETL Enhancements
-
-**NEEDS REVIEW**: Consider whether Facebook Pixel destination should implement RETL-specific optimizations such as:
-- Batching support for RETL events
-- Pre-formatted data handling for warehouse sources
-- VDM v2 record type support
-- RETL-specific configuration options
+**Limitations**:
+- No warehouse source type support
+- No VDM v1 or VDM v2 capabilities
+- Limited to standard event stream processing

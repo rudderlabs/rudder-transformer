@@ -866,17 +866,17 @@ export const trackTestData: ProcessorTestData[] = [
                     type: 'MARKETING', // "MARKETING" or "TRANSACTIONAL" or "CHECKOUT_ABANDONED"
                     channel: 'sms',
                     consented: false,
-                    // Optional notification properties to override - for unsubscribe only
-                    notification: {
-                      language: 'en-US', // "fr-CA",
-                      disabled: true,
-                    },
                   },
                   {
                     channel: 'email',
                     consented: true,
                   },
                 ],
+                // Optional notification properties to override - for unsubscribe only
+                notification: {
+                  language: 'en-US', // "fr-CA",
+                  disabled: true,
+                },
               },
               event: 'subscription_event',
               anonymousId: '00000000000000000000000000',
@@ -1044,6 +1044,328 @@ export const trackTestData: ProcessorTestData[] = [
                     email: 'subscription.test@gmail.com',
                   },
                   signUpSourceId: '241654',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-track-processor-test-10',
+    name: 'attentive_tag',
+    description: 'Subscription event track call - unsubscribe from both email and SMS',
+    scenario: 'Track event for unsubscribing from both email and SMS channels',
+    successCriteria:
+      'Should successfully send subscription event to unsubscribe both email and SMS',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'test@gmail.com',
+                  phone: '+10000000000',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'sub123',
+                  },
+                ],
+              },
+              type: 'track',
+              properties: {
+                signUpSourceId: '241654',
+                channelConsents: [
+                  {
+                    // Optional type indicating the desired subscriptions to remove - for unsubscribe only
+                    type: 'MARKETING', // "MARKETING" or "TRANSACTIONAL" or "CHECKOUT_ABANDONED"
+                    channel: 'sms',
+                    consented: false,
+                  },
+                  {
+                    type: 'TRANSACTIONAL',
+                    channel: 'email',
+                    consented: false,
+                  },
+                ],
+                // Optional notification properties to override - for unsubscribe only
+                notification: {
+                  language: 'en-US', // "fr-CA",
+                  disabled: true,
+                },
+              },
+              event: 'subscription_event',
+              anonymousId: '00000000000000000000000000',
+              userId: '123456',
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              userId: '',
+              endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'test@gmail.com',
+                    phone: '+10000000000',
+                  },
+                  subscriptions: [
+                    {
+                      type: 'MARKETING',
+                      channel: 'TEXT',
+                    },
+                    {
+                      type: 'TRANSACTIONAL',
+                      channel: 'EMAIL',
+                    },
+                  ],
+                  notification: {
+                    language: 'en-US', // "fr-CA",
+                    disabled: true,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-track-processor-test-11',
+    name: 'attentive_tag',
+    description:
+      'Subscription event track call - unsubscribe from email and SMS from all type and channel',
+    scenario: 'Track event for unsubscribing from email and SMS channels',
+    successCriteria:
+      'Should successfully send subscription event to unsubscribe email and SMS from all type and channel',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'test@gmail.com',
+                  phone: '+10000000000',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'sub123',
+                  },
+                ],
+              },
+              type: 'track',
+              properties: {
+                signUpSourceId: '241654',
+                channelConsents: [
+                  {
+                    channel: 'sms',
+                    consented: false,
+                  },
+                  {
+                    channel: 'email',
+                    consented: false,
+                  },
+                ],
+              },
+              event: 'subscription_event',
+              anonymousId: '00000000000000000000000000',
+              userId: '123456',
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              userId: '',
+              endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'test@gmail.com',
+                    phone: '+10000000000',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-track-processor-test-12',
+    name: 'attentive_tag',
+    description:
+      'Subscription event track call - unsubscribe from email if phone is unavailable even channelConsents is present for sms',
+    scenario: 'Track event for unsubscribing from email channel if phone is unavailable',
+    successCriteria:
+      'Should successfully send subscription event to unsubscribe email if phone is unavailable',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    skip: true,
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'test@gmail.com',
+                },
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'sub123',
+                  },
+                ],
+              },
+              type: 'track',
+              properties: {
+                signUpSourceId: '241654',
+                channelConsents: [
+                  {
+                    channel: 'sms',
+                    consented: true,
+                  },
+                  {
+                    channel: 'email',
+                    consented: false,
+                  },
+                ],
+              },
+              event: 'subscription_event',
+              anonymousId: '00000000000000000000000000',
+              userId: '123456',
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              userId: '',
+              endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    email: 'test@gmail.com',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},

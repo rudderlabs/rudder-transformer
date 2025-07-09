@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.0...v1.104.1) (2025-07-09)
+
+
+### Bug Fixes
+
+* add robust error handling middleware ([46b4c26](https://github.com/rudderlabs/rudder-transformer/commit/46b4c2642a869f16a2ec3f5bde42299f45cb866d))
+
 ## [1.104.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.103.0...v1.104.0) (2025-07-07)
 
 

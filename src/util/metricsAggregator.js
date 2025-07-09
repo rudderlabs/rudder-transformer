@@ -40,32 +40,48 @@ class MetricsAggregator {
 
   // onWorkerMessage is called when the master receives a message from a worker
   onWorkerMessage(worker, message) {
-    if (message.type === MESSAGE_TYPES.GET_METRICS_RES) {
-      logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
-      this.handleMetricsResponse(message);
+    try {
+      if (message.type === MESSAGE_TYPES.GET_METRICS_RES) {
+        logger.debug(`[MetricsAggregator] Master received metrics from worker ${worker.id}`);
+        this.handleMetricsResponse(message);
+      }
+    } catch (error) {
+      logger.error(`[MetricsAggregator] Error handling worker message: ${error.message}`, {
+        error: error.stack,
+        workerId: worker?.id,
+        messageType: message?.type,
+      });
     }
   }
 
   onWorkerThreadMessage(message) {
-    if (message.type === MESSAGE_TYPES.AGGREGATE_METRICS_RES) {
-      if (message.requestId !== this.requestId) {
-        logger.info(
-          `[MetricsAggregator] Ignoring aggregation response for old request ${message.requestId}`,
-        );
-        return;
-      }
-      if (!this.resolveFunc) {
-        logger.info('[MetricsAggregator] No active request, ignoring aggregation response');
-        return;
-      }
-      if (message.error) {
-        logger.error(`[MetricsAggregator] Worker aggregation error: ${message.error}`);
-        this.rejectFunc(new Error(message.error));
+    try {
+      if (message.type === MESSAGE_TYPES.AGGREGATE_METRICS_RES) {
+        if (message.requestId !== this.requestId) {
+          logger.info(
+            `[MetricsAggregator] Ignoring aggregation response for old request ${message.requestId}`,
+          );
+          return;
+        }
+        if (!this.resolveFunc) {
+          logger.info('[MetricsAggregator] No active request, ignoring aggregation response');
+          return;
+        }
+        if (message.error) {
+          logger.error(`[MetricsAggregator] Worker aggregation error: ${message.error}`);
+          this.rejectFunc(new Error(message.error));
+          this.resetAggregator();
+          return;
+        }
+        this.resolveFunc(message.metrics);
         this.resetAggregator();
-        return;
       }
-      this.resolveFunc(message.metrics);
-      this.resetAggregator();
+    } catch (error) {
+      logger.error(`[MetricsAggregator] Error handling worker thread message: ${error.message}`, {
+        error: error.stack,
+        messageType: message?.type,
+        requestId: message?.requestId,
+      });
     }
   }
 
@@ -81,16 +97,34 @@ class MetricsAggregator {
           requestId: message.requestId,
         });
       } catch (error) {
-        cluster.worker.send({
-          type: MESSAGE_TYPES.GET_METRICS_RES,
-          error: error.message,
-          requestId: message.requestId,
-        });
+        logger.error(
+          `[MetricsAggregator] Error getting metrics from worker ${cluster.worker.id}: ${error.message}`,
+          { error: error.stack, workerId: cluster.worker.id, requestId: message.requestId },
+        );
+        try {
+          cluster.worker.send({
+            type: MESSAGE_TYPES.GET_METRICS_RES,
+            error: error.message,
+            requestId: message.requestId,
+          });
+        } catch (sendError) {
+          logger.error(
+            `[MetricsAggregator] Error sending error response from worker ${cluster.worker.id}: ${sendError.message}`,
+            { error: sendError.stack, workerId: cluster.worker.id, requestId: message.requestId },
+          );
+        }
       }
     } else if (message.type === MESSAGE_TYPES.RESET_METRICS_REQ) {
       logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} received reset metrics request`);
-      this.prometheusInstance.prometheusRegistry.resetMetrics();
-      logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
+      try {
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
+        logger.info(`[MetricsAggregator] Worker ${cluster.worker.id} reset metrics successfully`);
+      } catch (error) {
+        logger.error(
+          `[MetricsAggregator] Error resetting metrics in worker ${cluster.worker.id}: ${error.message}`,
+          { error: error.stack, workerId: cluster.worker.id },
+        );
+      }
     }
   }
 
@@ -125,21 +159,34 @@ class MetricsAggregator {
         `[MetricsAggregator] Worker thread created with threadId ${this.workerThread.threadId}`,
       );
       this.workerThread.on('message', (message) => {
-        this.onWorkerThreadMessage(message);
+        try {
+          this.onWorkerThreadMessage(message);
+        } catch (error) {
+          logger.error(
+            `[MetricsAggregator] Error handling worker thread message: ${error.message}`,
+            { error: error.stack, messageType: message?.type, requestId: message?.requestId },
+          );
+        }
       });
       this.workerThread.on('error', (error) => {
         if (this.shuttingDown) {
           // Ignore errors during shutdown
           return;
         }
-        logger.error(`[MetricsAggregator] Worker thread error: ${error.message}`);
+        logger.error(`[MetricsAggregator] Worker thread error: ${error.message}`, {
+          error: error.stack,
+          threadId: this.workerThread?.threadId,
+        });
       });
       this.workerThread.on('exit', (code) => {
         if (this.shuttingDown) {
           // Ignore exit events during shutdown
           return;
         }
-        logger.error(`[MetricsAggregator] Worker thread exited with code ${code}`);
+        logger.error(`[MetricsAggregator] Worker thread exited with code ${code}`, {
+          exitCode: code,
+          threadId: this.workerThread?.threadId,
+        });
         this.createWorkerThread(); // Restart the worker thread if it exits unexpectedly
       });
     }
@@ -198,7 +245,9 @@ class MetricsAggregator {
           } catch (error) {
             logger.error(
               `[MetricsAggregator] Error sending message to worker ${id}: ${error.message}`,
+              { error: error.stack, workerId: id, requestId: currentRequestId },
             );
+            // Continue with other workers even if one fails
           }
         }
       }
@@ -215,6 +264,11 @@ class MetricsAggregator {
     } catch (error) {
       logger.error(
         `[MetricsAggregator] Failed to send aggregate metrics request to worker thread: ${error.message}`,
+        {
+          error: error.stack,
+          requestId: this.requestId,
+          metricsBufferLength: this.metricsBuffer.length,
+        },
       );
       this.rejectFunc(new Error('Failed to send aggregate metrics request to worker thread'));
       this.resetAggregator();
@@ -263,7 +317,9 @@ class MetricsAggregator {
       } catch (error) {
         logger.error(
           `[MetricsAggregator] Error sending reset metrics request to worker ${id}: ${error.message}`,
+          { error: error.stack, workerId: id, operation: 'reset_metrics' },
         );
+        // Continue with other workers even if one fails
       }
     }
   }

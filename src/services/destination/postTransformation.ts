@@ -68,10 +68,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    logger.error(
-      errObj.message || '[Processor Transform] Error occurred while processing the payload.',
-      metaTo.errorDetails,
-    );
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -109,7 +105,6 @@ export class DestinationPostTransformationService {
           ...resp.statTags,
           ...metaTo.errorDetails,
         };
-        logger.error(resp.error || defaultErrorMessages.router, metaTo.errorDetails);
         stats.increment('event_transform_failure', metaTo.errorDetails);
       } else {
         stats.increment('event_transform_success', {
@@ -138,7 +133,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || defaultErrorMessages.router,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    logger.error(errObj.message || defaultErrorMessages.router, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     stats.increment('event_transform_failure', metaTo.errorDetails);
     return resp;
@@ -156,7 +150,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || defaultErrorMessages.delivery,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    logger.error(error as string, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -175,7 +168,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryV0Response;
-
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -212,7 +204,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryV1Response;
-    logger.error(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -230,7 +221,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    logger.error(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

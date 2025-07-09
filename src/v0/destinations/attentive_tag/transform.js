@@ -36,8 +36,83 @@ const responseBuilder = (payload, apiKey, endpoint) => {
   return undefined;
 };
 
-const identifyResponseBuilder = (message, { Config }) => {
+// Helper functions for new identify flow
+const processIdentityResolution = (message, apiKey) => {
+  const identityPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTITY.name]);
+  const externalIdentifiers = getExternalIdentifiersMapping(message);
+
+  if (identityPayload && externalIdentifiers) {
+    const payload = {
+      ...identityPayload,
+      ...externalIdentifiers,
+    };
+    if (
+      (payload.email || payload.phone || payload.shopifyId || payload.klaviyoId) &&
+      (payload.clientUserId || payload.customIdentifiers)
+    ) {
+      return responseBuilder(payload, apiKey, '/identity-resolution/user-identifiers');
+    }
+  }
+  return null;
+};
+
+const processUserAttributes = (message, apiKey) => {
+  const userTraits = getFieldValueFromMessage(message, 'traits') || {};
+  const { email, phone, customIdentifiers, ...customProperties } = userTraits;
+  const externalIdentifiers = getExternalIdentifiersMapping(message);
+
+  const payload = {
+    user: {
+      ...(email && { email }),
+      ...(phone && { phone }),
+      externalIdentifiers: {
+        ...(externalIdentifiers.clientUserId && { clientUserId: externalIdentifiers.clientUserId }),
+        ...(customIdentifiers && { customIdentifiers }),
+      },
+    },
+    properties: removeUndefinedAndNullValues(customProperties),
+  };
+
+  if (
+    payload.user &&
+    Object.keys(payload.user).length > 0 &&
+    payload.properties &&
+    Object.keys(payload.properties).length > 0
+  ) {
+    return responseBuilder(payload, apiKey, '/attributes/custom');
+  }
+  return null;
+};
+
+const identifyResponseBuilderNew = (message, { Config }) => {
   const { apiKey } = Config;
+  const responses = [];
+
+  // Process Identity Resolution API call
+  const identityResponse = processIdentityResolution(message, apiKey);
+  if (identityResponse) {
+    responses.push(identityResponse);
+  }
+
+  // Process User Attributes API call
+  const attributesResponse = processUserAttributes(message, apiKey);
+  if (attributesResponse) {
+    responses.push(attributesResponse);
+  }
+
+  if (responses.length === 0) {
+    throw new InstrumentationError('[Attentive Tag]: Identify payload is not valid');
+  }
+
+  return responses;
+};
+
+const identifyResponseBuilder = (message, { Config }) => {
+  const { apiKey, enableNewIdentifyFlow = false } = Config;
+  // If enableNewIdentifyFlow is true, use the new identify flow
+  if (enableNewIdentifyFlow) {
+    return identifyResponseBuilderNew(message, { Config });
+  }
   let { signUpSourceId } = Config;
   let endpoint;
   let payload;
@@ -97,6 +172,113 @@ const identifyResponseBuilder = (message, { Config }) => {
   return responseBuilder(payload, apiKey, endpoint);
 };
 
+// Helper functions for subscription processing
+const filterUserByConsents = (user, consents) => {
+  if (!user || !consents || consents.length === 0) return {};
+
+  const filteredUser = {};
+  consents.forEach((consent) => {
+    if (consent.channel === 'email' && user.email) {
+      filteredUser.email = user.email;
+    } else if (consent.channel === 'sms' && user.phone) {
+      filteredUser.phone = user.phone;
+    }
+  });
+
+  return filteredUser;
+};
+
+const processSubscribeConsents = (filteredUser, signUpSourceId, apiKey) => {
+  if (Object.keys(filteredUser).length === 0) return [];
+
+  if (!signUpSourceId) {
+    throw new ConfigurationError(
+      '[Attentive Tag]: SignUp Source Id is required for subscribe event',
+    );
+  }
+
+  const subscribePayload = { user: filteredUser, signUpSourceId };
+  const subscribeResponse = responseBuilder(subscribePayload, apiKey, '/subscriptions');
+
+  return subscribeResponse ? [subscribeResponse] : [];
+};
+
+const processUnsubscribeConsents = (unsubscribeConsents, filteredUser, notification, apiKey) => {
+  if (unsubscribeConsents.length === 0 || Object.keys(filteredUser).length === 0) return [];
+
+  const unsubscribePayload = { user: filteredUser };
+
+  // Add subscriptions if type exists
+  const subscriptions = unsubscribeConsents
+    .filter((consent) => consent.type)
+    .map((consent) => ({
+      type: consent.type,
+      channel: consent.channel === 'sms' ? 'TEXT' : 'EMAIL',
+    }));
+
+  if (subscriptions.length > 0) {
+    unsubscribePayload.subscriptions = subscriptions;
+  }
+
+  // Add notification if present
+  if (notification) {
+    unsubscribePayload.notification = notification;
+  }
+
+  const unsubscribeResponse = responseBuilder(
+    unsubscribePayload,
+    apiKey,
+    '/subscriptions/unsubscribe',
+  );
+
+  return unsubscribeResponse ? [unsubscribeResponse] : [];
+};
+
+const subscriptionResponseBuilder = (message, { Config }) => {
+  const { apiKey, signUpSourceId } = Config;
+  const userPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
+  const properties = get(message, 'properties') || {};
+  const { channelConsents, signUpSourceId: propSignUpSourceId, notification } = properties;
+
+  // Determine which signUpSourceId to use
+  const finalSignUpSourceId = propSignUpSourceId || signUpSourceId;
+
+  if (!Array.isArray(channelConsents)) {
+    throw new InstrumentationError('[Attentive Tag]: No valid consent found for email or phone');
+  }
+
+  // Separate subscribe and unsubscribe consents
+  const subscribeConsents = channelConsents.filter((consent) => consent.consented === true);
+  const unsubscribeConsents = channelConsents.filter((consent) => consent.consented === false);
+
+  // Filter user data based on consents
+  const subscribeFilteredUser = filterUserByConsents(userPayload.user, subscribeConsents);
+  const unsubscribeFilteredUser = filterUserByConsents(userPayload.user, unsubscribeConsents);
+
+  // Process subscribe and unsubscribe consents with filtered user data
+  const subscribeResponses = processSubscribeConsents(
+    subscribeFilteredUser,
+    finalSignUpSourceId,
+    apiKey,
+  );
+  const unsubscribeResponses = processUnsubscribeConsents(
+    unsubscribeConsents,
+    unsubscribeFilteredUser,
+    notification,
+    apiKey,
+  );
+
+  // Combine responses
+  const responses = [...subscribeResponses, ...unsubscribeResponses];
+
+  // Validate responses
+  if (responses.length === 0) {
+    throw new InstrumentationError('[Attentive Tag]: No valid consent found for email or phone');
+  }
+
+  return responses;
+};
+
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let endpoint;
@@ -104,6 +286,9 @@ const trackResponseBuilder = (message, { Config }) => {
   const event = get(message, 'event');
   if (!event) {
     throw new InstrumentationError('[Attentive Tag] :: Event name is not present');
+  }
+  if (event.toLowerCase().trim().replace(/\s+/g, '_') === 'subscription_event') {
+    return subscriptionResponseBuilder(message, { Config });
   }
   if (!validateTimestamp(getFieldValueFromMessage(message, 'timestamp'))) {
     throw new InstrumentationError(

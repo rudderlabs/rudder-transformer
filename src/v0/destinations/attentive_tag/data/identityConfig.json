@@ -1,0 +1,14 @@
+[
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

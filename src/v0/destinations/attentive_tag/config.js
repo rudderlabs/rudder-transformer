@@ -5,6 +5,7 @@ const BASE_URL = 'https://api.attentivemobile.com/v1';
 const ConfigCategory = {
   ITEMS: { name: 'itemsConfig' },
   IDENTIFY: { name: 'identifyConfig' },
+  IDENTITY: { name: 'identityConfig' },
   TRACK: { name: 'customTrackConfig', endpoint: '/events/custom' },
   ORDER_COMPLETED: {
     name: 'orderCompletedConfig',

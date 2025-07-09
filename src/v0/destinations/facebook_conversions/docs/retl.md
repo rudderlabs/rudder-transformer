@@ -1,49 +1,50 @@
-# Facebook Conversions API - RETL Functionality
+# Facebook Conversions API RETL Functionality
 
-## RETL Support Status
+## Is RETL supported at all?
 
-**RETL Support**: ❌ **Not Available**
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-The Facebook Conversions API destination does not support RETL (Real-time Extract, Transform, Load) functionality.
+The Facebook Conversions API destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
+
+## RETL Support Analysis
+
+Since RETL is not supported (no warehouse source type), the following analysis applies:
+
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
+
+### Does it have vdm support?
+**No** - `supportsVisualMapper` is not present in `db-config.json`
+
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
+
+### Connection config
+Not applicable as RETL is not supported.
 
 ## Technical Analysis
 
-### VDM v2 Support
-
-- **Record Event Type**: Not supported
-- **MappedToDestination Logic**: Not implemented
-- **Database Configuration**: No `record` event type in `supportedMessageTypes`
-
+### Supported Message Types
 ```json
-// From db-config.json
 "supportedMessageTypes": {
   "cloud": ["page", "screen", "track"]
-  // Note: "record" is not included
 }
 ```
 
 ### Implementation Details
 
 The destination uses a standard processor-based implementation:
-
-```json
-// From db-config.json
-"transformAtV1": "processor"
-```
-
-This configuration indicates that the destination:
 - Processes events individually
 - Does not support batch warehouse operations
 - Lacks RETL-specific event handling logic
-
-### Code Analysis
-
-The transform logic in `transform.js` only handles:
-- `EventType.PAGE`
-- `EventType.SCREEN` 
-- `EventType.TRACK`
-
-No handling for `record` event types or `mappedToDestination` flags is present.
+- No handling for `record` event types or `mappedToDestination` flags
 
 ## Alternative Approaches for Warehouse Data
 
@@ -88,16 +89,8 @@ const warehouseToFacebook = async (warehouseData) => {
 - **Batch Processing**: Send events in batches to Facebook
 - **Error Handling**: Retry logic and failure management
 
-### 3. Real-time Streaming Integration
 
-**Recommended for**: Ongoing real-time data synchronization
-
-- **Method**: Use RudderStack's standard cloud mode integration
-- **Trigger**: Stream events from warehouse to RudderStack
-- **Processing**: Events processed through standard Facebook Conversions destination
-- **Latency**: Near real-time event delivery
-
-### 4. Facebook S3 Data Import
+### 3. Facebook S3 Data Import
 
 **Recommended for**: Automated file-based imports
 
@@ -250,13 +243,34 @@ When RETL becomes available:
 3. **Performance Testing**: Validate RETL performance vs. alternatives
 4. **Documentation Updates**: Update integration guides
 
-## Conclusion
+## Summary
 
-While the Facebook Conversions API destination does not currently support RETL functionality, several robust alternatives exist for warehouse-to-Facebook data integration. The choice of approach depends on:
+The Facebook Conversions API destination does not support RETL functionality. The destination:
 
-- **Data Volume**: Bulk import for large datasets, streaming for real-time needs
-- **Latency Requirements**: Real-time vs. batch processing needs
-- **Technical Resources**: Available development and maintenance capacity
-- **Data Governance**: Compliance and data quality requirements
+- **Does not support RETL**: No warehouse source type support
+- **Does not support VDM v1**: No `supportsVisualMapper` configuration
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
 
-For most use cases, a combination of Facebook's bulk import capabilities for historical data and RudderStack's real-time streaming for ongoing events provides an optimal solution.
+**Note**: For warehouse-based data activation, consider using Facebook's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+
+### Supported Source Types
+```json
+"supportedSourceTypes": [
+  "android", "ios", "web", "unity", "amp", "cloud",
+  "reactnative", "flutter", "cordova", "shopify"
+]
+```
+
+**Note**: `warehouse` is not included in supported source types, confirming no RETL support.
+
+### Alternative Approaches Summary
+
+For warehouse-to-Facebook data integration, consider:
+
+1. **Facebook Bulk Import API**: Most efficient for historical data
+2. **Custom ETL Pipeline**: Automated warehouse-to-Facebook data flows
+3. **Real-time Streaming Integration**: Use RudderStack's standard cloud mode
+4. **Facebook S3 Data Import**: Automated file-based imports
+
+The choice of approach depends on data volume, latency requirements, technical resources, and data governance needs. For most use cases, a combination of Facebook's bulk import capabilities for historical data and RudderStack's real-time streaming for ongoing events provides an optimal solution.

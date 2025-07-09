@@ -1,51 +1,108 @@
 # MoEngage RETL Functionality
 
-## VDM v2 Support
+## Is RETL supported at all?
 
-**Supported**: No
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-The MoEngage destination does not support VDM v2 (Warehouse Destinations v2) functionality. This is evidenced by:
+The MoEngage destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
 
-- No `record` event type in the `supportedMessageTypes` configuration
-- No handling for `record` events in the transformation logic
-- No `mappedToDestination` logic implementation
+## RETL Support Analysis
 
-## RETL Flow
+Since RETL is not supported (no warehouse source type), the following analysis applies:
 
-Since MoEngage does not support VDM v2, there is no specific RETL (Real-time Extract, Transform, Load) flow implemented for this destination.
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
-### Supported Event Types for Cloud Mode
+### Does it have vdm support?
+**No** - `supportsVisualMapper` is not present in `db-config.json`
 
-The MoEngage destination supports the following event types in cloud mode:
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
 
-- **Identify**: For updating user attributes and profiles
-- **Track**: For tracking custom events and user behavior
-- **Alias**: For merging user profiles and identity resolution
+### Connection config
+Not applicable as RETL is not supported.
 
-### Warehouse Integration
+## Alternative Approaches for Warehouse Data
 
-For warehouse-based data integration with MoEngage, consider:
+Since RETL is not supported, consider these alternatives for warehouse-based data activation:
 
-1. **Alternative Approaches**:
-   - Use MoEngage's Bulk Import API for large-scale data imports
-   - Implement custom ETL processes using MoEngage's Data APIs
-   - Use MoEngage's S3 Data Import feature for batch processing
+### 1. Event Stream from Other Sources
 
-2. **API-Based Integration**:
-   - Leverage MoEngage's Track User API for user attribute updates
-   - Use Create Event API for event data ingestion
-   - Implement custom scheduling for batch data processing
+Transform warehouse data into events using other tools and send through supported sources:
 
-## Recommendations
+```javascript
+// Example: Sending user profile updates
+{
+  "type": "identify",
+  "userId": "user123",
+  "traits": {
+    "email": "user@example.com",
+    "name": "John Doe",
+    "plan": "premium"
+  }
+}
+```
 
-For warehouse-to-MoEngage data flows, we recommend:
+### 2. Direct API Integration
 
-1. **Batch Processing**: Use MoEngage's bulk import capabilities for large datasets
-2. **Real-time Streaming**: Use the standard cloud mode integration for real-time data
-3. **Hybrid Approach**: Combine batch imports for historical data and real-time streaming for ongoing events
+Use MoEngage's APIs directly from your warehouse:
+- **Bulk Import API**: For large-scale data imports
+- **Track User API**: For user attribute updates
+- **Create Event API**: For event data ingestion
+- **S3 Data Import**: For batch processing
+
+### 3. Custom ETL Solutions
+
+Implement custom solutions to extract data from warehouse and send to MoEngage APIs.
+
+## Standard Event Stream Processing
+
+The MoEngage destination processes all events through the standard event stream logic:
+
+### Supported Event Types
+- **Identify**: User profile updates via Track User API
+- **Track**: Event tracking via Create Event API
+- **Alias**: User identity merging
+
+### Connection Configuration
+
+Standard MoEngage configuration parameters:
+
+- **API ID**: MoEngage application API ID
+- **API Key**: MoEngage API key
+- **Data Center**: MoEngage data center (US, EU, etc.)
+
+## Summary
+
+The MoEngage destination does not support RETL functionality. The destination:
+
+- **Does not support RETL**: No warehouse source type support
+- **Does not support VDM v1**: No `supportsVisualMapper` configuration
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
+
+**Note**: For warehouse-based data activation, consider using MoEngage's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+
+### Supported Source Types
+```json
+"supportedSourceTypes": [
+  "android", "ios", "web", "unity", "amp", "cloud",
+  "reactnative", "flutter", "cordova", "shopify"
+]
+```
+
+**Note**: `warehouse` is not included in supported source types, confirming no RETL support.
 
 ## Documentation References
 
 - [MoEngage Bulk Import API](https://developers.moengage.com/hc/en-us/articles/4413174113044-Bulk-Import)
 - [MoEngage S3 Data Import](https://developers.moengage.com/hc/en-us/articles/4577796892308-S3-Data-Import)
 - [MoEngage Data APIs Overview](https://developers.moengage.com/hc/en-us/articles/4404674776724-Overview)
+- [RudderStack Event Stream Documentation](https://rudderstack.com/docs/destinations/streaming-destinations/)

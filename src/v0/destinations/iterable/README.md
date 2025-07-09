@@ -141,7 +141,12 @@ The destination supports multiple data centers with automatic endpoint routing:
 
 #### RETL Support
 
-**NEEDS REVIEW** - The destination appears to have RETL functionality based on catalog endpoints and external ID handling, but specific RETL configuration is not clearly defined in the current implementation.
+**Supported**: Yes, through VDM v1 and catalog management
+- **VDM v1**: Supported (`supportsVisualMapper: true`)
+- **VDM v2**: Not supported (no record message type)
+- **Catalog Operations**: Dynamic catalog endpoints based on object type
+- **Batch Processing**: Up to 1000 catalog items per batch
+- **Mixed Routing**: User events to identify endpoints, catalog events to catalog endpoints
 
 ### Event Ordering
 
@@ -342,10 +347,13 @@ A: Yes, but ensure your API key is valid for the target data center. Data center
 ### RETL and Advanced Features
 
 **Q: Does Iterable destination support RETL?**
-A: **NEEDS REVIEW** - The destination has catalog management capabilities that suggest RETL support, but VDM v2 and record event types are not explicitly configured. Contact support for current RETL capabilities.
+A: Yes, the destination supports RETL through VDM v1 with catalog management capabilities. It supports dynamic catalog endpoints based on object type and can batch up to 1000 catalog items per request. However, VDM v2 (record event types) is not supported.
 
 **Q: How do I handle catalog operations?**
-A: **NEEDS REVIEW** - Catalog operations appear to be supported through external ID handling and catalog endpoints, but specific configuration and usage patterns need verification.
+A: Catalog operations are handled automatically when `mappedToDestination: true` and the external ID contains an object type other than 'users'. The destination routes these to `/api/catalogs/{objectType}/items` endpoints and supports bulk operations up to 1000 items per batch.
+
+**Q: What's the difference between user events and catalog events in RETL?**
+A: User events (object type 'users') are routed to standard identify endpoints, while catalog events (any other object type) are routed to catalog-specific endpoints for product/content management.
 
 ### Event Ordering and Replay
 

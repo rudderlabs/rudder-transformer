@@ -1,42 +1,85 @@
 # Customer.io RETL Functionality
 
-## Overview
+## Is RETL supported at all?
 
-Customer.io destination supports RETL (Real-time Extract, Transform, Load) functionality through specific handling of events that are mapped to the destination. RETL functionality is primarily used for warehouse-to-destination data synchronization.
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-## VDM v2 Support
+The Customer.io destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
 
-- **Supported**: No
-- **Evidence**: The `supportedMessageTypes` in `db-config.json` does not include "record" type
-- **Record Type**: Not supported in the current implementation
-- **Note**: Customer.io has a separate `customerio_audience` destination that supports VDM v2 with "record" type for audience management
+**Note**: Customer.io has a separate `customerio_audience` destination that supports RETL with VDM v2 for audience management.
 
-## RETL Flow Handling
+## RETL Support Analysis
 
-### Mapped to Destination Logic
+Since RETL is not supported (no warehouse source type), the following analysis applies:
 
-The Customer.io destination implements RETL functionality through the `mappedToDestination` flag processing:
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`) - but only for event stream
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
+
+### Does it have vdm support?
+**Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support for event stream functionality.
+
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
+
+### Connection config
+Not applicable as RETL is not supported.
+
+## Alternative Approaches for Warehouse Data
+
+Since RETL is not supported, consider these alternatives for warehouse-based data activation:
+
+### 1. Customer.io Audience Destination
+
+Use the separate `customerio_audience` destination which supports RETL:
+- **VDM v2 Support**: Supports record message types
+- **Audience Management**: Designed for audience/segment management
+- **Warehouse Integration**: Supports warehouse source types
+
+### 2. Event Stream from Other Sources
+
+Transform warehouse data into events using other tools and send through supported sources:
 
 ```javascript
-// override userId with externalId in context(if present) and event is mapped to destination
-const mappedToDestination = get(message, MappedToDestinationKey);
-if (mappedToDestination) {
-  addExternalIdToTraits(message);
-  adduserIdFromExternalId(message);
+// Example: Sending user profile updates
+{
+  "type": "identify",
+  "userId": "user123",
+  "traits": {
+    "email": "user@example.com",
+    "plan": "premium"
+  }
 }
 ```
 
-When `mappedToDestination` is true, the destination:
+### 3. Direct API Integration
 
-1. **External ID Processing**: Adds external ID to traits for proper user identification
-2. **User ID Override**: Uses external ID as the primary user identifier
-3. **Enhanced Data Mapping**: Ensures warehouse data is properly mapped to Customer.io user profiles
+Use Customer.io's APIs directly from your warehouse:
+- **Track API**: For event tracking
+- **App API**: For user profile management
+- **Beta API**: For object and relationship management
 
-### RETL-Specific Event Types
+## Standard Event Stream Processing
 
-#### Group Events (Objects)
+The Customer.io destination processes all events through the standard event stream logic:
 
-Group events are the primary RETL functionality in Customer.io, used for managing objects and relationships:
+### Supported Event Types
+- **Identify**: User profile updates via Track API
+- **Track**: Event tracking via Track API
+- **Page**: Page view events (converted to track events)
+- **Screen**: Screen view events (converted to track events)
+- **Group**: Object management via Beta API
+- **Alias**: User identity merging
+
+### Group Events (Objects)
+
+Group events in Customer.io are used for object management in event stream:
 
 ```javascript
 const groupResponseBuilder = (message) => {
@@ -61,21 +104,31 @@ const groupResponseBuilder = (message) => {
 - **Batch Processing**: Uses Customer.io's v2 batch API for efficient processing
 - **Action Support**: Supports identify, delete, add_relationships, delete_relationships actions
 
-### RETL Configuration
+### Connection Configuration
 
-#### Connection Configuration
+Standard Customer.io configuration parameters:
 
-RETL connections for Customer.io require:
-
-- **API Key**: Same as regular Customer.io configuration
+- **API Key**: Customer.io Track API key
 - **Site ID**: Workspace identifier
 - **Data Center**: US or EU region selection
 
-#### Supported Source Types
+## Summary
 
+The Customer.io destination does not support RETL functionality. The destination:
+
+- **Does not support RETL**: No warehouse source type support
+- **Supports VDM v1**: `supportsVisualMapper: true` for visual data mapping (event stream only)
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
+
+**Note**: For RETL functionality, use the separate `customerio_audience` destination which supports VDM v2 and warehouse sources.
+
+### Supported Source Types
 ```json
 "supportedSourceTypes": [
-  "warehouse",
-  "cloud"
+  "android", "ios", "web", "unity", "amp", "cloud",
+  "reactnative", "flutter", "cordova", "shopify"
 ]
 ```
+
+**Note**: `warehouse` is not included in supported source types, confirming no RETL support.

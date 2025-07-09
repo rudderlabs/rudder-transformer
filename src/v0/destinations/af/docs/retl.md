@@ -1,10 +1,10 @@
-# Mixpanel RETL Functionality
+# AppsFlyer RETL Functionality
 
 ## Is RETL supported at all?
 
 **RETL (Reverse ETL) Support**: **Not Supported**
 
-The Mixpanel destination does not support RETL functionality. Evidence:
+The AppsFlyer destination does not support RETL functionality. Evidence:
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -38,48 +38,52 @@ Since RETL is not supported, consider these alternatives for warehouse-based dat
 Transform warehouse data into events using other tools and send through supported sources:
 
 ```javascript
-// Example: Sending user profile updates
+// Example: Sending app events
 {
-  "type": "identify",
-  "userId": "user123",
-  "traits": {
-    "email": "user@example.com",
-    "plan": "premium"
+  "type": "track",
+  "event": "purchase",
+  "properties": {
+    "af_revenue": 99.99,
+    "af_currency": "USD",
+    "af_order_id": "12345"
+  },
+  "context": {
+    "device": {
+      "advertisingId": "abc-123-def"
+    }
   }
 }
 ```
 
 ### 2. Direct API Integration
 
-Use Mixpanel's APIs directly from your warehouse:
-- **Import API**: For historical event data
-- **Engage API**: For user profile updates
-- **Groups API**: For group profile updates
+Use AppsFlyer's APIs directly from your warehouse:
+- **S2S Events API**: For server-to-server event tracking
+- **Audiences API**: For audience management
+- **Raw Data Export**: For data extraction
 
 ### 3. Custom ETL Solutions
 
-Implement custom solutions to extract data from warehouse and send to Mixpanel APIs.
+Implement custom solutions to extract data from warehouse and send to AppsFlyer APIs.
 
 ## Standard Event Stream Processing
 
-The Mixpanel destination processes all events through the standard event stream logic:
+The AppsFlyer destination processes all events through the standard event stream logic:
 
 ### Supported Event Types
-- **Identify**: User profile updates via `/engage` endpoint
-- **Track**: Event tracking via `/track` or `/import` endpoints
-- **Page**: Page view events (converted to track events)
-- **Screen**: Screen view events (converted to track events)
-- **Group**: Group profile updates via `/groups` endpoint
-- **Alias**: User identity merging via `/import` endpoint with `$merge` event
+- **Track**: Event tracking via S2S Events API
+- **Screen**: Screen view events (mobile apps)
+- **Page**: Page view events (web)
+- **Identify**: User identification (device mode only)
 
 ### Connection Configuration
 
-Standard Mixpanel configuration parameters:
+Standard AppsFlyer configuration parameters:
 
-- **Token**: Required for authentication with Mixpanel API
-- **Data Residency**: Specifies the Mixpanel data center to use (US, EU, IN)
-- **API Secret**: Required for using the Import API (server-side implementations)
-- **Identity Merge API**: Choose between Original ID Merge and Simplified ID Merge
+- **Dev Key**: AppsFlyer application dev key
+- **Apple App ID**: Required for iOS apps
+- **HTTP API**: Enable for server-to-server events
+- **Share Event Names**: Configure event name sharing
 
 ## Data Flow
 
@@ -87,29 +91,44 @@ Standard Mixpanel configuration parameters:
 
 1. RudderStack receives events from supported sources (SDK, cloud app, etc.)
 2. Events are processed through standard transformation logic
-3. Transformed events are sent to appropriate Mixpanel endpoints:
-   - `/import` for server-side event tracking
-   - `/track` for client-side event tracking
-   - `/engage` for user profile updates
-   - `/groups` for group profile updates
+3. Transformed events are sent to AppsFlyer endpoints:
+   - S2S Events API for server-side tracking
+   - SDK integration for device-side tracking
 
 ## Summary
 
-The Mixpanel destination does not support RETL functionality. The destination:
+The AppsFlyer destination does not support RETL functionality. The destination:
 
 - **Does not support RETL**: No warehouse source type support
 - **Does not support VDM v1**: No `supportsVisualMapper` configuration
 - **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
 - **Standard Event Stream Only**: All events processed through standard event stream logic
 
-**Note**: For warehouse-based data activation, consider using Mixpanel's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+**Note**: For warehouse-based data activation, consider using AppsFlyer's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
 
 ### Supported Source Types
 ```json
 "supportedSourceTypes": [
-  "android", "ios", "web", "unity", "amp", "cloud",
+  "android", "ios", "web", "unity", "amp", "cloud", 
   "reactnative", "flutter", "cordova", "shopify"
 ]
 ```
 
 **Note**: `warehouse` is not included in supported source types, confirming no RETL support.
+
+### Supported Message Types
+```json
+"supportedMessageTypes": {
+  "cloud": ["track", "screen", "page"],
+  "device": {
+    "android": ["track", "screen", "identify"],
+    "ios": ["track", "screen", "identify"],
+    "web": ["track", "page"]
+  }
+}
+```
+
+**Limitations**:
+- No warehouse source type support
+- No VDM v1 or VDM v2 capabilities
+- Limited to mobile and web event tracking use cases

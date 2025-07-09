@@ -27,6 +27,7 @@ import {
   handleRtTfSingleEventError,
   getFieldValueFromMessage,
   getDestinationExternalID,
+  getEventType,
 } from '../../util';
 import {
   performSubscriberLookup,
@@ -49,23 +50,18 @@ import {
  */
 const processIdentifyEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
   const { message, metadata } = event;
+  const traits = getFieldValueFromMessage(message, 'traits') || {};
 
   // Extract and validate required fields for subscriber creation/update
-  const contextTraits = (message.context as any)?.traits ?? {};
-  const messageTraits = message.traits ?? {};
-
-  // Combine traits with context.traits taking priority
-  const allTraits = { ...messageTraits, ...contextTraits };
-  const { keyword, keywordId } = allTraits;
-  const phone = allTraits.phone ?? getFieldValueFromMessage(message, 'phone');
+  const { keyword, keywordId } = traits;
+  const phone = traits.phone ?? getFieldValueFromMessage(message, 'phone');
 
   // Check for subscriber ID from external identifiers for update operations
   const subscriberId =
-    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ?? allTraits.subscriberId;
-  const externalId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.EXTERNAL_ID);
+    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ?? traits.subscriberId;
 
-  // Determine if this is an update operation (subscriber ID or external ID present)
-  const isUpdateOperation = !!subscriberId || !!externalId;
+  // Determine if this is an update operation (subscriber ID is present)
+  const isUpdateOperation = !!subscriberId;
 
   // Phone number is required for create operations, but optional for updates when subscriber ID is present
   if (!phone && !isUpdateOperation) {
@@ -177,7 +173,7 @@ const processRouterDest = async (
     try {
       let processedEvent: ProcessedEvent;
 
-      const messageType = event.message.type?.toLowerCase();
+      const messageType = getEventType(event.message);
 
       switch (messageType) {
         case EventType.IDENTIFY:

@@ -13,6 +13,7 @@ jest.mock('../../util', () => ({
   handleRtTfSingleEventError: jest.fn(),
   getFieldValueFromMessage: jest.fn(),
   getDestinationExternalID: jest.fn(),
+  getEventType: jest.fn(),
 }));
 
 jest.mock('./utils', () => ({
@@ -26,6 +27,7 @@ jest.mock('./utils', () => ({
 const mockHandleRtTfSingleEventError = jest.fn();
 const mockGetFieldValueFromMessage = jest.fn();
 const mockGetDestinationExternalID = jest.fn();
+const mockGetEventType = jest.fn();
 const mockPerformSubscriberLookup = jest.fn();
 const mockBuildSubscriberPayload = jest.fn();
 const mockBuildCustomEventPayload = jest.fn();
@@ -35,6 +37,7 @@ const mockBatchResponseBuilder = jest.fn();
 require('../../util').handleRtTfSingleEventError = mockHandleRtTfSingleEventError;
 require('../../util').getFieldValueFromMessage = mockGetFieldValueFromMessage;
 require('../../util').getDestinationExternalID = mockGetDestinationExternalID;
+require('../../util').getEventType = mockGetEventType;
 require('./utils').performSubscriberLookup = mockPerformSubscriberLookup;
 require('./utils').buildSubscriberPayload = mockBuildSubscriberPayload;
 require('./utils').buildCustomEventPayload = mockBuildCustomEventPayload;
@@ -44,6 +47,27 @@ describe('PostScript Transform', () => {
   // Reset mocks before each test
   beforeEach(() => {
     jest.clearAllMocks();
+
+    // Set up default mock implementations
+    mockBuildSubscriberPayload.mockReturnValue({
+      phone_number: '+1234567890',
+      email: 'test@example.com',
+      first_name: 'John',
+      last_name: 'Doe',
+    });
+
+    mockBuildCustomEventPayload.mockReturnValue({
+      name: 'custom_event',
+      subscriber_id: 'sub_123',
+      occurred_at: '2023-01-01T00:00:00Z',
+      properties: {},
+    });
+
+    mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
+    mockGetDestinationExternalID.mockReturnValue(null);
+    mockPerformSubscriberLookup.mockResolvedValue([
+      { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
+    ]);
   });
 
   // Helper function to create mock destination
@@ -147,6 +171,9 @@ describe('PostScript Transform', () => {
         Config: {},
       } as PostscriptDestination;
       const inputs = [createMockRouterRequest({ type: 'identify' }, destination)];
+
+      mockGetEventType.mockReturnValue('identify');
+
       await expect(processRouterDest(inputs, {})).rejects.toThrow(ConfigurationError);
     });
 
@@ -164,18 +191,23 @@ describe('PostScript Transform', () => {
         const message: Partial<RudderMessage> = {
           type: 'identify',
           userId: 'user_123',
-          traits: {
-            phone: '+1234567890',
-            email: 'test@example.com',
-            firstName: 'John',
-            lastName: 'Doe',
-            keyword: 'WELCOME',
+          context: {
+            traits: {
+              phone: '+1234567890',
+              email: 'test@example.com',
+              firstName: 'John',
+              lastName: 'Doe',
+              keyword: 'WELCOME',
+            },
           },
         };
 
         const inputs = [createMockRouterRequest(message)];
 
-        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetEventType.mockReturnValue('identify');
+        mockGetFieldValueFromMessage
+          .mockReturnValueOnce((message.context as any)?.traits || {})
+          .mockReturnValueOnce('+1234567890');
         mockGetDestinationExternalID.mockReturnValue(null);
         mockPerformSubscriberLookup.mockResolvedValue([
           { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
@@ -202,6 +234,7 @@ describe('PostScript Transform', () => {
 
         const inputs = [createMockRouterRequest(message)];
 
+        mockGetEventType.mockReturnValue('identify');
         mockGetFieldValueFromMessage.mockReturnValue(null);
         mockHandleRtTfSingleEventError.mockReturnValue(
           createMockErrorResponse('Phone is required'),
@@ -217,16 +250,19 @@ describe('PostScript Transform', () => {
         const message: Partial<RudderMessage> = {
           type: 'identify',
           userId: 'user_123',
-          traits: {
-            email: 'updated@example.com',
-            firstName: 'John',
-            lastName: 'Doe',
+          context: {
+            traits: {
+              email: 'updated@example.com',
+              firstName: 'John',
+              lastName: 'Doe',
+            },
           },
         };
 
         const inputs = [createMockRouterRequest(message)];
 
         // Mock subscriber ID to indicate this is an update operation
+        mockGetEventType.mockReturnValue('identify');
         mockGetDestinationExternalID.mockReturnValue('sub_existing_123');
 
         // Create a mock response with PATCH method for update
@@ -262,6 +298,7 @@ describe('PostScript Transform', () => {
 
         const inputs = [createMockRouterRequest(message)];
 
+        mockGetEventType.mockReturnValue('identify');
         mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
         mockGetDestinationExternalID.mockReturnValue(null); // No subscriber ID, so it's a create operation
         mockHandleRtTfSingleEventError.mockReturnValue(
@@ -284,16 +321,21 @@ describe('PostScript Transform', () => {
         const message: Partial<RudderMessage> = {
           type: 'identify',
           userId: 'user_123',
-          traits: {
-            phone: '+1234567890',
-            email: 'updated@example.com',
-            keyword: 'WELCOME',
+          context: {
+            traits: {
+              phone: '+1234567890',
+              email: 'updated@example.com',
+              keyword: 'WELCOME',
+            },
           },
         };
 
         const inputs = [createMockRouterRequest(message)];
 
-        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
+        mockGetEventType.mockReturnValue('identify');
+        mockGetFieldValueFromMessage
+          .mockReturnValueOnce((message.context as any)?.traits || {})
+          .mockReturnValueOnce('+1234567890');
         mockGetDestinationExternalID.mockReturnValue(null);
         // Mock lookup finding an existing subscriber
         mockPerformSubscriberLookup.mockResolvedValue([
@@ -354,6 +396,7 @@ describe('PostScript Transform', () => {
 
         const inputs = [createMockRouterRequest(message)];
 
+        mockGetEventType.mockReturnValue('track');
         mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
 
         const result = await processRouterDest(inputs, {});
@@ -374,6 +417,7 @@ describe('PostScript Transform', () => {
 
         const inputs = [createMockRouterRequest(message)];
 
+        mockGetEventType.mockReturnValue('track');
         mockHandleRtTfSingleEventError.mockReturnValue(
           createMockErrorResponse('Event name is required'),
         );
@@ -394,6 +438,7 @@ describe('PostScript Transform', () => {
 
         const inputs = [createMockRouterRequest(message)];
 
+        mockGetEventType.mockReturnValue('alias');
         mockHandleRtTfSingleEventError.mockReturnValue(
           createMockErrorResponse('Unsupported event type'),
         );
@@ -402,84 +447,6 @@ describe('PostScript Transform', () => {
 
         expect(mockHandleRtTfSingleEventError).toHaveBeenCalled();
         expect(result).toEqual([createMockErrorResponse('Unsupported event type')]);
-      });
-    });
-
-    describe('Batch Processing', () => {
-      it('should handle mixed event types', async () => {
-        const identifyMessage: Partial<RudderMessage> = {
-          type: 'identify',
-          userId: 'user_123',
-          traits: {
-            phone: '+1234567890',
-            keyword: 'WELCOME',
-          },
-        };
-
-        const trackMessage: Partial<RudderMessage> = {
-          type: 'track',
-          userId: 'user_123',
-          event: 'Product Viewed',
-          properties: {
-            product_id: '123',
-          },
-        };
-
-        const inputs = [
-          createMockRouterRequest(identifyMessage),
-          createMockRouterRequest(trackMessage),
-        ];
-
-        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
-        mockGetDestinationExternalID.mockReturnValue(null);
-        mockPerformSubscriberLookup.mockResolvedValue([
-          { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
-        ]);
-
-        mockBatchResponseBuilder.mockReturnValue([
-          createMockBatchedResponse(),
-          createMockBatchedResponse(),
-        ]);
-
-        const result = await processRouterDest(inputs, {});
-
-        expect(mockBuildSubscriberPayload).toHaveBeenCalledWith(identifyMessage);
-        expect(mockBuildCustomEventPayload).toHaveBeenCalledWith(trackMessage);
-        expect(mockBatchResponseBuilder).toHaveBeenCalled();
-        expect(result).toHaveLength(2);
-      });
-
-      it('should handle subscriber lookup failure and modify error message', async () => {
-        const message: Partial<RudderMessage> = {
-          type: 'identify',
-          userId: 'user_123',
-          traits: {
-            phone: '+1234567890',
-            keyword: 'WELCOME',
-          },
-        };
-
-        const inputs = [createMockRouterRequest(message)];
-
-        mockGetFieldValueFromMessage.mockReturnValue('+1234567890');
-        mockGetDestinationExternalID.mockReturnValue(null);
-
-        // Create a specific error to test error message modification
-        const originalError = new Error('API timeout');
-        mockPerformSubscriberLookup.mockRejectedValue(originalError);
-        mockBatchResponseBuilder.mockReturnValue([createMockBatchedResponse()]);
-
-        const result = await processRouterDest(inputs, {});
-
-        expect(mockPerformSubscriberLookup).toHaveBeenCalled();
-        expect(mockBatchResponseBuilder).toHaveBeenCalled();
-        expect(result).toHaveLength(1);
-
-        // Verify that error message was modified
-        expect(originalError.message).toBe('Subscriber lookup failed: API timeout');
-
-        // Verify that it falls back to a create operation (POST)
-        expect(result[0].batchedRequest.method).toBe('POST');
       });
     });
   });

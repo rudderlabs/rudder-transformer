@@ -1,7 +1,7 @@
 [
   {
-    "destKey": "custom_data.brands",
-    "sourceKeys": "properties.brands",
+    "destKey": "custom_data.brand",
+    "sourceKeys": ["properties.brands", "properties.brand"],
     "required": false,
     "metadata": {
       "type": "IsArray"

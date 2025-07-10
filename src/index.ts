@@ -27,9 +27,9 @@ configureBatchProcessingDefaults({
 });
 
 const app = new Koa();
+app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 addProfilingMiddleware(app);
 addStatMiddleware(app); // Track request time and status codes
-app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.

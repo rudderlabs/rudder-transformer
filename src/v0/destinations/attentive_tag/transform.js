@@ -191,9 +191,9 @@ const filterUserByConsents = (user, consents) => {
 
   const filteredUser = {};
   consents.forEach((consent) => {
-    if (consent.channel === 'email' && user.email) {
+    if (consent.channel?.toLowerCase() === 'email' && user.email) {
       filteredUser.email = user.email;
-    } else if (consent.channel === 'sms' && user.phone) {
+    } else if (consent.channel?.toLowerCase() === 'sms' && user.phone) {
       filteredUser.phone = user.phone;
     }
   });
@@ -214,7 +214,7 @@ const processSubscribeConsents = (filteredUser, signUpSourceId, apiKey) => {
   const subscribePayload = { user: filteredUser, signUpSourceId };
   const subscribeResponse = responseBuilder(subscribePayload, apiKey, '/subscriptions');
 
-  return subscribeResponse ? [subscribeResponse] : [];
+  return [subscribeResponse];
 };
 
 // Helper function to process unsubscribe consents
@@ -246,13 +246,19 @@ const processUnsubscribeConsents = (unsubscribeConsents, filteredUser, notificat
     '/subscriptions/unsubscribe',
   );
 
-  return unsubscribeResponse ? [unsubscribeResponse] : [];
+  return [unsubscribeResponse];
 };
 
 // Helper function to process subscription event track call
 const subscriptionResponseBuilder = (message, { Config }) => {
   const { apiKey, signUpSourceId } = Config;
   const userPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
+  // Validate user payload
+  if (!userPayload?.user?.email && !userPayload?.user?.phone) {
+    throw new InstrumentationError(
+      '[Attentive Tag]: Either email or phone is required for subscription event',
+    );
+  }
   const properties = get(message, 'properties') || {};
   const { channelConsents, signUpSourceId: propSignUpSourceId, notification } = properties;
 
@@ -260,9 +266,7 @@ const subscriptionResponseBuilder = (message, { Config }) => {
   const finalSignUpSourceId = propSignUpSourceId || signUpSourceId;
 
   if (!Array.isArray(channelConsents)) {
-    throw new InstrumentationError(
-      '[Attentive Tag]: No valid consent found for subscription event',
-    );
+    throw new InstrumentationError('[Attentive Tag]: Channel consents must be an array');
   }
 
   // Separate subscribe and unsubscribe consents
@@ -293,7 +297,7 @@ const subscriptionResponseBuilder = (message, { Config }) => {
   // Validate responses
   if (responses.length === 0) {
     throw new InstrumentationError(
-      '[Attentive Tag]: No valid consent or email/phone found for subscription event',
+      '[Attentive Tag]: No valid consent found for subscription event',
     );
   }
 

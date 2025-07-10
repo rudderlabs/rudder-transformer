@@ -675,10 +675,9 @@ export const validationTestData: ProcessorTestData[] = [
   {
     id: 'attentive-tag-validation-processor-test-7',
     name: 'attentive_tag',
-    description: 'Subscription event track call - with no valid sms or email channel consent',
-    scenario: 'Track event for subscribing to no valid sms or email channel consent',
-    successCriteria:
-      'Should reject event with error message about no valid sms or email channel consent',
+    description: 'Subscription event track call - with no valid channel consent',
+    scenario: 'Track event for subscribing to no valid channel consent',
+    successCriteria: 'Should reject event with error message about no valid channel consent',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -730,7 +729,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             metadata,
             statusCode: 400,
-            error: '[Attentive Tag]: No valid consent or email/phone found for subscription event',
+            error: '[Attentive Tag]: No valid consent found for subscription event',
             statTags: statTags,
           },
         ],
@@ -741,9 +740,9 @@ export const validationTestData: ProcessorTestData[] = [
   {
     id: 'attentive-tag-validation-processor-test-8',
     name: 'attentive_tag',
-    description: 'Subscription event track call - with no valid channel consent',
-    scenario: 'Track event for subscribing to no valid channel consent',
-    successCriteria: 'Should reject event with error message about no valid channel consent',
+    description: 'Subscription event track call - with invalid channel consents',
+    scenario: 'Track event for subscribing to invalid channel consents',
+    successCriteria: 'Should reject event with error message about invalid channel consents',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -793,7 +792,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             metadata,
             statusCode: 400,
-            error: '[Attentive Tag]: No valid consent found for subscription event',
+            error: '[Attentive Tag]: Channel consents must be an array',
             statTags: statTags,
           },
         ],
@@ -848,7 +847,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             metadata,
             statusCode: 400,
-            error: '[Attentive Tag]: No valid consent or email/phone found for subscription event',
+            error: '[Attentive Tag]: Either email or phone is required for subscription event',
             statTags: statTags,
           },
         ],

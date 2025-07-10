@@ -75,6 +75,13 @@ function init() {
 }
 
 function notify(err, context, metadata) {
+  logger.debug('error occurred', {
+    error: err.message,
+    stack: err.stack,
+    metadata,
+    context,
+  });
+
   if (!bugsnagClient) return;
 
   const isDeniedErrType = errorTypesDenyList.some((errType) => err instanceof errType);
@@ -84,6 +91,13 @@ function notify(err, context, metadata) {
     stackTraceParser.parse(err.stack)?.[0]?.file?.includes(denyPath),
   );
   if (isDeniedErrPath) return;
+
+  logger.error('Unknown error occurred', {
+    error: err.message,
+    stack: err.stack,
+    metadata,
+    context,
+  });
 
   bugsnagClient.notify(err, (event) => {
     event.addMetadata('metadata', { ...metadata, opContext: context });

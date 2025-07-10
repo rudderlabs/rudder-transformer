@@ -75,6 +75,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'tiktok_ads',
   'bluecore',
   'postscript',
+  'attentive_tag',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = ['googlesheets'];

@@ -25,10 +25,19 @@ const ConfigCategory = {
   },
 };
 
+const CHANNEL_MAPPING = {
+  sms: 'TEXT',
+  email: 'EMAIL',
+};
+
+const mapChannelToSubscriptionType = (channel) =>
+  CHANNEL_MAPPING[channel?.toLowerCase()] || 'EMAIL';
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
   BASE_URL,
   ConfigCategory,
   mappingConfig,
+  mapChannelToSubscriptionType,
 };

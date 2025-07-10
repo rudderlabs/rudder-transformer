@@ -1,7 +1,12 @@
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const { ConfigCategory, mappingConfig, BASE_URL } = require('./config');
+const {
+  ConfigCategory,
+  mappingConfig,
+  BASE_URL,
+  mapChannelToSubscriptionType,
+} = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -203,13 +208,13 @@ const filterUserByConsents = (user, consents) => {
 
 // Helper function to process subscribe consents
 const processSubscribeConsents = (filteredUser, signUpSourceId, apiKey) => {
-  if (Object.keys(filteredUser).length === 0) return [];
-
   if (!signUpSourceId) {
     throw new ConfigurationError(
       '[Attentive Tag]: SignUp Source Id is required for subscribe event',
     );
   }
+
+  if (Object.keys(filteredUser).length === 0) return [];
 
   const subscribePayload = { user: filteredUser, signUpSourceId };
   const subscribeResponse = responseBuilder(subscribePayload, apiKey, '/subscriptions');
@@ -228,7 +233,7 @@ const processUnsubscribeConsents = (unsubscribeConsents, filteredUser, notificat
     .filter((consent) => consent.type)
     .map((consent) => ({
       type: consent.type,
-      channel: consent.channel === 'sms' ? 'TEXT' : 'EMAIL',
+      channel: mapChannelToSubscriptionType(consent.channel),
     }));
 
   if (subscriptions.length > 0) {

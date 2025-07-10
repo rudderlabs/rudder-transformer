@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.1...v1.104.2) (2025-07-10)
+
+
+### Bug Fixes
+
+* add graceful shutdown for uncaught exceptions in bugsnag ([#4477](https://github.com/rudderlabs/rudder-transformer/issues/4477)) ([3c04f74](https://github.com/rudderlabs/rudder-transformer/commit/3c04f740a874581a0bdb70553c258b09c427b399))
+
 ### [1.104.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.0...v1.104.1) (2025-07-09)
 
 

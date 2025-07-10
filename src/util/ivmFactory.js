@@ -14,7 +14,6 @@ const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
-const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
@@ -28,6 +27,181 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
   });
   await module.instantiate(contextInternal, () => {});
   return module;
+}
+
+/**
+ * Sets up the jail/global, fetch, fetchV2, geolocation, rsSecrets, and log functions in the isolate context.
+ * Does not set up metadata.
+ * @param {ivm.Context} context
+ * @param {ivm.Reference} jail
+ * @param {Object} options - { secrets, testMode, trTags, logs }
+ */
+async function setupIvmJail(jail, { secrets, testMode, trTags, logs }) {
+  await jail.set('global', jail.derefInto());
+  await jail.set('_ivm', ivm);
+  await jail.set(
+    '_fetch',
+    new ivm.Reference(async (resolve, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetchWithDnsWrapper(trTags, ...args);
+        const data = await res.json();
+        stats.timing('fetch_call_duration', fetchStartTime, trTags);
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
+      } catch (error) {
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+      }
+    }),
+  );
+  await jail.set(
+    '_fetchV2',
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const fetchStartTime = new Date();
+        const res = await fetchWithDnsWrapper(trTags, ...args);
+        const headersContent = {};
+        res.headers.forEach((value, header) => {
+          headersContent[header] = value;
+        });
+        const data = {
+          url: res.url,
+          status: res.status,
+          headers: headersContent,
+          body: await res.text(),
+        };
+        try {
+          data.body = JSON.parse(data.body);
+        } catch (e) {}
+        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
+      } catch (error) {
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      }
+    }),
+  );
+  await jail.set(
+    '_geolocation',
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const geoStartTime = new Date();
+        if (args.length < 1) {
+          throw new Error('ip address is required');
+        }
+        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
+        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
+          timeout: GEOLOCATION_TIMEOUT_IN_MS,
+        });
+        if (res.status !== 200) {
+          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
+        }
+        const geoData = await res.json();
+        stats.timing('geo_call_duration', geoStartTime, trTags);
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
+      } catch (error) {
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      }
+    }),
+  );
+  await jail.set('_rsSecrets', function (...args) {
+    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    return secrets[args[0]];
+  });
+  await jail.set('log', function (...args) {
+    if (testMode) {
+      let logString = 'Log:';
+      args.forEach((arg) => {
+        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
+      });
+      logs.push(logString);
+    }
+  });
+}
+
+/**
+ * Returns the bootstrap script string for ivm context.
+ * @param {Object} options
+ *   - includeMetadata: boolean (whether to include metadata function)
+ *   - forwardReject: boolean (whether to include reject in forwardMainPromise)
+ */
+function getIvmBootstrapScriptString({ includeMetadata = false, forwardReject = false } = {}) {
+  return (
+    'new ' +
+    `
+    function() {
+      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
+      // only place in the context with a reference to the module. The 'ivm' module is very powerful
+      // so you should not put it in the hands of untrusted code.
+      let ivm = _ivm;
+      delete _ivm;
+
+      // Now we create the other half of the 'log' function in this isolate. We'll just take every
+      // argument, create an external copy of it and pass it along to the log function above.
+      let fetch = _fetch;
+      delete _fetch;
+      global.fetch = function(...args) {
+        return new Promise(resolve => {
+          fetch.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let fetchV2 = _fetchV2;
+      delete _fetchV2;
+      global.fetchV2 = function(...args) {
+        return new Promise((resolve${forwardReject ? ', reject' : ''}) => {
+          fetchV2.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            ${forwardReject ? 'new ivm.Reference(reject),' : ''}
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let geolocation = _geolocation;
+      delete _geolocation;
+      global.geolocation = function(...args) {
+        return new Promise((resolve, reject) => {
+          geolocation.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let rsSecrets = _rsSecrets;
+      delete _rsSecrets;
+      global.rsSecrets = function(...args) {
+        return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
+      };
+
+      ${includeMetadata ? `// metadata function will be set outside in the context` : ''}
+
+      return new ivm.Reference(function forwardMainPromise(
+        fnRef,
+        resolve,${forwardReject ? '\n        reject,' : ''}
+        events
+        ) {
+          const derefMainFunc = fnRef.deref();
+          Promise.resolve(derefMainFunc(events))
+          .then(value => {
+            resolve.applyIgnored(undefined, [
+              new ivm.ExternalCopy(value).copyInto()
+            ]);
+          })
+          .catch(error => {
+            ${forwardReject ? 'reject.applyIgnored(undefined, [new ivm.ExternalCopy(error.message).copyInto()]);' : 'resolve.applyIgnored(undefined, [new ivm.ExternalCopy(error.message).copyInto()]);'}
+          });
+        });
+      }
+    `
+  );
 }
 
 async function createIvm(
@@ -208,82 +382,7 @@ async function createIvm(
 
   const jail = context.global;
 
-  // This make the global object available in the context as 'global'. We use 'derefInto()' here
-  // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-  await jail.set('global', jail.derefInto());
-
-  // The entire ivm module is transferable! We transfer the module to the new isolate so that we
-  // have access to the library from within the isolate.
-  await jail.set('_ivm', ivm);
-  await jail.set(
-    '_fetch',
-    new ivm.Reference(async (resolve, ...args) => {
-      try {
-        const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_fetchV2',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      try {
-        const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const headersContent = {};
-        res.headers.forEach((value, header) => {
-          headersContent[header] = value;
-        });
-        const data = {
-          url: res.url,
-          status: res.status,
-          headers: headersContent,
-          body: await res.text(),
-        };
-
-        try {
-          data.body = JSON.parse(data.body);
-        } catch (e) {}
-
-        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_geolocation',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      try {
-        const geoStartTime = new Date();
-        if (args.length < 1) {
-          throw new Error('ip address is required');
-        }
-        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
-        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
-          timeout: GEOLOCATION_TIMEOUT_IN_MS,
-        });
-        if (res.status !== 200) {
-          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
-        }
-        const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      }
-    }),
-  );
+  await setupIvmJail(jail, { secrets, testMode, trTags, logs });
 
   await jail.set('_getCredential', function (key) {
     if (isNil(credentials) || !isObject(credentials)) {
@@ -299,113 +398,12 @@ async function createIvm(
     return credentials[key];
   });
 
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
-  });
-
-  await jail.set('log', function (...args) {
-    if (testMode) {
-      let logString = 'Log:';
-      args.forEach((arg) => {
-        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      });
-      logs.push(logString);
-    }
-  });
-
   await jail.set('extractStackTrace', function (trace, stringLiterals) {
     return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
   const bootstrap = await isolate.compileScript(
-    'new ' +
-      `
-    function() {
-      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
-      // only place in the context with a reference to the module. The 'ivm' module is very powerful
-      // so you should not put it in the hands of untrusted code.
-      let ivm = _ivm;
-      delete _ivm;
-
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
-      let fetch = _fetch;
-      delete _fetch;
-      global.fetch = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
-        return new Promise(resolve => {
-          fetch.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
-
-      let fetchV2 = _fetchV2;
-      delete _fetchV2;
-      global.fetchV2 = function(...args) {
-        return new Promise((resolve,reject) => {
-          fetchV2.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            new ivm.Reference(reject),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
-
-      let geolocation = _geolocation;
-      delete _geolocation;
-      global.geolocation = function(...args) {
-        return new Promise((resolve, reject) => {
-          geolocation.applyIgnored(undefined, [
-            new ivm.Reference(resolve),
-            new ivm.Reference(reject),
-            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-          ]);
-        });
-      };
-      
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
-      };
-
-      let getCredential = _getCredential;
-      delete _getCredential;
-      global.getCredential = function(...args) {
-        const key = args[0];
-        return getCredential(new ivm.ExternalCopy(key).copyInto());
-      };
-
-      return new ivm.Reference(function forwardMainPromise(
-        fnRef,
-        resolve,
-        reject,
-        events
-        ){
-          const derefMainFunc = fnRef.deref();
-          Promise.resolve(derefMainFunc(events))
-          .then(value => {
-            resolve.applyIgnored(undefined, [
-              new ivm.ExternalCopy(value).copyInto()
-            ]);
-          })
-          .catch(error => {
-            reject.applyIgnored(undefined, [
-              new ivm.ExternalCopy(error.message).copyInto()
-            ]);
-          });
-        });
-      }
-
-        `,
+    getIvmBootstrapScriptString({ forwardReject: true }),
   );
 
   // Now we can execute the script we just compiled:
@@ -511,4 +509,7 @@ module.exports = {
   getFactory,
   compileUserLibrary,
   SUPPORTED_FUNC_NAMES,
+  setupIvmJail,
+  ISOLATE_VM_MEMORY,
+  getIvmBootstrapScriptString,
 };

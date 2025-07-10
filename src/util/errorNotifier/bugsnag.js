@@ -17,6 +17,7 @@ const {
   UnauthorizedError,
   NetworkInstrumentationError,
 } = require('@rudderstack/integrations-lib');
+const { inspect } = require('util');
 const { FilteredEventsError } = require('../../v0/util/errorTypes');
 const logger = require('../../logger');
 const pkg = require('../../../package.json');
@@ -67,6 +68,14 @@ function init() {
       },
       onError(event) {
         event.severity = 'error';
+      },
+      onUncaughtException(err) {
+        logger.error('Uncaught exception occurred, initiating graceful shutdown', {
+          error: err.message || inspect(err),
+          stack: err.stack,
+        });
+        // Emit SIGTERM for graceful shutdown instead of process.exit(1)
+        process.emit('SIGTERM');
       },
     });
   } else {

@@ -2,6 +2,15 @@ import { Middleware } from 'koa';
 import logger from '../logger';
 
 /**
+ * Determines if an error should be ignored (not logged)
+ * @param error - The error to check
+ * @returns true if the error should be ignored, false otherwise
+ */
+function shouldIgnoreError(error: unknown): boolean {
+  return error instanceof Error && error.constructor.name === 'BadRequestError';
+}
+
+/**
  * Error handling middleware that captures any errors thrown in the middleware stack
  * and logs them using the logger.
  *
@@ -15,6 +24,16 @@ export function errorHandlerMiddleware(): Middleware {
     try {
       await next();
     } catch (error: unknown) {
+      if (shouldIgnoreError(error)) {
+        logger.debug('Ignoring aborted request error', {
+          error: error instanceof Error ? error.message : String(error),
+        });
+        // Set appropriate response for aborted requests
+        ctx.status = 400;
+        ctx.body = { error: 'Request aborted' };
+        return;
+      }
+
       // Log the error with context information
       logger.error('Unhandled error in middleware stack', {
         error: error instanceof Error ? error.message : String(error),

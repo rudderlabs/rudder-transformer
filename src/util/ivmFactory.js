@@ -226,7 +226,7 @@ async function createIvm(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-        logger.info(error);
+        logger.debug('Error fetching data', error);
       }
     }),
   );
@@ -251,7 +251,7 @@ async function createIvm(
         try {
           data.body = JSON.parse(data.body);
         } catch (e) {
-          logger.info(e);
+          logger.debug('Error parsing JSON', e);
         }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, trTags);

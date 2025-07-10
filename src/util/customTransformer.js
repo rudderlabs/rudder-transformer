@@ -15,7 +15,6 @@ const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS
 async function runUserTransform(
   events,
   code,
-  secrets,
   eventsMetadata,
   transformationId,
   workspaceId,
@@ -45,7 +44,7 @@ async function runUserTransform(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-        logger.info(error);
+        logger.debug('Error fetching data', error);
       }
     }),
   );
@@ -70,7 +69,7 @@ async function runUserTransform(
         try {
           data.body = JSON.parse(data.body);
         } catch (e) {
-          logger.info(e);
+          logger.debug('Error parsing JSON', e);
         }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
@@ -336,7 +335,6 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
-          res.secrets || {},
           eventsMetadata,
           res.id,
           res.workspaceId,

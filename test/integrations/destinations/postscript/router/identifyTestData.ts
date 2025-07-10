@@ -72,8 +72,8 @@ export const identifyTestData: RouterTestData[] = [
                     origin: 'other',
                     tags: ['premium', 'customer'],
                     properties: {
-                      custom_string_property: 'customValue',
-                      custom_int_property: 101,
+                      customStringProperty: 'customValue',
+                      customIntProperty: 101,
                     },
                   },
                   JSON_ARRAY: {},

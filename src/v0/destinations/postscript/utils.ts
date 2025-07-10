@@ -6,7 +6,8 @@
  * and API communication helpers.
  */
 
-import { httpGET } from '../../../adapters/network';
+import { handleHttpRequest } from '../../../adapters/network';
+import logger from '../../../logger';
 import {
   PostscriptSubscriberPayload,
   PostscriptCustomEventPayload,
@@ -26,6 +27,8 @@ import {
   defaultRequestConfig,
   getSuccessRespEvents,
   constructPayload,
+  extractCustomFields,
+  generateExclusionList,
 } from '../../util';
 import { RudderMessage } from '../../../types';
 
@@ -74,16 +77,13 @@ export const validateRequiredFields = (message: RudderMessage, requiredFields: s
  */
 export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscriberPayload => {
   const payload: PostscriptSubscriberPayload = {};
-  const contextTraits = (message.context as any)?.traits ?? {};
-  const messageTraits = message.traits ?? {};
 
-  // Combine traits from both context and message level, with context taking priority
-  const allTraits = { ...messageTraits, ...contextTraits };
+  // Use getFieldValueFromMessage to extract traits consistently with other parts of the codebase
+  const allTraits = getFieldValueFromMessage(message, 'traits') || {};
 
   // Check if we have a subscriber ID (meaning this is an update operation)
   const subscriberId =
-    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ??
-    contextTraits.subscriberId;
+    getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID) ?? allTraits.subscriberId;
   const isUpdate = !!subscriberId;
 
   // Use constructPayload to map fields from the JSON configuration
@@ -113,33 +113,40 @@ export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscr
   }
 
   // Extract custom properties from traits (excluding mapped fields)
-  const customProperties: Record<string, any> = {};
-  const mappedSourceKeys = new Set<string>();
+  const exclusionFields = generateExclusionList(subscriberMapping);
 
-  // Collect all mapped source keys (handling both string and array sourceKeys)
-  subscriberMapping.forEach((mapping: any) => {
+  // Create a comprehensive exclusion list for traits extraction
+  const traitsExclusions = new Set();
+
+  // Add all field names from the mapping configuration
+  subscriberMapping.forEach((mapping) => {
     if (Array.isArray(mapping.sourceKeys)) {
-      mapping.sourceKeys.forEach((key: string) => {
-        // Extract the trait key from paths like "traits.keyword" or "context.traits.keyword"
-        const traitKey = key.replace(/^(traits\.|context\.traits\.)/, '');
-        mappedSourceKeys.add(traitKey);
+      mapping.sourceKeys.forEach((sourceKey) => {
+        if (sourceKey.startsWith('traits.')) {
+          // Extract the field name after 'traits.'
+          traitsExclusions.add(sourceKey.replace('traits.', ''));
+        }
       });
-    } else if (typeof mapping.sourceKeys === 'string') {
-      mappedSourceKeys.add(mapping.sourceKeys);
+    } else if (mapping.sourceFromGenericMap) {
+      // For generic map fields, exclude the sourceKeys directly
+      traitsExclusions.add(mapping.sourceKeys);
     }
   });
 
-  Object.entries(allTraits).forEach(([key, value]) => {
-    if (!mappedSourceKeys.has(key) && value !== undefined && value !== null) {
-      // Convert camelCase to snake_case for custom properties
-      const snakeCaseKey = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-      customProperties[snakeCaseKey] = value;
-    }
-  });
+  // Convert Set to Array for extractCustomFields
+  const allExclusions = [...exclusionFields, ...Array.from(traitsExclusions)];
+
+  const customPropertiesPayload = {};
+  extractCustomFields(
+    message,
+    customPropertiesPayload,
+    ['traits', 'context.traits'],
+    allExclusions,
+  );
 
   // Add custom properties if any exist
-  if (Object.keys(customProperties).length > 0) {
-    payload.properties = customProperties;
+  if (Object.keys(customPropertiesPayload).length > 0) {
+    payload.properties = customPropertiesPayload;
   }
 
   return removeUndefinedAndNullValues(payload);
@@ -163,9 +170,9 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   const subscriberId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID);
   const externalId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.EXTERNAL_ID);
 
-  // Get email and phone from context traits (don't fallback to external IDs)
-  const contextTraits = (message.context as any)?.traits ?? {};
-  const { email, phone } = contextTraits;
+  // Use getFieldValueFromMessage to extract traits consistently
+  const traits = getFieldValueFromMessage(message, 'traits') || {};
+  const { email, phone } = traits;
 
   // Add subscriber identification (prefer subscriber_id, then external_id, then userId as fallback)
   if (subscriberId) {
@@ -180,10 +187,11 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   if (phone) payload.phone = phone;
 
   // Handle timestamp conversion (prefer originalTimestamp, then timestamp)
-  if (message.originalTimestamp) {
-    payload.occurred_at = new Date(message.originalTimestamp).toISOString();
-  } else if (message.timestamp) {
-    payload.occurred_at = new Date(message.timestamp).toISOString();
+  const timestamp =
+    getFieldValueFromMessage(message, 'originalTimestamp') ||
+    getFieldValueFromMessage(message, 'timestamp');
+  if (timestamp) {
+    payload.occurred_at = new Date(timestamp).toISOString();
   }
 
   // Extract custom properties from event properties
@@ -239,7 +247,8 @@ export const performSubscriberLookup = async (
     const lookupUrl = `${SUBSCRIBERS_ENDPOINT}?${params.toString()}`;
 
     // Perform batched API call
-    const response = await httpGET(
+    const { processedResponse } = await handleHttpRequest(
+      'GET',
       lookupUrl,
       {
         headers,
@@ -254,7 +263,7 @@ export const performSubscriberLookup = async (
     );
 
     // Parse response and map to lookup results
-    const lookupData = response.response as PostscriptLookupResponse;
+    const lookupData = processedResponse.response as PostscriptLookupResponse;
     const subscribers = lookupData.data || [];
 
     // Create lookup results mapping each event to subscriber existence
@@ -272,13 +281,13 @@ export const performSubscriberLookup = async (
       };
     });
   } catch (error) {
-    // Return default results (all non-existent) to allow processing to continue
-    // This ensures the transformation doesn't fail even if the lookup API is unavailable
-    if (error instanceof Error) {
-      error.message = `Subscriber batch lookup failed: ${error.message}`;
-    }
+    // Log the error for debugging but continue with fallback behavior
+    logger.warn('PostScript subscriber lookup failed:', error);
+
+    // On error, return all events as non-existing subscribers
     return events.map((event) => ({
       exists: false,
+      subscriberId: undefined,
       identifierValue: event.identifierValue ?? '',
       identifierType: 'phone' as const,
     }));

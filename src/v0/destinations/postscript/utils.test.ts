@@ -36,10 +36,12 @@ jest.mock('../../util', () => ({
     },
   })),
   getSuccessRespEvents: jest.fn(),
+  generateExclusionList: jest.fn(),
+  extractCustomFields: jest.fn(),
 }));
 
 jest.mock('../../../adapters/network', () => ({
-  httpGET: jest.fn(),
+  handleHttpRequest: jest.fn(),
 }));
 
 // Import mocked modules
@@ -48,8 +50,10 @@ import {
   getDestinationExternalID,
   constructPayload,
   getSuccessRespEvents,
+  generateExclusionList,
+  extractCustomFields,
 } from '../../util';
-import { httpGET } from '../../../adapters/network';
+import { handleHttpRequest } from '../../../adapters/network';
 
 const mockGetFieldValueFromMessage = getFieldValueFromMessage as jest.MockedFunction<
   typeof getFieldValueFromMessage
@@ -58,15 +62,49 @@ const mockGetDestinationExternalID = getDestinationExternalID as jest.MockedFunc
   typeof getDestinationExternalID
 >;
 const mockConstructPayload = constructPayload as jest.MockedFunction<typeof constructPayload>;
-const mockHttpGET = httpGET as jest.MockedFunction<typeof httpGET>;
+const mockHandleHttpRequest = handleHttpRequest as jest.MockedFunction<typeof handleHttpRequest>;
 const mockGetSuccessRespEvents = getSuccessRespEvents as jest.MockedFunction<
   typeof getSuccessRespEvents
+>;
+const mockGenerateExclusionList = generateExclusionList as jest.MockedFunction<
+  typeof generateExclusionList
+>;
+const mockExtractCustomFields = extractCustomFields as jest.MockedFunction<
+  typeof extractCustomFields
 >;
 
 describe('PostScript Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.POSTSCRIPT_PARTNER_API_KEY = 'partner_key_123';
+
+    // Set up default mocks
+    mockGenerateExclusionList.mockReturnValue([
+      'email',
+      'phone',
+      'firstName',
+      'lastName',
+      'traits.keyword',
+      'context.traits.keyword',
+    ]);
+
+    mockExtractCustomFields.mockImplementation((message, payload, paths, exclusions) => {
+      // Mock implementation that adds sample custom fields
+      payload.customField = 'customValue';
+    });
+
+    mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+      if (path === 'traits') {
+        return message.traits || {};
+      }
+      if (path === 'originalTimestamp') {
+        return message.originalTimestamp;
+      }
+      if (path === 'timestamp') {
+        return message.timestamp;
+      }
+      return null;
+    });
   });
 
   describe('buildHeaders', () => {
@@ -153,6 +191,17 @@ describe('PostScript Utils', () => {
         first_name: 'John',
         last_name: 'Doe',
       });
+
+      // Mock generateExclusionList
+      mockGenerateExclusionList.mockReturnValue(['email', 'phone', 'firstName', 'lastName']);
+
+      // Mock getFieldValueFromMessage for traits
+      mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+        if (path === 'traits') {
+          return message.traits;
+        }
+        return null;
+      });
     });
 
     it('should build subscriber payload for create operation', () => {
@@ -176,9 +225,18 @@ describe('PostScript Utils', () => {
 
       mockGetDestinationExternalID.mockReturnValue(null); // No subscriber ID (create operation)
 
+      // Mock extractCustomFields to populate custom properties
+      mockExtractCustomFields.mockImplementation((message, payload, sourcePaths, exclusions) => {
+        payload.company_name = 'Test Corp';
+        payload.custom_field = 'customValue';
+        payload.keyword = 'WELCOME';
+      });
+
       const payload = buildSubscriberPayload(message);
 
       expect(mockConstructPayload).toHaveBeenCalled();
+      expect(mockGenerateExclusionList).toHaveBeenCalled();
+      expect(mockExtractCustomFields).toHaveBeenCalled();
       expect(payload).toEqual({
         phone_number: '+1234567890',
         email: 'test@example.com',
@@ -187,6 +245,7 @@ describe('PostScript Utils', () => {
         properties: {
           company_name: 'Test Corp',
           custom_field: 'customValue',
+          keyword: 'WELCOME',
         },
       });
     });
@@ -212,6 +271,11 @@ describe('PostScript Utils', () => {
         email: 'updated@example.com',
       });
 
+      // Mock extractCustomFields to not add any custom properties
+      mockExtractCustomFields.mockImplementation(() => {
+        // No custom properties for this test
+      });
+
       const payload = buildSubscriberPayload(message);
 
       expect(payload).not.toHaveProperty('subscriber_id'); // Should be removed for updates
@@ -227,7 +291,10 @@ describe('PostScript Utils', () => {
       const message: RudderMessage = {
         type: 'identify',
         userId: 'user123',
-        traits: { email: 'test@example.com' },
+        traits: {
+          email: 'test@example.com',
+          customField: 'customValue',
+        },
       } as RudderMessage;
 
       mockGetDestinationExternalID
@@ -239,12 +306,20 @@ describe('PostScript Utils', () => {
         email: 'test@example.com',
       });
 
+      // Mock extractCustomFields to add custom properties
+      mockExtractCustomFields.mockImplementation((message, payload, sourcePaths, exclusions) => {
+        payload.customField = 'customValue';
+      });
+
       const payload = buildSubscriberPayload(message);
 
       expect(payload).toEqual({
         email: 'test@example.com',
         external_id: 'ext_123',
         shopify_customer_id: 456,
+        properties: {
+          customField: 'customValue',
+        },
       });
     });
 
@@ -269,6 +344,12 @@ describe('PostScript Utils', () => {
         email: 'test@example.com',
       });
 
+      // Mock extractCustomFields to add the expected custom properties
+      mockExtractCustomFields.mockImplementation((message, payload, sourcePaths, exclusions) => {
+        payload.custom_field1 = 'value1';
+        payload.custom_field2 = 'value2';
+      });
+
       const payload = buildSubscriberPayload(message);
 
       expect(payload).toEqual({
@@ -282,6 +363,11 @@ describe('PostScript Utils', () => {
   });
 
   describe('buildCustomEventPayload', () => {
+    beforeEach(() => {
+      // Reset mocks for buildCustomEventPayload tests
+      jest.clearAllMocks();
+    });
+
     it('should build custom event payload with subscriber ID', () => {
       const message: RudderMessage = {
         type: 'track',
@@ -297,6 +383,13 @@ describe('PostScript Utils', () => {
       mockGetDestinationExternalID
         .mockReturnValueOnce('sub_123') // subscriber_id
         .mockReturnValueOnce(null); // external_id
+
+      mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+        if (path === 'traits') return {};
+        if (path === 'originalTimestamp') return null;
+        if (path === 'timestamp') return '2025-01-15T10:00:00.000Z';
+        return null;
+      });
 
       const payload = buildCustomEventPayload(message);
 
@@ -331,6 +424,17 @@ describe('PostScript Utils', () => {
         .mockReturnValueOnce(null) // subscriber_id
         .mockReturnValueOnce('ext_456'); // external_id
 
+      mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+        if (path === 'traits')
+          return {
+            email: 'test@example.com',
+            phone: '+1234567890',
+          };
+        if (path === 'originalTimestamp') return null;
+        if (path === 'timestamp') return null;
+        return null;
+      });
+
       const payload = buildCustomEventPayload(message);
 
       expect(payload).toEqual({
@@ -358,6 +462,13 @@ describe('PostScript Utils', () => {
         .mockReturnValueOnce(null) // subscriber_id
         .mockReturnValueOnce(null); // external_id
 
+      mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+        if (path === 'traits') return {};
+        if (path === 'originalTimestamp') return null;
+        if (path === 'timestamp') return null;
+        return null;
+      });
+
       const payload = buildCustomEventPayload(message);
 
       expect(payload).toEqual({
@@ -376,6 +487,13 @@ describe('PostScript Utils', () => {
       } as RudderMessage;
 
       mockGetDestinationExternalID.mockReturnValue(null);
+
+      mockGetFieldValueFromMessage.mockImplementation((message, path) => {
+        if (path === 'traits') return {};
+        if (path === 'originalTimestamp') return null;
+        if (path === 'timestamp') return null;
+        return null;
+      });
 
       const payload = buildCustomEventPayload(message);
 
@@ -410,23 +528,26 @@ describe('PostScript Utils', () => {
 
     it('should perform successful subscriber lookup', async () => {
       const mockResponse = {
-        success: true,
-        response: {
-          data: [
-            {
-              id: 'sub_123',
-              phone_number: '+1234567890',
-              email: 'test1@example.com',
-            },
-          ],
+        httpResponse: Promise.resolve({}),
+        processedResponse: {
+          response: {
+            data: [
+              {
+                id: 'sub_123',
+                phone_number: '+1234567890',
+                email: 'test1@example.com',
+              },
+            ],
+          },
         },
       };
 
-      mockHttpGET.mockResolvedValueOnce(mockResponse);
+      mockHandleHttpRequest.mockResolvedValueOnce(mockResponse);
 
       const results = await performSubscriberLookup(mockEvents, 'test_api_key');
 
-      expect(mockHttpGET).toHaveBeenCalledWith(
+      expect(mockHandleHttpRequest).toHaveBeenCalledWith(
+        'GET',
         'https://api.postscript.io/api/v2/subscribers?phone_in=%2B1234567890%2C%2B0987654321&limit=100',
         {
           headers: {
@@ -463,13 +584,15 @@ describe('PostScript Utils', () => {
 
     it('should handle empty subscriber lookup response', async () => {
       const mockResponse = {
-        success: true,
-        response: {
-          data: [],
+        httpResponse: Promise.resolve({}),
+        processedResponse: {
+          response: {
+            data: [],
+          },
         },
       };
 
-      mockHttpGET.mockResolvedValueOnce(mockResponse);
+      mockHandleHttpRequest.mockResolvedValueOnce(mockResponse);
 
       const results = await performSubscriberLookup(mockEvents, 'test_api_key');
 
@@ -480,7 +603,7 @@ describe('PostScript Utils', () => {
     });
 
     it('should handle lookup API error', async () => {
-      mockHttpGET.mockRejectedValueOnce(new Error('API Error'));
+      mockHandleHttpRequest.mockRejectedValueOnce(new Error('API Error'));
 
       const results = await performSubscriberLookup(mockEvents, 'test_api_key');
 
@@ -504,7 +627,7 @@ describe('PostScript Utils', () => {
 
       const results = await performSubscriberLookup(eventsWithoutContact, 'test_api_key');
 
-      expect(mockHttpGET).not.toHaveBeenCalled();
+      expect(mockHandleHttpRequest).not.toHaveBeenCalled();
       expect(results).toEqual([]);
     });
   });

@@ -219,10 +219,6 @@ const processRouterDest = async (
   const identifyEvents = processedEvents.filter(
     (event) => event.eventType === 'identify' && event.subscriberLookupNeeded,
   );
-  const trackEvents = processedEvents.filter((event) => event.eventType === 'track');
-  const updateEvents = processedEvents.filter(
-    (event) => event.eventType === 'identify' && !event.subscriberLookupNeeded,
-  );
 
   // Perform subscriber lookup for identify events to determine create vs update operations
   let lookupResults: SubscriberLookupResult[] = [];
@@ -264,8 +260,14 @@ const processRouterDest = async (
     };
   });
 
-  // Combine all processed events for batching
-  const allProcessedEvents = [...updatedIdentifyEvents, ...updateEvents, ...trackEvents];
+  // Create a map for quick lookup of updated events by original event reference
+  const updatedEventMap = new Map();
+  identifyEvents.forEach((originalEvent, index) => {
+    updatedEventMap.set(originalEvent, updatedIdentifyEvents[index]);
+  });
+
+  // Preserve original event order by mapping each processed event to its updated version
+  const allProcessedEvents = processedEvents.map((event) => updatedEventMap.get(event) || event);
 
   // Create batched responses using the utility function
   const batchedResponses = batchResponseBuilder(

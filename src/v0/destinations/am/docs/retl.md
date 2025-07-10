@@ -1,72 +1,94 @@
 # Amplitude RETL Functionality
 
-## RETL Support Status
+## Is RETL supported at all?
 
-Based on the code analysis, the Amplitude destination does not have explicit RETL-specific logic like some other destinations (e.g., Braze). There is no specific handling for events marked with `context.mappedToDestination = true` flag or for the `record` event type.
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-## VDM v2 Support
+The Amplitude destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
 
-This destination doesn't support VDM v2, as there is no support for the `record` event type in the `supportedMessageTypes` configuration. The `supportedMessageTypes` in the `db-config.json` file only includes the standard event types (identify, track, page, screen, group, alias) and does not include the `record` event type required for VDM v2 support.
+## RETL Support Analysis
 
-## Connection Configuration
+Since RETL is not supported (no warehouse source type), the following analysis applies:
 
-No special connection configuration is required for RETL with Amplitude. The standard destination configuration is used for all event types, including those that might come from RETL sources.
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`) - but only for event stream
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
-The standard configuration includes:
-- API Key
-- Data Center (US or EU)
-- User property operation settings (traitsToIncrement, traitsToSetOnce, etc.)
-- Other optional settings as described in the main README
+### Does it have vdm support?
+**Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support for event stream functionality.
 
-## Data Flow
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
 
-Since there is no explicit RETL support, data would flow through the standard event stream processing logic:
+### Connection config
+Not applicable as RETL is not supported.
 
-1. Events from RETL sources would be processed like regular events
-2. Standard mapping logic would be applied to transform the events to Amplitude's format
-3. The transformed events would be sent to Amplitude via the appropriate endpoints
+## Alternative Approaches for Warehouse Data
 
-### Standard Event Processing Flow
+Since RETL is not supported, consider these alternatives for warehouse-based data activation:
 
-For all events, including those that might come from RETL sources:
+### 1. Event Stream from Warehouse Sources
 
-1. The event is received by the destination
-2. The event type is determined (identify, track, page, screen, group, alias)
-3. The appropriate mapping configuration is applied based on the event type
-4. The event is transformed to Amplitude's format
-5. The transformed event is sent to the appropriate Amplitude endpoint
+Use RudderStack's warehouse sources to send standard events:
 
-### Identify Events
+```javascript
+// Example: Sending user profile updates from warehouse
+{
+  "type": "identify",
+  "userId": "user123",
+  "traits": {
+    "email": "user@example.com",
+    "plan": "premium"
+  }
+}
+```
 
-Identify events from RETL sources would be processed like regular identify events:
-- The event_type is set to `$identify`
-- User traits are mapped to user_properties
-- If Enhanced User Operations is enabled, user properties are processed with operations like $set, $setOnce, etc.
+### 2. VDM v1 (Visual Data Mapper)
 
-### Track Events
+Since Amplitude supports VDM v1 (`supportsVisualMapper: true`), you can:
+- Use the visual mapper interface for data transformation
+- Map warehouse data fields to Amplitude properties
+- Configure user property operations ($set, $setOnce, etc.)
 
-Track events from RETL sources would be processed like regular track events:
-- The event name is used as the event_type
-- Event properties are included as event_properties
-- If the event has revenue, special revenue handling is applied
+### 3. Batch Processing
+
+Implement batch processing of warehouse data to generate standard events:
+- Transform warehouse records into identify/track events
+- Send through standard event stream processing
+- Leverage Amplitude's batching capabilities (up to 1000 events per batch)
 
 
-## Conclusion
+## Technical Limitations
 
-The Amplitude destination currently does not have explicit RETL support. All events, regardless of their source, are processed through the standard event stream logic. If RETL support is needed, it would require modifications to the destination code to add special handling for RETL events.
+### Why RETL is Not Supported
 
-### Recommendations for RETL Usage
+1. **No Warehouse Source Support**: `supportedSourceTypes` does not include `warehouse`
+2. **No Record Event Handling**: Missing `record` message type in `supportedMessageTypes`
+3. **No mappedToDestination Logic**: Transformer code does not handle RETL-specific processing
+4. **Event-Centric Model**: Amplitude focuses on event-based analytics rather than profile-based data updates
 
-If you need to use RETL with Amplitude, consider the following approaches:
+### Current Capabilities
 
-1. **Format RETL Events to Match Standard Format**:
-   - Ensure that RETL events match the standard format expected by the Amplitude destination
-   - Use the standard field mappings as described in the businesslogic.md document
+- **VDM v1 Support**: Visual data mapper for field transformations
+- **Standard Event Processing**: All standard message types (identify, track, page, screen, group, alias)
+- **Batching**: Up to 1000 events per batch for efficient processing
+- **Enhanced User Operations**: Support for $set, $setOnce, $add, $unset operations
 
-2. **Request RETL Support Enhancement**:
-   - Request that RETL support be added to the Amplitude destination
-   - Provide specific use cases and requirements for RETL support
+## Summary
 
-3. **Custom Implementation**:
-   - If immediate RETL support is needed, consider implementing a custom version of the Amplitude destination with RETL support
-   - Use the implementation considerations outlined above as a starting point
+The Amplitude destination does not support RETL functionality. The destination:
+
+- **Does not support RETL**: No warehouse source type support
+- **Supports VDM v1**: `supportsVisualMapper: true` for visual data mapping (event stream only)
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
+
+**Note**: VDM v1 support is available for event stream functionality but not for RETL since warehouse source type is not supported.
+
+For warehouse-based data activation, consider using other destinations that support RETL or implement custom solutions to transform warehouse data into standard events.

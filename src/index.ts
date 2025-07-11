@@ -9,7 +9,7 @@ import { metricsRouter } from './routes/metricsRouter';
 import * as cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
-import { initializeFeatureFlags, shutdownFeatureFlags } from './featureFlags';
+import { initializeFeatureFlags } from './featureFlags';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
@@ -58,10 +58,7 @@ addSwaggerRoutes(app);
 
 applicationRoutes(app);
 
-async function finalFunction() {
-  // Shutdown feature flags service
-  await shutdownFeatureFlags();
-
+function finalFunction() {
   RedisDB.disconnect();
   logger.info('Redis client disconnected');
   logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);

@@ -10,6 +10,7 @@ router.get('/transformerBuildVersion', MiscController.buildVersion); // depricia
 router.get('/buildVersion', MiscController.buildVersion);
 router.get('/version', MiscController.version);
 router.get('/features', MiscController.features);
+router.get('/flagtest', MiscController.flagtest);
 
 const miscRoutes = router.routes();
 export default miscRoutes;

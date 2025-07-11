@@ -1,15 +1,15 @@
 import { FeatureFlagService, FeatureFlagDefinition } from '@rudderstack/integrations-lib';
 import logger from './logger';
 
-enum TransformerFeatureFlagKeys {
-  ENABLE_TRANSFORMER_TEST = 'enable-transformer-test',
+export enum TransformerFeatureFlagKeys {
+  ENABLE_TEST_FLAG = 'enable-test-flag',
 } 
 
 
 const transformerFeatureFlags: FeatureFlagDefinition[] = [
   {
     name: 'Enable transformer test feature flag',
-    key: TransformerFeatureFlagKeys.ENABLE_TRANSFORMER_TEST as string,
+    key: TransformerFeatureFlagKeys.ENABLE_TEST_FLAG as string,
     type: 'boolean',
     defaultValue: false,
     description: 'Enable identity resolution v2',
@@ -31,18 +31,8 @@ export async function initializeFeatureFlags(): Promise<void> {
     return;
   }
 
-  try {
-    // Initialize with configuration from environment variables
-    // The lib automatically reads FEATURE_FLAG_* environment variables
-    featureFlagService = await FeatureFlagService.create({}, transformerFeatureFlags);
-    await featureFlagService.initialize();
+  featureFlagService = await FeatureFlagService.create({}, transformerFeatureFlags);
 
-    logger.info(`Feature flag service initialized successfully`);
-  } catch (error) {
-    logger.error('Failed to initialize feature flag service:', error);
-    // Don't throw the error - feature flags should not prevent application startup
-
-  }
 }
 
 export function getFeatureFlagService() {

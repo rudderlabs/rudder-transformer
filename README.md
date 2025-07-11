@@ -364,6 +364,61 @@ The test scripts directory contains:
 - Case studies of successful test migrations
 - Guidelines for handling mock functions and test validation
 
+## Testing Tools
+
+The repository includes automated testing tools that streamline development workflows for API testing and test execution.
+
+### Prerequisites
+
+**For VS Code Integration:**
+- Install the [Command Variable](https://marketplace.visualstudio.com/items?itemName=rioj7.command-variable) extension
+- This extension is required for text transformation in VS Code tasks (converts multi-line selections to single arguments)
+
+**For Command Line Usage:**
+- Node.js and npm installed (npm includes `npx` for running packages)
+- TypeScript support (`ts-node`)
+
+### Quick Usage
+
+**VS Code Integration (Recommended):**
+1. Open any test data file (e.g., `src/v0/destinations/facebook_pixel/data.ts`)
+2. Select an **entire test case object** OR at minimum the key fields:
+   ```typescript
+   description: 'Track event with standard properties',
+   feature: 'processor',
+   module: 'destination',
+   version: 'v1',
+   ```
+3. Use Command Palette (`Cmd+Shift+P`) → "Tasks: Run Task" → Choose:
+   - **"Create and run dt curl request"** - Generate curl for destination transformer API
+   - **"Create and run server curl request"** - Generate curl for server API (*processor feature only*)
+   - **"Run component test on selected test case"** - Execute specific test case
+
+**Command Line:**
+```bash
+# Generate destination transformer API curl
+npx ts-node scripts/dtApiCurlCreation.ts <test-file> "description: 'test name' feature: 'processor' module: 'destination' version: 'v1'"
+
+# Generate server API curl  
+npx ts-node scripts/serverApiCurlCreation.ts <test-file> "description: 'test name' feature: 'processor' module: 'destination'"
+
+# Run specific test case
+npx ts-node scripts/runSingleTestCase.ts <test-file> "description: 'test name' feature: 'processor' module: 'destination'"
+```
+
+### Features
+
+- **Automatic curl generation** with proper headers and endpoints
+- **Clipboard integration** - curl commands copied automatically
+- **Live test execution** with real-time output
+- **Cross-platform support** (macOS, Windows, Linux)
+- **Support for all features**: processor, router, dataDelivery, userDeletion
+
+**Important Limitations:**
+- **Server curl request tool** only works with `processor` feature test cases (validates message type from request body)
+
+The tools automatically detect destination names, resolve data files, and construct appropriate URLs based on your test case configuration.
+
 ## Contact Us
 
 If you come across any issues while setting up or running the RudderStack Transformer, feel free to start a conversation on our [Slack](https://resources.rudderstack.com/join-rudderstack-slack) channel.

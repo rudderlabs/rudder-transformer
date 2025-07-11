@@ -7,6 +7,7 @@ const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
 const logger = require('../logger');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
+const { createIsolateContext, cleanupIsolateResources } = require('./ivmCommon');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
@@ -58,7 +59,6 @@ async function createIvm(
       ),
     );
 
-    // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
@@ -79,7 +79,6 @@ async function createIvm(
   }
 
   const codeWithWrapper =
-    // eslint-disable-next-line prefer-template
     code +
     `
     export async function transformWrapper(transformationPayload) {
@@ -105,9 +104,6 @@ async function createIvm(
           destinationId: eventMetadata.destinationId,
           destinationType: eventMetadata.destinationType,
           destinationName: eventMetadata.destinationName,
-
-          // TODO: remove non required fields
-
           namespace: eventMetadata.namespace,
           originalSourceId: eventMetadata.originalSourceId,
           trackingPlanId: eventMetadata.trackingPlanId,
@@ -156,7 +152,6 @@ async function createIvm(
             const currMsgId = ev.messageId;
             try{
               let transformedOutput = await transformEvent(ev, metadata);
-              // if func returns null/undefined drop event
               if (transformedOutput === null || transformedOutput === undefined) return;
               if (Array.isArray(transformedOutput)) {
                 const producedEvents = [];
@@ -180,7 +175,6 @@ async function createIvm(
               outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
               return;
             } catch (error) {
-              // Handling the errors in versionedRouter.js
               return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
             }
           }));
@@ -189,120 +183,15 @@ async function createIvm(
       return outputEvents
     }
   `;
-  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  const isolateStartWallTime = isolate.wallTime;
-  const isolateStartCPUTime = isolate.cpuTime;
-  const context = await isolate.createContext();
 
-  const compiledModules = {};
-
-  await Promise.all(
-    Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
-      compiledModules[moduleName] = {
-        module: await loadModule(isolate, context, moduleName, moduleCode),
-      };
-    }),
-  );
-
-  // TODO: Add rudder nodejs sdk to libraries
-
-  const jail = context.global;
-
-  // This make the global object available in the context as 'global'. We use 'derefInto()' here
-  // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-  await jail.set('global', jail.derefInto());
-
-  // The entire ivm module is transferable! We transfer the module to the new isolate so that we
-  // have access to the library from within the isolate.
-  await jail.set('_ivm', ivm);
-  await jail.set(
-    '_fetch',
-    new ivm.Reference(async (resolve, ...args) => {
-      try {
-        const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-        logger.debug('Error fetching data', error);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_fetchV2',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      try {
-        const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const headersContent = {};
-        res.headers.forEach((value, header) => {
-          headersContent[header] = value;
-        });
-        const data = {
-          url: res.url,
-          status: res.status,
-          headers: headersContent,
-          body: await res.text(),
-        };
-
-        try {
-          data.body = JSON.parse(data.body);
-        } catch (e) {
-          logger.debug('Error parsing JSON', e);
-        }
-
-        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_geolocation',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      try {
-        const geoStartTime = new Date();
-        if (args.length < 1) {
-          throw new Error('ip address is required');
-        }
-        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
-        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
-          timeout: GEOLOCATION_TIMEOUT_IN_MS,
-        });
-        if (res.status !== 200) {
-          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
-        }
-        const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, trTags);
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      }
-    }),
-  );
-
-  await jail.set('_getCredential', function (key) {
-    if (isNil(credentials) || !isObject(credentials)) {
-      logger.error(
-        `Error fetching credentials map for transformationID: ${transformationId} and workspaceId: ${workspaceId}`,
-      );
-      stats.increment('credential_error_total', trTags);
-      return undefined;
-    }
-    if (key === null || key === undefined) {
-      throw new TypeError('Key should be valid and defined');
-    }
-    return credentials[key];
+  // Use shared ivmCommon utility for isolate/context/global setup
+  const { isolate, context, jail } = await createIsolateContext({
+    trTags,
+    testMode,
+    credentials,
+    withCredential: true,
   });
-
-  await jail.set('log', function (...args) {
+  jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
       args.forEach((arg) => {
@@ -312,29 +201,29 @@ async function createIvm(
     }
   });
 
-  await jail.set('extractStackTrace', function (trace, stringLiterals) {
+  // Register extractStackTrace for V1 user code
+  jail.setSync('extractStackTrace', function (trace, stringLiterals) {
     return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
+
+  const compiledModules = {};
+  await Promise.all(
+    Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
+      compiledModules[moduleName] = {
+        module: await loadModule(isolate, context, moduleName, moduleCode),
+      };
+    }),
+  );
 
   const bootstrap = await isolate.compileScript(
     'new ' +
       `
     function() {
-      // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
-      // only place in the context with a reference to the module. The 'ivm' module is very powerful
-      // so you should not put it in the hands of untrusted code.
       let ivm = _ivm;
       delete _ivm;
-
-      // Now we create the other half of the 'log' function in this isolate. We'll just take every
-      // argument, create an external copy of it and pass it along to the log function above.
       let fetch = _fetch;
       delete _fetch;
       global.fetch = function(...args) {
-        // We use 'copyInto()' here so that on the other side we don't have to call 'copy()'. It
-        // doesn't make a difference who requests the copy, the result is the same.
-        // 'applyIgnored' calls 'log' asynchronously but doesn't return a promise-- it ignores the
-        // return value or thrown exception from 'log'.
         return new Promise(resolve => {
           fetch.applyIgnored(undefined, [
             new ivm.Reference(resolve),
@@ -342,7 +231,6 @@ async function createIvm(
           ]);
         });
       };
-
       let fetchV2 = _fetchV2;
       delete _fetchV2;
       global.fetchV2 = function(...args) {
@@ -354,7 +242,6 @@ async function createIvm(
           ]);
         });
       };
-
       let geolocation = _geolocation;
       delete _geolocation;
       global.geolocation = function(...args) {
@@ -366,14 +253,12 @@ async function createIvm(
           ]);
         });
       };
-
       let getCredential = _getCredential;
       delete _getCredential;
       global.getCredential = function(...args) {
         const key = args[0];
         return getCredential(new ivm.ExternalCopy(key).copyInto());
       };
-
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
@@ -394,13 +279,10 @@ async function createIvm(
           });
         });
       }
-
         `,
   );
 
-  // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
-  // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
     filename: 'base transformation',
   });
@@ -408,7 +290,6 @@ async function createIvm(
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
-    // Release the isolate context before throwing an error
     await context.release();
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
@@ -416,7 +297,6 @@ async function createIvm(
   await customScriptModule.evaluate();
 
   const supportedFuncs = {};
-
   await Promise.all(
     SUPPORTED_FUNC_NAMES.map(async (sName) => {
       const funcRef = await customScriptModule.namespace.get(sName, {
@@ -440,8 +320,6 @@ async function createIvm(
   });
   const fName = availableFuncNames[0];
   stats.timing('createivm_duration', createIvmStartTime, trTags);
-  // TODO : check if we can resolve this
-  // eslint-disable-next-line no-async-promise-executor
 
   return {
     isolate,
@@ -451,8 +329,8 @@ async function createIvm(
     customScriptModule,
     context,
     fnRef,
-    isolateStartWallTime,
-    isolateStartCPUTime,
+    isolateStartWallTime: isolate.wallTime,
+    isolateStartCPUTime: isolate.cpuTime,
     fName,
     logs,
   };
@@ -486,11 +364,14 @@ async function getFactory(
       );
     },
     destroy: async (client) => {
-      client.fnRef.release();
-      client.bootstrap.release();
-      client.customScriptModule.release();
-      client.context.release();
-      await client.isolate.dispose();
+      // Use shared cleanup utility
+      cleanupIsolateResources({
+        fnRef: client.fnRef,
+        bootstrapScriptResult: client.bootstrapScriptResult,
+        customScript: client.customScriptModule,
+        context: client.context,
+        isolate: client.isolate,
+      });
     },
   };
 

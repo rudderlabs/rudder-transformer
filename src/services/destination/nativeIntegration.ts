@@ -19,6 +19,7 @@ import {
   ProxyRequest,
   ProxyV0Request,
   ProxyV1Request,
+  RequestMetadata,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -60,7 +61,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList = await mapInBatches(
@@ -100,7 +101,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const groupedEvents: RouterTransformationRequestData[][] =
@@ -143,7 +144,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {

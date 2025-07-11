@@ -91,6 +91,9 @@ class MetricsAggregator {
       logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
       try {
         const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
+        // TODO: Remove this once we have a proper solution for IPC JSON parsing errors
+        // We are trying to check if the metrics are safe to send to the master process
+        JSON.parse(JSON.stringify(metrics));
         cluster.worker.send({
           type: MESSAGE_TYPES.GET_METRICS_RES,
           metrics,
@@ -101,6 +104,7 @@ class MetricsAggregator {
           `[MetricsAggregator] Error getting metrics from worker ${cluster.worker.id}: ${error.message}`,
           { error: error.stack, workerId: cluster.worker.id, requestId: message.requestId },
         );
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
         try {
           cluster.worker.send({
             type: MESSAGE_TYPES.GET_METRICS_RES,
@@ -109,7 +113,7 @@ class MetricsAggregator {
           });
         } catch (sendError) {
           logger.error(
-            `[MetricsAggregator] Error sending error response from worker ${cluster.worker.id}: ${sendError.message}`,
+            `[MetricsAggregator] Error sending error response to master: ${sendError.message}`,
             { error: sendError.stack, workerId: cluster.worker.id, requestId: message.requestId },
           );
         }

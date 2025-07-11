@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.2...v1.104.3) (2025-07-10)
+
+
+### Bug Fixes
+
+* santize metrics before sending to ipc ([1422b50](https://github.com/rudderlabs/rudder-transformer/commit/1422b50274958d223aade4c412fb37d2b4b3eaa5))
+
 ### [1.104.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.1...v1.104.2) (2025-07-10)
 
 

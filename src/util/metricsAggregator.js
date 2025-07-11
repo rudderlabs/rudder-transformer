@@ -2,6 +2,7 @@
 const cluster = require('cluster');
 const logger = require('../logger');
 const { Worker, isMainThread } = require('worker_threads');
+const v8 = require('v8');
 
 const MESSAGE_TYPES = {
   GET_METRICS_REQ: 'rudder-transformer:getMetricsReq',
@@ -91,10 +92,10 @@ class MetricsAggregator {
     if (message.type === MESSAGE_TYPES.GET_METRICS_REQ) {
       logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
       try {
-        const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
+        const metrics = await this.getSafeMetrics();
         cluster.worker.send({
           type: MESSAGE_TYPES.GET_METRICS_RES,
-          metrics: JSON.stringify(metrics),
+          metrics,
           requestId: message.requestId,
         });
       } catch (error) {
@@ -128,6 +129,24 @@ class MetricsAggregator {
         );
       }
     }
+  }
+
+  isMetricsSafe(metric) {
+    try {
+      v8.serialize(metric);
+      return true;
+    } catch (error) {
+      logger.error(`[MetricsAggregator] Error serializing metric: ${error.message}`, {
+        error: error.stack,
+        metric,
+      });
+      return false;
+    }
+  }
+
+  async getSafeMetrics() {
+    const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
+    return metrics.filter((metric) => this.isMetricsSafe(metric));
   }
 
   registerCallbacks() {
@@ -297,7 +316,7 @@ class MetricsAggregator {
       this.resetAggregator(true);
       return;
     }
-    this.metricsBuffer.push(JSON.parse(message.metrics));
+    this.metricsBuffer.push(message.metrics);
     this.pendingMetricRequests--;
     if (this.pendingMetricRequests === 0) {
       this.aggregateMetricsInWorkerThread();

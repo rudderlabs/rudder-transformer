@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.3...v1.104.4) (2025-07-11)
+
 ### [1.104.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.2...v1.104.3) (2025-07-10)
 
 

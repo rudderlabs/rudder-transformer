@@ -51,6 +51,7 @@ class MetricsAggregator {
         workerId: worker?.id,
         messageType: message?.type,
       });
+      this.resetAggregator(true);
     }
   }
 
@@ -70,7 +71,7 @@ class MetricsAggregator {
         if (message.error) {
           logger.error(`[MetricsAggregator] Worker aggregation error: ${message.error}`);
           this.rejectFunc(new Error(message.error));
-          this.resetAggregator();
+          this.resetAggregator(true);
           return;
         }
         this.resolveFunc(message.metrics);
@@ -91,12 +92,9 @@ class MetricsAggregator {
       logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
       try {
         const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
-        // TODO: Remove this once we have a proper solution for IPC JSON parsing errors
-        // We are trying to check if the metrics are safe to send to the master process
-        JSON.parse(JSON.stringify(metrics));
         cluster.worker.send({
           type: MESSAGE_TYPES.GET_METRICS_RES,
-          metrics,
+          metrics: JSON.stringify(metrics),
           requestId: message.requestId,
         });
       } catch (error) {
@@ -196,7 +194,7 @@ class MetricsAggregator {
     }
   }
 
-  resetAggregator() {
+  resetAggregator(shouldResetMetrics = false) {
     if (this.currentTimeout) clearTimeout(this.currentTimeout);
     this.currentTimeout = null;
     this.metricsBuffer = [];
@@ -204,6 +202,9 @@ class MetricsAggregator {
     this.requestId++; // Increment to invalidate old responses
     this.resolveFunc = null;
     this.rejectFunc = null;
+    if (shouldResetMetrics) {
+      this.resetMetrics();
+    }
   }
 
   async aggregateMetrics() {
@@ -293,10 +294,10 @@ class MetricsAggregator {
     if (message.error) {
       logger.error(`[MetricsAggregator] Worker get metrics error: ${message.error}`);
       this.rejectFunc(new Error(message.error));
-      this.resetAggregator();
+      this.resetAggregator(true);
       return;
     }
-    this.metricsBuffer.push(message.metrics);
+    this.metricsBuffer.push(JSON.parse(message.metrics));
     this.pendingMetricRequests--;
     if (this.pendingMetricRequests === 0) {
       this.aggregateMetricsInWorkerThread();
@@ -310,6 +311,7 @@ class MetricsAggregator {
   }
 
   resetMetrics() {
+    logger.info(`[MetricsAggregator] Resetting metrics`);
     for (const id in cluster.workers) {
       if (!cluster.workers[id].isConnected()) {
         logger.warn(`[MetricsAggregator] Worker ${id} is not connected, skipping reset`);

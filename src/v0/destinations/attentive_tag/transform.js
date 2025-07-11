@@ -1,7 +1,12 @@
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const { ConfigCategory, mappingConfig, BASE_URL } = require('./config');
+const {
+  ConfigCategory,
+  mappingConfig,
+  BASE_URL,
+  mapChannelToSubscriptionType,
+} = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -18,6 +23,7 @@ const {
   getExternalIdentifiersMapping,
   arePropertiesValid,
   validateTimestamp,
+  filterUserByConsents,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -36,8 +42,96 @@ const responseBuilder = (payload, apiKey, endpoint) => {
   return undefined;
 };
 
-const identifyResponseBuilder = (message, { Config }) => {
+// response builder for identity resolution
+const responseBuilderForIdentityResolution = (message, apiKey) => {
+  const identityPayload =
+    constructPayload(message, mappingConfig[ConfigCategory.IDENTITY_RESOLUTION.name]) || {};
+  const externalIdentifiers = getExternalIdentifiersMapping(message) || {};
+
+  // Build payload
+  const payload = {
+    ...identityPayload,
+    ...externalIdentifiers,
+  };
+
+  // If email or phone or shopifyId or klaviyoId is present and clientUserId or customIdentifiers is present, return the response
+  if (
+    (payload.email || payload.phone || payload.shopifyId || payload.klaviyoId) &&
+    (payload.clientUserId || payload.customIdentifiers)
+  ) {
+    return responseBuilder(payload, apiKey, '/identity-resolution/user-identifiers');
+  }
+
+  return null;
+};
+
+// response builder for user attributes
+const responseBuilderForUserAttributes = (message, apiKey) => {
+  const traits = getFieldValueFromMessage(message, 'traits') || {};
+  const { email, phone, customIdentifiers, ...customProperties } = traits;
+  const externalIds = getExternalIdentifiersMapping(message);
+
+  // Build user object
+  const user = {};
+  if (email) user.email = email;
+  if (phone) user.phone = phone;
+
+  // Build external identifiers object
+  const externalIdentifiers = {};
+  if (externalIds?.clientUserId) {
+    externalIdentifiers.clientUserId = externalIds.clientUserId;
+  }
+  if (customIdentifiers) {
+    externalIdentifiers.customIdentifiers = customIdentifiers;
+  }
+
+  // Add external identifiers to user if any exist
+  if (Object.keys(externalIdentifiers).length > 0) {
+    user.externalIdentifiers = externalIdentifiers;
+  }
+
+  const properties = removeUndefinedAndNullValues(customProperties);
+
+  // If user or properties is empty, return null as we don't want to send empty user or properties
+  if (Object.keys(user).length === 0 || Object.keys(properties).length === 0) {
+    return null;
+  }
+
+  return responseBuilder({ user, properties }, apiKey, '/attributes/custom');
+};
+
+// Helper function to process identify event for new identify flow
+const responseBuilderForNewIdentifyFlow = (message, { Config }) => {
   const { apiKey } = Config;
+  const responses = [];
+
+  // Process Identity Resolution API call
+  const identityResponse = responseBuilderForIdentityResolution(message, apiKey);
+  if (identityResponse) {
+    responses.push(identityResponse);
+  }
+
+  // Process User Attributes API call
+  const attributesResponse = responseBuilderForUserAttributes(message, apiKey);
+  if (attributesResponse) {
+    responses.push(attributesResponse);
+  }
+
+  if (responses.length === 0) {
+    throw new InstrumentationError(
+      '[Attentive Tag]: Identify payload is not valid, either user or properties is empty',
+    );
+  }
+
+  return responses;
+};
+
+const identifyResponseBuilder = (message, { Config }) => {
+  const { apiKey, enableNewIdentifyFlow = false } = Config;
+  // If enableNewIdentifyFlow is true, use the new identify flow
+  if (enableNewIdentifyFlow) {
+    return responseBuilderForNewIdentifyFlow(message, { Config });
+  }
   let { signUpSourceId } = Config;
   let endpoint;
   let payload;
@@ -97,6 +191,109 @@ const identifyResponseBuilder = (message, { Config }) => {
   return responseBuilder(payload, apiKey, endpoint);
 };
 
+// response builder for subscribe
+const responseBuilderForSubscribe = (filteredUser, signUpSourceId, apiKey) => {
+  if (!signUpSourceId) {
+    throw new ConfigurationError(
+      '[Attentive Tag]: SignUp Source Id is required for subscribe event',
+    );
+  }
+
+  if (Object.keys(filteredUser).length === 0) return [];
+
+  const subscribePayload = { user: filteredUser, signUpSourceId };
+  const subscribeResponse = responseBuilder(subscribePayload, apiKey, '/subscriptions');
+
+  return [subscribeResponse];
+};
+
+// response builder for unsubscribe
+const responseBuilderForUnsubscribe = (unsubscribeConsents, filteredUser, notification, apiKey) => {
+  if (unsubscribeConsents.length === 0 || Object.keys(filteredUser).length === 0) return [];
+
+  const unsubscribePayload = { user: filteredUser };
+
+  // Add subscriptions if type exists
+  const subscriptions = unsubscribeConsents
+    .filter((consent) => consent.type)
+    .map((consent) => ({
+      type: consent.type,
+      channel: mapChannelToSubscriptionType(consent.channel),
+    }));
+
+  if (subscriptions.length > 0) {
+    unsubscribePayload.subscriptions = subscriptions;
+  }
+
+  // Add notification if present
+  if (notification) {
+    unsubscribePayload.notification = notification;
+  }
+
+  const unsubscribeResponse = responseBuilder(
+    unsubscribePayload,
+    apiKey,
+    '/subscriptions/unsubscribe',
+  );
+
+  return [unsubscribeResponse];
+};
+
+// Helper function to process subscription event track call
+const subscriptionResponseBuilder = (message, { Config }) => {
+  const { apiKey, signUpSourceId } = Config;
+  const userPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
+  // Validate user payload
+  if (!userPayload?.user?.email && !userPayload?.user?.phone) {
+    throw new InstrumentationError(
+      '[Attentive Tag]: Either email or phone is required for subscription event',
+    );
+  }
+  const properties = get(message, 'properties') || {};
+  const { channelConsents, signUpSourceId: propSignUpSourceId, notification } = properties;
+
+  // Determine which signUpSourceId to use
+  const finalSignUpSourceId = propSignUpSourceId || signUpSourceId;
+
+  if (!Array.isArray(channelConsents)) {
+    throw new InstrumentationError('[Attentive Tag]: Channel consents must be an array');
+  }
+
+  // Separate subscribe and unsubscribe consents
+  const subscribeConsents = channelConsents.filter((consent) => consent.consented === true);
+  const unsubscribeConsents = channelConsents.filter((consent) => consent.consented === false);
+
+  // Filter user data based on consents
+  const subscribeFilteredUser = filterUserByConsents(userPayload.user, subscribeConsents);
+  const unsubscribeFilteredUser = filterUserByConsents(userPayload.user, unsubscribeConsents);
+
+  // Process subscribe consents
+  const subscribeResponses = responseBuilderForSubscribe(
+    subscribeFilteredUser,
+    finalSignUpSourceId,
+    apiKey,
+  );
+  // Process unsubscribe consents
+  const unsubscribeResponses = responseBuilderForUnsubscribe(
+    unsubscribeConsents,
+    unsubscribeFilteredUser,
+    notification,
+    apiKey,
+  );
+
+  // Combine responses
+  const responses = [...subscribeResponses, ...unsubscribeResponses];
+
+  // Validate responses
+  if (responses.length === 0) {
+    throw new InstrumentationError(
+      '[Attentive Tag]: No valid consent found for subscription event',
+    );
+  }
+
+  return responses;
+};
+
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let endpoint;
@@ -104,6 +301,9 @@ const trackResponseBuilder = (message, { Config }) => {
   const event = get(message, 'event');
   if (!event) {
     throw new InstrumentationError('[Attentive Tag] :: Event name is not present');
+  }
+  if (event.toLowerCase().trim().replace(/\s+/g, '_') === 'subscription_event') {
+    return subscriptionResponseBuilder(message, { Config });
   }
   if (!validateTimestamp(getFieldValueFromMessage(message, 'timestamp'))) {
     throw new InstrumentationError(

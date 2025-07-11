@@ -837,7 +837,6 @@ export const trackTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         method: 'POST',
@@ -977,7 +976,6 @@ export const trackTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         method: 'POST',
@@ -1069,7 +1067,6 @@ export const trackTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         method: 'POST',
@@ -1192,7 +1189,6 @@ export const trackTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         method: 'POST',
@@ -1293,7 +1289,6 @@ export const trackTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         method: 'POST',

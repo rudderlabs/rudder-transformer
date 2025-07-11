@@ -27,6 +27,8 @@ VDM v1 (Visual Data Mapper v1) is supported:
 - Allows visual mapping of warehouse fields to Facebook Custom Audience schema fields
 - Supports custom field mapping through the RudderStack dashboard
 
+**Note**: VDM v1 is supported but as we moved from audience list to record events, VDM v2 is being used now.
+
 ### VDM v2 Support
 
 **Supported**: Yes

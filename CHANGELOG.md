@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.4...v1.104.5) (2025-07-11)
+
+
+### Bug Fixes
+
+* add v8 import and update metrics aggregator for safe serialization ([f36287a](https://github.com/rudderlabs/rudder-transformer/commit/f36287ac2ad520bbc85299ca014994288ac993c2))
+
 ### [1.104.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.3...v1.104.4) (2025-07-11)
 
 ### [1.104.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.2...v1.104.3) (2025-07-10)

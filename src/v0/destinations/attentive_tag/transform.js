@@ -23,6 +23,7 @@ const {
   getExternalIdentifiersMapping,
   arePropertiesValid,
   validateTimestamp,
+  filterUserByConsents,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -41,10 +42,10 @@ const responseBuilder = (payload, apiKey, endpoint) => {
   return undefined;
 };
 
-// Helper function to process identity resolution
-const processIdentityResolution = (message, apiKey) => {
+// response builder for identity resolution
+const responseBuilderForIdentityResolution = (message, apiKey) => {
   const identityPayload =
-    constructPayload(message, mappingConfig[ConfigCategory.IDENTITY.name]) || {};
+    constructPayload(message, mappingConfig[ConfigCategory.IDENTITY_RESOLUTION.name]) || {};
   const externalIdentifiers = getExternalIdentifiersMapping(message) || {};
 
   // Build payload
@@ -64,8 +65,8 @@ const processIdentityResolution = (message, apiKey) => {
   return null;
 };
 
-// Helper function to process user attributes
-const processUserAttributes = (message, apiKey) => {
+// response builder for user attributes
+const responseBuilderForUserAttributes = (message, apiKey) => {
   const traits = getFieldValueFromMessage(message, 'traits') || {};
   const { email, phone, customIdentifiers, ...customProperties } = traits;
   const externalIds = getExternalIdentifiersMapping(message);
@@ -100,18 +101,18 @@ const processUserAttributes = (message, apiKey) => {
 };
 
 // Helper function to process identify event for new identify flow
-const identifyResponseBuilderNew = (message, { Config }) => {
+const responseBuilderForNewIdentifyFlow = (message, { Config }) => {
   const { apiKey } = Config;
   const responses = [];
 
   // Process Identity Resolution API call
-  const identityResponse = processIdentityResolution(message, apiKey);
+  const identityResponse = responseBuilderForIdentityResolution(message, apiKey);
   if (identityResponse) {
     responses.push(identityResponse);
   }
 
   // Process User Attributes API call
-  const attributesResponse = processUserAttributes(message, apiKey);
+  const attributesResponse = responseBuilderForUserAttributes(message, apiKey);
   if (attributesResponse) {
     responses.push(attributesResponse);
   }
@@ -129,7 +130,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey, enableNewIdentifyFlow = false } = Config;
   // If enableNewIdentifyFlow is true, use the new identify flow
   if (enableNewIdentifyFlow) {
-    return identifyResponseBuilderNew(message, { Config });
+    return responseBuilderForNewIdentifyFlow(message, { Config });
   }
   let { signUpSourceId } = Config;
   let endpoint;
@@ -190,24 +191,8 @@ const identifyResponseBuilder = (message, { Config }) => {
   return responseBuilder(payload, apiKey, endpoint);
 };
 
-// Helper function to filter user by consents
-const filterUserByConsents = (user, consents) => {
-  if (!user || !consents || consents.length === 0) return {};
-
-  const filteredUser = {};
-  consents.forEach((consent) => {
-    if (consent.channel?.toLowerCase() === 'email' && user.email) {
-      filteredUser.email = user.email;
-    } else if (consent.channel?.toLowerCase() === 'sms' && user.phone) {
-      filteredUser.phone = user.phone;
-    }
-  });
-
-  return filteredUser;
-};
-
-// Helper function to process subscribe consents
-const processSubscribeConsents = (filteredUser, signUpSourceId, apiKey) => {
+// response builder for subscribe
+const responseBuilderForSubscribe = (filteredUser, signUpSourceId, apiKey) => {
   if (!signUpSourceId) {
     throw new ConfigurationError(
       '[Attentive Tag]: SignUp Source Id is required for subscribe event',
@@ -222,8 +207,8 @@ const processSubscribeConsents = (filteredUser, signUpSourceId, apiKey) => {
   return [subscribeResponse];
 };
 
-// Helper function to process unsubscribe consents
-const processUnsubscribeConsents = (unsubscribeConsents, filteredUser, notification, apiKey) => {
+// response builder for unsubscribe
+const responseBuilderForUnsubscribe = (unsubscribeConsents, filteredUser, notification, apiKey) => {
   if (unsubscribeConsents.length === 0 || Object.keys(filteredUser).length === 0) return [];
 
   const unsubscribePayload = { user: filteredUser };
@@ -283,13 +268,13 @@ const subscriptionResponseBuilder = (message, { Config }) => {
   const unsubscribeFilteredUser = filterUserByConsents(userPayload.user, unsubscribeConsents);
 
   // Process subscribe consents
-  const subscribeResponses = processSubscribeConsents(
+  const subscribeResponses = responseBuilderForSubscribe(
     subscribeFilteredUser,
     finalSignUpSourceId,
     apiKey,
   );
   // Process unsubscribe consents
-  const unsubscribeResponses = processUnsubscribeConsents(
+  const unsubscribeResponses = responseBuilderForUnsubscribe(
     unsubscribeConsents,
     unsubscribeFilteredUser,
     notification,

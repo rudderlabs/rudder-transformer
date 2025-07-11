@@ -175,4 +175,4 @@ async function processBatchedIdentify(
   }
 }
 
-export { processBatchedIdentify };
+export { processBatchedIdentify, processSingleBatch };

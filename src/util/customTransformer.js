@@ -6,6 +6,7 @@ const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
+const logger = require('../logger');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const { ISOLATE_VM_MEMORY, setupIvmJail, getIvmBootstrapScriptString } = require('./ivmFactory');
@@ -13,7 +14,6 @@ const { ISOLATE_VM_MEMORY, setupIvmJail, getIvmBootstrapScriptString } = require
 async function runUserTransform(
   events,
   code,
-  secrets,
   eventsMetadata,
   transformationId,
   workspaceId,
@@ -27,7 +27,6 @@ async function runUserTransform(
   const jail = context.global;
   // Shared jail/global setup
   await setupIvmJail(jail, { secrets, testMode, trTags, logs });
-
   // metadata setup remains local
   jail.setSync('metadata', function (...args) {
     const eventMetadata = eventsMetadata[args[0].messageId] || {};
@@ -41,7 +40,6 @@ async function runUserTransform(
       destinationId: eventMetadata.destinationId,
       destinationType: eventMetadata.destinationType,
       destinationName: eventMetadata.destinationName,
-      // TODO: remove non required fields
       namespace: eventMetadata.namespace,
       trackingPlanId: eventMetadata.trackingPlanId,
       trackingPlanVersion: eventMetadata.trackingPlanVersion,
@@ -181,7 +179,6 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
-          res.secrets || {},
           eventsMetadata,
           res.id,
           res.workspaceId,

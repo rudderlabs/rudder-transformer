@@ -402,9 +402,7 @@ async function createIvm(
     return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
-  const bootstrap = await isolate.compileScript(
-    getIvmBootstrapScriptString({ forwardReject: true }),
-  );
+  const bootstrap = await isolate.compileScript();
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);

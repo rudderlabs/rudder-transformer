@@ -30,6 +30,12 @@ export type ProcessorTransformationRequest<
   credentials?: Credential[];
 };
 
+export type RequestMetadata = {
+  namespace: string;
+  cluster: string;
+  features: Record<string, boolean>;
+};
+
 export type BatchedRequestBody<T = Record<string, unknown>> = {
   JSON?: T;
   JSON_ARRAY?: Record<string, unknown>;

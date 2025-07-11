@@ -3,10 +3,6 @@ const logger = require('../../src/logger');
 const { Worker } = require('worker_threads');
 jest.mock('cluster');
 const cluster = require('cluster');
-const exp = require('constants');
-const { set } = require('lodash');
-const { error } = require('console');
-const { any } = require('is');
 
 describe('MetricsAggregator', () => {
 
@@ -94,6 +90,7 @@ describe('MetricsAggregator', () => {
     const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
       throw new Error('Get metrics error');
     });
+    const mockResetMetrics = jest.fn();
     
     // mock master's send - this functions simulates worker -> master communication
     // mockMasterSend(workerId) returns a function that simulates sending a message from a worker to the master
@@ -120,12 +117,12 @@ describe('MetricsAggregator', () => {
     };
    
     // create metrics aggregator
-    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON}});
+    const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {getMetricsAsJSON: mockGetMetricsAsJSON, resetMetrics: mockResetMetrics}});
     const metrics = metricsAggregator.aggregateMetrics();
     await expect(metrics).rejects.toBeInstanceOf(Error);
 
     await metricsAggregator.shutdown();
-
+    
   });
 
   it('should timeout a request if it takes too long', async () => {
@@ -433,9 +430,10 @@ describe('MetricsAggregator', () => {
     const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
       throw new Error('Get metrics error');
     });
+    const mockResetMetrics = jest.fn();
 
     const metricsAggregator = new MetricsAggregator({ 
-      prometheusRegistry: { getMetricsAsJSON: mockGetMetricsAsJSON }
+      prometheusRegistry: { getMetricsAsJSON: mockGetMetricsAsJSON, resetMetrics: mockResetMetrics }
     });
     
     // Call onMasterMessage with GET_METRICS_REQ - this should trigger both error paths

@@ -1,10 +1,10 @@
-# Mixpanel RETL Functionality
+# MoEngage RETL Functionality
 
 ## Is RETL supported at all?
 
 **RETL (Reverse ETL) Support**: **Not Supported**
 
-The Mixpanel destination does not support RETL functionality. Evidence:
+The MoEngage destination does not support RETL functionality. Evidence:
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -44,6 +44,7 @@ Transform warehouse data into events using other tools and send through supporte
   "userId": "user123",
   "traits": {
     "email": "user@example.com",
+    "name": "John Doe",
     "plan": "premium"
   }
 }
@@ -51,58 +52,43 @@ Transform warehouse data into events using other tools and send through supporte
 
 ### 2. Direct API Integration
 
-Use Mixpanel's APIs directly from your warehouse:
-- **Import API**: For historical event data
-- **Engage API**: For user profile updates
-- **Groups API**: For group profile updates
+Use MoEngage's APIs directly from your warehouse:
+- **Bulk Import API**: For large-scale data imports
+- **Track User API**: For user attribute updates
+- **Create Event API**: For event data ingestion
+- **S3 Data Import**: For batch processing
 
 ### 3. Custom ETL Solutions
 
-Implement custom solutions to extract data from warehouse and send to Mixpanel APIs.
+Implement custom solutions to extract data from warehouse and send to MoEngage APIs.
 
 ## Standard Event Stream Processing
 
-The Mixpanel destination processes all events through the standard event stream logic:
+The MoEngage destination processes all events through the standard event stream logic:
 
 ### Supported Event Types
-- **Identify**: User profile updates via `/engage` endpoint
-- **Track**: Event tracking via `/track` or `/import` endpoints
-- **Page**: Page view events (converted to track events)
-- **Screen**: Screen view events (converted to track events)
-- **Group**: Group profile updates via `/groups` endpoint
-- **Alias**: User identity merging via `/import` endpoint with `$merge` event
+- **Identify**: User profile updates via Track User API
+- **Track**: Event tracking via Create Event API
+- **Alias**: User identity merging
 
 ### Connection Configuration
 
-Standard Mixpanel configuration parameters:
+Standard MoEngage configuration parameters:
 
-- **Token**: Required for authentication with Mixpanel API
-- **Data Residency**: Specifies the Mixpanel data center to use (US, EU, IN)
-- **API Secret**: Required for using the Import API (server-side implementations)
-- **Identity Merge API**: Choose between Original ID Merge and Simplified ID Merge
-
-## Data Flow
-
-### Standard Event Stream Data Flow
-
-1. RudderStack receives events from supported sources (SDK, cloud app, etc.)
-2. Events are processed through standard transformation logic
-3. Transformed events are sent to appropriate Mixpanel endpoints:
-   - `/import` for server-side event tracking
-   - `/track` for client-side event tracking
-   - `/engage` for user profile updates
-   - `/groups` for group profile updates
+- **API ID**: MoEngage application API ID
+- **API Key**: MoEngage API key
+- **Data Center**: MoEngage data center (US, EU, etc.)
 
 ## Summary
 
-The Mixpanel destination does not support RETL functionality. The destination:
+The MoEngage destination does not support RETL functionality. The destination:
 
 - **Does not support RETL**: No warehouse source type support
 - **Does not support VDM v1**: No `supportsVisualMapper` configuration
 - **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
 - **Standard Event Stream Only**: All events processed through standard event stream logic
 
-**Note**: For warehouse-based data activation, consider using Mixpanel's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+**Note**: For warehouse-based data activation, consider using MoEngage's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
 
 ### Supported Source Types
 ```json
@@ -113,3 +99,10 @@ The Mixpanel destination does not support RETL functionality. The destination:
 ```
 
 **Note**: `warehouse` is not included in supported source types, confirming no RETL support.
+
+## Documentation References
+
+- [MoEngage Bulk Import API](https://developers.moengage.com/hc/en-us/articles/4413174113044-Bulk-Import)
+- [MoEngage S3 Data Import](https://developers.moengage.com/hc/en-us/articles/4577796892308-S3-Data-Import)
+- [MoEngage Data APIs Overview](https://developers.moengage.com/hc/en-us/articles/4404674776724-Overview)
+- [RudderStack Event Stream Documentation](https://rudderstack.com/docs/destinations/streaming-destinations/)

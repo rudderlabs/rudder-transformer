@@ -6,6 +6,7 @@ const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
+const logger = require('../logger');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
@@ -14,7 +15,6 @@ const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS
 async function runUserTransform(
   events,
   code,
-  secrets,
   eventsMetadata,
   transformationId,
   workspaceId,
@@ -44,6 +44,7 @@ async function runUserTransform(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+        logger.debug('Error fetching data', error);
       }
     }),
   );
@@ -67,7 +68,9 @@ async function runUserTransform(
 
         try {
           data.body = JSON.parse(data.body);
-        } catch (e) {}
+        } catch (e) {
+          logger.debug('Error parsing JSON', e);
+        }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -104,11 +107,6 @@ async function runUserTransform(
     }),
   );
 
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
-  });
-
   jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -131,7 +129,6 @@ async function runUserTransform(
       destinationId: eventMetadata.destinationId,
       destinationType: eventMetadata.destinationType,
       destinationName: eventMetadata.destinationName,
-      // TODO: remove non required fields
       namespace: eventMetadata.namespace,
       trackingPlanId: eventMetadata.trackingPlanId,
       trackingPlanVersion: eventMetadata.trackingPlanVersion,
@@ -205,14 +202,6 @@ async function runUserTransform(
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
-      };
-
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
       };
 
         return new ivm.Reference(function forwardMainPromise(
@@ -346,7 +335,6 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
-          res.secrets || {},
           eventsMetadata,
           res.id,
           res.workspaceId,

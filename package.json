@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.104.1",
+  "version": "1.104.4",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -67,7 +67,7 @@
     "@datadog/pprof": "^5.5.1",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@rudderstack/integrations-lib": "^0.2.40",
+    "@rudderstack/integrations-lib": "^0.2.41",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
     "@rudderstack/workflow-engine": "^0.8.13",

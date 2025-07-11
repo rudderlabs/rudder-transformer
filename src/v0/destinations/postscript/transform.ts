@@ -223,24 +223,10 @@ const processRouterDest = async (
   // Perform subscriber lookup for identify events to determine create vs update operations
   let lookupResults: SubscriberLookupResult[] = [];
   if (identifyEvents.length > 0) {
-    try {
-      lookupResults = await performSubscriberLookup(
-        identifyEvents,
-        postscriptDestination.Config.apiKey,
-      );
-    } catch (error) {
-      // If lookup fails, we can still proceed by treating all as create operations
-      // This ensures the transformation continues even if the lookup API is temporarily unavailable
-      if (error instanceof Error) {
-        // Log the error for debugging while still proceeding
-        error.message = `Subscriber lookup failed: ${error.message}`;
-      }
-      lookupResults = identifyEvents.map((event) => ({
-        exists: false,
-        identifierValue: event.identifierValue ?? '',
-        identifierType: 'phone' as const,
-      }));
-    }
+    lookupResults = await performSubscriberLookup(
+      identifyEvents,
+      postscriptDestination.Config.apiKey,
+    );
   }
 
   // Update identify events based on lookup results

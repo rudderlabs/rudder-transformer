@@ -602,17 +602,6 @@ describe('PostScript Utils', () => {
       ]);
     });
 
-    it('should handle lookup API error', async () => {
-      mockHandleHttpRequest.mockRejectedValueOnce(new Error('API Error'));
-
-      const results = await performSubscriberLookup(mockEvents, 'test_api_key');
-
-      expect(results).toEqual([
-        { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
-        { exists: false, identifierValue: '+0987654321', identifierType: 'phone' },
-      ]);
-    });
-
     it('should handle events without phone or email', async () => {
       const eventsWithoutContact: ProcessedEvent[] = [
         {

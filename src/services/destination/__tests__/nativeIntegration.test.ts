@@ -3,6 +3,7 @@ import {
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  RequestMetadata,
 } from '../../../types/index';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
 import { DestinationPostTransformationService } from '../postTransformation';
@@ -15,7 +16,14 @@ describe('NativeIntegration Service', () => {
   test('doProcessorTransformation - success', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';
-    const requestMetadata = {};
+    const requestMetadata: RequestMetadata = {
+      namespace: 'Unknown',
+      cluster: 'Unknown',
+      features: {
+        'filter-code': true,
+        'gzip-support': true,
+      },
+    };
     const event = { message: { a: 'b' } } as unknown as ProcessorTransformationRequest;
     const events: ProcessorTransformationRequest[] = [event, event];
 
@@ -57,7 +65,14 @@ describe('NativeIntegration Service', () => {
   test('doProcessorTransformation - failure', async () => {
     const destType = '__rudder_test__';
     const version = 'v0';
-    const requestMetadata = {};
+    const requestMetadata: RequestMetadata = {
+      namespace: 'Unknown',
+      cluster: 'Unknown',
+      features: {
+        'filter-code': true,
+        'gzip-support': false,
+      },
+    };
     const event = { message: { a: 'b' } } as unknown as ProcessorTransformationRequest;
     const events: ProcessorTransformationRequest[] = [event, event];
 

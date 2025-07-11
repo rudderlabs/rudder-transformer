@@ -13,6 +13,7 @@ Facebook Custom Audience destination supports RETL (Reverse ETL) functionality, 
 **Supported**: No
 
 JSON Mapper is explicitly disabled for Facebook Custom Audience destination:
+
 - Configuration: `"disableJsonMapper": true` in db-config.json
 - Reason: Facebook Custom Audience requires specific field mappings and data transformations that are better handled through VDM flows
 
@@ -21,6 +22,7 @@ JSON Mapper is explicitly disabled for Facebook Custom Audience destination:
 **Supported**: Yes
 
 VDM v1 (Visual Data Mapper v1) is supported:
+
 - Configuration: `"supportsVisualMapper": true` in db-config.json
 - Allows visual mapping of warehouse fields to Facebook Custom Audience schema fields
 - Supports custom field mapping through the RudderStack dashboard
@@ -30,6 +32,7 @@ VDM v1 (Visual Data Mapper v1) is supported:
 **Supported**: Yes
 
 VDM v2 (Visual Data Mapper v2) is supported:
+
 - Configuration: `"supportedMessageTypes": {"cloud": ["audiencelist", "record"]}` includes record type
 - Enhanced VDM experience with improved field mapping capabilities
 - Supports `record` message type processing in the transformer code
@@ -41,11 +44,13 @@ VDM v2 (Visual Data Mapper v2) is supported:
 When connecting from a warehouse source:
 
 **Required Configuration**:
+
 - **Ad Account ID**: The Facebook Ad Account ID where audiences will be managed
-- **Access Token**: Facebook access token with appropriate permissions
+- **Access Token**: Facebook access token with `ads_read` and `ads_management` permissions
 - **Connection Mode**: Must be set to "cloud"
 
 **Optional Configuration**:
+
 - **App Secret**: For enhanced security with app secret proof
 - **User Schema**: Defines which fields to sync (automatically determined in VDM v2)
 - **Is Hash Required**: Whether to hash user data (default: true)
@@ -109,12 +114,21 @@ if (isEventSentByVDMV2Flow(event)) {
 const processAction = async (action, operation) => {
   if (groupedRecordsByAction[action]) {
     // Special validation for value-based audiences
-    if (isValueBasedAudience && !cleanUserSchema.includes('LOOKALIKE_VALUE') && operation === 'add') {
-      throw new ConfigurationError('LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.');
+    if (
+      isValueBasedAudience &&
+      !cleanUserSchema.includes('LOOKALIKE_VALUE') &&
+      operation === 'add'
+    ) {
+      throw new ConfigurationError(
+        'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+      );
     }
-    
+
     // Batch processing with user count limits
-    const recordChunksArray = returnArrayOfSubarrays(groupedRecordsByAction[action], MAX_USER_COUNT);
+    const recordChunksArray = returnArrayOfSubarrays(
+      groupedRecordsByAction[action],
+      MAX_USER_COUNT,
+    );
     return processRecordEventArray(recordChunksArray, config, destination, operation, audienceId);
   }
   return null;
@@ -144,13 +158,16 @@ For value-based custom audiences:
 ```javascript
 // Value-based audience validation
 if (isValueBasedAudience && !cleanUserSchema.includes('LOOKALIKE_VALUE') && operation === 'add') {
-  throw new ConfigurationError('LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.');
+  throw new ConfigurationError(
+    'LOOKALIKE_VALUE field is required for Value-Based Custom Audiences.',
+  );
 }
 
 // LOOKALIKE_VALUE processing
 if (propertyName === 'LOOKALIKE_VALUE') {
   const lookalikeValue = Number(normalizedValue);
-  const validLookalikeValue = Number.isFinite(lookalikeValue) && lookalikeValue >= 0 ? lookalikeValue : 0;
+  const validLookalikeValue =
+    Number.isFinite(lookalikeValue) && lookalikeValue >= 0 ? lookalikeValue : 0;
   dataElement.push(validLookalikeValue);
   return dataElement;
 }
@@ -172,9 +189,9 @@ if (propertyName === 'LOOKALIKE_VALUE') {
 
 ### Response Handling
 
-- Partial batch failures are handled gracefully
-- Failed records are reported with appropriate error messages
-- Successful records continue processing even if some fail
+- Batch-level success/failure handling - all records in a batch succeed or fail together
+- Failed batches are reported with appropriate error messages
+- No individual record-level error reporting within batches
 
 ## Performance Considerations
 

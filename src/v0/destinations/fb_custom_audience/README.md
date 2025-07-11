@@ -10,45 +10,54 @@ Implementation in **Javascript**
 
 - **Access Token**: Required for authentication with Facebook Graph API
   - Must have appropriate permissions for Custom Audience operations
-  - Should have `ads_management` permission for creating and managing custom audiences
+  - Should have `ads_read` and `ads_management` permissions for reading and managing custom audiences
 
 ### Optional Settings
 
 - **App Secret**: Used for enhanced security with app secret proof generation
+
   - When provided, generates `appsecret_proof` parameter for additional security
   - Follows Facebook's security recommendations for server-to-server API calls
 
 - **Max User Count**: Maximum number of users to process in a single batch
+
   - Default: 10,000 users (Facebook's maximum limit)
   - Used for chunking large audience lists
 
 - **User Schema**: Defines the user data fields to be sent to Facebook
+
   - Available fields: `EMAIL`, `PHONE`, `GEN`, `MADID`, `EXTERN_ID`, `DOBY`, `DOBM`, `DOBD`, `LN`, `FN`, `FI`, `CT`, `ST`, `ZIP`, `COUNTRY`, `LOOKALIKE_VALUE`
   - Default: `["EMAIL"]`
   - Multiple fields can be selected for better matching rates
 
 - **Is Hash Required**: Controls whether user data should be hashed
+
   - Default: `true`
   - When enabled, most fields (except `MADID` and `EXTERN_ID`) are SHA-256 hashed
   - Required for compliance with Facebook's data handling requirements
 
 - **Is Raw**: Controls whether to send raw (unhashed) data
+
   - Default: `false`
   - When enabled, data is sent without hashing (use with caution)
 
 - **Disable Format**: Controls whether to apply Facebook's formatting rules
+
   - Default: `false`
   - When enabled, skips data normalization and formatting
 
 - **Type**: Specifies the audience type for data source classification
+
   - Available values: `UNKNOWN`, `FILE_IMPORTED`, `EVENT_BASED`, `SEED_BASED`, `THIRD_PARTY_IMPORTED`, `COPY_PASTE`, `CONTACT_IMPORTER`, `HOUSEHOLD_AUDIENCE`
   - Default: `NA`
 
 - **Sub Type**: Specifies the audience sub-type for data source classification
+
   - Available values: Multiple options including `ANYTHING`, `NOTHING`, `HASHES`, `USER_IDS`, `EXTERNAL_IDS`, etc.
   - Default: `NA`
 
 - **Audience ID**: Required for event stream mode
+
   - The Facebook Custom Audience ID where users will be added/removed
   - Must be provided when using cloud connection mode
 
@@ -78,13 +87,14 @@ Implementation in **Javascript**
 
 **NEEDS REVIEW**: Facebook's official documentation for Custom Audience API rate limits is not publicly accessible. Based on general Facebook Graph API patterns:
 
-| Endpoint | Event Types | Estimated Rate Limit | Batch Limits | Description |
-|----------|-------------|---------------------|--------------|-------------|
-| `/{audience-id}/users` | Audience List, Record | **NEEDS REVIEW** | 10,000 users per batch | Used for adding/removing users from custom audiences |
+| Endpoint               | Event Types           | Estimated Rate Limit | Batch Limits           | Description                                          |
+| ---------------------- | --------------------- | -------------------- | ---------------------- | ---------------------------------------------------- |
+| `/{audience-id}/users` | Audience List, Record | **NEEDS REVIEW**     | 10,000 users per batch | Used for adding/removing users from custom audiences |
 
 **Note**: Facebook implements dynamic rate limiting based on various factors including:
+
 - App usage patterns
-- Historical API call volume  
+- Historical API call volume
 - Account standing
 - Time of day and overall platform load
 
@@ -126,8 +136,8 @@ The destination implements retry logic through the Facebook utilities network ha
 
 ### Partial Batching Response Handling
 
-- **Supported**: Yes
-- **Implementation**: Network handler supports partial batch response handling through Facebook utilities
+- **Supported**: No
+- **Implementation**: Facebook Custom Audience destination does not support partial batch response handling. All records in a batch are treated as a single unit - either all succeed or all fail based on the overall API response.
 
 ### Additional Functionalities
 
@@ -214,20 +224,24 @@ The following Facebook API error codes are configured as abortable (will not be 
 ### Event Ordering
 
 #### Audience List Events
+
 - **Required**: No
 - **Reasoning**: Facebook Custom Audience operations are idempotent. Adding the same user multiple times or removing a user that doesn't exist doesn't cause issues. The final state of the audience is what matters, not the order of operations.
 
 #### Record Events (RETL)
-- **Required**: No  
+
+- **Required**: No
 - **Reasoning**: Similar to audience list events, RETL operations for audience management are idempotent. The destination processes insert, update, and delete actions, but the order doesn't affect the final audience composition.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes
 - **Reasoning**: Since event ordering is not required, missing data can be replayed without issues. Facebook Custom Audience operations are idempotent, so replaying missing add/remove operations will result in the correct final audience state.
 
 #### Already Delivered Data Replay
+
 - **Feasible**: Yes
 - **Reasoning**: Facebook Custom Audience operations are idempotent. Re-adding users who are already in the audience or re-removing users who are already removed will not cause duplicates or errors. The API handles these scenarios gracefully.
 
@@ -239,12 +253,13 @@ The following Facebook API error codes are configured as abortable (will not be 
 #### Event Processing Scenarios
 
 1. **Audience List Events**:
+
    - **Multiplexing**: NO
    - Single API Call: `POST/DELETE /{audience-id}/users` - To add or remove users from the audience
    - **Note**: Each audience list event results in one API call per batch (due to batching limits)
 
 2. **Record Events (RETL)**:
-   - **Multiplexing**: NO  
+   - **Multiplexing**: NO
    - Single API Call: `POST/DELETE /{audience-id}/users` - Based on the record action (insert/update = add, delete = remove)
    - **Note**: Multiple records may be batched into single API calls, but each record doesn't generate multiple calls
 

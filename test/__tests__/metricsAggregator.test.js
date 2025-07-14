@@ -602,7 +602,7 @@ describe('MetricsAggregator', () => {
     await metricsAggregator.shutdown();
   });
 
-  it('should filter unsafe metrics using v8.serialize', async () => {
+  it('should return all metrics without filtering', async () => {
     logger.setLogLevel('info');
     
     const cluster = require('cluster');
@@ -611,15 +611,6 @@ describe('MetricsAggregator', () => {
       id: 1,
       send: jest.fn()
     };
-
-    // Mock v8.serialize to throw error for unsafe metrics
-    const originalSerialize = v8.serialize;
-    v8.serialize = jest.fn().mockImplementation((obj) => {
-      if (obj.name === 'unsafe_metric') {
-        throw new Error('Cannot serialize');
-      }
-      return originalSerialize(obj);
-    });
 
     const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
       return [
@@ -644,15 +635,17 @@ describe('MetricsAggregator', () => {
       requestId: 1
     });
     
-    // Verify that only safe metrics were sent
+    // Verify that all metrics are returned without filtering
     expect(cluster.worker.send).toHaveBeenCalledWith({
       type: 'rudder-transformer:getMetricsRes',
-      metrics: [{ name: 'safe_metric', value: 1 }],
+      metrics: [
+        { name: 'safe_metric', value: 1 },
+        { name: 'unsafe_metric', value: 2 }
+      ],
       requestId: 1
     });
     
     // Restore original state
-    v8.serialize = originalSerialize;
     cluster.worker = originalWorker;
     
     await metricsAggregator.shutdown();

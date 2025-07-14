@@ -90,6 +90,13 @@ export async function start(port: any, app: any, metricsApp: any) {
     10,
   );
 
+  const getSerialization = () => {
+    if (process.env.CLUSTER_MANAGER_SERIALIZATION === 'json') {
+      return 'json';
+    }
+    return 'advanced';
+  };
+
   const usePrometheus = process.env.STATS_CLIENT === 'prometheus';
   let server: any = null; // Will hold the http server instance
   const clusterManager = new ClusterManager({
@@ -125,6 +132,7 @@ export async function start(port: any, app: any, metricsApp: any) {
       server = app.listen(port);
     },
     workerShutdownFn: workerShutdownFn(() => server),
+    serialization: getSerialization(),
   });
 
   await clusterManager.start();

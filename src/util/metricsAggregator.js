@@ -92,7 +92,7 @@ class MetricsAggregator {
     if (message.type === MESSAGE_TYPES.GET_METRICS_REQ) {
       logger.debug(`[MetricsAggregator] Worker ${cluster.worker.id} received metrics request`);
       try {
-        const metrics = await this.getSafeMetrics();
+        const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
         cluster.worker.send({
           type: MESSAGE_TYPES.GET_METRICS_RES,
           metrics,
@@ -129,24 +129,6 @@ class MetricsAggregator {
         );
       }
     }
-  }
-
-  isMetricsSafe(metric) {
-    try {
-      v8.serialize(metric);
-      return true;
-    } catch (error) {
-      logger.error(`[MetricsAggregator] Error serializing metric: ${error.message}`, {
-        error: error.stack,
-        metric,
-      });
-      return false;
-    }
-  }
-
-  async getSafeMetrics() {
-    const metrics = await this.prometheusInstance.prometheusRegistry.getMetricsAsJSON();
-    return metrics.filter((metric) => this.isMetricsSafe(metric));
   }
 
   registerCallbacks() {

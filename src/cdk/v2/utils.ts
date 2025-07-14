@@ -86,6 +86,7 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
   const message = isProd ? getWorkflowEngineErrorMessage(err) : err.message;
 
   if (err instanceof WorkflowExecutionError) {
+    logger.debug(`Error occurred during workflow step execution: ${message}`, err);
     // Determine the error instance
     let errInstance: CatchErr = err;
     if (err.originalError) {

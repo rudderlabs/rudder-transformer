@@ -1,6 +1,7 @@
 const { MetricsAggregator } = require('../../src/util/metricsAggregator');
 const logger = require('../../src/logger');
 const { Worker } = require('worker_threads');
+const v8 = require('v8');
 jest.mock('cluster');
 const cluster = require('cluster');
 
@@ -215,7 +216,7 @@ describe('MetricsAggregator', () => {
     await metricsAggregator.shutdown();
   });
 
-  it('should handle an error in workerThread.postMessage', async () => {
+  it('should handle error in workerThread.postMessage', async () => {
     logger.setLogLevel('info');
     jest.useFakeTimers();
     // mock the getMetricsAsJSON method to return a single metric
@@ -292,7 +293,7 @@ describe('MetricsAggregator', () => {
     });
 
     metricsAggregator.resolveFunc = jest.fn();
-    mockRejectFunc = jest.fn();
+    const mockRejectFunc = jest.fn();
     metricsAggregator.rejectFunc = mockRejectFunc;
     metricsAggregator.onWorkerThreadMessage({
       type: 'rudder-transformer:aggregateMetricsRes', 
@@ -519,26 +520,26 @@ describe('MetricsAggregator', () => {
     // Create metricsAggregator and mock the config property directly
     const metricsAggregator = new MetricsAggregator({ prometheusRegistry: {}});
     
-    // Mock the config to disable periodic reset
-    const originalConfig = metricsAggregator.constructor.config;
-    metricsAggregator.constructor.config = { 
-      ...originalConfig, 
-      isPeriodicResetEnabled: false 
-    };
+    // Mock the config to disable periodic reset by setting environment variable
+    const originalEnv = process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED;
+    process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED = 'false';
+    
+    // Create a new instance to pick up the environment variable change
+    const metricsAggregator2 = new MetricsAggregator({ prometheusRegistry: {}});
     
     // Spy on registerCallbackForPeriodicReset
-    const registerSpy = jest.spyOn(metricsAggregator, 'registerCallbackForPeriodicReset');
+    const registerSpy = jest.spyOn(metricsAggregator2, 'registerCallbackForPeriodicReset');
     
     // This should call registerCallbacks and trigger line 137 (return without periodic reset)
-    metricsAggregator.registerCallbacks();
+    metricsAggregator2.registerCallbacks();
     
     expect(registerSpy).not.toHaveBeenCalled();
     
     // Restore original state
-    metricsAggregator.constructor.config = originalConfig;
-    cluster.isPrimary = originalIsPrimary;
+    process.env.METRICS_AGGREGATOR_PERIODIC_RESET_ENABLED = originalEnv;
     
     await metricsAggregator.shutdown();
+    await metricsAggregator2.shutdown();
   });
 
   it('should handle worker thread errors during shutdown', async () => {
@@ -597,6 +598,55 @@ describe('MetricsAggregator', () => {
     // Restore original cluster state
     cluster.workers = originalWorkers;
     cluster.isPrimary = originalIsPrimary;
+    
+    await metricsAggregator.shutdown();
+  });
+
+  it('should return all metrics without filtering', async () => {
+    logger.setLogLevel('info');
+    
+    const cluster = require('cluster');
+    const originalWorker = cluster.worker;
+    cluster.worker = {
+      id: 1,
+      send: jest.fn()
+    };
+
+    const mockGetMetricsAsJSON = jest.fn().mockImplementation(() => {
+      return [
+        {
+          name: 'safe_metric',
+          value: 1
+        },
+        {
+          name: 'unsafe_metric',
+          value: 2
+        }
+      ];
+    });
+
+    const metricsAggregator = new MetricsAggregator({ 
+      prometheusRegistry: { getMetricsAsJSON: mockGetMetricsAsJSON }
+    });
+    
+    // Call onMasterMessage with GET_METRICS_REQ
+    await metricsAggregator.onMasterMessage({
+      type: 'rudder-transformer:getMetricsReq',
+      requestId: 1
+    });
+    
+    // Verify that all metrics are returned without filtering
+    expect(cluster.worker.send).toHaveBeenCalledWith({
+      type: 'rudder-transformer:getMetricsRes',
+      metrics: [
+        { name: 'safe_metric', value: 1 },
+        { name: 'unsafe_metric', value: 2 }
+      ],
+      requestId: 1
+    });
+    
+    // Restore original state
+    cluster.worker = originalWorker;
     
     await metricsAggregator.shutdown();
   });

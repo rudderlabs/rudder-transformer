@@ -128,8 +128,7 @@ const getExtInfo = (message) => {
     deviceInfo.freeStorage,
     environmentInfo.timezone,
   ];
-
-  return extInfo.some((value) => value == null) ? null : extInfo;
+  return extInfo.map((value) => (value == null ? '' : value));
 };
 
 module.exports = {

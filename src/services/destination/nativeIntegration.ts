@@ -183,7 +183,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
   public async deliver(
     deliveryRequest: ProxyRequest,
     destinationType: string,
-    _requestMetadata: NonNullable<unknown>,
+    _requestMetadata: RequestMetadata,
     version: string,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {

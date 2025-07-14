@@ -34,6 +34,8 @@ export type RequestMetadata = {
   namespace: string;
   cluster: string;
   features: Record<string, boolean>;
+  // Allow additional metadata fields for future extensibility
+  [key: string]: unknown;
 };
 
 export type BatchedRequestBody<T = Record<string, unknown>> = {

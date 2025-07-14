@@ -1,5 +1,6 @@
 import { FetchHandler } from '../../../helpers/fetchHandlers';
 import {
+  RequestMetadata,
   SourceTransformationResponse,
   SourceTransformationSuccessResponse,
 } from '../../../types/index';
@@ -16,9 +17,18 @@ const headers = {
 };
 
 describe('NativeIntegration Source Service', () => {
+  const createMockRequestMetadata = (): RequestMetadata => ({
+    namespace: 'Test',
+    cluster: 'Test',
+    features: {
+      'source-transformation': true,
+      'batch-processing': true,
+    },
+  });
+
   test('sourceTransformRoutine - success', async () => {
     const sourceType = '__rudder_test__';
-    const requestMetadata = {};
+    const requestMetadata = createMockRequestMetadata();
 
     const event = {
       request: { body: JSON.stringify({ message: { a: 'b' } }) },
@@ -61,7 +71,7 @@ describe('NativeIntegration Source Service', () => {
   describe('sourceTransformRoutine - failure', () => {
     test('integration failure', async () => {
       const sourceType = '__rudder_test__';
-      const requestMetadata = {};
+      const requestMetadata = createMockRequestMetadata();
 
       const event = {
         request: { body: JSON.stringify({ message: { a: 'b' } }) },
@@ -99,7 +109,7 @@ describe('NativeIntegration Source Service', () => {
 
     test('invalid source events', async () => {
       const sourceType = '__rudder_test__';
-      const requestMetadata = {};
+      const requestMetadata = createMockRequestMetadata();
 
       const service = new NativeIntegrationSourceService();
       await expect(

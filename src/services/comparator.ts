@@ -13,6 +13,7 @@ import {
   RouterTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,
+  RequestMetadata,
 } from '../types';
 import { CommonUtils } from '../util/common';
 import stats from '../util/stats';
@@ -159,7 +160,7 @@ export class ComparatorService implements DestinationService {
     secondaryServiceCallback: any,
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
     feature: string,
     destinationId: string,
   ): Promise<void> {
@@ -197,7 +198,7 @@ export class ComparatorService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<ProcessorTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -255,7 +256,7 @@ export class ComparatorService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<RouterTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -313,7 +314,7 @@ export class ComparatorService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): RouterTransformationResponse[] {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -370,7 +371,7 @@ export class ComparatorService implements DestinationService {
   public async deliver(
     event: ProxyRequest,
     destinationType: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
     version: string,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     const primaryResplist = await this.primaryService.deliver(

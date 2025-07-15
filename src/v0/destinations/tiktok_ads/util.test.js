@@ -1,4 +1,4 @@
-const { getContents, hashUserField } = require('./util');
+const { getContents, hashUserField, getEventSource } = require('./util');
 
 describe('getContents utility test', () => {
   it('product id sent as number', () => {
@@ -170,5 +170,40 @@ describe('hashUserField utility test', () => {
     const hashedUser = hashUserField(user);
 
     expect(hashedUser).not.toBe(user);
+  });
+});
+
+describe('getEventSource utility test', () => {
+  it('should return the event source from the message properties', () => {
+    const message = {
+      properties: {
+        eventSource: 'web',
+      },
+    };
+    expect(getEventSource(message)).toBe('web');
+  });
+  it('returns channel if eventSource is missing and channel is valid', () => {
+    const message = { properties: {}, channel: 'crm' };
+    expect(getEventSource(message)).toBe('crm');
+  });
+  it('returns channel if eventSource is invalid and channel is valid', () => {
+    const message = { properties: { eventSource: 'invalid' }, channel: 'offline' };
+    expect(getEventSource(message)).toBe('offline');
+  });
+  it('returns "web" if both eventSource and channel are missing', () => {
+    const message = { properties: {} };
+    expect(getEventSource(message)).toBe('web');
+  });
+  it('returns "web" if both eventSource and channel are invalid', () => {
+    const message = { properties: { eventSource: 'foo' }, channel: 'bar' };
+    expect(getEventSource(message)).toBe('web');
+  });
+  it('returns eventSource if both eventSource and channel are valid', () => {
+    const message = { properties: { eventSource: 'crm' }, channel: 'app' };
+    expect(getEventSource(message)).toBe('crm');
+  });
+  it('returns "web" if properties is undefined', () => {
+    const message = {};
+    expect(getEventSource(message)).toBe('web');
   });
 });

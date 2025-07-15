@@ -19,9 +19,9 @@ import {
  * @returns A single payload with combined data from all events
  */
 export const getMergedPayload = (batch: SnapchatV3ProcessedEvent[]): SnapchatV3Payload => ({
-  data: batch.flatMap((input) => {
-    const json = input.message.body.JSON as SnapchatV3Payload;
-    return json.data;
+  data: batch.flatMap((input: SnapchatV3ProcessedEvent) => {
+    const json = input.message.body.JSON;
+    return json?.data || [];
   }),
 });
 

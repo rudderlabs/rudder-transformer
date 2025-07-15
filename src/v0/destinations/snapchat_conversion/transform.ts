@@ -362,7 +362,7 @@ const trackResponseBuilder = (
  */
 export const process = (
   event: SnapchatRouterRequest,
-): SnapchatV2BatchedRequest | SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
+): SnapchatV2BatchedRequest[] | SnapchatV3BatchedRequest => {
   const { message, destination } = event;
   const apiVersion = destination.Config?.apiVersion as ApiVersionValue;
 
@@ -392,7 +392,7 @@ export const process = (
   } else {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
-  return response;
+  return Array.isArray(response) ? response : [response];
 };
 
 /**
@@ -415,7 +415,7 @@ const processRouterDest = async (inputs: SnapchatRouterRequest[], reqMetadata: a
     try {
       const resp = process(event);
       eventsChunk.push({
-        message: (Array.isArray(resp) ? resp : [resp]) as SnapchatV2BatchedRequest[],
+        message: resp as SnapchatV2BatchedRequest[], // as resp can be SnapchatV2BatchedRequest[] or SnapchatV3BatchedRequest so we need to typecast it to SnapchatV2BatchedRequest[]
         metadata: event.metadata,
         destination: event.destination,
       });

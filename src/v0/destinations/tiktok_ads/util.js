@@ -60,4 +60,29 @@ const hashUserField = (user) => {
   }
   return updatedUser;
 };
-module.exports = { getContents, hashUserField };
+
+/**
+ * Get event source from message properties or channel. We have considered the following doc
+ * https://business-api.tiktok.com/portal/docs?id=1771100779668482
+ * @param {*} message
+ * @returns (string): The resolved, valid event source — one of 'web', 'app', 'offline', or 'crm'. Defaults to 'web' if none are valid.
+ */
+const getEventSource = ({ properties, channel }) => {
+  const supportedSources = ['web', 'app', 'offline', 'crm'];
+
+  const isSupported = (source) => supportedSources.includes(source);
+
+  const { eventSource } = properties || {};
+
+  if (eventSource && isSupported(eventSource)) {
+    return eventSource;
+  }
+
+  if (channel && isSupported(channel)) {
+    return channel;
+  }
+
+  return 'web';
+};
+
+module.exports = { getContents, hashUserField, getEventSource };

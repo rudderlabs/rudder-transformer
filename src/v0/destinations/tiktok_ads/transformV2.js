@@ -17,7 +17,7 @@ const {
   validateEventName,
   sortBatchesByMinJobId,
 } = require('../../util');
-const { getContents, hashUserField } = require('./util');
+const { getContents, hashUserField, getEventSource } = require('./util');
 const config = require('./config');
 
 const {
@@ -131,7 +131,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   // set event source and event_source_id
   response.body.JSON = {
-    event_source: 'web',
+    event_source: getEventSource(message),
     event_source_id: pixelCode,
     partner_name: PARTNER_NAME,
     test_event_code: message.properties?.testEventCode,
@@ -683,17 +683,19 @@ const batchEvents = (eventsChunk) => {
   const events = [];
   let data = [];
   let metadata = [];
+  let eventSource = 'web';
   const { destination } = eventsChunk[0];
   const { pixelCode } = destination.Config;
   eventsChunk.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
+    eventSource = event.message[0]?.body.JSON.event_source;
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (Array.isArray(eventData) && eventData?.length > config.maxBatchSizeV2 - data.length) {
       // Partner name must be added above "data": [..];
       events.push({
         event: {
           event_source_id: pixelCode,
-          event_source: 'web',
+          event_source: eventSource,
           partner_name: PARTNER_NAME,
           data: [...data],
         },
@@ -710,7 +712,7 @@ const batchEvents = (eventsChunk) => {
   events.push({
     event: {
       event_source_id: pixelCode,
-      event_source: 'web',
+      event_source: eventSource,
       partner_name: PARTNER_NAME,
       data: [...data],
     },

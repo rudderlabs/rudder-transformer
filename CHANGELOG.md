@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.6](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.5...v1.104.6) (2025-07-14)
+
+
+### Bug Fixes
+
+* add mapping of advertiser_tracking_enabled and enable extInfo with empty string ([#4491](https://github.com/rudderlabs/rudder-transformer/issues/4491)) ([2a8456b](https://github.com/rudderlabs/rudder-transformer/commit/2a8456bbfa6a090ad2fd107df70107a4cf0848e9))
+* update integrations-lib and improve cluster serialization ([3adae0e](https://github.com/rudderlabs/rudder-transformer/commit/3adae0ee5207006e8eb3872945e28630b488e3ec))
+
+### [1.104.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.4...v1.104.5) (2025-07-11)
+
+
+### Bug Fixes
+
+* add v8 import and update metrics aggregator for safe serialization ([f36287a](https://github.com/rudderlabs/rudder-transformer/commit/f36287ac2ad520bbc85299ca014994288ac993c2))
+
+### [1.104.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.3...v1.104.4) (2025-07-11)
+
+### [1.104.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.2...v1.104.3) (2025-07-10)
+
+
+### Bug Fixes
+
+* santize metrics before sending to ipc ([1422b50](https://github.com/rudderlabs/rudder-transformer/commit/1422b50274958d223aade4c412fb37d2b4b3eaa5))
+
 ### [1.104.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.1...v1.104.2) (2025-07-10)
 
 

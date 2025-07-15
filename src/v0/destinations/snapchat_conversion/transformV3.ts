@@ -347,6 +347,12 @@ const trackResponseBuilder = (
       ...commonProperties.custom_data,
     };
   }
+  if (commonProperties?.app_data) {
+    payload.data[0].app_data = {
+      ...payload.data[0]?.app_data,
+      ...commonProperties.app_data,
+    };
+  }
 
   // Process and validate payload
   const processedPayload: SnapchatV3Payload = processPayload(payload, message, {

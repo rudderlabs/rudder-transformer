@@ -226,6 +226,7 @@ async function createIvm(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+        logger.debug('Error fetching data', error);
       }
     }),
   );
@@ -249,7 +250,9 @@ async function createIvm(
 
         try {
           data.body = JSON.parse(data.body);
-        } catch (e) {}
+        } catch (e) {
+          logger.debug('Error parsing JSON', e);
+        }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -297,11 +300,6 @@ async function createIvm(
       throw new TypeError('Key should be valid and defined');
     }
     return credentials[key];
-  });
-
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
   });
 
   await jail.set('log', function (...args) {
@@ -367,14 +365,6 @@ async function createIvm(
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
-      };
-      
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
       };
 
       let getCredential = _getCredential;

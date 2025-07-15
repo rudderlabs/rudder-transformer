@@ -188,10 +188,5 @@ export const getExtInfo = (message: RudderMessage): string[] | null => {
     environmentInfo.timezone,
   ];
 
-  if (extInfo.some((value) => value == null)) {
-    return null;
-  }
-
-  // Convert all values to strings and filter out nulls
-  return extInfo.map((value) => (value === null ? '' : String(value))) as string[];
+  return extInfo.map((value) => (value == null ? '' : value));
 };

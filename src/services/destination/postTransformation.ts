@@ -89,7 +89,7 @@ export class DestinationPostTransformationService {
       if (Array.isArray(resultantPayload.batchedRequest)) {
         resultantPayload.batchedRequest = resultantPayload.batchedRequest.map((request) => ({
           ...request,
-          userId: request.userId ? `${request.userId}` : request.userId,
+          userId: request.userId != null ? String(request.userId) : request.userId,
         }));
       } else if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
         resultantPayload.batchedRequest = {

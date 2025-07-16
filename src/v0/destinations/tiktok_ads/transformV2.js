@@ -1,7 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
 const set = require('set-value');
-const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  ConfigurationError,
+  InstrumentationError,
+  groupByInBatches,
+  forEachInBatches,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -751,15 +756,23 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   const batchedResponseList = [];
-  if (eventsChunk.length > 0) {
-    const batchedEvents = batchEvents(eventsChunk);
-    batchedEvents.forEach((batch) => {
-      const batchedRequest = buildBatchResponseForEvent(batch);
-      batchedResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
-      );
-    });
-  }
+  // Grouping events by event_source
+  const groupedEventChunks = await groupByInBatches(
+    eventsChunk,
+    (event) => event.message[0].body.JSON.event_source,
+  );
+
+  await forEachInBatches(Object.keys(groupedEventChunks), async (eventSource) => {
+    const batchedEvents = batchEvents(groupedEventChunks[eventSource]);
+    if (batchedEvents.length > 0) {
+      forEachInBatches(batchedEvents, async (batch) => {
+        const batchedRequest = buildBatchResponseForEvent(batch);
+        batchedResponseList.push(
+          getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+        );
+      });
+    }
+  });
   // Sort the events based on job id
   // Event may get out of order due testEventCode properties this function ensure that events are in order
   return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));

@@ -2651,7 +2651,7 @@ export const data: RouterTestData[] = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'web',
+                channel: 'crm',
                 context: {
                   userAgent:
                     'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -2706,118 +2706,171 @@ export const data: RouterTestData[] = [
         body: {
           output: [
             {
+              batched: true,
               batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
+                body: {
+                  FORM: {},
+                  JSON: {
+                    data: [
+                      {
+                        event: 'CompletePayment',
+                        event_id: '1616318632825_357',
+                        event_time: 1600372167,
+                        page: {
+                          referrer: 'http://demo.mywebsite.com',
+                          url: 'http://demo.mywebsite.com/purchase',
+                        },
+                        properties: {
+                          content_type: 'product',
+                          contents: [
+                            {
+                              content_id: '1077218',
+                              content_type: 'socks',
+                              price: 8,
+                              quantity: 2,
+                            },
+                            {
+                              content_id: '1197218',
+                              content_type: 'dress',
+                              price: 30,
+                              quantity: 1,
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        user: {
+                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          external_id: 'id5',
+                          ip: '13.57.97.131',
+                          locale: 'en-US',
+                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                      },
+                      {
+                        event: 'CompletePayment',
+                        event_id: '1616318632825_357',
+                        event_time: 1600372167,
+                        page: {
+                          url: 'http://demo.mywebsite.com/purchase',
+                        },
+                        properties: {
+                          content_type: 'product',
+                          contents: [
+                            {
+                              content_id: '1077218',
+                              content_type: 'socks',
+                              price: 8,
+                              quantity: 2,
+                            },
+                            {
+                              content_id: '1197218',
+                              content_type: 'dress',
+                              price: 30,
+                              quantity: 1,
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        user: {
+                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          external_id: 'id1',
+                          ip: '13.57.97.131',
+                          locale: 'en-US',
+                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                      },
+                      {
+                        event: 'download',
+                        event_id: '1616318632825_357',
+                        event_time: 1600372167,
+                        page: {
+                          url: 'http://demo.mywebsite.com/purchase',
+                        },
+                        properties: {
+                          contents: [
+                            {
+                              content_id: '1077218',
+                              content_type: 'socks',
+                              price: 8,
+                              quantity: 2,
+                            },
+                            {
+                              content_id: '1197218',
+                              content_type: 'dress',
+                              price: 30,
+                              quantity: 1,
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        user: {
+                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          external_id: 'id1',
+                          ip: '13.57.97.131',
+                          locale: 'en-US',
+                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                      },
+                    ],
+                    event_source: 'web',
+                    event_source_id: 'dummyPixelCode',
+                    partner_name: 'RudderStack',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                files: {},
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
                 },
+                method: 'POST',
                 params: {},
-                body: {
-                  JSON: {
-                    event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
-                    partner_name: 'RudderStack',
-                    data: [
-                      {
-                        event_id: '1616318632825_357',
-                        event_time: 1600372167,
-                        properties: {
-                          contents: [
-                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          content_type: 'product',
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        page: {
-                          url: 'http://demo.mywebsite.com/purchase',
-                          referrer: 'http://demo.mywebsite.com',
-                        },
-                        user: {
-                          locale: 'en-US',
-                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                          external_id: 'id5',
-                        },
-                        event: 'CompletePayment',
-                      },
-                      {
-                        event_id: '1616318632825_357',
-                        event_time: 1600372167,
-                        properties: {
-                          contents: [
-                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          content_type: 'product',
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        page: { url: 'http://demo.mywebsite.com/purchase' },
-                        user: {
-                          locale: 'en-US',
-                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                          external_id: 'id1',
-                        },
-                        event: 'CompletePayment',
-                      },
-                      {
-                        event_id: '1616318632825_357',
-                        event_time: 1600372167,
-                        properties: {
-                          contents: [
-                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        page: { url: 'http://demo.mywebsite.com/purchase' },
-                        user: {
-                          locale: 'en-US',
-                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                          external_id: 'id1',
-                        },
-                        event: 'download',
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  accessToken: 'dummyAccessToken',
+                  eventsToStandard: [
+                    {
+                      from: 'addToCart',
+                      to: 'CompletePayment',
+                    },
+                    {
+                      from: 'addToCart',
+                      to: 'download',
+                    },
+                  ],
+                  hashUserProperties: false,
+                  pixelCode: 'dummyPixelCode',
+                  version: 'v2',
                 },
-                files: {},
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'Default Display Name',
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                },
+                Enabled: true,
+                ID: 'default-destination-id',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'Default Destination',
+                RevisionID: 'default-revision',
+                Transformations: [],
+                WorkspaceID: 'default-workspaceId',
+                hasDynamicConfig: false,
               },
               metadata: [
                 {
@@ -2829,28 +2882,49 @@ export const data: RouterTestData[] = [
                   userId: 'u1',
                 },
               ],
-              batched: true,
               statusCode: 200,
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-                version: 'v2',
-                eventsToStandard: [
-                  { from: 'addToCart', to: 'CompletePayment' },
-                  { from: 'addToCart', to: 'download' },
-                ],
-              }),
             },
             {
+              batched: false,
+              destination: {
+                Config: {
+                  eventsToStandard: [
+                    {
+                      from: 'addToCart',
+                      to: 'CompletePayment',
+                    },
+                    {
+                      from: 'addToCart',
+                      to: 'download',
+                    },
+                  ],
+                  hashUserProperties: false,
+                  pixelCode: 'dummyPixelCode',
+                  version: 'v2',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'Default Display Name',
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                },
+                Enabled: true,
+                ID: 'default-destination-id',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'Default Destination',
+                RevisionID: 'default-revision',
+                Transformations: [],
+                WorkspaceID: 'default-workspaceId',
+                hasDynamicConfig: false,
+              },
+              error: 'Access Token not found. Aborting',
               metadata: [
                 {
                   jobId: 2,
                   userId: 'u1',
                 },
               ],
-              batched: false,
-              statusCode: 400,
               statTags: {
                 destType: 'TIKTOK_ADS',
                 errorCategory: 'dataValidation',
@@ -2859,149 +2933,190 @@ export const data: RouterTestData[] = [
                 implementation: 'native',
                 module: 'destination',
               },
-              error: 'Access Token not found. Aborting',
-              destination: overrideDestination(destinationConfig, {
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-                version: 'v2',
-                eventsToStandard: [
-                  { from: 'addToCart', to: 'CompletePayment' },
-                  { from: 'addToCart', to: 'download' },
-                ],
-              }),
+              statusCode: 400,
             },
             {
+              batched: false,
               batchedRequest: [
                 {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      data: [
+                        {
+                          event: 'CompletePayment',
+                          event_id: '1616318632825_357',
+                          event_time: 1600372167,
+                          page: {
+                            url: 'http://demo.mywebsite.com/purchase',
+                          },
+                          properties: {
+                            content_type: 'product',
+                            contents: [
+                              {
+                                content_id: '1077218',
+                                content_type: 'socks',
+                                price: 8,
+                                quantity: 2,
+                              },
+                              {
+                                content_id: '1197218',
+                                content_type: 'dress',
+                                price: 30,
+                                quantity: 1,
+                              },
+                            ],
+                            currency: 'USD',
+                            value: 46,
+                          },
+                          user: {
+                            email:
+                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                            external_id: 'id2',
+                            ip: '13.57.97.131',
+                            locale: 'en-US',
+                            phone:
+                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                            user_agent:
+                              'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                          },
+                        },
+                      ],
+                      event_source: 'web',
+                      event_source_id: 'dummyPixelCode',
+                      partner_name: 'RudderStack',
+                      test_event_code: 'Some test event code for testing setup',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                  files: {},
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
                   },
+                  method: 'POST',
                   params: {},
-                  body: {
-                    JSON: {
-                      event_source_id: 'dummyPixelCode',
-                      event_source: 'web',
-                      partner_name: 'RudderStack',
-                      test_event_code: 'Some test event code for testing setup',
-                      data: [
-                        {
-                          event_id: '1616318632825_357',
-                          event_time: 1600372167,
-                          properties: {
-                            contents: [
-                              {
-                                price: 8,
-                                quantity: 2,
-                                content_type: 'socks',
-                                content_id: '1077218',
-                              },
-                              {
-                                price: 30,
-                                quantity: 1,
-                                content_type: 'dress',
-                                content_id: '1197218',
-                              },
-                            ],
-                            content_type: 'product',
-                            currency: 'USD',
-                            value: 46,
-                          },
-                          page: { url: 'http://demo.mywebsite.com/purchase' },
-                          user: {
-                            locale: 'en-US',
-                            email:
-                              'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                            phone:
-                              '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                            ip: '13.57.97.131',
-                            user_agent:
-                              'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                            external_id: 'id2',
-                          },
-                          event: 'CompletePayment',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+                  type: 'REST',
+                  version: '1',
                 },
               ],
+              destination: {
+                Config: {
+                  accessToken: 'dummyAccessToken',
+                  hashUserProperties: false,
+                  pixelCode: 'dummyPixelCode',
+                  version: 'v2',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'Default Display Name',
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                },
+                Enabled: true,
+                ID: 'default-destination-id',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'Default Destination',
+                RevisionID: 'default-revision',
+                Transformations: [],
+                WorkspaceID: 'default-workspaceId',
+                hasDynamicConfig: false,
+              },
               metadata: [
                 {
                   jobId: 4,
                   userId: 'u1',
                 },
               ],
-              batched: false,
               statusCode: 200,
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-                version: 'v2',
-              }),
             },
             {
+              batched: true,
               batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
+                body: {
+                  FORM: {},
+                  JSON: {
+                    data: [
+                      {
+                        event: 'CompletePayment',
+                        event_id: '1616318632825_357',
+                        event_time: 1600372167,
+                        page: {
+                          url: 'http://demo.mywebsite.com/purchase',
+                        },
+                        properties: {
+                          content_type: 'product',
+                          contents: [
+                            {
+                              content_id: '1077218',
+                              content_type: 'socks',
+                              price: 8,
+                              quantity: 2,
+                            },
+                            {
+                              content_id: '1197218',
+                              content_type: 'dress',
+                              price: 30,
+                              quantity: 1,
+                            },
+                          ],
+                          currency: 'USD',
+                          value: 46,
+                        },
+                        user: {
+                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                          external_id: 'id4',
+                          ip: '13.57.97.131',
+                          locale: 'en-US',
+                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                          user_agent:
+                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                        },
+                      },
+                    ],
+                    event_source: 'crm',
+                    event_source_id: 'dummyPixelCode',
+                    partner_name: 'RudderStack',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                files: {},
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
                 },
+                method: 'POST',
                 params: {},
-                body: {
-                  JSON: {
-                    event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
-                    partner_name: 'RudderStack',
-                    data: [
-                      {
-                        event_id: '1616318632825_357',
-                        event_time: 1600372167,
-                        properties: {
-                          contents: [
-                            { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
-                            {
-                              price: 30,
-                              quantity: 1,
-                              content_type: 'dress',
-                              content_id: '1197218',
-                            },
-                          ],
-                          content_type: 'product',
-                          currency: 'USD',
-                          value: 46,
-                        },
-                        page: { url: 'http://demo.mywebsite.com/purchase' },
-                        user: {
-                          locale: 'en-US',
-                          email: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
-                          phone: '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
-                          ip: '13.57.97.131',
-                          user_agent:
-                            'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
-                          external_id: 'id4',
-                        },
-                        event: 'CompletePayment',
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  accessToken: 'dummyAccessToken',
+                  hashUserProperties: false,
+                  pixelCode: 'dummyPixelCode',
+                  version: 'v2',
                 },
-                files: {},
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'Default Display Name',
+                  ID: 'default-dest-def-id',
+                  Name: 'Default Destination Definition',
+                },
+                Enabled: true,
+                ID: 'default-destination-id',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'Default Destination',
+                RevisionID: 'default-revision',
+                Transformations: [],
+                WorkspaceID: 'default-workspaceId',
+                hasDynamicConfig: false,
               },
               metadata: [
                 {
@@ -3009,18 +3124,7 @@ export const data: RouterTestData[] = [
                   userId: 'u1',
                 },
               ],
-              batched: true,
               statusCode: 200,
-              destination: overrideDestination(destinationConfig, {
-                accessToken: 'dummyAccessToken',
-                pixelCode: 'dummyPixelCode',
-                hashUserProperties: false,
-                version: 'v2',
-                eventsToStandard: [
-                  { from: 'addToCart', to: 'CompletePayment' },
-                  { from: 'addToCart', to: 'download' },
-                ],
-              }),
             },
           ],
         },

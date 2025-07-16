@@ -127,8 +127,8 @@ jobs:
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          docker run --pull=never --rm ${{ inputs.build_tag }} npm run test:js:ci
+          docker run --pull=never --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.5.3
@@ -183,8 +183,8 @@ jobs:
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          docker run --pull=never --rm ${{ inputs.build_tag }} npm run test:js:ci
+          docker run --pull=never --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.5.3

@@ -7,8 +7,8 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
-    "sourceFromGenericMap": false,
-    "required": false
+    "sourceKeys": "emailOnly",
+    "required": false,
+    "sourceFromGenericMap": true
   }
 ]

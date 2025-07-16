@@ -5,6 +5,7 @@ const {
   ConfigCategory,
   mappingConfig,
   BASE_URL,
+  ENDPOINTS,
   mapChannelToSubscriptionType,
 } = require('./config');
 const {
@@ -23,7 +24,7 @@ const {
   getExternalIdentifiersMapping,
   arePropertiesValid,
   validateTimestamp,
-  filterUserByConsents,
+  getConsentedUserContacts,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -59,7 +60,7 @@ const responseBuilderForIdentityResolution = (message, apiKey) => {
     (payload.email || payload.phone || payload.shopifyId || payload.klaviyoId) &&
     (payload.clientUserId || payload.customIdentifiers)
   ) {
-    return responseBuilder(payload, apiKey, '/identity-resolution/user-identifiers');
+    return responseBuilder(payload, apiKey, ENDPOINTS.IDENTITY_RESOLUTION);
   }
 
   return null;
@@ -97,7 +98,7 @@ const responseBuilderForUserAttributes = (message, apiKey) => {
     return null;
   }
 
-  return responseBuilder({ user, properties }, apiKey, '/attributes/custom');
+  return responseBuilder({ user, properties }, apiKey, ENDPOINTS.USER_ATTRIBUTES);
 };
 
 // Helper function to process identify event for new identify flow
@@ -142,7 +143,7 @@ const identifyResponseBuilder = (message, { Config }) => {
       signUpSourceId = integrationsObj.signUpSourceId;
     }
     if (integrationsObj.identifyOperation?.toLowerCase() === 'unsubscribe') {
-      endpoint = '/subscriptions/unsubscribe';
+      endpoint = ENDPOINTS.UNSUBSCRIBE;
       payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
 
       /**
@@ -168,7 +169,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
   // If the identify request is not for unsubscribe
   if (!payload) {
-    endpoint = '/subscriptions';
+    endpoint = ENDPOINTS.SUBSCRIPTIONS;
     payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
     if (!signUpSourceId) {
       throw new ConfigurationError(
@@ -192,17 +193,17 @@ const identifyResponseBuilder = (message, { Config }) => {
 };
 
 // response builder for subscribe
-const responseBuilderForSubscribe = (filteredUser, signUpSourceId, apiKey) => {
+const responseBuilderForSubscribe = (consentedUserContacts, signUpSourceId, apiKey) => {
   if (!signUpSourceId) {
     throw new ConfigurationError(
       '[Attentive Tag]: SignUp Source Id is required for subscribe event',
     );
   }
 
-  if (Object.keys(filteredUser).length === 0) return [];
+  if (Object.keys(consentedUserContacts).length === 0) return [];
 
-  const subscribePayload = { user: filteredUser, signUpSourceId };
-  const subscribeResponse = responseBuilder(subscribePayload, apiKey, '/subscriptions');
+  const subscribePayload = { user: consentedUserContacts, signUpSourceId };
+  const subscribeResponse = responseBuilder(subscribePayload, apiKey, ENDPOINTS.SUBSCRIPTIONS);
 
   return [subscribeResponse];
 };
@@ -230,11 +231,7 @@ const responseBuilderForUnsubscribe = (unsubscribeConsents, filteredUser, notifi
     unsubscribePayload.notification = notification;
   }
 
-  const unsubscribeResponse = responseBuilder(
-    unsubscribePayload,
-    apiKey,
-    '/subscriptions/unsubscribe',
-  );
+  const unsubscribeResponse = responseBuilder(unsubscribePayload, apiKey, ENDPOINTS.UNSUBSCRIBE);
 
   return [unsubscribeResponse];
 };
@@ -264,19 +261,25 @@ const subscriptionResponseBuilder = (message, { Config }) => {
   const unsubscribeConsents = channelConsents.filter((consent) => consent.consented === false);
 
   // Filter user data based on consents
-  const subscribeFilteredUser = filterUserByConsents(userPayload.user, subscribeConsents);
-  const unsubscribeFilteredUser = filterUserByConsents(userPayload.user, unsubscribeConsents);
+  const subscribeConsentedUserContacts = getConsentedUserContacts(
+    userPayload.user,
+    subscribeConsents,
+  );
+  const unsubscribeConsentedUserContacts = getConsentedUserContacts(
+    userPayload.user,
+    unsubscribeConsents,
+  );
 
   // Process subscribe consents
   const subscribeResponses = responseBuilderForSubscribe(
-    subscribeFilteredUser,
+    subscribeConsentedUserContacts,
     finalSignUpSourceId,
     apiKey,
   );
   // Process unsubscribe consents
   const unsubscribeResponses = responseBuilderForUnsubscribe(
     unsubscribeConsents,
-    unsubscribeFilteredUser,
+    unsubscribeConsentedUserContacts,
     notification,
     apiKey,
   );

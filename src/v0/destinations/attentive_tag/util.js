@@ -139,19 +139,19 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
 };
 
 // Helper function to filter user by consents
-const filterUserByConsents = (user, consents) => {
+const getConsentedUserContacts = (user, consents) => {
   if (!user || !consents || consents.length === 0) return {};
 
-  const filteredUser = {};
+  const consentedUserContacts = {};
   consents.forEach((consent) => {
     if (consent.channel?.toLowerCase() === 'email' && user.email) {
-      filteredUser.email = user.email;
+      consentedUserContacts.email = user.email;
     } else if (consent.channel?.toLowerCase() === 'sms' && user.phone) {
-      filteredUser.phone = user.phone;
+      consentedUserContacts.phone = user.phone;
     }
   });
 
-  return filteredUser;
+  return consentedUserContacts;
 };
 
 module.exports = {
@@ -159,5 +159,5 @@ module.exports = {
   getExternalIdentifiersMapping,
   arePropertiesValid,
   validateTimestamp,
-  filterUserByConsents,
+  getConsentedUserContacts,
 };

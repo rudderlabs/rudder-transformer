@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.7](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.6...v1.104.7) (2025-07-17)
+
+
+### Bug Fixes
+
+* resolve AM proxy handling issues ([4e2640b](https://github.com/rudderlabs/rudder-transformer/commit/4e2640ba775e11bdd63d252c2600c8653395bb1e))
+
 ### [1.104.6](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.5...v1.104.6) (2025-07-14)
 
 

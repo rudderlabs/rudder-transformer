@@ -1628,9 +1628,18 @@ function isHttpStatusSuccess(status) {
 function isHttpStatusRetryable(status) {
   return status >= 500 && status < 600;
 }
+
+/**
+ * Returns true for http status code 429
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusThrottled(status) {
+  return status === 429;
+}
 /**
  *
- * Utility function for UUID genration
+ * Utility function for UUID generation
  * @returns
  */
 function generateUUID() {
@@ -2525,6 +2534,7 @@ module.exports = {
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
+  isHttpStatusThrottled,
   isNonFuncObject,
   isOAuthDestination,
   isOAuthSupported,

@@ -123,12 +123,6 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Verify Local Image
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
-        run: |
-          echo "Checking if image exists locally..."
-          docker image ls | grep -E "$(echo '${{ inputs.build_tag }}' | cut -d: -f1)" || echo "Image not found locally"
-          docker image inspect ${{ inputs.build_tag }} || echo "Image inspection failed"
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
@@ -186,12 +180,6 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Verify Local Image
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
-        run: |
-          echo "Checking if image exists locally..."
-          docker image ls | grep -E "$(echo '${{ inputs.build_tag }}' | cut -d: -f1)" || echo "Image not found locally"
-          docker image inspect ${{ inputs.build_tag }} || echo "Image inspection failed"
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}

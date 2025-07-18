@@ -2449,7 +2449,7 @@ export const data: RouterTestData[] = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'web',
+                channel: 'app',
                 context: {
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
@@ -2554,7 +2554,7 @@ export const data: RouterTestData[] = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'web',
+                channel: 'app',
                 context: {
                   userAgent:
                     'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -2692,6 +2692,10 @@ export const data: RouterTestData[] = [
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
                 version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
               }),
             },
           ],
@@ -2719,7 +2723,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
+                    event_source: 'app',
                     partner_name: 'RudderStack',
                     data: [
                       {

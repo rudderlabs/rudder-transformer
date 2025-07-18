@@ -79,11 +79,7 @@ module.exports = {
   // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
-  modulePathIgnorePatterns: [
-    '<rootDir>/test/__mocks__/axios.js',
-    '<rootDir>/dist/',
-    '<rootDir>/dist-test/',
-  ],
+  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/dist-test/'],
 
   // Activates notifications for test results
   notify: true,

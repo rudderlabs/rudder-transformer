@@ -20,8 +20,6 @@ tags:
 
 paths:
   #Misc Routes
-  /heapdump:
-    $ref: './routes/misc.yaml#/~1heapdump'
   /health:
     $ref: './routes/misc.yaml#/~1health'
   /transformerBuildVersion:

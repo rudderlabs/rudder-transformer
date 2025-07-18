@@ -12,6 +12,7 @@ import {
   RudderMessage,
   SourceInputV2,
   SourceTransformationResponse,
+  RequestMetadata,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   FixMe,
 } from '../../types';
@@ -40,7 +41,7 @@ export class NativeIntegrationSourceService implements SourceService {
     sourceEvents: NonNullable<SourceInputV2>[],
     sourceType: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _requestMetadata: NonNullable<unknown>,
+    _requestMetadata: RequestMetadata,
   ): Promise<SourceTransformationResponse[]> {
     if (!Array.isArray(sourceEvents)) {
       throw new TransformationError('Invalid source events');

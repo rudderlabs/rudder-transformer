@@ -94,13 +94,6 @@ jobs:
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
 
-      - name: Checkout Operator Repo
-        uses: actions/checkout@v4.2.1
-        with:
-          repository: rudderlabs/rudderstack-operator
-          token: ${{ secrets.PAT }}
-          path: rudderstack-operator # matches downstream `cd` commands
-          fetch-depth: 1 # shallow clone for speed
 
       - name: Extract branch name
         id: extract_branch_name
@@ -155,6 +148,10 @@ jobs:
           git push -u origin hosted-transformer-$TAG_NAME
 
           gh pr create --fill
+
+      - name: Clone Operator Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         run: |

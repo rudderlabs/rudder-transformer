@@ -333,3 +333,18 @@ export const rETLRecordRouterRequestVDMv1: RouterTransformationRequest = {
   ],
   destType: 'google_adwords_remarketing_lists',
 };
+
+export const rETLRecordRouterRequestForVDMV2Flow: RouterTransformationRequest = {
+  input: rETLRecordRouterRequest.input.map((event) => {
+    event.connection = {
+      config: { destination: { schemaVersion: '1.1', ...event.destination.Config } },
+      sourceId: 'randomSourceId',
+      destinationId: 'randomDestinationId',
+      enabled: true,
+    };
+    event.message.identifiers = event.message.fields;
+    return event;
+  }),
+
+  destType: 'google_adwords_remarketing_lists',
+};

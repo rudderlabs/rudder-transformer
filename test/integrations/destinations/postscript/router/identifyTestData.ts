@@ -13,7 +13,6 @@ export const identifyTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -73,8 +72,8 @@ export const identifyTestData: RouterTestData[] = [
                     origin: 'other',
                     tags: ['premium', 'customer'],
                     properties: {
-                      custom_string_property: 'customValue',
-                      custom_int_property: 101,
+                      customStringProperty: 'customValue',
+                      customIntProperty: 101,
                     },
                   },
                   JSON_ARRAY: {},
@@ -101,7 +100,6 @@ export const identifyTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -177,7 +175,6 @@ export const identifyTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {

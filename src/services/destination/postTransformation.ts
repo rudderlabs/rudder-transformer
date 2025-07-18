@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { PlatformError } from '@rudderstack/integrations-lib';
-import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
 import {
@@ -79,16 +78,20 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map(
+      (payload) => ({ ...payload }),
+    );
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
-        resultantPayload.batchedRequest.forEach((batchedRequest) => {
-          if (batchedRequest.userId) {
-            batchedRequest.userId = `${batchedRequest.userId}`;
-          }
-        });
+        resultantPayload.batchedRequest = resultantPayload.batchedRequest.map((request) => ({
+          ...request,
+          userId: request.userId != null ? String(request.userId) : request.userId,
+        }));
       } else if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
-        resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
+        resultantPayload.batchedRequest = {
+          ...resultantPayload.batchedRequest,
+          userId: `${resultantPayload.batchedRequest.userId}`,
+        };
       }
     });
 

@@ -2,6 +2,9 @@ name: Commitlint
 
 on: [push]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true

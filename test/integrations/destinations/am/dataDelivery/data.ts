@@ -66,8 +66,12 @@ export const data = [
           output: {
             status: 200,
             message: '[amplitude Response Handler] - Request Processed Successfully',
-            destinationResponse:
-              '{"code":200,"server_upload_time":1639235302252,"payload_size_bytes":863,"events_ingested":1}',
+            destinationResponse: {
+              code: 200,
+              server_upload_time: 1639235302252,
+              payload_size_bytes: 863,
+              events_ingested: 1,
+            },
           },
         },
       },
@@ -620,7 +624,7 @@ export const data = [
                 },
                 throttled_events: [3, 4, 7],
               },
-              status: 200,
+              status: 429,
             },
             statTags: {
               destType: 'AM',
@@ -645,7 +649,7 @@ export const data = [
           },
         })
         .replyOnce(
-          200,
+          429,
           {
             code: 429,
             error: 'Too many requests for some devices and users',
@@ -734,7 +738,7 @@ export const data = [
                 throttled_events: [],
                 throttled_users: {},
               },
-              status: 200,
+              status: 429,
             },
             message:
               'Request Failed during amplitude response transformation: Rate limit exceeded - due to Request Limit exceeded, (Throttled)',
@@ -762,7 +766,7 @@ export const data = [
           },
         })
         .replyOnce(
-          200,
+          429,
           {
             code: 429,
             error: 'Rate limit exceeded',

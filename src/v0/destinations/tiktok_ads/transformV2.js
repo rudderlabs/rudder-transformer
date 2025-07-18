@@ -1,7 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
 const set = require('set-value');
-const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  ConfigurationError,
+  InstrumentationError,
+  groupByInBatches,
+  forEachInBatches,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -17,7 +22,7 @@ const {
   validateEventName,
   sortBatchesByMinJobId,
 } = require('../../util');
-const { getContents, hashUserField } = require('./util');
+const { getContents, hashUserField, getEventSource } = require('./util');
 const config = require('./config');
 
 const {
@@ -131,7 +136,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   // set event source and event_source_id
   response.body.JSON = {
-    event_source: 'web',
+    event_source: getEventSource(message),
     event_source_id: pixelCode,
     partner_name: PARTNER_NAME,
     test_event_code: message.properties?.testEventCode,
@@ -683,17 +688,19 @@ const batchEvents = (eventsChunk) => {
   const events = [];
   let data = [];
   let metadata = [];
+  let eventSource = 'web';
   const { destination } = eventsChunk[0];
   const { pixelCode } = destination.Config;
   eventsChunk.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
+    eventSource = event.message[0]?.body.JSON.event_source;
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (Array.isArray(eventData) && eventData?.length > config.maxBatchSizeV2 - data.length) {
       // Partner name must be added above "data": [..];
       events.push({
         event: {
           event_source_id: pixelCode,
-          event_source: 'web',
+          event_source: eventSource,
           partner_name: PARTNER_NAME,
           data: [...data],
         },
@@ -710,7 +717,7 @@ const batchEvents = (eventsChunk) => {
   events.push({
     event: {
       event_source_id: pixelCode,
-      event_source: 'web',
+      event_source: eventSource,
       partner_name: PARTNER_NAME,
       data: [...data],
     },
@@ -721,14 +728,14 @@ const batchEvents = (eventsChunk) => {
 };
 const processRouterDest = async (inputs, reqMetadata) => {
   const trackResponseList = []; // list containing single track event in batched format
-  const eventsChunk = []; // temporary variable to divide payload into chunks
+  const processedEvents = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, trackResponseList, eventsChunk);
+          getEventChunks(event, trackResponseList, processedEvents);
         } else {
           // if not transformed
           getEventChunks(
@@ -738,7 +745,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
               destination: event.destination,
             },
             trackResponseList,
-            eventsChunk,
+            processedEvents,
           );
         }
       } catch (error) {
@@ -749,15 +756,23 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   const batchedResponseList = [];
-  if (eventsChunk.length > 0) {
-    const batchedEvents = batchEvents(eventsChunk);
-    batchedEvents.forEach((batch) => {
-      const batchedRequest = buildBatchResponseForEvent(batch);
-      batchedResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
-      );
-    });
-  }
+  // Grouping events by event_source
+  const groupedEventChunks = await groupByInBatches(
+    processedEvents,
+    (event) => event.message[0].body.JSON.event_source,
+  );
+
+  await forEachInBatches(Object.keys(groupedEventChunks), async (eventSource) => {
+    const batchedEvents = batchEvents(groupedEventChunks[eventSource]);
+    if (batchedEvents.length > 0) {
+      forEachInBatches(batchedEvents, async (batch) => {
+        const batchedRequest = buildBatchResponseForEvent(batch);
+        batchedResponseList.push(
+          getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+        );
+      });
+    }
+  });
   // Sort the events based on job id
   // Event may get out of order due testEventCode properties this function ensure that events are in order
   return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));

@@ -24,9 +24,16 @@ class NetworkHandler {
       };
     }
     if (isHttpStatusThrottled(status)) {
-      const { error, throttled_users: throttledUsers } = response;
-      if (Object.keys(throttledUsers).length > 0) {
-        logger.error('Too many requests for some devices and users.');
+      const {
+        error,
+        throttled_users: throttledUsers,
+        throttled_devices: throttledDevices,
+      } = response;
+
+      const hasThrottledItems = (obj) => obj && Object.keys(obj).length > 0;
+
+      if (hasThrottledItems(throttledUsers) || hasThrottledItems(throttledDevices)) {
+        logger.error('Too many requests for some devices or users.');
         throw new RetryableError(
           `Request Failed during ${DESTINATION} response transformation: ${error} - due to Request Limit exceeded, (Retryable)`,
           500,

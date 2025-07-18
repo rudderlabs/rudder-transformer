@@ -728,14 +728,14 @@ const batchEvents = (eventsChunk) => {
 };
 const processRouterDest = async (inputs, reqMetadata) => {
   const trackResponseList = []; // list containing single track event in batched format
-  const eventsChunk = []; // temporary variable to divide payload into chunks
+  const processedEvents = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, trackResponseList, eventsChunk);
+          getEventChunks(event, trackResponseList, processedEvents);
         } else {
           // if not transformed
           getEventChunks(
@@ -745,7 +745,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
               destination: event.destination,
             },
             trackResponseList,
-            eventsChunk,
+            processedEvents,
           );
         }
       } catch (error) {
@@ -758,7 +758,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const batchedResponseList = [];
   // Grouping events by event_source
   const groupedEventChunks = await groupByInBatches(
-    eventsChunk,
+    processedEvents,
     (event) => event.message[0].body.JSON.event_source,
   );
 

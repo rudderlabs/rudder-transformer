@@ -262,6 +262,8 @@ class Prometheus {
           'workspaceId',
           'feature',
           'implementation',
+          'errorCategory',
+          'errorType',
         ],
       },
       {
@@ -389,7 +391,15 @@ class Prometheus {
         name: 'regulation_worker_user_deletion_failure',
         help: 'regulation_worker_user_deletion_failure',
         type: 'counter',
-        labelNames: ['destType', 'module', 'implementation', 'feature'],
+        labelNames: [
+          'destType',
+          'module',
+          'implementation',
+          'feature',
+          'destinationId',
+          'errorCategory',
+          'errorType',
+        ],
       },
       {
         name: 'shopify_server_side_identifier_event',

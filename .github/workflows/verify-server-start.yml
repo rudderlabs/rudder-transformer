@@ -4,6 +4,9 @@ on:
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -26,17 +29,17 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-      
+
       - name: Build Project
         run: npm run build
 
       - name: Verify Server Startup (no cluster)
-        working-directory: ./dist  
+        working-directory: ./dist
         run: ../.github/scripts/verifyServerStart.sh
         env:
           CLUSTER_ENABLED: 'false'
           STATS_CLIENT: 'prometheus'
-      
+
       - name: Verify Server Startup (cluster with 4 workers)
         working-directory: ./dist
         run: ../.github/scripts/verifyServerStart.sh
@@ -45,4 +48,3 @@ jobs:
           NUM_PROCS: '4'
           STATS_CLIENT: 'prometheus'
           CLUSTER_MANAGER_SHUTDOWN_TIMEOUT: '5000'
-

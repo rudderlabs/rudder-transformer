@@ -89,7 +89,16 @@ describe('process', () => {
       }
 
       if (shouldCallGa4Process) {
-        expect(mockGa4Process).toHaveBeenCalledWith({ event: input, destType: 'ga4_v2' });
+        expect(mockGa4Process).toHaveBeenCalledWith({
+          event: expect.objectContaining({
+            ...input,
+            destination: expect.objectContaining({
+              ...input.destination,
+              Config: expect.objectContaining(expectedConfig),
+            }),
+          }),
+          destType: 'ga4_v2',
+        });
       } else {
         expect(mockGa4Process).not.toHaveBeenCalled();
       }

@@ -2,6 +2,10 @@ name: Draft New Release
 
 on: workflow_dispatch
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   draft-new-release:
     name: Draft New Release

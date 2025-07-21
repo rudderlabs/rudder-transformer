@@ -503,6 +503,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          'AOSP on IA Emulator',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -583,7 +601,6 @@ export const dataV3: ProcessorTestData[] = [
                 },
                 network: {
                   bluetooth: false,
-                  carrier: 'Android',
                   cellular: true,
                   wifi: true,
                 },
@@ -615,6 +632,7 @@ export const dataV3: ProcessorTestData[] = [
                 storage: 128,
                 free_storage: 8,
                 cpu_cores: 2,
+                att_status: 0,
               },
               integrations: {
                 All: true,
@@ -653,7 +671,6 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
-                        app_id: 'dhfeih44f',
                         extinfo: [
                           'i2',
                           'com.rudderlabs.javascript',
@@ -663,7 +680,7 @@ export const dataV3: ProcessorTestData[] = [
                           'AOSP on IA Emulator',
                           'en-US',
                           'IST',
-                          'Android',
+                          '',
                           '1080',
                           '1794',
                           '420',
@@ -672,6 +689,8 @@ export const dataV3: ProcessorTestData[] = [
                           '8',
                           'Asia/Kolkata',
                         ],
+                        advertiser_tracking_enabled: 0,
+                        app_id: 'dhfeih44f',
                       },
                       custom_data: {
                         search_string: 't-shirts',
@@ -819,6 +838,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -967,6 +1004,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -1115,10 +1170,28 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_ids: ['123', '124'],
                         value: '56',
                       },
@@ -1254,6 +1327,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -2715,6 +2806,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -3263,6 +3372,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -3411,6 +3538,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -3557,6 +3702,24 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
@@ -3705,10 +3868,28 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_category: 'shoes',
                         content_ids: ['123', '124'],
                         value: '56',
@@ -3857,10 +4038,28 @@ export const dataV3: ProcessorTestData[] = [
                     {
                       action_source: 'MOBILE_APP',
                       app_data: {
+                        extinfo: [
+                          'i2',
+                          'com.rudderlabs.javascript',
+                          '1.0.0',
+                          '1.0.0',
+                          '14.4.1',
+                          '',
+                          'en-US',
+                          '',
+                          '',
+                          '',
+                          '',
+                          '2',
+                          '',
+                          '',
+                          '',
+                          '',
+                        ],
                         app_id: 'dhfeih44f',
                       },
                       custom_data: {
-                        brands: ['brand01', 'brand02'],
+                        brand: ['brand01', 'brand02'],
                         content_category: 'glass',
                         content_ids: ['123', '124'],
                         value: '56',
@@ -4085,7 +4284,7 @@ export const dataV3: ProcessorTestData[] = [
               type: 'track',
               event: 'Products Searched',
               properties: {
-                brands: 'abc',
+                brand: 'abc',
                 action_source: 'web',
                 num_items: 4,
                 sc_click_id: 'some_click_id',

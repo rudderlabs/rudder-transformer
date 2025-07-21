@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { PlatformError } from '@rudderstack/integrations-lib';
-import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
 import {
@@ -68,10 +67,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    logger.error(
-      errObj.message || '[Processor Transform] Error occurred while processing the payload.',
-      metaTo.errorDetails,
-    );
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -83,16 +78,20 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads.map(
+      (payload) => ({ ...payload }),
+    );
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
-        resultantPayload.batchedRequest.forEach((batchedRequest) => {
-          if (batchedRequest.userId) {
-            batchedRequest.userId = `${batchedRequest.userId}`;
-          }
-        });
+        resultantPayload.batchedRequest = resultantPayload.batchedRequest.map((request) => ({
+          ...request,
+          userId: request.userId != null ? String(request.userId) : request.userId,
+        }));
       } else if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
-        resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
+        resultantPayload.batchedRequest = {
+          ...resultantPayload.batchedRequest,
+          userId: `${resultantPayload.batchedRequest.userId}`,
+        };
       }
     });
 
@@ -109,7 +108,6 @@ export class DestinationPostTransformationService {
           ...resp.statTags,
           ...metaTo.errorDetails,
         };
-        logger.error(resp.error || defaultErrorMessages.router, metaTo.errorDetails);
         stats.increment('event_transform_failure', metaTo.errorDetails);
       } else {
         stats.increment('event_transform_success', {
@@ -138,7 +136,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || defaultErrorMessages.router,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    logger.error(errObj.message || defaultErrorMessages.router, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     stats.increment('event_transform_failure', metaTo.errorDetails);
     return resp;
@@ -156,7 +153,6 @@ export class DestinationPostTransformationService {
       error: errObj.message || defaultErrorMessages.delivery,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    logger.error(error as string, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -175,7 +171,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryV0Response;
-
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -212,7 +207,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryV1Response;
-    logger.error(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -230,7 +224,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    logger.error(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

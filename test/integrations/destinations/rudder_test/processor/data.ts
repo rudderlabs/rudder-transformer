@@ -1199,4 +1199,84 @@ export const data: ProcessorTestData[] = [
       },
     },
   },
+  // Environment Variable Override Example
+  {
+    id: 'rudder-test-processor-env-override-example',
+    name: 'rudder_test',
+    description: 'Test with environment variable override for API endpoint',
+    scenario: 'Environment variable override functionality demonstration',
+    successCriteria: 'Should use endpoint from environment variable override',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    // Environment variable override - this overrides the API endpoint for this test only
+    envOverrides: {
+      RUDDER_TEST_API_ENDPOINT: 'https://staging.example.com/v1/events',
+      DEBUG_MODE: 'true',
+    },
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: buildMessage({
+              fields: {
+                email: 'env-test@example.com',
+                name: 'Environment Test User',
+              },
+              context: {
+                testBehavior: {
+                  statusCode: 200,
+                },
+                sources: baseSources,
+              },
+            }),
+            metadata: generateMetadata(999, 'env-test'),
+            destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              // This endpoint comes from the environment variable override
+              endpoint: 'https://staging.example.com/v1/events',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  action: 'insert',
+                  recordId: 'record123',
+                  fields: {
+                    email: 'env-test@example.com',
+                    name: 'Environment Test User',
+                  },
+                  identifiers: {
+                    userId: 'user123',
+                  },
+                  timestamp: '2023-01-01T00:00:00.000Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: generateMetadata(999, 'env-test'),
+          },
+        ],
+      },
+    },
+  },
 ];

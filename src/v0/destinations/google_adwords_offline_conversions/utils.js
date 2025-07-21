@@ -256,7 +256,7 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
     payload.operations.create.transaction_attribute[properties.custom_key] =
       properties[properties.custom_key];
   }
-  // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
+  // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v19/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
   payload.operations.create.transaction_attribute.transaction_amount_micros = `${
     payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
   }`;
@@ -402,7 +402,7 @@ const getClickConversionPayloadAndEndpoint = (
 
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
-  // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
+  // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadClickConversions#ClickConversion
 
   const userIdentifierInfo = {
     email:

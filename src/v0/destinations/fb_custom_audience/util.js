@@ -2,7 +2,12 @@ const lodash = require('lodash');
 const sha256 = require('sha256');
 const crypto = require('crypto');
 const jsonSize = require('json-size');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  isDefinedAndNotNull,
+  convertToString,
+} = require('@rudderstack/integrations-lib');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const { typeFields, subTypeFields, getEndPoint } = require('./config');
 const {
@@ -12,7 +17,6 @@ const {
 } = require('../../util');
 const stats = require('../../../util/stats');
 
-const { isDefinedAndNotNull } = require('../../util');
 const config = require('./config');
 
 /**
@@ -65,7 +69,7 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
   if (isDefinedAndNotNull(userInformation)) {
-    const stringifiedUserInformation = userInformation.toString();
+    const stringifiedUserInformation = convertToString(userInformation);
     switch (userProperty) {
       case 'EMAIL':
         updatedProperty = stringifiedUserInformation.trim().toLowerCase();
@@ -126,6 +130,9 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'EXTERN_ID':
         updatedProperty = stringifiedUserInformation;
         break;
+      case 'LOOKALIKE_VALUE':
+        updatedProperty = userInformation;
+        break;
       default:
         throw new ConfigurationError(`The property ${userProperty} is not supported`);
     }
@@ -133,27 +140,36 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   return updatedProperty;
 };
 
-const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, updatedProperty) => {
-  let tmpUpdatedProperty = updatedProperty;
+const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, propertyValue) => {
+  // Normalize undefined/null to empty string
+  const normalizedValue = propertyValue ?? '';
+
   /**
-   * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
-   * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-   * sending empty string for the properties for which user hasn't provided any value
+   * Special case for LOOKALIKE_VALUE, for value-based audience
+   * Ensure it's a finite number and greater than or equal to 0, if not, default to 0.
    */
-  if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-    if (tmpUpdatedProperty) {
-      tmpUpdatedProperty = `${tmpUpdatedProperty}`;
-      dataElement.push(sha256(tmpUpdatedProperty));
-    } else {
-      dataElement.push('');
-    }
+  if (propertyName === 'LOOKALIKE_VALUE') {
+    const lookalikeValue = Number(normalizedValue);
+    const validLookalikeValue =
+      Number.isFinite(lookalikeValue) && lookalikeValue >= 0 ? lookalikeValue : 0;
+    dataElement.push(validLookalikeValue);
+    return dataElement;
   }
-  // if property name is MADID or EXTERN_ID if the value is undefined send empty string
-  else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
-    dataElement.push('');
+
+  /**
+   * Hash the original value for the properties apart from 'MADID' and 'EXTERN_ID',
+   * as hashing is not required for them.
+   * Reference: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+   * Send an empty string for the properties for which the user hasn't provided any value.
+   */
+  const isHashable = isHashRequired && propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+
+  if (isHashable) {
+    dataElement.push(normalizedValue ? sha256(String(normalizedValue)) : '');
   } else {
-    dataElement.push(tmpUpdatedProperty || '');
+    dataElement.push(normalizedValue);
   }
+
   return dataElement;
 };
 

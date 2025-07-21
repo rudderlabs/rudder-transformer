@@ -21,6 +21,15 @@ const responseHandler = (responseParams) => {
   const message = `[${DESTINATION}] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
 
+  // Check if the response is string
+  if (typeof response !== 'string') {
+    return {
+      status,
+      message: `[${DESTINATION}] - Response is not a string response: ${JSON.stringify(response)}`,
+      destinationResponse,
+    };
+  }
+
   // Extract values between different tags
   const responseStatus = extractContent(response, 'status');
   const reason = extractContent(response, 'reason');

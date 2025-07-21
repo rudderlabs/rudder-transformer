@@ -30,7 +30,8 @@ class NetworkHandler {
         throttled_devices: throttledDevices,
       } = response;
 
-      const hasThrottledItems = (obj) => obj && Object.keys(obj).length > 0;
+      const hasThrottledItems = (obj) =>
+        typeof obj === 'object' && obj !== null && Object.keys(obj).length > 0;
 
       if (hasThrottledItems(throttledUsers) || hasThrottledItems(throttledDevices)) {
         logger.error('Too many requests for some devices or users.');

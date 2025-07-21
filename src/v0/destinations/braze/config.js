@@ -58,8 +58,8 @@ const BRAZE_NON_BILLABLE_ATTRIBUTES = [
 
 const BRAZE_PURCHASE_STANDARD_PROPERTIES = ['product_id', 'sku', 'price', 'quantity', 'currency'];
 
-const shouldBatchBrazeIdentifyResolution = () =>
-  process.env.BRAZE_BATCH_IDENTIFY_RESOLUTION === 'true';
+const shouldBatchBrazeIdentifyResolution = () => process.env.BRAZE_BATCH_IDENTIFY_RESOLUTION === 'true';
+
 
 module.exports = {
   ConfigCategory,

@@ -1,7 +1,9 @@
+
 /**
  * Mock function for testing with batched identify disabled
  */
 export const mockFnsWithBatchedIdentifyDisabled = (mockAdapter: any) => {
+
   // Mock successful response for individual identify calls
   mockAdapter.onPost(/.*\/users\/identify/).replyOnce(200, {
     message: 'success',
@@ -13,6 +15,7 @@ export const mockFnsWithBatchedIdentifyDisabled = (mockAdapter: any) => {
  * Mock function for testing network failures in batched identify
  */
 export const mockNetworkFailure = (mockAdapter: any) => {
+
   // Mock network failure for identify endpoint
   mockAdapter.onPost(/.*\/users\/identify/).networkErrorOnce();
 };
@@ -21,6 +24,7 @@ export const mockNetworkFailure = (mockAdapter: any) => {
  * Mock function for testing HTTP status failures in batched identify
  */
 export const mockHttpStatusFailure = (mockAdapter: any) => {
+
   // Mock HTTP 500 error for identify endpoint
   mockAdapter.onPost(/.*\/users\/identify/).replyOnce(500, {
     message: 'Internal Server Error',
@@ -38,6 +42,7 @@ export const mockHttpStatusFailure = (mockAdapter: any) => {
  * Mock function for testing successful batched identify
  */
 export const mockSuccessfulBatchedIdentify = (mockAdapter: any) => {
+
   // Mock successful response for identify endpoint
   mockAdapter.onPost(/.*\/users\/identify/).replyOnce(200, {
     message: 'success',

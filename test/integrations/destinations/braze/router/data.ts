@@ -423,7 +423,7 @@ const basicRouterTests = [
     },
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
-    },
+    }
   },
   {
     name: 'braze',
@@ -902,7 +902,7 @@ const basicRouterTests = [
     },
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
-    },
+    }
   },
 ];
 
@@ -911,7 +911,7 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
     ...test,
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
-    },
+    }
   };
 });
 

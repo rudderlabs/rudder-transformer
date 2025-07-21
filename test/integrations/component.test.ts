@@ -66,6 +66,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'klaviyo',
   'campaign_manager',
   'criteo_audience',
+  'customerio_audience',
   'branch',
   'userpilot',
   'loops',

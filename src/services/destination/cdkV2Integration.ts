@@ -98,7 +98,16 @@ export class CDKV2DestinationService implements DestinationService {
               metaTo,
             );
 
-          stats.increment('event_transform_failure', metaTo.errorDetails);
+          stats.increment('event_transform_failure', {
+            destType: metaTo.errorDetails.destType,
+            module: metaTo.errorDetails.module,
+            destinationId: metaTo.errorDetails.destinationId,
+            workspaceId: metaTo.errorDetails.workspaceId,
+            feature: metaTo.errorDetails.feature,
+            implementation: metaTo.errorDetails.implementation,
+            errorCategory: metaTo.errorDetails.errorCategory,
+            errorType: metaTo.errorDetails.errorType,
+          });
 
           return [erroredResp];
         }

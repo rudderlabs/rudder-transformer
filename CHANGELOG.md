@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.104.8](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.7...v1.104.8) (2025-07-22)
+
+
+### Bug Fixes
+
+* **klaviyo:** missing revision from subscribtion header ([#4514](https://github.com/rudderlabs/rudder-transformer/issues/4514)) ([fe44de4](https://github.com/rudderlabs/rudder-transformer/commit/fe44de4294791a725640e72724e920e5a3068d7a))
+
 ### [1.104.7](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.6...v1.104.7) (2025-07-17)
 
 

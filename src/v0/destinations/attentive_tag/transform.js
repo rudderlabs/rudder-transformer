@@ -55,11 +55,18 @@ const responseBuilderForIdentityResolution = (message, apiKey) => {
     ...externalIdentifiers,
   };
 
-  // If email or phone or shopifyId or klaviyoId is present and clientUserId or customIdentifiers is present, return the response
-  if (
-    (payload.email || payload.phone || payload.shopifyId || payload.klaviyoId) &&
-    (payload.clientUserId || payload.customIdentifiers)
-  ) {
+  // Check if any of the other identifiers are present
+  const hasOtherIdentifiers =
+    payload.email || payload.phone || payload.shopifyId || payload.klaviyoId;
+
+  // Check if the payload has sufficient identity
+  const hasSufficientIdentity =
+  (payload.clientUserId && payload.customIdentifiers) ||
+  (hasOtherIdentifiers && payload.clientUserId) ||
+  (hasOtherIdentifiers && payload.customIdentifiers);
+
+
+  if (hasSufficientIdentity) {
     return responseBuilder(payload, apiKey, ENDPOINTS.IDENTITY_RESOLUTION);
   }
 

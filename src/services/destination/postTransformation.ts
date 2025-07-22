@@ -108,7 +108,16 @@ export class DestinationPostTransformationService {
           ...resp.statTags,
           ...metaTo.errorDetails,
         };
-        stats.increment('event_transform_failure', metaTo.errorDetails);
+        stats.increment('event_transform_failure', {
+          destType: metaTo.errorDetails.destType,
+          module: metaTo.errorDetails.module,
+          destinationId: metaTo.errorDetails.destinationId,
+          workspaceId: metaTo.errorDetails.workspaceId,
+          feature: metaTo.errorDetails.feature,
+          implementation: metaTo.errorDetails.implementation,
+          errorCategory: metaTo.errorDetails.errorCategory,
+          errorType: metaTo.errorDetails.errorType,
+        });
       } else {
         stats.increment('event_transform_success', {
           destType: destinationType,
@@ -137,7 +146,17 @@ export class DestinationPostTransformationService {
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
-    stats.increment('event_transform_failure', metaTo.errorDetails);
+
+    stats.increment('event_transform_failure', {
+      destType: metaTo.errorDetails.destType,
+      module: metaTo.errorDetails.module,
+      destinationId: metaTo.errorDetails.destinationId,
+      workspaceId: metaTo.errorDetails.workspaceId,
+      feature: metaTo.errorDetails.feature,
+      implementation: metaTo.errorDetails.implementation,
+      errorCategory: metaTo.errorDetails.errorCategory,
+      errorType: metaTo.errorDetails.errorType,
+    });
     return resp;
   }
 
@@ -216,7 +235,16 @@ export class DestinationPostTransformationService {
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
-    stats.increment('regulation_worker_user_deletion_failure', metaTo.errorDetails);
+
+    stats.increment('regulation_worker_user_deletion_failure', {
+      destType: metaTo.errorDetails.destType,
+      module: metaTo.errorDetails.module,
+      implementation: metaTo.errorDetails.implementation,
+      feature: metaTo.errorDetails.feature,
+      destinationId: metaTo.errorDetails.destinationId,
+      errorCategory: metaTo.errorDetails.errorCategory,
+      errorType: metaTo.errorDetails.errorType,
+    });
     const resp = {
       statusCode: errObj.status,
       error: errObj.message,

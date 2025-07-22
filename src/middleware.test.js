@@ -5,6 +5,10 @@ const {
   addStatMiddleware,
   addRequestSizeMiddleware,
   addProfilingMiddleware,
+  PYROSCOPE_WALL_SAMPLING_DURATION_MS,
+  PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS,
+  PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES,
+  PYROSCOPE_HEAP_STACK_DEPTH,
 } = require('./middleware');
 
 const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
@@ -15,6 +19,7 @@ const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 jest.mock('@rudderstack/pyroscope-nodejs', () => ({
   default: {
     init: jest.fn(),
+    start: jest.fn(),
     koaMiddleware: () => async (ctx, next) => {
       await next();
     },
@@ -33,7 +38,13 @@ describe('Pyroscope', () => {
     expect(Pyroscope.init).toHaveBeenCalledWith({
       appName: 'rudder-transformer',
       wall: {
-        collectCpuTime: true, // Enable CPU time collection
+        collectCpuTime: true, // Enable CPU time collection - REQUIRED for CPU profiling
+        samplingDurationMs: PYROSCOPE_WALL_SAMPLING_DURATION_MS, // Duration of a single wall profile (60 seconds)
+        samplingIntervalMicros: PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS, // Interval between samples (10ms in microseconds)
+      },
+      heap: {
+        samplingIntervalBytes: PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES, // 512KB - heap sampling interval
+        stackDepth: PYROSCOPE_HEAP_STACK_DEPTH, // Reduced stack depth to limit deep node_modules traces
       },
     });
   });

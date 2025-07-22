@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.105.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.8...v1.105.0) (2025-07-22)
+
+
+### Features
+
+* add new identify flow and subscription event in track call for attentive tag ([#4468](https://github.com/rudderlabs/rudder-transformer/issues/4468)) ([004401a](https://github.com/rudderlabs/rudder-transformer/commit/004401aac81dbbe8884585d23c7eb315d4238e86))
+* update test cases for customer io audience ([#4428](https://github.com/rudderlabs/rudder-transformer/issues/4428)) ([01aa484](https://github.com/rudderlabs/rudder-transformer/commit/01aa484758600eb2b59cee6693355d9d2fa9a6f9))
+
+
+### Bug Fixes
+
+* add cloning of operator repo in workflow ([#4475](https://github.com/rudderlabs/rudder-transformer/issues/4475)) ([b5f239c](https://github.com/rudderlabs/rudder-transformer/commit/b5f239cadad7038e352492ad74b255837f3b6db1))
+* add object type check ([b1f3584](https://github.com/rudderlabs/rudder-transformer/commit/b1f35840fa6e2f0fc050066901c8ad37bee98af5))
+* **attentive_tag:** correct identity resolution logic and add test cases ([#4513](https://github.com/rudderlabs/rudder-transformer/issues/4513)) ([b105b72](https://github.com/rudderlabs/rudder-transformer/commit/b105b72936e16d5d0c9d58f40d6330b75f88f4f9))
+* google sheets metadata maintenance ([#4463](https://github.com/rudderlabs/rudder-transformer/issues/4463)) ([b23d9a8](https://github.com/rudderlabs/rudder-transformer/commit/b23d9a8f601a8695c3d5646dc39f43852116f7d3))
+* handle throttled_devices in AM network handler response ([b90b0f5](https://github.com/rudderlabs/rudder-transformer/commit/b90b0f544e6ba3fa1ee262c712e03bacea19c93b))
+* handle throttled_devices in AM network handler response ([#4508](https://github.com/rudderlabs/rudder-transformer/issues/4508)) ([ded932f](https://github.com/rudderlabs/rudder-transformer/commit/ded932f0dd449c0614f5a4e64c65e650e37c898e))
+* stream dest test type fix ([8de1054](https://github.com/rudderlabs/rudder-transformer/commit/8de10544d8543a3374e46f970bb4ce81a3d6fcbb))
+
 ### [1.104.8](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.7...v1.104.8) (2025-07-22)
 
 

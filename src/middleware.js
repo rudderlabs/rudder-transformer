@@ -3,21 +3,30 @@ const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 const stats = require('./util/stats');
 
-const PYROSCOPE_WALL_SAMPLING_DURATION_MS = process.env.PYROSCOPE_WALL_SAMPLING_DURATION_MS
-  ? parseInt(process.env.PYROSCOPE_WALL_SAMPLING_DURATION_MS, 10)
-  : 60000;
+function parseEnvInt(envVar, defaultValue) {
+  const value = process.env[envVar];
+  if (!value) return defaultValue;
 
-const PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS = process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS
-  ? parseInt(process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS, 10)
-  : 10000;
+  const trimmed = value.trim();
+  if (!trimmed) return defaultValue;
 
-const PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES = process.env.PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES
-  ? parseInt(process.env.PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES, 10)
-  : 512 * 1024;
+  const parsed = Number(trimmed);
+  return Number.isInteger(parsed) ? parsed : defaultValue;
+}
 
-const PYROSCOPE_HEAP_STACK_DEPTH = process.env.PYROSCOPE_HEAP_STACK_DEPTH
-  ? parseInt(process.env.PYROSCOPE_HEAP_STACK_DEPTH, 10)
-  : 64;
+const PYROSCOPE_WALL_SAMPLING_DURATION_MS = parseEnvInt(
+  'PYROSCOPE_WALL_SAMPLING_DURATION_MS',
+  60000,
+);
+const PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS = parseEnvInt(
+  'PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS',
+  10000,
+);
+const PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES = parseEnvInt(
+  'PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES',
+  512 * 1024,
+);
+const PYROSCOPE_HEAP_STACK_DEPTH = parseEnvInt('PYROSCOPE_HEAP_STACK_DEPTH', 64);
 
 Pyroscope.init({
   appName: 'rudder-transformer',
@@ -90,6 +99,7 @@ module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
   addProfilingMiddleware,
+  parseEnvInt,
   PYROSCOPE_WALL_SAMPLING_DURATION_MS,
   PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS,
   PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES,

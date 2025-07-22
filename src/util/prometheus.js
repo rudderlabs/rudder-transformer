@@ -262,6 +262,8 @@ class Prometheus {
           'workspaceId',
           'feature',
           'implementation',
+          'errorCategory',
+          'errorType',
         ],
       },
       {
@@ -389,7 +391,15 @@ class Prometheus {
         name: 'regulation_worker_user_deletion_failure',
         help: 'regulation_worker_user_deletion_failure',
         type: 'counter',
-        labelNames: ['destType', 'module', 'implementation', 'feature'],
+        labelNames: [
+          'destType',
+          'module',
+          'implementation',
+          'feature',
+          'destinationId',
+          'errorCategory',
+          'errorType',
+        ],
       },
       {
         name: 'shopify_server_side_identifier_event',
@@ -537,6 +547,12 @@ class Prometheus {
         help: 'braze_alias_missconfigured_count',
         type: 'counter',
         labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batched_identify_func_calls_count',
+        help: 'braze_batched_identify_func_calls_count will count the number of times the batched identify function is called',
+        type: 'counter',
+        labelNames: ['destination_id', 'status', 'error'],
       },
       {
         name: 'braze_batch_subscription_size',

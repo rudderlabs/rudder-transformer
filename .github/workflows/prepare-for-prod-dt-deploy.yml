@@ -10,6 +10,11 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
+  contents: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -90,6 +95,7 @@ jobs:
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
 
+
       - name: Extract branch name
         id: extract_branch_name
         run: |
@@ -143,6 +149,10 @@ jobs:
           git push -u origin hosted-transformer-$TAG_NAME
 
           gh pr create --fill
+
+      - name: Clone Operator Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         run: |

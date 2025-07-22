@@ -3,6 +3,10 @@ name: Prepare for Rollback in Production Environment
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   create-rollback-pr:
     name: Update Helm Charts For Production and Create Pull Request
@@ -85,13 +89,36 @@ jobs:
             done
           done
 
-          # bump up the customers version and repository information
-          for customer in "${enabled_ut_customers[@]}"; do
-            yq eval -i ".spec.user_transformer.image.version=\"${{ steps.target-version.outputs.tag_name }}\"" $customer
-            git add $customer
-          done
+          if [ ${#enabled_ut_customers[@]} -gt 0 ]; then
+            # bump up the customers version and repository information
+            for customer in "${enabled_ut_customers[@]}"; do
+                yq eval -i ".spec.user_transformer.image.version=\"${{ steps.target-version.outputs.tag_name }}\"" $customer
+                git add $customer
+            done
 
-          git commit -m "chore: rollback dedicated transformers to ${{ steps.target-version.outputs.tag_name }}"
+            git commit -m "chore: rollback dedicated transformers to ${{ steps.target-version.outputs.tag_name }}"
+            git push -u origin dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+            gh pr create --fill
+          else
+              echo "No dedicated customers found to rollback"
+          fi
+
+      - name: Clone Operator Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudderstack-operator.git
+
+      - name: Update helm charts and raise pull request for dedicated transformer from operator
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudderstack-operator
+          git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+
+          cd operator-helm/valuefiles
+          yq eval -i ".transformer.image.version=\"${{ steps.target-version.outputs.tag_name }}\"" values.yaml
+          git add values.yaml
+
+          git commit -m "chore: rollback dedicated transformer default version to ${{ steps.target-version.outputs.tag_name }}"
           git push -u origin dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           gh pr create --fill

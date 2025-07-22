@@ -66,6 +66,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'klaviyo',
   'campaign_manager',
   'criteo_audience',
+  'customerio_audience',
   'branch',
   'userpilot',
   'loops',
@@ -74,6 +75,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'rudder_test',
   'tiktok_ads',
   'bluecore',
+  'attentive_tag',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = ['googlesheets'];

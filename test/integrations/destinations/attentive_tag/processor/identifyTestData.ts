@@ -725,4 +725,243 @@ export const identifyTestData: ProcessorTestData[] = [
     },
     mockFns,
   },
+  {
+    id: 'attentive-tag-identify-processor-test-insufficient-identity',
+    name: 'attentive_tag',
+    description: 'Identify event with only clientUserId - insufficient for identity resolution',
+    scenario: 'User identification with only clientUserId, no other identifiers',
+    successCriteria: 'Should NOT make identity resolution API call due to insufficient identifiers',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+              channel: 'web',
+              context: {
+                locale: 'en-GB',
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'user123',
+                  },
+                ],
+                traits: {
+                  firstName: 'John',
+                  lastName: 'Doe',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+              messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
+              receivedAt: '2023-10-14T13:56:14.945+05:30',
+              type: 'identify',
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    externalIdentifiers: {
+                      clientUserId: 'user123',
+                    },
+                  },
+                  properties: {
+                    firstName: 'John',
+                    lastName: 'Doe',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
+  {
+    id: 'attentive-tag-identify-processor-test-client-user-custom-identifiers',
+    name: 'attentive_tag',
+    description:
+      'Identify event with clientUserId and customIdentifiers - sufficient for identity resolution',
+    scenario: 'User identification with both clientUserId and customIdentifiers',
+    successCriteria: 'Should make identity resolution API call with both identifiers',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: [
+          {
+            message: {
+              anonymousId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
+              channel: 'web',
+              context: {
+                locale: 'en-GB',
+                externalId: [
+                  {
+                    type: 'clientUserId',
+                    id: 'user456',
+                  },
+                ],
+                traits: {
+                  firstName: 'Alice',
+                  lastName: 'Johnson',
+                  customIdentifiers: [
+                    {
+                      name: 'loyaltyId',
+                      value: 'LOYALTY123',
+                    },
+                    {
+                      name: 'memberId',
+                      value: 'MEMBER789',
+                    },
+                  ],
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+                attentive_tag: {
+                  signUpSourceId: '241654',
+                },
+              },
+              messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
+              receivedAt: '2023-10-14T13:56:14.945+05:30',
+              type: 'identify',
+            },
+            metadata,
+            destination: {
+              ...destination,
+              Config: {
+                ...destination.Config,
+                enableNewIdentifyFlow: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  clientUserId: 'user456',
+                  customIdentifiers: [
+                    {
+                      name: 'loyaltyId',
+                      value: 'LOYALTY123',
+                    },
+                    {
+                      name: 'memberId',
+                      value: 'MEMBER789',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              headers: headers,
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    externalIdentifiers: {
+                      clientUserId: 'user456',
+                      customIdentifiers: [
+                        {
+                          name: 'loyaltyId',
+                          value: 'LOYALTY123',
+                        },
+                        {
+                          name: 'memberId',
+                          value: 'MEMBER789',
+                        },
+                      ],
+                    },
+                  },
+                  properties: {
+                    firstName: 'Alice',
+                    lastName: 'Johnson',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            metadata,
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns,
+  },
 ];

@@ -1,7 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const { trackResponseBuilder } = require('./transformV2');
-const { eventNames } = require('process');
 
 describe('trackResponseBuilder', () => {
   const baseConfig = {

@@ -155,6 +155,8 @@ jobs:
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudderstack-operator
           git checkout -b dedicated-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}

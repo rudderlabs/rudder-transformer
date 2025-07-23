@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.105.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.105.0...v1.105.1) (2025-07-23)
+
+
+### Bug Fixes
+
+* add missing env prepare-for-prod-dt-deploy.yml ([fb25f76](https://github.com/rudderlabs/rudder-transformer/commit/fb25f765067d6ff46503efd56836f31960971c63))
+
 ## [1.105.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.104.8...v1.105.0) (2025-07-22)
 
 

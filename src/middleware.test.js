@@ -5,11 +5,6 @@ const {
   addStatMiddleware,
   addRequestSizeMiddleware,
   addProfilingMiddleware,
-  PYROSCOPE_WALL_SAMPLING_DURATION_MS,
-  PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS,
-  PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES,
-  PYROSCOPE_HEAP_STACK_DEPTH,
-  parseEnvInt,
 } = require('./middleware');
 
 const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
@@ -20,7 +15,6 @@ const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 jest.mock('@rudderstack/pyroscope-nodejs', () => ({
   default: {
     init: jest.fn(),
-    start: jest.fn(),
     koaMiddleware: () => async (ctx, next) => {
       await next();
     },
@@ -39,13 +33,7 @@ describe('Pyroscope', () => {
     expect(Pyroscope.init).toHaveBeenCalledWith({
       appName: 'rudder-transformer',
       wall: {
-        collectCpuTime: true, // Enable CPU time collection - REQUIRED for CPU profiling
-        samplingDurationMs: PYROSCOPE_WALL_SAMPLING_DURATION_MS, // Duration of a single wall profile (60 seconds)
-        samplingIntervalMicros: PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS, // Interval between samples (10ms in microseconds)
-      },
-      heap: {
-        samplingIntervalBytes: PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES, // 512KB - heap sampling interval
-        stackDepth: PYROSCOPE_HEAP_STACK_DEPTH, // Reduced stack depth to limit deep node_modules traces
+        collectCpuTime: true, // Enable CPU time collection
       },
     });
   });
@@ -185,93 +173,6 @@ describe('requestSizeMiddleware', () => {
       method: 'POST',
       code: 200,
       route: '/test',
-    });
-  });
-});
-
-describe('parseEnvInt', () => {
-  const originalEnv = process.env;
-
-  beforeEach(() => {
-    jest.resetModules();
-    process.env = { ...originalEnv };
-  });
-
-  afterAll(() => {
-    process.env = originalEnv;
-  });
-
-  describe('when environment variable is not set', () => {
-    it('should return default value when env var is undefined', () => {
-      delete process.env.TEST_VAR;
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-
-    it('should return default value when env var is empty string', () => {
-      process.env.TEST_VAR = '';
-      expect(parseEnvInt('TEST_VAR', 200)).toBe(200);
-    });
-  });
-
-  describe('when environment variable contains valid integers', () => {
-    it('should parse positive integers', () => {
-      process.env.TEST_VAR = '42';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(42);
-    });
-
-    it('should parse zero', () => {
-      process.env.TEST_VAR = '0';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(0);
-    });
-
-    it('should parse negative integers', () => {
-      process.env.TEST_VAR = '-10';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(-10);
-    });
-
-    it('should parse large integers', () => {
-      process.env.TEST_VAR = '999999';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(999999);
-    });
-  });
-
-  describe('when environment variable contains invalid values', () => {
-    it('should return default value for non-numeric strings', () => {
-      process.env.TEST_VAR = 'abc';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-
-    it('should return default value for mixed alphanumeric', () => {
-      process.env.TEST_VAR = '123abc';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-
-    it('should return default value for floating point numbers', () => {
-      process.env.TEST_VAR = '12.34';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-
-    it('should return default value for special values', () => {
-      process.env.TEST_VAR = 'null';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should handle whitespace-only strings', () => {
-      process.env.TEST_VAR = '   ';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(100);
-    });
-
-    it('should parse integers with leading/trailing whitespace', () => {
-      process.env.TEST_VAR = '  42  ';
-      expect(parseEnvInt('TEST_VAR', 100)).toBe(42);
-    });
-
-    it('should work with different default value types', () => {
-      process.env.TEST_VAR = 'invalid';
-      expect(parseEnvInt('TEST_VAR', 0)).toBe(0);
-      expect(parseEnvInt('TEST_VAR', -1)).toBe(-1);
     });
   });
 });

@@ -171,6 +171,29 @@ describe('hashUserField utility test', () => {
 
     expect(hashedUser).not.toBe(user);
   });
+
+  it('should hash idfa and gaid fields if present', () => {
+    const user = {
+      idfa: 'AEBE52E7-03EE-455A-B3C4-E57283966239',
+      gaid: '38400000-8cf0-11bd-b23e-10b96e40000d',
+    };
+    const hashedUser = hashUserField(user);
+    expect(hashedUser.idfa).toBeDefined();
+    expect(hashedUser.idfa).not.toBe(user.idfa);
+    expect(hashedUser.gaid).toBeDefined();
+    expect(hashedUser.gaid).not.toBe(user.gaid);
+  });
+
+  it('should hash an array of phone numbers', () => {
+    const user = {
+      phone: ['+1234567890', '+0987654321'],
+    };
+    const hashedUser = hashUserField(user);
+    expect(Array.isArray(hashedUser.phone)).toBe(true);
+    hashedUser.phone.forEach((hashed, idx) => {
+      expect(hashed).not.toBe(user.phone[idx]);
+    });
+  });
 });
 
 describe('getEventSource utility test', () => {
@@ -205,5 +228,13 @@ describe('getEventSource utility test', () => {
   it('returns "web" if properties is undefined', () => {
     const message = {};
     expect(getEventSource(message)).toBe('web');
+  });
+  it('should return event_source (snake_case) if present and valid', () => {
+    const message = { properties: { event_source: 'app' } };
+    expect(getEventSource(message)).toBe('app');
+  });
+  it('should prefer eventSource over event_source if both are present and valid', () => {
+    const message = { properties: { eventSource: 'offline', event_source: 'app' } };
+    expect(getEventSource(message)).toBe('offline');
   });
 });

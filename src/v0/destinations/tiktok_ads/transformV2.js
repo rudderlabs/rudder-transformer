@@ -86,7 +86,7 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
   // remove idfa/idfv/gaid from user object depending on the android/ios
   const os = get(message, 'context.os.name');
 
-  if (isDefinedAndNotNull(os)) {
+  if (isDefinedAndNotNull(os) && payload.user) {
     if (isAppleFamily(os)) {
       delete payload.user.gaid;
     } else if (os.toLowerCase() === 'android') {

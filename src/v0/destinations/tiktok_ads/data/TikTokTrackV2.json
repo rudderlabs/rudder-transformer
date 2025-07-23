@@ -243,10 +243,6 @@
     "sourceKeys": ["properties.attributionProvider", "properties.attribution_provider"]
   },
   {
-    "destKey": "ad.attribution_provider",
-    "sourceKeys": ["properties.attributionProvider", "properties.attribution_provider"]
-  },
-  {
     "destKey": "lead.lead_id",
     "sourceKeys": ["properties.leadId", "properties.lead_id"]
   },

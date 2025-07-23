@@ -6,7 +6,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Page Call -> page_view event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -112,7 +111,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> product_viewed event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -260,7 +258,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] cart_viewed event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -458,7 +455,6 @@ export const newpixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: false,
     description: 'Track Call -> [ECOM] collection_viewed event from web pixel',
     module: 'source',
     version: 'v2',
@@ -735,7 +731,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] product_added_to_cart event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -902,7 +897,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] product_removed_from_cart event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -1069,7 +1063,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] search_submitted event from web pixel',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {
@@ -1175,7 +1168,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> unknown event from web pixel, should not be sent to Shopify.',
     module: 'source',
-    skip: false,
     version: 'v2',
     input: {
       request: {

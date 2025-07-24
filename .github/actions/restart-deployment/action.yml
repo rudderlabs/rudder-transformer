@@ -21,6 +21,8 @@ inputs:
 runs:
   using: 'composite'
   steps:
+    - uses: azure/setup-kubectl@v4
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:

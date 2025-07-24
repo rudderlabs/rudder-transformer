@@ -1,13 +1,7 @@
 const lodash = require('lodash');
 const { defaultRequestConfig, getSuccessRespEvents, isDefinedAndNotNull } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const {
-  BASE_ENDPOINT,
-  CONFIG_CATEGORIES,
-  MAX_BATCH_SIZE,
-  revision,
-  revisionOct2024,
-} = require('./config');
+const { BASE_ENDPOINT, CONFIG_CATEGORIES, MAX_BATCH_SIZE, revision } = require('./config');
 const { buildRequest, getSubscriptionPayload } = require('./util');
 
 /**
@@ -36,7 +30,7 @@ const groupSubscribeResponsesUsingListIdV2 = (subscribeResponseList) => {
  */
 const generateBatchedSubscriptionRequest = (subscription, destination) => {
   const subscriptionPayloadResponse = defaultRequestConfig();
-  const { useNewKlaviyoRevisionVersion, privateApiKey } = destination.Config;
+  const { privateApiKey } = destination.Config;
   // fetching listId from first event as listId is same for all the events
   const profiles = []; // list of profiles to be subscribed
   const { listId, subscriptionProfileList, operation } = subscription;
@@ -47,7 +41,7 @@ const generateBatchedSubscriptionRequest = (subscription, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: useNewKlaviyoRevisionVersion ? revisionOct2024 : revision,
+    revision,
   };
   return subscriptionPayloadResponse;
 };

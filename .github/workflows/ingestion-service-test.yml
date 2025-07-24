@@ -34,6 +34,14 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: 'rudder-ingestion-svc/go.mod'
+      - name: 'Update Go module to use current branch'
+        run: |
+          cd rudder-ingestion-svc
+          # Add replace directive to use local rudder-transformer code
+          go mod edit -replace github.com/rudderlabs/rudder-transformer/go=../go
+          # Update go.sum and download dependencies
+          go mod tidy
+          cat go.mod
       - name: 'Install dependencies'
         run: |
           go version

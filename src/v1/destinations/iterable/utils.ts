@@ -7,21 +7,13 @@ import { IterableBulkApiResponse } from './types';
 const get = require('get-value');
 
 /**
- * Checks if a value is present in a response array based on a given path.
- * @param {Object} response - The response object to search within.
- * @param {string} path - The path to the response array.
- * @param {any} value - The value to check for in the array.
- * @returns {boolean} - True if the value is in the array, otherwise false.
- */
-const isValueInResponseArray = (destinationResponse, path, value) => {
-  const respArr = get(destinationResponse, path);
-  return Array.isArray(respArr) && respArr.includes(value);
-};
-
-/**
+ * Creates an optimized error checker function that pre-processes response data
+ * into lookup maps for O(1) access instead of O(n) array searches.
+ *
  * Determines if an event should be aborted based on the response from a destination
  * and extracts an error message if applicable.
- * ref:
+ *
+ * References:
  * 1) https://api.iterable.com/api/docs#users_updateEmail
  * 2) https://api.iterable.com/api/docs#events_track
  * 3) https://api.iterable.com/api/docs#users_bulkUpdateUser
@@ -32,61 +24,79 @@ const isValueInResponseArray = (destinationResponse, path, value) => {
  * 8) https://api.iterable.com/api/docs#commerce_trackPurchase
  * 9) https://api.iterable.com/api/docs#commerce_updateCart
  *
- * @param {Object} event - The event object containing various event properties.
- * @param {Object} destinationResponse - The response object from the destination.
- * @returns {Object} An object containing a boolean `isAbortable` indicating if the event
- * should be aborted, and an `errorMsg` string with the error message if applicable.
+ * @param {IterableBulkApiResponse} destinationResponse - The response object from the destination.
+ * @returns {Function} A function that checks if an event should be aborted with optimized lookups.
+ *                   Returns an object containing a boolean `isAbortable` indicating if the event
+ *                   should be aborted, and an `errorMsg` string with the error message if applicable.
  */
-
-export const checkIfEventIsAbortableAndExtractErrorMessage = (
-  event: any,
-  destinationResponse: IterableBulkApiResponse,
-): {
-  isAbortable: boolean;
-  errorMsg: string;
-} => {
-  const { failCount } = destinationResponse.response;
+export const createBatchErrorChecker = (destinationResponse: IterableBulkApiResponse) => {
+  const { failCount, ...response } = destinationResponse.response;
 
   if (failCount === 0) {
-    return { isAbortable: false, errorMsg: '' };
+    return () => ({ isAbortable: false, errorMsg: '' });
   }
 
-  const eventValues = {
-    email: event.email,
-    userId: event.userId,
-    eventName: event.eventName,
-  };
+  // Pre-process response data into lookup maps for O(1) access
+  const emailErrorMap = new Map<string, string[]>(); // email -> paths where it was found
+  const userIdErrorMap = new Map<string, string[]>(); // userId -> paths where it was found
+  const eventNameErrorMap = new Set<string>();
 
-  let errorMsg = '';
-  const userIdMatchPath = ITERABLE_RESPONSE_USER_ID_PATHS.filter((userIdPath) =>
-    isValueInResponseArray(destinationResponse.response, userIdPath, eventValues.userId),
-  );
-  if (userIdMatchPath.length > 0) {
-    errorMsg += `userId error:"${eventValues.userId}" in "${userIdMatchPath}".`;
+  // Build lookup maps from response paths
+  ITERABLE_RESPONSE_EMAIL_PATHS.forEach((path) => {
+    const respArr = get(response, path);
+    if (Array.isArray(respArr)) {
+      respArr.forEach((email) => {
+        if (!emailErrorMap.has(email)) {
+          emailErrorMap.set(email, []);
+        }
+        emailErrorMap.get(email)?.push(path);
+      });
+    }
+  });
+
+  ITERABLE_RESPONSE_USER_ID_PATHS.forEach((path) => {
+    const respArr = get(response, path);
+    if (Array.isArray(respArr)) {
+      respArr.forEach((userId) => {
+        if (!userIdErrorMap.has(userId)) {
+          userIdErrorMap.set(userId, []);
+        }
+        userIdErrorMap.get(userId)?.push(path);
+      });
+    }
+  });
+
+  const disallowedEventNames = get(response, 'disallowedEventNames');
+  if (Array.isArray(disallowedEventNames)) {
+    disallowedEventNames.forEach((eventName) => eventNameErrorMap.add(eventName));
   }
 
-  const emailMatchPath = ITERABLE_RESPONSE_EMAIL_PATHS.filter((emailPath) =>
-    isValueInResponseArray(destinationResponse.response, emailPath, eventValues.email),
-  );
+  return (event: any) => {
+    const eventValues = {
+      email: event.email,
+      userId: event.userId,
+      eventName: event.eventName,
+    };
 
-  if (emailMatchPath.length > 0) {
-    errorMsg += `email error:"${eventValues.email}" in "${emailMatchPath}".`;
-  }
+    let errorMsg = '';
 
-  const eventNameMatchPath = ['disallowedEventNames'].filter((eventNamePath) =>
-    isValueInResponseArray(destinationResponse.response, eventNamePath, eventValues.eventName),
-  );
+    if (eventValues.userId && userIdErrorMap.has(eventValues.userId)) {
+      const paths = userIdErrorMap.get(eventValues.userId);
+      errorMsg += `userId error:"${eventValues.userId}" in "${paths?.join(',')}".`;
+    }
 
-  if (eventNameMatchPath.length > 0) {
-    errorMsg += `eventName error:"${eventValues.eventName}" in "${eventNameMatchPath}".`;
-  }
+    if (eventValues.email && emailErrorMap.has(eventValues.email)) {
+      const paths = emailErrorMap.get(eventValues.email);
+      errorMsg += `email error:"${eventValues.email}" in "${paths?.join(',')}".`;
+    }
 
-  if (errorMsg) {
+    if (eventValues.eventName && eventNameErrorMap.has(eventValues.eventName)) {
+      errorMsg += `eventName error:"${eventValues.eventName}" in "disallowedEventNames".`;
+    }
+
     return {
-      isAbortable: true,
+      isAbortable: errorMsg.length > 0,
       errorMsg,
     };
-  }
-
-  return { isAbortable: false, errorMsg: '' };
+  };
 };

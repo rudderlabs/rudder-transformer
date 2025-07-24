@@ -37,7 +37,7 @@ const hashString = (input) => hashToSha256(input.toString().trim());
 const hashUserField = (user) => {
   const updatedUser = { ...user };
   // hashing external_id
-  const { email, phone, external_id: externalId } = user;
+  const { email, phone, external_id: externalId, idfa, gaid } = user;
   if (externalId) {
     // if there are multiple externalId's in form of array that tiktok supports then hashing every
     if (Array.isArray(externalId)) {
@@ -58,6 +58,14 @@ const hashUserField = (user) => {
       updatedUser.phone = hashString(phone).toString();
     }
   }
+  if (idfa) {
+    updatedUser.idfa = hashString(idfa).toString().toLowerCase();
+  }
+
+  if (gaid) {
+    updatedUser.gaid = hashString(gaid).toString();
+  }
+
   return updatedUser;
 };
 
@@ -72,10 +80,13 @@ const getEventSource = ({ properties, channel }) => {
 
   const isSupported = (source) => supportedSources.includes(source);
 
-  const { eventSource } = properties || {};
+  const { eventSource, event_source: eventSourceV2 } = properties || {};
 
   if (eventSource && isSupported(eventSource)) {
     return eventSource;
+  }
+  if (eventSourceV2 && isSupported(eventSourceV2)) {
+    return eventSourceV2;
   }
 
   if (channel && isSupported(channel)) {

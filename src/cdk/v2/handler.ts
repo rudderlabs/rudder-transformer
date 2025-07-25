@@ -5,7 +5,7 @@ import {
   WorkflowEngine,
   WorkflowEngineFactory,
 } from '@rudderstack/workflow-engine';
-import { FixMe } from '../../types';
+import { FixMe, RequestMetadata } from '../../types';
 
 import tags from '../../v0/util/tags';
 
@@ -73,7 +73,7 @@ export async function getCachedWorkflowEngine(
 export async function executeWorkflow(
   workflowEngine: WorkflowEngine,
   parsedEvent: FixMe,
-  requestMetadata: NonNullable<unknown> = {},
+  requestMetadata: RequestMetadata,
 ) {
   const result = await workflowEngine.execute(parsedEvent, { requestMetadata });
   // TODO: Handle remaining output scenarios
@@ -84,7 +84,7 @@ export async function processCdkV2Workflow(
   destType: string,
   parsedEvent: FixMe,
   feature: string,
-  requestMetadata: NonNullable<unknown> = {},
+  requestMetadata: RequestMetadata,
   bindings: Record<string, FixMe> = {},
 ) {
   try {

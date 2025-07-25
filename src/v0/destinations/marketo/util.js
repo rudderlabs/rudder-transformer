@@ -233,7 +233,7 @@ const marketoResponseHandler = (
   }
   // More readable error message
   let message = `Error occurred ${sourceMessage}`;
-  if (response.errors.length > 0 && response.errors[0].message) {
+  if (response?.errors?.length > 0 && response.errors[0].message) {
     message += ` -> ${response.errors[0].message}`;
   }
   // Marketo sent us some failure which is not handled

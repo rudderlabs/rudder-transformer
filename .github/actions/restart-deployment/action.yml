@@ -39,6 +39,7 @@ runs:
       run: |
         # Split comma-separated namespaces and restart deployment in each
         IFS=',' read -ra NAMESPACES <<< "${{ inputs.k8s-namespace }}"
+        IFS=',' read -ra DEPLOYMENTS <<< "${{ inputs.deployment-name }}"
 
         echo "🚀 Starting deployment restart process..."
         echo "Deployment: ${{ inputs.deployment-name }}"
@@ -55,11 +56,11 @@ runs:
           fi
           
           echo "📦 Processing namespace: $namespace"
-          echo "🔄 Command that would be executed: kubectl rollout restart deployment -l app.kubernetes.io/name=\"${{ inputs.deployment-name }}\" -n $namespace"
-
-
-          kubectl rollout restart deployment -l app.kubernetes.io/name="${{ inputs.deployment-name }}" -n "$namespace"
-          kubectl rollout status deployment -l app.kubernetes.io/name="${{ inputs.deployment-name }}" -n "$namespace" --timeout=300s
+          for deployment in "${DEPLOYMENTS[@]}"; do
+            echo "🔄 Command that would be executed: kubectl rollout restart deployment -l app.kubernetes.io/name=\"$deployment\" -n $namespace"
+            kubectl rollout restart deployment -l app.kubernetes.io/name="$deployment" -n "$namespace"
+            kubectl rollout status deployment -l app.kubernetes.io/name="$deployment" -n "$namespace" --timeout=300s
+          done
 
           echo "✅ Successfully restarted deployment in namespace: $namespace"
           echo ""

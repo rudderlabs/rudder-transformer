@@ -1,6 +1,6 @@
 import { BaseStrategy } from './base';
 import { GenericProxyHandlerInput, IterableBulkProxyInput } from '../types';
-import { checkIfEventIsAbortableAndExtractErrorMessage } from '../utils';
+import { createBatchErrorChecker } from '../utils';
 import { DeliveryJobState, DeliveryV1Response } from '../../../../types';
 import { TransformerProxyError } from '../../../../v0/util/errorTypes';
 import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
@@ -10,28 +10,27 @@ class TrackIdentifyStrategy extends BaseStrategy {
   handleSuccess(responseParams: IterableBulkProxyInput): DeliveryV1Response {
     const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
     const { status } = destinationResponse;
-    const responseWithIndividualEvents: DeliveryJobState[] = [];
+    let responseWithIndividualEvents: DeliveryJobState[] = [];
 
     const { events, users } = destinationRequest?.body.JSON || {};
     const finalData = events || users;
 
     if (finalData) {
-      finalData.forEach((event, idx) => {
+      // Create optimized error checker for this batch
+      const checkEventError = createBatchErrorChecker(destinationResponse);
+
+      responseWithIndividualEvents = finalData.map((event, idx) => {
         const parsedOutput = {
           statusCode: 200,
           metadata: rudderJobMetadata[idx],
           error: 'success',
         };
-
-        const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(
-          event,
-          destinationResponse,
-        );
+        const { isAbortable, errorMsg } = checkEventError(event);
         if (isAbortable) {
           parsedOutput.statusCode = 400;
           parsedOutput.error = errorMsg;
         }
-        responseWithIndividualEvents.push(parsedOutput);
+        return parsedOutput;
       });
     }
 

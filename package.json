@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.105.1",
+  "version": "1.105.2",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -68,7 +68,7 @@
     "@rudderstack/integrations-lib": "^0.2.43",
     "@rudderstack/json-template-engine": "^0.19.5",
     "@rudderstack/pyroscope-nodejs": "^0.4.6-fork.1",
-    "@rudderstack/workflow-engine": "^0.8.13",
+    "@rudderstack/workflow-engine": "^0.8.20",
     "@shopify/jest-koa-mocks": "^5.1.1",
     "ajv": "^8.17.1",
     "ajv-draft-04": "^1.0.0",

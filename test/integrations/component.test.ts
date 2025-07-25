@@ -75,6 +75,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'rudder_test',
   'tiktok_ads',
   'bluecore',
+  'postscript',
   'attentive_tag',
 ];
 

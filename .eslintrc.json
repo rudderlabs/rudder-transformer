@@ -11,9 +11,11 @@
     "plugin:sonarjs/recommended",
     "plugin:json/recommended",
     "plugin:@typescript-eslint/recommended",
-    "prettier"
+    "prettier",
+    "plugin:import/errors",
+    "plugin:import/warnings"
   ],
-  "plugins": ["@typescript-eslint", "unicorn"],
+  "plugins": ["@typescript-eslint", "unicorn", "import"],
   "globals": {},
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -67,6 +69,8 @@
     "sonarjs/no-identical-functions": "error",
     "no-prototype-builtins": "off",
     "@typescript-eslint/dot-notation": "error",
-    "@typescript-eslint/no-unused-vars": "error"
+    "@typescript-eslint/no-unused-vars": "error",
+    "import/named": "error",
+    "import/no-unresolved": "error"
   }
 }

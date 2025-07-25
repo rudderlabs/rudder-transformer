@@ -6,7 +6,6 @@ export const newpixelCheckoutEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] checkout_started event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -334,7 +333,6 @@ export const newpixelCheckoutEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] checkout_completed event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {

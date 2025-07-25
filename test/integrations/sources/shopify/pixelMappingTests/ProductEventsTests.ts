@@ -6,7 +6,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Page Call -> page_view event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -112,7 +111,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> product_viewed event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -141,7 +139,7 @@ export const newpixelEventsTestScenarios = [
                     image: {
                       src: '//store.myshopify.com/cdn/shop/files/Main_b13ad453-477c-4ed1-9b43-81f3345adfd6.jpg?v=1724736600',
                     },
-                    sku: '',
+                    sku: 'sku-tcs-liquid',
                     title: 'Default Title',
                     untranslatedTitle: 'Default Title',
                   },
@@ -185,6 +183,7 @@ export const newpixelEventsTestScenarios = [
                     currency: 'USD',
                     url: '/products/the-collection-snowboard-liquid',
                     name: 'The Collection Snowboard: Liquid',
+                    sku: 'sku-tcs-liquid',
                   },
                   context: {
                     page: {
@@ -224,7 +223,7 @@ export const newpixelEventsTestScenarios = [
                             url: '/products/the-collection-snowboard-liquid',
                             vendor: 'Hydrogen Vendor',
                           },
-                          sku: '',
+                          sku: 'sku-tcs-liquid',
                           title: 'Default Title',
                           untranslatedTitle: 'Default Title',
                         },
@@ -245,7 +244,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T17:34:54.889Z',
                   messageId: 'sh-f6c07b5a-D20A-4E5F-812E-337299B56C34',
                 },
               ],
@@ -259,7 +258,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] cart_viewed event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -445,7 +443,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T18:25:30.125Z',
                   messageId: 'shu-f6eecef1-4132-459F-CDB5-681DA3DD61CD',
                 },
               ],
@@ -457,7 +455,6 @@ export const newpixelEventsTestScenarios = [
   },
   {
     name: 'shopify',
-    skip: true,
     description: 'Track Call -> [ECOM] collection_viewed event from web pixel',
     module: 'source',
     version: 'v2',
@@ -720,7 +717,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T18:27:39.197Z',
                   messageId: 'sh-f6f0c6be-43F8-47D2-5F94-C22AD5ED3E79',
                 },
               ],
@@ -734,7 +731,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] product_added_to_cart event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -865,6 +861,8 @@ export const newpixelEventsTestScenarios = [
                               vendor: 'Hydrogen Vendor',
                             },
                             sku: '',
+                            title: null,
+                            untranslatedTitle: null,
                           },
                           quantity: 1,
                         },
@@ -885,7 +883,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T18:34:42.625Z',
                   messageId: 'sh-f6f828db-F77B-43E8-96C4-1D51DACD52A3',
                 },
               ],
@@ -899,7 +897,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] product_removed_from_cart event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -1030,6 +1027,8 @@ export const newpixelEventsTestScenarios = [
                               vendor: 'Hydrogen Vendor',
                             },
                             sku: '',
+                            title: null,
+                            untranslatedTitle: null,
                           },
                           quantity: 1,
                         },
@@ -1050,7 +1049,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T20:56:00.125Z',
                   messageId: 'shu-f778d1eb-9B83-4832-9DC0-5C3B33A809F0',
                 },
               ],
@@ -1064,7 +1063,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> [ECOM] search_submitted event from web pixel',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {
@@ -1156,7 +1154,7 @@ export const newpixelEventsTestScenarios = [
                       },
                     },
                   },
-                  timestamp: '2024-09-15T17:24:30.373Z',
+                  timestamp: '2024-09-15T22:37:35.869Z',
                   messageId: 'sh-f7d599b4-D80F-4D05-C4CE-B980D5444596',
                 },
               ],
@@ -1170,7 +1168,6 @@ export const newpixelEventsTestScenarios = [
     name: 'shopify',
     description: 'Track Call -> unknown event from web pixel, should not be sent to Shopify.',
     module: 'source',
-    skip: true,
     version: 'v2',
     input: {
       request: {

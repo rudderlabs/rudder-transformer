@@ -98,5 +98,5 @@ jobs:
           aws-role: ${{ secrets.DEV_CI_DEPLOYMENT_RESTARTER_ROLE }}
           aws-region: us-east-1
           k8s-cluster: dev-rudder
-          k8s-namespace: rudder-us-east-1a,retl-int
+          k8s-namespace: rudder-us-east-1a,retl-int,hostedmt-dev
           deployment-name: rudder-transformer,source-transformer,delivery-transformer

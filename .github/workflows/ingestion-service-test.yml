@@ -41,7 +41,6 @@ jobs:
           go mod edit -replace github.com/rudderlabs/rudder-transformer/go=../go
           # Update go.sum and download dependencies
           go mod tidy
-          cat go.mod
       - name: 'Install dependencies'
         run: |
           go version

@@ -35,8 +35,12 @@ jobs:
           echo "Latest commit SHA: $latest_sha"
 
       - name: Clone Ingestion Service Repo
-        run: |
-          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git
+        uses: actions/checkout@v4.2.1
+        with:
+          repository: rudderlabs/rudder-ingestion-svc
+          token: ${{ secrets.PAT }}
+          path: rudder-ingestion-svc
+          fetch-depth: 1
 
       - name: Get Go Version from Ingestion Service
         id: get_go_version
@@ -56,6 +60,7 @@ jobs:
         env:
           LATEST_SHA: ${{ steps.get_sha.outputs.latest_sha }}
         run: |
+          set -euo pipefail
           cd rudder-ingestion-svc
 
           # Create a new branch for the update
@@ -87,7 +92,7 @@ jobs:
           git commit -m "chore: update transformer-go to latest version"
 
           # Push the branch
-          git push -u origin $branch_name
+          git push --force-with-lease -u origin $branch_name
 
           # Set output to indicate changes were made
           echo "has_changes=true" >> $GITHUB_OUTPUT

@@ -7,6 +7,10 @@ on:
         description: 'Personal Access Token for repository access'
         required: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   update-ingestion-service:
     name: Update Ingestion Service with Latest Transformer Version

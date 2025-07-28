@@ -32,7 +32,7 @@
     "destKeys": "url"
   },
   {
-    "sourceKeys": "productVariant.product.sku",
+    "sourceKeys": "productVariant.sku",
     "destKeys": "sku"
   },
   {

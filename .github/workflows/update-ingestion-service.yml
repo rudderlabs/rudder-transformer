@@ -1,0 +1,104 @@
+name: Update Ingestion Service with Latest Transformer Version
+
+on:
+  workflow_call:
+    secrets:
+      PAT:
+        description: 'Personal Access Token for repository access'
+        required: true
+
+jobs:
+  update-ingestion-service:
+    name: Update Ingestion Service with Latest Transformer Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+        with:
+          fetch-depth: 1
+
+      # In order to make a commit, we need to initialize a user.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+
+      - name: Get Latest Commit SHA
+        id: get_sha
+        run: |
+          latest_sha=$(git rev-parse HEAD)
+          echo "latest_sha=$latest_sha" >> $GITHUB_OUTPUT
+          echo "Latest commit SHA: $latest_sha"
+
+      - name: Clone Ingestion Service Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git
+
+      - name: Get Go Version from Ingestion Service
+        id: get_go_version
+        run: |
+          cd rudder-ingestion-svc
+          go_version=$(grep "^go " go.mod | awk '{print $2}')
+          echo "go_version=$go_version" >> $GITHUB_OUTPUT
+          echo "Go version from ingestion service: $go_version"
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ steps.get_go_version.outputs.go_version }}
+
+      - name: Update go.mod with Latest Transformer Version
+        id: update
+        env:
+          LATEST_SHA: ${{ steps.get_sha.outputs.latest_sha }}
+        run: |
+          cd rudder-ingestion-svc
+
+          # Create a new branch for the update
+          branch_name="chore.update-transformer-go-tests"
+
+          # Delete the branch if it exists (both locally and remotely)
+          git branch -D $branch_name 2>/dev/null || true
+          git push origin --delete $branch_name 2>/dev/null || true
+
+          # Create a new branch
+          git checkout -b $branch_name
+
+          # Update the go.mod file with the latest commit SHA using go get
+          # This is the proper way to update Go dependencies
+          go get github.com/rudderlabs/rudder-transformer/go@$LATEST_SHA
+
+          # Run go mod tidy to clean up and update go.sum
+          go mod tidy
+
+          # Check if there are any changes
+          if git diff --quiet; then
+            echo "No changes to commit"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Commit the changes
+          git add go.mod go.sum
+          git commit -m "chore: update transformer-go to latest version"
+
+          # Push the branch
+          git push -u origin $branch_name
+
+          # Set output to indicate changes were made
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.update.outputs.has_changes == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudder-ingestion-svc
+          
+          # Create a pull request
+          gh pr create \
+            --title "chore: update transformer-go to latest version" \
+            --body "This PR updates the rudder-transformer/go dependency to the latest version from the main branch." \
+            --head ${{ steps.update.outputs.branch_name }} \
+            --base main

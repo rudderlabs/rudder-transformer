@@ -90,6 +90,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces
         uses: ./.github/actions/restart-deployment
@@ -105,6 +108,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces
         uses: ./.github/actions/restart-deployment

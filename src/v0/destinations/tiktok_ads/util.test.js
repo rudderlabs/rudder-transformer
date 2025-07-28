@@ -237,4 +237,8 @@ describe('getEventSource utility test', () => {
     const message = { properties: { eventSource: 'offline', event_source: 'app' } };
     expect(getEventSource(message)).toBe('offline');
   });
+  it('if mobile is present, it should return app', () => {
+    const message = { properties: { eventSource: 'mobile', event_source: 'web' } };
+    expect(getEventSource(message)).toBe('app');
+  });
 });

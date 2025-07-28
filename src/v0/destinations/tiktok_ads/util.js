@@ -78,22 +78,36 @@ const hashUserField = (user) => {
 const getEventSource = ({ properties, channel }) => {
   const supportedSources = ['web', 'app', 'offline', 'crm'];
 
-  const isSupported = (source) => supportedSources.includes(source);
+  // Mapping for backward compatibility and new mappings
+  const sourceMapping = {
+    web: 'web',
+    mobile: 'app',
+    server: 'offline',
+    sources: 'offline',
+  };
 
   const { eventSource, event_source: eventSourceV2 } = properties || {};
 
-  if (eventSource && isSupported(eventSource)) {
-    return eventSource;
-  }
-  if (eventSourceV2 && isSupported(eventSourceV2)) {
-    return eventSourceV2;
-  }
+  // Helper function to resolve source with mapping
+  const resolveSource = (source) => {
+    if (!source) return null;
 
-  if (channel && isSupported(channel)) {
-    return channel;
-  }
+    // First check if it's a direct supported source
+    if (supportedSources.includes(source)) {
+      return source;
+    }
 
-  return 'web';
+    // Then check if it needs mapping
+    if (sourceMapping[source]) {
+      return sourceMapping[source];
+    }
+
+    return null;
+  };
+
+  return (
+    resolveSource(eventSource) || resolveSource(eventSourceV2) || resolveSource(channel) || 'web'
+  );
 };
 
 module.exports = { getContents, hashUserField, getEventSource };

@@ -6,6 +6,8 @@ const {
   InstrumentationError,
   groupByInBatches,
   forEachInBatches,
+  isDefinedAndNotNull,
+  get,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -21,6 +23,7 @@ const {
   handleRtTfSingleEventError,
   validateEventName,
   sortBatchesByMinJobId,
+  isAppleFamily,
 } = require('../../util');
 const { getContents, hashUserField, getEventSource } = require('./util');
 const config = require('./config');
@@ -59,6 +62,18 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
     payload.properties.contents = getContents(message, false);
   }
 
+  // if contents is present then we need to add contents_ids and num_items to the payload
+  if (payload.properties?.contents?.length > 0) {
+    const contentIds = payload.properties.contents
+      .map((content) => content.content_id)
+      .filter(Boolean);
+
+    if (contentIds.length > 0) {
+      payload.properties.contents_ids = contentIds;
+    }
+    payload.properties.num_items = payload.properties.contents.length;
+  }
+
   // getting externalId and hashing it and storing it in
   const externalId = getDestinationExternalID(message, 'tiktokExternalId');
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {
@@ -67,6 +82,19 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
   if (destConfig.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
     payload.user = hashUserField(payload.user);
   }
+
+  // remove idfa/idfv/gaid from user object depending on the android/ios
+  const os = get(message, 'context.os.name');
+
+  if (isDefinedAndNotNull(os) && payload.user) {
+    if (isAppleFamily(os)) {
+      delete payload.user.gaid;
+    } else if (os.toLowerCase() === 'android') {
+      delete payload.user.idfa;
+      delete payload.user.idfv;
+    }
+  }
+
   // setting content-type default value in case of all standard event except `page-view`
   if (!payload.properties?.content_type && setDefaultForContentType) {
     // properties object may be empty due which next line may give some error
@@ -173,11 +201,11 @@ const process = async (event) => {
 
 /**
  * it builds batch response for an event using defaultBatchRequestConfig() utility
- * @param {*} eventsChunk
+ * @param {*} batch
  * @returns batchedRequest
  *
  * Example:
- * inputEvent:
+ * batch:
  *{
     event: {
       event_source_id: "dummyPixelCode",
@@ -379,8 +407,8 @@ const process = async (event) => {
   },
 }
  */
-const buildBatchResponseForEvent = (inputEvent) => {
-  const { destination, event } = inputEvent;
+const buildBatchResponseForEvent = (batch) => {
+  const { destination, event } = batch;
   const { accessToken } = destination.Config;
   const { batchedRequest } = defaultBatchRequestConfig();
   batchedRequest.body.JSON = event;
@@ -392,7 +420,7 @@ const buildBatchResponseForEvent = (inputEvent) => {
   return batchedRequest;
 };
 
-const getEventChunks = (event, trackResponseList, eventsChunk) => {
+const separateTestEvents = (event, processedTestEvents, processedEvents) => {
   // only for already transformed payload
   // eslint-disable-next-line no-param-reassign
   event.message = Array.isArray(event.message) ? event.message : [event.message];
@@ -400,15 +428,15 @@ const getEventChunks = (event, trackResponseList, eventsChunk) => {
   // not performing batching for test events as it is not supported
   if (event.message[0].body.JSON.test_event_code) {
     const { metadata, destination, message } = event;
-    trackResponseList.push(getSuccessRespEvents(message, [metadata], destination));
+    processedTestEvents.push(getSuccessRespEvents(message, [metadata], destination));
   } else {
-    eventsChunk.push({ ...event });
+    processedEvents.push({ ...event });
   }
 };
 
 /**
- * This clubs eventsChunk request body and metadat based upon maxBatchSize
- * @param {*} eventsChunk
+ * This clubs proecessedEvents request body and metadat based upon maxBatchSize
+ * @param {*} processedEvents
  * @param {*} maxBatchSize
  * @returns array of objects as
  * {
@@ -419,7 +447,7 @@ const getEventChunks = (event, trackResponseList, eventsChunk) => {
  *
  * Example:
  *
- * eventsChunk:[
+ * processedEvents:[
   {
     message: [
       {
@@ -684,14 +712,14 @@ Returns
   }
 ]
  */
-const batchEvents = (eventsChunk) => {
+const batchEvents = (processedEvents) => {
   const events = [];
   let data = [];
   let metadata = [];
   let eventSource = 'web';
-  const { destination } = eventsChunk[0];
+  const { destination } = processedEvents[0];
   const { pixelCode } = destination.Config;
-  eventsChunk.forEach((event) => {
+  processedEvents.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
     eventSource = event.message[0]?.body.JSON.event_source;
     // eslint-disable-next-line unicorn/consistent-destructuring
@@ -727,24 +755,24 @@ const batchEvents = (eventsChunk) => {
   return events;
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const trackResponseList = []; // list containing single track event in batched format
-  const processedEvents = []; // temporary variable to divide payload into chunks
+  const processedEvents = []; // variable to store processed events
+  const processedTestEvents = []; // list containing single track event in batched format which are test events
   const errorRespList = [];
   await Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          getEventChunks(event, trackResponseList, processedEvents);
+          separateTestEvents(event, processedTestEvents, processedEvents);
         } else {
           // if not transformed
-          getEventChunks(
+          separateTestEvents(
             {
               message: await process(event),
               metadata: event.metadata,
               destination: event.destination,
             },
-            trackResponseList,
+            processedTestEvents,
             processedEvents,
           );
         }
@@ -757,13 +785,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const batchedResponseList = [];
   // Grouping events by event_source
-  const groupedEventChunks = await groupByInBatches(
+  const groupedProcessedEvents = await groupByInBatches(
     processedEvents,
     (event) => event.message[0].body.JSON.event_source,
   );
 
-  await forEachInBatches(Object.keys(groupedEventChunks), async (eventSource) => {
-    const batchedEvents = batchEvents(groupedEventChunks[eventSource]);
+  await forEachInBatches(Object.keys(groupedProcessedEvents), async (eventSource) => {
+    const batchedEvents = batchEvents(groupedProcessedEvents[eventSource]);
     if (batchedEvents.length > 0) {
       forEachInBatches(batchedEvents, async (batch) => {
         const batchedRequest = buildBatchResponseForEvent(batch);
@@ -775,7 +803,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   });
   // Sort the events based on job id
   // Event may get out of order due testEventCode properties this function ensure that events are in order
-  return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList, errorRespList));
+  return sortBatchesByMinJobId(batchedResponseList.concat(processedTestEvents, errorRespList));
 };
 
 module.exports = { process, processRouterDest, trackResponseBuilder };

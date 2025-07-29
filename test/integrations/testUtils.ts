@@ -630,7 +630,7 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
 };
 
 export const validateStreamTestWithZOD = (testPayload: TestCaseData, response: any) => {
-  // Validate the resquest payload
+  // Validate the response payload
   switch (testPayload.feature) {
     case 'router':
       RouterStreamingResponseListSchema.parse(response.body.output);

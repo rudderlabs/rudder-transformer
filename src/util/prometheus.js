@@ -262,6 +262,8 @@ class Prometheus {
           'workspaceId',
           'feature',
           'implementation',
+          'errorCategory',
+          'errorType',
         ],
       },
       {
@@ -294,12 +296,7 @@ class Prometheus {
         type: 'counter',
         labelNames: ['destination', 'success'],
       },
-      {
-        name: 'marketo_bulk_upload_upload_file_jobs',
-        help: 'marketo_bulk_upload_upload_file_jobs',
-        type: 'counter',
-        labelNames: ['success'],
-      },
+
       {
         name: 'proxy_test_error',
         help: 'proxy_test_error',
@@ -342,24 +339,7 @@ class Prometheus {
         type: 'counter',
         labelNames: ['source', 'version'],
       },
-      {
-        name: 'marketo_bulk_upload_get_job_status',
-        help: 'marketo_bulk_upload_get_job_status',
-        type: 'counter',
-        labelNames: ['status', 'state'],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file',
-        help: 'marketo_bulk_upload_upload_file',
-        type: 'counter',
-        labelNames: ['status', 'state'],
-      },
-      {
-        name: 'marketo_bulk_upload_polling',
-        help: 'marketo_bulk_upload_polling',
-        type: 'counter',
-        labelNames: ['status', 'state', 'requestTime'],
-      },
+
       {
         name: 'marketo_fetch_token',
         help: 'marketo_fetch_token',
@@ -389,7 +369,15 @@ class Prometheus {
         name: 'regulation_worker_user_deletion_failure',
         help: 'regulation_worker_user_deletion_failure',
         type: 'counter',
-        labelNames: ['destType', 'module', 'implementation', 'feature'],
+        labelNames: [
+          'destType',
+          'module',
+          'implementation',
+          'feature',
+          'destinationId',
+          'errorCategory',
+          'errorType',
+        ],
       },
       {
         name: 'shopify_server_side_identifier_event',
@@ -539,6 +527,12 @@ class Prometheus {
         labelNames: ['destination_id'],
       },
       {
+        name: 'braze_batched_identify_func_calls_count',
+        help: 'braze_batched_identify_func_calls_count will count the number of times the batched identify function is called',
+        type: 'counter',
+        labelNames: ['destination_id', 'status', 'error'],
+      },
+      {
         name: 'braze_batch_subscription_size',
         help: 'braze_batch_subscription_size',
         type: 'gauge',
@@ -635,18 +629,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: ['destination', 'version'],
       },
-      {
-        name: 'marketo_bulk_upload_process_time',
-        help: 'marketo_bulk_upload_process_time',
-        type: 'histogram',
-        labelNames: ['action'],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_size',
-        help: 'marketo_bulk_upload_upload_file_size',
-        type: 'histogram',
-        labelNames: [],
-      },
+
       {
         name: 'braze_partial_failure',
         help: 'braze_partial_failure',
@@ -677,18 +660,7 @@ class Prometheus {
         type: 'counter',
         labelNames: ['http_status', 'destination_id'],
       },
-      {
-        name: 'marketo_bulk_upload_upload_file_succJobs',
-        help: 'marketo_bulk_upload_upload_file_succJobs',
-        type: 'counter',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
-        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
-        type: 'counter',
-        labelNames: [],
-      },
+
       {
         name: 'braze_lookup_time',
         help: 'braze look-up time',
@@ -760,42 +732,7 @@ class Prometheus {
         labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
-      {
-        name: 'marketo_bulk_upload_create_header_time',
-        help: 'marketo_bulk_upload_create_header_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_fetch_job_time',
-        help: 'marketo_bulk_upload_fetch_job_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_fetch_job_create_response_time',
-        help: 'marketo_bulk_upload_fetch_job_create_response_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_create_file_time',
-        help: 'marketo_bulk_upload_create_file_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_time',
-        help: 'marketo_bulk_upload_upload_file_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_create_csvloop_time',
-        help: 'marketo_bulk_upload_create_csvloop_time',
-        type: 'histogram',
-        labelNames: [],
-      },
+
       // tracking plan metrics:
       // counter
       {

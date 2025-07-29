@@ -2,6 +2,7 @@
 const cluster = require('cluster');
 const logger = require('../logger');
 const { Worker, isMainThread } = require('worker_threads');
+const v8 = require('v8');
 
 const MESSAGE_TYPES = {
   GET_METRICS_REQ: 'rudder-transformer:getMetricsReq',
@@ -51,6 +52,7 @@ class MetricsAggregator {
         workerId: worker?.id,
         messageType: message?.type,
       });
+      this.resetAggregator(true);
     }
   }
 
@@ -70,7 +72,7 @@ class MetricsAggregator {
         if (message.error) {
           logger.error(`[MetricsAggregator] Worker aggregation error: ${message.error}`);
           this.rejectFunc(new Error(message.error));
-          this.resetAggregator();
+          this.resetAggregator(true);
           return;
         }
         this.resolveFunc(message.metrics);
@@ -101,6 +103,7 @@ class MetricsAggregator {
           `[MetricsAggregator] Error getting metrics from worker ${cluster.worker.id}: ${error.message}`,
           { error: error.stack, workerId: cluster.worker.id, requestId: message.requestId },
         );
+        this.prometheusInstance.prometheusRegistry.resetMetrics();
         try {
           cluster.worker.send({
             type: MESSAGE_TYPES.GET_METRICS_RES,
@@ -109,7 +112,7 @@ class MetricsAggregator {
           });
         } catch (sendError) {
           logger.error(
-            `[MetricsAggregator] Error sending error response from worker ${cluster.worker.id}: ${sendError.message}`,
+            `[MetricsAggregator] Error sending error response to master: ${sendError.message}`,
             { error: sendError.stack, workerId: cluster.worker.id, requestId: message.requestId },
           );
         }
@@ -192,7 +195,7 @@ class MetricsAggregator {
     }
   }
 
-  resetAggregator() {
+  resetAggregator(shouldResetMetrics = false) {
     if (this.currentTimeout) clearTimeout(this.currentTimeout);
     this.currentTimeout = null;
     this.metricsBuffer = [];
@@ -200,6 +203,9 @@ class MetricsAggregator {
     this.requestId++; // Increment to invalidate old responses
     this.resolveFunc = null;
     this.rejectFunc = null;
+    if (shouldResetMetrics) {
+      this.resetMetrics();
+    }
   }
 
   async aggregateMetrics() {
@@ -289,7 +295,7 @@ class MetricsAggregator {
     if (message.error) {
       logger.error(`[MetricsAggregator] Worker get metrics error: ${message.error}`);
       this.rejectFunc(new Error(message.error));
-      this.resetAggregator();
+      this.resetAggregator(true);
       return;
     }
     this.metricsBuffer.push(message.metrics);
@@ -306,6 +312,7 @@ class MetricsAggregator {
   }
 
   resetMetrics() {
+    logger.info(`[MetricsAggregator] Resetting metrics`);
     for (const id in cluster.workers) {
       if (!cluster.workers[id].isConnected()) {
         logger.warn(`[MetricsAggregator] Worker ${id} is not connected, skipping reset`);

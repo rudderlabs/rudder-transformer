@@ -1628,9 +1628,18 @@ function isHttpStatusSuccess(status) {
 function isHttpStatusRetryable(status) {
   return status >= 500 && status < 600;
 }
+
+/**
+ * Returns true for http status code 429
+ * @param {*} status
+ * @returns
+ */
+function isHttpStatusThrottled(status) {
+  return status === 429;
+}
 /**
  *
- * Utility function for UUID genration
+ * Utility function for UUID generation
  * @returns
  */
 function generateUUID() {
@@ -1816,7 +1825,7 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await singleTfFunc(input, processParams);
+          resp = await singleTfFunc(input, processParams, reqMetadata);
         }
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
@@ -2525,6 +2534,7 @@ module.exports = {
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
+  isHttpStatusThrottled,
   isNonFuncObject,
   isOAuthDestination,
   isOAuthSupported,

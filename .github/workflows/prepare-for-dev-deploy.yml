@@ -97,7 +97,7 @@ jobs:
         # # This action restarts the deployment in the specified namespaces
         uses: ./.github/actions/restart-deployment
         with:
-          aws-role: ${{ secrets.DEV_CI_DEPLOYMENT_RESTARTER_ROLE }}
+          aws-role: ${{ vars.DEV_KUBERNETES_IAM_ROLE }}
           aws-region: us-east-1
           k8s-cluster: dev-rudder
           k8s-namespace: rudder-us-east-1a
@@ -115,7 +115,7 @@ jobs:
         # # This action restarts the deployment in the specified namespaces
         uses: ./.github/actions/restart-deployment
         with:
-          aws-role: ${{ secrets.DEV_CI_DEPLOYMENT_RESTARTER_ROLE }}
+          aws-role: ${{ vars.DEV_KUBERNETES_IAM_ROLE }}
           aws-region: us-east-1
           k8s-cluster: dev-rudder
           k8s-namespace: retl-int,hostedmt-dev

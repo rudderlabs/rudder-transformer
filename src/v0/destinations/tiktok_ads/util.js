@@ -37,7 +37,7 @@ const hashString = (input) => hashToSha256(input.toString().trim());
 const hashUserField = (user) => {
   const updatedUser = { ...user };
   // hashing external_id
-  const { email, phone, external_id: externalId } = user;
+  const { email, phone, external_id: externalId, idfa, gaid } = user;
   if (externalId) {
     // if there are multiple externalId's in form of array that tiktok supports then hashing every
     if (Array.isArray(externalId)) {
@@ -58,6 +58,14 @@ const hashUserField = (user) => {
       updatedUser.phone = hashString(phone).toString();
     }
   }
+  if (idfa) {
+    updatedUser.idfa = hashString(idfa).toString().toLowerCase();
+  }
+
+  if (gaid) {
+    updatedUser.gaid = hashString(gaid).toString();
+  }
+
   return updatedUser;
 };
 
@@ -70,19 +78,36 @@ const hashUserField = (user) => {
 const getEventSource = ({ properties, channel }) => {
   const supportedSources = ['web', 'app', 'offline', 'crm'];
 
-  const isSupported = (source) => supportedSources.includes(source);
+  // Mapping for backward compatibility and new mappings
+  const sourceMapping = {
+    web: 'web',
+    mobile: 'app',
+    server: 'offline',
+    sources: 'offline',
+  };
 
-  const { eventSource } = properties || {};
+  const { eventSource, event_source: eventSourceV2 } = properties || {};
 
-  if (eventSource && isSupported(eventSource)) {
-    return eventSource;
-  }
+  // Helper function to resolve source with mapping
+  const resolveSource = (source) => {
+    if (!source) return null;
 
-  if (channel && isSupported(channel)) {
-    return channel;
-  }
+    // First check if it's a direct supported source
+    if (supportedSources.includes(source)) {
+      return source;
+    }
 
-  return 'web';
+    // Then check if it needs mapping
+    if (sourceMapping[source]) {
+      return sourceMapping[source];
+    }
+
+    return null;
+  };
+
+  return (
+    resolveSource(eventSource) || resolveSource(eventSourceV2) || resolveSource(channel) || 'web'
+  );
 };
 
 module.exports = { getContents, hashUserField, getEventSource };

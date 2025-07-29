@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
 const { isNil, isObject, camelCase } = require('lodash');
@@ -218,15 +219,19 @@ async function createIvm(
   await jail.set(
     '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = true;
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
         logger.debug('Error fetching data', error);
+        fetchTags.isSuccess = false;
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+      } finally {
+        stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );
@@ -234,9 +239,10 @@ async function createIvm(
   await jail.set(
     '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
-        const res = await fetchWithDnsWrapper(trTags, ...args);
+        const res = await fetchWithDnsWrapper(fetchTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -253,12 +259,15 @@ async function createIvm(
         } catch (e) {
           logger.debug('Error parsing JSON', e);
         }
-
-        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = true;
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        logger.debug('Error fetching data in fetchV2', err);
+        fetchTags.isSuccess = false;
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );

@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
 const { isNil, isObject, camelCase } = require('lodash');
@@ -224,11 +223,11 @@ async function createIvm(
       try {
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        fetchTags.isSuccess = true;
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         logger.debug('Error fetching data', error);
-        fetchTags.isSuccess = false;
+        fetchTags.isSuccess = 'false';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
       } finally {
         stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
@@ -259,12 +258,12 @@ async function createIvm(
         } catch (e) {
           logger.debug('Error parsing JSON', e);
         }
-        fetchTags.isSuccess = true;
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         logger.debug('Error fetching data in fetchV2', err);
-        fetchTags.isSuccess = false;
+        fetchTags.isSuccess = 'false';
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       } finally {
         stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
@@ -275,8 +274,9 @@ async function createIvm(
   await jail.set(
     '_geolocation',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const geoStartTime = new Date();
+      const geoTags = { ...trTags };
       try {
-        const geoStartTime = new Date();
         if (args.length < 1) {
           throw new Error('ip address is required');
         }
@@ -288,11 +288,14 @@ async function createIvm(
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
         }
         const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, trTags);
+        geoTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        geoTags.isSuccess = 'false';
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('geo_call_duration', geoStartTime, geoTags);
       }
     }),
   );

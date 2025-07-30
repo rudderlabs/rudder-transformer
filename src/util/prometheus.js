@@ -895,13 +895,13 @@ class Prometheus {
         name: 'fetchV2_call_duration',
         help: 'fetchV2_call_duration',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'isSuccess'],
       },
       {
         name: 'fetch_call_duration',
         help: 'fetch_call_duration',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'isSuccess'],
       },
       {
         name: 'fetch_dns_resolve_time',
@@ -913,7 +913,7 @@ class Prometheus {
         name: 'geo_call_duration',
         help: 'geo_call_duration',
         type: 'histogram',
-        labelNames: ['identifier', 'transformationId', 'workspaceId'],
+        labelNames: ['identifier', 'transformationId', 'workspaceId', 'isSuccess'],
       },
       // summary
       {

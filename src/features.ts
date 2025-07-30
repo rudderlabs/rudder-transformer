@@ -97,6 +97,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     TOPSORT: true,
     CUSTOMERIO_AUDIENCE: true,
     ACCOIL_ANALYTICS: true,
+    POSTSCRIPT: true,
   },
   regulations: [
     'BRAZE',

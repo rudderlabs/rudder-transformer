@@ -36,15 +36,19 @@ async function runUserTransform(
   await jail.set(
     '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
+        fetchTags.isSuccess = 'false';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
         logger.debug('Error fetching data', error);
+      } finally {
+        stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );
@@ -52,8 +56,9 @@ async function runUserTransform(
   await jail.set(
     '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
@@ -72,11 +77,14 @@ async function runUserTransform(
           logger.debug('Error parsing JSON', e);
         }
 
-        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
+        fetchTags.isSuccess = 'false';
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );
@@ -84,8 +92,9 @@ async function runUserTransform(
   await jail.set(
     '_geolocation',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const geoStartTime = new Date();
+      const geoTags = { ...trTags };
       try {
-        const geoStartTime = new Date();
         if (args.length < 1) {
           throw new Error('ip address is required');
         }
@@ -98,11 +107,14 @@ async function runUserTransform(
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
         }
         const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, trTags);
+        geoTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        geoTags.isSuccess = 'false';
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('geo_call_duration', geoStartTime, geoTags);
       }
     }),
   );

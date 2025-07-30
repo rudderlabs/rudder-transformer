@@ -1,0 +1,68 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "keyword",
+    "sourceKeys": ["traits.keyword", "context.traits.keyword"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "keyword_id",
+    "sourceKeys": ["traits.keywordId", "context.traits.keywordId"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "subscriber_id",
+    "sourceKeys": ["traits.subscriberId", "context.traits.subscriberId"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": ["traits.externalId", "context.traits.externalId"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": ["traits.tags", "context.traits.tags"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "origin",
+    "sourceKeys": ["traits.origin", "context.traits.origin"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "shopify_customer_id",
+    "sourceKeys": ["traits.shopifyCustomerId", "context.traits.shopifyCustomerId"],
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

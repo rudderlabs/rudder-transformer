@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.106.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.105.2...v1.106.0) (2025-07-30)
+
+
+### Features
+
+* onboard postscript destination ([#4438](https://github.com/rudderlabs/rudder-transformer/issues/4438)) ([0ae1ac5](https://github.com/rudderlabs/rudder-transformer/commit/0ae1ac594675b07d1cbf8ad83328526eccd60d35))
+
 ### [1.105.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.105.1...v1.105.2) (2025-07-24)
 
 ### [1.105.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.105.0...v1.105.1) (2025-07-23)

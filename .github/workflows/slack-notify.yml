@@ -28,9 +28,10 @@ jobs:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           PROJECT_NAME: 'Rudder Transformer'
         with:
-          channel-id: ${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}
+          method: chat.postMessage
           payload: |
             {
+              "channel": "${{ secrets.SLACK_INTEGRATION_DEV_CHANNEL_ID }}",
               "text": "*<prod release tests failed>*\nCC: <!subteam^S02AEQL26CT>",
               "blocks": [
                 {

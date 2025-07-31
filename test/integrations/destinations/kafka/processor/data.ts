@@ -1,21 +1,25 @@
-export const data = [
+/**
+ * Auto-migrated and optimized test cases
+ * Generated on: 2025-06-27T06:24:57.526Z
+ */
+
+import { ProcessorStreamTestData } from '../../../testTypes';
+
+export const data: ProcessorStreamTestData[] = [
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with null destination config',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: 'kafkadestinationid',
-              Name: 'Kafka',
-              Config: null,
-              Enabled: true,
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'anonymousId',
               context: {
@@ -40,8 +44,25 @@ export const data = [
               userId: 'userId',
             },
             metadata: {
-              jobId: 'jobId 0',
+              jobId: 1,
               rudderId: 'randomRudderId',
+            },
+            destination: {
+              ID: 'kafkadestinationid',
+              Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {},
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -52,10 +73,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 0',
-              rudderId: 'randomRudderId',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -82,6 +99,10 @@ export const data = [
               },
               userId: 'userId',
             },
+            metadata: {
+              jobId: 1,
+              rudderId: 'randomRudderId',
+            },
             statusCode: 200,
           },
         ],
@@ -89,22 +110,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case without userId',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: 'kafkadestinationid',
-              Name: 'Kafka',
-              Config: null,
-              Enabled: true,
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'anonymousId',
               context: {
@@ -128,8 +146,25 @@ export const data = [
               type: 'track',
             },
             metadata: {
-              jobId: 'jobId 1',
+              jobId: 2,
               rudderId: 'randomRudderId',
+            },
+            destination: {
+              ID: 'kafkadestinationid',
+              Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {},
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -140,10 +175,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 1',
-              rudderId: 'randomRudderId',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -169,6 +200,10 @@ export const data = [
               },
               userId: 'anonymousId',
             },
+            metadata: {
+              jobId: 2,
+              rudderId: 'randomRudderId',
+            },
             statusCode: 200,
           },
         ],
@@ -176,22 +211,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with null dest config and avro schema',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: 'kafkadestinationid',
-              Name: 'Kafka',
-              Config: null,
-              Enabled: true,
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'anonymousId',
               context: {
@@ -218,8 +250,25 @@ export const data = [
               userId: 'userId',
             },
             metadata: {
-              jobId: 'jobId 2',
+              jobId: 3,
               rudderId: 'randomRudderId',
+            },
+            destination: {
+              ID: 'kafkadestinationid',
+              Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {},
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -230,10 +279,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 2',
-              rudderId: 'randomRudderId',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -263,6 +308,10 @@ export const data = [
               userId: 'userId',
               schemaId: 'schema001',
             },
+            metadata: {
+              jobId: 3,
+              rudderId: 'randomRudderId',
+            },
             statusCode: 200,
           },
         ],
@@ -270,22 +319,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with null dest config and integrations topic',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: 'kafkadestinationid',
-              Name: 'Kafka',
-              Config: null,
-              Enabled: true,
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'anonymousId',
               context: {
@@ -312,8 +358,25 @@ export const data = [
               userId: 'userId',
             },
             metadata: {
-              jobId: 'jobId 3',
+              jobId: 4,
               rudderId: 'randomRudderId',
+            },
+            destination: {
+              ID: 'kafkadestinationid',
+              Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {},
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -324,10 +387,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 3',
-              rudderId: 'randomRudderId<<>>specific-topic',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -357,6 +416,10 @@ export const data = [
               userId: 'userId',
               topic: 'specific-topic',
             },
+            metadata: {
+              jobId: 4,
+              rudderId: 'randomRudderId<<>>specific-topic',
+            },
             statusCode: 200,
           },
         ],
@@ -364,24 +427,19 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with dest config with default topic',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
-            destination: {
-              ID: 'kafkadestinationid',
-              Name: 'Kafka',
-              Config: {
-                topic: 'default-topic',
-              },
-              Enabled: true,
-              IsProcessorEnabled: true,
-            },
             message: {
               anonymousId: 'anonymousId',
               context: {
@@ -403,8 +461,27 @@ export const data = [
               userId: 'userId',
             },
             metadata: {
-              jobId: 'jobId 4',
+              jobId: 5,
               rudderId: 'randomRudderId',
+            },
+            destination: {
+              ID: 'kafkadestinationid',
+              Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
+              Config: {
+                topic: 'default-topic',
+              },
+              Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
+              IsProcessorEnabled: true,
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -415,10 +492,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 4',
-              rudderId: 'randomRudderId<<>>default-topic',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -443,6 +516,10 @@ export const data = [
               userId: 'userId',
               topic: 'default-topic',
             },
+            metadata: {
+              jobId: 5,
+              rudderId: 'randomRudderId<<>>default-topic',
+            },
             statusCode: 200,
           },
         ],
@@ -450,18 +527,51 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with dest config with event type topic',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
+            message: {
+              anonymousId: 'anonymousId',
+              context: {
+                library: {
+                  name: 'analytics-go',
+                  version: '3.0.0',
+                },
+              },
+              messageId: 'messageId',
+              originalTimestamp: '2019-07-18T15:00:00Z',
+              properties: {
+                key: 'value',
+              },
+              receivedAt: '2019-07-18T15:00:00Z',
+              sentAt: '2019-07-18T15:00:00Z',
+              timestamp: '2019-07-18T15:00:00Z',
+              type: 'identify',
+              userId: 'userId',
+            },
+            metadata: {
+              jobId: 6,
+              rudderId: 'randomRudderId',
+            },
             destination: {
               ID: 'kafkadestinationid',
               Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 topic: 'default-topic',
                 enableMultiTopic: true,
@@ -495,30 +605,11 @@ export const data = [
                 ],
               },
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
               IsProcessorEnabled: true,
-            },
-            message: {
-              anonymousId: 'anonymousId',
-              context: {
-                library: {
-                  name: 'analytics-go',
-                  version: '3.0.0',
-                },
-              },
-              messageId: 'messageId',
-              originalTimestamp: '2019-07-18T15:00:00Z',
-              properties: {
-                key: 'value',
-              },
-              receivedAt: '2019-07-18T15:00:00Z',
-              sentAt: '2019-07-18T15:00:00Z',
-              timestamp: '2019-07-18T15:00:00Z',
-              type: 'identify',
-              userId: 'userId',
-            },
-            metadata: {
-              jobId: 'jobId 5',
-              rudderId: 'randomRudderId',
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -529,10 +620,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 5',
-              rudderId: 'randomRudderId<<>>identify-topic',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -556,6 +643,10 @@ export const data = [
               userId: 'userId',
               topic: 'identify-topic',
             },
+            metadata: {
+              jobId: 6,
+              rudderId: 'randomRudderId<<>>identify-topic',
+            },
             statusCode: 200,
           },
         ],
@@ -563,18 +654,52 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with dest config with event name topic',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
+            message: {
+              anonymousId: 'anonymousId',
+              context: {
+                library: {
+                  name: 'analytics-go',
+                  version: '3.0.0',
+                },
+              },
+              event: 'Product Added',
+              messageId: 'messageId',
+              originalTimestamp: '2019-07-18T15:00:00Z',
+              properties: {
+                key: 'value',
+              },
+              receivedAt: '2019-07-18T15:00:00Z',
+              sentAt: '2019-07-18T15:00:00Z',
+              timestamp: '2019-07-18T15:00:00Z',
+              type: 'track',
+              userId: 'userId',
+            },
+            metadata: {
+              jobId: 7,
+              rudderId: 'randomRudderId',
+            },
             destination: {
               ID: 'kafkadestinationid',
               Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 topic: 'default-topic',
                 enableMultiTopic: true,
@@ -608,31 +733,11 @@ export const data = [
                 ],
               },
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
               IsProcessorEnabled: true,
-            },
-            message: {
-              anonymousId: 'anonymousId',
-              context: {
-                library: {
-                  name: 'analytics-go',
-                  version: '3.0.0',
-                },
-              },
-              event: 'Product Added',
-              messageId: 'messageId',
-              originalTimestamp: '2019-07-18T15:00:00Z',
-              properties: {
-                key: 'value',
-              },
-              receivedAt: '2019-07-18T15:00:00Z',
-              sentAt: '2019-07-18T15:00:00Z',
-              timestamp: '2019-07-18T15:00:00Z',
-              type: 'track',
-              userId: 'userId',
-            },
-            metadata: {
-              jobId: 'jobId 6',
-              rudderId: 'randomRudderId',
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -643,10 +748,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 6',
-              rudderId: 'randomRudderId<<>>product-added',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -671,6 +772,10 @@ export const data = [
               userId: 'userId',
               topic: 'product-added',
             },
+            metadata: {
+              jobId: 7,
+              rudderId: 'randomRudderId<<>>product-added',
+            },
             statusCode: 200,
           },
         ],
@@ -678,18 +783,52 @@ export const data = [
     },
   },
   {
+    id: 'processor-1751005497524',
     name: 'kafka',
     description: 'Test case with dest config with event name topic no match',
+    scenario: 'Default processor scenario',
+    successCriteria: 'Processor test should pass successfully',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
+        method: 'POST',
         body: [
           {
+            message: {
+              anonymousId: 'anonymousId',
+              context: {
+                library: {
+                  name: 'analytics-go',
+                  version: '3.0.0',
+                },
+              },
+              event: 'Product Added No match',
+              messageId: 'messageId',
+              originalTimestamp: '2019-07-18T15:00:00Z',
+              properties: {
+                key: 'value',
+              },
+              receivedAt: '2019-07-18T15:00:00Z',
+              sentAt: '2019-07-18T15:00:00Z',
+              timestamp: '2019-07-18T15:00:00Z',
+              type: 'track',
+              userId: 'userId',
+            },
+            metadata: {
+              jobId: 8,
+              rudderId: 'randomRudderId',
+            },
             destination: {
               ID: 'kafkadestinationid',
               Name: 'Kafka',
+              DestinationDefinition: {
+                ID: 'default-dest-def-id',
+                Name: 'Default Destination Definition',
+                DisplayName: 'Default Display Name',
+                Config: {},
+              },
               Config: {
                 topic: 'default-topic',
                 enableMultiTopic: true,
@@ -723,31 +862,11 @@ export const data = [
                 ],
               },
               Enabled: true,
+              WorkspaceID: 'default-workspace',
+              Transformations: [],
+              RevisionID: 'default-revision',
               IsProcessorEnabled: true,
-            },
-            message: {
-              anonymousId: 'anonymousId',
-              context: {
-                library: {
-                  name: 'analytics-go',
-                  version: '3.0.0',
-                },
-              },
-              event: 'Product Added No match',
-              messageId: 'messageId',
-              originalTimestamp: '2019-07-18T15:00:00Z',
-              properties: {
-                key: 'value',
-              },
-              receivedAt: '2019-07-18T15:00:00Z',
-              sentAt: '2019-07-18T15:00:00Z',
-              timestamp: '2019-07-18T15:00:00Z',
-              type: 'track',
-              userId: 'userId',
-            },
-            metadata: {
-              jobId: 'jobId 7',
-              rudderId: 'randomRudderId',
+              IsConnectionEnabled: true,
             },
           },
         ],
@@ -758,10 +877,6 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: {
-              jobId: 'jobId 7',
-              rudderId: 'randomRudderId<<>>default-topic',
-            },
             output: {
               message: {
                 anonymousId: 'anonymousId',
@@ -785,6 +900,10 @@ export const data = [
               },
               userId: 'userId',
               topic: 'default-topic',
+            },
+            metadata: {
+              jobId: 8,
+              rudderId: 'randomRudderId<<>>default-topic',
             },
             statusCode: 200,
           },

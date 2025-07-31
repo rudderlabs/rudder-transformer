@@ -29,27 +29,27 @@ export const destination: Destination = {
 
 // Header interfaces
 interface PostscriptAuthHeaders {
-  accept: string;
+  Accept: string;
   Authorization: string;
   'X-Postscript-Partner-Key': string | undefined;
 }
 
 interface PostscriptRequestHeaders extends PostscriptAuthHeaders {
   [key: string]: string | undefined;
-  'content-type': string;
+  'Content-type': string;
   Authorization: string;
 }
 
 // Headers with proper typing
 export const getHeader: PostscriptAuthHeaders = {
-  accept: 'application/json',
+  Accept: 'application/json',
   Authorization: 'Bearer ps_test_api_key',
   'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
 };
 
 export const postPatchHeader: PostscriptRequestHeaders = {
   ...getHeader,
-  'content-type': 'application/json',
+  'Content-type': 'application/json',
 };
 
 // Test user data interfaces

@@ -5,7 +5,6 @@ const {
   ConfigurationError,
   InstrumentationError,
   groupByInBatches,
-  forEachInBatches,
   isDefinedAndNotNull,
   get,
 } = require('@rudderstack/integrations-lib');
@@ -434,6 +433,14 @@ const separateTestEvents = (event, processedTestEvents, processedEvents) => {
   }
 };
 
+const buildResponseList = (events) =>
+  getSuccessRespEvents(
+    buildBatchResponseForEvent(events),
+    events.metadata,
+    events.destination,
+    true,
+  );
+
 /**
  * This clubs proecessedEvents request body and metadat based upon maxBatchSize
  * @param {*} processedEvents
@@ -712,29 +719,30 @@ Returns
   }
 ]
  */
-const batchEvents = (processedEvents) => {
-  const events = [];
+
+const batchEvents = (processedEvents, eventSource) => {
+  const responseLists = [];
   let data = [];
   let metadata = [];
-  let eventSource = 'web';
   const { destination } = processedEvents[0];
   const { pixelCode } = destination.Config;
   processedEvents.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
-    eventSource = event.message[0]?.body.JSON.event_source;
     // eslint-disable-next-line unicorn/consistent-destructuring
-    if (Array.isArray(eventData) && eventData?.length > config.maxBatchSizeV2 - data.length) {
+    if (eventData.length + data.length > config.maxBatchSizeV2) {
       // Partner name must be added above "data": [..];
-      events.push({
-        event: {
-          event_source_id: pixelCode,
-          event_source: eventSource,
-          partner_name: PARTNER_NAME,
-          data: [...data],
-        },
-        metadata: [...metadata],
-        destination,
-      });
+      responseLists.push(
+        buildResponseList({
+          event: {
+            event_source_id: pixelCode,
+            event_source: eventSource,
+            partner_name: PARTNER_NAME,
+            data: [...data],
+          },
+          metadata: [...metadata],
+          destination,
+        }),
+      );
       data = [];
       metadata = [];
     }
@@ -742,17 +750,19 @@ const batchEvents = (processedEvents) => {
     metadata.push(event.metadata);
   });
   // Partner name must be added above "data": [..];
-  events.push({
-    event: {
-      event_source_id: pixelCode,
-      event_source: eventSource,
-      partner_name: PARTNER_NAME,
-      data: [...data],
-    },
-    metadata: [...metadata],
-    destination,
-  });
-  return events;
+  responseLists.push(
+    buildResponseList({
+      event: {
+        event_source_id: pixelCode,
+        event_source: eventSource,
+        partner_name: PARTNER_NAME,
+        data: [...data],
+      },
+      metadata: [...metadata],
+      destination,
+    }),
+  );
+  return responseLists;
 };
 const processRouterDest = async (inputs, reqMetadata) => {
   const processedEvents = []; // variable to store processed events
@@ -785,21 +795,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const batchedResponseList = [];
   // Grouping events by event_source
-  const groupedProcessedEvents = await groupByInBatches(
+  const pocessedEventsGroups = await groupByInBatches(
     processedEvents,
     (event) => event.message[0].body.JSON.event_source,
   );
 
-  await forEachInBatches(Object.keys(groupedProcessedEvents), async (eventSource) => {
-    const batchedEvents = batchEvents(groupedProcessedEvents[eventSource]);
-    if (batchedEvents.length > 0) {
-      forEachInBatches(batchedEvents, async (batch) => {
-        const batchedRequest = buildBatchResponseForEvent(batch);
-        batchedResponseList.push(
-          getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
-        );
-      });
-    }
+  Object.keys(pocessedEventsGroups).forEach((eventSource) => {
+    batchedResponseList.push(...batchEvents(pocessedEventsGroups[eventSource], eventSource));
   });
   // Sort the events based on job id
   // Event may get out of order due testEventCode properties this function ensure that events are in order

@@ -131,7 +131,21 @@ const getExtInfo = (message) => {
   return extInfo.map((value) => (value == null ? '' : value));
 };
 
+const productsToContentsMapping = (message) => {
+  const products = get(message, 'properties.products');
+  if (!Array.isArray(products) || products.length === 0) {
+    return [];
+  }
+  return products.map((product) => ({
+    id: product?.product_id || product?.sku || product?.id,
+    quantity: product.quantity,
+    item_price: product.price,
+    delivery_category: product.category,
+  }));
+};
+
 module.exports = {
   batchResponseBuilder,
   getExtInfo,
+  productsToContentsMapping,
 };

@@ -520,38 +520,3 @@ describe('CDK V2 api tests', () => {
 });
 
 jest.setTimeout(100000);
-describe('Comparsion service tests', () => {
-  test('compare cdk v2 and native', async () => {
-    process.env.COMPARATOR_ENABLED = 'true';
-    const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
-    data.input.forEach((input) => {
-      setValue(input, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
-      setValue(input, 'destination.DestinationDefinition.Config.comparisonService', 'native_dest');
-    });
-    const response = await request(server)
-      .post('/v0/destinations/pinterest_tag')
-      .set('Accept', 'application/json')
-      .send(data.input);
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(data.output);
-  });
-
-  test('compare native and cdk v2', async () => {
-    process.env.COMPARATOR_ENABLED = 'true';
-    const data = getDataFromPath('./data_scenarios/destination/router/successful_test.json');
-    data.input.input.forEach((input) => {
-      setValue(input, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
-      setValue(input, 'destination.DestinationDefinition.Config.comparisonService', 'cdkv2_dest');
-    });
-    data.output.output.forEach((output) => {
-      setValue(output, 'destination.DestinationDefinition.Config.comparisonTestEnabeld', true);
-      setValue(output, 'destination.DestinationDefinition.Config.comparisonService', 'cdkv2_dest');
-    });
-    const response = await request(server)
-      .post('/routerTransform')
-      .set('Accept', 'application/json')
-      .send(data.input);
-    expect(response.status).toEqual(200);
-    expect(JSON.parse(response.text)).toEqual(data.output);
-  });
-});

@@ -220,24 +220,7 @@ class Prometheus {
   createMetrics(enableSummaryMetrics) {
     const metrics = [
       // Counters
-      {
-        name: 'cdk_live_compare_test_failed',
-        help: 'cdk_live_compare_test_failed',
-        type: 'counter',
-        labelNames: ['destType', 'feature'],
-      },
-      {
-        name: 'cdk_live_compare_test_success',
-        help: 'cdk_live_compare_test_success',
-        type: 'counter',
-        labelNames: ['destType', 'feature'],
-      },
-      {
-        name: 'cdk_live_compare_test_errored',
-        help: 'cdk_live_compare_test_errored',
-        type: 'counter',
-        labelNames: ['destType', 'feature'],
-      },
+
       {
         name: 'event_transform_success',
         help: 'event_transform_success',
@@ -490,12 +473,7 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destType', 'feature'],
       },
-      {
-        name: 'cdk_transformation_time',
-        help: 'cdk_transformation_time',
-        type: 'gauge',
-        labelNames: ['destType', 'feature'],
-      },
+
       {
         name: 'braze_batch_attributes_pack_size',
         help: 'braze_batch_attributes_pack_size',
@@ -599,12 +577,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: ['method', 'route', 'code', 'destType'],
       },
-      {
-        name: 'cdk_events_latency',
-        help: 'cdk_events_latency',
-        type: 'histogram',
-        labelNames: ['destination', 'sourceType', 'destinationType', 'k8_namespace'],
-      },
+
       {
         name: 'regulation_worker_requests_dest_latency',
         help: 'regulation_worker_requests_dest_latency',

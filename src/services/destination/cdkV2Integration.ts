@@ -17,6 +17,7 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
   CatchErr,
+  RequestMetadata,
 } from '../../types';
 import stats from '../../util/stats';
 import { groupRouterTransformEvents } from '../../v0/util';
@@ -54,7 +55,7 @@ export class CDKV2DestinationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await mapInBatches(
@@ -121,7 +122,7 @@ export class CDKV2DestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<RouterTransformationResponse[]> {
     const groupedEvents: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);
@@ -166,7 +167,7 @@ export class CDKV2DestinationService implements DestinationService {
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    _requestMetadata: RequestMetadata,
   ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV2 Does not Implement Batch Transform Routine');
   }
@@ -174,7 +175,7 @@ export class CDKV2DestinationService implements DestinationService {
   public deliver(
     _event: ProxyRequest,
     _destinationType: string,
-    _requestMetadata: NonNullable<unknown>,
+    _requestMetadata: RequestMetadata,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }

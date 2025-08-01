@@ -9,6 +9,7 @@ import {
   RouterTransformationResponse,
   UserDeletionRequest,
   UserDeletionResponse,
+  RequestMetadata,
 } from '../types/index';
 
 export interface DestinationService {
@@ -27,27 +28,27 @@ export interface DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<ProcessorTransformationResponse[]>;
 
   doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): Promise<RouterTransformationResponse[]>;
 
   doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
   ): RouterTransformationResponse[];
 
   deliver(
     event: ProxyRequest,
     destinationType: string,
-    requestMetadata: NonNullable<unknown>,
+    requestMetadata: RequestMetadata,
     version: string,
   ): Promise<DeliveryV0Response | DeliveryV1Response>;
 

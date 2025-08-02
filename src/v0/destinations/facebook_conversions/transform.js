@@ -34,6 +34,10 @@ const {
 } = require('../../util/facebookUtils');
 const { verifyEventDuration } = require('../facebook_pixel/utils');
 
+const FacebookConversionsMetrics = require('./metricsUtils');
+
+const metrics = new FacebookConversionsMetrics();
+
 const responseBuilderSimple = (message, category, destination) => {
   const { Config, ID } = destination;
   let { categoryToContent } = Config;
@@ -163,8 +167,18 @@ const processEvent = (message, destination) => {
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
+
   // build the response
-  return responseBuilderSimple(message, category, destination);
+  const result = responseBuilderSimple(message, category, destination);
+
+  // Track metrics using the final transformed payload
+  const eventName = message.event;
+  const destID = destination.ID;
+
+  metrics.trackTotalEvents(eventName, destID);
+  metrics.trackPropertyUsage(result, eventName, destID);
+
+  return result;
 };
 
 const process = (event) => processEvent(event.message, event.destination);

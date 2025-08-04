@@ -8,7 +8,7 @@ const {
   mapInBatches,
 } = require('@rudderstack/integrations-lib');
 const { schemaFields, MAX_USER_COUNT } = require('./config');
-const stats = require('../../../util/stats');
+const integrationMetrics = require('../../../util/integrationMetrics');
 const {
   getDestinationExternalIDInfoForRetl,
   isDefinedAndNotNullAndNotEmpty,
@@ -58,10 +58,13 @@ const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
   });
 
   if (nullUserData) {
-    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-      destinationId: record.destination.ID,
-      nullFields: userSchema,
-    });
+    // Track data quality issues using generic integration metrics
+    integrationMetrics.dataQualityIssue(
+      'fb_custom_audience',
+      'destination',
+      'missing_fields',
+      'user_data',
+    );
   }
 
   return { dataElement, metadata: record.metadata };

@@ -15,7 +15,7 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
 } = require('../../util');
-const stats = require('../../../util/stats');
+const integrationMetrics = require('../../../util/integrationMetrics');
 
 const config = require('./config');
 
@@ -175,13 +175,7 @@ const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, proper
 
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
-const prepareDataField = (
-  userSchema,
-  userUpdateList,
-  isHashRequired,
-  disableFormat,
-  destinationId,
-) => {
+const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFormat) => {
   const data = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
 
@@ -211,19 +205,26 @@ const prepareDataField = (
     });
 
     if (nullUserData) {
-      stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-        destinationId,
-        nullFields: userSchema,
-      });
+      // Track data quality issues using generic integration metrics
+      integrationMetrics.dataQualityIssue(
+        'fb_custom_audience',
+        'destination',
+        'missing_fields',
+        'user_data',
+      );
     }
 
     data.push(dataElement);
   });
 
   if (nullEvent) {
-    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
-      destinationId,
-    });
+    // Track data quality issues using generic integration metrics
+    integrationMetrics.dataQualityIssue(
+      'fb_custom_audience',
+      'destination',
+      'missing_fields',
+      'all_users_data',
+    );
   }
 
   return data;

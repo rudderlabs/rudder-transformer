@@ -230,7 +230,7 @@ describe("JS Transformation Error Tests", () => {
     it("manually thrown error in user library - shows up under transformedEvents", async () => {
       const libVid = "l4";
       const code = "import {add} from 'jsLib2';\nexport function transformBatch(events, metadata) {\n add(1, 2); return events; \n}";
-      const trRevCode = contructTrRevCode(code);
+      const trRevCode = {...contructTrRevCode(code), name: "test-transformation"} ;
 
       const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
       when(fetch)
@@ -261,7 +261,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(1);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "Error: Manual Error 2\n    at add (library jsLib2:3:23)\n    at transformBatch (base transformation:3:2)"
+        "Error: Manual Error 2\n    at add (library jsLib2:3:23)\n    at transformBatch (test-transformation:3:2)"
       ) });
     });
   });

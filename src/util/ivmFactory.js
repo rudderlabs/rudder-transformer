@@ -38,6 +38,7 @@ async function createIvm(
   credentials,
   secrets,
   testMode,
+  transformationName,
 ) {
   const trTags = { identifier: 'V1', transformationId, workspaceId };
   const createIvmStartTime = new Date();
@@ -414,7 +415,7 @@ async function createIvm(
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
-    filename: 'base transformation',
+    filename: transformationName,
   });
   await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
@@ -484,6 +485,7 @@ async function getFactory(
   credentials,
   secrets,
   testMode,
+  transformationName,
 ) {
   const factory = {
     create: async () => {
@@ -495,6 +497,7 @@ async function getFactory(
         credentials,
         secrets,
         testMode,
+        transformationName,
       );
     },
     destroy: async (client) => {

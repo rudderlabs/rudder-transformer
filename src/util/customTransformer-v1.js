@@ -71,6 +71,7 @@ async function userTransformHandlerV1(
     credentialsMap,
     userTransformation.secrets || {},
     testMode,
+    userTransformation.name || 'base transformation',
   );
 
   logger.debug(`Creating IsolateVM`);

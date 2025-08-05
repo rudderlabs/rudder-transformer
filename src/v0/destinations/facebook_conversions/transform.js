@@ -175,8 +175,10 @@ const processEvent = (message, destination) => {
   const eventName = message.event;
   const destID = destination.ID;
 
+  // get the data for the metrics
+  const { data } = result.body.FORM;
   metrics.trackTotalEvents(eventName, destID);
-  metrics.trackPropertyUsage(result, eventName, destID);
+  metrics.trackPropertyUsage(JSON.parse(data[0]), eventName, destID);
 
   return result;
 };

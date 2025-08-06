@@ -1,20 +1,6 @@
 // Facebook Conversions API - Metrics Allowlist Configuration
 // Based on the Facebook Conversions Parameter Guide
 
-// Allowlisted events - both Rudder event names and Facebook event names
-const ALLOWED_RUDDER_EVENTS = [
-  'Product Viewed', // → ViewContent
-  'Product List Viewed', // → ViewContent
-  'Product Added', // → AddToCart
-  'Order Completed', // → Purchase
-  'Products Searched', // → Search
-  'Checkout Started', // → InitiateCheckout
-  'Payment Info Entered', // → AddPaymentInfo
-  'Product Added to Wishlist', // → AddToWishlist
-  'Page', // → PageView
-  'Screen', // → PageView
-];
-
 const ALLOWED_FACEBOOK_EVENTS = [
   'ViewContent',
   'AddToCart',
@@ -26,8 +12,9 @@ const ALLOWED_FACEBOOK_EVENTS = [
   'PageView',
 ];
 
-// Combined allowlist for both Rudder and Facebook event names
-const ALLOWED_EVENTS = [...ALLOWED_RUDDER_EVENTS, ...ALLOWED_FACEBOOK_EVENTS];
+// Standard events that should be tracked individually
+const STANDARD_EVENTS = [...ALLOWED_FACEBOOK_EVENTS];
+const OTHER_EVENT = 'OTHER_EVENT';
 
 // Allowlisted properties by category (based on ROI impact from parameter guide)
 const ALLOWED_PROPERTIES = {
@@ -112,9 +99,9 @@ const ALL_ALLOWED_PROPERTIES = [
 ];
 
 module.exports = {
-  ALLOWED_EVENTS,
-  ALLOWED_RUDDER_EVENTS,
   ALLOWED_FACEBOOK_EVENTS,
+  STANDARD_EVENTS,
+  OTHER_EVENT,
   ALLOWED_PROPERTIES,
   ALL_ALLOWED_PROPERTIES,
   EVENT_MAPPING,

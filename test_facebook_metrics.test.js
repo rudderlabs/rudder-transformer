@@ -33,13 +33,16 @@ describe('FacebookConversionsMetrics', () => {
     });
   });
 
-  test('should not track events that are not in allowlist', () => {
-    const nonAllowedEvent = 'Random Custom Event';
+  test('should track non-standard events under OTHER_EVENT', () => {
+    const nonStandardEvent = 'Random Custom Event';
     const destID = 'test_dest_123';
 
-    metrics.trackTotalEvents(nonAllowedEvent, destID);
+    metrics.trackTotalEvents(nonStandardEvent, destID);
 
-    expect(mockIncrement).not.toHaveBeenCalled();
+    expect(mockIncrement).toHaveBeenCalledWith('facebook_conversions_total_events', {
+      event_name: 'OTHER_EVENT',
+      destID: destID,
+    });
   });
 
   test('trackPropertyUsage should only track allowlisted properties', () => {
@@ -468,21 +471,38 @@ describe('FacebookConversionsMetrics', () => {
 
   // Test non-allowlisted events and properties
   describe('Non-allowlisted tests', () => {
-    test('should not track non-allowlisted events', () => {
-      const nonAllowedEvents = [
-        'Random Custom Event',
-        'Unknown Event',
-        'Test Event',
+    test('should track non-standard events under OTHER_EVENT', () => {
+      const nonStandardEvent = 'Random Custom Event';
+      const destID = 'test_dest_123';
+
+      metrics.trackTotalEvents(nonStandardEvent, destID);
+
+      expect(mockIncrement).toHaveBeenCalledWith('facebook_conversions_total_events', {
+        event_name: 'OTHER_EVENT',
+        destID: destID,
+      });
+    });
+
+    test('should track allowlisted custom events under OTHER_EVENT', () => {
+      const allowlistedCustomEvents = [
         'Custom Purchase',
-        'Product Clicked',
+        'User Registration',
+        'Newsletter Signup',
+        'Product Review',
+        'Wishlist Item',
+        'Random Event',
+        'Test Event',
       ];
 
       const destID = 'test_dest_123';
 
-      nonAllowedEvents.forEach((event) => {
+      allowlistedCustomEvents.forEach((event) => {
         mockIncrement.mockClear();
         metrics.trackTotalEvents(event, destID);
-        expect(mockIncrement).not.toHaveBeenCalled();
+        expect(mockIncrement).toHaveBeenCalledWith('facebook_conversions_total_events', {
+          event_name: 'OTHER_EVENT',
+          destID: destID,
+        });
       });
     });
 

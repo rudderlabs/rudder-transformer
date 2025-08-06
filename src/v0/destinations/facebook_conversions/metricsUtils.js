@@ -1,11 +1,15 @@
 const DestinationMetrics = require('../../../util/destinationMetrics');
-const { ALLOWED_EVENTS, ALL_ALLOWED_PROPERTIES, EVENT_MAPPING } = require('./metricsConfig');
+const {
+  OTHER_EVENT,
+  ALL_ALLOWED_PROPERTIES,
+  EVENT_MAPPING,
+  STANDARD_EVENTS,
+} = require('./metricsConfig');
 
 class FacebookConversionsMetrics extends DestinationMetrics {
   constructor() {
     // Pass allowlist configuration to parent class
     super('facebook_conversions', {
-      allowedEvents: ALLOWED_EVENTS,
       allowedProperties: ALL_ALLOWED_PROPERTIES,
     });
   }
@@ -17,8 +21,13 @@ class FacebookConversionsMetrics extends DestinationMetrics {
       return EVENT_MAPPING[rudderEventName];
     }
 
-    // Fallback to category event name or original event name
-    return rudderEventName;
+    // If the event is a standard event, return the event name
+    if (STANDARD_EVENTS.includes(rudderEventName)) {
+      return rudderEventName;
+    }
+
+    // Fallback to OTHER_EVENT
+    return OTHER_EVENT;
   }
 
   // Override trackTotalEvents to use mapped event name

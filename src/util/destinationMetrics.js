@@ -6,14 +6,6 @@ class DestinationMetrics {
     this.allowlistConfig = allowlistConfig;
   }
 
-  // Check if event should be tracked
-  isEventAllowed(eventName) {
-    if (!this.allowlistConfig?.allowedEvents) {
-      return true; // No allowlist = track all
-    }
-    return this.allowlistConfig.allowedEvents.includes(eventName);
-  }
-
   // Check if property should be tracked
   isPropertyAllowed(propertyName) {
     if (!this.allowlistConfig?.allowedProperties) {
@@ -30,12 +22,8 @@ class DestinationMetrics {
     return this.allowlistConfig.allowedProperties.includes(nestedProp);
   }
 
-  // Track total events with allowlist check
+  // Track total events with standard/custom event differentiation
   trackTotalEvents(eventName, destID) {
-    if (!this.isEventAllowed(eventName)) {
-      return; // Skip non-allowlisted events
-    }
-
     const metricName = `${this.destinationName}_total_events`;
 
     stats.increment(metricName, {
@@ -46,10 +34,6 @@ class DestinationMetrics {
 
   // Track property usage with allowlist filtering
   trackPropertyUsage(transformedPayload, eventName, destID) {
-    if (!this.isEventAllowed(eventName)) {
-      return; // Skip non-allowlisted events
-    }
-
     if (!transformedPayload || typeof transformedPayload !== 'object') {
       return;
     }

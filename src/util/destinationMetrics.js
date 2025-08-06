@@ -1,12 +1,41 @@
 const stats = require('./stats');
 
 class DestinationMetrics {
-  constructor(destinationName) {
+  constructor(destinationName, allowlistConfig = null) {
     this.destinationName = destinationName;
+    this.allowlistConfig = allowlistConfig;
   }
 
-  // Track total events by event name and destID
+  // Check if event should be tracked
+  isEventAllowed(eventName) {
+    if (!this.allowlistConfig?.allowedEvents) {
+      return true; // No allowlist = track all
+    }
+    return this.allowlistConfig.allowedEvents.includes(eventName);
+  }
+
+  // Check if property should be tracked
+  isPropertyAllowed(propertyName) {
+    if (!this.allowlistConfig?.allowedProperties) {
+      return true; // No allowlist = track all
+    }
+
+    // Check direct property name
+    if (this.allowlistConfig.allowedProperties.includes(propertyName)) {
+      return true;
+    }
+
+    // Check nested property (e.g., user_data.em should match 'em')
+    const nestedProp = propertyName.split('.').pop();
+    return this.allowlistConfig.allowedProperties.includes(nestedProp);
+  }
+
+  // Track total events with allowlist check
   trackTotalEvents(eventName, destID) {
+    if (!this.isEventAllowed(eventName)) {
+      return; // Skip non-allowlisted events
+    }
+
     const metricName = `${this.destinationName}_total_events`;
 
     stats.increment(metricName, {
@@ -15,8 +44,12 @@ class DestinationMetrics {
     });
   }
 
-  // Track property usage dynamically for each property
+  // Track property usage with allowlist filtering
   trackPropertyUsage(transformedPayload, eventName, destID) {
+    if (!this.isEventAllowed(eventName)) {
+      return; // Skip non-allowlisted events
+    }
+
     if (!transformedPayload || typeof transformedPayload !== 'object') {
       return;
     }
@@ -24,22 +57,26 @@ class DestinationMetrics {
     const sanitizeFieldName = (fieldName) =>
       // Replace dots with underscores for Prometheus compatibility
       fieldName.replace(/\./g, '_');
+
     const extractFields = (obj, prefix = '') => {
       Object.keys(obj).forEach((key) => {
         const value = obj[key];
         const fieldName = prefix ? `${prefix}.${key}` : key;
 
         if (value !== undefined && value !== null) {
-          // Create dynamic metric name for each property
-          const sanitizedFieldName = sanitizeFieldName(fieldName);
-          const metricName = `${this.destinationName}_property_${sanitizedFieldName}`;
+          // Check if this property is allowlisted
+          if (this.isPropertyAllowed(fieldName)) {
+            // Create dynamic metric name for each property
+            const sanitizedFieldName = sanitizeFieldName(fieldName);
+            const metricName = `${this.destinationName}_property_${sanitizedFieldName}`;
 
-          stats.increment(metricName, {
-            event_name: eventName,
-            destID,
-          });
+            stats.increment(metricName, {
+              event_name: eventName,
+              destID,
+            });
+          }
 
-          // Recursively extract nested fields
+          // Always recursively extract nested fields (even if parent is not allowlisted)
           if (typeof value === 'object' && !Array.isArray(value)) {
             extractFields(value, fieldName);
           }

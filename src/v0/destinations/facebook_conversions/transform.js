@@ -171,14 +171,17 @@ const processEvent = (message, destination) => {
   // build the response
   const result = responseBuilderSimple(message, category, destination);
 
-  // Track metrics using the final transformed payload
-  const eventName = message.event;
+  // Track metrics using allowlist filtering and Facebook event mapping
+  const rudderEventName = message.event;
   const destID = destination.ID;
 
-  // get the data for the metrics
+  // Extract the actual Facebook payload from the result
   const { data } = result.body.FORM;
-  metrics.trackTotalEvents(eventName, destID);
-  metrics.trackPropertyUsage(JSON.parse(data[0]), eventName, destID);
+  const facebookPayload = JSON.parse(data[0]);
+
+  // Track with Facebook event mapping and allowlist filtering
+  metrics.trackTotalEvents(rudderEventName, destID);
+  metrics.trackPropertyUsage(facebookPayload, rudderEventName, destID);
 
   return result;
 };

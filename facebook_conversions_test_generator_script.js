@@ -10,7 +10,7 @@ const axios = require('axios');
 const CONFIG = {
   totalEvents: 1000,
   dataPlaneUrl: 'http://localhost:8080',
-  apiKey: 'MzBybXJmVTE3NFdZaG9UQkFVOEJqUlRwR0hEOg==',
+  apiKey: 'dummy-apiKey',
   delayBetweenRequests: 10000, // milliseconds
 };
 

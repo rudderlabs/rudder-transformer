@@ -225,12 +225,97 @@ const handleTestEvent = async (ctx, dest) => {
   }
 };
 
+const testSourceTransform = async (ctx) => {
+  const { source } = ctx.params;
+  const requestBody = ctx.request.body;
+  console.log('Source Test Request:', JSON.stringify(requestBody, null, 2));
+
+  const { sourceData } = requestBody;
+
+  if (!sourceData || !Array.isArray(sourceData)) {
+    ctx.body = {
+      error: 'sourceData array is required in payload',
+    };
+    ctx.status = 400;
+    return;
+  }
+
+  if (!source) {
+    ctx.body = {
+      error: 'source parameter is required',
+    };
+    ctx.status = 400;
+    return;
+  }
+
+  try {
+    // Get the source transformation handler
+    const sourceHandler = require(`./sources/${source}/transform`);
+    const respList = [];
+
+    // Process each source input through the transformer
+    const transformationPromises = sourceData.map(async (inputData) => {
+      try {
+        // Transform the source data
+        // For V2 sources, pass the complete inputData object
+        const transformedOutput = await sourceHandler.process(inputData);
+
+        // Format response
+        if (Array.isArray(transformedOutput)) {
+          return transformedOutput.map((output) => ({
+            output: { batch: Array.isArray(output) ? output : [output] },
+            statusCode: 200,
+          }));
+        }
+        return [
+          {
+            output: { batch: [transformedOutput] },
+            statusCode: 200,
+          },
+        ];
+      } catch (error) {
+        // Handle transformation error for individual input
+        return [
+          {
+            error: error.message || JSON.stringify(error),
+            statusCode: 400,
+            statTags: {
+              srcType: source,
+              errorCategory: 'transformation',
+              module: 'source',
+            },
+          },
+        ];
+      }
+    });
+
+    const results = await Promise.all(transformationPromises);
+    results.forEach((result) => {
+      respList.push(...result);
+    });
+
+    ctx.body = respList;
+    ctx.status = 200;
+  } catch (err) {
+    // Handle handler loading error
+    console.log('Source Test Error:', err);
+    ctx.body = {
+      error: `Failed to load source handler for '${source}': ${err.message}`,
+    };
+    ctx.status = 400;
+  }
+  ctx.set('apiVersion', API_VERSION);
+};
+
 getDestinations().forEach(async (destination) => {
   testRouter.post(`/${version}/${destination}`, async (ctx) => {
     await handleTestEvent(ctx, destination);
     return ctx;
   });
 });
+
+// Add source transformation test route
+testRouter.post(`/source-test/:source`, testSourceTransform);
 
 testRouter.get(`/${version}/health`, (ctx) => {
   ctx.body = 'OK';

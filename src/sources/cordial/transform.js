@@ -17,7 +17,7 @@ const processEvent = (inputPaylaod) => {
 
   const externalId = [];
   // setting up cordial contact_id to externalId
-  if (inputPaylaod.contact.cID) {
+  if (inputPaylaod?.contact?.cID) {
     externalId.push({
       type: 'cordialContactId',
       id: inputPaylaod.contact.cID,

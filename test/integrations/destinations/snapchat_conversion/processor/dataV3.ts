@@ -3539,6 +3539,7 @@ export const dataV3: ProcessorTestData[] = [
                     product_id: '123',
                     price: '14',
                     category: 'shoes',
+                    delivery_category: 'standard',
                   },
                   {
                     product_id: '123',
@@ -3612,7 +3613,7 @@ export const dataV3: ProcessorTestData[] = [
                           {
                             id: '123',
                             item_price: '14',
-                            delivery_category: 'shoes',
+                            delivery_category: 'standard',
                           },
                           {
                             id: '123',
@@ -3720,6 +3721,7 @@ export const dataV3: ProcessorTestData[] = [
                     product_id: '123',
                     price: 14,
                     quantity: 3,
+                    delivery_category: 'express',
                   },
                 ],
                 revenue: '100',
@@ -3793,6 +3795,7 @@ export const dataV3: ProcessorTestData[] = [
                             id: '123',
                             item_price: 14,
                             quantity: 3,
+                            delivery_category: 'express',
                           },
                         ],
                       },

@@ -31,7 +31,7 @@ describe('productsToContentsMapping', () => {
       description: 'should map products with product_id',
       input: {
         properties: {
-          products: [{ product_id: '123', quantity: 2, price: 10, category: 'cat1' }],
+          products: [{ product_id: '123', quantity: 2, price: 10, delivery_category: 'cat1' }],
         },
       },
       expected: [
@@ -47,7 +47,7 @@ describe('productsToContentsMapping', () => {
       description: 'should map products with sku if product_id is missing',
       input: {
         properties: {
-          products: [{ sku: 'sku-1', quantity: 1, price: 5, category: 'cat2' }],
+          products: [{ sku: 'sku-1', quantity: 1, price: 5, delivery_category: 'cat2' }],
         },
       },
       expected: [
@@ -63,7 +63,7 @@ describe('productsToContentsMapping', () => {
       description: 'should map products with id if product_id and sku are missing',
       input: {
         properties: {
-          products: [{ id: 'id-1', quantity: 3, price: 15, category: 'cat3' }],
+          products: [{ id: 'id-1', quantity: 3, price: 15, delivery_category: 'cat3' }],
         },
       },
       expected: [
@@ -80,9 +80,9 @@ describe('productsToContentsMapping', () => {
       input: {
         properties: {
           products: [
-            { product_id: 'p1', quantity: 1, price: 10, category: 'c1' },
-            { sku: 's2', quantity: 2, price: 20, category: 'c2' },
-            { id: 'i3', quantity: 3, price: 30, category: 'c3' },
+            { product_id: 'p1', quantity: 1, price: 10, delivery_category: 'c1' },
+            { sku: 's2', quantity: 2, price: 20, delivery_category: 'c2' },
+            { id: 'i3', quantity: 3, price: 30, delivery_category: 'c3' },
           ],
         },
       },

@@ -69,8 +69,8 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
 
     if (contentIds.length > 0) {
       payload.properties.contents_ids = contentIds;
+      payload.properties.num_items = contentIds.length;
     }
-    payload.properties.num_items = contentIds.length;
   }
 
   // getting externalId and hashing it and storing it in

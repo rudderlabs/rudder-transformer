@@ -29,11 +29,11 @@ const processEvent = (inputPaylaod) => {
     message.anonymousId = generateUUID();
   }
   // Due to multiple mappings to the same destination path object some are not showing up due to which we are doing the following
-  message.context.traits = { ...message.context.traits, ...inputPaylaod.contact };
+  message.context.traits = { ...message.context.traits, ...(inputPaylaod.contact ?? {}) };
   message.properties = {
     ...message.properties,
-    ...inputPaylaod.event.properties,
-    ...inputPaylaod.event,
+    ...(inputPaylaod?.event?.properties ?? {}),
+    ...(inputPaylaod?.event ?? {}),
   };
   delete message.properties.properties;
   delete message.properties.d;

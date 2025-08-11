@@ -70,7 +70,7 @@ const getTrackResponsePayload = (message, destConfig, event, setDefaultForConten
     if (contentIds.length > 0) {
       payload.properties.contents_ids = contentIds;
     }
-    payload.properties.num_items = payload.properties.contents.length;
+    payload.properties.num_items = contentIds.length;
   }
 
   // getting externalId and hashing it and storing it in
@@ -728,8 +728,8 @@ const batchEvents = (processedEvents, eventSource) => {
   const { pixelCode } = destination.Config;
   processedEvents.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    if (eventData.length + data.length > config.maxBatchSizeV2) {
+    // eslint-disable-next-line no-unsafe-optional-chaining, unicorn/consistent-destructuring
+    if (eventData?.length + data.length > config.maxBatchSizeV2) {
       // Partner name must be added above "data": [..];
       responseLists.push(
         buildResponseList({

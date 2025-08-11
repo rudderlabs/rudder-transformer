@@ -140,7 +140,7 @@ const productsToContentsMapping = (message) => {
     id: product?.product_id || product?.sku || product?.id,
     quantity: product.quantity,
     item_price: product.price,
-    delivery_category: product.category,
+    ...(product?.delivery_category && { delivery_category: product?.delivery_category }),
   }));
 };
 

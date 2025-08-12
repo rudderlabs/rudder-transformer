@@ -74,14 +74,14 @@ Iterable supports batching for the following message types to optimize performan
 | `/users/bulkUpdate` | Identify | 5 requests/second per API key | 4MB request size (~1000 users) | Bulk user profile updates |
 | `/events/trackBulk` | Track, Page, Screen | 10 requests/second per project | 4MB request size (~1000 events) | Bulk event tracking |
 | `/events/track` | Track, Page, Screen | 2000 requests/second per project | Single event | Individual event tracking |
-| `/users/update` | Identify | 5 requests/second | Single user | Individual user updates |
-| `/commerce/trackPurchase` | Track (Order Completed) | 5 requests/second | Single purchase | Purchase tracking |
-| `/commerce/updateCart` | Track (Product Added/Removed) | 5 requests/second | Single cart update | Shopping cart updates |
-| `/users/updateEmail` | Alias | 5 requests/second | Single user | Email address updates |
+| `/users/update` | Identify | 500 requests/second | Single user | Individual user updates |
+| `/commerce/trackPurchase` | Track (Order Completed) | - | Single purchase | Purchase tracking |
+| `/commerce/updateCart` | Track (Product Added/Removed) | - | Single cart update | Shopping cart updates |
+| `/users/updateEmail` | Alias | - | Single user | Email address updates |
 | `/users/registerDeviceToken` | Device Registration | 500 requests/second per project | Single device | Mobile push token registration |
-| `/users/registerBrowserToken` | Browser Registration | 5 requests/second | Single browser | Web push token registration |
-| `/users/byUserId/{userId}` | User Deletion | 5 requests/second | Single user | User data deletion |
-| `/catalogs/{objectType}/items` | RETL Catalog | 5 requests/second | 1000 items | Catalog item management |
+| `/users/registerBrowserToken` | Browser Registration | - | Single browser | Web push token registration |
+| `/users/byUserId/{userId}` | User Deletion | 100 requests/second | Single user | User data deletion |
+| `/catalogs/{objectType}/items` | RETL Catalog | 100 requests/second | 1000 items | Catalog item management |
 
 ### Intermediate Calls
 

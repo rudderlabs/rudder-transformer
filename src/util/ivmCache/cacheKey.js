@@ -11,10 +11,8 @@ const { isNil } = require('lodash');
  * @returns {string} Cache key for the IVM instance
  */
 function generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
-  // Handle null/undefined inputs
-  if (isNil(transformationId) || isNil(code)) {
-    throw new Error('transformationId and code are required for cache key generation');
-  }
+  // Validate inputs
+  validateCacheKeyInputs(transformationId, code, libraryVersionIds, testMode, workspaceId);
 
   // Normalize inputs
   const normalizedLibraryIds = (libraryVersionIds || []).slice().sort();

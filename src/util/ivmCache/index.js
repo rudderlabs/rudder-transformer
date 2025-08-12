@@ -6,8 +6,14 @@ const stats = require('../stats');
  */
 class IvmCache {
   constructor(options = {}) {
-    this.maxSize = parseInt(options.maxSize || process.env.IVM_CACHE_MAX_SIZE || '50', 10);
-    this.ttlMs = parseInt(options.ttlMs || process.env.IVM_CACHE_TTL_MS || '1800000', 10); // 30 min default
+    this.maxSize = parseInt(
+      options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '50',
+      10,
+    );
+    this.ttlMs = parseInt(
+      options.ttlMs !== undefined ? options.ttlMs : process.env.IVM_CACHE_TTL_MS || '1800000',
+      10,
+    ); // 30 min default
 
     // Cache storage: Map maintains insertion order for LRU
     this.cache = new Map();
@@ -61,6 +67,12 @@ class IvmCache {
    * @param {any} value Value to cache
    */
   set(key, value) {
+    // If maxSize is 0, don't cache anything
+    if (this.maxSize === 0) {
+      this._emitStats('set');
+      return;
+    }
+
     // Remove existing entry if present
     if (this.cache.has(key)) {
       this._clearTtl(key);

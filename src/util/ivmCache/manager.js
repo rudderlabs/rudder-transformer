@@ -1,0 +1,266 @@
+const NoneStrategy = require('./strategies/none');
+const IsolateStrategy = require('./strategies/isolate');
+const { generateCacheKey, validateCacheKeyInputs } = require('./cacheKey');
+const logger = require('../../logger');
+
+/**
+ * Main IVM Cache Manager
+ * Handles strategy selection and provides unified interface
+ */
+class IvmCacheManager {
+  constructor() {
+    this.strategy = null;
+    this.currentStrategyName = null;
+    this._initializeStrategy();
+  }
+
+  /**
+   * Initialize cache strategy based on environment configuration
+   * @private
+   */
+  _initializeStrategy() {
+    const strategyName = (process.env.IVM_CACHE_STRATEGY || 'none').toLowerCase();
+
+    if (this.currentStrategyName === strategyName && this.strategy) {
+      return; // Already initialized with correct strategy
+    }
+
+    // Clean up existing strategy
+    if (this.strategy && typeof this.strategy.destroy === 'function') {
+      this.strategy.destroy().catch((error) => {
+        logger.error('Error destroying previous cache strategy', {
+          error: error.message,
+          strategy: this.currentStrategyName,
+        });
+      });
+    }
+
+    // Initialize new strategy
+    const options = {
+      maxSize: process.env.IVM_CACHE_MAX_SIZE,
+      ttlMs: process.env.IVM_CACHE_TTL_MS,
+    };
+
+    switch (strategyName) {
+      case 'none':
+        this.strategy = new NoneStrategy();
+        break;
+
+      case 'isolate':
+        this.strategy = new IsolateStrategy(options);
+        break;
+
+      default:
+        logger.warn(`Unknown IVM cache strategy: ${strategyName}, falling back to 'none'`);
+        this.strategy = new NoneStrategy();
+        this.currentStrategyName = 'none';
+        return;
+    }
+
+    this.currentStrategyName = strategyName;
+
+    logger.info('IVM Cache Manager initialized', {
+      strategy: this.currentStrategyName,
+      ...options,
+    });
+  }
+
+  /**
+   * Generate cache key for transformation
+   * @param {string} transformationId
+   * @param {string} code
+   * @param {Array<string>} libraryVersionIds
+   * @param {boolean} testMode
+   * @param {string} workspaceId
+   * @returns {string} Cache key
+   */
+  generateKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
+    try {
+      validateCacheKeyInputs(transformationId, code, libraryVersionIds, testMode, workspaceId);
+      return generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId);
+    } catch (error) {
+      logger.error('Error generating cache key', {
+        error: error.message,
+        transformationId,
+        workspaceId,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Get cached isolate
+   * @param {string} cacheKey Cache key
+   * @param {Object} credentials Fresh credentials for execution
+   * @param {boolean} testMode Test mode flag
+   * @returns {Object|null} Cached isolate or null
+   */
+  async get(cacheKey, credentials = {}, testMode = false) {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      return await this.strategy.get(cacheKey, credentials, testMode);
+    } catch (error) {
+      logger.error('Error getting from cache', {
+        error: error.message,
+        cacheKey,
+        strategy: this.currentStrategyName,
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Cache an isolate
+   * @param {string} cacheKey Cache key
+   * @param {Object} isolateData Isolate data to cache
+   */
+  async set(cacheKey, isolateData) {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      await this.strategy.set(cacheKey, isolateData);
+    } catch (error) {
+      logger.error('Error setting cache', {
+        error: error.message,
+        cacheKey,
+        strategy: this.currentStrategyName,
+      });
+    }
+  }
+
+  /**
+   * Delete cached isolate
+   * @param {string} cacheKey Cache key
+   */
+  async delete(cacheKey) {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      await this.strategy.delete(cacheKey);
+    } catch (error) {
+      logger.error('Error deleting from cache', {
+        error: error.message,
+        cacheKey,
+        strategy: this.currentStrategyName,
+      });
+    }
+  }
+
+  /**
+   * Clear all cached isolates
+   */
+  async clear() {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      await this.strategy.clear();
+    } catch (error) {
+      logger.error('Error clearing cache', {
+        error: error.message,
+        strategy: this.currentStrategyName,
+      });
+    }
+  }
+
+  /**
+   * Get cache statistics
+   * @returns {Object} Cache statistics
+   */
+  getStats() {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      const stats = this.strategy.getStats();
+      return {
+        ...stats,
+        manager: {
+          currentStrategy: this.currentStrategyName,
+          environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'none',
+        },
+      };
+    } catch (error) {
+      logger.error('Error getting cache stats', {
+        error: error.message,
+        strategy: this.currentStrategyName,
+      });
+      return {
+        strategy: this.currentStrategyName,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Get current strategy name
+   * @returns {string} Strategy name
+   */
+  getCurrentStrategy() {
+    return this.currentStrategyName;
+  }
+
+  /**
+   * Check if caching is enabled
+   * @returns {boolean} True if caching is enabled
+   */
+  isCachingEnabled() {
+    return this.currentStrategyName !== 'none';
+  }
+
+  /**
+   * Get health information
+   * @returns {Object} Health information
+   */
+  getHealthInfo() {
+    this._initializeStrategy(); // Ensure strategy is current
+
+    try {
+      if (typeof this.strategy.getHealthInfo === 'function') {
+        return this.strategy.getHealthInfo();
+      }
+
+      const stats = this.getStats();
+      return {
+        strategy: this.currentStrategyName,
+        healthy: true,
+        stats,
+      };
+    } catch (error) {
+      logger.error('Error getting cache health info', {
+        error: error.message,
+        strategy: this.currentStrategyName,
+      });
+      return {
+        strategy: this.currentStrategyName,
+        healthy: false,
+        error: error.message,
+      };
+    }
+  }
+
+  /**
+   * Destroy cache manager and cleanup resources
+   */
+  async destroy() {
+    if (this.strategy && typeof this.strategy.destroy === 'function') {
+      try {
+        await this.strategy.destroy();
+      } catch (error) {
+        logger.error('Error destroying cache strategy', {
+          error: error.message,
+          strategy: this.currentStrategyName,
+        });
+      }
+    }
+
+    this.strategy = null;
+    this.currentStrategyName = null;
+
+    logger.info('IVM Cache Manager destroyed');
+  }
+}
+
+// Create singleton instance
+const ivmCacheManager = new IvmCacheManager();
+
+module.exports = ivmCacheManager;

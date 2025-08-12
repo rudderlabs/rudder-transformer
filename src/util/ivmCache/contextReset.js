@@ -1,4 +1,9 @@
+const { isNil, isObject } = require('lodash');
+const fetch = require('node-fetch');
+const ivm = require('isolated-vm');
 const logger = require('../../logger');
+const stats = require('../stats');
+const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require('../utils');
 
 /**
  * Context reset utilities for cached IVM isolates
@@ -6,107 +11,23 @@ const logger = require('../../logger');
  */
 
 /**
- * Reset the context of a cached isolate for fresh execution
- * @param {Object} cachedIsolate The cached isolate object
- * @param {Object} credentials Fresh credentials for this execution
- * @param {boolean} testMode Whether running in test mode
- * @returns {Object} Reset isolate ready for execution
- */
-async function resetContext(cachedIsolate, credentials = {}, testMode = false) {
-  if (!cachedIsolate || !cachedIsolate.isolate) {
-    throw new Error('Invalid cached isolate provided for context reset');
-  }
-
-  try {
-    // Create a new context for this execution
-    const newContext = await cachedIsolate.isolate.createContext();
-    const jail = newContext.global;
-
-    // Set up global object properly
-    await jail.set('global', jail.derefInto());
-
-    // Re-inject the required APIs with fresh state
-    await injectFreshApis(jail, cachedIsolate, credentials, testMode);
-
-    // Set up bootstrap script in the new context
-    const bootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
-
-    // Re-instantiate the user's custom script module in the new context
-    await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
-      if (cachedIsolate.compiledModules[spec]) {
-        return cachedIsolate.compiledModules[spec].module;
-      }
-      throw new Error(`import from ${spec} failed. Module not found.`);
-    });
-
-    // Re-evaluate the custom script module
-    await cachedIsolate.customScriptModule.evaluate();
-
-    // Get fresh function reference
-    const fnRef = await cachedIsolate.customScriptModule.namespace.get('transformWrapper', {
-      reference: true,
-    });
-
-    // Clean up the old context
-    if (cachedIsolate.context) {
-      try {
-        cachedIsolate.context.release();
-      } catch (error) {
-        logger.warn('Error releasing old context during reset', { error: error.message });
-      }
-    }
-
-    // Update the cached isolate with new context
-    const resetIsolate = {
-      ...cachedIsolate,
-      context: newContext,
-      jail,
-      bootstrapScriptResult,
-      fnRef,
-      logs: [], // Fresh logs array
-      isolateStartWallTime: cachedIsolate.isolate.wallTime,
-      isolateStartCPUTime: cachedIsolate.isolate.cpuTime,
-    };
-
-    logger.debug('IVM context reset completed', {
-      transformationId: cachedIsolate.transformationId,
-    });
-
-    return resetIsolate;
-  } catch (error) {
-    logger.error('Error during context reset', {
-      error: error.message,
-      transformationId: cachedIsolate.transformationId,
-    });
-    throw error;
-  }
-}
-
-/**
  * Inject fresh APIs into the jail for a new execution
- * @private
  * @param {Object} jail The context jail
  * @param {Object} cachedIsolate The cached isolate
  * @param {Object} credentials Fresh credentials
  * @param {boolean} testMode Test mode flag
+ * @param {Array} logs Fresh logs array
  */
-async function injectFreshApis(jail, cachedIsolate, credentials, testMode) {
-  const { isNil, isObject } = require('lodash');
-  const stats = require('../stats');
-  const { fetchWithDnsWrapper } = require('../utils');
-  const { extractStackTraceUptoLastSubstringMatch } = require('../utils');
-
+async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs) {
   const trTags = {
     identifier: 'V1',
     transformationId: cachedIsolate.transformationId,
     workspaceId: cachedIsolate.workspaceId,
   };
 
-  // Fresh logs array for this execution
-  const logs = [];
+  const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
   // Re-inject _ivm module
-  const ivm = require('isolated-vm');
   await jail.set('_ivm', ivm);
 
   // Re-inject _fetch
@@ -168,16 +89,13 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode) {
   );
 
   // Re-inject _geolocation
-  const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
-  const fetch = require('node-fetch');
-
   await jail.set(
     '_geolocation',
     new ivm.Reference(async (resolve, reject, ...args) => {
       const geoStartTime = new Date();
       const geoTags = { ...trTags };
       try {
-        if (args.length < 1) {
+        if (args.length === 0) {
           throw new Error('ip address is required');
         }
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
@@ -201,7 +119,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode) {
   );
 
   // Re-inject _getCredential with fresh credentials
-  await jail.set('_getCredential', function (key) {
+  await jail.set('_getCredential', (key) => {
     if (isNil(credentials) || !isObject(credentials)) {
       logger.error(
         `Error fetching credentials map for transformationID: ${cachedIsolate.transformationId} and workspaceId: ${cachedIsolate.workspaceId}`,
@@ -216,7 +134,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode) {
   });
 
   // Re-inject log function with fresh logs array
-  await jail.set('log', function (...args) {
+  await jail.set('log', (...args) => {
     if (testMode) {
       let logString = 'Log:';
       args.forEach((arg) => {
@@ -227,20 +145,96 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode) {
   });
 
   // Re-inject extractStackTrace
-  await jail.set('extractStackTrace', function (trace, stringLiterals) {
-    return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
-  });
+  await jail.set('extractStackTrace', (trace, stringLiterals) =>
+    extractStackTraceUptoLastSubstringMatch(trace, stringLiterals),
+  );
+}
 
-  // Store fresh logs reference in the cached isolate
-  cachedIsolate.logs = logs;
+/**
+ * Reset the context of a cached isolate for fresh execution
+ * @param {Object} cachedIsolate The cached isolate object
+ * @param {Object} credentials Fresh credentials for this execution
+ * @param {boolean} testMode Whether running in test mode
+ * @returns {Object} Reset isolate ready for execution
+ */
+async function resetContext(cachedIsolate, credentials = {}, testMode = false) {
+  if (!cachedIsolate?.isolate) {
+    throw new Error('Invalid cached isolate provided for context reset');
+  }
+
+  try {
+    // Create a new context for this execution
+    const newContext = await cachedIsolate.isolate.createContext();
+    const jail = newContext.global;
+
+    // Set up global object properly
+    await jail.set('global', jail.derefInto());
+
+    // Fresh logs array for this execution
+    const logs = [];
+
+    // Re-inject the required APIs with fresh state
+    await injectFreshApis(jail, cachedIsolate, credentials, testMode, logs);
+
+    // Set up bootstrap script in the new context
+    const bootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
+
+    // Re-instantiate the user's custom script module in the new context
+    await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
+      if (cachedIsolate.compiledModules[spec]) {
+        return cachedIsolate.compiledModules[spec].module;
+      }
+      throw new Error(`import from ${spec} failed. Module not found.`);
+    });
+
+    // Re-evaluate the custom script module
+    await cachedIsolate.customScriptModule.evaluate();
+
+    // Get fresh function reference
+    const fnRef = await cachedIsolate.customScriptModule.namespace.get('transformWrapper', {
+      reference: true,
+    });
+
+    // Clean up the old context
+    if (cachedIsolate.context) {
+      try {
+        cachedIsolate.context.release();
+      } catch (error) {
+        logger.warn('Error releasing old context during reset', { error: error.message });
+      }
+    }
+
+    // Create reset isolate with new context
+    const resetIsolate = {
+      ...cachedIsolate,
+      context: newContext,
+      jail,
+      bootstrapScriptResult,
+      fnRef,
+      logs, // Fresh logs array
+      isolateStartWallTime: cachedIsolate.isolate.wallTime,
+      isolateStartCPUTime: cachedIsolate.isolate.cpuTime,
+    };
+
+    logger.debug('IVM context reset completed', {
+      transformationId: cachedIsolate.transformationId,
+    });
+
+    return resetIsolate;
+  } catch (error) {
+    logger.error('Error during context reset', {
+      error: error.message,
+      transformationId: cachedIsolate.transformationId,
+    });
+    throw error;
+  }
 }
 
 /**
  * Check if an isolate needs context reset
- * @param {Object} cachedIsolate The cached isolate
  * @returns {boolean} True if reset is needed
  */
-function needsContextReset(cachedIsolate) {
+function needsContextReset() {
   // For isolate strategy, we always reset context to ensure clean state
   return true;
 }

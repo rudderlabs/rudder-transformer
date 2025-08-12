@@ -20,16 +20,14 @@ jest.mock('../../../src/util/utils', () => ({
 jest.mock('node-fetch', () => jest.fn());
 
 // Mock isolated-vm
-const mockIvm = {
+jest.mock('isolated-vm', () => ({
   Reference: jest.fn().mockImplementation((fn) => ({
     applyIgnored: jest.fn(),
   })),
   ExternalCopy: jest.fn().mockImplementation((data) => ({
     copyInto: jest.fn().mockReturnValue(data),
   })),
-};
-
-jest.mock('isolated-vm', () => mockIvm);
+}));
 
 describe('Context Reset Utilities', () => {
   let mockCachedIsolate;
@@ -140,7 +138,7 @@ describe('Context Reset Utilities', () => {
 
       const expectedApiCalls = [
         ['global', {}],
-        ['_ivm', mockIvm],
+        ['_ivm', require('isolated-vm')],
         ['_fetch', expect.any(Object)],
         ['_fetchV2', expect.any(Object)],
         ['_geolocation', expect.any(Object)],
@@ -235,9 +233,10 @@ describe('Context Reset Utilities', () => {
 
   describe('injected API functions', () => {
     let injectedFunctions;
+    let resetResult;
 
     beforeEach(async () => {
-      await resetContext(mockCachedIsolate, { testKey: 'testValue' }, true);
+      resetResult = await resetContext(mockCachedIsolate, { testKey: 'testValue' }, true);
       
       // Extract the injected functions from the jail.set calls
       injectedFunctions = {};
@@ -266,8 +265,8 @@ describe('Context Reset Utilities', () => {
       // Since we're in test mode, logs should be captured
       logFunction('test message', { data: 'test' });
       
-      // The logs should be stored in the cached isolate
-      expect(mockCachedIsolate.logs).toContain('Log: test message {"data":"test"}');
+      // The logs should be stored in the reset result
+      expect(resetResult.logs).toContain('Log: test message {"data":"test"}');
     });
 
     test('should inject working extractStackTrace function', () => {

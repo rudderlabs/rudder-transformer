@@ -12,30 +12,24 @@ class NoneStrategy {
 
   /**
    * Get cached isolate (always returns null for none strategy)
-   * @param {string} cacheKey Cache key
    * @returns {null} Always null for none strategy
    */
-  async get(cacheKey) {
+  async get() {
     return null;
   }
 
   /**
    * Set cached isolate (no-op for none strategy)
-   * @param {string} cacheKey Cache key
-   * @param {Object} isolateData Isolate data to cache
    */
-  async set(cacheKey, isolateData) {
+  async set() {
     // No-op for none strategy
-    return;
   }
 
   /**
    * Delete cached isolate (no-op for none strategy)
-   * @param {string} cacheKey Cache key
    */
-  async delete(cacheKey) {
+  async delete() {
     // No-op for none strategy
-    return;
   }
 
   /**
@@ -43,7 +37,6 @@ class NoneStrategy {
    */
   async clear() {
     // No-op for none strategy
-    return;
   }
 
   /**
@@ -66,7 +59,6 @@ class NoneStrategy {
    */
   async destroy() {
     // No-op for none strategy
-    return;
   }
 }
 

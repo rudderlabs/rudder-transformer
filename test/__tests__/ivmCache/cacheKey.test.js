@@ -1,6 +1,5 @@
 const {
   generateCacheKey,
-  validateCacheKeyInputs,
   parseCacheKey,
 } = require('../../../src/util/ivmCache/cacheKey');
 
@@ -83,13 +82,6 @@ describe('IVM Cache Key Generation', () => {
       expect(key2).toBe(key3);
     });
 
-    test('should throw error for missing required params', () => {
-      expect(() => generateCacheKey(null, 'code', [], false, 'ws1')).toThrow();
-      expect(() => generateCacheKey('trans', null, [], false, 'ws1')).toThrow();
-      expect(() => generateCacheKey('', 'code', [], false, 'ws1')).toThrow();
-      expect(() => generateCacheKey('trans', '', [], false, 'ws1')).toThrow();
-    });
-
     test('should generate keys with expected format', () => {
       const key = generateCacheKey('trans-1', 'code1', ['lib1'], false, 'ws1');
       const parts = key.split(':');
@@ -100,44 +92,6 @@ describe('IVM Cache Key Generation', () => {
       expect(parts[2]).toHaveLength(16); // codeHash (16 chars)
       expect(parts[3]).toHaveLength(16); // libsHash (16 chars)
       expect(parts[4]).toBe('false'); // testMode
-    });
-  });
-
-  describe('validateCacheKeyInputs', () => {
-    test('should validate correct inputs', () => {
-      expect(() => validateCacheKeyInputs(
-        'trans-1',
-        'code1',
-        ['lib1'],
-        false,
-        'ws1'
-      )).not.toThrow();
-    });
-
-    test('should throw for invalid transformationId', () => {
-      expect(() => validateCacheKeyInputs('', 'code', [], false, 'ws1')).toThrow();
-      expect(() => validateCacheKeyInputs(123, 'code', [], false, 'ws1')).toThrow();
-      expect(() => validateCacheKeyInputs(null, 'code', [], false, 'ws1')).toThrow();
-    });
-
-    test('should throw for invalid code', () => {
-      expect(() => validateCacheKeyInputs('trans', '', [], false, 'ws1')).toThrow();
-      expect(() => validateCacheKeyInputs('trans', 123, [], false, 'ws1')).toThrow();
-      expect(() => validateCacheKeyInputs('trans', null, [], false, 'ws1')).toThrow();
-    });
-
-    test('should throw for invalid libraryVersionIds', () => {
-      expect(() => validateCacheKeyInputs('trans', 'code', 'invalid', false, 'ws1')).toThrow();
-      expect(() => validateCacheKeyInputs('trans', 'code', 123, false, 'ws1')).toThrow();
-    });
-
-    test('should throw for invalid workspaceId', () => {
-      expect(() => validateCacheKeyInputs('trans', 'code', [], false, 123)).toThrow();
-    });
-
-    test('should allow undefined/null for optional params', () => {
-      expect(() => validateCacheKeyInputs('trans', 'code', null, false, null)).not.toThrow();
-      expect(() => validateCacheKeyInputs('trans', 'code', undefined, true, undefined)).not.toThrow();
     });
   });
 
@@ -221,3 +175,4 @@ describe('IVM Cache Key Generation', () => {
     });
   });
 });
+

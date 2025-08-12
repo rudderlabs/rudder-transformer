@@ -1,5 +1,3 @@
-const IvmCache = require('../../../src/util/ivmCache/index');
-
 // Mock logger and stats
 jest.mock('../../../src/logger', () => ({
   info: jest.fn(),
@@ -15,6 +13,116 @@ jest.mock('../../../src/util/stats', () => ({
   counter: jest.fn(),
   summary: jest.fn(),
 }));
+
+// Mock lru-cache to test our wrapper behavior
+jest.mock('lru-cache', () => ({
+  LRUCache: jest.fn().mockImplementation((options) => {
+    const map = new Map();
+    const timers = new Map();
+    
+    const mockCache = {
+      _options: options,
+      _map: map,
+      _timers: timers,
+      set: jest.fn().mockImplementation((key, value) => {
+        // Clear existing timer if key exists
+        if (timers.has(key)) {
+          clearTimeout(timers.get(key));
+          timers.delete(key);
+        }
+        
+        // Simulate LRU behavior - if at max capacity, evict oldest
+        if (map.size >= options.max && !map.has(key)) {
+          const firstKey = map.keys().next().value;
+          if (firstKey !== undefined) {
+            const firstValue = map.get(firstKey);
+            map.delete(firstKey);
+            if (timers.has(firstKey)) {
+              clearTimeout(timers.get(firstKey));
+              timers.delete(firstKey);
+            }
+            if (options.dispose) {
+              options.dispose(firstValue, firstKey, 'evict');
+            }
+          }
+        }
+        
+        // If updating existing key, dispose old value
+        if (map.has(key) && options.dispose) {
+          const oldValue = map.get(key);
+          options.dispose(oldValue, key, 'set');
+        }
+        
+        map.set(key, value);
+        
+        // Set TTL timer if specified
+        if (options.ttl && options.ttl > 0) {
+          const timer = setTimeout(() => {
+            if (map.has(key)) {
+              const expiredValue = map.get(key);
+              map.delete(key);
+              timers.delete(key);
+              if (options.dispose) {
+                options.dispose(expiredValue, key, 'delete');
+              }
+            }
+          }, options.ttl);
+          timers.set(key, timer);
+        }
+        
+        return mockCache;
+      }),
+      get: jest.fn().mockImplementation((key) => {
+        const value = map.get(key);
+        if (value !== undefined) {
+          // Simulate LRU - move to end
+          map.delete(key);
+          map.set(key, value);
+        }
+        return value;
+      }),
+      has: jest.fn().mockImplementation((key) => map.has(key)),
+      delete: jest.fn().mockImplementation((key) => {
+        const had = map.has(key);
+        if (had) {
+          const value = map.get(key);
+          map.delete(key);
+          
+          if (timers.has(key)) {
+            clearTimeout(timers.get(key));
+            timers.delete(key);
+          }
+          
+          if (options.dispose) {
+            options.dispose(value, key, 'delete');
+          }
+        }
+        return had;
+      }),
+      clear: jest.fn().mockImplementation(() => {
+        // Clear all timers
+        for (const timer of timers.values()) {
+          clearTimeout(timer);
+        }
+        timers.clear();
+        
+        if (options.dispose) {
+          for (const [key, value] of map.entries()) {
+            options.dispose(value, key, 'delete');
+          }
+        }
+        map.clear();
+      }),
+      keys: jest.fn().mockImplementation(() => map.keys()),
+      values: jest.fn().mockImplementation(() => map.values()),
+      entries: jest.fn().mockImplementation(() => map.entries()),
+      get size() { return map.size; }
+    };
+    return mockCache;
+  })
+}));
+
+const IvmCache = require('../../../src/util/ivmCache/index');
 
 describe('IVM LRU Cache with TTL', () => {
   let cache;
@@ -162,64 +270,64 @@ describe('IVM LRU Cache with TTL', () => {
   });
 
   describe('TTL behavior', () => {
-    test('should expire items after TTL', (done) => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+  
+    // ✅ Restore real timers after this block is done
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+  
+    test('should expire items after TTL', () => {
+      // Note: No more `done` callback
       cache = new IvmCache({ maxSize: 5, ttlMs: 100 });
       
       cache.set('key1', 'value1');
       expect(cache.get('key1')).toBe('value1');
       
-      setTimeout(() => {
-        expect(cache.get('key1')).toBeNull();
-        expect(cache.cache.size).toBe(0);
-        done();
-      }, 150);
+      jest.advanceTimersByTime(150);
+      
+      expect(cache.get('key1')).toBeNull();
+      expect(cache.cache.size).toBe(0);
     });
-
-    test('should call destroy method on TTL expired items', (done) => {
+  
+    test('should call destroy method on TTL expired items', () => {
       cache = new IvmCache({ maxSize: 5, ttlMs: 100 });
       const mockDestroy = jest.fn();
       const itemWithDestroy = { data: 'test', destroy: mockDestroy };
       
       cache.set('key1', itemWithDestroy);
       
-      setTimeout(() => {
-        expect(mockDestroy).toHaveBeenCalled();
-        done();
-      }, 150);
+      jest.advanceTimersByTime(150);
+      
+      expect(mockDestroy).toHaveBeenCalled();
     });
-
-    test('should reset TTL when item is overwritten', (done) => {
+  
+    test('should reset TTL when item is overwritten', () => {
       cache = new IvmCache({ maxSize: 5, ttlMs: 200 });
       
       cache.set('key1', 'value1');
       
-      setTimeout(() => {
-        // Overwrite before expiry
-        cache.set('key1', 'value2');
-        
-        setTimeout(() => {
-          // Should still be there because TTL was reset
-          expect(cache.get('key1')).toBe('value2');
-          done();
-        }, 100);
-      }, 100);
-    });
-
-    test('should clear TTL when item is deleted', () => {
-      cache.set('key1', 'value1');
-      expect(cache.ttlTimeouts.has('key1')).toBe(true);
+      jest.advanceTimersByTime(100);
       
-      cache.delete('key1');
-      expect(cache.ttlTimeouts.has('key1')).toBe(false);
-    });
-
-    test('should clear all TTL timeouts when cache is cleared', () => {
-      cache.set('key1', 'value1');
-      cache.set('key2', 'value2');
-      expect(cache.ttlTimeouts.size).toBe(2);
+      // Overwrite the key, which should reset the timer
+      cache.set('key1', 'value2');
       
-      cache.clear();
-      expect(cache.ttlTimeouts.size).toBe(0);
+      jest.advanceTimersByTime(150);
+  
+      // Should still exist because the timer was reset
+      expect(cache.get('key1')).toBe('value2');
+      
+      jest.advanceTimersByTime(100);
+      
+      expect(cache.get('key1')).toBeNull();
+    });
+  
+    // This test doesn't need fake timers, but it's fine to leave it here
+    test('should handle TTL configuration', () => {
+      expect(cache.cache._options.ttl).toBe(1000);
+      expect(cache.cache._options.max).toBe(3);
     });
   });
 
@@ -280,6 +388,7 @@ describe('IVM LRU Cache with TTL', () => {
       expect(stats).toEqual({
         hits: 1,
         misses: 1,
+        sets: 1,
         evictions: 0,
         ttlExpiries: 0,
         currentSize: 1,
@@ -329,6 +438,7 @@ describe('IVM LRU Cache with TTL', () => {
       // With maxSize 0, item gets added then immediately evicted
       expect(zeroCache.cache.size).toBe(0);
       expect(zeroCache.get('key1')).toBeNull();
+      zeroCache.clear();
     });
 
     test('should handle max size of 1', () => {
@@ -341,6 +451,7 @@ describe('IVM LRU Cache with TTL', () => {
       expect(singleCache.get('key1')).toBeNull();
       expect(singleCache.get('key2')).toBe('value2');
       expect(singleCache.cache.size).toBe(1);
+      singleCache.clear();
     });
 
     test('should maintain correct size after operations', () => {
@@ -366,7 +477,7 @@ describe('IVM LRU Cache with TTL', () => {
       cache.set('undefinedKey', undefined);
       
       expect(cache.get('nullKey')).toBeNull();
-      expect(cache.get('undefinedKey')).toBeUndefined();
+      expect(cache.get('undefinedKey')).toBeNull(); // Our cache returns null for non-existent
       expect(cache.has('nullKey')).toBe(true);
       expect(cache.has('undefinedKey')).toBe(true);
     });

@@ -1,8 +1,10 @@
+const { LRUCache } = require('lru-cache');
 const logger = require('../../logger');
 const stats = require('../stats');
 
 /**
- * LRU Cache with TTL support for IVM instances
+ * IVM Cache implementation using battle-tested lru-cache library
+ * Handles caching of IVM isolates with TTL support and proper cleanup
  */
 class IvmCache {
   constructor(options = {}) {
@@ -15,25 +17,59 @@ class IvmCache {
       10,
     ); // 30 min default
 
-    // Cache storage: Map maintains insertion order for LRU
-    this.cache = new Map();
+    this.cache = new LRUCache({
+      max: this.maxSize,
+      ttl: this.ttlMs,
+      allowStale: false,
+      updateAgeOnGet: true,
+      updateAgeOnHas: false,
+      dispose: this.handleDispose.bind(this),
+    });
 
-    // TTL tracking
-    this.ttlTimeouts = new Map();
-
-    // Statistics
+    // Stats tracking
     this.stats = {
       hits: 0,
       misses: 0,
+      sets: 0,
       evictions: 0,
       ttlExpiries: 0,
       currentSize: 0,
     };
 
-    logger.info('IVM Cache initialized', {
+    logger.debug('IVM Cache initialized', {
       maxSize: this.maxSize,
       ttlMs: this.ttlMs,
     });
+  }
+
+  /**
+   * Handle disposal of cache items with proper cleanup
+   * @param {any} value The cached value being disposed
+   * @param {string} key The cache key
+   * @param {string} reason Disposal reason ('evict', 'set', 'delete')
+   */
+  async handleDispose(value, key, reason) {
+    try {
+      // Track disposal reason
+      if (reason === 'evict') {
+        this.stats.evictions += 1;
+      }
+
+      // Perform async cleanup if destroy method exists
+      if (value && typeof value.destroy === 'function') {
+        await value.destroy();
+        logger.debug('IVM Cache item disposed', { key, reason });
+      }
+    } catch (error) {
+      logger.error('Error disposing cache item', {
+        key,
+        reason,
+        error: error.message,
+      });
+    }
+
+    this.stats.currentSize = this.cache.size;
+    this.emitStats('dispose');
   }
 
   /**
@@ -45,20 +81,16 @@ class IvmCache {
     const item = this.cache.get(key);
 
     if (!item) {
-      this.stats.misses++;
-      this._emitStats('miss');
+      this.stats.misses += 1;
+      this.emitStats('miss');
       return null;
     }
 
-    // Move to end (most recently used)
-    this.cache.delete(key);
-    this.cache.set(key, item);
-
-    this.stats.hits++;
-    this._emitStats('hit');
+    this.stats.hits += 1;
+    this.emitStats('hit');
 
     logger.debug('IVM Cache hit', { key, cacheSize: this.cache.size });
-    return item.value;
+    return item;
   }
 
   /**
@@ -69,32 +101,13 @@ class IvmCache {
   set(key, value) {
     // If maxSize is 0, don't cache anything
     if (this.maxSize === 0) {
-      this._emitStats('set');
+      this.emitStats('set');
       return;
     }
 
-    // Remove existing entry if present
-    if (this.cache.has(key)) {
-      this._clearTtl(key);
-      this.cache.delete(key);
-    }
-
-    // Evict least recently used if at capacity
-    if (this.cache.size >= this.maxSize) {
-      this._evictLru();
-    }
-
-    // Add new entry
-    const item = {
-      value,
-      createdAt: Date.now(),
-    };
-
-    this.cache.set(key, item);
+    this.cache.set(key, value);
+    this.stats.sets += 1;
     this.stats.currentSize = this.cache.size;
-
-    // Set TTL timeout
-    this._setTtl(key);
 
     logger.debug('IVM Cache set', {
       key,
@@ -102,7 +115,7 @@ class IvmCache {
       ttlMs: this.ttlMs,
     });
 
-    this._emitStats('set');
+    this.emitStats('set');
   }
 
   /**
@@ -110,27 +123,29 @@ class IvmCache {
    * @param {string} key Cache key
    */
   delete(key) {
-    if (this.cache.has(key)) {
-      this._clearTtl(key);
-      this.cache.delete(key);
+    const deleted = this.cache.delete(key);
+    if (deleted) {
       this.stats.currentSize = this.cache.size;
-
       logger.debug('IVM Cache delete', { key, cacheSize: this.cache.size });
     }
+    return deleted;
   }
 
   /**
-   * Clear all cache entries
+   * Check if a key exists in cache
+   * @param {string} key Cache key
+   * @returns {boolean} True if key exists
+   */
+  has(key) {
+    return this.cache.has(key);
+  }
+
+  /**
+   * Clear all items from cache
    */
   clear() {
-    // Clear all TTL timeouts
-    for (const key of this.ttlTimeouts.keys()) {
-      this._clearTtl(key);
-    }
-
     this.cache.clear();
     this.stats.currentSize = 0;
-
     logger.info('IVM Cache cleared');
   }
 
@@ -146,111 +161,47 @@ class IvmCache {
 
     return {
       ...this.stats,
-      hitRate: Math.round(hitRate * 100) / 100,
+      hitRate: Math.round(hitRate),
       maxSize: this.maxSize,
       ttlMs: this.ttlMs,
     };
   }
 
   /**
-   * Check if cache has a key
-   * @param {string} key Cache key
-   * @returns {boolean} True if key exists
-   */
-  has(key) {
-    return this.cache.has(key);
-  }
-
-  /**
-   * Get all cache keys
-   * @returns {Array<string>} Array of cache keys
+   * Get cache keys
+   * @returns {Array} Array of cache keys
    */
   keys() {
     return Array.from(this.cache.keys());
   }
 
   /**
-   * Evict least recently used item
-   * @private
+   * Get cache values
+   * @returns {Array} Array of cache values
    */
-  _evictLru() {
-    if (this.cache.size === 0) return;
-
-    // First item in Map is least recently used
-    const [lruKey] = this.cache.keys();
-    const lruItem = this.cache.get(lruKey);
-
-    // Clean up the evicted item if it has a destroy method
-    if (lruItem && lruItem.value && typeof lruItem.value.destroy === 'function') {
-      try {
-        lruItem.value.destroy();
-      } catch (error) {
-        logger.error('Error destroying evicted cache item', { error: error.message, key: lruKey });
-      }
-    }
-
-    this._clearTtl(lruKey);
-    this.cache.delete(lruKey);
-    this.stats.evictions++;
-    this.stats.currentSize = this.cache.size;
-
-    logger.debug('IVM Cache LRU eviction', { evictedKey: lruKey, cacheSize: this.cache.size });
+  values() {
+    return Array.from(this.cache.values());
   }
 
   /**
-   * Set TTL timeout for a key
-   * @private
-   * @param {string} key Cache key
+   * Get cache entries
+   * @returns {Array} Array of [key, value] pairs
    */
-  _setTtl(key) {
-    const timeout = setTimeout(() => {
-      const item = this.cache.get(key);
-
-      // Clean up the expired item if it has a destroy method
-      if (item && item.value && typeof item.value.destroy === 'function') {
-        try {
-          item.value.destroy();
-        } catch (error) {
-          logger.error('Error destroying expired cache item', { error: error.message, key });
-        }
-      }
-
-      this.cache.delete(key);
-      this.ttlTimeouts.delete(key);
-      this.stats.ttlExpiries++;
-      this.stats.currentSize = this.cache.size;
-
-      logger.debug('IVM Cache TTL expiry', { key, cacheSize: this.cache.size });
-    }, this.ttlMs);
-
-    this.ttlTimeouts.set(key, timeout);
-  }
-
-  /**
-   * Clear TTL timeout for a key
-   * @private
-   * @param {string} key Cache key
-   */
-  _clearTtl(key) {
-    const timeout = this.ttlTimeouts.get(key);
-    if (timeout) {
-      clearTimeout(timeout);
-      this.ttlTimeouts.delete(key);
-    }
+  entries() {
+    return Array.from(this.cache.entries());
   }
 
   /**
    * Emit cache statistics
-   * @private
    * @param {string} operation Operation type
    */
-  _emitStats(operation) {
+  emitStats(operation) {
     const tags = {
+      cache: 'ivm',
       operation,
-      cacheSize: this.cache.size,
-      maxSize: this.maxSize,
     };
 
+    // Emit operation-specific stats
     switch (operation) {
       case 'hit':
         stats.increment('ivm_cache_hits_total', tags);
@@ -261,19 +212,16 @@ class IvmCache {
       case 'set':
         stats.increment('ivm_cache_sets_total', tags);
         break;
+      case 'dispose':
+        stats.increment('ivm_cache_disposals_total', tags);
+        break;
+      default:
+        // No action for unknown operations
+        break;
     }
 
     // Emit current cache size
-    stats.gauge('ivm_cache_size_current', this.cache.size, tags);
-
-    // Emit hit rate periodically
-    if ((this.stats.hits + this.stats.misses) % 10 === 0) {
-      const hitRate =
-        this.stats.hits + this.stats.misses > 0
-          ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100
-          : 0;
-      stats.gauge('ivm_cache_hit_ratio', hitRate, tags);
-    }
+    stats.gauge('ivm_cache_size', this.stats.currentSize, tags);
   }
 }
 

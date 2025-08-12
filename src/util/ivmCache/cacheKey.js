@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const { isNil } = require('lodash');
 
 /**
  * Generates a deterministic cache key for IVM instances
@@ -11,11 +10,8 @@ const { isNil } = require('lodash');
  * @returns {string} Cache key for the IVM instance
  */
 function generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
-  // Validate inputs
-  validateCacheKeyInputs(transformationId, code, libraryVersionIds, testMode, workspaceId);
-
   // Normalize inputs
-  const normalizedLibraryIds = (libraryVersionIds || []).slice().sort();
+  const normalizedLibraryIds = (libraryVersionIds || []).slice().sort((a, b) => a.localeCompare(b));
   const normalizedTestMode = Boolean(testMode);
   const normalizedWorkspaceId = workspaceId || 'default';
 
@@ -33,35 +29,6 @@ function generateCacheKey(transformationId, code, libraryVersionIds, testMode, w
   const cacheKey = `${normalizedWorkspaceId}:${transformationId}:${codeHash}:${libsHash}:${normalizedTestMode}`;
 
   return cacheKey;
-}
-
-/**
- * Validates cache key components
- * @param {string} transformationId
- * @param {string} code
- * @param {Array<string>} libraryVersionIds
- * @param {boolean} testMode
- * @param {string} workspaceId
- * @returns {boolean} True if valid, throws error if invalid
- */
-function validateCacheKeyInputs(transformationId, code, libraryVersionIds, testMode, workspaceId) {
-  if (typeof transformationId !== 'string' || transformationId.length === 0) {
-    throw new Error('transformationId must be a non-empty string');
-  }
-
-  if (typeof code !== 'string' || code.length === 0) {
-    throw new Error('code must be a non-empty string');
-  }
-
-  if (libraryVersionIds && !Array.isArray(libraryVersionIds)) {
-    throw new Error('libraryVersionIds must be an array');
-  }
-
-  if (workspaceId && typeof workspaceId !== 'string') {
-    throw new Error('workspaceId must be a string');
-  }
-
-  return true;
 }
 
 /**
@@ -90,6 +57,5 @@ function parseCacheKey(cacheKey) {
 
 module.exports = {
   generateCacheKey,
-  validateCacheKeyInputs,
   parseCacheKey,
 };

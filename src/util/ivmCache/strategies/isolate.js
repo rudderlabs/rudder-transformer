@@ -191,11 +191,14 @@ class IsolateStrategy {
   async clear() {
     try {
       // Destroy all cached isolates
-      for (const [key, cachedIsolate] of this.cache.cache.entries()) {
-        if (cachedIsolate && typeof cachedIsolate.destroy === 'function') {
-          await cachedIsolate.destroy();
-        }
-      }
+      const entries = Array.from(this.cache.cache.entries());
+      await Promise.all(
+        entries.map(async ([, cachedIsolate]) => {
+          if (cachedIsolate && typeof cachedIsolate.destroy === 'function') {
+            await cachedIsolate.destroy();
+          }
+        }),
+      );
 
       this.cache.clear();
 
@@ -225,24 +228,6 @@ class IsolateStrategy {
   async destroy() {
     await this.clear();
     logger.info('IVM isolate strategy destroyed');
-  }
-
-  /**
-   * Get cache health information
-   * @returns {Object} Health information
-   */
-  getHealthInfo() {
-    const stats = this.getStats();
-    const memoryPressure = stats.currentSize / stats.maxSize;
-
-    return {
-      strategy: 'isolate',
-      healthy: memoryPressure < 0.9, // Consider unhealthy if >90% full
-      memoryPressure: Math.round(memoryPressure * 100),
-      cacheSize: stats.currentSize,
-      maxSize: stats.maxSize,
-      hitRate: stats.hitRate,
-    };
   }
 }
 

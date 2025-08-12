@@ -1,6 +1,6 @@
 const NoneStrategy = require('./strategies/none');
 const IsolateStrategy = require('./strategies/isolate');
-const { generateCacheKey, validateCacheKeyInputs } = require('./cacheKey');
+const { generateCacheKey } = require('./cacheKey');
 const logger = require('../../logger');
 
 /**
@@ -11,14 +11,13 @@ class IvmCacheManager {
   constructor() {
     this.strategy = null;
     this.currentStrategyName = null;
-    this._initializeStrategy();
+    this.initializeStrategy();
   }
 
   /**
    * Initialize cache strategy based on environment configuration
-   * @private
    */
-  _initializeStrategy() {
+  initializeStrategy() {
     const strategyName = (process.env.IVM_CACHE_STRATEGY || 'none').toLowerCase();
 
     if (this.currentStrategyName === strategyName && this.strategy) {
@@ -76,7 +75,6 @@ class IvmCacheManager {
    */
   generateKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
     try {
-      validateCacheKeyInputs(transformationId, code, libraryVersionIds, testMode, workspaceId);
       return generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId);
     } catch (error) {
       logger.error('Error generating cache key', {
@@ -96,10 +94,10 @@ class IvmCacheManager {
    * @returns {Object|null} Cached isolate or null
    */
   async get(cacheKey, credentials = {}, testMode = false) {
-    this._initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy(); // Ensure strategy is current
 
     try {
-      return await this.strategy.get(cacheKey, credentials, testMode);
+      return this.strategy.get(cacheKey, credentials, testMode);
     } catch (error) {
       logger.error('Error getting from cache', {
         error: error.message,
@@ -116,7 +114,7 @@ class IvmCacheManager {
    * @param {Object} isolateData Isolate data to cache
    */
   async set(cacheKey, isolateData) {
-    this._initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy(); // Ensure strategy is current
 
     try {
       await this.strategy.set(cacheKey, isolateData);
@@ -134,7 +132,7 @@ class IvmCacheManager {
    * @param {string} cacheKey Cache key
    */
   async delete(cacheKey) {
-    this._initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy(); // Ensure strategy is current
 
     try {
       await this.strategy.delete(cacheKey);
@@ -151,7 +149,7 @@ class IvmCacheManager {
    * Clear all cached isolates
    */
   async clear() {
-    this._initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy(); // Ensure strategy is current
 
     try {
       await this.strategy.clear();
@@ -168,7 +166,7 @@ class IvmCacheManager {
    * @returns {Object} Cache statistics
    */
   getStats() {
-    this._initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy(); // Ensure strategy is current
 
     try {
       const stats = this.strategy.getStats();
@@ -205,37 +203,6 @@ class IvmCacheManager {
    */
   isCachingEnabled() {
     return this.currentStrategyName !== 'none';
-  }
-
-  /**
-   * Get health information
-   * @returns {Object} Health information
-   */
-  getHealthInfo() {
-    this._initializeStrategy(); // Ensure strategy is current
-
-    try {
-      if (typeof this.strategy.getHealthInfo === 'function') {
-        return this.strategy.getHealthInfo();
-      }
-
-      const stats = this.getStats();
-      return {
-        strategy: this.currentStrategyName,
-        healthy: true,
-        stats,
-      };
-    } catch (error) {
-      logger.error('Error getting cache health info', {
-        error: error.message,
-        strategy: this.currentStrategyName,
-      });
-      return {
-        strategy: this.currentStrategyName,
-        healthy: false,
-        error: error.message,
-      };
-    }
   }
 
   /**

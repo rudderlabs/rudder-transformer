@@ -68,20 +68,17 @@ class IvmCacheManager {
 
   /**
    * Generate cache key for transformation
-   * @param {string} transformationId
-   * @param {string} code
+   * @param {string} transformationVersionId
    * @param {Array<string>} libraryVersionIds
-   * @param {string} workspaceId
    * @returns {string} Cache key
    */
-  generateKey(transformationId, code, libraryVersionIds, workspaceId) {
+  generateKey(transformationVersionId, libraryVersionIds) {
     try {
-      return generateCacheKey(transformationId, code, libraryVersionIds, workspaceId);
+      return generateCacheKey(transformationVersionId, libraryVersionIds);
     } catch (error) {
       logger.error('Error generating cache key', {
         error: error.message,
-        transformationId,
-        workspaceId,
+        transformationVersionId,
       });
       throw error;
     }

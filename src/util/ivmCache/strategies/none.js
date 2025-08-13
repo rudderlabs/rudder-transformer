@@ -12,23 +12,31 @@ class NoneStrategy {
 
   /**
    * Get cached isolate (always returns null for none strategy)
+   * @param {string} cacheKey Cache key
+   * @param {Object} credentials Credentials
    * @returns {null} Always null for none strategy
    */
-  async get() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async get(cacheKey, credentials = {}) {
     return null;
   }
 
   /**
    * Set cached isolate (no-op for none strategy)
+   * @param {string} cacheKey Cache key
+   * @param {Object} isolateData Isolate data
    */
-  async set() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async set(cacheKey, isolateData) {
     // No-op for none strategy
   }
 
   /**
    * Delete cached isolate (no-op for none strategy)
+   * @param {string} cacheKey Cache key
    */
-  async delete() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async delete(cacheKey) {
     // No-op for none strategy
   }
 

@@ -389,7 +389,7 @@ describe('Isolate Cache Strategy', () => {
       await strategy.set(cacheKey, mockIsolateData);
 
       const getPromises = Array.from({ length: 10 }, () =>
-        strategy.get(cacheKey, {})
+        strategy.get(cacheKey, {}, false)
       );
 
       const results = await Promise.all(getPromises);

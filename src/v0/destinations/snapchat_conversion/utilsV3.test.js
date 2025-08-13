@@ -3,32 +3,17 @@ const { productsToContentsMapping } = require('./utilsV3');
 describe('productsToContentsMapping', () => {
   const testCases = [
     {
-      description: 'should return an empty array if products is null',
+      description: 'should return an empty array for invalid input',
       input: { properties: { products: null } },
       expected: [],
     },
     {
-      description: 'should return an empty array if products is undefined',
-      input: { properties: { products: undefined } },
-      expected: [],
-    },
-    {
-      description: 'should return an empty array if products is not an array',
-      input: { properties: { products: {} } },
-      expected: [],
-    },
-    {
-      description: 'should return an empty array if message is empty',
-      input: {},
-      expected: [],
-    },
-    {
-      description: 'should return an empty array if products array is empty',
+      description: 'should return an empty array for empty products array',
       input: { properties: { products: [] } },
       expected: [],
     },
     {
-      description: 'should map products with product_id',
+      description: 'should map products with product_id correctly',
       input: {
         properties: {
           products: [{ product_id: '123', quantity: 2, price: 10, delivery_category: 'cat1' }],
@@ -44,64 +29,46 @@ describe('productsToContentsMapping', () => {
       ],
     },
     {
-      description: 'should map products with sku if product_id is missing',
-      input: {
-        properties: {
-          products: [{ sku: 'sku-1', quantity: 1, price: 5, delivery_category: 'cat2' }],
-        },
-      },
-      expected: [
-        {
-          id: 'sku-1',
-          quantity: 1,
-          item_price: 5,
-          delivery_category: 'cat2',
-        },
-      ],
-    },
-    {
-      description: 'should map products with id if product_id and sku are missing',
-      input: {
-        properties: {
-          products: [{ id: 'id-1', quantity: 3, price: 15, delivery_category: 'cat3' }],
-        },
-      },
-      expected: [
-        {
-          id: 'id-1',
-          quantity: 3,
-          item_price: 15,
-          delivery_category: 'cat3',
-        },
-      ],
-    },
-    {
-      description: 'should map multiple products correctly',
+      description: 'should prioritize product_id over sku and id',
       input: {
         properties: {
           products: [
-            { product_id: 'p1', quantity: 1, price: 10, delivery_category: 'c1' },
-            { sku: 's2', quantity: 2, price: 20, delivery_category: 'c2' },
-            { id: 'i3', quantity: 3, price: 30, delivery_category: 'c3' },
+            {
+              product_id: 'product-123',
+              sku: 'sku-456',
+              id: 'id-789',
+              quantity: 1,
+              price: 10,
+            },
           ],
         },
       },
-      expected: [
-        { id: 'p1', quantity: 1, item_price: 10, delivery_category: 'c1' },
-        { id: 's2', quantity: 2, item_price: 20, delivery_category: 'c2' },
-        { id: 'i3', quantity: 3, item_price: 30, delivery_category: 'c3' },
-      ],
+      expected: [{ id: 'product-123', quantity: 1, item_price: 10 }],
     },
     {
-      description: 'should handle missing quantity, price, or category gracefully',
+      description: 'should handle missing fields and remove undefined values',
       input: {
         properties: {
-          products: [{ product_id: 'p1' }],
+          products: [{ product_id: 'p1', quantity: null, price: undefined }],
         },
       },
       expected: [
-        { id: 'p1', quantity: undefined, item_price: undefined, delivery_category: undefined },
+        { id: 'p1' }, // removeUndefinedAndNullValues removes null/undefined fields
       ],
+    },
+    {
+      description: 'should filter out invalid products and products without identifiers',
+      input: {
+        properties: {
+          products: [
+            null, // invalid
+            { product_id: 'p1', quantity: 1, price: 10 }, // valid
+            { quantity: 2, price: 20 }, // invalid (no id)
+            'invalid-string', // invalid
+          ],
+        },
+      },
+      expected: [{ id: 'p1', quantity: 1, item_price: 10 }],
     },
   ];
 

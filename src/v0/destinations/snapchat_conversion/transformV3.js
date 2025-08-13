@@ -163,9 +163,12 @@ const buildBasePayload = (message, event) => {
     }
     payload.data[0].custom_data.content_ids = getItemIds(message);
     payload.data[0].custom_data.value = payload.data[0].custom_data.value || getPriceSum(message);
-    payload.data[0].custom_data.contents = productsToContentsMapping(message);
   }
 
+  const contents = productsToContentsMapping(message);
+  if (contents.length > 0) {
+    payload.data[0].custom_data.contents = contents;
+  }
   return payload;
 };
 

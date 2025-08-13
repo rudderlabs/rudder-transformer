@@ -2,7 +2,7 @@ const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { get } = require('lodash');
 const moment = require('moment-timezone');
 const { MAX_BATCH_SIZE } = require('./config');
-const { isAppleFamily } = require('../../util');
+const { isAppleFamily, isObject, removeUndefinedAndNullValues } = require('../../util');
 
 const getMergedPayload = (batch) => ({
   data: batch.flatMap((input) => input.message.body.JSON.data),
@@ -133,15 +133,28 @@ const getExtInfo = (message) => {
 
 const productsToContentsMapping = (message) => {
   const products = get(message, 'properties.products');
+
   if (!Array.isArray(products) || products.length === 0) {
     return [];
   }
-  return products.map((product) => ({
-    id: product?.product_id || product?.sku || product?.id,
-    quantity: product.quantity,
-    item_price: product.price,
-    ...(product?.delivery_category && { delivery_category: product?.delivery_category }),
-  }));
+
+  const result = [];
+
+  products.forEach((product) => {
+    if (isObject(product)) {
+      const id = product?.product_id || product?.sku || product?.id;
+      if (id) {
+        const content = {
+          id,
+          item_price: product?.price,
+          quantity: product?.quantity,
+          delivery_category: product?.delivery_category,
+        };
+        result.push(removeUndefinedAndNullValues(content));
+      }
+    }
+  });
+  return result;
 };
 
 module.exports = {

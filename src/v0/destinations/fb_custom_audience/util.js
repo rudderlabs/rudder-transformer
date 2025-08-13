@@ -175,7 +175,13 @@ const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, proper
 
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
-const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFormat) => {
+const prepareDataField = (
+  userSchema,
+  userUpdateList,
+  isHashRequired,
+  disableFormat,
+  destinationId,
+) => {
   const data = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
 
@@ -207,8 +213,9 @@ const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFor
     if (nullUserData) {
       // Track data quality issues using generic integration metrics
       integrationMetrics.dataQualityIssue(
+        destinationId,
         'fb_custom_audience',
-        'destination',
+        'fb_custom_audience',
         'missing_fields',
         'user_data',
       );
@@ -220,8 +227,9 @@ const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFor
   if (nullEvent) {
     // Track data quality issues using generic integration metrics
     integrationMetrics.dataQualityIssue(
+      destinationId,
       'fb_custom_audience',
-      'destination',
+      'fb_custom_audience',
       'missing_fields',
       'all_users_data',
     );

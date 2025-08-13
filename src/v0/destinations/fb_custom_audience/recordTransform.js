@@ -60,8 +60,9 @@ const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
   if (nullUserData) {
     // Track data quality issues using generic integration metrics
     integrationMetrics.dataQualityIssue(
+      record.destination.ID,
       'fb_custom_audience',
-      'destination',
+      'fb_custom_audience',
       'missing_fields',
       'user_data',
     );

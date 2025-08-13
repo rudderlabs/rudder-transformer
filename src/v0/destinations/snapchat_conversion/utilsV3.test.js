@@ -49,7 +49,7 @@ describe('productsToContentsMapping', () => {
       description: 'should handle missing fields and remove undefined values',
       input: {
         properties: {
-          products: [{ product_id: 'p1', quantity: null, price: undefined }],
+          products: [{ sku: 'p1', quantity: null, price: undefined }],
         },
       },
       expected: [
@@ -62,13 +62,17 @@ describe('productsToContentsMapping', () => {
         properties: {
           products: [
             null, // invalid
-            { product_id: 'p1', quantity: 1, price: 10 }, // valid
+            { product_id: 'p1', quantity: 0, price: 10 }, // valid
+            { id: 'p1', quantity: 34, price: 10 }, // valid
             { quantity: 2, price: 20 }, // invalid (no id)
             'invalid-string', // invalid
           ],
         },
       },
-      expected: [{ id: 'p1', quantity: 1, item_price: 10 }],
+      expected: [
+        { id: 'p1', quantity: 0, item_price: 10 },
+        { id: 'p1', quantity: 34, item_price: 10 },
+      ],
     },
   ];
 

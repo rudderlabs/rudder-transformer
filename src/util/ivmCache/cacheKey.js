@@ -9,10 +9,9 @@ const crypto = require('crypto');
  * @param {string} workspaceId - Workspace identifier
  * @returns {string} Cache key for the IVM instance
  */
-function generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
+function generateCacheKey(transformationId, code, libraryVersionIds, workspaceId) {
   // Normalize inputs
   const normalizedLibraryIds = (libraryVersionIds || []).slice().sort((a, b) => a.localeCompare(b));
-  const normalizedTestMode = Boolean(testMode);
   const normalizedWorkspaceId = workspaceId || 'default';
 
   // Create hash of the code to keep key length manageable
@@ -26,7 +25,7 @@ function generateCacheKey(transformationId, code, libraryVersionIds, testMode, w
     .substring(0, 16);
 
   // Combine all components into a cache key
-  const cacheKey = `${normalizedWorkspaceId}:${transformationId}:${codeHash}:${libsHash}:${normalizedTestMode}`;
+  const cacheKey = `${normalizedWorkspaceId}:${transformationId}:${codeHash}:${libsHash}`;
 
   return cacheKey;
 }
@@ -42,7 +41,7 @@ function parseCacheKey(cacheKey) {
   }
 
   const parts = cacheKey.split(':');
-  if (parts.length !== 5) {
+  if (parts.length !== 4) {
     throw new Error('Invalid cache key format');
   }
 
@@ -51,7 +50,6 @@ function parseCacheKey(cacheKey) {
     transformationId: parts[1],
     codeHash: parts[2],
     libsHash: parts[3],
-    testMode: parts[4] === 'true',
   };
 }
 

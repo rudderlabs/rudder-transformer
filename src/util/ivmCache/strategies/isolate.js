@@ -22,10 +22,9 @@ class IsolateStrategy {
    * Get cached isolate and reset context for fresh execution
    * @param {string} cacheKey Cache key
    * @param {Object} credentials Fresh credentials for this execution
-   * @param {boolean} testMode Whether running in test mode
    * @returns {Object|null} Reset isolate ready for execution or null if not cached
    */
-  async get(cacheKey, credentials = {}, testMode = false) {
+  async get(cacheKey, credentials = {}) {
     const startTime = new Date();
 
     try {
@@ -40,7 +39,7 @@ class IsolateStrategy {
       }
 
       // Reset context for fresh execution
-      const resetIsolate = await resetContext(cachedIsolate, credentials, testMode);
+      const resetIsolate = await resetContext(cachedIsolate, credentials);
 
       stats.timing('ivm_cache_get_duration', startTime, {
         strategy: 'isolate',

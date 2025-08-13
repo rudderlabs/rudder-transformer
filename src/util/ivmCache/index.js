@@ -48,7 +48,7 @@ class IvmCache {
    * @param {string} key The cache key
    * @param {string} reason Disposal reason ('evict', 'set', 'delete')
    */
-  async handleDispose(value, key, reason) {
+  handleDispose(value, key, reason) {
     try {
       // Track disposal reason
       if (reason === 'evict') {
@@ -57,7 +57,14 @@ class IvmCache {
 
       // Perform async cleanup if destroy method exists
       if (value && typeof value.destroy === 'function') {
-        await value.destroy();
+        // Fire and forget the async cleanup - don't await
+        value.destroy().catch((error) => {
+          logger.error('Error in async destroy during disposal', {
+            key,
+            reason,
+            error: error.message,
+          });
+        });
         logger.debug('IVM Cache item disposed', { key, reason });
       }
     } catch (error) {

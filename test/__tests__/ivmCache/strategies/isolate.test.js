@@ -161,12 +161,11 @@ describe('Isolate Cache Strategy', () => {
       };
       jest.spyOn(strategy.cache, 'get').mockReturnValue(mockCachedData);
       
-      const result = await strategy.get(cacheKey, credentials, true);
+      const result = await strategy.get(cacheKey, credentials);
 
       expect(resetContext).toHaveBeenCalledWith(
         mockCachedData,
-        credentials,
-        true
+        credentials
       );
       expect(result).toBe(resetIsolate);
     });
@@ -390,7 +389,7 @@ describe('Isolate Cache Strategy', () => {
       await strategy.set(cacheKey, mockIsolateData);
 
       const getPromises = Array.from({ length: 10 }, () =>
-        strategy.get(cacheKey, {}, false)
+        strategy.get(cacheKey, {})
       );
 
       const results = await Promise.all(getPromises);

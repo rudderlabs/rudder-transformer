@@ -16,15 +16,17 @@ class IvmCacheManager {
 
   /**
    * Initialize cache strategy based on environment configuration
+   * Only called when strategy needs to be created or changed
    */
   initializeStrategy() {
     const strategyName = (process.env.IVM_CACHE_STRATEGY || 'none').toLowerCase();
 
+    // If strategy is already initialized and matches, do nothing
     if (this.currentStrategyName === strategyName && this.strategy) {
-      return; // Already initialized with correct strategy
+      return;
     }
 
-    // Clean up existing strategy
+    // Clean up existing strategy if different
     if (this.strategy && typeof this.strategy.destroy === 'function') {
       this.strategy.destroy().catch((error) => {
         logger.error('Error destroying previous cache strategy', {
@@ -69,13 +71,12 @@ class IvmCacheManager {
    * @param {string} transformationId
    * @param {string} code
    * @param {Array<string>} libraryVersionIds
-   * @param {boolean} testMode
    * @param {string} workspaceId
    * @returns {string} Cache key
    */
-  generateKey(transformationId, code, libraryVersionIds, testMode, workspaceId) {
+  generateKey(transformationId, code, libraryVersionIds, workspaceId) {
     try {
-      return generateCacheKey(transformationId, code, libraryVersionIds, testMode, workspaceId);
+      return generateCacheKey(transformationId, code, libraryVersionIds, workspaceId);
     } catch (error) {
       logger.error('Error generating cache key', {
         error: error.message,
@@ -90,14 +91,13 @@ class IvmCacheManager {
    * Get cached isolate
    * @param {string} cacheKey Cache key
    * @param {Object} credentials Fresh credentials for execution
-   * @param {boolean} testMode Test mode flag
    * @returns {Object|null} Cached isolate or null
    */
-  async get(cacheKey, credentials = {}, testMode = false) {
-    this.initializeStrategy(); // Ensure strategy is current
+  async get(cacheKey, credentials = {}) {
+    this.initializeStrategy();
 
     try {
-      return this.strategy.get(cacheKey, credentials, testMode);
+      return this.strategy.get(cacheKey, credentials);
     } catch (error) {
       logger.error('Error getting from cache', {
         error: error.message,
@@ -114,7 +114,7 @@ class IvmCacheManager {
    * @param {Object} isolateData Isolate data to cache
    */
   async set(cacheKey, isolateData) {
-    this.initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy();
 
     try {
       await this.strategy.set(cacheKey, isolateData);
@@ -132,7 +132,7 @@ class IvmCacheManager {
    * @param {string} cacheKey Cache key
    */
   async delete(cacheKey) {
-    this.initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy();
 
     try {
       await this.strategy.delete(cacheKey);
@@ -149,7 +149,7 @@ class IvmCacheManager {
    * Clear all cached isolates
    */
   async clear() {
-    this.initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy();
 
     try {
       await this.strategy.clear();
@@ -166,7 +166,7 @@ class IvmCacheManager {
    * @returns {Object} Cache statistics
    */
   getStats() {
-    this.initializeStrategy(); // Ensure strategy is current
+    this.initializeStrategy();
 
     try {
       const stats = this.strategy.getStats();
@@ -202,6 +202,7 @@ class IvmCacheManager {
    * @returns {boolean} True if caching is enabled
    */
   isCachingEnabled() {
+    this.initializeStrategy();
     return this.currentStrategyName !== 'none';
   }
 

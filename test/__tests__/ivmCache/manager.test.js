@@ -154,7 +154,7 @@ describe('IVM Cache Manager', () => {
 
   describe('generateKey method', () => {
     test('should call cacheKey utilities correctly', () => {
-      const params = ['trans-1', 'code', ['lib1'], false, 'ws1'];
+      const params = ['trans-1', 'code', ['lib1'], 'ws1'];
       
       const result = IvmCacheManager.generateKey(...params);
       
@@ -165,9 +165,9 @@ describe('IVM Cache Manager', () => {
 
   describe('get method', () => {
     test('should delegate to strategy with none strategy', async () => {
-      const result = await IvmCacheManager.get('test:key', { cred: 'test' }, true);
+      const result = await IvmCacheManager.get('test:key', { cred: 'test' });
       
-      expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' }, true);
+      expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' });
       expect(result).toBeNull();
     });
 
@@ -175,9 +175,9 @@ describe('IVM Cache Manager', () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
       
-      const result = await IvmCacheManager.get('test:key', { cred: 'test' }, false);
+      const result = await IvmCacheManager.get('test:key', { cred: 'test' });
       
-      expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' }, false);
+      expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' });
       expect(result).toEqual({ reset: true });
     });
 

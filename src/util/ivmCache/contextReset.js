@@ -15,10 +15,8 @@ const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require
  * @param {Object} jail The context jail
  * @param {Object} cachedIsolate The cached isolate
  * @param {Object} credentials Fresh credentials
- * @param {boolean} testMode Test mode flag
- * @param {Array} logs Fresh logs array
  */
-async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs) {
+async function injectFreshApis(jail, cachedIsolate, credentials) {
   const trTags = {
     identifier: 'V1',
     transformationId: cachedIsolate.transformationId,
@@ -27,10 +25,8 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
 
   const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
-  // Re-inject _ivm module
   await jail.set('_ivm', ivm);
 
-  // Re-inject _fetch
   await jail.set(
     '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
@@ -51,7 +47,6 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
     }),
   );
 
-  // Re-inject _fetchV2
   await jail.set(
     '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
@@ -88,7 +83,6 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
     }),
   );
 
-  // Re-inject _geolocation
   await jail.set(
     '_geolocation',
     new ivm.Reference(async (resolve, reject, ...args) => {
@@ -118,7 +112,6 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
     }),
   );
 
-  // Re-inject _getCredential with fresh credentials
   await jail.set('_getCredential', (key) => {
     if (isNil(credentials) || !isObject(credentials)) {
       logger.error(
@@ -133,18 +126,6 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
     return credentials[key];
   });
 
-  // Re-inject log function with fresh logs array
-  await jail.set('log', (...args) => {
-    if (testMode) {
-      let logString = 'Log:';
-      args.forEach((arg) => {
-        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      });
-      logs.push(logString);
-    }
-  });
-
-  // Re-inject extractStackTrace
   await jail.set('extractStackTrace', (trace, stringLiterals) =>
     extractStackTraceUptoLastSubstringMatch(trace, stringLiterals),
   );
@@ -154,10 +135,9 @@ async function injectFreshApis(jail, cachedIsolate, credentials, testMode, logs)
  * Reset the context of a cached isolate for fresh execution
  * @param {Object} cachedIsolate The cached isolate object
  * @param {Object} credentials Fresh credentials for this execution
- * @param {boolean} testMode Whether running in test mode
  * @returns {Object} Reset isolate ready for execution
  */
-async function resetContext(cachedIsolate, credentials = {}, testMode = false) {
+async function resetContext(cachedIsolate, credentials = {}) {
   if (!cachedIsolate?.isolate) {
     throw new Error('Invalid cached isolate provided for context reset');
   }
@@ -170,11 +150,8 @@ async function resetContext(cachedIsolate, credentials = {}, testMode = false) {
     // Set up global object properly
     await jail.set('global', jail.derefInto());
 
-    // Fresh logs array for this execution
-    const logs = [];
-
     // Re-inject the required APIs with fresh state
-    await injectFreshApis(jail, cachedIsolate, credentials, testMode, logs);
+    await injectFreshApis(jail, cachedIsolate, credentials);
 
     // Set up bootstrap script in the new context
     const bootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
@@ -211,7 +188,6 @@ async function resetContext(cachedIsolate, credentials = {}, testMode = false) {
       jail,
       bootstrapScriptResult,
       fnRef,
-      logs, // Fresh logs array
       isolateStartWallTime: cachedIsolate.isolate.wallTime,
       isolateStartCPUTime: cachedIsolate.isolate.cpuTime,
     };

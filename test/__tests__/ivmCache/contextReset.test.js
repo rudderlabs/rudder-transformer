@@ -110,7 +110,6 @@ describe('Context Reset Utilities', () => {
         jail: mockJail,
         transformationId: 'test-transformation-123',
         workspaceId: 'test-workspace-456',
-        logs: [],
       });
     });
 
@@ -127,14 +126,19 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should handle test mode correctly', async () => {
-      await resetContext(mockCachedIsolate, {}, true);
+      await resetContext(mockCachedIsolate, {});
 
-      // Verify log function was injected
-      expect(mockJail.set).toHaveBeenCalledWith('log', expect.any(Function));
+      // Verify all required APIs were injected (no testMode parameter anymore)
+      expect(mockJail.set).toHaveBeenCalledWith('_ivm', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_fetch', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_fetchV2', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_geolocation', expect.any(Object));
+      expect(mockJail.set).toHaveBeenCalledWith('_getCredential', expect.any(Function));
+      expect(mockJail.set).toHaveBeenCalledWith('extractStackTrace', expect.any(Function));
     });
 
     test('should inject all required APIs', async () => {
-      await resetContext(mockCachedIsolate, {}, false);
+      await resetContext(mockCachedIsolate, {});
 
       const expectedApiCalls = [
         ['global', {}],
@@ -143,7 +147,6 @@ describe('Context Reset Utilities', () => {
         ['_fetchV2', expect.any(Object)],
         ['_geolocation', expect.any(Object)],
         ['_getCredential', expect.any(Function)],
-        ['log', expect.any(Function)],
         ['extractStackTrace', expect.any(Function)],
       ];
 
@@ -236,7 +239,7 @@ describe('Context Reset Utilities', () => {
     let resetResult;
 
     beforeEach(async () => {
-      resetResult = await resetContext(mockCachedIsolate, { testKey: 'testValue' }, true);
+      resetResult = await resetContext(mockCachedIsolate, { testKey: 'testValue' });
       
       // Extract the injected functions from the jail.set calls
       injectedFunctions = {};
@@ -258,17 +261,6 @@ describe('Context Reset Utilities', () => {
       expect(() => getCredential(undefined)).toThrow('Key should be valid and defined');
     });
 
-    test('should inject working log function in test mode', () => {
-      const logFunction = injectedFunctions.log;
-      expect(logFunction).toBeDefined();
-      
-      // Since we're in test mode, logs should be captured
-      logFunction('test message', { data: 'test' });
-      
-      // The logs should be stored in the reset result
-      expect(resetResult.logs).toContain('Log: test message {"data":"test"}');
-    });
-
     test('should inject working extractStackTrace function', () => {
       const extractStackTrace = injectedFunctions.extractStackTrace;
       expect(extractStackTrace).toBeDefined();
@@ -281,7 +273,7 @@ describe('Context Reset Utilities', () => {
     test('getCredential should handle missing credentials gracefully', async () => {
       // Reset with no credentials
       jest.clearAllMocks();
-      await resetContext(mockCachedIsolate, null, false);
+      await resetContext(mockCachedIsolate, null);
       
       const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
       const result = getCredential('anyKey');
@@ -291,7 +283,7 @@ describe('Context Reset Utilities', () => {
     test('getCredential should handle invalid credentials gracefully', async () => {
       // Reset with invalid credentials
       jest.clearAllMocks();
-      await resetContext(mockCachedIsolate, 'invalid', false);
+      await resetContext(mockCachedIsolate, 'invalid');
       
       const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
       const result = getCredential('anyKey');

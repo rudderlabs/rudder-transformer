@@ -19,17 +19,30 @@ const integrationMetrics = require('../../../util/integrationMetrics');
 
 // Track data quality issues
 integrationMetrics.dataQualityIssue(
+  'dest-123',
   'fb_custom_audience',
-  'destination',
+  'fb_custom_audience',
   'missing_fields',
   'user_data',
 );
 
 // Track operation failures
-integrationMetrics.operationFailure('fb_custom_audience', 'destination', 'api_call', 'network');
+integrationMetrics.operationFailure(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'api_call',
+  'network',
+);
 
 // Track batch sizes
-integrationMetrics.batchSize('fb_custom_audience', 'destination', 'events', batchSize);
+integrationMetrics.batchSize(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'events',
+  batchSize,
+);
 ```
 
 For more details, see the [Generic Integration Metrics Documentation](../../../docs/INTEGRATION_METRICS.md).
@@ -354,8 +367,9 @@ if (isValueBasedAudience && !cleanUserSchema.includes('LOOKALIKE_VALUE') && oper
 #### Data Quality Metrics
 
 - **Generic Integration Metrics**: Use `integration_data_quality_issues` for tracking data quality problems
-  - `integration_type: 'destination'`
-  - `integration_name: 'fb_custom_audience'`
+  - `destinationId: 'dest-id'`
+  - `destType: 'fb_custom_audience'`
+  - `destination: 'fb_custom_audience'`
   - `issue_type: 'missing_fields'`
   - `data_category: 'user_data'` or `'all_users_data'`
 

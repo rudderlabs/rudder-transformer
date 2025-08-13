@@ -16,8 +16,9 @@ Tracks data quality issues across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration (e.g., 'fb_custom_audience', 'braze')
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `issue_type`: Type of data quality issue ('missing_fields', 'invalid_format', 'duplicate_data', etc.)
 - `data_category`: Category of data affected ('user_data', 'event_data', 'properties', etc.)
 
@@ -27,8 +28,9 @@ Tracks missing data occurrences across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `missing_field_type`: Type of missing field ('user_id', 'event_name', 'properties', etc.)
 - `data_category`: Category of data affected
 
@@ -40,8 +42,9 @@ Tracks operation failures across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `operation_type`: Type of operation ('lookup', 'api_call', 'cache_access', etc.)
 - `error_category`: Category of error ('network', 'auth', 'validation', etc.)
 
@@ -51,8 +54,9 @@ Tracks operation successes across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `operation_type`: Type of operation ('lookup', 'api_call', 'cache_access', etc.)
 
 ### 3. Performance Metrics
@@ -63,8 +67,9 @@ Tracks batch sizes across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `batch_type`: Type of batch ('events', 'attributes', 'purchases', etc.)
 
 #### `integration_operation_latency`
@@ -73,8 +78,9 @@ Tracks operation latency across integrations.
 
 **Labels:**
 
-- `integration_type`: Type of integration ('source' or 'destination')
-- `integration_name`: Name of the integration
+- `destinationId`: Destination ID
+- `destType`: Destination type
+- `destination`: Destination name
 - `operation_type`: Type of operation ('lookup', 'api_call', 'cache_access', etc.)
 
 ## Usage
@@ -88,26 +94,50 @@ const integrationMetrics = require('../../util/integrationMetrics');
 
 // Track data quality issues
 integrationMetrics.dataQualityIssue(
+  'dest-123',
   'fb_custom_audience',
-  'destination',
+  'fb_custom_audience',
   'missing_fields',
   'user_data',
 );
 
 // Track missing data
-integrationMetrics.missingData('fb_custom_audience', 'destination', 'user_id', 'user_data');
+integrationMetrics.missingData(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'user_id',
+  'user_data',
+);
 
 // Track operation failures
-integrationMetrics.operationFailure('fb_custom_audience', 'destination', 'api_call', 'network');
+integrationMetrics.operationFailure(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'api_call',
+  'network',
+);
 
 // Track operation successes
-integrationMetrics.operationSuccess('fb_custom_audience', 'destination', 'api_call');
+integrationMetrics.operationSuccess(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'api_call',
+);
 
 // Track batch sizes
-integrationMetrics.batchSize('fb_custom_audience', 'destination', 'events', 100);
+integrationMetrics.batchSize('dest-123', 'fb_custom_audience', 'fb_custom_audience', 'events', 100);
 
 // Track operation latency
-integrationMetrics.operationLatency('fb_custom_audience', 'destination', 'api_call', 150);
+integrationMetrics.operationLatency(
+  'dest-123',
+  'fb_custom_audience',
+  'fb_custom_audience',
+  'api_call',
+  150,
+);
 ```
 
 ### Direct Usage with Stats
@@ -118,8 +148,9 @@ You can also use the metrics directly with the stats module:
 const stats = require('../../util/stats');
 
 stats.increment('integration_data_quality_issues', {
-  integration_type: 'destination',
-  integration_name: 'fb_custom_audience',
+  destinationId: 'dest-123',
+  destType: 'fb_custom_audience',
+  destination: 'fb_custom_audience',
   issue_type: 'missing_fields',
   data_category: 'user_data',
 });
@@ -131,10 +162,10 @@ stats.increment('integration_data_quality_issues', {
 
 The following Facebook Custom Audience specific metrics have been migrated to generic integration metrics:
 
-| Old Metric                                                            | New Metric                        | Labels                                                                                                                                         |
-| --------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `fb_custom_audience_event_having_all_null_field_values_for_a_user`    | `integration_data_quality_issues` | `integration_type: 'destination'`, `integration_name: 'fb_custom_audience'`, `issue_type: 'missing_fields'`, `data_category: 'user_data'`      |
-| `fb_custom_audience_event_having_all_null_field_values_for_all_users` | `integration_data_quality_issues` | `integration_type: 'destination'`, `integration_name: 'fb_custom_audience'`, `issue_type: 'missing_fields'`, `data_category: 'all_users_data'` |
+| Old Metric                                                            | New Metric                        | Labels                                                                                                                                                               |
+| --------------------------------------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fb_custom_audience_event_having_all_null_field_values_for_a_user`    | `integration_data_quality_issues` | `destinationId: 'dest-id'`, `destType: 'fb_custom_audience'`, `destination: 'fb_custom_audience'`, `issue_type: 'missing_fields'`, `data_category: 'user_data'`      |
+| `fb_custom_audience_event_having_all_null_field_values_for_all_users` | `integration_data_quality_issues` | `destinationId: 'dest-id'`, `destType: 'fb_custom_audience'`, `destination: 'fb_custom_audience'`, `issue_type: 'missing_fields'`, `data_category: 'all_users_data'` |
 
 **Note**: The legacy Facebook Custom Audience metrics have been removed as they were not widely used. The integration now exclusively uses the new generic integration metrics.
 

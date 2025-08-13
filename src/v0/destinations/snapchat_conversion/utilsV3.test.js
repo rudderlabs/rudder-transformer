@@ -3,6 +3,16 @@ const { productsToContentsMapping } = require('./utilsV3');
 describe('productsToContentsMapping', () => {
   const testCases = [
     {
+      description: 'should return an empty array for null input',
+      input: null,
+      expected: [],
+    },
+    {
+      description: 'should return an empty array for undefined input',
+      input: undefined,
+      expected: [],
+    },
+    {
       description: 'should return an empty array for invalid input',
       input: { properties: { products: null } },
       expected: [],
@@ -65,6 +75,7 @@ describe('productsToContentsMapping', () => {
             { product_id: 'p1', quantity: 0, price: 10 }, // valid
             { id: 'p1', quantity: 34, price: 10 }, // valid
             { quantity: 2, price: 20 }, // invalid (no id)
+            { foo: 'bar' }, // invalid
             'invalid-string', // invalid
           ],
         },
@@ -72,6 +83,7 @@ describe('productsToContentsMapping', () => {
       expected: [
         { id: 'p1', quantity: 0, item_price: 10 },
         { id: 'p1', quantity: 34, item_price: 10 },
+        { quantity: 2, item_price: 20 },
       ],
     },
   ];

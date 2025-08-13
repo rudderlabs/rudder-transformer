@@ -110,7 +110,7 @@ export class UserTransformService {
             } else if (ev.metadata?.messageIds) {
               ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
             } else if (ev.error && isEmpty(ev.metadata)) {
-              // incase of error, add messageIds to output set so that are not marked as dropped
+              // incase of error, add messageIds to output set so that they are not marked as dropped
               commonMetadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
             }
             if (ev.error) {

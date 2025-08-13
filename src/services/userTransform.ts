@@ -109,6 +109,8 @@ export class UserTransformService {
               messageIdsInOutputSet.add(ev.metadata.messageId);
             } else if (ev.metadata?.messageIds) {
               ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            } else if (isEmpty(ev.metadata)) {
+              commonMetadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
             }
             if (ev.error) {
               transformedEventsWithMetadata.push({

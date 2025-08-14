@@ -83,6 +83,7 @@
     "fast-xml-parser": "^4.5.1",
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
+    "fs-extra": "^11.3.1",
     "get-value": "^3.0.1",
     "handlebars": "^4.7.7",
     "http-graceful-shutdown": "^3.1.13",

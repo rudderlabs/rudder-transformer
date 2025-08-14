@@ -127,7 +127,7 @@ export interface PostscriptSubscriberResponse {
  * API response structure for subscriber lookup operations
  */
 export interface PostscriptLookupResponse {
-  data: PostscriptSubscriberResponse[];
+  subscribers: PostscriptSubscriberResponse[];
   meta?: {
     total_count: number;
     page: number;

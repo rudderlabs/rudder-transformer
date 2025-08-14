@@ -152,7 +152,7 @@ async function createIvm(
             break;
           }
           outputEvents = transformedEventsBatch.map(transformedEvent => {
-            const eventMetadata = eventsMetadata[transformedEvent?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
+            const eventMetadata = eventsMetadata[transformedEvent?.messageId] || eventsMetadata[firstInputEventMessageId] || {};
             if (!isObject(transformedEvent)) {
               return {error: "returned event in events array from transformBatch(events) is not an object", metadata: eventMetadata};
             }

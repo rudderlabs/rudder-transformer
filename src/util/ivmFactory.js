@@ -141,13 +141,13 @@ async function createIvm(
             transformedEventsBatch = await transformBatch([...eventMessages], metadata);
           } catch (error) {
             outputEvents.push(...eventMessages.map(ev => (
-              {error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[ev.messageId] || {}}
+              {error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[ev?.messageId] || {}}
             )));
             return outputEvents;
           }
           if (!Array.isArray(transformedEventsBatch)) {
             outputEvents.push(...eventMessages.map(ev => (
-              {error: "returned events from transformBatch(event) is not an array", metadata: eventsMetadata[ev.messageId] || {}}
+              {error: "returned events from transformBatch(event) is not an array", metadata: eventsMetadata[ev?.messageId] || {}}
             )));
             break;
           }

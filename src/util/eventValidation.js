@@ -241,6 +241,7 @@ async function validate(event) {
         case 'maxItems':
         case 'uniqueItems':
         case 'enum':
+        case 'if':
           rudderValidationError = {
             type: violationTypes.AdvanceRulesViolation,
             message: error.message,

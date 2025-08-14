@@ -95,62 +95,32 @@ async function createIvm(
 
       const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
 
-      var metadata = function(event, firstInputEventMessageId) {
-       const eventMetadata = eventsMetadata[event?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
-        return {
-          sourceId: eventMetadata.sourceId,
-          sourceName: eventMetadata.sourceName,
-          workspaceId: eventMetadata.workspaceId,
-          sourceType: eventMetadata.sourceType,
-          sourceCategory: eventMetadata.sourceCategory,
-          destinationId: eventMetadata.destinationId,
-          destinationType: eventMetadata.destinationType,
-          destinationName: eventMetadata.destinationName,
+      const getMetadata = (event, firstInputEventMessageId) => eventsMetadata[event?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
 
-          // TODO: remove non required fields
-
-          namespace: eventMetadata.namespace,
-          originalSourceId: eventMetadata.originalSourceId,
-          trackingPlanId: eventMetadata.trackingPlanId,
-          trackingPlanVersion: eventMetadata.trackingPlanVersion,
-          sourceTpConfig: eventMetadata.sourceTpConfig,
-          mergedTpConfig: eventMetadata.mergedTpConfig,
-          jobId: eventMetadata.jobId,
-          sourceJobId: eventMetadata.sourceJobId,
-          sourceJobRunId: eventMetadata.sourceJobRunId,
-          sourceTaskRunId: eventMetadata.sourceTaskRunId,
-          recordId: eventMetadata.recordId,
-          messageId: eventMetadata.messageId,
-          messageIds: eventMetadata.messageIds,
-          rudderId: eventMetadata.rudderId,
-          receivedAt: eventMetadata.receivedAt,
-          eventName: eventMetadata.eventName,
-          eventType: eventMetadata.eventType,
-          sourceDefinitionId: eventMetadata.sourceDefinitionId,
-          destinationDefinitionId: eventMetadata.destinationDefinitionId,
-          transformationId: eventMetadata.transformationId,
-          transformationVersionId: eventMetadata.transformationVersionId,
-        };
-      }
       switch(transformType) {
         case "transformBatch":
           const firstInputEventMessageId = eventMessages.length > 0 ? eventMessages[0].messageId : null;
           let transformedEventsBatch;
           try {
-            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+            // create a new array with the same elements as eventMessages, this is done to avoid mutating the original array
+            transformedEventsBatch = await transformBatch([...eventMessages], metadata);
           } catch (error) {
-            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
+            outputEvents.push(...eventMessages.map(ev => (
+              {error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[ev.messageId] || {}}
+            )));
             return outputEvents;
           }
           if (!Array.isArray(transformedEventsBatch)) {
-            outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
+            outputEvents.push(...eventMessages.map(ev => (
+              {error: "returned events from transformBatch(event) is not an array", metadata: eventsMetadata[ev.messageId] || {}}
+            )));
             break;
           }
           outputEvents = transformedEventsBatch.map(transformedEvent => {
             if (!isObject(transformedEvent)) {
-              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: {}};
+              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
             }
-            return{transformedEvent, metadata: metadata(transformedEvent, firstInputEventMessageId)};
+            return{transformedEvent, metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
           })
           break;
         case "transformEvent":

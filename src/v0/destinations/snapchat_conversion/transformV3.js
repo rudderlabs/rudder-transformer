@@ -31,7 +31,7 @@ const {
   getEventTimestamp,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { batchResponseBuilder, getExtInfo } = require('./utilsV3');
+const { batchResponseBuilder, getExtInfo, productsToContentsMapping } = require('./utilsV3');
 
 function buildResponse(apiKey, payload, ID) {
   const response = defaultRequestConfig();
@@ -165,6 +165,10 @@ const buildBasePayload = (message, event) => {
     payload.data[0].custom_data.value = payload.data[0].custom_data.value || getPriceSum(message);
   }
 
+  const contents = productsToContentsMapping(message);
+  if (contents.length > 0) {
+    payload.data[0].custom_data.contents = contents;
+  }
   return payload;
 };
 

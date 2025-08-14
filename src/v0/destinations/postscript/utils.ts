@@ -16,7 +16,6 @@ import {
   ProcessedEvent,
   SubscriberLookupResult,
   PostscriptDestination,
-  PostscriptConnection,
   PostscriptBatchResponse,
 } from './types';
 import { SUBSCRIBERS_ENDPOINT, EXTERNAL_ID_TYPES } from './config';
@@ -47,7 +46,9 @@ export const buildHeaders = (apiKey: string): PostscriptHeaders => ({
   'Content-type': 'application/json',
   Accept: 'application/json',
   Authorization: `Bearer ${apiKey}`,
-  'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
+  ...(process.env.POSTSCRIPT_PARTNER_API_KEY && {
+    'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
+  }),
 });
 
 /**
@@ -194,7 +195,9 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   }
 
   if (isObject(message.properties)) {
-    payload.properties = removeUndefinedAndNullValues(message.properties);
+    payload.properties = removeUndefinedAndNullValues(
+      message.properties as Record<string, unknown>,
+    );
   }
 
   return removeUndefinedAndNullValues(payload) as PostscriptCustomEventPayload;
@@ -297,8 +300,6 @@ export const performSubscriberLookup = async (
 export const batchResponseBuilder = (
   events: ProcessedEvent[],
   destination: PostscriptDestination,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  connection: PostscriptConnection,
 ): PostscriptBatchResponse[] => {
   if (events.length === 0) {
     return [];

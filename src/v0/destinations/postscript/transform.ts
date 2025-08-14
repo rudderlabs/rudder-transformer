@@ -9,7 +9,6 @@
  * - Track: Create custom events for subscribers
  *
  * Features:
- * - Batch processing (up to 100 events)
  * - Subscriber lookup for identifying create vs update operations
  * - Error handling with proper RudderStack status codes
  * - Router transform pattern for efficient bulk processing
@@ -143,7 +142,6 @@ const processTrackEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
  * - Concurrent processing of events for performance
  * - Lookup-based approach for subscriber management
  * - Error handling with proper categorization
- * - Batching up to 100 events per API call
  *
  * @param inputs - Array of PostScript router transformation requests
  * @param reqMetadata - Request metadata for error handling
@@ -158,10 +156,9 @@ const processRouterDest = async (
     return [];
   }
 
-  // Extract destination and connection configuration from first event
-  const { destination, connection } = inputs[0];
+  // Extract destination configuration from first event
+  const { destination } = inputs[0];
   const postscriptDestination = destination;
-  const postscriptConnection = connection;
 
   // Validate destination configuration
   if (!postscriptDestination.Config?.apiKey) {
@@ -256,18 +253,7 @@ const processRouterDest = async (
   const allProcessedEvents = processedEvents.map((event) => updatedEventMap.get(event) || event);
 
   // Create batched responses using the utility function
-  const batchedResponses = batchResponseBuilder(
-    allProcessedEvents,
-    postscriptDestination,
-    postscriptConnection ?? {
-      sourceId: 'default-source-id',
-      destinationId: 'default-destination-id',
-      enabled: true,
-      config: {
-        destination: {},
-      },
-    },
-  );
+  const batchedResponses = batchResponseBuilder(allProcessedEvents, postscriptDestination);
 
   // Combine successful batched responses with individual event errors
   return [...batchedResponses, ...errorEvents];

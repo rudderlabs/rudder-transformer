@@ -8,9 +8,7 @@
 
 import { z } from 'zod';
 import {
-  Connection,
   Destination,
-  DestinationConnectionConfig,
   Metadata,
   RouterTransformationRequestData,
   RudderMessage,
@@ -29,22 +27,9 @@ export const PostscriptDestinationConfigSchema = z
   })
   .passthrough();
 
-/**
- * Postscript connection configuration schema validation
- * For audience/list-based destinations, this would contain list/segment information
- * For now, kept minimal for identify/track functionality
- */
-export const PostscriptConnectionConfigSchema = z
-  .object({
-    // Future: audienceId, listId, segmentId for audience management
-    // Currently not needed for basic identify/track functionality
-  })
-  .passthrough();
-
 // ==================== Inferred Configuration Types ====================
 
 export type PostscriptDestinationConfig = z.infer<typeof PostscriptDestinationConfigSchema>;
-export type PostscriptConnectionConfig = z.infer<typeof PostscriptConnectionConfigSchema>;
 
 // ==================== External ID Types ====================
 
@@ -179,19 +164,11 @@ export interface RespList {
 export type PostscriptDestination = Destination<PostscriptDestinationConfig>;
 
 /**
- * Postscript connection type using generic Connection interface
- */
-export type PostscriptConnection = Connection<
-  DestinationConnectionConfig<PostscriptConnectionConfig>
->;
-
-/**
  * Router request type specific to Postscript
  */
 export type PostscriptRouterRequest = RouterTransformationRequestData<
   RudderMessage,
-  PostscriptDestination,
-  PostscriptConnection
+  PostscriptDestination
 >;
 
 // ==================== Batch Request Types ====================

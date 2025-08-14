@@ -26,7 +26,6 @@ jest.mock('../../../logger', () => ({
 // Import mocked modules
 import { handleHttpRequest } from '../../../adapters/network';
 import logger from '../../../logger';
-import { subscribe } from 'diagnostics_channel';
 
 const mockHandleHttpRequest = handleHttpRequest as jest.MockedFunction<typeof handleHttpRequest>;
 const mockLogger = logger as jest.Mocked<typeof logger>;
@@ -52,7 +51,6 @@ describe('PostScript Utils', () => {
     });
 
     it('should build headers without partner key when env var is not set', () => {
-      const originalPartnerKey = process.env.POSTSCRIPT_PARTNER_API_KEY;
       delete process.env.POSTSCRIPT_PARTNER_API_KEY;
 
       const apiKey = 'test_api_key_123';
@@ -62,13 +60,7 @@ describe('PostScript Utils', () => {
         'Content-type': 'application/json',
         Accept: 'application/json',
         Authorization: 'Bearer test_api_key_123',
-        'X-Postscript-Partner-Key': undefined,
       });
-
-      // Restore original value
-      if (originalPartnerKey) {
-        process.env.POSTSCRIPT_PARTNER_API_KEY = originalPartnerKey;
-      }
     });
   });
 
@@ -491,15 +483,6 @@ describe('PostScript Utils', () => {
       Transformations: [],
     };
 
-    const mockConnection = {
-      sourceId: 'source_123',
-      destinationId: 'dest_123',
-      enabled: true,
-      config: {
-        destination: {},
-      },
-    };
-
     it('should build batched responses correctly', () => {
       const events: ProcessedEvent[] = [
         {
@@ -518,7 +501,7 @@ describe('PostScript Utils', () => {
         },
       ];
 
-      const responses = batchResponseBuilder(events, mockDestination, mockConnection);
+      const responses = batchResponseBuilder(events, mockDestination);
 
       expect(responses).toHaveLength(2);
       expect(responses[0]).toHaveProperty('batchedRequest');
@@ -527,7 +510,7 @@ describe('PostScript Utils', () => {
     });
 
     it('should handle empty events array', () => {
-      const responses = batchResponseBuilder([], mockDestination, mockConnection);
+      const responses = batchResponseBuilder([], mockDestination);
       expect(responses).toHaveLength(0);
     });
 
@@ -542,7 +525,7 @@ describe('PostScript Utils', () => {
         },
       ];
 
-      const responses = batchResponseBuilder(events, mockDestination, mockConnection);
+      const responses = batchResponseBuilder(events, mockDestination);
 
       expect(responses).toHaveLength(1);
       expect(responses[0].batchedRequest.headers).toHaveProperty('Authorization');

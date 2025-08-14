@@ -95,8 +95,43 @@ async function createIvm(
 
       const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
 
-      const getMetadata = (event, firstInputEventMessageId) => eventsMetadata[event?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
+      var metadata = function(event) {
+        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
+        return {
+          sourceId: eventMetadata.sourceId,
+          sourceName: eventMetadata.sourceName,
+          workspaceId: eventMetadata.workspaceId,
+          sourceType: eventMetadata.sourceType,
+          sourceCategory: eventMetadata.sourceCategory,
+          destinationId: eventMetadata.destinationId,
+          destinationType: eventMetadata.destinationType,
+          destinationName: eventMetadata.destinationName,
 
+          // TODO: remove non required fields
+
+          namespace: eventMetadata.namespace,
+          originalSourceId: eventMetadata.originalSourceId,
+          trackingPlanId: eventMetadata.trackingPlanId,
+          trackingPlanVersion: eventMetadata.trackingPlanVersion,
+          sourceTpConfig: eventMetadata.sourceTpConfig,
+          mergedTpConfig: eventMetadata.mergedTpConfig,
+          jobId: eventMetadata.jobId,
+          sourceJobId: eventMetadata.sourceJobId,
+          sourceJobRunId: eventMetadata.sourceJobRunId,
+          sourceTaskRunId: eventMetadata.sourceTaskRunId,
+          recordId: eventMetadata.recordId,
+          messageId: eventMetadata.messageId,
+          messageIds: eventMetadata.messageIds,
+          rudderId: eventMetadata.rudderId,
+          receivedAt: eventMetadata.receivedAt,
+          eventName: eventMetadata.eventName,
+          eventType: eventMetadata.eventType,
+          sourceDefinitionId: eventMetadata.sourceDefinitionId,
+          destinationDefinitionId: eventMetadata.destinationDefinitionId,
+          transformationId: eventMetadata.transformationId,
+          transformationVersionId: eventMetadata.transformationVersionId,
+        };
+      }
       switch(transformType) {
         case "transformBatch":
           const firstInputEventMessageId = eventMessages.length > 0 ? eventMessages[0].messageId : null;
@@ -117,10 +152,11 @@ async function createIvm(
             break;
           }
           outputEvents = transformedEventsBatch.map(transformedEvent => {
+            const eventMetadata = eventsMetadata[transformedEvent?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
             if (!isObject(transformedEvent)) {
-              return {error: "returned event in events array from transformBatch(events) is not an object", metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
+              return {error: "returned event in events array from transformBatch(events) is not an object", metadata: eventMetadata};
             }
-            return {transformedEvent, metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
+            return {transformedEvent, metadata: eventMetadata};
           });
           break;
         case "transformEvent":

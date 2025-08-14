@@ -95,8 +95,8 @@ async function createIvm(
 
       const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
 
-      var metadata = function(event) {
-        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
+      var metadata = function(event, firstInputEventMessageId) {
+       const eventMetadata = eventsMetadata[event?.messageId] ?? eventsMetadata[firstInputEventMessageId] ?? {};
         return {
           sourceId: eventMetadata.sourceId,
           sourceName: eventMetadata.sourceName,
@@ -134,6 +134,7 @@ async function createIvm(
       }
       switch(transformType) {
         case "transformBatch":
+          const firstInputEventMessageId = eventMessages.length > 0 ? eventMessages[0].messageId : null;
           let transformedEventsBatch;
           try {
             transformedEventsBatch = await transformBatch(eventMessages, metadata);
@@ -149,7 +150,7 @@ async function createIvm(
             if (!isObject(transformedEvent)) {
               return{error: "returned event in events array from transformBatch(events) is not an object", metadata: {}};
             }
-            return{transformedEvent, metadata: metadata(transformedEvent)};
+            return{transformedEvent, metadata: metadata(transformedEvent, firstInputEventMessageId)};
           })
           break;
         case "transformEvent":

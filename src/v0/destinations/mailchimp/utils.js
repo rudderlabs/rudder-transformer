@@ -179,9 +179,9 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email, metada
     });
     return userStatus;
   }
-  if (processedResponse.response.contact_id) {
+  if (processedResponse.response?.contact_id) {
     userStatus.exists = true;
-    userStatus.subscriptionStatus = processedResponse.response.status;
+    userStatus.subscriptionStatus = processedResponse.response?.status;
   }
   return userStatus;
 };

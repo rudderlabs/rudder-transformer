@@ -118,10 +118,10 @@ async function createIvm(
           }
           outputEvents = transformedEventsBatch.map(transformedEvent => {
             if (!isObject(transformedEvent)) {
-              return{error: "returned event in events array from transformBatch(events) is not an object", metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
+              return {error: "returned event in events array from transformBatch(events) is not an object", metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
             }
-            return{transformedEvent, metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
-          })
+            return {transformedEvent, metadata: getMetadata(transformedEvent, firstInputEventMessageId)};
+          });
           break;
         case "transformEvent":
           await Promise.all(eventMessages.map(async ev => {

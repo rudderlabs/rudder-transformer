@@ -138,7 +138,7 @@ export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscr
   // Convert Set to Array for extractCustomFields
   const allExclusions = [...exclusionFields, ...Array.from(traitsExclusions)];
 
-  const customPropertiesPayload = {};
+  const customPropertiesPayload: Record<string, unknown> = {};
   extractCustomFields(
     message,
     customPropertiesPayload,
@@ -222,56 +222,39 @@ export const performSubscriberLookup = async (
     return [];
   }
 
-  try {
-    // Build lookup request with PostScript's filter parameters
-    const headers = buildHeaders(apiKey);
-    const params = new URLSearchParams();
+  // Build lookup request with PostScript's filter parameters
+  const headers = buildHeaders(apiKey);
+  const params = new URLSearchParams();
 
-    // https://developers.postscript.io/reference/get-subscribers
-    phoneNumbers.forEach((phone) => {
-      params.append('phone_number__in', phone);
+  // https://developers.postscript.io/reference/get-subscribers
+  phoneNumbers.forEach((phone) => {
+    params.append('phone_number__in', phone);
+  });
+  const lookupUrl = `${SUBSCRIBERS_ENDPOINT}?${params.toString()}`;
+
+  // Perform batched API call - handleHttpRequest handles all errors gracefully
+  const { processedResponse } = await handleHttpRequest(
+    'GET',
+    lookupUrl,
+    {
+      headers,
+    },
+    {
+      feature: 'subscriber-batch-lookup',
+      destType: 'postscript',
+      endpointPath: '/subscribers',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+
+  // Handle API errors by returning all events as non-existing subscribers
+  if (processedResponse.status >= 400) {
+    logger.warn('PostScript subscriber lookup failed:', {
+      status: processedResponse.status,
+      response: processedResponse.response,
     });
-    const lookupUrl = `${SUBSCRIBERS_ENDPOINT}?${params.toString()}`;
 
-    // Perform batched API call
-    const { processedResponse } = await handleHttpRequest(
-      'GET',
-      lookupUrl,
-      {
-        headers,
-      },
-      {
-        feature: 'subscriber-batch-lookup',
-        destType: 'postscript',
-        endpointPath: '/subscribers',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-
-    // Parse response and map to lookup results
-    const lookupData = processedResponse.response as PostscriptLookupResponse;
-    const subscribers = lookupData.subscribers || [];
-
-    // Create lookup results mapping each event to subscriber existence
-    return events.map((event) => {
-      const phone = event.identifierValue;
-
-      // Find existing subscriber by phone
-      const existingSubscriber = subscribers.find((sub) => phone && sub.phone_number === phone);
-
-      return {
-        exists: !!existingSubscriber,
-        subscriberId: existingSubscriber?.id,
-        identifierValue: phone ?? '',
-        identifierType: 'phone' as const,
-      };
-    });
-  } catch (error) {
-    // Log the error for debugging but continue with fallback behavior
-    logger.warn('PostScript subscriber lookup failed:', error);
-
-    // On error, return all events as non-existing subscribers
     return events.map((event) => ({
       exists: false,
       subscriberId: undefined,
@@ -279,6 +262,25 @@ export const performSubscriberLookup = async (
       identifierType: 'phone' as const,
     }));
   }
+
+  // Parse successful response and map to lookup results
+  const lookupData = processedResponse.response as PostscriptLookupResponse;
+  const subscribers = lookupData.subscribers || [];
+
+  // Create lookup results mapping each event to subscriber existence
+  return events.map((event) => {
+    const phone = event.identifierValue;
+
+    // Find existing subscriber by phone
+    const existingSubscriber = subscribers.find((sub) => phone && sub.phone_number === phone);
+
+    return {
+      exists: !!existingSubscriber,
+      subscriberId: existingSubscriber?.id,
+      identifierValue: phone ?? '',
+      identifierType: 'phone' as const,
+    };
+  });
 };
 
 /**

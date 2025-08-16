@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.106.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.106.0...v1.106.1) (2025-08-15)
+
+
+### Bug Fixes
+
+* salesforce v1 token api with correct client id and secret ([6dfe061](https://github.com/rudderlabs/rudder-transformer/commit/6dfe061100a84f52f497a63a0b375f1a7f2c041b))
+
 ## [1.106.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.105.2...v1.106.0) (2025-07-30)
 
 

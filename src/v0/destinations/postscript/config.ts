@@ -9,7 +9,7 @@
 // API Configuration
 export const BASE_ENDPOINT = 'https://api.postscript.io/api/v2';
 export const SUBSCRIBERS_ENDPOINT = `${BASE_ENDPOINT}/subscribers`;
-export const CUSTOM_EVENTS_ENDPOINT = `${BASE_ENDPOINT}/custom-events`;
+export const CUSTOM_EVENTS_ENDPOINT = `${BASE_ENDPOINT}/events`;
 
 // Configuration for field mappings
 export const MAPPING_CONFIG = {

@@ -186,9 +186,15 @@ class Prometheus {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
         logger.warn(
-          `Prometheus: Counter metric ${name} not found in the registry. Creating a new one`,
+          `Prometheus: Counter metric ${name} not found in the registry. Creating a new one dynamically`,
         );
-        metric = this.newCounterStat(name, name, Object.keys(tags));
+        // Create metric dynamically with detected labels
+        metric = new prometheusClient.Counter({
+          name: appendPrefix(name),
+          help: name,
+          labelNames: Object.keys(tags),
+        });
+        this.prometheusRegistry.registerMetric(metric);
       }
       metric.inc(tags, delta);
     } catch (e) {

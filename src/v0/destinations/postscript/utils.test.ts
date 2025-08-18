@@ -23,17 +23,16 @@ jest.mock('../../../logger', () => ({
   warn: jest.fn(),
 }));
 
-// Import mocked modules
 import { handleHttpRequest } from '../../../adapters/network';
-import logger from '../../../logger';
+import * as logger from '../../../logger';
 
 const mockHandleHttpRequest = handleHttpRequest as jest.MockedFunction<typeof handleHttpRequest>;
-const mockLogger = logger as jest.Mocked<typeof logger>;
+const mockLogger = logger.warn as jest.MockedFunction<typeof logger.warn>;
 
 describe('PostScript Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.POSTSCRIPT_PARTNER_API_KEY = 'partner_key_123';
+    process.env.POSTSCRIPT_PARTNER_API_KEY = 'test_partner_key_123';
   });
 
   // Pure function - no mocks needed
@@ -46,7 +45,7 @@ describe('PostScript Utils', () => {
         'Content-type': 'application/json',
         Accept: 'application/json',
         Authorization: 'Bearer test_api_key_123',
-        'X-Postscript-Partner-Key': 'partner_key_123',
+        'X-Postscript-Partner-Key': 'test_partner_key_123',
       });
     });
 
@@ -350,7 +349,7 @@ describe('PostScript Utils', () => {
             'Content-type': 'application/json',
             Accept: 'application/json',
             Authorization: 'Bearer test_api_key',
-            'X-Postscript-Partner-Key': 'partner_key_123',
+            'X-Postscript-Partner-Key': 'test_partner_key_123',
           },
         },
         {
@@ -436,7 +435,7 @@ describe('PostScript Utils', () => {
 
       const results = await performSubscriberLookup(mockEvents, 'test_api_key');
 
-      expect(mockLogger.warn).toHaveBeenCalledWith('PostScript subscriber lookup failed:', {
+      expect(mockLogger).toHaveBeenCalledWith('PostScript subscriber lookup failed:', {
         status: 500,
         response: { error: 'Internal server error' },
       });

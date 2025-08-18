@@ -138,28 +138,33 @@ const getExtInfo = (message) => {
 
 const productsToContentsMapping = (message) => {
   const products = get(message, 'properties.products');
+  // Extract content mapping logic into a pure function
+  const mapProductToContent = (product) =>
+    removeUndefinedAndNullValues({
+      id: product?.product_id || product?.sku || product?.id,
+      item_price: product?.price,
+      quantity: product?.quantity,
+      delivery_category: product?.delivery_category,
+    });
 
+  // Handle case where products array is empty or doesn't exist
   if (!Array.isArray(products) || products.length === 0) {
-    return [];
+    const properties = get(message, 'properties');
+    const content = mapProductToContent(properties);
+    return isEmptyObject(content) ? [] : [content];
   }
 
+  // Process products array using forEach approach
   const result = [];
-
   products.forEach((product) => {
     if (isObject(product)) {
-      const content = removeUndefinedAndNullValues({
-        id: product?.product_id || product?.sku || product?.id,
-        item_price: product?.price,
-        quantity: product?.quantity,
-        delivery_category: product?.delivery_category,
-      });
-
-      if (isEmptyObject(content)) {
-        return;
+      const content = mapProductToContent(product);
+      if (!isEmptyObject(content)) {
+        result.push(content);
       }
-      result.push(content);
     }
   });
+
   return result;
 };
 

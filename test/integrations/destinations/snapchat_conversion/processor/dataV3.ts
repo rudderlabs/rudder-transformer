@@ -1386,6 +1386,12 @@ export const dataV3: ProcessorTestData[] = [
                         content_ids: '123',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'ADD_CART',
                       event_time: '1650625078',
@@ -1522,6 +1528,13 @@ export const dataV3: ProcessorTestData[] = [
                         currency: 'USD',
                         num_items: 14,
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -1657,6 +1670,13 @@ export const dataV3: ProcessorTestData[] = [
                         currency: 'USD',
                         num_items: 1,
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -1915,6 +1935,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'SUBSCRIBE',
                       event_time: '1650625078',
@@ -2047,6 +2072,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         price: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'AD_VIEW',
                       event_time: '1650625078',
@@ -2179,6 +2209,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         price: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'AD_CLICK',
                       event_time: '1650625078',
@@ -2311,6 +2346,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'SAVE',
                       event_time: '1650625078',
@@ -2444,6 +2484,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_source_url: 'hjhb.com',
@@ -2578,6 +2623,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -2865,6 +2915,12 @@ export const dataV3: ProcessorTestData[] = [
                         content_ids: '123',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'ADD_TO_WISHLIST',
                       event_time: '1650625078',

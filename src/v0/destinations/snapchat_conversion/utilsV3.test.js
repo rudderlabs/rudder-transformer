@@ -86,6 +86,98 @@ describe('productsToContentsMapping', () => {
         { quantity: 2, item_price: 20 },
       ],
     },
+    {
+      description: 'should handle fallback to properties when products array is empty',
+      input: {
+        properties: {
+          products: [],
+          product_id: 'fallback-123',
+          quantity: 5,
+          price: 25.99,
+          delivery_category: 'electronics',
+        },
+      },
+      expected: [
+        {
+          id: 'fallback-123',
+          quantity: 5,
+          item_price: 25.99,
+          delivery_category: 'electronics',
+        },
+      ],
+    },
+    {
+      description: 'should handle fallback to properties when products is null',
+      input: {
+        properties: {
+          products: null,
+          sku: 'fallback-sku-456',
+          quantity: 3,
+          price: 15.5,
+        },
+      },
+      expected: [
+        {
+          id: 'fallback-sku-456',
+          quantity: 3,
+          item_price: 15.5,
+        },
+      ],
+    },
+    {
+      description: 'should handle fallback to properties when products is undefined',
+      input: {
+        properties: {
+          id: 'fallback-id-789',
+          quantity: 1,
+          price: 99.99,
+          delivery_category: 'premium',
+        },
+      },
+      expected: [
+        {
+          id: 'fallback-id-789',
+          quantity: 1,
+          item_price: 99.99,
+          delivery_category: 'premium',
+        },
+      ],
+    },
+    {
+      description: 'should handle fallback with only partial data',
+      input: {
+        properties: {
+          products: null,
+          product_id: 'partial-123',
+          // Only id field, missing other properties
+        },
+      },
+      expected: [
+        {
+          id: 'partial-123',
+        },
+      ],
+    },
+    {
+      description: 'should prioritize product_id over sku and id in fallback scenario',
+      input: {
+        properties: {
+          products: [],
+          product_id: 'priority-product',
+          sku: 'priority-sku',
+          id: 'priority-id',
+          quantity: 7,
+          price: 42.0,
+        },
+      },
+      expected: [
+        {
+          id: 'priority-product',
+          quantity: 7,
+          item_price: 42.0,
+        },
+      ],
+    },
   ];
 
   testCases.forEach(({ description, input, expected }) => {

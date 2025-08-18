@@ -80,7 +80,7 @@ class IsolateStrategy {
 
     try {
       // Prepare isolate for caching by storing essential components
-      const cachableIsolate = {
+      const cacheableIsolate = {
         isolate: isolateData.isolate,
         bootstrap: isolateData.bootstrap,
         customScriptModule: isolateData.customScriptModule,
@@ -141,7 +141,7 @@ class IsolateStrategy {
         },
       };
 
-      this.cache.set(cacheKey, cachableIsolate);
+      this.cache.set(cacheKey, cacheableIsolate);
 
       stats.timing('ivm_cache_set_duration', startTime, {
         strategy: 'isolate',
@@ -223,14 +223,6 @@ class IsolateStrategy {
       ...baseStats,
       strategy: 'isolate',
     };
-  }
-
-  /**
-   * Destroy the strategy and cleanup all resources
-   */
-  async destroy() {
-    await this.clear();
-    logger.info('IVM isolate strategy destroyed');
   }
 }
 

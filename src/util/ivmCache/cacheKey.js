@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-
 /**
  * Generates a deterministic cache key for IVM instances
  * @param {string} transformationVersionId - Unique transformation identifier
@@ -10,11 +8,7 @@ function generateCacheKey(transformationVersionId, libraryVersionIds) {
   // Normalize inputs
   const normalizedLibraryIds = (libraryVersionIds || []).slice().sort((a, b) => a.localeCompare(b));
   // Create hash of library version IDs
-  const libsHash = crypto
-    .createHash('sha256')
-    .update(JSON.stringify(normalizedLibraryIds))
-    .digest('hex')
-    .substring(0, 16);
+  const libsHash = normalizedLibraryIds.join('-');
 
   // Combine all components into a cache key
   const cacheKey = `${transformationVersionId}:${libsHash}`;

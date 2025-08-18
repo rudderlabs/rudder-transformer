@@ -1,12 +1,9 @@
-const { when } = require("jest-when");
-jest.mock("node-fetch");
-const fetch = require("node-fetch", () => jest.fn());
 const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const ivm = require('isolated-vm');
 
-
-const axios = require("axios");
+const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
+const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
 
 const bootstrapCode = 'new ' +
               `
@@ -77,7 +74,7 @@ const wrapperCode = `
                   return;
                 } catch (error) {
                   // Handling the errors in versionedRouter.js
-                  return outputEvents.push({error: extractStackTrace(error.stack, [transformType])});
+                  return outputEvents.push({error: error.message});
                 }
               }));
               break;
@@ -92,6 +89,43 @@ jest.mock("axios", () => ({
   delete: jest.fn(),
 }));
 
+
+async function transform(isolatevm, events) {
+    const transformationPayload = {};
+    transformationPayload.events = events;
+    transformationPayload.transformationType = isolatevm.fName;
+    const executionPromise = new Promise(async (resolve, reject) => {
+      const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
+        transferIn: true,
+      });
+      try {
+        await isolatevm.bootstrapScriptResult.apply(
+          undefined,
+          [
+            isolatevm.fnRef,
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            sharedTransformationPayload,
+          ],
+          { timeout: ivmExecutionTimeout },
+        );
+      } catch (error) {
+        reject(error.message);
+      }
+    });
+  
+    let setTimeoutHandle;
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeoutHandle = setTimeout(() => {
+        reject(new Error('Timed out'));
+      }, userTransformTimeout);
+    });
+    return Promise.race([executionPromise, timeoutPromise])
+      .catch((e) => {
+        throw new Error(e);
+      })
+      .finally(() => clearTimeout(setTimeoutHandle));
+  }
 
 describe("User transformation Cache", () => {
 
@@ -200,7 +234,7 @@ describe("User transformation Cache", () => {
             }
         })
         expect(result).toBeDefined();
+        const output = await transform(result, inputData);
+        expect(output).toEqual(expectedData);
       })
-      
-
 })

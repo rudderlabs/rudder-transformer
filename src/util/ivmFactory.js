@@ -191,8 +191,6 @@ async function createIvm(
     }
   `;
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  const isolateStartWallTime = isolate.wallTime;
-  const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
 
   const compiledModules = {};

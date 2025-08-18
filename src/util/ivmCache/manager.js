@@ -91,8 +91,6 @@ class IvmCacheManager {
    * @returns {Object|null} Cached isolate or null
    */
   async get(cacheKey, credentials = {}) {
-    this.initializeStrategy();
-
     try {
       return this.strategy.get(cacheKey, credentials);
     } catch (error) {
@@ -111,8 +109,6 @@ class IvmCacheManager {
    * @param {Object} isolateData Isolate data to cache
    */
   async set(cacheKey, isolateData) {
-    this.initializeStrategy();
-
     try {
       await this.strategy.set(cacheKey, isolateData);
     } catch (error) {
@@ -129,8 +125,6 @@ class IvmCacheManager {
    * @param {string} cacheKey Cache key
    */
   async delete(cacheKey) {
-    this.initializeStrategy();
-
     try {
       await this.strategy.delete(cacheKey);
     } catch (error) {
@@ -146,8 +140,6 @@ class IvmCacheManager {
    * Clear all cached isolates
    */
   async clear() {
-    this.initializeStrategy();
-
     try {
       await this.strategy.clear();
     } catch (error) {
@@ -163,8 +155,6 @@ class IvmCacheManager {
    * @returns {Object} Cache statistics
    */
   getStats() {
-    this.initializeStrategy();
-
     try {
       const stats = this.strategy.getStats();
       return {
@@ -199,29 +189,7 @@ class IvmCacheManager {
    * @returns {boolean} True if caching is enabled
    */
   isCachingEnabled() {
-    this.initializeStrategy();
     return this.currentStrategyName !== 'none';
-  }
-
-  /**
-   * Destroy cache manager and cleanup resources
-   */
-  async destroy() {
-    if (this.strategy && typeof this.strategy.destroy === 'function') {
-      try {
-        await this.strategy.destroy();
-      } catch (error) {
-        logger.error('Error destroying cache strategy', {
-          error: error.message,
-          strategy: this.currentStrategyName,
-        });
-      }
-    }
-
-    this.strategy = null;
-    this.currentStrategyName = null;
-
-    logger.info('IVM Cache Manager destroyed');
   }
 }
 

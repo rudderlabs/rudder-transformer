@@ -61,13 +61,6 @@ class NoneStrategy {
       maxSize: 0,
     };
   }
-
-  /**
-   * Destroy the strategy (no-op for none strategy)
-   */
-  async destroy() {
-    // No-op for none strategy
-  }
 }
 
 module.exports = NoneStrategy;

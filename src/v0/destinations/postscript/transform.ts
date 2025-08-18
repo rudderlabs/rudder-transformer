@@ -111,7 +111,7 @@ const processTrackEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
   const { message, metadata } = event;
 
   // Event name is required for track events
-  if (!message.event?.trim()) {
+  if (typeof message?.event !== 'string' || !message.event.trim()) {
     throw new InstrumentationError('Event name is required for track events');
   }
 

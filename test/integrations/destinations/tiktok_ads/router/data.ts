@@ -1177,6 +1177,7 @@ export const data: RouterTestData[] = [
                 properties: {
                   eventId: '1616318632825_357',
                   clickId: 'dummyClickId',
+                  eventSource: 'app',
                   contents: [
                     { price: 8, quantity: 2, content_type: 'socks', content_id: '1077218' },
                     { price: 30, quantity: 1, content_type: 'dress', content_id: '1197218' },
@@ -1224,6 +1225,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'addToCart',
                 properties: {
+                  eventSource: 'app',
                   eventId: '1616318632825_357',
                   clickId: 'dummyClickId',
                   contents: [
@@ -1274,6 +1276,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'checkout step completed',
                 properties: {
+                  eventSource: 'app',
                   eventId: '1616318632825_357',
                   clickId: 'dummyClickId',
                   contents: [
@@ -1320,6 +1323,7 @@ export const data: RouterTestData[] = [
                 type: 'track',
                 event: 'checkout step completed',
                 properties: {
+                  eventSource: 'app',
                   eventId: '1616318632825_357',
                   clickId: 'dummyClickId',
                   contents: [
@@ -1373,7 +1377,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
+                    event_source: 'app',
                     partner_name: 'RudderStack',
                     data: [
                       {
@@ -1389,6 +1393,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1421,6 +1427,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1450,6 +1458,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           currency: 'USD',
                           value: 46,
                         },
@@ -1510,7 +1520,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
+                    event_source: 'app',
                     partner_name: 'RudderStack',
                     data: [
                       {
@@ -1526,6 +1536,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1555,6 +1567,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1850,6 +1864,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1882,6 +1898,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1911,6 +1929,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -1988,6 +2008,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2282,6 +2304,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2314,6 +2338,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2343,6 +2369,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2445,7 +2473,7 @@ export const data: RouterTestData[] = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'web',
+                channel: 'app',
                 context: {
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
@@ -2550,7 +2578,7 @@ export const data: RouterTestData[] = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'web',
+                channel: 'app',
                 context: {
                   userAgent:
                     'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -2688,6 +2716,10 @@ export const data: RouterTestData[] = [
                 pixelCode: 'dummyPixelCode',
                 hashUserProperties: false,
                 version: 'v2',
+                eventsToStandard: [
+                  { from: 'addToCart', to: 'CompletePayment' },
+                  { from: 'addToCart', to: 'download' },
+                ],
               }),
             },
           ],
@@ -2715,7 +2747,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
+                    event_source: 'app',
                     partner_name: 'RudderStack',
                     data: [
                       {
@@ -2731,6 +2763,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2763,6 +2797,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -2792,6 +2828,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           currency: 'USD',
                           value: 46,
                         },
@@ -2903,6 +2941,8 @@ export const data: RouterTestData[] = [
                                 content_id: '1197218',
                               },
                             ],
+                            contents_ids: ['1077218', '1197218'],
+                            num_items: 2,
                             content_type: 'product',
                             currency: 'USD',
                             value: 46,
@@ -2975,6 +3015,8 @@ export const data: RouterTestData[] = [
                               content_id: '1197218',
                             },
                           ],
+                          contents_ids: ['1077218', '1197218'],
+                          num_items: 2,
                           content_type: 'product',
                           currency: 'USD',
                           value: 46,
@@ -3183,6 +3225,8 @@ export const data: RouterTestData[] = [
                                 content_id: '1197218',
                               },
                             ],
+                            contents_ids: ['1077218', '1197218'],
+                            num_items: 2,
                             content_type: 'product',
                             currency: 'USD',
                             value: 46,
@@ -3266,6 +3310,8 @@ export const data: RouterTestData[] = [
                                 content_id: '1197218',
                               },
                             ],
+                            contents_ids: ['1077218', '1197218'],
+                            num_items: 2,
                             content_type: 'product',
                             currency: 'USD',
                             value: 46,

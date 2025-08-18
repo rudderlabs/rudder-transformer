@@ -1,7 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const { trackResponseBuilder } = require('./transformV2');
-const { eventNames } = require('process');
 
 describe('trackResponseBuilder', () => {
   const baseConfig = {
@@ -140,5 +139,94 @@ describe('trackResponseBuilder', () => {
         });
       }
     });
+  });
+
+  it('should include contents_ids and num_items in properties if contents are present', async () => {
+    const message = {
+      event: 'purchase',
+      properties: {
+        products: [
+          { product_id: '123', name: 'Product1', price: 10, quantity: 2 },
+          { product_id: '456', name: 'Product2', price: 20, quantity: 1 },
+        ],
+      },
+      timestamp: '2023-10-01T00:00:00Z',
+    };
+    const config = {
+      eventsToStandard: [{ from: 'purchase', to: 'CompletePayment' }],
+      sendCustomEvents: false,
+      accessToken: 'dummyAccessToken',
+      pixelCode: 'dummyPixelCode',
+      hashUserProperties: false,
+    };
+    const resp = await trackResponseBuilder(message, { Config: config });
+    const data = resp.body.JSON.data[0];
+    expect(data.properties.contents_ids).toEqual(['123', '456']);
+    expect(data.properties.num_items).toBe(2);
+  });
+
+  it('should remove gaid for Apple family OS', async () => {
+    const message = {
+      event: 'purchase',
+      properties: {
+        products: [{ product_id: '123', name: 'Product1', price: 10, quantity: 2 }],
+      },
+      context: { os: { name: 'ios' }, device: { advertisingId: 'some-idfa' } },
+      timestamp: '2023-10-01T00:00:00Z',
+    };
+    const config = {
+      eventsToStandard: [{ from: 'purchase', to: 'CompletePayment' }],
+      sendCustomEvents: false,
+      accessToken: 'dummyAccessToken',
+      pixelCode: 'dummyPixelCode',
+      hashUserProperties: false,
+    };
+    const resp = await trackResponseBuilder(message, { Config: config });
+    const data = resp.body.JSON.data[0];
+    expect(data.user.gaid).toBeUndefined();
+    expect(data.user.idfa).toBeDefined();
+  });
+
+  it('should remove idfa and idfv for Android OS', async () => {
+    const message = {
+      event: 'purchase',
+      properties: {
+        products: [{ product_id: '123', name: 'Product1', price: 10, quantity: 2 }],
+      },
+      context: { os: { name: 'android' }, device: { advertisingId: 'some-gaid' } },
+      timestamp: '2023-10-01T00:00:00Z',
+    };
+    const config = {
+      eventsToStandard: [{ from: 'purchase', to: 'CompletePayment' }],
+      sendCustomEvents: false,
+      accessToken: 'dummyAccessToken',
+      pixelCode: 'dummyPixelCode',
+      hashUserProperties: false,
+    };
+    const resp = await trackResponseBuilder(message, { Config: config });
+    const data = resp.body.JSON.data[0];
+    expect(data.user.idfa).toBeUndefined();
+    expect(data.user.idfv).toBeUndefined();
+    expect(data.user.gaid).toBeDefined();
+  });
+
+  it('should use event_source (snake_case) if present in properties', async () => {
+    const message = {
+      event: 'purchase',
+      properties: {
+        event_source: 'app',
+        products: [{ product_id: '123', name: 'Product1', price: 10, quantity: 2 }],
+      },
+      timestamp: '2023-10-01T00:00:00Z',
+    };
+    const config = {
+      eventsToStandard: [{ from: 'purchase', to: 'CompletePayment' }],
+      sendCustomEvents: false,
+      accessToken: 'dummyAccessToken',
+      pixelCode: 'dummyPixelCode',
+      hashUserProperties: false,
+    };
+    const resp = await trackResponseBuilder(message, { Config: config });
+    expect(resp.body.JSON.event_source).toBe('app');
   });
 });

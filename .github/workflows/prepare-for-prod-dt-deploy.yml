@@ -10,6 +10,11 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
+  contents: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -90,13 +95,6 @@ jobs:
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
 
-      - name: Checkout Operator Repo
-        uses: actions/checkout@v4.2.1
-        with:
-          repository: rudderlabs/rudderstack-operator
-          token: ${{ secrets.PAT }}
-          path: rudderstack-operator # matches downstream `cd` commands
-          fetch-depth: 1 # shallow clone for speed
 
       - name: Extract branch name
         id: extract_branch_name
@@ -152,7 +150,13 @@ jobs:
 
           gh pr create --fill
 
+      - name: Clone Operator Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudderstack-operator.git
+
       - name: Update helm charts and raise pull request for dedicated transformer from operator
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudderstack-operator
           git checkout -b dedicated-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
@@ -166,3 +170,9 @@ jobs:
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill
+
+  update-ingestion-service:
+    name: Update Ingestion Service with Latest Transformer Version
+    uses: ./.github/workflows/update-ingestion-service.yml
+    secrets:
+      PAT: ${{ secrets.PAT }}

@@ -66,6 +66,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'klaviyo',
   'campaign_manager',
   'criteo_audience',
+  'customerio_audience',
   'branch',
   'userpilot',
   'loops',
@@ -74,10 +75,17 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'rudder_test',
   'tiktok_ads',
   'bluecore',
+  'postscript',
   'attentive_tag',
 ];
 
-const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = ['googlesheets'];
+const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [
+  'googlesheets',
+  'kafka',
+  'kinesis',
+  'personalize',
+  'eventbridge',
+];
 
 beforeAll(async () => {
   initaliseReport();

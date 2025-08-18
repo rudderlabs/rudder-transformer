@@ -2,7 +2,6 @@ import { PlatformError } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import { SourceService } from '../interfaces/SourceService';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
-import { ComparatorService } from '../services/comparator';
 import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
 import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
@@ -19,17 +18,6 @@ export class ServiceSelector {
 
   private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
     return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
-  }
-
-  private static isComparatorEnabled(destinationDefinitionConfig: FixMe): boolean {
-    return (
-      process.env.COMPARATOR_ENABLED === 'true' &&
-      !!destinationDefinitionConfig.comparisonTestEnabeld
-    );
-  }
-
-  private static getSecondaryServiceName(destinationDefinitionConfig: FixMe): string {
-    return destinationDefinitionConfig.comparisonService;
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -52,10 +40,6 @@ export class ServiceSelector {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_SOURCE);
   }
 
-  private static getDestinationServiceByName(name: string): DestinationService {
-    return this.fetchCachedService(name);
-  }
-
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
@@ -75,21 +59,6 @@ export class ServiceSelector {
   public static getDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinition = events[0]?.destination?.DestinationDefinition;
-    const destinationDefinitionConfig = destinationDefinition?.Config;
-    const primaryService = this.getPrimaryDestinationService(events);
-    if (!this.isComparatorEnabled(destinationDefinitionConfig)) {
-      return primaryService;
-    }
-    const comparatorServiceStateKey = `${destinationDefinition.ID}#${INTEGRATION_SERVICE.COMPARATOR}`;
-    if (this.serviceMap.has(comparatorServiceStateKey)) {
-      return this.serviceMap.get(comparatorServiceStateKey);
-    }
-    const secondaryServiceName = this.getSecondaryServiceName(destinationDefinitionConfig);
-    const secondaryService = this.getDestinationServiceByName(secondaryServiceName);
-    const comparatorService = new ComparatorService(primaryService, secondaryService);
-
-    this.serviceMap.set(comparatorServiceStateKey, comparatorService);
-    return comparatorService;
+    return this.getPrimaryDestinationService(events);
   }
 }

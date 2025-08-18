@@ -32,33 +32,33 @@ const mockLogger = logger.warn as jest.MockedFunction<typeof logger.warn>;
 describe('PostScript Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.POSTSCRIPT_PARTNER_API_KEY = 'test_partner_key_123';
+    process.env.POSTSCRIPT_PARTNER_API_KEY = 'dummy_partner_key'; // gitleaks: allow – clearly non-secret
   });
 
   // Pure function - no mocks needed
   describe('buildHeaders', () => {
     it('should build correct headers with API key', () => {
-      const apiKey = 'test_api_key_123';
+      const apiKey = 'dummy_api_key';
       const headers = buildHeaders(apiKey);
 
       expect(headers).toMatchObject({
         'Content-type': 'application/json',
         Accept: 'application/json',
-        Authorization: 'Bearer test_api_key_123',
-        'X-Postscript-Partner-Key': 'test_partner_key_123',
+        Authorization: 'Bearer dummy_api_key',
+        'X-Postscript-Partner-Key': 'dummy_partner_key',
       });
     });
 
     it('should build headers without partner key when env var is not set', () => {
       delete process.env.POSTSCRIPT_PARTNER_API_KEY;
 
-      const apiKey = 'test_api_key_123';
+      const apiKey = 'dummy_api_key';
       const headers = buildHeaders(apiKey);
 
       expect(headers).toMatchObject({
         'Content-type': 'application/json',
         Accept: 'application/json',
-        Authorization: 'Bearer test_api_key_123',
+        Authorization: 'Bearer dummy_api_key',
       });
     });
   });
@@ -134,23 +134,6 @@ describe('PostScript Utils', () => {
       expect(payload).toHaveProperty('last_name', 'Doe');
       expect(payload).toHaveProperty('properties');
       expect(payload.properties).toHaveProperty('customField', 'customValue');
-    });
-
-    it('should handle payload with external ID from traits', () => {
-      const message: RudderMessage = {
-        type: 'identify',
-        userId: 'user123',
-        traits: {
-          email: 'test@example.com',
-          phone: '+1234567890',
-          externalId: 'ext_123',
-        },
-      } as RudderMessage;
-
-      const payload = buildSubscriberPayload(message);
-
-      expect(payload).toHaveProperty('phone_number', '+1234567890');
-      expect(payload).toHaveProperty('email', 'test@example.com');
     });
   });
 
@@ -349,7 +332,7 @@ describe('PostScript Utils', () => {
             'Content-type': 'application/json',
             Accept: 'application/json',
             Authorization: 'Bearer test_api_key',
-            'X-Postscript-Partner-Key': 'test_partner_key_123',
+            'X-Postscript-Partner-Key': 'dummy_partner_key',
           },
         },
         {

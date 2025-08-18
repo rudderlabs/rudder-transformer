@@ -530,6 +530,17 @@ export const dataV3: RouterTestData[] = [
                         custom_data: {
                           content_ids: ['123', '123'],
                           value: '56',
+                          contents: [
+                            {
+                              id: '123',
+                              item_price: '14',
+                            },
+                            {
+                              id: '123',
+                              quantity: 3,
+                              item_price: 14,
+                            },
+                          ],
                         },
                         event_name: 'VIEW_CONTENT',
                         event_time: '1650625078',

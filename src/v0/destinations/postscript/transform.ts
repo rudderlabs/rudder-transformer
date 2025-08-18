@@ -111,7 +111,7 @@ const processTrackEvent = (event: PostscriptRouterRequest): ProcessedEvent => {
   const { message, metadata } = event;
 
   // Event name is required for track events
-  if (!message.event) {
+  if (!message.event?.trim()) {
     throw new InstrumentationError('Event name is required for track events');
   }
 
@@ -157,8 +157,7 @@ const processRouterDest = async (
   }
 
   // Extract destination configuration from first event
-  const { destination } = inputs[0];
-  const postscriptDestination = destination;
+  const { destination: postscriptDestination } = inputs[0];
 
   // Validate destination configuration
   if (!postscriptDestination.Config?.apiKey) {

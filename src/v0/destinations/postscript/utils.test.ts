@@ -296,21 +296,6 @@ describe('PostScript Utils', () => {
         expect(payload.occurred_at).toBe(expected);
       });
     });
-
-    it('should handle event without name', () => {
-      const message: RudderMessage = {
-        type: 'track',
-        userId: 'user123',
-        traits: {},
-      } as RudderMessage;
-
-      const payload = buildCustomEventPayload(message);
-
-      expect(payload).toMatchObject({
-        type: 'Unknown Event',
-        subscriber_id: 'user123',
-      });
-    });
   });
 
   describe('performSubscriberLookup', () => {

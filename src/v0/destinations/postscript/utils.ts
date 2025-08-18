@@ -175,7 +175,7 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   const timestamp = getFieldValueFromMessage(message, 'timestamp');
 
   const payload: PostscriptCustomEventPayload = {
-    type: message.event ?? 'Unknown Event',
+    type: message.event,
     email,
     phone,
     // postscript expect occurred_at in the UTC time format: %Y-%m-%d %H:%M:%S.%f

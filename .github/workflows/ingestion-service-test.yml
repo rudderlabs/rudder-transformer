@@ -26,7 +26,7 @@ jobs:
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: 'Clone ingestion service'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git

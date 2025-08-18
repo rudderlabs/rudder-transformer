@@ -141,9 +141,9 @@ describe('Isolate Cache Strategy', () => {
     test('should return reset isolate for existing keys', async () => {
       const cacheKey = 'test:key:123';
       const credentials = { apiKey: 'test' };
-      const resetIsolate = { ...mockIsolateData, reset: true };
+      const cachedIsolateWithResetContext = { ...mockIsolateData, reset: true };
 
-      resetContext.mockResolvedValue(resetIsolate);
+      resetContext.mockResolvedValue(cachedIsolateWithResetContext);
 
       await strategy.set(cacheKey, mockIsolateData);
       
@@ -167,7 +167,7 @@ describe('Isolate Cache Strategy', () => {
         mockCachedData,
         credentials
       );
-      expect(result).toBe(resetIsolate);
+      expect(result).toBe(cachedIsolateWithResetContext);
     });
 
     test('should handle reset context errors', async () => {

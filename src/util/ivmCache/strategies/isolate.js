@@ -39,7 +39,7 @@ class IsolateStrategy {
       }
 
       // Reset context for fresh execution
-      const resetIsolate = await resetContext(cachedIsolate, credentials);
+      const cachedIsolateWithResetContext = await resetContext(cachedIsolate, credentials);
 
       stats.timing('ivm_cache_get_duration', startTime, {
         strategy: 'isolate',
@@ -51,7 +51,7 @@ class IsolateStrategy {
         transformationId: cachedIsolate.transformationId,
       });
 
-      return resetIsolate;
+      return cachedIsolateWithResetContext;
     } catch (error) {
       logger.error('Error getting cached isolate', {
         error: error.message,
@@ -81,16 +81,20 @@ class IsolateStrategy {
     try {
       // Prepare isolate for caching by storing essential components
       const cachableIsolate = {
-        // Core isolate components
         isolate: isolateData.isolate,
         bootstrap: isolateData.bootstrap,
         customScriptModule: isolateData.customScriptModule,
+        bootstrapScriptResult: isolateData.bootstrapScriptResult,
+        context: isolateData.context,
+        fnRef: isolateData.fnRef,
+        fName: isolateData.fName,
+        logs: isolateData.logs,
+
         compiledModules: isolateData.compiledModules,
 
         // Metadata for debugging and reset
         transformationId: isolateData.transformationId,
         workspaceId: isolateData.workspaceId,
-        fName: isolateData.fName,
 
         // Cache metadata
         cachedAt: Date.now(),

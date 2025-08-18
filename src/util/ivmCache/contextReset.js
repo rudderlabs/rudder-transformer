@@ -135,7 +135,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
  * Reset the context of a cached isolate for fresh execution
  * @param {Object} cachedIsolate The cached isolate object
  * @param {Object} credentials Fresh credentials for this execution
- * @returns {Object} Reset isolate ready for execution
+ * @returns {Object} Cached isolate with reset context ready for execution
  */
 async function resetContext(cachedIsolate, credentials = {}) {
   if (!cachedIsolate?.isolate) {
@@ -154,7 +154,7 @@ async function resetContext(cachedIsolate, credentials = {}) {
     await injectFreshApis(jail, cachedIsolate, credentials);
 
     // Set up bootstrap script in the new context
-    const bootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
+    await cachedIsolate.bootstrap.run(newContext);
 
     // Re-instantiate the user's custom script module in the new context
     await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
@@ -181,22 +181,27 @@ async function resetContext(cachedIsolate, credentials = {}) {
       }
     }
 
-    // Create reset isolate with new context
-    const resetIsolate = {
-      ...cachedIsolate,
+    // Create cached isolate with reset context
+    const cachedIsolateWithResetContext = {
+      isolate: cachedIsolate.isolate,
+      bootstrap: cachedIsolate.bootstrap,
+      customScriptModule: cachedIsolate.customScriptModule,
+      bootstrapScriptResult: cachedIsolate.bootstrapScriptResult,
       context: newContext,
-      jail,
-      bootstrapScriptResult,
       fnRef,
-      isolateStartWallTime: cachedIsolate.isolate.wallTime,
-      isolateStartCPUTime: cachedIsolate.isolate.cpuTime,
+      fName: cachedIsolate.fName,
+      logs: cachedIsolate.logs,
+
+      // Metadata for debugging and tracking
+      transformationId: cachedIsolate.transformationId,
+      workspaceId: cachedIsolate.workspaceId,
     };
 
     logger.debug('IVM context reset completed', {
       transformationId: cachedIsolate.transformationId,
     });
 
-    return resetIsolate;
+    return cachedIsolateWithResetContext;
   } catch (error) {
     logger.error('Error during context reset', {
       error: error.message,

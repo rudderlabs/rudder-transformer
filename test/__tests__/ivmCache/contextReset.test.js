@@ -107,7 +107,6 @@ describe('Context Reset Utilities', () => {
         bootstrap: mockCachedIsolate.bootstrap,
         customScriptModule: mockCachedIsolate.customScriptModule,
         context: mockNewContext,
-        jail: mockJail,
         transformationId: 'test-transformation-123',
         workspaceId: 'test-workspace-456',
       });
@@ -190,13 +189,6 @@ describe('Context Reset Utilities', () => {
       });
 
       await expect(resetContext(mockCachedIsolate)).resolves.toBeDefined();
-    });
-
-    test('should preserve isolate timing information', async () => {
-      const result = await resetContext(mockCachedIsolate);
-
-      expect(result.isolateStartWallTime).toEqual([1, 500000000]);
-      expect(result.isolateStartCPUTime).toEqual([0, 100000000]);
     });
 
     test('should throw error for invalid cached isolate', async () => {

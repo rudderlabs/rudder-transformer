@@ -458,14 +458,11 @@ async function createIvm(
 
   return {
     isolate,
-    jail,
-    bootstrapScriptResult,
     bootstrap,
     customScriptModule,
+    bootstrapScriptResult,
     context,
     fnRef,
-    isolateStartWallTime,
-    isolateStartCPUTime,
     fName,
     logs,
   };

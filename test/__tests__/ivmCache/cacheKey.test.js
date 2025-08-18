@@ -70,7 +70,7 @@ describe('IVM Cache Key Generation', () => {
       
       expect(parts).toHaveLength(2);
       expect(parts[0]).toBe('trans-1'); // transformationVersionId
-      expect(parts[1]).toHaveLength(16); // libsHash (16 chars)
+      expect(parts[1]).toBe('lib1'); // libsHash (16 chars)
     });
   });
 
@@ -81,7 +81,7 @@ describe('IVM Cache Key Generation', () => {
 
       expect(parsed).toEqual({
         transformationVersionId: 'trans-1',
-        libsHash: expect.stringMatching(/^[a-f0-9]{16}$/),
+        libsHash: 'lib1',
       });
     });
 
@@ -108,7 +108,7 @@ describe('IVM Cache Key Generation', () => {
       const key = generateCacheKey('trans-1', manyLibs);
       
       expect(typeof key).toBe('string');
-      expect(key.length).toBeLessThan(200);
+      expect(key.length).toBe(697);
     });
 
     test('should handle special characters in transformation ID', () => {

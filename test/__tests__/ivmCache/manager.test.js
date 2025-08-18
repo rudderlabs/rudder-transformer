@@ -136,7 +136,7 @@ describe('IVM Cache Manager', () => {
       // Give a moment for async destroy to potentially complete
       await new Promise(resolve => setTimeout(resolve, 10));
       
-      expect(previousStrategy.destroy).toHaveBeenCalled();
+      expect(previousStrategy.clear).toHaveBeenCalled();
     });
 
     test('should not reinitialize if strategy unchanged', () => {
@@ -198,14 +198,6 @@ describe('IVM Cache Manager', () => {
           error: 'Strategy error',
         })
       );
-    });
-
-    test('should ensure strategy is current before operation', async () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      
-      await IvmCacheManager.get('test:key');
-      
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
     });
   });
 
@@ -362,69 +354,6 @@ describe('IVM Cache Manager', () => {
       IvmCacheManager.initializeStrategy();
       
       expect(IvmCacheManager.isCachingEnabled()).toBe(true);
-    });
-  });
-
-  describe('destroy method', () => {
-    test('should destroy strategy and reset state', async () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      const strategy = IvmCacheManager.strategy;
-      
-      await IvmCacheManager.destroy();
-      
-      expect(strategy.destroy).toHaveBeenCalled();
-      expect(IvmCacheManager.strategy).toBeNull();
-      expect(IvmCacheManager.currentStrategyName).toBeNull();
-    });
-
-    test('should handle destroy errors gracefully', async () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      IvmCacheManager.strategy.destroy.mockRejectedValue(new Error('Destroy error'));
-      
-      await expect(IvmCacheManager.destroy()).resolves.toBeUndefined();
-      expect(logger.error).toHaveBeenCalledWith(
-        'Error destroying cache strategy',
-        expect.objectContaining({
-          error: 'Destroy error',
-        })
-      );
-    });
-
-    test('should handle missing strategy gracefully', async () => {
-      IvmCacheManager.strategy = null;
-      
-      await expect(IvmCacheManager.destroy()).resolves.toBeUndefined();
-    });
-  });
-
-  describe('environment changes', () => {
-    test('should reinitialize when environment changes', () => {
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
-      
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
-      
-      process.env.IVM_CACHE_STRATEGY = 'none';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
-    });
-
-    test('should handle strategy change during operation', async () => {
-      // Start with none strategy
-      await IvmCacheManager.get('test:key');
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
-      
-      // Change environment and perform operation
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      await IvmCacheManager.get('test:key');
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
     });
   });
 

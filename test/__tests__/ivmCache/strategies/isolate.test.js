@@ -58,7 +58,7 @@ describe('Isolate Cache Strategy', () => {
 
   afterEach(() => {
     if (strategy) {
-      strategy.destroy();
+      strategy.clear();
     }
   });
 
@@ -330,7 +330,7 @@ describe('Isolate Cache Strategy', () => {
       await strategy.set('key1', mockIsolateData);
       await strategy.set('key2', { ...mockIsolateData });
 
-      await strategy.destroy();
+      await strategy.clear();
 
       expect(strategy.cache.cache.size).toBe(0);
     });
@@ -374,7 +374,7 @@ describe('Isolate Cache Strategy', () => {
           expect(shortTtlStrategy.cache.has('key1')).toBe(false);
           // With lru-cache library, TTL expiry is handled automatically
           // We verify the behavior through cache state rather than mock calls
-          shortTtlStrategy.destroy();
+          shortTtlStrategy.clear();
           done();
         }, 150);
       });

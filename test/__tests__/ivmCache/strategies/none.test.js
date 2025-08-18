@@ -131,12 +131,6 @@ describe('None Cache Strategy', () => {
     });
   });
 
-  describe('destroy method', () => {
-    test('should be a no-op and not throw', async () => {
-      await expect(strategy.destroy()).resolves.toBeUndefined();
-    });
-  });
-
   describe('integration scenarios', () => {
     test('should handle typical cache workflow without errors', async () => {
       const cacheKey = 'test:transformation:abc123';

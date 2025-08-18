@@ -27,8 +27,8 @@ class IvmCacheManager {
     }
 
     // Clean up existing strategy if different
-    if (this.strategy && typeof this.strategy.destroy === 'function') {
-      this.strategy.destroy().catch((error) => {
+    if (this.strategy && typeof this.strategy.clear === 'function') {
+      this.strategy.clear().catch((error) => {
         logger.error('Error destroying previous cache strategy', {
           error: error.message,
           strategy: this.currentStrategyName,

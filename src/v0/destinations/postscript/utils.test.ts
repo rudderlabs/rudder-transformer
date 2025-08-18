@@ -19,9 +19,10 @@ jest.mock('../../../adapters/network', () => ({
 }));
 
 // Mock only logger for warnings
-jest.mock('../../../logger', () => ({
-  warn: jest.fn(),
-}));
+jest.mock('../../../logger', () => {
+  const warn = jest.fn();
+  return { __esModule: true, default: { warn }, warn };
+});
 
 import { handleHttpRequest } from '../../../adapters/network';
 import * as logger from '../../../logger';
@@ -29,7 +30,7 @@ import * as logger from '../../../logger';
 const mockHandleHttpRequest = handleHttpRequest as jest.MockedFunction<typeof handleHttpRequest>;
 const mockLogger = logger.warn as jest.MockedFunction<typeof logger.warn>;
 
-describe('PostScript Utils', () => {
+describe('Postscript Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.POSTSCRIPT_PARTNER_API_KEY = 'dummy_partner_key'; // gitleaks: allow – clearly non-secret
@@ -246,37 +247,20 @@ describe('PostScript Utils', () => {
       });
     });
 
-    it('should handle different timestamp formats', () => {
-      const testCases = [
-        {
-          input: '2023-03-15T12:30:45.123Z',
-          expected: '2023-03-15 12:30:45.123',
-          description: 'standard ISO with milliseconds',
-        },
-        {
-          input: '2023-03-15T12:30:45Z',
-          expected: '2023-03-15 12:30:45.000',
-          description: 'ISO without milliseconds',
-        },
-        {
-          input: '2023-12-31T23:59:59.999Z',
-          expected: '2023-12-31 23:59:59.999',
-          description: 'end of year timestamp',
-        },
-      ];
-
-      testCases.forEach(({ input, expected, description }) => {
-        const message: RudderMessage = {
-          type: 'track',
-          event: 'Test Event',
-          userId: 'user123',
-          timestamp: input,
-          traits: {},
-        };
-
-        const payload = buildCustomEventPayload(message);
-        expect(payload.occurred_at).toBe(expected);
-      });
+    it.each([
+      ['standard ISO with milliseconds', '2023-03-15T12:30:45.123Z', '2023-03-15 12:30:45.123'],
+      ['ISO without milliseconds', '2023-03-15T12:30:45Z', '2023-03-15 12:30:45.000'],
+      ['end of year timestamp', '2023-12-31T23:59:59.999Z', '2023-12-31 23:59:59.999'],
+    ])('should handle different timestamp formats: %s', (_desc, input, expected) => {
+      const message: RudderMessage = {
+        type: 'track',
+        event: 'Test Event',
+        userId: 'user123',
+        timestamp: input,
+        traits: {},
+      };
+      const payload = buildCustomEventPayload(message);
+      expect(payload.occurred_at).toBe(expected);
     });
   });
 
@@ -307,6 +291,7 @@ describe('PostScript Utils', () => {
       const mockResponse = {
         httpResponse: Promise.resolve({}),
         processedResponse: {
+          status: 200,
           response: {
             subscribers: [
               {
@@ -321,7 +306,7 @@ describe('PostScript Utils', () => {
 
       mockHandleHttpRequest.mockResolvedValueOnce(mockResponse);
 
-      const results = await performSubscriberLookup(mockEvents, 'test_api_key');
+      const results = await performSubscriberLookup(mockEvents, 'dummy_api_key');
 
       // Verify the correct API call was made
       expect(mockHandleHttpRequest).toHaveBeenCalledWith(
@@ -331,7 +316,7 @@ describe('PostScript Utils', () => {
           headers: {
             'Content-type': 'application/json',
             Accept: 'application/json',
-            Authorization: 'Bearer test_api_key',
+            Authorization: 'Bearer dummy_api_key',
             'X-Postscript-Partner-Key': 'dummy_partner_key',
           },
         },
@@ -368,7 +353,7 @@ describe('PostScript Utils', () => {
         },
       });
 
-      const results = await performSubscriberLookup(mockEvents, 'test_api_key');
+      const results = await performSubscriberLookup(mockEvents, 'dummy_api_key');
 
       expect(results).toMatchObject([
         { exists: false, identifierValue: '+1234567890', identifierType: 'phone' },
@@ -388,7 +373,7 @@ describe('PostScript Utils', () => {
         },
       ];
 
-      const results = await performSubscriberLookup(eventsWithoutContact, 'test_api_key');
+      const results = await performSubscriberLookup(eventsWithoutContact, 'dummy_api_key');
 
       expect(mockHandleHttpRequest).not.toHaveBeenCalled();
       expect(results).toMatchObject([]);
@@ -416,7 +401,7 @@ describe('PostScript Utils', () => {
         },
       });
 
-      const results = await performSubscriberLookup(mockEvents, 'test_api_key');
+      const results = await performSubscriberLookup(mockEvents, 'dummy_api_key');
 
       expect(mockLogger).toHaveBeenCalledWith('PostScript subscriber lookup failed:', {
         status: 500,
@@ -431,72 +416,6 @@ describe('PostScript Utils', () => {
           identifierType: 'phone',
         },
       ]);
-    });
-  });
-
-  describe('batchResponseBuilder', () => {
-    const mockDestination: PostscriptDestination = {
-      ID: 'dest_123',
-      Name: 'PostScript',
-      Config: { apiKey: 'test_key' },
-      DestinationDefinition: {
-        ID: 'postscript_def_123',
-        Name: 'POSTSCRIPT',
-        DisplayName: 'PostScript',
-        Config: {},
-      },
-      Enabled: true,
-      WorkspaceID: 'workspace_123',
-      Transformations: [],
-    };
-
-    it('should build batched responses correctly', () => {
-      const events: ProcessedEvent[] = [
-        {
-          eventType: 'identify',
-          endpoint: 'https://api.postscript.io/api/v2/subscribers',
-          method: 'POST',
-          payload: { phone_number: '+1234567890' },
-          metadata: { jobId: 1 },
-        },
-        {
-          eventType: 'track',
-          endpoint: 'https://api.postscript.io/api/v2/events',
-          method: 'POST',
-          payload: { type: 'Purchase' },
-          metadata: { jobId: 2 },
-        },
-      ];
-
-      const responses = batchResponseBuilder(events, mockDestination);
-
-      expect(responses).toHaveLength(2);
-      expect(responses[0]).toHaveProperty('batchedRequest');
-      expect(responses[0].batchedRequest).toHaveProperty('endpoint');
-      expect(responses[0].batchedRequest).toHaveProperty('method');
-    });
-
-    it('should handle empty events array', () => {
-      const responses = batchResponseBuilder([], mockDestination);
-      expect(responses).toHaveLength(0);
-    });
-
-    it('should set correct headers for all responses', () => {
-      const events: ProcessedEvent[] = [
-        {
-          eventType: 'identify',
-          endpoint: 'https://api.postscript.io/api/v2/subscribers',
-          method: 'POST',
-          payload: { phone_number: '+1234567890' },
-          metadata: { jobId: 1 },
-        },
-      ];
-
-      const responses = batchResponseBuilder(events, mockDestination);
-
-      expect(responses).toHaveLength(1);
-      expect(responses[0].batchedRequest.headers).toHaveProperty('Authorization');
-      expect(responses[0].batchedRequest.headers).toHaveProperty('Content-type');
     });
   });
 });

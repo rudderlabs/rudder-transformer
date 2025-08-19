@@ -82,6 +82,7 @@ async function userTransformHandlerV1(
     userTransformation.secrets || {},
     testMode,
     userTransformation.name || 'base transformation',
+    userTransformation.versionId,
   );
 
   logger.debug(`Creating IsolateVM`);

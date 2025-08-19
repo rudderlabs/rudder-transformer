@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.107.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.106.1...v1.107.0) (2025-08-18)
+
+
+### Features
+
+* add keyword if under advance rule violations ([#4560](https://github.com/rudderlabs/rudder-transformer/issues/4560)) ([5fba787](https://github.com/rudderlabs/rudder-transformer/commit/5fba787847fade9b4d52bcf1e5d6bd5318a90623))
+* onboard postscript destination ([#4438](https://github.com/rudderlabs/rudder-transformer/issues/4438)) ([0ae1ac5](https://github.com/rudderlabs/rudder-transformer/commit/0ae1ac594675b07d1cbf8ad83328526eccd60d35))
+* remove CDK compare test logic and metrics ([#4541](https://github.com/rudderlabs/rudder-transformer/issues/4541)) ([94f48e1](https://github.com/rudderlabs/rudder-transformer/commit/94f48e1094066a0268b759cc5c95b4f004de8778))
+* **snapchat_conversion:** add products to contents mapping ([#4526](https://github.com/rudderlabs/rudder-transformer/issues/4526)) ([26c3dd7](https://github.com/rudderlabs/rudder-transformer/commit/26c3dd7267c0cf4855252d0691ebab93cb852772))
+
+
+### Bug Fixes
+
+* add mapping of event_source instead of static value ([#4497](https://github.com/rudderlabs/rudder-transformer/issues/4497)) ([d4f20b6](https://github.com/rudderlabs/rudder-transformer/commit/d4f20b68899c02caec41ce4834e96a165f1cfe22)), closes [#4501](https://github.com/rudderlabs/rudder-transformer/issues/4501)
+* **cordial:** optional check for cid ([#4553](https://github.com/rudderlabs/rudder-transformer/issues/4553)) ([b430edb](https://github.com/rudderlabs/rudder-transformer/commit/b430edb4a75a7539eec056a0e184f5d0a8fc9f36))
+* update yaml path for hosted user-transformer image config ([#4545](https://github.com/rudderlabs/rudder-transformer/issues/4545)) ([65868f6](https://github.com/rudderlabs/rudder-transformer/commit/65868f631dfff472f26826e79939981b6ee859e5))
+
 ### [1.106.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.106.0...v1.106.1) (2025-08-15)
 
 

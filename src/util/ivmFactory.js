@@ -482,6 +482,7 @@ async function getFactory(
   secrets,
   testMode,
   transformationName,
+  transformationVersionId,
 ) {
   const factory = {
     create: async () => {
@@ -519,6 +520,7 @@ async function getFactory(
  * @param {Object} secrets - User secrets
  * @param {boolean} testMode - Test mode flag
  * @param {string} transformationName - Transformation name
+ * @param {string} transformationVersionId - Transformation version identifier
  * @returns {Object} Factory with create/destroy methods
  */
 async function getCachedFactory(
@@ -530,12 +532,12 @@ async function getCachedFactory(
   secrets,
   testMode,
   transformationName,
+  transformationVersionId,
 ) {
   const ivmCacheManager = require('./ivmCache/manager');
-  const logger = require('../logger');
 
   // Generate cache key for this transformation
-  const cacheKey = ivmCacheManager.generateKey(transformationId, libraryVersionIds);
+  const cacheKey = ivmCacheManager.generateKey(transformationVersionId, libraryVersionIds);
 
   const factory = {
     create: async () => {
@@ -551,6 +553,8 @@ async function getCachedFactory(
             cacheKey,
             transformationId,
           });
+
+          console.log('IVM Factory cache hit');
 
           stats.timing('cached_ivm_create_duration', startTime, {
             result: 'hit',

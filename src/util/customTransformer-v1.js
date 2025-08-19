@@ -7,7 +7,6 @@ const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
-const useIvmCache = process.env.USE_IVM_CACHE === 'true';
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -56,6 +55,7 @@ async function userTransformHandlerV1(
   libraryVersionIds,
   testMode = false,
 ) {
+  const useIvmCache = process.env.USE_IVM_CACHE === 'true';
   if (!userTransformation.versionId) {
     return { transformedEvents: events };
   }
@@ -65,7 +65,7 @@ async function userTransformHandlerV1(
     credentialsMap[cred.key] = cred.value;
   });
   // Choose factory based on environment configuration
-  const factoryFunction = useIvmCache ? getCachedFactory : getFactory;
+  const factoryFunction = useIvmCache && !testMode ? getCachedFactory : getFactory;
 
   logger.debug(`Using IVM factory: ${useIvmCache ? 'cached' : 'standard'}`, {
     transformationId: userTransformation.id,
@@ -82,6 +82,7 @@ async function userTransformHandlerV1(
     userTransformation.secrets || {},
     testMode,
     userTransformation.name || 'base transformation',
+    userTransformation.versionId,
   );
 
   logger.debug(`Creating IsolateVM`);

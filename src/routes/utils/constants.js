@@ -1,7 +1,6 @@
 const SUPPORTED_VERSIONS = ['v0', 'v1'];
 const API_VERSION = '2';
 const INTEGRATION_SERVICE = {
-  COMPARATOR: 'comparator',
   CDK_V1_DEST: 'cdkv1_dest',
   CDK_V2_DEST: 'cdkv2_dest',
   NATIVE_DEST: 'native_dest',

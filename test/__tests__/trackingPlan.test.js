@@ -622,7 +622,7 @@ const eventValidationTestCases = [
         }
       },
       {
-        type: "Unknown-Violation",
+        type: "Advance-Rules-Violation",
         message: 'must match "then" schema',
         meta: {
           instancePath: "/properties/revenue",

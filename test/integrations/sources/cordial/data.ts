@@ -587,6 +587,98 @@ export const data = [
       },
     },
   },
+  {
+    name: 'cordial',
+    description: 'When contact object is not present in the event payload',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                event: {
+                  _id: '669141857b8cxxx1ba0da2xx',
+                  cID: '6690fe3655e334xx028xxx',
+                  ts: '2024-07-12T14:45:25+00:00',
+                  ats: '2024-07-12T14:45:25+0000',
+                  a: 'browse',
+                  tzo: -7,
+                  rl: 'a',
+                  UID: '4934ee07118197xx3f74d5xxxx7b0076',
+                  time: '2024-07-12T14:45:25+0000',
+                  action: 'browse',
+                  bmID: '',
+                  first: 0,
+                  properties: {
+                    category: 'Shirts',
+                    url: 'http://example.com/shirts',
+                    description: 'A really cool khaki shirt.',
+                    price: 9.99,
+                    title: 'Khaki Shirt',
+                    test_key: 'value',
+                  },
+                },
+              }),
+            },
+            source: {},
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
+                  context: {
+                    library: { name: 'unknown', version: 'unknown' },
+                    integration: { name: 'Cordial' },
+                    externalId: [],
+                    traits: {},
+                  },
+                  integrations: { Cordial: false },
+                  type: 'track',
+                  event: 'browse',
+                  originalTimestamp: '2024-07-12T14:45:25+00:00',
+                  properties: {
+                    event_id: '669141857b8cxxx1ba0da2xx',
+                    category: 'Shirts',
+                    url: 'http://example.com/shirts',
+                    description: 'A really cool khaki shirt.',
+                    price: 9.99,
+                    title: 'Khaki Shirt',
+                    test_key: 'value',
+                    cID: '6690fe3655e334xx028xxx',
+                    ts: '2024-07-12T14:45:25+00:00',
+                    ats: '2024-07-12T14:45:25+0000',
+                    a: 'browse',
+                    tzo: -7,
+                    rl: 'a',
+                    UID: '4934ee07118197xx3f74d5xxxx7b0076',
+                    time: '2024-07-12T14:45:25+0000',
+                    action: 'browse',
+                    bmID: '',
+                    first: 0,
+                  },
+                  timestamp: '2024-07-12T14:45:25+00:00',
+                  sentAt: '2024-07-12T14:45:25+00:00',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   mockFns: () => {

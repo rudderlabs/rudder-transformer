@@ -861,6 +861,17 @@ export const dataV3: ProcessorTestData[] = [
                       custom_data: {
                         content_ids: ['123', '123'],
                         value: '56',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                          {
+                            id: '123',
+                            quantity: 3,
+                            item_price: 14,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -1027,6 +1038,17 @@ export const dataV3: ProcessorTestData[] = [
                       custom_data: {
                         content_ids: ['123', '123'],
                         value: '42',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                          {
+                            id: '123',
+                            quantity: '2',
+                            item_price: 14,
+                          },
+                        ],
                       },
                       event_name: 'START_CHECKOUT',
                       event_time: '1650625078',
@@ -1194,6 +1216,18 @@ export const dataV3: ProcessorTestData[] = [
                         brand: ['brand01', 'brand02'],
                         content_ids: ['123', '124'],
                         value: '56',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                          {
+                            id: '124',
+                            item_price: 14,
+                            quantity: 3,
+                          },
+                        ],
                       },
                       event_name: 'PURCHASE',
                       event_time: '1650625078',
@@ -1352,6 +1386,12 @@ export const dataV3: ProcessorTestData[] = [
                         content_ids: '123',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'ADD_CART',
                       event_time: '1650625078',
@@ -1488,6 +1528,13 @@ export const dataV3: ProcessorTestData[] = [
                         currency: 'USD',
                         num_items: 14,
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -1623,6 +1670,13 @@ export const dataV3: ProcessorTestData[] = [
                         currency: 'USD',
                         num_items: 1,
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -1881,6 +1935,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'SUBSCRIBE',
                       event_time: '1650625078',
@@ -2013,6 +2072,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         price: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'AD_VIEW',
                       event_time: '1650625078',
@@ -2145,6 +2209,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         price: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'AD_CLICK',
                       event_time: '1650625078',
@@ -2277,6 +2346,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'SAVE',
                       event_time: '1650625078',
@@ -2410,6 +2484,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_source_url: 'hjhb.com',
@@ -2544,6 +2623,11 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -2831,6 +2915,12 @@ export const dataV3: ProcessorTestData[] = [
                         content_ids: '123',
                         currency: 'USD',
                         value: '14',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                        ],
                       },
                       event_name: 'ADD_TO_WISHLIST',
                       event_time: '1650625078',
@@ -3395,6 +3485,18 @@ export const dataV3: ProcessorTestData[] = [
                       custom_data: {
                         content_ids: ['123', '123'],
                         value: '100',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                          {
+                            id: '123',
+                            item_price: 14,
+                            quantity: 3,
+                          },
+                        ],
                       },
                       event_id: '1234',
                       event_name: 'PURCHASE',
@@ -3492,6 +3594,8 @@ export const dataV3: ProcessorTestData[] = [
                   {
                     product_id: '123',
                     price: '14',
+                    category: 'shoes',
+                    delivery_category: 'standard',
                   },
                   {
                     product_id: '123',
@@ -3561,6 +3665,18 @@ export const dataV3: ProcessorTestData[] = [
                       custom_data: {
                         content_ids: ['123', '123'],
                         value: '100',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            delivery_category: 'standard',
+                          },
+                          {
+                            id: '123',
+                            item_price: 14,
+                            quantity: 3,
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -3661,6 +3777,7 @@ export const dataV3: ProcessorTestData[] = [
                     product_id: '123',
                     price: 14,
                     quantity: 3,
+                    delivery_category: 'express',
                   },
                 ],
                 revenue: '100',
@@ -3725,6 +3842,18 @@ export const dataV3: ProcessorTestData[] = [
                       custom_data: {
                         content_ids: ['123', '123'],
                         value: '100',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                          },
+                          {
+                            id: '123',
+                            item_price: 14,
+                            quantity: 3,
+                            delivery_category: 'express',
+                          },
+                        ],
                       },
                       event_name: 'VIEW_CONTENT',
                       event_time: '1650625078',
@@ -3893,6 +4022,18 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'shoes',
                         content_ids: ['123', '124'],
                         value: '56',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                          {
+                            id: '124',
+                            item_price: 14,
+                            quantity: 3,
+                          },
+                        ],
                       },
                       event_name: 'PURCHASE',
                       event_time: '1650625078',
@@ -4063,6 +4204,18 @@ export const dataV3: ProcessorTestData[] = [
                         content_category: 'glass',
                         content_ids: ['123', '124'],
                         value: '56',
+                        contents: [
+                          {
+                            id: '123',
+                            item_price: '14',
+                            quantity: 1,
+                          },
+                          {
+                            id: '124',
+                            item_price: 14,
+                            quantity: 3,
+                          },
+                        ],
                       },
                       event_name: 'PURCHASE',
                       event_time: '1650625078',

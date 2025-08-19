@@ -135,7 +135,8 @@ jobs:
           git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
           git push -u origin shared-user-transformer-$UT_TAG_NAME
 
-          gh pr create --fill
+          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          echo "SHARED_PR_URL=$PR_URL" >> $GITHUB_ENV
 
       - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
         env:
@@ -145,14 +146,15 @@ jobs:
           git checkout -b hosted-user-transformer-$UT_TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
-          yq eval -i ".spec.user_transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".spec.user_transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
           git push -u origin hosted-user-transformer-$UT_TAG_NAME
 
-          gh pr create --fill
+          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          echo "HOSTED_PR_URL=$PR_URL" >> $GITHUB_ENV
 
       - name: Update helm charts and raise pull request for enterprise customers on dedicated transformers
         env:
@@ -188,4 +190,34 @@ jobs:
           git commit -m "chore: upgrade dedicated user transformers to $TAG_NAME"
           git push -u origin dedicated-user-transformer-$TAG_NAME
 
-          gh pr create --fill
+          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          echo "DEDICATED_PR_URL=$PR_URL" >> $GITHUB_ENV
+
+      - name: Notify Control Plane Team
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2.1.1
+        continue-on-error: true
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          method: chat.postMessage
+          payload: |
+            {
+              "channel": "${{ secrets.SLACK_CONTROL_PLANE_CHANNEL_ID }}",
+              "text": "*UT Deployment PRs Created*\nCC: @control-plane-on-call",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text", 
+                    "text": "🚀 User Transformer Deployment - DevOps PRs Ready"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Version: `${{ needs.generate-tag-names.outputs.tag_name_ut }}`\n\nPRs created for review:\n• <${{ env.SHARED_PR_URL }}|Shared User Transformer>\n• <${{ env.HOSTED_PR_URL }}|Hosted User Transformer>\n• <${{ env.DEDICATED_PR_URL }}|Dedicated User Transformer>\n\nPlease review and merge the DevOps PRs."
+                  }
+                }
+              ]
+            }

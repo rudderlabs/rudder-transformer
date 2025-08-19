@@ -92,7 +92,8 @@ class IvmCacheManager {
    */
   async get(cacheKey, credentials = {}) {
     try {
-      return this.strategy.get(cacheKey, credentials);
+      const result = await this.strategy.get(cacheKey, credentials);
+      return result;
     } catch (error) {
       logger.error('Error getting from cache', {
         error: error.message,
@@ -148,6 +149,7 @@ class IvmCacheManager {
         strategy: this.currentStrategyName,
       });
     }
+    logger.info('IVM cache cleared', { strategy: this.currentStrategyName });
   }
 
   /**

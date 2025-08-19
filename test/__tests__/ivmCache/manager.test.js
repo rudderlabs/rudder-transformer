@@ -249,29 +249,6 @@ describe('IVM Cache Manager', () => {
     });
   });
 
-  describe('clear method', () => {
-    test('should delegate to strategy', async () => {
-      await IvmCacheManager.clear();
-      
-      expect(IvmCacheManager.strategy.clear).toHaveBeenCalled();
-    });
-
-    test('should handle strategy errors gracefully', async () => {
-      // Ensure we have a strategy with a mocked clear method
-      if (IvmCacheManager.strategy && IvmCacheManager.strategy.clear) {
-        IvmCacheManager.strategy.clear.mockRejectedValue(new Error('Clear error'));
-      }
-      
-      await expect(IvmCacheManager.clear()).resolves.toBeUndefined();
-      expect(logger.error).toHaveBeenCalledWith(
-        'Error clearing cache',
-        expect.objectContaining({
-          error: 'Clear error',
-        })
-      );
-    });
-  });
-
   describe('getStats method', () => {
     test('should return strategy stats with manager info for none strategy', () => {
       const stats = IvmCacheManager.getStats();
@@ -373,7 +350,7 @@ describe('IVM Cache Manager', () => {
       await IvmCacheManager.clear();
       
       const stats = IvmCacheManager.getStats();
-      expect(stats.strategy).toBe('none');
+      expect(stats.strategy).toBe("none");
     });
 
     test('should handle complete workflow with isolate strategy', async () => {

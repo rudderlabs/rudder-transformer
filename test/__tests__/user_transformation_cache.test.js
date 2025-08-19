@@ -135,9 +135,8 @@ describe("User transformation Cache", () => {
     const cacheMode = "isolate";
     const workspaceId = "test-workspace";
     const transformationId = "test-transformation";
-    const libraryVersionIds = ["test-library-version-1", "test-library-version-2"];
-    const inputData = require(`./data/user_transformation_service_filter_input.json`);
-    const expectedData = require(`./data/user_transformation_service_filter_output.json`);
+    const inputData = require(`./data/user_transformation_cache_input.json`);
+    const expectedData = require(`./data/user_transformation_cache_output.json`);
     const code = `      export async function transformEvent(event, metadata) {
                 const eventType = event.type;
                 if(eventType === 'non-standard') throw new Error('non-standard event');
@@ -155,6 +154,7 @@ describe("User transformation Cache", () => {
 
       it(`should initialize cache manager`, async () => {
         process.env.IVM_CACHE_STRATEGY = cacheMode;
+        ivmCacheManager.initializeStrategy();
         expect(ivmCacheManager.isCachingEnabled()).toBe(true);
         expect(ivmCacheManager.getCurrentStrategy()).toBe(cacheMode);
         const result = await ivmCacheManager.get(cacheKey, {
@@ -226,7 +226,9 @@ describe("User transformation Cache", () => {
             workspaceId: workspaceId,
         });
 
+      })
 
+      it(`should get cache user transformation and transform events`, async () => {
         const result = await ivmCacheManager.get(cacheKey, {
             credentials: {
                 user: username,
@@ -236,5 +238,39 @@ describe("User transformation Cache", () => {
         expect(result).toBeDefined();
         const output = await transform(result, inputData);
         expect(output).toEqual(expectedData);
+      })
+
+      it(`should get cached user transformation again and transform events`, async () => {
+        const result = await ivmCacheManager.get(cacheKey, {
+            credentials: {
+                user: username,
+                password: password
+            }
+        })
+        expect(result).toBeDefined();
+        const output = await transform(result, inputData);
+        expect(output).toEqual(expectedData);
+      })
+
+      it(`should delete cache user transformation`, async () => {
+        await ivmCacheManager.delete(cacheKey);
+        const result = await ivmCacheManager.get(cacheKey, {
+            credentials: {
+                user: username,
+                password: password
+            }
+        })
+        expect(result).toBe(null);
+      })
+
+      it(`should clear cache user transformation`, async () => {
+        await ivmCacheManager.clear();
+        const result = await ivmCacheManager.get(cacheKey, {
+            credentials: {
+                user: username,
+                password: password
+            }
+        })
+        expect(result).toBe(null);
       })
 })

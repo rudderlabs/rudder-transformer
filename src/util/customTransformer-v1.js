@@ -1,12 +1,13 @@
 const ivm = require('isolated-vm');
 
-const { getFactory } = require('./ivmFactory');
+const { getFactory, getCachedFactory } = require('./ivmFactory');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const logger = require('../logger');
 const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
+const useIvmCache = process.env.USE_IVM_CACHE === 'true';
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -63,7 +64,16 @@ async function userTransformHandlerV1(
   (events[0]?.credentials || []).forEach((cred) => {
     credentialsMap[cred.key] = cred.value;
   });
-  const isolatevmFactory = await getFactory(
+  // Choose factory based on environment configuration
+  const factoryFunction = useIvmCache ? getCachedFactory : getFactory;
+
+  logger.debug(`Using IVM factory: ${useIvmCache ? 'cached' : 'standard'}`, {
+    transformationId: userTransformation.id,
+    workspaceId: userTransformation.workspaceId,
+    cacheEnabled: useIvmCache,
+  });
+
+  const isolatevmFactory = await factoryFunction(
     userTransformation.code,
     libraryVersionIds,
     userTransformation.id,

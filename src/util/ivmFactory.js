@@ -11,7 +11,6 @@ const { fetchWithDnsWrapper } = require('./utils');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
-const IS_TRANSFORM_BATCH_V2_ENABLED = process.env.IS_TRANSFORM_BATCH_V2_ENABLED === 'true';
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
@@ -80,7 +79,7 @@ async function createIvm(
     });
   }
 
-  let codeWithWrapper =
+  const codeWithWrapper =
     // eslint-disable-next-line prefer-template
     code +
     `
@@ -191,127 +190,6 @@ async function createIvm(
       return outputEvents
     }
   `;
-
-  if (IS_TRANSFORM_BATCH_V2_ENABLED) {
-    codeWithWrapper =
-      // eslint-disable-next-line prefer-template
-      code +
-      `
-    export async function transformWrapper(transformationPayload) {
-      let events = transformationPayload.events
-      let transformType = transformationPayload.transformationType
-      let outputEvents = []
-      const eventMessages = events.map(event => event.message);
-      const eventsMetadata = {};
-      events.forEach(ev => {
-        eventsMetadata[ev.message.messageId] = ev.metadata;
-      });
-
-      const isObject = (o) => Object.prototype.toString.call(o) === '[object Object]';
-
-      var metadata = function(event) {
-        const eventMetadata = event ? eventsMetadata[event.messageId] || {} : {};
-        return {
-          sourceId: eventMetadata.sourceId,
-          sourceName: eventMetadata.sourceName,
-          workspaceId: eventMetadata.workspaceId,
-          sourceType: eventMetadata.sourceType,
-          sourceCategory: eventMetadata.sourceCategory,
-          destinationId: eventMetadata.destinationId,
-          destinationType: eventMetadata.destinationType,
-          destinationName: eventMetadata.destinationName,
-
-          // TODO: remove non required fields
-
-          namespace: eventMetadata.namespace,
-          originalSourceId: eventMetadata.originalSourceId,
-          trackingPlanId: eventMetadata.trackingPlanId,
-          trackingPlanVersion: eventMetadata.trackingPlanVersion,
-          sourceTpConfig: eventMetadata.sourceTpConfig,
-          mergedTpConfig: eventMetadata.mergedTpConfig,
-          jobId: eventMetadata.jobId,
-          sourceJobId: eventMetadata.sourceJobId,
-          sourceJobRunId: eventMetadata.sourceJobRunId,
-          sourceTaskRunId: eventMetadata.sourceTaskRunId,
-          recordId: eventMetadata.recordId,
-          messageId: eventMetadata.messageId,
-          messageIds: eventMetadata.messageIds,
-          rudderId: eventMetadata.rudderId,
-          receivedAt: eventMetadata.receivedAt,
-          eventName: eventMetadata.eventName,
-          eventType: eventMetadata.eventType,
-          sourceDefinitionId: eventMetadata.sourceDefinitionId,
-          destinationDefinitionId: eventMetadata.destinationDefinitionId,
-          transformationId: eventMetadata.transformationId,
-          transformationVersionId: eventMetadata.transformationVersionId,
-        };
-      }
-      switch(transformType) {
-        case "transformBatch":
-          const firstInputEventMessageId = eventMessages.length > 0 ? eventMessages[0].messageId : null;
-          let transformedEventsBatch;
-          try {
-            // create a new array with the same elements as eventMessages, this is done to avoid mutating the original array
-            transformedEventsBatch = await transformBatch([...eventMessages], metadata);
-          } catch (error) {
-            outputEvents.push(...eventMessages.map(ev => (
-              {error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[ev?.messageId] || {}}
-            )));
-            return outputEvents;
-          }
-          if (!Array.isArray(transformedEventsBatch)) {
-            outputEvents.push(...eventMessages.map(ev => (
-              {error: "returned events from transformBatch(event) is not an array", metadata: eventsMetadata[ev?.messageId] || {}}
-            )));
-            break;
-          }
-          outputEvents = transformedEventsBatch.map(transformedEvent => {
-            const eventMetadata = eventsMetadata[transformedEvent?.messageId] || eventsMetadata[firstInputEventMessageId] || {};
-            if (!isObject(transformedEvent)) {
-              return {error: "returned event in events array from transformBatch(events) is not an object", metadata: eventMetadata};
-            }
-            return {transformedEvent, metadata: eventMetadata};
-          });
-          break;
-        case "transformEvent":
-          await Promise.all(eventMessages.map(async ev => {
-            const currMsgId = ev.messageId;
-            try{
-              let transformedOutput = await transformEvent(ev, metadata);
-              // if func returns null/undefined drop event
-              if (transformedOutput === null || transformedOutput === undefined) return;
-              if (Array.isArray(transformedOutput)) {
-                const producedEvents = [];
-                const encounteredError = !transformedOutput.every(e => {
-                  if (isObject(e)) {
-                    producedEvents.push({transformedEvent: e, metadata: eventsMetadata[currMsgId] || {}});
-                    return true;
-                  } else {
-                    outputEvents.push({error: "returned event in events array from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-                    return false;
-                  }
-                })
-                if (!encounteredError) {
-                  outputEvents.push(...producedEvents);
-                }
-                return;
-              }
-              if (!isObject(transformedOutput)) {
-                return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-              }
-              outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
-              return;
-            } catch (error) {
-              // Handling the errors in versionedRouter.js
-              return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
-            }
-          }));
-          break;
-      }
-      return outputEvents
-    }
-  `;
-  }
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;

@@ -3,7 +3,9 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
-import { addRequestSizeMiddleware, addStatMiddleware, addProfilingMiddleware } from './middleware';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { init as pyroscopeInit, start as pyroscopeStart } from '@pyroscope/nodejs';
+import { addRequestSizeMiddleware, addStatMiddleware } from './middleware';
 import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
 import * as cluster from './util/cluster';
@@ -20,6 +22,11 @@ const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
+pyroscopeInit({
+  appName: 'rudder-transformer-test',
+});
+pyroscopeStart();
+
 configureBatchProcessingDefaults({
   batchSize: parseInt(process.env.BATCH_PROCESSING_BATCH_SIZE || '50', 10), // TODO: we should decrease the default value to 20 after we have enough confidence in the performance of the batch processing
   yieldThreshold: parseInt(process.env.BATCH_PROCESSING_YIELD_THRESHOLD || '5', 10), // Yield control back to the event loop every 5ms by default
@@ -28,7 +35,6 @@ configureBatchProcessingDefaults({
 
 const app = new Koa();
 app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
-addProfilingMiddleware(app);
 addStatMiddleware(app); // Track request time and status codes
 
 // Memory fencing middleware needs to come early in the middleware stack,

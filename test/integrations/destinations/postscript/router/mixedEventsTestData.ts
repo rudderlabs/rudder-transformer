@@ -100,14 +100,14 @@ export const mixedEventsTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
                     type: 'Product Viewed',
                     subscriber_id: 'user123',
-                    occurred_at: '2025-06-23T10:01:00.000Z',
+                    occurred_at: '2025-06-23 10:01:00.000',
                     properties: {
                       product_id: '12345',
                       category: 'Electronics',

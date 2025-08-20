@@ -4,6 +4,9 @@ const ACCESS_TOKEN_CACHE_TTL = process.env.ACCESS_TOKEN_CACHE_TTL
   ? parseInt(process.env.ACCESS_TOKEN_CACHE_TTL, 10)
   : 0;
 
+const CLIENT_ID = process.env.SALESFORCE_CLIENT_ID;
+const CLIENT_SECRET = process.env.SALESFORCE_CLIENT_SECRET;
+
 const ConfigCategory = {
   IDENTIFY_LEAD: {
     name: 'SFIdentifyLeadConfig',
@@ -31,6 +34,8 @@ const LEGACY = 'legacy';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
+  CLIENT_ID,
+  CLIENT_SECRET,
   SF_API_VERSION,
   SF_TOKEN_REQUEST_URL,
   SF_TOKEN_REQUEST_URL_SANDBOX,

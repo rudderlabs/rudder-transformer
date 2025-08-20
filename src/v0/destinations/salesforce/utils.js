@@ -13,6 +13,8 @@ const {
 } = require('../../util');
 const Cache = require('../../util/cache');
 const {
+  CLIENT_ID,
+  CLIENT_SECRET,
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
   SF_TOKEN_REQUEST_URL,
@@ -177,9 +179,7 @@ const getAccessToken = async ({ destination, metadata }) => {
       destination.Config.userName
     }&password=${encodeURIComponent(destination.Config.password)}${encodeURIComponent(
       destination.Config.initialAccessToken,
-    )}&client_id=${destination.Config.consumerKey}&client_secret=${
-      destination.Config.consumerSecret
-    }&grant_type=password`;
+    )}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&grant_type=password`;
     const { httpResponse, processedResponse } = await handleHttpRequest(
       'post',
       authUrl,

@@ -1,9 +1,5 @@
-const { isNil, isObject } = require('lodash');
-const fetch = require('node-fetch');
-const ivm = require('isolated-vm');
 const logger = require('../../logger');
-const stats = require('../stats');
-const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require('../utils');
+const { setupJailWithApis } = require('../ivmApiInjection');
 
 /**
  * Context reset utilities for cached IVM isolates
@@ -17,118 +13,13 @@ const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require
  * @param {Object} credentials Fresh credentials
  */
 async function injectFreshApis(jail, cachedIsolate, credentials) {
-  const trTags = {
-    identifier: 'V1',
+  await setupJailWithApis(jail, {
     transformationId: cachedIsolate.transformationId,
     workspaceId: cachedIsolate.workspaceId,
-  };
-
-  const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
-
-  await jail.set('_ivm', ivm);
-
-  await jail.set(
-    '_fetch',
-    new ivm.Reference(async (resolve, ...args) => {
-      const fetchStartTime = new Date();
-      const fetchTags = { ...trTags };
-      try {
-        const res = await fetchWithDnsWrapper(trTags, ...args);
-        const data = await res.json();
-        fetchTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        logger.debug('Error fetching data', error);
-        fetchTags.isSuccess = 'false';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
-      } finally {
-        stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_fetchV2',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      const fetchStartTime = new Date();
-      const fetchTags = { ...trTags };
-      try {
-        const res = await fetchWithDnsWrapper(fetchTags, ...args);
-        const headersContent = {};
-        res.headers.forEach((value, header) => {
-          headersContent[header] = value;
-        });
-        const data = {
-          url: res.url,
-          status: res.status,
-          headers: headersContent,
-          body: await res.text(),
-        };
-
-        try {
-          data.body = JSON.parse(data.body);
-        } catch (e) {
-          logger.debug('Error parsing JSON', e);
-        }
-        fetchTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        logger.debug('Error fetching data in fetchV2', err);
-        fetchTags.isSuccess = 'false';
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      } finally {
-        stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
-      }
-    }),
-  );
-
-  await jail.set(
-    '_geolocation',
-    new ivm.Reference(async (resolve, reject, ...args) => {
-      const geoStartTime = new Date();
-      const geoTags = { ...trTags };
-      try {
-        if (args.length === 0) {
-          throw new Error('ip address is required');
-        }
-        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
-        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
-          timeout: GEOLOCATION_TIMEOUT_IN_MS,
-        });
-        if (res.status !== 200) {
-          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
-        }
-        const geoData = await res.json();
-        geoTags.isSuccess = 'true';
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
-      } catch (error) {
-        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        geoTags.isSuccess = 'false';
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
-      } finally {
-        stats.timing('geo_call_duration', geoStartTime, geoTags);
-      }
-    }),
-  );
-
-  await jail.set('_getCredential', (key) => {
-    if (isNil(credentials) || !isObject(credentials)) {
-      logger.error(
-        `Error fetching credentials map for transformationID: ${cachedIsolate.transformationId} and workspaceId: ${cachedIsolate.workspaceId}`,
-      );
-      stats.increment('credential_error_total', trTags);
-      return undefined;
-    }
-    if (key === null || key === undefined) {
-      throw new TypeError('Key should be valid and defined');
-    }
-    return credentials[key];
+    credentials,
+    testMode: false, // Context reset doesn't use test mode
+    logs: [], // Not used since testMode is false
   });
-
-  await jail.set('extractStackTrace', (trace, stringLiterals) =>
-    extractStackTraceUptoLastSubstringMatch(trace, stringLiterals),
-  );
 }
 
 /**

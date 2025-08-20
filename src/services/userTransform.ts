@@ -1,7 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
 import { isNil } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
+import { generateUUID } from '@rudderstack/integrations-lib';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -76,7 +76,7 @@ export class UserTransformService {
 
         const generateNewMetadata = (response: UserTransformationResponse) => ({
           ...eventsToProcess[0]?.metadata,
-          messageId: uuidv4(),
+          messageId: generateUUID(),
           eventName: response.transformedEvent.event,
           eventType: response.transformedEvent.type,
         });

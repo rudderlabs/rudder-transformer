@@ -1,4 +1,5 @@
 import {
+  createFailedRecordsIndex,
   checkIfEventIsAbortableInImport,
   createResponsesForAllEvents,
   createSuccessResponse,
@@ -270,6 +271,69 @@ describe('Mixpanel Utils', () => {
     );
   });
 
+  describe('createFailedRecordsIndex', () => {
+    const testCases = [
+      {
+        name: 'when failedRecords is null',
+        failedRecords: null,
+        expectedSize: 0,
+      },
+      {
+        name: 'when failedRecords is empty array',
+        failedRecords: [],
+        expectedSize: 0,
+      },
+      {
+        name: 'when failedRecords is not an array',
+        failedRecords: 'not an array' as any,
+        expectedSize: 0,
+      },
+      {
+        name: 'when failedRecords has valid records',
+        failedRecords: [
+          { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
+          { $insert_id: 'event2', field: 'email', message: 'Invalid email format' },
+          { $insert_id: 'event3', field: 'user_id', message: 'Missing user_id' },
+        ],
+        expectedSize: 3,
+        expectedRecord: {
+          event1: { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
+          event2: { $insert_id: 'event2', field: 'email', message: 'Invalid email format' },
+          event3: { $insert_id: 'event3', field: 'user_id', message: 'Missing user_id' },
+        },
+      },
+      {
+        name: 'when failedRecords has records without $insert_id',
+        failedRecords: [
+          { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
+          { field: 'email', message: 'Invalid email format' }, // No $insert_id
+          { $insert_id: 'event3', field: 'user_id', message: 'Missing user_id' },
+        ],
+        expectedSize: 2, // Only records with $insert_id should be indexed
+        expectedRecord: {
+          event1: { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' },
+          event3: { $insert_id: 'event3', field: 'user_id', message: 'Missing user_id' },
+        },
+      },
+    ];
+
+    test.each(testCases)(
+      'should create correct index $name',
+      ({ failedRecords, expectedSize, expectedRecord }) => {
+        const index = createFailedRecordsIndex(failedRecords);
+        console.log('Failed Records Index:', index);
+
+        expect(index.size).toBe(expectedSize);
+
+        if (expectedRecord) {
+          Object.entries(expectedRecord).forEach(([insertId, record]) => {
+            expect(index.get(insertId)).toEqual(record);
+          });
+        }
+      },
+    );
+  });
+
   describe('checkIfEventIsAbortableInImport', () => {
     const testCases = [
       {
@@ -326,6 +390,66 @@ describe('Mixpanel Utils', () => {
         expect(result).toEqual(expected);
       },
     );
+
+    describe('with optimized index', () => {
+      test('should return same results with index for O(1) lookup', () => {
+        const failedRecords = [
+          { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' } as FailedRecord,
+          { $insert_id: 'event2', field: 'email', message: 'Invalid email format' } as FailedRecord,
+        ];
+        const failedRecordsIndex = createFailedRecordsIndex(failedRecords);
+
+        const event1 = { properties: { $insert_id: 'event1' } } as Event;
+        const event3 = { properties: { $insert_id: 'event3' } } as Event;
+
+        // Test with index
+        const result1WithIndex = checkIfEventIsAbortableInImport(
+          event1,
+          failedRecords,
+          failedRecordsIndex,
+        );
+        const result3WithIndex = checkIfEventIsAbortableInImport(
+          event3,
+          failedRecords,
+          failedRecordsIndex,
+        );
+
+        // Test without index (fallback)
+        const result1WithoutIndex = checkIfEventIsAbortableInImport(event1, failedRecords);
+        const result3WithoutIndex = checkIfEventIsAbortableInImport(event3, failedRecords);
+
+        // Results should be identical
+        expect(result1WithIndex).toEqual(result1WithoutIndex);
+        expect(result3WithIndex).toEqual(result3WithoutIndex);
+
+        // Verify the actual values
+        expect(result1WithIndex).toEqual({
+          isAbortable: true,
+          errorMsg: 'Field: time, Message: Invalid timestamp',
+        });
+        expect(result3WithIndex).toEqual({
+          isAbortable: false,
+          errorMsg: '',
+        });
+      });
+
+      test('should work when only index is provided (no failedRecords array)', () => {
+        const failedRecords = [
+          { $insert_id: 'event1', field: 'time', message: 'Invalid timestamp' } as FailedRecord,
+        ];
+        const failedRecordsIndex = createFailedRecordsIndex(failedRecords);
+
+        const event = { properties: { $insert_id: 'event1' } } as Event;
+
+        // Test with only index (no failedRecords array)
+        const result = checkIfEventIsAbortableInImport(event, null, failedRecordsIndex);
+
+        expect(result).toEqual({
+          isAbortable: true,
+          errorMsg: 'Field: time, Message: Invalid timestamp',
+        });
+      });
+    });
   });
 
   describe('handleApiErrorResponse', () => {

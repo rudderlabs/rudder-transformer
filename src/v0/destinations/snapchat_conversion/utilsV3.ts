@@ -11,7 +11,7 @@ import {
   SnapchatV3Payload,
   SnapchatV3BatchRequestOutput,
   SnapchatV3Headers,
-  SnapchatContent,
+  SnapchatV3Content,
 } from './types';
 
 /**
@@ -211,7 +211,7 @@ export const productsToContentsMapping = (message: RudderMessage) => {
   }
 
   // Process products array using forEach approach
-  const result: SnapchatContent[] = [];
+  const result: SnapchatV3Content[] = [];
   products.forEach((product) => {
     if (isObject(product)) {
       const content = mapProductToContent(product);

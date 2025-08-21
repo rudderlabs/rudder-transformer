@@ -135,7 +135,7 @@ jobs:
           git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
           git push -u origin shared-user-transformer-$UT_TAG_NAME
 
-          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
           echo "SHARED_PR_URL=$PR_URL" >> $GITHUB_ENV
 
       - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
@@ -153,7 +153,7 @@ jobs:
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
           git push -u origin hosted-user-transformer-$UT_TAG_NAME
 
-          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
           echo "HOSTED_PR_URL=$PR_URL" >> $GITHUB_ENV
 
       - name: Update helm charts and raise pull request for enterprise customers on dedicated transformers
@@ -190,7 +190,7 @@ jobs:
           git commit -m "chore: upgrade dedicated user transformers to $TAG_NAME"
           git push -u origin dedicated-user-transformer-$TAG_NAME
 
-          PR_URL=$(gh pr create --fill --json url --jq '.url')
+          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
           echo "DEDICATED_PR_URL=$PR_URL" >> $GITHUB_ENV
 
       - name: Notify Control Plane Team

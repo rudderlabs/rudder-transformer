@@ -554,8 +554,6 @@ async function getCachedFactory(
             transformationId,
           });
 
-          console.log('IVM Factory cache hit');
-
           stats.timing('cached_ivm_create_duration', startTime, {
             result: 'hit',
             transformationId,

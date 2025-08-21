@@ -266,3 +266,199 @@ describe("JS Transformation Error Tests", () => {
     });
   });
 });
+
+describe("JS Transformation Error Tests when using ivm cache", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    process.env.USE_IVM_CACHE = 'true';
+    process.env.IVM_CACHE_STRATEGY = 'isolate';
+  });
+  afterAll(() => {
+    
+  });
+
+  describe("Transformations with transformEvent function with cache", () => {
+    it("semantic error in base transformation - shows up under transformedEvents", async () => {
+      const code = "export function transformEvent(event, metadata) {\n return events; \n}";
+      const trRevCode = contructTrRevCode(code);
+
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValueOnce({
+          status: 200,
+          json: jest.fn().mockResolvedValueOnce(trRevCode)
+      });
+
+      const result = await userTransformHandler(
+        events,
+        versionId,
+        [],
+      );
+      
+      expect(result.length).toBe(2);
+      result.forEach(ev => { expect(ev.error).toEqual(
+        "ReferenceError: events is not defined\n    at transformEvent (base transformation:2:2)"
+      ) });
+
+      const resultCached = await userTransformHandler(
+        events,
+        versionId,
+        [],
+      );
+      
+      expect(resultCached.length).toBe(2);
+      resultCached.forEach(ev => { expect(ev.error).toEqual(
+        "ReferenceError: events is not defined\n    at transformEvent (base transformation:2:2)"
+      ) });
+    });
+
+    it("manually thrown error in base transformation - shows up under transformedEvents", async () => {
+      const code = "export function transformEvent(event, metadata) {\n throw new Error('Manual Error'); return event; \n}";
+      const versionIdManualError = 'versionIdManualError'
+      const trRevCode = contructTrRevCode(code);
+      trRevCode.versionId = versionIdManualError;
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionIdManualError}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValueOnce({
+          status: 200,
+          json: jest.fn().mockResolvedValueOnce(trRevCode)
+      });
+
+
+      const result = await userTransformHandler(
+        events,
+        versionIdManualError,
+        [],
+      );
+      expect(result.length).toBe(2);
+      result.forEach(ev => { expect(ev.error).toEqual(
+        "Error: Manual Error\n    at transformEvent (base transformation:2:8)"
+      ) });
+
+      const resultCached = await userTransformHandler(
+        events,
+        versionIdManualError,
+        [],
+      );
+      expect(resultCached.length).toBe(2);
+      resultCached.forEach(ev => { expect(ev.error).toEqual(
+        "Error: Manual Error\n    at transformEvent (base transformation:2:8)"
+      ) });
+    });
+
+    it("semantic error in user library - shows up under transformedEvents", async () => {
+      const libVid = "l1";
+      const versionIdWithLibVid = 'versionIdWithLibVid'
+      const code = "import {add} from 'jsLib1';\nexport function transformEvent(event, metadata) {\n event['result'] = add(1, 2); return event; \n}";
+      const trRevCode = contructTrRevCode(code);
+      trRevCode.versionId = versionIdWithLibVid;
+
+      const transformerUrlCode = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionIdWithLibVid}`;
+      when(fetch)
+        .calledWith(transformerUrlCode)
+        .mockResolvedValueOnce({
+          status: 200,
+          json: jest.fn().mockResolvedValueOnce(trRevCode)
+      });
+
+
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValueOnce({
+          status: 200,
+          json: jest.fn().mockResolvedValueOnce({
+            name: "js Lib1",
+            handleName: "jsLib1",
+            importName: "jsLib1",
+            code: `
+              export function add(x, y) {
+                return x + z2;
+              }
+            `,
+            language: "javascript",
+          })
+      });
+
+      const result = await userTransformHandler(
+        events,
+        versionIdWithLibVid,
+        [libVid],
+      );
+      
+      expect(result.length).toBe(2);
+      result.forEach(ev => { expect(ev.error).toEqual(
+        "ReferenceError: z2 is not defined\n    at add (library jsLib1:3:28)\n    at transformEvent (base transformation:3:20)"
+      ) });
+
+      const resultCached = await userTransformHandler(
+        events,
+        versionIdWithLibVid,
+        [libVid],
+      );
+      expect(resultCached.length).toBe(2);
+      resultCached.forEach(ev => { expect(ev.error).toEqual(
+        "ReferenceError: z2 is not defined\n    at add (library jsLib1:3:28)\n    at transformEvent (base transformation:3:20)"
+      ) });
+    });
+
+    it("manually thrown error in user library - shows up under transformedEvents", async () => {
+      const libVid = "l2";
+      const versionIdWithLibVid2 = 'versionIdWithLibVid2'
+      const code = "import {add} from 'jsLib2';\nexport function transformEvent(event, metadata) {\n event['result'] = add(1, 2); return event; \n}";
+      const trRevCode = contructTrRevCode(code);
+      trRevCode.versionId = versionIdWithLibVid2;
+
+      const transformerUrlCode = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionIdWithLibVid2}`;
+      when(fetch)
+        .calledWith(transformerUrlCode)
+        .mockResolvedValueOnce({
+          status: 200,
+          json: jest.fn().mockResolvedValueOnce(trRevCode)
+      });
+
+
+      const transformerUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libVid}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue({
+            name: "js Lib2",
+            handleName: "jsLib2",
+            importName: "jsLib2",
+            code: `
+              export function add(x, y) {
+                throw new Error('Manual Error');
+                return x + y;
+              }
+            `,
+            language: "javascript",
+          })
+      });
+
+      const result = await userTransformHandler(
+        events,
+        versionIdWithLibVid2,
+        [libVid],
+      );
+      
+      expect(result.length).toBe(2);
+      result.forEach(ev => { expect(ev.error).toEqual(
+        "Error: Manual Error\n    at add (library jsLib2:3:23)\n    at transformEvent (base transformation:3:20)"
+      ) });
+
+      const resultCached = await userTransformHandler(
+        events,
+        versionIdWithLibVid2,
+        [libVid],
+      );
+      expect(resultCached.length).toBe(2);
+      resultCached.forEach(ev => { expect(ev.error).toEqual(
+        "Error: Manual Error\n    at add (library jsLib2:3:23)\n    at transformEvent (base transformation:3:20)"
+      ) });
+    });
+  });
+});

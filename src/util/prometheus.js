@@ -865,6 +865,12 @@ class Prometheus {
         labelNames: ['identifier', 'transformationId', 'workspaceId'],
       },
       {
+        name: 'cached_ivm_create_duration',
+        help: 'cached_ivm_create_duration',
+        type: 'histogram',
+        labelNames: ['result', 'transformationId'],
+      },
+      {
         name: 'ivm_cache_get_duration',
         help: 'ivm_cache_get_duration',
         type: 'histogram',
@@ -910,7 +916,7 @@ class Prometheus {
         name: 'ivm_cache_size',
         help: 'ivm_cache_size',
         type: 'gauge',
-        labelNames: ['cache'],
+        labelNames: ['cache', 'operation'],
       },
       {
         name: 'fetchV2_call_duration',

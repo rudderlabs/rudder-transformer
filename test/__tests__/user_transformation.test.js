@@ -1334,56 +1334,64 @@ describe("User transformation with IVM cache", () => {
     
   });
 
-  // it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
-  //   const versionId = randomID();
-  //   const inputData = require(`./data/${integration}_input.json`);
+  it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
 
-  //   const respBody = {
-  //     code: `
-  //     export async function transformEvent(event, metadata) {
-  //         try{
-  //           const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
-  //           return res;
-  //         } catch (err) {
-  //           return err;
-  //         }
-  //       }
-  //         `,
-  //     name: "url",
-  //     codeVersion: "1"
-  //   };
-  //   respBody.versionId = versionId;
-  //   const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
-  //   when(fetch)
-  //     .calledWith(transformerUrl)
-  //     .mockResolvedValue({
-  //       status: 200,
-  //       json: jest.fn().mockResolvedValue(respBody)
-  //     });
+    const respBody = {
+      code: `
+      export async function transformEvent(event, metadata) {
+          try{
+            const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
+            return res;
+          } catch (err) {
+            return err;
+          }
+        }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
 
-  //   const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
-  //   const jsonResponse = { type: "json" };
-  //   const textResponse = "200 OK";
-  //   when(fetch)
-  //     .calledWith(dummyUrl)
-  //     .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
-  //     .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
-  //     .mockRejectedValue(new Error("Timed Out"));
+    const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
+    const jsonResponse = { type: "json" };
+    const textResponse = "200 OK";
+    when(fetch)
+      .calledWith(dummyUrl)
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValueOnce(new Error("Timed Out"))
+      // Second execution (cached isolate) - same sequence
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValue(new Error("Timed Out"));
 
-  //   const output = await userTransformHandler(inputData, versionId, []);
-  //   expect(fetch).toHaveBeenCalledWith(transformerUrl);
-  //   expect(fetch).toHaveBeenCalledWith(dummyUrl);
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(transformerUrl);
+    expect(fetch).toHaveBeenCalledWith(dummyUrl);
 
-  //   expect(output[0].transformedEvent.body).toEqual(jsonResponse);
-  //   expect(output[1].transformedEvent.body).toEqual(textResponse);
-  //   expect(output[2].transformedEvent.message).toEqual("Timed Out");
+    expect(output[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(output[1].transformedEvent.body).toEqual(textResponse);
+    expect(output[2].transformedEvent.message).toEqual("Timed Out");
 
-  //   // Should get the same output when using cached isolate vm
-  //   const outputCached = await userTransformHandler(inputData, versionId, []);
-  //   expect(fetch).toHaveBeenCalledWith(transformerUrl);
-  //   expect(fetch).toHaveBeenCalledWith(dummyUrl);
-  //   expect(outputCached).toEqual(output);
-  // });
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(transformerUrl);
+    expect(fetch).toHaveBeenCalledWith(dummyUrl);
+    
+    expect(outputCached[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(outputCached[1].transformedEvent.body).toEqual(textResponse);
+    expect(outputCached[2].transformedEvent.message).toEqual("Timed Out");
+    expect(outputCached.length).toEqual(output.length);
+  });
 
   it(`Simple ${name} async test for V1 transformation - transformBatch`, async () => {
     const versionId = randomID();

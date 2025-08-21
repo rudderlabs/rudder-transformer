@@ -198,6 +198,17 @@ export type SnapchatV3UserData = {
 };
 
 /**
+ * Snapchat content structure for product mapping
+ */
+export type SnapchatContent = {
+  id?: string;
+  item_price?: number | string;
+  quantity?: number;
+  delivery_category?: string;
+  [key: string]: unknown;
+};
+
+/**
  * Custom data for V3 API
  */
 export type SnapchatV3CustomData = {
@@ -210,6 +221,7 @@ export type SnapchatV3CustomData = {
   content_name?: string;
   content_type?: string;
   search_string?: string;
+  contents?: SnapchatContent[];
   [key: string]: unknown;
 };
 

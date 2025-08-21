@@ -11,6 +11,7 @@ import {
   SnapchatV3Payload,
   SnapchatV3BatchRequestOutput,
   SnapchatV3Headers,
+  SnapchatContent,
 } from './types';
 
 /**
@@ -115,9 +116,9 @@ export const batchResponseBuilder = (
 /**
  * Extracts extended information from the message for mobile app events
  * @param message - The message containing the event data
- * @returns Extended information string or undefined if not available
+ * @returns Extended information string array
  */
-export const getExtInfo = (message: RudderMessage): string[] | null => {
+export const getExtInfo = (message: RudderMessage): string[] => {
   const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;
@@ -210,7 +211,7 @@ export const productsToContentsMapping = (message: RudderMessage) => {
   }
 
   // Process products array using forEach approach
-  const result: any[] = [];
+  const result: SnapchatContent[] = [];
   products.forEach((product) => {
     if (isObject(product)) {
       const content = mapProductToContent(product);

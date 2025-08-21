@@ -16,7 +16,6 @@ import {
   ProcessedEvent,
   SubscriberLookupResult,
   PostscriptDestination,
-  PostscriptConnection,
   PostscriptBatchResponse,
 } from './types';
 import { SUBSCRIBERS_ENDPOINT, EXTERNAL_ID_TYPES } from './config';
@@ -29,6 +28,8 @@ import {
   constructPayload,
   extractCustomFields,
   generateExclusionList,
+  isObject,
+  formatTimeStamp,
 } from '../../util';
 import { RudderMessage } from '../../../types';
 
@@ -45,7 +46,9 @@ export const buildHeaders = (apiKey: string): PostscriptHeaders => ({
   'Content-type': 'application/json',
   Accept: 'application/json',
   Authorization: `Bearer ${apiKey}`,
-  'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
+  ...(process.env.POSTSCRIPT_PARTNER_API_KEY && {
+    'X-Postscript-Partner-Key': process.env.POSTSCRIPT_PARTNER_API_KEY,
+  }),
 });
 
 /**
@@ -136,7 +139,7 @@ export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscr
   // Convert Set to Array for extractCustomFields
   const allExclusions = [...exclusionFields, ...Array.from(traitsExclusions)];
 
-  const customPropertiesPayload = {};
+  const customPropertiesPayload: Record<string, unknown> = {};
   extractCustomFields(
     message,
     customPropertiesPayload,
@@ -162,10 +165,6 @@ export const buildSubscriberPayload = (message: RudderMessage): PostscriptSubscr
  * @returns PostScript custom event payload
  */
 export const buildCustomEventPayload = (message: RudderMessage): PostscriptCustomEventPayload => {
-  const payload: PostscriptCustomEventPayload = {
-    type: message.event ?? 'Unknown Event',
-  };
-
   // Map subscriber identification fields
   const subscriberId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.SUBSCRIBER_ID);
   const externalId = getDestinationExternalID(message, EXTERNAL_ID_TYPES.EXTERNAL_ID);
@@ -173,6 +172,18 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
   // Use getFieldValueFromMessage to extract traits consistently
   const traits = getFieldValueFromMessage(message, 'traits') || {};
   const { email, phone } = traits;
+  const timestamp = getFieldValueFromMessage(message, 'timestamp');
+
+  const payload: PostscriptCustomEventPayload = {
+    type: message.event,
+    email,
+    phone,
+    // postscript expect occurred_at in the UTC time format: %Y-%m-%d %H:%M:%S.%f
+    // https://developers.postscript.io/reference/create-custom-event
+    ...(timestamp && {
+      occurred_at: formatTimeStamp(timestamp, 'YYYY-MM-DD HH:mm:ss.SSS') as string,
+    }),
+  };
 
   // Add subscriber identification (prefer subscriber_id, then external_id, then userId as fallback)
   if (subscriberId) {
@@ -183,29 +194,10 @@ export const buildCustomEventPayload = (message: RudderMessage): PostscriptCusto
     payload.subscriber_id = message.userId;
   }
 
-  if (email) payload.email = email;
-  if (phone) payload.phone = phone;
-
-  // Handle timestamp conversion (prefer originalTimestamp, then timestamp)
-  const timestamp =
-    getFieldValueFromMessage(message, 'originalTimestamp') ||
-    getFieldValueFromMessage(message, 'timestamp');
-  if (timestamp) {
-    payload.occurred_at = new Date(timestamp).toISOString();
-  }
-
-  // Extract custom properties from event properties
-  if (message.properties && typeof message.properties === 'object') {
-    const customProperties: Record<string, any> = {};
-    Object.entries(message.properties).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        customProperties[key] = value;
-      }
-    });
-
-    if (Object.keys(customProperties).length > 0) {
-      payload.properties = customProperties;
-    }
+  if (isObject(message.properties)) {
+    payload.properties = removeUndefinedAndNullValues(
+      message.properties as Record<string, unknown>,
+    );
   }
 
   return removeUndefinedAndNullValues(payload) as PostscriptCustomEventPayload;
@@ -233,58 +225,39 @@ export const performSubscriberLookup = async (
     return [];
   }
 
-  try {
-    // Build lookup request with PostScript's filter parameters
-    const headers = buildHeaders(apiKey);
-    const params = new URLSearchParams();
+  // Build lookup request with PostScript's filter parameters
+  const headers = buildHeaders(apiKey);
+  const params = new URLSearchParams();
 
-    // Use phone_in filter for batch phone lookup
-    params.append('phone_in', phoneNumbers.join(','));
+  // https://developers.postscript.io/reference/get-subscribers
+  phoneNumbers.forEach((phone) => {
+    params.append('phone_number__in', phone);
+  });
+  const lookupUrl = `${SUBSCRIBERS_ENDPOINT}?${params.toString()}`;
 
-    // Add pagination to handle large result sets
-    params.append('limit', '100');
+  // Perform batched API call - handleHttpRequest handles all errors gracefully
+  const { processedResponse } = await handleHttpRequest(
+    'GET',
+    lookupUrl,
+    {
+      headers,
+    },
+    {
+      feature: 'subscriber-batch-lookup',
+      destType: 'postscript',
+      endpointPath: '/subscribers',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
 
-    const lookupUrl = `${SUBSCRIBERS_ENDPOINT}?${params.toString()}`;
-
-    // Perform batched API call
-    const { processedResponse } = await handleHttpRequest(
-      'GET',
-      lookupUrl,
-      {
-        headers,
-      },
-      {
-        feature: 'subscriber-batch-lookup',
-        destType: 'postscript',
-        endpointPath: '/subscribers',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-
-    // Parse response and map to lookup results
-    const lookupData = processedResponse.response as PostscriptLookupResponse;
-    const subscribers = lookupData.data || [];
-
-    // Create lookup results mapping each event to subscriber existence
-    return events.map((event) => {
-      const phone = event.identifierValue;
-
-      // Find existing subscriber by phone
-      const existingSubscriber = subscribers.find((sub) => phone && sub.phone_number === phone);
-
-      return {
-        exists: !!existingSubscriber,
-        subscriberId: existingSubscriber?.id,
-        identifierValue: phone ?? '',
-        identifierType: 'phone' as const,
-      };
+  // Handle API errors by returning all events as non-existing subscribers
+  if (processedResponse.status >= 400) {
+    logger.warn('PostScript subscriber lookup failed:', {
+      status: processedResponse.status,
+      response: processedResponse.response,
     });
-  } catch (error) {
-    // Log the error for debugging but continue with fallback behavior
-    logger.warn('PostScript subscriber lookup failed:', error);
 
-    // On error, return all events as non-existing subscribers
     return events.map((event) => ({
       exists: false,
       subscriberId: undefined,
@@ -292,6 +265,25 @@ export const performSubscriberLookup = async (
       identifierType: 'phone' as const,
     }));
   }
+
+  // Parse successful response and map to lookup results
+  const lookupData = processedResponse.response as PostscriptLookupResponse;
+  const subscribers = lookupData.subscribers || [];
+
+  // Create lookup results mapping each event to subscriber existence
+  return events.map((event) => {
+    const phone = event.identifierValue;
+
+    // Find existing subscriber by phone
+    const existingSubscriber = subscribers.find((sub) => phone && sub.phone_number === phone);
+
+    return {
+      exists: !!existingSubscriber,
+      subscriberId: existingSubscriber?.id,
+      identifierValue: phone ?? '',
+      identifierType: 'phone' as const,
+    };
+  });
 };
 
 /**
@@ -308,8 +300,6 @@ export const performSubscriberLookup = async (
 export const batchResponseBuilder = (
   events: ProcessedEvent[],
   destination: PostscriptDestination,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  connection: PostscriptConnection,
 ): PostscriptBatchResponse[] => {
   if (events.length === 0) {
     return [];

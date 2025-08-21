@@ -31,7 +31,7 @@ import {
   getEventTimestamp,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
-import { batchResponseBuilder, getExtInfo } from './utilsV3';
+import { batchResponseBuilder, getExtInfo, productsToContentsMapping } from './utilsV3';
 import {
   SnapchatDestination,
   SnapchatV3ProcessedEvent,
@@ -267,6 +267,14 @@ const buildBasePayload = (message: RudderMessage, event: string): SnapchatV3Payl
     payload.data[0].custom_data.content_ids = getItemIds(message) || undefined;
     payload.data[0].custom_data.value =
       payload.data[0].custom_data.value || getPriceSum(message) || undefined;
+  }
+
+  const contents = productsToContentsMapping(message);
+  if (contents.length > 0) {
+    if (!payload.data[0].custom_data) {
+      payload.data[0].custom_data = {};
+    }
+    payload.data[0].custom_data.contents = contents;
   }
 
   return payload;

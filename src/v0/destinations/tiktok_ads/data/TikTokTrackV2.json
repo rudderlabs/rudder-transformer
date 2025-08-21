@@ -28,6 +28,10 @@
     "sourceKeys": ["properties.contentType", "properties.content_type"]
   },
   {
+    "destKey": "properties.search_string",
+    "sourceKeys": ["properties.query"]
+  },
+  {
     "destKey": "properties.shop_id",
     "sourceKeys": ["properties.shop_id", "properties.shopId"],
     "required": false,
@@ -162,5 +166,88 @@
     "metadata": {
       "type": ["removeSpacesAndDashes", "hashToSha256"]
     }
+  },
+  {
+    "destKey": "user.idfa",
+    "sourceKeys": "context.device.advertisingId",
+    "metadata": {
+      "type": ["trim"]
+    }
+  },
+  {
+    "destKey": "user.idfv",
+    "sourceKeys": "context.device.id"
+  },
+  {
+    "destKey": "user.gaid",
+    "sourceKeys": "context.device.advertisingId",
+    "metadata": {
+      "type": ["trim", "toLower"]
+    }
+  },
+  {
+    "destKey": "user.att_status",
+    "sourceKeys": "properties.att_status",
+    "metadata": {
+      "type": "toString",
+      "allowedKeyCheck": [
+        {
+          "sourceVal": ["AUTHORIZED", "DENIED", "NOT_DETERMINED", "RESTRICTED", "NOT_APPLICABLE"],
+          "type": "toUpperCase"
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "app.app_id",
+    "sourceKeys": ["properties.appId", "properties.app_id", "context.app.namespace"]
+  },
+  {
+    "destKey": "app.app_name",
+    "sourceKeys": ["properties.appName", "properties.app_name", "context.app.name"]
+  },
+  {
+    "destKey": "app.app_version",
+    "sourceKeys": ["properties.appVersion", "properties.app_version", "context.app.version"]
+  },
+  {
+    "destKey": "ad.callback",
+    "sourceKeys": ["properties.callBack"]
+  },
+  {
+    "destKey": "ad.campaign_id",
+    "sourceKeys": ["properties.campaignId", "properties.campaign_id"]
+  },
+  {
+    "destKey": "ad.ad_id",
+    "sourceKeys": ["properties.adId", "properties.ad_id"]
+  },
+  {
+    "destKey": "ad.creative_id",
+    "sourceKeys": ["properties.creativeId", "properties.creative_id"]
+  },
+  {
+    "destKey": "ad.is_retargeting",
+    "sourceKeys": ["properties.isRetargeting", "properties.is_retargeting"]
+  },
+  {
+    "destKey": "ad.attributed",
+    "sourceKeys": ["properties.attributed"]
+  },
+  {
+    "destKey": "ad.attribution_type",
+    "sourceKeys": ["properties.attributionType", "properties.attribution_type"]
+  },
+  {
+    "destKey": "ad.attribution_provider",
+    "sourceKeys": ["properties.attributionProvider", "properties.attribution_provider"]
+  },
+  {
+    "destKey": "lead.lead_id",
+    "sourceKeys": ["properties.leadId", "properties.lead_id"]
+  },
+  {
+    "destKey": "lead.lead_event_source",
+    "sourceKeys": ["properties.leadEventSource", "properties.lead_event_source"]
   }
 ]

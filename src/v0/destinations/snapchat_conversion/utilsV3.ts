@@ -2,7 +2,7 @@ import { BatchUtils } from '@rudderstack/workflow-engine';
 import { get } from 'lodash';
 import moment from 'moment-timezone';
 import { MAX_BATCH_SIZE } from './config';
-import { isAppleFamily } from '../../util';
+import { isAppleFamily, isObject, removeUndefinedAndNullValues, isEmptyObject } from '../../util';
 import { Metadata, RudderMessage } from '../../../types';
 import {
   SnapchatV3ProcessedEvent,
@@ -189,4 +189,36 @@ export const getExtInfo = (message: RudderMessage): string[] | null => {
   ];
 
   return extInfo.map((value) => (value == null ? '' : value));
+};
+
+export const productsToContentsMapping = (message: RudderMessage) => {
+  const products = get(message, 'properties.products');
+  // Extract content mapping logic into a pure function
+  const mapProductToContent = (product) =>
+    removeUndefinedAndNullValues({
+      id: product?.product_id || product?.sku || product?.id,
+      item_price: product?.price,
+      quantity: product?.quantity,
+      delivery_category: product?.delivery_category,
+    });
+
+  // Handle case where products array is empty or doesn't exist
+  if (!Array.isArray(products) || products.length === 0) {
+    const properties = get(message, 'properties');
+    const content = mapProductToContent(properties);
+    return isEmptyObject(content) ? [] : [content];
+  }
+
+  // Process products array using forEach approach
+  const result: any[] = [];
+  products.forEach((product) => {
+    if (isObject(product)) {
+      const content = mapProductToContent(product);
+      if (!isEmptyObject(content)) {
+        result.push(content);
+      }
+    }
+  });
+
+  return result;
 };

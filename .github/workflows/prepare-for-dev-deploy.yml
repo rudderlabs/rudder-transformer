@@ -37,7 +37,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -91,7 +91,7 @@ jobs:
     needs: [generate-tag-names, build-transformer-image]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
 
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces
@@ -109,7 +109,7 @@ jobs:
     needs: [generate-tag-names, build-transformer-image]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
 
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces

@@ -1,4 +1,6 @@
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { wrapWithLabels } = require('@pyroscope/nodejs');
 const stats = require('./util/stats');
 
 function durationMiddleware() {
@@ -47,7 +49,24 @@ function addRequestSizeMiddleware(app) {
   });
 }
 
+function addProfilingLabelsMiddleware(app) {
+  app.use((ctx, next) => {
+    let resp;
+    wrapWithLabels(
+      {
+        integration_type: ctx.request.url.includes('source') ? 'source' : 'destination',
+        integration_name: getDestTypeFromContext(ctx),
+      },
+      () => {
+        resp = next();
+      },
+    );
+    return resp;
+  });
+}
+
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
+  addProfilingLabelsMiddleware,
 };

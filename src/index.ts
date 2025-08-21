@@ -5,7 +5,11 @@ import bodyParser from 'koa-bodyparser';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { init as pyroscopeInit, start as pyroscopeStart } from '@pyroscope/nodejs';
-import { addRequestSizeMiddleware, addStatMiddleware } from './middleware';
+import {
+  addRequestSizeMiddleware,
+  addStatMiddleware,
+  addProfilingLabelsMiddleware,
+} from './middleware';
 import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
 import * as cluster from './util/cluster';
@@ -23,7 +27,26 @@ const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 pyroscopeInit({
-  appName: 'rudder-transformer-test',
+  // https://grafana.com/docs/pyroscope/latest/configure-client/language-sdks/nodejs/#configuration-options
+
+  appName: process.env.PYROSCOPE_APPLICATION_NAME || 'rudder-transformer',
+  serverAddress: process.env.PYROSCOPE_SERVER_ADDRESS || 'http://localhost:4040', // This should come from devops setup
+  flushIntervalMs: parseInt(process.env.PYROSCOPE_FLUSH_INTERVAL_MS || '1000', 10),
+  heap: {
+    samplingIntervalBytes: parseInt(
+      process.env.PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES || '512',
+      10,
+    ),
+    stackDepth: parseInt(process.env.PYROSCOPE_HEAP_STACK_DEPTH || '64', 10),
+  },
+  wall: {
+    samplingDurationMs: parseInt(process.env.PYROSCOPE_WALL_SAMPLING_DURATION_MS || '1000', 10),
+    samplingIntervalMicros: parseInt(
+      process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS || '1000',
+      10,
+    ),
+    collectCpuTime: process.env.PYROSCOPE_WALL_COLLECT_CPU_TIME === 'true',
+  },
 });
 pyroscopeStart();
 
@@ -60,6 +83,7 @@ metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
 app.use(bodyParser({ jsonLimit: '200mb' }));
 addRequestSizeMiddleware(app); // Track request and response sizes
+addProfilingLabelsMiddleware(app);
 
 addSwaggerRoutes(app);
 

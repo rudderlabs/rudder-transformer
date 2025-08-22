@@ -75,9 +75,14 @@ const hashUserField = (user) => {
  * @param {*} message
  * @returns (string): The resolved, valid event source — one of 'web', 'app', 'offline', or 'crm'. Defaults to 'web' if none are valid.
  */
-const getEventSource = ({ properties }) => {
+const getEventSource = ({ properties, channel }) => {
   const supportedSources = ['web', 'app', 'offline', 'crm'];
-
+  const sourceMapping = {
+    web: 'web',
+    mobile: 'app',
+    server: 'offline',
+    sources: 'offline',
+  };
   const { eventSource, event_source: eventSourceV2 } = properties || {};
 
   // Helper function to resolve source with mapping
@@ -89,10 +94,16 @@ const getEventSource = ({ properties }) => {
       return source;
     }
 
+    if (sourceMapping[source]) {
+      return sourceMapping[source];
+    }
+
     return null;
   };
 
-  return resolveSource(eventSource) || resolveSource(eventSourceV2) || 'web';
+  return (
+    resolveSource(eventSource) || resolveSource(eventSourceV2) || resolveSource(channel) || 'web'
+  );
 };
 
 module.exports = { getContents, hashUserField, getEventSource };

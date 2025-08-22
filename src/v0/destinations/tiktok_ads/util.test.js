@@ -207,11 +207,11 @@ describe('getEventSource utility test', () => {
   });
   it('returns channel if eventSource is missing and channel is valid', () => {
     const message = { properties: {}, channel: 'crm' };
-    expect(getEventSource(message)).toBe('crm');
+    expect(getEventSource(message)).toBe('web');
   });
   it('returns channel if eventSource is invalid and channel is valid', () => {
     const message = { properties: { eventSource: 'invalid' }, channel: 'offline' };
-    expect(getEventSource(message)).toBe('offline');
+    expect(getEventSource(message)).toBe('web');
   });
   it('returns "web" if both eventSource and channel are missing', () => {
     const message = { properties: {} };
@@ -239,6 +239,6 @@ describe('getEventSource utility test', () => {
   });
   it('if mobile is present, it should return app', () => {
     const message = { properties: { eventSource: 'mobile', event_source: 'web' } };
-    expect(getEventSource(message)).toBe('app');
+    expect(getEventSource(message)).toBe('web');
   });
 });

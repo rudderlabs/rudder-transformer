@@ -152,7 +152,15 @@ class IvmCache {
    */
   clear() {
     this.cache.clear();
-    this.stats.currentSize = 0;
+    // Reset all stats when clearing cache
+    this.stats = {
+      hits: 0,
+      misses: 0,
+      sets: 0,
+      evictions: 0,
+      ttlExpiries: 0,
+      currentSize: 0,
+    };
     logger.info('IVM Cache cleared');
   }
 

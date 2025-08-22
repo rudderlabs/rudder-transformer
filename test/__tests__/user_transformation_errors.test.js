@@ -6,6 +6,7 @@ const fetch = require("node-fetch", () => jest.fn());
 const {
   userTransformHandler
 } = require("../../src/util/customTransformer");
+const ivmCacheManager = require("../../src/util/ivmCache/manager");
 
 const events = [
   {
@@ -272,9 +273,15 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
     jest.resetAllMocks();
     process.env.USE_IVM_CACHE = 'true';
     process.env.IVM_CACHE_STRATEGY = 'isolate';
+    ivmCacheManager.initializeStrategy();
   });
-  afterAll(() => {
-    
+  afterEach(() => {
+    expect(ivmCacheManager.getStats().hits).toEqual(1);
+    expect(ivmCacheManager.getStats().misses).toEqual(1);
+    expect(ivmCacheManager.getStats().sets).toEqual(1);
+    if (ivmCacheManager && ivmCacheManager.clear) {
+      ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
+    }
   });
 
   describe("Transformations with transformEvent function with cache", () => {

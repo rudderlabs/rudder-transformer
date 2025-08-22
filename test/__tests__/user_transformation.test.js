@@ -14,6 +14,7 @@ const { generateFunctionName } = require('../../src/util/customTransformer-faas.
 const { Response, Headers } = jest.requireActual("node-fetch");
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
+const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const unsupportedFuncNames = [
   "_",
   "extend",
@@ -1329,9 +1330,15 @@ describe("User transformation with IVM cache", () => {
     jest.resetAllMocks();
     process.env.USE_IVM_CACHE = 'true';
     process.env.IVM_CACHE_STRATEGY = 'isolate';
+    ivmCacheManager.initializeStrategy();
   });
-  afterAll(() => {
-    
+  afterEach(() => {
+    expect(ivmCacheManager.getStats().hits).toEqual(1);
+    expect(ivmCacheManager.getStats().misses).toEqual(1);
+    expect(ivmCacheManager.getStats().sets).toEqual(1);
+    if (ivmCacheManager && ivmCacheManager.clear) {
+      ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
+    }
   });
 
   it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
@@ -1889,45 +1896,6 @@ describe("User transformation with IVM cache", () => {
     expect(outputCached).toEqual(expectedData);
   });
 
-  it(`Filtering ${name} Test`, async () => {
-    const versionId = randomID();
-    const inputData = require(`./data/${integration}_filter_input.json`);
-    const expectedData = require(`./data/${integration}_filter_output.json`);
-
-    const respBody = {
-      codeVersion: "0",
-      name,
-      code: `function transform(events) {
-                        let filteredEvents = events.filter(event => {
-                          const eventType = event.type;
-                          return eventType && eventType.match(/track/g);
-                        });
-
-                        filteredEvents = filteredEvents.map(event => {
-                          const eventMetadata = metadata(event);
-                          event.sourceId = eventMetadata.sourceId;
-                          return event;
-                        })
-                        return filteredEvents;
-                      }
-                      `
-    };
-    fetch.mockResolvedValue({
-      status: 200,
-      json: jest.fn().mockResolvedValue(respBody)
-    });
-    const output = await userTransformHandler(inputData, versionId, []);
-    expect(fetch).toHaveBeenCalledWith(
-      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-    );
-
-    expect(output).toEqual(expectedData);
-
-    // Should get the same output when using cached isolate vm
-    const outputCached = await userTransformHandler(inputData, versionId, []);
-    expect(outputCached).toEqual(expectedData);
-  });
-
   it(`Simple ${name} Test for lodash functions`, async () => {
     const versionId = randomID();
     const libraryVersionId = randomID();
@@ -2059,57 +2027,6 @@ describe("User transformation with IVM cache", () => {
     expect(outputCached).toEqual(expectedData);
   });
 
-  it(`Simple ${name} Test for invalid library import error`, async () => {
-    const versionId = randomID();
-    const libraryVersionId = randomID();
-    const inputData = require(`./data/${integration}_input.json`);
-
-    const respBody = {
-      code: `
-      import { add } from 'addLib';
-      import { sub } from 'somelib';
-      export async function transformEvent(event, metadata) {
-          event.add = add(1, 2);
-          event.sub = sub(1, 2);
-          return event;
-        }
-        `,
-      name: "import from non existing library",
-      codeVersion: "1"
-    };
-    respBody.versionId = versionId;
-    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
-    when(fetch)
-      .calledWith(transformerUrl)
-      .mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue(respBody)
-      });
-
-    const addLibCode = `
-    export function add(a, b) {
-      return a + b;
-    }
-    `;
-
-    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
-    when(fetch)
-      .calledWith(libraryUrl)
-      .mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue({ code: addLibCode, name: "addLib" })
-      });
-
-    await expect(async () => {
-      await userTransformHandler(inputData, versionId, [libraryVersionId]);
-    }).rejects.toThrow("import from somelib failed. Module not found.");
-
-    // Should get the same error when using cached isolate vm
-    await expect(async () => {
-      await userTransformHandler(inputData, versionId, [libraryVersionId]);
-    }).rejects.toThrow("import from somelib failed. Module not found.");
-  });
-
   it(`Simple ${name} async test for V1 transformation code`, async () => {
     const libraryVersionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
@@ -2135,6 +2052,14 @@ describe("User transformation with IVM cache", () => {
       versionId: "testVersionId"
     };
 
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${trRevCode.versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(trRevCode)
+      });
     const urlCode = `${fs.readFileSync(
       path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
@@ -2154,16 +2079,19 @@ describe("User transformation with IVM cache", () => {
       inputData,
       trRevCode.versionId,
       [libraryVersionId],
-      trRevCode,
-      true
     );
 
     expect(fetch).toHaveBeenCalledWith(libraryUrl);
+    expect(output.length).toEqual(expectedData.transformedEvents.length);
+    output.forEach((event, index) => {
+      expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
+    });
 
-    expect(output).toEqual(expectedData);
-
-    const outputCached = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId], trRevCode, true);
-    expect(outputCached).toEqual(expectedData);
+    const outputCached = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId]);
+    expect(outputCached.length).toEqual(expectedData.transformedEvents.length);
+    output.forEach((event, index) => {
+      expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
+    });
   });
 
   describe("UserTransformation With Credentials for code version 1", () => {

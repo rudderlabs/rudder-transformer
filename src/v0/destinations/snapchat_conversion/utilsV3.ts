@@ -1,29 +1,59 @@
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const { get } = require('lodash');
-const moment = require('moment-timezone');
-const { MAX_BATCH_SIZE } = require('./config');
-const {
-  isAppleFamily,
-  isObject,
-  removeUndefinedAndNullValues,
-  isEmptyObject,
-} = require('../../util');
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import { get } from 'lodash';
+import moment from 'moment-timezone';
+import { MAX_BATCH_SIZE } from './config';
+import { isAppleFamily, isObject, removeUndefinedAndNullValues, isEmptyObject } from '../../util';
+import { Metadata, RudderMessage } from '../../../types';
+import {
+  SnapchatV3ProcessedEvent,
+  SnapchatDestination,
+  SnapchatV3Params,
+  SnapchatV3Payload,
+  SnapchatV3BatchRequestOutput,
+  SnapchatV3Headers,
+  SnapchatV3Content,
+} from './types';
 
-const getMergedPayload = (batch) => ({
-  data: batch.flatMap((input) => input.message.body.JSON.data),
+/**
+ * Merges multiple payloads into a single Snapchat V3 payload
+ * @param batch - Array of processed events to merge
+ * @returns A single payload with combined data from all events
+ */
+export const getMergedPayload = (batch: SnapchatV3ProcessedEvent[]): SnapchatV3Payload => ({
+  data: batch.flatMap((input: SnapchatV3ProcessedEvent) => {
+    const json = input.message.body.JSON;
+    return json?.data || [];
+  }),
 });
 
-const getMergedMetadata = (batch) => batch.map((input) => input.metadata);
+/**
+ * Extracts metadata from a batch of processed events
+ * @param batch - Array of processed events
+ * @returns Array of metadata objects from each event
+ */
+export const getMergedMetadata = (batch: SnapchatV3ProcessedEvent[]): Partial<Metadata>[] =>
+  batch.map((input) => input.metadata);
 
-const buildBatchedResponse = (
-  mergedPayload,
-  endpoint,
-  headers,
-  params,
-  method,
-  metadata,
-  destination,
-) => ({
+/**
+ * Builds a batched response for Snapchat V3 API
+ * @param mergedPayload - The combined payload from multiple events
+ * @param endpoint - The API endpoint to send the request to
+ * @param headers - HTTP headers for the request
+ * @param params - URL parameters for the request
+ * @param method - HTTP method (POST, GET, etc.)
+ * @param metadata - Array of metadata objects from each event
+ * @param destination - Destination configuration
+ * @returns A formatted batch request object ready to be sent to Snapchat
+ */
+export const buildBatchedResponse = (
+  mergedPayload: SnapchatV3Payload,
+  endpoint: string,
+  headers: SnapchatV3Headers,
+  params: SnapchatV3Params,
+  method: string,
+  metadata: Partial<Metadata>[],
+  destination: SnapchatDestination,
+): SnapchatV3BatchRequestOutput => ({
   batchedRequest: {
     body: {
       JSON: mergedPayload,
@@ -44,7 +74,10 @@ const buildBatchedResponse = (
   statusCode: 200,
   destination,
 });
-const processBatch = (eventsChunk) => {
+
+export const processBatch = (
+  eventsChunk: SnapchatV3ProcessedEvent[],
+): SnapchatV3BatchRequestOutput[] => {
   if (!eventsChunk?.length) {
     return [];
   }
@@ -64,19 +97,34 @@ const processBatch = (eventsChunk) => {
     );
   });
 };
-const batchResponseBuilder = (webOrOfflineEventsChunk, mobileEventsChunk) => {
+
+/**
+ * Builds batched responses for both web/offline and mobile events
+ * @param webOrOfflineEventsChunk - Array of web or offline events
+ * @param mobileEventsChunk - Array of mobile app events
+ * @returns Array of batched request objects for different event types
+ */
+export const batchResponseBuilder = (
+  webOrOfflineEventsChunk: SnapchatV3ProcessedEvent[],
+  mobileEventsChunk: SnapchatV3ProcessedEvent[],
+): SnapchatV3BatchRequestOutput[] => {
   const webOrOfflineEventsResp = processBatch(webOrOfflineEventsChunk);
   const mobileEventsResp = processBatch(mobileEventsChunk);
   return [...webOrOfflineEventsResp, ...mobileEventsResp];
 };
 
-const getExtInfo = (message) => {
-  const getValue = (path) => {
+/**
+ * Extracts extended information from the message for mobile app events
+ * @param message - The message containing the event data
+ * @returns Extended information string array
+ */
+export const getExtInfo = (message: RudderMessage): string[] => {
+  const getValue = (path: string): string | null => {
     const value = get(message, path);
     return value != null ? String(value) : null;
   };
 
-  const extInfoVersion = isAppleFamily(message.context?.device?.type) ? 'i2' : 'a2';
+  const extInfoVersion = isAppleFamily(getValue('context.device.type')) ? 'i2' : 'a2';
 
   // App related information
   const appInfo = {
@@ -110,9 +158,16 @@ const getExtInfo = (message) => {
     locale: getValue('context.locale'),
     timezone: getValue('context.timezone'),
     carrier: getValue('context.network.carrier'),
+    timezoneAbbr: null as string | null,
   };
   if (environmentInfo.timezone) {
-    environmentInfo.timezoneAbbr = moment().tz(environmentInfo.timezone)?.format('z');
+    try {
+      environmentInfo.timezoneAbbr = moment.tz.zone(environmentInfo.timezone)
+        ? moment().tz(environmentInfo.timezone).format('z')
+        : null;
+    } catch {
+      environmentInfo.timezoneAbbr = null;
+    }
   }
 
   const extInfo = [
@@ -133,10 +188,11 @@ const getExtInfo = (message) => {
     deviceInfo.freeStorage,
     environmentInfo.timezone,
   ];
+
   return extInfo.map((value) => (value == null ? '' : value));
 };
 
-const productsToContentsMapping = (message) => {
+export const productsToContentsMapping = (message: RudderMessage) => {
   const products = get(message, 'properties.products');
   // Extract content mapping logic into a pure function
   const mapProductToContent = (product) =>
@@ -155,7 +211,7 @@ const productsToContentsMapping = (message) => {
   }
 
   // Process products array using forEach approach
-  const result = [];
+  const result: SnapchatV3Content[] = [];
   products.forEach((product) => {
     if (isObject(product)) {
       const content = mapProductToContent(product);
@@ -166,10 +222,4 @@ const productsToContentsMapping = (message) => {
   });
 
   return result;
-};
-
-module.exports = {
-  batchResponseBuilder,
-  getExtInfo,
-  productsToContentsMapping,
 };

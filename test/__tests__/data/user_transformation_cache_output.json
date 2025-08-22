@@ -1,0 +1,50 @@
+[
+  {
+    "transformedEvent": {
+      "anonymousId": "00000000000000000000000000",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "anonymousId": "12345",
+          "email": "test@rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+      },
+      "event": "test track event GA3",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "properties": {
+        "user_actual_id": 12345,
+        "user_actual_role": "system_admin, system_user"
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z",
+      "type": "track",
+      "userId": "12345"
+    }
+  },
+  {
+    "error": "non-standard event"
+  }
+]

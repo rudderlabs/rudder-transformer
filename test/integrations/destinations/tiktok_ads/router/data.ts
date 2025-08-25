@@ -2747,7 +2747,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     event_source_id: 'dummyPixelCode',
-                    event_source: 'web',
+                    event_source: 'app',
                     partner_name: 'RudderStack',
                     data: [
                       {

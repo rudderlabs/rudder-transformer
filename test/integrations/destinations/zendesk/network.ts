@@ -1626,67 +1626,6 @@ export const networkCallsData = [
         'Content-Type': 'application/json',
       },
       method: 'GET',
-      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=abcd-144',
-    },
-    httpRes: {
-      data: {
-        count: 1,
-        facets: null,
-        next_page: null,
-        previous_page: null,
-        users: [
-          {
-            active: true,
-            alias: null,
-            created_at: '2022-11-24T09:03:54Z',
-            custom_role_id: null,
-            default_group_id: null,
-            details: null,
-            email: 'test1000@email.com',
-            external_id: 'abcd-144',
-            iana_time_zone: 'Asia/Kolkata',
-            id: 900113780483,
-            last_login_at: null,
-            locale: 'en-US',
-            locale_id: 1,
-            moderator: false,
-            name: 'name-1000 user',
-            notes: null,
-            only_private_comments: false,
-            organization_id: null,
-            phone: null,
-            photo: null,
-            report_csv: false,
-            restricted_agent: true,
-            result_type: 'user',
-            role: 'end-user',
-            role_type: null,
-            shared: false,
-            shared_agent: false,
-            shared_phone_number: null,
-            signature: null,
-            suspended: false,
-            tags: [],
-            ticket_restriction: 'requested',
-            time_zone: 'Asia/Kolkata',
-            two_factor_auth_enabled: false,
-            updated_at: '2022-11-24T09:03:54Z',
-            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
-            user_fields: {},
-            verified: true,
-          },
-        ],
-      },
-      status: 200,
-    },
-  },
-  {
-    httpReq: {
-      headers: {
-        Authorization: authHeader1,
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
       url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities',
     },
     httpRes: {
@@ -1830,68 +1769,6 @@ export const networkCallsData = [
     },
     httpRes: { data: { user: {} }, status: 200 },
   },
-  // network call to get id for userId = test-user-id
-  {
-    httpReq: {
-      headers: {
-        Authorization: authHeader1,
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id',
-    },
-    httpRes: {
-      data: {
-        count: 1,
-        facets: null,
-        next_page: null,
-        previous_page: null,
-        users: [
-          {
-            active: true,
-            alias: null,
-            created_at: '2022-11-24T09:03:54Z',
-            custom_role_id: null,
-            default_group_id: null,
-            details: null,
-            email: 'test1000@email.com',
-            external_id: 'test-user-id',
-            iana_time_zone: 'Asia/Kolkata',
-            id: 911113780483,
-            last_login_at: null,
-            locale: 'en-US',
-            locale_id: 1,
-            moderator: false,
-            name: 'name-1000 user',
-            notes: null,
-            only_private_comments: false,
-            organization_id: null,
-            phone: null,
-            photo: null,
-            report_csv: false,
-            restricted_agent: true,
-            result_type: 'user',
-            role: 'end-user',
-            role_type: null,
-            shared: false,
-            shared_agent: false,
-            shared_phone_number: null,
-            signature: null,
-            suspended: false,
-            tags: [],
-            ticket_restriction: 'requested',
-            time_zone: 'Asia/Kolkata',
-            two_factor_auth_enabled: false,
-            updated_at: '2022-11-24T09:03:54Z',
-            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
-            user_fields: {},
-            verified: true,
-          },
-        ],
-      },
-      status: 200,
-    },
-  },
   // network call to get identities for user test-user-id
   {
     httpReq: {
@@ -1950,68 +1827,6 @@ export const networkCallsData = [
       status: 200,
     },
   },
-  // network call to get id for user-id = test-user-id-no-primary-email
-  {
-    httpReq: {
-      headers: {
-        Authorization: authHeader1,
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id-no-primary-email',
-    },
-    httpRes: {
-      data: {
-        count: 1,
-        facets: null,
-        next_page: null,
-        previous_page: null,
-        users: [
-          {
-            active: true,
-            alias: null,
-            created_at: '2022-11-24T09:03:54Z',
-            custom_role_id: null,
-            default_group_id: null,
-            details: null,
-            email: 'test1000@email.com',
-            external_id: 'test-user-id',
-            iana_time_zone: 'Asia/Kolkata',
-            id: 911113781483,
-            last_login_at: null,
-            locale: 'en-US',
-            locale_id: 1,
-            moderator: false,
-            name: 'name-1000 user',
-            notes: null,
-            only_private_comments: false,
-            organization_id: null,
-            phone: null,
-            photo: null,
-            report_csv: false,
-            restricted_agent: true,
-            result_type: 'user',
-            role: 'end-user',
-            role_type: null,
-            shared: false,
-            shared_agent: false,
-            shared_phone_number: null,
-            signature: null,
-            suspended: false,
-            tags: [],
-            ticket_restriction: 'requested',
-            time_zone: 'Asia/Kolkata',
-            two_factor_auth_enabled: false,
-            updated_at: '2022-11-24T09:03:54Z',
-            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
-            user_fields: {},
-            verified: true,
-          },
-        ],
-      },
-      status: 200,
-    },
-  },
   // network call to get identities for user test-user-id-no-primary-email
   {
     httpReq: {
@@ -2053,68 +1868,6 @@ export const networkCallsData = [
         ],
         next_page: null,
         previous_page: null,
-      },
-      status: 200,
-    },
-  },
-  // network call to get id for user-id = test-user-id-with-same-primary-email
-  {
-    httpReq: {
-      headers: {
-        Authorization: authHeader1,
-        'Content-Type': 'application/json',
-      },
-      method: 'GET',
-      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/search.json?query=test-user-id-with-same-primary-email',
-    },
-    httpRes: {
-      data: {
-        count: 1,
-        facets: null,
-        next_page: null,
-        previous_page: null,
-        users: [
-          {
-            active: true,
-            alias: null,
-            created_at: '2022-11-24T09:03:54Z',
-            custom_role_id: null,
-            default_group_id: null,
-            details: null,
-            email: 'test1000@email.com',
-            external_id: 'test-user-id',
-            iana_time_zone: 'Asia/Kolkata',
-            id: 911113781481,
-            last_login_at: null,
-            locale: 'en-US',
-            locale_id: 1,
-            moderator: false,
-            name: 'name-1000 user',
-            notes: null,
-            only_private_comments: false,
-            organization_id: null,
-            phone: null,
-            photo: null,
-            report_csv: false,
-            restricted_agent: true,
-            result_type: 'user',
-            role: 'end-user',
-            role_type: null,
-            shared: false,
-            shared_agent: false,
-            shared_phone_number: null,
-            signature: null,
-            suspended: false,
-            tags: [],
-            ticket_restriction: 'requested',
-            time_zone: 'Asia/Kolkata',
-            two_factor_auth_enabled: false,
-            updated_at: '2022-11-24T09:03:54Z',
-            url: 'https://rudderstack6787.zendesk.com/api/v2/users/10865192864273.json',
-            user_fields: {},
-            verified: true,
-          },
-        ],
       },
       status: 200,
     },
@@ -2174,6 +1927,372 @@ export const networkCallsData = [
         next_page: null,
         previous_page: null,
       },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example124@email.com',
+          name: 'abcd124',
+          external_id: 'abcd-124',
+          user_fields: { id: 'abcd-124' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 26515899281693,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/26515899281693.json',
+          name: 'abcd124',
+          email: 'example124@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to remove user from organisation membership
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/organization_memberships/900004877903.json',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'johnwick@example.com',
+          name: 'John Wick',
+          external_id: 'abcd-124',
+          user_fields: { id: 'abcd-124', country: 'UK' },
+        },
+      },
+      headers: {
+        Authorization: authHeader3,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 26515899281693,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/26515899281693.json',
+          name: 'John Wick',
+          email: 'johnwick@example.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'johnwick@example.com',
+          name: 'John Wick',
+          external_id: 'abcd-124',
+          user_fields: { id: 'abcd-124', country: 'UK' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader3,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 26515899281693,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/26515899281693.json',
+          name: 'John Wick',
+          email: 'johnwick@example.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          name: 'abcd124',
+          external_id: 'abcd-124',
+          user_fields: { id: 'abcd-124' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 26515899281693,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/26515899281693.json',
+          name: 'abcd124',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example124@email.com',
+          name: 'name_abcd144',
+          external_id: 'abcd-144',
+          user_fields: { id: 'abcd-144' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 900113780483,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483.json',
+          name: 'name_abcd144',
+          email: 'example124@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to update primary email
+  {
+    httpReq: {
+      data: { identity: { type: 'email', value: 'example124@email.com', verified: true } },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7535981118877',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example@email.com',
+          name: 'test-user-name',
+          external_id: 'test-user-id',
+          user_fields: { id: 'test-user-id' },
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 911113780483,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/911113780483.json',
+          name: 'test-user-name',
+          email: 'example@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to update primary email
+  {
+    httpReq: {
+      data: { identity: { type: 'email', value: 'example@email.com', verified: false } },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/911113780483/identities/7534173321117',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example@email.com',
+          name: 'test-user-name',
+          external_id: 'test-user-id-no-primary-email',
+          user_fields: { id: 'test-user-id-no-primary-email' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 9111137804831,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/9111137804831.json',
+          name: 'test-user-name',
+          email: 'example@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example@email.com',
+          name: 'test-user-name',
+          external_id: 'test-user-id-with-same-primary-email',
+          user_fields: { id: 'test-user-id-with-same-primary-email' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 8111137804831,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/8111137804831.json',
+          name: 'test-user-name',
+          email: 'example@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user
+  {
+    httpReq: {
+      data: {
+        user: {
+          email: 'example115@email.com',
+          name: 'test-user-name',
+          external_id: 'test-user-id-with-secondary-email',
+          user_fields: { id: 'test-user-id-with-secondary-email' },
+          verified: true,
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      data: {
+        user: {
+          id: 900113780483,
+          url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483.json',
+          name: 'test-user-name',
+          email: 'example115@email.com',
+          created_at: '2025-04-09T17:52:48Z',
+          updated_at: '2025-04-09T17:58:06Z',
+        },
+      },
+      status: 200,
+    },
+  },
+  // network call to remove email from user
+  {
+    httpReq: {
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7534173321117',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
+  // network call to update primary email
+  {
+    httpReq: {
+      data: { identity: { type: 'email', value: 'example115@email.com', verified: true } },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      url: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/identities/7535981118877',
+    },
+    httpRes: {
       status: 200,
     },
   },

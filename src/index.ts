@@ -15,6 +15,7 @@ import { initializeFeatureFlags } from './featureFlags';
 import logger from './logger';
 import { memoryFenceMiddleware } from './middlewares/memoryFencing';
 import { concurrentRequests } from './middlewares/concurrentRequests';
+import { errorHandlerMiddleware } from './middlewares/errorHandler';
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
@@ -32,8 +33,10 @@ initializeFeatureFlags().catch((error) => {
 });
 
 const app = new Koa();
+app.use(errorHandlerMiddleware()); // Error handling middleware - must be early in stack
 addProfilingMiddleware(app);
 addStatMiddleware(app); // Track request time and status codes
+
 // Memory fencing middleware needs to come early in the middleware stack,
 // before any other middleware that might allocate memory.
 // It is disabled by default
@@ -42,6 +45,10 @@ if (process.env.MEMORY_FENCING_ENABLED === 'true') {
     memoryFenceMiddleware({
       thresholdPercent: parseInt(process.env.MEMORY_FENCING_THRESHOLD_PERCENT || '80', 10),
       statusCode: parseInt(process.env.MEMORY_FENCING_STATUS_CODE || '503', 10),
+      memoryUsageRefreshPeriod: parseInt(
+        process.env.MEMORY_FENCING_MEMORY_USAGE_REFRESH_PERIOD || '100',
+        10,
+      ), // default 100ms
     }),
   );
 }
@@ -89,11 +96,47 @@ if (clusterEnabled) {
     logger.error(`SIGINT signal received`);
   });
 
+  // Handle uncaught exceptions
+  process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception', {
+      error: error.message,
+      stack: error.stack,
+      pid: process.pid,
+    });
+
+    // Log process info before exit
+    logProcessInfo();
+
+    // Trigger graceful shutdown by emitting SIGTERM
+    // This allows proper cleanup of resources, connections, etc.
+    process.emit('SIGTERM');
+  });
+
+  // Handle unhandled promise rejections
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Promise Rejection', {
+      reason: reason instanceof Error ? reason.message : String(reason),
+      stack: reason instanceof Error ? reason.stack : undefined,
+      promise: promise.toString(),
+      pid: process.pid,
+    });
+
+    // Log process info before exit
+    logProcessInfo();
+
+    // Trigger graceful shutdown by emitting SIGTERM
+    // This allows proper cleanup of resources, connections, etc.
+    process.emit('SIGTERM');
+  });
+
   gracefulShutdown(server, {
     signals: 'SIGINT SIGTERM',
     timeout: 30000, // timeout: 30 secs
     forceExit: true, // triggers process.exit() at the end of shutdown process
     finally: finalFunction,
+    onShutdown: async (signal) => {
+      logger.info(`Graceful shutdown initiated by signal: ${signal}`);
+    },
   });
 
   logger.info(`App started. Listening on port: ${port}`);

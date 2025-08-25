@@ -106,6 +106,7 @@ export type ProcessorTestData = {
   feature: string;
   module: string;
   version: string;
+  skip?: boolean;
   input: {
     request: {
       method: string;
@@ -189,7 +190,6 @@ export type ProcessorStreamTestData = Omit<ProcessorTestData, 'output'> & {
       body: Array<
         Omit<ProcessorTransformationResponse, 'output'> & {
           output?: Record<string, unknown>;
-          message?: Record<string, unknown>;
         }
       >;
     };
@@ -200,13 +200,19 @@ export type RouterStreamTestData = Omit<RouterTestData, 'output'> & {
   output: {
     response: {
       status: number;
-      body: {
-        output: Array<
-          Omit<RouterTransformationResponse, 'batchedRequest'> & {
-            batchedRequest: Record<string, unknown>;
+      // The union type below allows for two possible response body shapes:
+      // 1. An object with an 'output' property containing an array of RouterTransformationResponse objects (with optional 'batchedRequest'),
+      //    which is used for standard router transformation responses.
+      // 2. An array of generic records, which is required for Kafka stream output tests where the output may not conform to the standard structure.
+      body:
+        | {
+            output?: Array<
+              Omit<RouterTransformationResponse, 'batchedRequest'> & {
+                batchedRequest?: Record<string, unknown>;
+              }
+            >;
           }
-        >;
-      };
+        | Array<Record<string, unknown>>;
     };
   };
 };

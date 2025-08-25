@@ -4,7 +4,7 @@ import { destType, destination, channel, postPatchHeader } from '../common';
 
 export const trackTestData: RouterTestData[] = [
   {
-    id: 'postscript-router-track-custom-events-test',
+    id: 'postscript-router-track-events-test',
     name: destType,
     description: 'Track Call: Custom events with subscriber id, email, and phone in traits',
     scenario: 'Business',
@@ -12,7 +12,6 @@ export const trackTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -56,7 +55,7 @@ export const trackTestData: RouterTestData[] = [
                 },
                 originalTimestamp: '2025-06-20T00:00:00.000Z',
               },
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(2),
             },
             {
               destination,
@@ -75,7 +74,7 @@ export const trackTestData: RouterTestData[] = [
                 },
                 originalTimestamp: '2025-06-20T00:00:00.000Z',
               },
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(3),
             },
           ],
           destType,
@@ -94,14 +93,14 @@ export const trackTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
                     type: 'Custom Event 1',
                     subscriber_id: 'sub_12345',
-                    occurred_at: '2025-06-20T00:00:00.000Z',
+                    occurred_at: '2025-06-20 00:00:00.000',
                     properties: {
                       customProp1: 'value1',
                       customProp2: 'value2',
@@ -123,14 +122,14 @@ export const trackTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
                     type: 'Custom Event 2',
                     email: 'customer@example.com',
-                    occurred_at: '2025-06-20T00:00:00.000Z',
+                    occurred_at: '2025-06-20 00:00:00.000',
                     properties: {
                       customProp3: 'value3',
                       customProp4: 'value4',
@@ -143,7 +142,7 @@ export const trackTestData: RouterTestData[] = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(1)],
+              metadata: [generateMetadata(2)],
               statusCode: 200,
             },
             {
@@ -152,14 +151,14 @@ export const trackTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
                     type: 'Custom Event 3',
                     phone: '+1111111111',
-                    occurred_at: '2025-06-20T00:00:00.000Z',
+                    occurred_at: '2025-06-20 00:00:00.000',
                     properties: {
                       customProp5: 'value5',
                       customProp6: 'value6',
@@ -172,7 +171,7 @@ export const trackTestData: RouterTestData[] = [
                 files: {},
               },
               destination,
-              metadata: [generateMetadata(1)],
+              metadata: [generateMetadata(3)],
               statusCode: 200,
             },
           ],
@@ -189,7 +188,6 @@ export const trackTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -233,14 +231,14 @@ export const trackTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
                     type: 'Custom Event 4',
                     external_id: 'ext-123',
-                    occurred_at: '2025-06-20T00:05:00.000Z',
+                    occurred_at: '2025-06-20 00:05:00.000',
                     properties: {
                       customProp7: 'value7',
                       customProp8: 'value8',

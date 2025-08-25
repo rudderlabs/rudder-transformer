@@ -269,14 +269,6 @@ export interface ResponseProxyObject
   [key: string]: any;
 }
 
-export type ComparatorInput = {
-  events: ProcessorTransformationRequest[] | RouterTransformationRequestData[];
-  destination: string;
-  version: string;
-  requestMetadata: object;
-  feature: string;
-};
-
 // Add helper type for pre-processing functions
 export type PreProcessableRequest =
   | ProcessorTransformationRequest

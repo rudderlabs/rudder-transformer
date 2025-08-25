@@ -10,6 +10,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   release:
     name: Publish New GitHub Release
@@ -162,16 +166,17 @@ jobs:
 
       - name: Notify Slack Channel
         id: slack
-        uses: slackapi/slack-github-action@v2.1.0
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2.1.1
         continue-on-error: true
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           PROJECT_NAME: 'Rudder Transformer'
           RELEASES_URL: 'https://github.com/rudderlabs/rudder-transformer/releases/tag/'
         with:
-          channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
+          method: chat.postMessage
+          token: ${{ secrets.SLACK_BOT_TOKEN }}
           payload: |
             {
+              "channel": "${{ secrets.SLACK_RELEASE_CHANNEL_ID }}",
               "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D> <@U021E50QAGY>",
               "blocks": [
                 {

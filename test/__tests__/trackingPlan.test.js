@@ -426,6 +426,57 @@ const sampleForumTrackingPlan = {
           }
         }
       },
+      {
+        id: "ev_complex_draft_19",
+        name: "Post Created - Draft 19",
+        description: "Fired when a post is created.",
+        version: "1-0-0",
+        rules: {
+          type: "object",
+          $schema: "https://json-schema.org/draft/2019-09/schema",
+          required: ["properties"],
+          properties: {
+            properties: {
+              unevaluatedProperties: false,
+              properties: {
+                flairs: {
+                  type: ["array", "object"],
+                  items: {
+                    type: ["string", "object"],
+                    properties: {
+                      name: {
+                        type: "string"
+                      }
+                    },
+                    required: ["name"]
+                  },
+                  properties: {
+                    name: {
+                      type: "array",
+                      items: {
+                        type: "string"
+                      }
+                    }
+                  },
+                  required: ["name"],
+                  additionalProperties: false
+                },
+                title: {
+                  type: ["string"]
+                },
+                body: {
+                  type: ["string"]
+                },
+                post_comment: {
+                  type: ["string", "null"]
+                }
+              },
+              type: "object",
+              required: ["flairs", "title", "body"]
+            }
+          }
+        }
+      },
     ]
   },
   name: "workspaces/dummy_workspace_id/tracking-plans/dummy_tracking_plan_id2",
@@ -583,6 +634,31 @@ const sampleForumValidationEvents = {
       },
       timestamp: "2020-02-02T00:23:09.544Z"
     }
+  },
+  complexEvent7: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 19",
+      properties: {
+        flairs: [],
+        title: "Some Post",
+        body: "Some Body...",
+        new_property: 1,
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
   }
 }
 
@@ -622,7 +698,7 @@ const eventValidationTestCases = [
         }
       },
       {
-        type: "Unknown-Violation",
+        type: "Advance-Rules-Violation",
         message: 'must match "then" schema',
         meta: {
           instancePath: "/properties/revenue",
@@ -730,6 +806,22 @@ const eventValidationTestCases = [
         "meta": {
           "instancePath": "/properties",
           "schemaPath": "#/properties/properties/additionalProperties",
+        }
+      }
+    ]
+  },
+  {
+    testCase: "draft 19 -  unevaluated properties",
+    event: sampleForumValidationEvents.complexEvent7,
+    trackingPlan: sampleForumTrackingPlan,
+    output: [
+      {
+        "type": "Additional-Properties",
+        "message": "must NOT have unevaluated properties 'new_property'",
+        "property": "new_property",
+        "meta": {
+          "instancePath": "/properties",
+          "schemaPath": "#/properties/properties/unevaluatedProperties",
         }
       }
     ]

@@ -2,7 +2,12 @@ const { BatchUtils } = require('@rudderstack/workflow-engine');
 const { get } = require('lodash');
 const moment = require('moment-timezone');
 const { MAX_BATCH_SIZE } = require('./config');
-const { isAppleFamily } = require('../../util');
+const {
+  isAppleFamily,
+  isObject,
+  removeUndefinedAndNullValues,
+  isEmptyObject,
+} = require('../../util');
 
 const getMergedPayload = (batch) => ({
   data: batch.flatMap((input) => input.message.body.JSON.data),
@@ -128,11 +133,43 @@ const getExtInfo = (message) => {
     deviceInfo.freeStorage,
     environmentInfo.timezone,
   ];
+  return extInfo.map((value) => (value == null ? '' : value));
+};
 
-  return extInfo.some((value) => value == null) ? null : extInfo;
+const productsToContentsMapping = (message) => {
+  const products = get(message, 'properties.products');
+  // Extract content mapping logic into a pure function
+  const mapProductToContent = (product) =>
+    removeUndefinedAndNullValues({
+      id: product?.product_id || product?.sku || product?.id,
+      item_price: product?.price,
+      quantity: product?.quantity,
+      delivery_category: product?.delivery_category,
+    });
+
+  // Handle case where products array is empty or doesn't exist
+  if (!Array.isArray(products) || products.length === 0) {
+    const properties = get(message, 'properties');
+    const content = mapProductToContent(properties);
+    return isEmptyObject(content) ? [] : [content];
+  }
+
+  // Process products array using forEach approach
+  const result = [];
+  products.forEach((product) => {
+    if (isObject(product)) {
+      const content = mapProductToContent(product);
+      if (!isEmptyObject(content)) {
+        result.push(content);
+      }
+    }
+  });
+
+  return result;
 };
 
 module.exports = {
   batchResponseBuilder,
   getExtInfo,
+  productsToContentsMapping,
 };

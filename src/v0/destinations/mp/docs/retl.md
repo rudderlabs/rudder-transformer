@@ -1,21 +1,68 @@
 # Mixpanel RETL Functionality
 
-## RETL Support Status
+## Is RETL supported at all?
 
-**Current Status**: The Mixpanel destination does not have explicit RETL-specific implementation or special handling for events from RETL sources.
+**RETL (Reverse ETL) Support**: **Not Supported**
 
-## VDM v2 Support
+The Mixpanel destination does not support RETL functionality. Evidence:
+- `supportedSourceTypes` does not include `warehouse`
+- No warehouse source type support in configuration
+- RETL requires warehouse source type support
 
-**VDM v2 Support**: No
+## RETL Support Analysis
 
-Based on the configuration analysis:
-- The destination does not support the `record` event type in `supportedMessageTypes`
-- No VDM v2-specific logic is implemented in the transformer code
-- The destination processes standard event types (identify, track, page, screen, group, alias) only
+Since RETL is not supported (no warehouse source type), the following analysis applies:
+
+### Which type of retl support does it have?
+- **JSON Mapper**: Not applicable (no RETL support)
+- **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
+
+### Does it have vdm support?
+**No** - `supportsVisualMapper` is not present in `db-config.json`
+
+### Does it have vdm v2 support?
+**No** - Missing both:
+- `supportedMessageTypes > record` in `db-config.json`
+- Record event type handling in transformer code
+
+### Connection config
+Not applicable as RETL is not supported.
+
+## Alternative Approaches for Warehouse Data
+
+Since RETL is not supported, consider these alternatives for warehouse-based data activation:
+
+### 1. Event Stream from Other Sources
+
+Transform warehouse data into events using other tools and send through supported sources:
+
+```javascript
+// Example: Sending user profile updates
+{
+  "type": "identify",
+  "userId": "user123",
+  "traits": {
+    "email": "user@example.com",
+    "plan": "premium"
+  }
+}
+```
+
+### 2. Direct API Integration
+
+Use Mixpanel's APIs directly from your warehouse:
+- **Import API**: For historical event data
+- **Engage API**: For user profile updates
+- **Groups API**: For group profile updates
+
+### 3. Custom ETL Solutions
+
+Implement custom solutions to extract data from warehouse and send to Mixpanel APIs.
 
 ## Standard Event Stream Processing
 
-The Mixpanel destination processes all events through the standard event stream logic, regardless of their source:
+The Mixpanel destination processes all events through the standard event stream logic:
 
 ### Supported Event Types
 - **Identify**: User profile updates via `/engage` endpoint
@@ -27,7 +74,7 @@ The Mixpanel destination processes all events through the standard event stream 
 
 ### Connection Configuration
 
-All connections to Mixpanel use the same configuration parameters:
+Standard Mixpanel configuration parameters:
 
 - **Token**: Required for authentication with Mixpanel API
 - **Data Residency**: Specifies the Mixpanel data center to use (US, EU, IN)
@@ -36,9 +83,9 @@ All connections to Mixpanel use the same configuration parameters:
 
 ## Data Flow
 
-### Standard Data Flow
+### Standard Event Stream Data Flow
 
-1. RudderStack receives events from any source (SDK, cloud app, etc.)
+1. RudderStack receives events from supported sources (SDK, cloud app, etc.)
 2. Events are processed through standard transformation logic
 3. Transformed events are sent to appropriate Mixpanel endpoints:
    - `/import` for server-side event tracking
@@ -46,12 +93,23 @@ All connections to Mixpanel use the same configuration parameters:
    - `/engage` for user profile updates
    - `/groups` for group profile updates
 
-### No RETL-Specific Logic
+## Summary
 
-The codebase analysis confirms that there is no special handling for:
-- `context.mappedToDestination` flag
-- `record` event types
-- RETL-specific property mapping
-- External ID handling from RETL context
+The Mixpanel destination does not support RETL functionality. The destination:
 
-All events are processed using the same transformation and mapping logic regardless of their source.
+- **Does not support RETL**: No warehouse source type support
+- **Does not support VDM v1**: No `supportsVisualMapper` configuration
+- **Does not support VDM v2**: No `record` message type in `supportedMessageTypes`
+- **Standard Event Stream Only**: All events processed through standard event stream logic
+
+**Note**: For warehouse-based data activation, consider using Mixpanel's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
+
+### Supported Source Types
+```json
+"supportedSourceTypes": [
+  "android", "ios", "web", "unity", "amp", "cloud",
+  "reactnative", "flutter", "cordova", "shopify"
+]
+```
+
+**Note**: `warehouse` is not included in supported source types, confirming no RETL support.

@@ -470,6 +470,24 @@ export const dataV3: RouterTestData[] = [
                       {
                         action_source: 'MOBILE_APP',
                         app_data: {
+                          extinfo: [
+                            'i2',
+                            'com.rudderlabs.javascript',
+                            '1.0.0',
+                            '1.0.0',
+                            '14.4.1',
+                            'AOSP on IA Emulator',
+                            'en-US',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '2',
+                            '',
+                            '',
+                            '',
+                            '',
+                          ],
                           app_id: 'dhfeih44f',
                         },
                         custom_data: {
@@ -489,11 +507,40 @@ export const dataV3: RouterTestData[] = [
                       {
                         action_source: 'MOBILE_APP',
                         app_data: {
+                          extinfo: [
+                            'i2',
+                            'com.rudderlabs.javascript',
+                            '1.0.0',
+                            '1.0.0',
+                            '14.4.1',
+                            '',
+                            'en-US',
+                            '',
+                            '',
+                            '',
+                            '',
+                            '2',
+                            '',
+                            '',
+                            '',
+                            '',
+                          ],
                           app_id: 'dhfeih44f',
                         },
                         custom_data: {
                           content_ids: ['123', '123'],
                           value: '56',
+                          contents: [
+                            {
+                              id: '123',
+                              item_price: '14',
+                            },
+                            {
+                              id: '123',
+                              quantity: 3,
+                              item_price: 14,
+                            },
+                          ],
                         },
                         event_name: 'VIEW_CONTENT',
                         event_time: '1650625078',

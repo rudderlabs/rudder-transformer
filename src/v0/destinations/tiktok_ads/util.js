@@ -37,7 +37,7 @@ const hashString = (input) => hashToSha256(input.toString().trim());
 const hashUserField = (user) => {
   const updatedUser = { ...user };
   // hashing external_id
-  const { email, phone, external_id: externalId } = user;
+  const { email, phone, external_id: externalId, idfa, gaid } = user;
   if (externalId) {
     // if there are multiple externalId's in form of array that tiktok supports then hashing every
     if (Array.isArray(externalId)) {
@@ -58,6 +58,41 @@ const hashUserField = (user) => {
       updatedUser.phone = hashString(phone).toString();
     }
   }
+  if (idfa) {
+    updatedUser.idfa = hashString(idfa).toString().toLowerCase();
+  }
+
+  if (gaid) {
+    updatedUser.gaid = hashString(gaid).toString();
+  }
+
   return updatedUser;
 };
-module.exports = { getContents, hashUserField };
+
+/**
+ * Get event source from message properties or channel. We have considered the following doc
+ * https://business-api.tiktok.com/portal/docs?id=1771100779668482
+ * @param {*} message
+ * @returns (string): The resolved, valid event source — one of 'web', 'app', 'offline', or 'crm'. Defaults to 'web' if none are valid.
+ */
+const getEventSource = ({ properties }) => {
+  const supportedSources = ['web', 'app', 'offline', 'crm'];
+
+  const { eventSource, event_source: eventSourceV2 } = properties || {};
+
+  // Helper function to resolve source with mapping
+  const resolveSource = (source) => {
+    if (!source) return null;
+
+    // First check if it's a direct supported source
+    if (supportedSources.includes(source)) {
+      return source;
+    }
+
+    return null;
+  };
+
+  return resolveSource(eventSource) || resolveSource(eventSourceV2) || 'web';
+};
+
+module.exports = { getContents, hashUserField, getEventSource };

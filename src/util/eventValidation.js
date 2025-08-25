@@ -218,10 +218,11 @@ async function validate(event) {
           };
           break;
         case 'additionalProperties':
+        case 'unevaluatedProperties':
           rudderValidationError = {
             type: violationTypes.AdditionalProperties,
-            message: `${error.message} '${error.params.additionalProperty}'`,
-            property: error.params.additionalProperty,
+            message: `${error.message} '${error.params.additionalProperty || error.params.unevaluatedProperty}'`,
+            property: error.params.additionalProperty || error.params.unevaluatedProperty,
             meta: {
               instancePath: error.instancePath,
               schemaPath: error.schemaPath,
@@ -241,6 +242,7 @@ async function validate(event) {
         case 'maxItems':
         case 'uniqueItems':
         case 'enum':
+        case 'if':
           rudderValidationError = {
             type: violationTypes.AdvanceRulesViolation,
             message: error.message,

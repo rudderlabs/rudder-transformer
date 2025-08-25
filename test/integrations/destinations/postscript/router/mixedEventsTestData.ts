@@ -11,7 +11,6 @@ export const mixedEventsTestData: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -23,6 +22,8 @@ export const mixedEventsTestData: RouterTestData[] = [
                 userId: 'user123',
                 traits: {
                   email: 'user@example.com',
+                  phone: '+1234567890',
+                  keyword: 'WELCOME',
                   firstName: 'John',
                   lastName: 'Doe',
                 },
@@ -78,6 +79,8 @@ export const mixedEventsTestData: RouterTestData[] = [
                 body: {
                   JSON: {
                     email: 'user@example.com',
+                    phone_number: '+1234567890',
+                    keyword: 'WELCOME',
                     first_name: 'John',
                     last_name: 'Doe',
                   },
@@ -85,6 +88,7 @@ export const mixedEventsTestData: RouterTestData[] = [
                   XML: {},
                   FORM: {},
                 },
+                files: {},
               },
               metadata: [generateTestMetadata(1)],
               batched: false,
@@ -96,13 +100,14 @@ export const mixedEventsTestData: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.postscript.io/api/v2/custom-events',
+                endpoint: 'https://api.postscript.io/api/v2/events',
                 headers: postPatchHeader,
                 params: {},
                 body: {
                   JSON: {
-                    name: 'Product Viewed',
+                    type: 'Product Viewed',
                     subscriber_id: 'user123',
+                    occurred_at: '2025-06-23 10:01:00.000',
                     properties: {
                       product_id: '12345',
                       category: 'Electronics',
@@ -112,6 +117,7 @@ export const mixedEventsTestData: RouterTestData[] = [
                   XML: {},
                   FORM: {},
                 },
+                files: {},
               },
               metadata: [generateTestMetadata(2)],
               batched: false,

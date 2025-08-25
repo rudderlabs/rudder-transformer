@@ -10,6 +10,11 @@ on:
     branches:
       - develop
 
+permissions:
+  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
+  contents: write
+  pull-requests: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -79,3 +84,39 @@ jobs:
       push_target: production
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  restart-k8s-deployment:
+    name: Restart K8s Deployment
+    runs-on: ubuntu-latest
+    needs: [generate-tag-names, build-transformer-image]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Restart Deployment
+        # # This action restarts the deployment in the specified namespaces
+        uses: ./.github/actions/restart-deployment
+        with:
+          aws-role: ${{ vars.DEV_KUBERNETES_IAM_ROLE }}
+          aws-region: us-east-1
+          k8s-cluster: dev-rudder
+          k8s-namespace: rudder-us-east-1a
+          deployment-name: rudder-transformer,source-transformer,delivery-transformer
+
+  restart-k8s-deployment-dedicated:
+    name: Restart K8s Deployment
+    runs-on: ubuntu-latest
+    needs: [generate-tag-names, build-transformer-image]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.1
+
+      - name: Restart Deployment
+        # # This action restarts the deployment in the specified namespaces
+        uses: ./.github/actions/restart-deployment
+        with:
+          aws-role: ${{ vars.DEV_KUBERNETES_IAM_ROLE }}
+          aws-region: us-east-1
+          k8s-cluster: dev-rudder
+          k8s-namespace: retl-int,hostedmt-dev
+          deployment-name: rudderstack-transformer         

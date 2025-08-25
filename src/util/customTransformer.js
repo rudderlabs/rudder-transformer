@@ -6,6 +6,7 @@ const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
+const logger = require('../logger');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
@@ -14,7 +15,6 @@ const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS
 async function runUserTransform(
   events,
   code,
-  secrets,
   eventsMetadata,
   transformationId,
   workspaceId,
@@ -36,14 +36,19 @@ async function runUserTransform(
   await jail.set(
     '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
+        fetchTags.isSuccess = 'false';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
+        logger.debug('Error fetching data', error);
+      } finally {
+        stats.timing('fetch_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );
@@ -51,8 +56,9 @@ async function runUserTransform(
   await jail.set(
     '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const fetchStartTime = new Date();
+      const fetchTags = { ...trTags };
       try {
-        const fetchStartTime = new Date();
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
@@ -67,13 +73,18 @@ async function runUserTransform(
 
         try {
           data.body = JSON.parse(data.body);
-        } catch (e) {}
+        } catch (e) {
+          logger.debug('Error parsing JSON', e);
+        }
 
-        stats.timing('fetchV2_call_duration', fetchStartTime, trTags);
+        fetchTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
+        fetchTags.isSuccess = 'false';
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('fetchV2_call_duration', fetchStartTime, fetchTags);
       }
     }),
   );
@@ -81,8 +92,9 @@ async function runUserTransform(
   await jail.set(
     '_geolocation',
     new ivm.Reference(async (resolve, reject, ...args) => {
+      const geoStartTime = new Date();
+      const geoTags = { ...trTags };
       try {
-        const geoStartTime = new Date();
         if (args.length < 1) {
           throw new Error('ip address is required');
         }
@@ -95,19 +107,17 @@ async function runUserTransform(
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
         }
         const geoData = await res.json();
-        stats.timing('geo_call_duration', geoStartTime, trTags);
+        geoTags.isSuccess = 'true';
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        geoTags.isSuccess = 'false';
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      } finally {
+        stats.timing('geo_call_duration', geoStartTime, geoTags);
       }
     }),
   );
-
-  await jail.set('_rsSecrets', function (...args) {
-    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
-    return secrets[args[0]];
-  });
 
   jail.setSync('log', function (...args) {
     if (testMode) {
@@ -131,7 +141,6 @@ async function runUserTransform(
       destinationId: eventMetadata.destinationId,
       destinationType: eventMetadata.destinationType,
       destinationName: eventMetadata.destinationName,
-      // TODO: remove non required fields
       namespace: eventMetadata.namespace,
       trackingPlanId: eventMetadata.trackingPlanId,
       trackingPlanVersion: eventMetadata.trackingPlanVersion,
@@ -205,14 +214,6 @@ async function runUserTransform(
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
-      };
-
-      let rsSecrets = _rsSecrets;
-      delete _rsSecrets;
-      global.rsSecrets = function(...args) {
-        return rsSecrets([
-          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
-        ]);
       };
 
         return new ivm.Reference(function forwardMainPromise(
@@ -346,7 +347,6 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
-          res.secrets || {},
           eventsMetadata,
           res.id,
           res.workspaceId,

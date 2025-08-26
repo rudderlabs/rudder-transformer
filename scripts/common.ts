@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import path from 'path';
 import fs from 'fs/promises';
-import { exec } from 'child_process';
+import { execFile, spawn } from 'child_process';
 import os from 'os';
 
 // Extract CLI arguments
@@ -70,22 +70,31 @@ export async function importDataModule(filePath: string): Promise<any[]> {
 
 export function runTestCommand(command: string): void {
   console.log(`Running command: ${command}`);
-  const testCommand = exec(command);
-  if (!testCommand.stdout || !testCommand.stderr) {
-    console.error('Failed to execute command: stdout or stderr is null');
-    return;
-  }
+
+  // Split command into executable and arguments to avoid shell interpretation
+  const parts = command.trim().split(/\s+/);
+  const executable = parts[0];
+  const args = parts.slice(1);
+
+  const testCommand = spawn(executable, args, {
+    stdio: ['pipe', 'pipe', 'pipe'],
+    shell: false, // Disable shell to prevent command injection
+  });
 
   testCommand.stdout.on('data', (data) => {
-    console.log(data);
+    console.log(data.toString());
   });
 
   testCommand.stderr.on('data', (data) => {
-    console.error(data);
+    console.error(data.toString());
   });
 
   testCommand.on('close', (code) => {
     console.log(`Process exited with code ${code}`);
+  });
+
+  testCommand.on('error', (err) => {
+    console.error(`Failed to execute command: ${err.message}`);
   });
 }
 
@@ -116,7 +125,10 @@ export function copyToClipboard(text: string) {
     );
     return;
   }
-  const child = exec(command);
+
+  // Use execFile instead of exec for known commands to prevent command injection
+  const child = execFile(command, []);
+
   if (child.stdin) {
     child.stdin.write(text);
     child.stdin.end();

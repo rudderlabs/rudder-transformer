@@ -75,16 +75,8 @@ const hashUserField = (user) => {
  * @param {*} message
  * @returns (string): The resolved, valid event source — one of 'web', 'app', 'offline', or 'crm'. Defaults to 'web' if none are valid.
  */
-const getEventSource = ({ properties, channel }) => {
+const getEventSource = ({ properties }) => {
   const supportedSources = ['web', 'app', 'offline', 'crm'];
-
-  // Mapping for backward compatibility and new mappings
-  const sourceMapping = {
-    web: 'web',
-    mobile: 'app',
-    server: 'offline',
-    sources: 'offline',
-  };
 
   const { eventSource, event_source: eventSourceV2 } = properties || {};
 
@@ -97,17 +89,10 @@ const getEventSource = ({ properties, channel }) => {
       return source;
     }
 
-    // Then check if it needs mapping
-    if (sourceMapping[source]) {
-      return sourceMapping[source];
-    }
-
     return null;
   };
 
-  return (
-    resolveSource(eventSource) || resolveSource(eventSourceV2) || resolveSource(channel) || 'web'
-  );
+  return resolveSource(eventSource) || resolveSource(eventSourceV2) || 'web';
 };
 
 module.exports = { getContents, hashUserField, getEventSource };

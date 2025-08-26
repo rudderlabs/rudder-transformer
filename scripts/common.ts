@@ -77,7 +77,6 @@ export function runTestCommand(command: string): void {
   const args = parts.slice(1);
 
   const testCommand = spawn(executable, args, {
-    stdio: ['pipe', 'pipe', 'pipe'],
     shell: false, // Disable shell to prevent command injection
   });
 
@@ -110,41 +109,64 @@ export function buildCurl(url: string, headers: Record<string, string>, body: un
   return curl.join(' \\\n  ');
 }
 
-// Copy string to clipboard using pbcopy
+// Copy string to clipboard using platform-appropriate commands
 export function copyToClipboard(text: string) {
   const platform = os.platform();
+
+  // Detect WSL environment
+  const isWSL = platform === 'linux' && /microsoft/i.test(os.release());
+
+  // Platform-specific command mapping with WSL support
   const copyCommandMap: Record<string, string> = {
     darwin: 'pbcopy',
     win32: 'clip',
     linux: 'xclip',
   };
-  const command = copyCommandMap[platform];
-  if (platform === 'linux' && !command) {
+
+  // Use clip.exe in WSL instead of xclip
+  const resolvedCommand = isWSL ? 'clip.exe' : copyCommandMap[platform];
+
+  if (!resolvedCommand) {
     console.warn(
       '⚠️  Clipboard copy requires xclip on Linux (install with: apt-get install xclip)',
     );
     return;
   }
 
+  // Platform-specific arguments for proper clipboard targeting
+  const argsMap: Record<string, string[]> = {
+    darwin: [], // macOS (pbcopy)
+    win32: [], // Windows (clip)
+    linux: ['-selection', 'clipboard', '-in'], // Linux (xclip with clipboard target)
+  };
+
+  const args = argsMap[isWSL ? 'win32' : platform] ?? [];
+
   // Use execFile instead of exec for known commands to prevent command injection
-  const child = execFile(command, []);
+  const child = execFile(resolvedCommand, args, { windowsHide: true });
 
   if (child.stdin) {
-    child.stdin.write(text);
+    // Use proper encoding for Windows/WSL
+    if (isWSL || platform === 'win32') {
+      // clip.exe expects UTF-16LE
+      child.stdin.write(Buffer.from(`${text}\r\n`, 'utf16le'));
+    } else {
+      child.stdin.write(text);
+    }
     child.stdin.end();
   } else {
-    console.error(`${command}: stdin is null`);
+    console.error(`${resolvedCommand}: stdin is null`);
   }
 
   child.on('error', (err) => {
-    console.error(`${command} error: ${err}`);
+    console.error(`${resolvedCommand} error: ${err}`);
   });
 
   child.on('close', (code) => {
     if (code === 0) {
       console.log('✅ Copied curl command to clipboard.');
     } else {
-      console.error(`${command} exited with code ${code}`);
+      console.error(`${resolvedCommand} exited with code ${code}`);
     }
   });
 }

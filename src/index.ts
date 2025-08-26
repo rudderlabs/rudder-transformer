@@ -25,6 +25,7 @@ import { errorHandlerMiddleware } from './middlewares/errorHandler';
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+let pyroscopeInitialised = false;
 
 if (process.env.PYROSCOPE_SERVER_ADDRESS) {
   pyroscopeInit({
@@ -49,6 +50,7 @@ if (process.env.PYROSCOPE_SERVER_ADDRESS) {
     },
   });
   pyroscopeStart();
+  pyroscopeInitialised = true
 } else {
   logger.info('Pyroscope disabled (PYROSCOPE_SERVER_ADDRESS not set)');
 }
@@ -86,7 +88,10 @@ metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
 app.use(bodyParser({ jsonLimit: '200mb' }));
 addRequestSizeMiddleware(app); // Track request and response sizes
-addProfilingLabelsMiddleware(app);
+
+if (pyroscopeInitialised) {
+  addProfilingLabelsMiddleware(app);
+}
 
 addSwaggerRoutes(app);
 

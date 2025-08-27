@@ -53,11 +53,15 @@ const normalizeEmail = (email) => {
 };
 
 const normalizePhone = (phone, countryCode) => {
-  const phoneNumberObject = parsePhoneNumber(phone, countryCode);
-  if (phoneNumberObject && phoneNumberObject.isValid()) {
-    return phoneNumberObject.format('E.164');
+  try {
+    const phoneNumberObject = parsePhoneNumber(phone, countryCode);
+    if (phoneNumberObject && phoneNumberObject.isValid()) {
+      return phoneNumberObject.format('E.164');
+    }
+    throw new InstrumentationError('Invalid phone number');
+  } catch (error) {
+    throw new InstrumentationError(`Invalid phone number with error: ${error}`);
   }
-  throw new InstrumentationError('Invalid phone number');
 };
 
 // ref:- https://developers.google.com/doubleclick-advertisers/guides/conversions_ec#hashing
@@ -93,7 +97,7 @@ const prepareUserIdentifiers = (message, isHashingRequired) => {
   if (isHashingRequired) {
     payload.hashedEmail = normalizeAndHash('hashedEmail', payload.hashedEmail);
     payload.hashedPhoneNumber = normalizeAndHash('hashedPhoneNumber', payload.hashedPhoneNumber, {
-      options: payload.addressInfo?.countryCode,
+      countryCode: payload.addressInfo?.countryCode,
     });
 
     if (!isEmptyObject(payload.addressInfo)) {

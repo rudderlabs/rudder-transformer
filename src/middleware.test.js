@@ -1,25 +1,11 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const request = require('supertest');
-const {
-  addStatMiddleware,
-  addRequestSizeMiddleware,
-  addProfilingMiddleware,
-} = require('./middleware');
+const { addStatMiddleware, addRequestSizeMiddleware } = require('./middleware');
 
-const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
 const stats = require('./util/stats');
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 
-// Mock dependencies
-jest.mock('@rudderstack/pyroscope-nodejs', () => ({
-  default: {
-    init: jest.fn(),
-    koaMiddleware: () => async (ctx, next) => {
-      await next();
-    },
-  },
-}));
 jest.mock('./util/stats', () => ({
   timing: jest.fn(),
   histogram: jest.fn(),
@@ -27,34 +13,6 @@ jest.mock('./util/stats', () => ({
 jest.mock('@rudderstack/integrations-lib', () => ({
   getDestTypeFromContext: jest.fn(),
 }));
-
-describe('Pyroscope', () => {
-  it('should initialize Pyroscope with the correct app name', () => {
-    expect(Pyroscope.init).toHaveBeenCalledWith({
-      appName: 'rudder-transformer',
-      wall: {
-        collectCpuTime: true, // Enable CPU time collection
-      },
-    });
-  });
-
-  it('addProfilingMiddleware should add middleware', async () => {
-    const app = new Koa();
-    addProfilingMiddleware(app);
-
-    const ctx = {
-      method: 'GET',
-      status: 200,
-      request: { url: '/debug/pprof/heap' },
-    };
-    const next = jest.fn().mockResolvedValue(null);
-
-    await app.middleware[0](ctx, next);
-
-    expect(app.middleware).toHaveLength(1);
-    expect(next).toHaveBeenCalled();
-  });
-});
 
 describe('durationMiddleware', () => {
   it('should record the duration of the request', async () => {

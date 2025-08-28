@@ -42,8 +42,6 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
-
-  shouldBatchBrazeIdentifyResolution,
 } = require('./config');
 
 const logger = require('../../../logger');
@@ -559,7 +557,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       : simpleProcessRouterDest;
     const respList = await simpleProcessRouterDestFunc(groupedInputs[id], process, reqMetadata, {
       userStore,
-      identifyCallsArray: shouldBatchBrazeIdentifyResolution() ? identifyCallsArray : undefined,
+      identifyCallsArray,
     });
     return respList;
   });

@@ -76,8 +76,10 @@ export function runTestCommand(command: string): void {
   const executable = parts[0];
   const args = parts.slice(1);
 
-  const testCommand = spawn(executable, args, {
-    shell: false, // Disable shell to prevent command injection
+  const updatedExecutable =
+    process.platform === 'win32' && executable === 'npm' ? 'npm.cmd' : executable;
+  const testCommand = spawn(updatedExecutable, args, {
+    shell: process.platform === 'win32',
   });
 
   testCommand.stdout.on('data', (data) => {

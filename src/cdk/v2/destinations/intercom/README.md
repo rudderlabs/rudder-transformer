@@ -82,10 +82,17 @@ Event-specific:
 
 ### Rate Limits
 
-- Intercom commonly enforces workspace-level limits (community reference indicates ~1000 requests/min, distributed across 10s windows). Exact limits can vary by account and endpoint.
+- Intercom commonly enforces app-level limits & workspace-level limits distributed across 10s windows. Exact limits can vary by account and endpoint.
+- Every 10 seconds, the amount of permitted requests resets. For example, a default rate limit of 10000 per minute means that you can send a maximum of 1666 operations per 10 second period (10000/6).
 - Responses include standard rate limit headers to guide client backoff.
 - References:
-  - `Intercom Community – What is the current API rate limit?` — `https://community.intercom.com/api-webhooks-23/what-is-the-current-api-rate-limit-218` (NEEDS REVIEW against your workspace)
+  https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting#what-is-the-default-amount-of-requests
+Private
+Private apps have a default rate limit of 10,000 API calls per minute per app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple private apps installed, every one contributes towards total number of requests.
+
+Public
+Public apps have a default rate limit of 10,000 API calls per minute for each app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple public apps installed, each one has its own separate request limit without contributing to the others.
+
 
 ### Multiplexing
 

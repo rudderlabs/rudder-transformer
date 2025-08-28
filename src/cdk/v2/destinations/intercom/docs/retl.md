@@ -4,7 +4,7 @@
 
 - Supported: Yes (JSON Mapper) — `supportedSourceTypes` includes `warehouse`; `supportsVisualMapper: true` in `db-config.json`.
 - VDM v1: Supported (Visual Mapper enabled)
-- VDM v2: NEEDS REVIEW (no explicit `record` handling logic in transformer code)
+- VDM v2: Not Supported (no explicit `record` handling logic in transformer code)
 
 ### Connection Config
 

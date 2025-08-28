@@ -80,8 +80,3 @@ Validations:
 - `owner_id`, `unsubscribed_from_emails`, and `role` are processed when provided for v2 Identify.
 - The `name` field is intelligently derived; when not present and only first/last names exist, they are combined.
 - For v1, `update_last_request_at` defaults to true unless overridden in destination config.
-
-### Needs Review
-
-- Exact per-endpoint rate limits and any workspace-specific throttling behavior.
-- VDM v2 functionality (record type) — not explicitly implemented in transformer logic. 

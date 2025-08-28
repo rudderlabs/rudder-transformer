@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
 import path from 'path';
 import fs from 'fs/promises';
-import { exec } from 'child_process';
+import { execFile, spawn } from 'child_process';
 import os from 'os';
 
 // Extract CLI arguments
@@ -70,22 +70,32 @@ export async function importDataModule(filePath: string): Promise<any[]> {
 
 export function runTestCommand(command: string): void {
   console.log(`Running command: ${command}`);
-  const testCommand = exec(command);
-  if (!testCommand.stdout || !testCommand.stderr) {
-    console.error('Failed to execute command: stdout or stderr is null');
-    return;
-  }
+
+  // Split command into executable and arguments to avoid shell interpretation
+  const parts = command.trim().split(/\s+/);
+  const executable = parts[0];
+  const args = parts.slice(1);
+
+  const updatedExecutable =
+    process.platform === 'win32' && executable === 'npm' ? 'npm.cmd' : executable;
+  const testCommand = spawn(updatedExecutable, args, {
+    shell: process.platform === 'win32',
+  });
 
   testCommand.stdout.on('data', (data) => {
-    console.log(data);
+    console.log(data.toString());
   });
 
   testCommand.stderr.on('data', (data) => {
-    console.error(data);
+    console.error(data.toString());
   });
 
   testCommand.on('close', (code) => {
     console.log(`Process exited with code ${code}`);
+  });
+
+  testCommand.on('error', (err) => {
+    console.error(`Failed to execute command: ${err.message}`);
   });
 }
 
@@ -101,38 +111,60 @@ export function buildCurl(url: string, headers: Record<string, string>, body: un
   return curl.join(' \\\n  ');
 }
 
-// Copy string to clipboard using pbcopy
+// Copy string to clipboard using platform-appropriate commands
 export function copyToClipboard(text: string) {
   const platform = os.platform();
+
+  // Platform-specific command mapping with WSL support
   const copyCommandMap: Record<string, string> = {
     darwin: 'pbcopy',
     win32: 'clip',
     linux: 'xclip',
   };
-  const command = copyCommandMap[platform];
-  if (platform === 'linux' && !command) {
+
+  const resolvedCommand = copyCommandMap[platform];
+
+  if (!resolvedCommand) {
     console.warn(
       '⚠️  Clipboard copy requires xclip on Linux (install with: apt-get install xclip)',
     );
     return;
   }
-  const child = exec(command);
+
+  // Platform-specific arguments for proper clipboard targeting
+  const argsMap: Record<string, string[]> = {
+    darwin: [], // macOS (pbcopy)
+    win32: [], // Windows (clip)
+    linux: ['-selection', 'clipboard', '-in'], // Linux (xclip with clipboard target)
+  };
+
+  const args = argsMap[platform] ?? [];
+
+  // Use execFile instead of exec for known commands to prevent command injection
+  const child = execFile(resolvedCommand, args, { windowsHide: true });
+
   if (child.stdin) {
-    child.stdin.write(text);
+    // Use proper encoding for Windows
+    if (platform === 'win32') {
+      // clip.exe expects UTF-16LE
+      child.stdin.write(Buffer.from(`${text}\r\n`, 'utf16le'));
+    } else {
+      child.stdin.write(text);
+    }
     child.stdin.end();
   } else {
-    console.error(`${command}: stdin is null`);
+    console.error(`${resolvedCommand}: stdin is null`);
   }
 
   child.on('error', (err) => {
-    console.error(`${command} error: ${err}`);
+    console.error(`${resolvedCommand} error: ${err}`);
   });
 
   child.on('close', (code) => {
     if (code === 0) {
       console.log('✅ Copied curl command to clipboard.');
     } else {
-      console.error(`${command} exited with code ${code}`);
+      console.error(`${resolvedCommand} exited with code ${code}`);
     }
   });
 }

@@ -9,13 +9,13 @@ const stats = require('../stats');
 class IvmCache {
   constructor(options = {}) {
     this.maxSize = parseInt(
-      options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '50',
+      options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '10',
       10,
     );
     this.ttlMs = parseInt(
-      options.ttlMs !== undefined ? options.ttlMs : process.env.IVM_CACHE_TTL_MS || '1800000',
+      options.ttlMs !== undefined ? options.ttlMs : process.env.IVM_CACHE_TTL_MS || '300000',
       10,
-    ); // 30 min default
+    );
 
     this.cache = new LRUCache({
       max: this.maxSize,

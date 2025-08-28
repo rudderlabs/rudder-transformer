@@ -1,25 +1,5 @@
 const IvmCacheManager = require('../../../src/util/ivmCache/manager');
 
-// Mock strategies
-jest.mock('../../../src/util/ivmCache/strategies/none', () => {
-  return jest.fn().mockImplementation(() => ({
-    name: 'none',
-    get: jest.fn().mockResolvedValue(null),
-    set: jest.fn().mockResolvedValue(undefined),
-    delete: jest.fn().mockResolvedValue(undefined),
-    clear: jest.fn().mockResolvedValue(undefined),
-    getStats: jest.fn().mockReturnValue({
-      strategy: 'none',
-      hits: 0,
-      misses: 0,
-      hitRate: 0,
-      currentSize: 0,
-      maxSize: 0,
-    }),
-    destroy: jest.fn().mockResolvedValue(undefined),
-  }));
-});
-
 jest.mock('../../../src/util/ivmCache/strategies/isolate', () => {
   return jest.fn().mockImplementation(() => ({
     name: 'isolate',
@@ -89,8 +69,8 @@ describe('IVM Cache Manager', () => {
   });
 
   describe('strategy initialization', () => {
-    test('should default to none strategy', () => {
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
+    test('should default to isolate strategy', () => {
+      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
     });
 
     test('should initialize isolate strategy when configured', () => {
@@ -104,13 +84,18 @@ describe('IVM Cache Manager', () => {
       process.env.IVM_CACHE_STRATEGY = 'unknown';
       IvmCacheManager.initializeStrategy();
       
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
+      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
       expect(logger.warn).toHaveBeenCalledWith(
         expect.stringContaining('Unknown IVM cache strategy: unknown')
       );
     });
 
     test('should pass options to strategy constructor', () => {
+      // Clear existing mocks and reset strategy
+      jest.clearAllMocks();
+      IvmCacheManager.strategy = null;
+      IvmCacheManager.currentStrategyName = null;
+      
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       process.env.IVM_CACHE_MAX_SIZE = '100';
       process.env.IVM_CACHE_TTL_MS = '3600000';
@@ -130,25 +115,15 @@ describe('IVM Cache Manager', () => {
       
       const previousStrategy = IvmCacheManager.strategy;
       
-      process.env.IVM_CACHE_STRATEGY = 'none';
+      // Force a strategy change by resetting the current strategy name
+      IvmCacheManager.currentStrategyName = null;
+      process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
       
       // Give a moment for async destroy to potentially complete
       await new Promise(resolve => setTimeout(resolve, 10));
       
       expect(previousStrategy.clear).toHaveBeenCalled();
-    });
-
-    test('should not reinitialize if strategy unchanged', () => {
-      process.env.IVM_CACHE_STRATEGY = 'none';
-      IvmCacheManager.initializeStrategy();
-      
-      const NoneStrategy = require('../../../src/util/ivmCache/strategies/none');
-      const callCount = NoneStrategy.mock.calls.length;
-      
-      IvmCacheManager.initializeStrategy();
-      
-      expect(NoneStrategy.mock.calls.length).toBe(callCount); // No new calls
     });
   });
 
@@ -164,18 +139,18 @@ describe('IVM Cache Manager', () => {
   });
 
   describe('get method', () => {
-    test('should delegate to strategy with none strategy', async () => {
+    test('should delegate to strategy with isolate strategy', async () => {
       const result = await IvmCacheManager.get('test:key', { cred: 'test' });
       
       expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' });
-      expect(result).toBeNull();
+      expect(result).toEqual({ reset: true });
     });
 
-    test('should delegate to strategy with isolate strategy', async () => {
+    test('should delegate to strategy with explicit isolate strategy', async () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
       
-      const result = await IvmCacheManager.get('test:key', { cred: 'test' }, false);
+      const result = await IvmCacheManager.get('test:key', { cred: 'test' });
       
       expect(IvmCacheManager.strategy.get).toHaveBeenCalledWith('test:key', { cred: 'test' });
       expect(result).toEqual({ reset: true });
@@ -250,19 +225,19 @@ describe('IVM Cache Manager', () => {
   });
 
   describe('getStats method', () => {
-    test('should return strategy stats with manager info for none strategy', () => {
+    test('should return strategy stats with manager info for default isolate strategy', () => {
       const stats = IvmCacheManager.getStats();
       
       expect(stats).toEqual({
-        strategy: 'none',
-        hits: 0,
-        misses: 0,
-        hitRate: 0,
-        currentSize: 0,
-        maxSize: 0,
+        strategy: 'isolate',
+        hits: 5,
+        misses: 2,
+        hitRate: 71.43,
+        currentSize: 3,
+        maxSize: 50,
         manager: {
-          currentStrategy: 'none',
-          environmentStrategy: 'none',
+          currentStrategy: 'isolate',
+          environmentStrategy: 'isolate',
         },
       });
     });
@@ -298,7 +273,7 @@ describe('IVM Cache Manager', () => {
       const stats = IvmCacheManager.getStats();
       
       expect(stats).toEqual({
-        strategy: 'none',
+        strategy: 'isolate',
         error: 'Stats error',
       });
       expect(logger.error).toHaveBeenCalledWith(
@@ -312,7 +287,7 @@ describe('IVM Cache Manager', () => {
 
   describe('getCurrentStrategy method', () => {
     test('should return current strategy name', () => {
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
+      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
       
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
@@ -321,39 +296,26 @@ describe('IVM Cache Manager', () => {
     });
   });
 
-  describe('isCachingEnabled method', () => {
-    test('should return false for none strategy', () => {
-      expect(IvmCacheManager.isCachingEnabled()).toBe(false);
-    });
-
-    test('should return true for isolate strategy', () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.isCachingEnabled()).toBe(true);
-    });
-  });
-
   describe('integration scenarios', () => {
-    test('should handle complete workflow with none strategy', async () => {
+    test('should handle complete workflow with isolate strategy', async () => {
       const cacheKey = IvmCacheManager.generateKey('trans-1', 'code', [], false, 'ws1');
       
       let result = await IvmCacheManager.get(cacheKey);
-      expect(result).toBeNull();
+      expect(result).toEqual({ reset: true }); // Mock isolate strategy returns this
       
       await IvmCacheManager.set(cacheKey, { data: 'test' });
       
       result = await IvmCacheManager.get(cacheKey);
-      expect(result).toBeNull(); // Still null with none strategy
+      expect(result).toEqual({ reset: true });
       
       await IvmCacheManager.delete(cacheKey);
       await IvmCacheManager.clear();
       
       const stats = IvmCacheManager.getStats();
-      expect(stats.strategy).toBe("none");
+      expect(stats.strategy).toBe("isolate");
     });
 
-    test('should handle complete workflow with isolate strategy', async () => {
+    test('should handle complete workflow with explicit isolate strategy', async () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
       

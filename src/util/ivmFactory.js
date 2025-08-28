@@ -639,7 +639,7 @@ async function getCachedFactory(
       try {
         // For cached instances, we don't destroy immediately
         // The cache manager handles cleanup via TTL/LRU
-        if (ivmCacheManager.isCachingEnabled()) {
+        if (ivmCacheManager.getCurrentStrategy() === 'isolate') {
           logger.debug('Skipping immediate destroy for cached IVM', {
             transformationId,
           });

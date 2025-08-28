@@ -1,4 +1,3 @@
-const NoneStrategy = require('./strategies/none');
 const IsolateStrategy = require('./strategies/isolate');
 const { generateCacheKey } = require('./cacheKey');
 const logger = require('../../logger');
@@ -19,7 +18,14 @@ class IvmCacheManager {
    * Only called when strategy needs to be created or changed
    */
   initializeStrategy() {
-    const strategyName = (process.env.IVM_CACHE_STRATEGY || 'none').toLowerCase();
+    const requestedStrategy = (process.env.IVM_CACHE_STRATEGY || 'isolate').toLowerCase();
+    let strategyName = requestedStrategy;
+
+    // Validate strategy - only 'isolate' is supported currently
+    if (requestedStrategy !== 'isolate') {
+      logger.warn(`Unknown IVM cache strategy: ${requestedStrategy}. Falling back to 'isolate'`);
+      strategyName = 'isolate';
+    }
 
     // If strategy is already initialized and matches, do nothing
     if (this.currentStrategyName === strategyName && this.strategy) {
@@ -41,23 +47,7 @@ class IvmCacheManager {
       maxSize: process.env.IVM_CACHE_MAX_SIZE,
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
-
-    switch (strategyName) {
-      case 'none':
-        this.strategy = new NoneStrategy();
-        break;
-
-      case 'isolate':
-        this.strategy = new IsolateStrategy(options);
-        break;
-
-      default:
-        logger.warn(`Unknown IVM cache strategy: ${strategyName}, falling back to 'none'`);
-        this.strategy = new NoneStrategy();
-        this.currentStrategyName = 'none';
-        return;
-    }
-
+    this.strategy = new IsolateStrategy(options);
     this.currentStrategyName = strategyName;
 
     logger.info('IVM Cache Manager initialized', {
@@ -163,7 +153,7 @@ class IvmCacheManager {
         ...stats,
         manager: {
           currentStrategy: this.currentStrategyName,
-          environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'none',
+          environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'isolate',
         },
       };
     } catch (error) {
@@ -184,14 +174,6 @@ class IvmCacheManager {
    */
   getCurrentStrategy() {
     return this.currentStrategyName;
-  }
-
-  /**
-   * Check if caching is enabled
-   * @returns {boolean} True if caching is enabled
-   */
-  isCachingEnabled() {
-    return this.currentStrategyName !== 'none';
   }
 }
 

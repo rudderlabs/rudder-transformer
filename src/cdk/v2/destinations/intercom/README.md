@@ -87,11 +87,8 @@ Event-specific:
 - Responses include standard rate limit headers to guide client backoff.
 - References:
   https://developers.intercom.com/docs/references/rest-api/errors/rate-limiting#what-is-the-default-amount-of-requests
-Private
-Private apps have a default rate limit of 10,000 API calls per minute per app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple private apps installed, every one contributes towards total number of requests.
-
-Public
-Public apps have a default rate limit of 10,000 API calls per minute for each app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple public apps installed, each one has its own separate request limit without contributing to the others.
+- Private apps have a default rate limit of 10,000 API calls per minute per app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple private apps installed, every one contributes towards total number of requests.
+- Public apps have a default rate limit of 10,000 API calls per minute for each app and 25,000 API calls per minute per workspace. This means that if a workspace has multiple public apps installed, each one has its own separate request limit without contributing to the others.
 
 
 ### Multiplexing

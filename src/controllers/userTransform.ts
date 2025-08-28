@@ -35,7 +35,10 @@ export class UserTransformController {
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
       await UserTransformService.transformRoutine(events, ctx.state.features, requestSize);
-    ctx.body = processedRespone.transformedEvents;
+    ctx.body = `[${processedRespone.transformedEvents
+      .map((event) => JSON.stringify(event))
+      .join(',')}]`;
+    ctx.type = 'application/json';
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',

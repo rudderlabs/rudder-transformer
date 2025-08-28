@@ -11,10 +11,18 @@ jest.mock("dns", () => {
   };
 });
 
+// Mock the transformation store modules
+jest.mock("../../src/util/customTransforrmationsStore", () => ({
+  getTransformationCode: jest.fn(),
+  CONFIG_BACKEND_URL: 'https://api.rudderlabs.com'
+}));
+
 const {
   userTransformHandler,
 } = require("../../src/util/customTransformer");
 
+const customTransformStore = require("../../src/util/customTransforrmationsStore");
+const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const integration = "user_transformation";
 const name = "User Transformations";
 const versionId = "testVersionId";
@@ -342,5 +350,196 @@ describe("User transformation fetch tests", () => {
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });
+  });
+});
+
+describe("User transformation fetch tests with IVM Cache", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
+    process.env.USE_IVM_CACHE = 'true';
+    process.env.IVM_CACHE_STRATEGY = 'isolate';
+    ivmCacheManager.initializeStrategy();
+  });
+
+  afterEach(() => {
+    expect(ivmCacheManager.getStats().hits).toEqual(1);
+    expect(ivmCacheManager.getStats().misses).toEqual(1);
+    expect(ivmCacheManager.getStats().sets).toEqual(1);
+    if (ivmCacheManager && ivmCacheManager.clear) {
+      ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
+    }
+  });
+
+  it(`Simple v1 ${name} Test`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_output.json`);
+
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      code: `
+        export function transformEvent(event, metadata) {
+          return event;
+        }
+      `,
+      versionId,
+    };
+
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output).toEqual(expectedData);
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(expectedData);
+  });
+
+  it(`Simple async ${name} fetch fail Test for V1 transformation with localhost url`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          event.errMsg = await fetch('http://localhost:1000/dummyUrl');
+          return event;
+        }
+      `
+    };
+    const errMsg = "ERROR";
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    const output = await userTransformHandler(inputData, versionId, []);
+    
+    expect(mockResolver).toHaveBeenCalledTimes(0);
+    output.forEach(ev => {
+      expect(ev.transformedEvent.errMsg).toEqual(errMsg);
+    });
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(output);
+  });
+
+  it(`Simple async ${name} fetch fail Test for V1 transformation with dns resolve error`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          event.errMsg = await fetch('https://abc.xyz.com/dummyUrl');
+          return event;
+      }
+      `
+    };
+    const errMsg = "ERROR";
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    mockResolver.mockRejectedValue('invalid host');
+    const output = await userTransformHandler(inputData, versionId, []);
+    
+    expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
+    output.forEach(ev => {
+      expect(ev.transformedEvent.errMsg).toEqual(errMsg);
+    });
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(output);
+  });
+
+  it(`Simple async ${name} fetchV2 fail Test for V1 transformation with localhost ip`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          try {
+            const res = await fetchV2('http://127.0.0.1:9000/dummyUrl');
+            event.res = res.body;
+          } catch (err) {
+            event.errMsg = err.message;
+          }
+          return event;
+        }
+      `
+    };
+    const errMsg = "invalid url, localhost requests are not allowed";
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    const output = await userTransformHandler(inputData, versionId, []);
+    
+    expect(mockResolver).toHaveBeenCalledTimes(0);
+    output.forEach(ev => {
+      expect(ev.transformedEvent.errMsg).toEqual(errMsg);
+    });
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(output);
+  });
+
+  it(`Simple async ${name} fetchV2 fail Test for V1 transformation with dns resolve`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          try {
+            const res = await fetchV2('https://abc.xyz.com/dummyUrl');
+            event.res = res.body;
+          } catch (err) {
+            event.errMsg = err.message;
+          }
+          return event;
+        }
+      `
+    };
+    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address";
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 100 }, { address: '3.122.122.122', ttl: 600 }]);
+    const output = await userTransformHandler(inputData, versionId, []);
+    
+    expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
+    expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com', { ttl: true });
+    output.forEach(ev => {
+      expect(ev.transformedEvent.errMsg).toEqual(errMsg);
+    });
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(output);
+  });
+
+  it(`Simple async ${name} fetchV2 fail Test for V1 transformation with no arguments`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          try {
+            const res = await fetchV2();
+            event.res = res.body;
+          } catch (err) {
+            event.errMsg = err.message;
+          }
+          return event;
+        }
+      `
+    };
+    const errMsg = "fetch url is required";
+    customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
+    const output = await userTransformHandler(inputData, versionId, []);
+    
+    output.forEach(ev => {
+      expect(ev.transformedEvent.errMsg).toEqual(errMsg);
+    });
+
+    const cachedOutput = await userTransformHandler(inputData, versionId, []);
+    expect(cachedOutput).toEqual(output);
   });
 });

@@ -115,9 +115,6 @@ export function buildCurl(url: string, headers: Record<string, string>, body: un
 export function copyToClipboard(text: string) {
   const platform = os.platform();
 
-  // Detect WSL environment
-  const isWSL = platform === 'linux' && /microsoft/i.test(os.release());
-
   // Platform-specific command mapping with WSL support
   const copyCommandMap: Record<string, string> = {
     darwin: 'pbcopy',
@@ -125,8 +122,7 @@ export function copyToClipboard(text: string) {
     linux: 'xclip',
   };
 
-  // Use clip.exe in WSL instead of xclip
-  const resolvedCommand = isWSL ? 'clip.exe' : copyCommandMap[platform];
+  const resolvedCommand = copyCommandMap[platform];
 
   if (!resolvedCommand) {
     console.warn(
@@ -142,14 +138,14 @@ export function copyToClipboard(text: string) {
     linux: ['-selection', 'clipboard', '-in'], // Linux (xclip with clipboard target)
   };
 
-  const args = argsMap[isWSL ? 'win32' : platform] ?? [];
+  const args = argsMap[platform] ?? [];
 
   // Use execFile instead of exec for known commands to prevent command injection
   const child = execFile(resolvedCommand, args, { windowsHide: true });
 
   if (child.stdin) {
-    // Use proper encoding for Windows/WSL
-    if (isWSL || platform === 'win32') {
+    // Use proper encoding for Windows
+    if (platform === 'win32') {
       // clip.exe expects UTF-16LE
       child.stdin.write(Buffer.from(`${text}\r\n`, 'utf16le'));
     } else {

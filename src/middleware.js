@@ -54,8 +54,8 @@ function addProfilingLabelsMiddleware(app) {
     let resp;
     wrapWithLabels(
       {
-        integration_type: ctx.request.url.includes('source') ? 'source' : 'destination',
-        integration_name: getDestTypeFromContext(ctx),
+        integration_type: ctx.path.includes('/source') ? 'source' : 'destination',
+        integration_name: getDestTypeFromContext(ctx) || 'unknown',
       },
       () => {
         resp = next();

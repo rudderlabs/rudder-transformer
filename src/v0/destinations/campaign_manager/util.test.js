@@ -54,4 +54,12 @@ describe('normalizePhone', () => {
     const countryCode = 'US';
     expect(() => normalizePhone(invalidPhone, countryCode)).toThrow('Invalid phone number');
   });
+
+  it('should throw an InstrumentationError when the phone number is with invalid country code', () => {
+    const invalidPhone = '1234567890';
+    const countryCode = null;
+    expect(() => normalizePhone(invalidPhone, countryCode)).toThrow(
+      'Invalid phone number with error: ParseError: INVALID_COUNTRY',
+    );
+  });
 });

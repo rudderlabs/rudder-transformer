@@ -66,7 +66,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -106,6 +106,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/events/track',
+              endpointPath: 'events/track',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -224,7 +225,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -264,6 +265,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              endpointPath: 'commerce/updateCart',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -405,7 +407,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -445,6 +447,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+              endpointPath: 'commerce/trackPurchase',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -599,7 +602,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -639,6 +642,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/events/track',
+              endpointPath: 'events/track',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -745,7 +749,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -785,6 +789,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              endpointPath: 'commerce/updateCart',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -898,7 +903,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -938,6 +943,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+              endpointPath: 'commerce/updateCart',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -1049,7 +1055,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -1089,6 +1095,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+              endpointPath: 'commerce/trackPurchase',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -1171,7 +1178,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -1211,6 +1218,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/events/track',
+              endpointPath: 'events/track',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -1269,7 +1277,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -1309,6 +1317,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/events/track',
+              endpointPath: 'events/track',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -1367,7 +1376,7 @@ export const trackTestData: ProcessorTestData[] = [
             },
             metadata: baseMetadata,
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ID: '123',
               Name: 'iterable',
               DestinationDefinition: {
@@ -1407,6 +1416,7 @@ export const trackTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.eu.iterable.com/api/events/track',
+              endpointPath: 'events/track',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',

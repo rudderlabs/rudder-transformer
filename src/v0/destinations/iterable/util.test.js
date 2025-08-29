@@ -901,6 +901,7 @@ describe('iterable utils test', () => {
           name: 'IterableTrackPurchaseConfig',
           action: 'trackPurchase',
           endpoint: 'https://api.iterable.com/api/commerce/trackPurchase',
+          endpointPath: 'commerce/trackPurchase',
         },
       },
       {
@@ -915,6 +916,7 @@ describe('iterable utils test', () => {
         expected: {
           ...ConfigCategory.UPDATE_CART,
           endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+          endpointPath: 'commerce/updateCart',
         },
       },
       {
@@ -929,6 +931,7 @@ describe('iterable utils test', () => {
         expected: {
           ...ConfigCategory.UPDATE_CART,
           endpoint: 'https://api.eu.iterable.com/api/commerce/updateCart',
+          endpointPath: 'commerce/updateCart',
         },
       },
       {
@@ -943,6 +946,7 @@ describe('iterable utils test', () => {
         expected: {
           ...ConfigCategory.TRACK,
           endpoint: 'https://api.iterable.com/api/events/track',
+          endpointPath: 'events/track',
         },
       },
     ])('$description', ({ message, dataCenter, expected }) => {

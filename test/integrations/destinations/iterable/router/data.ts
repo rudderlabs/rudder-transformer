@@ -1,5 +1,5 @@
 import { RouterTestData } from '../../../testTypes';
-import { MessageType, RudderMessage } from '../../../../../src/types';
+import { MessageType } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 
 export const data: RouterTestData[] = [
@@ -54,7 +54,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(1),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -113,7 +113,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -151,6 +151,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/catalogs/test-ruchira/items',
+                endpointPath: 'catalogs',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
@@ -179,7 +180,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -245,7 +246,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -302,7 +303,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(3),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -376,7 +377,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(4),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -446,7 +447,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(5),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
                 DestinationDefinition: {
@@ -575,7 +576,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(6),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -625,7 +626,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(7),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -677,7 +678,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(8),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -719,6 +720,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -748,7 +750,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(2)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -779,6 +781,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                endpointPath: 'users/bulkUpdate',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -810,7 +813,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(3)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -841,6 +844,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '12345',
@@ -874,7 +878,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(4)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -906,6 +910,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+                endpointPath: 'commerce/updateCart',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -954,7 +959,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(6)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -986,6 +991,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -1015,7 +1021,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(7)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1047,6 +1053,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/users/updateEmail',
+                endpointPath: 'users/updateEmail',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
@@ -1066,7 +1073,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(8)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1098,6 +1105,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                endpointPath: 'users/bulkUpdate',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '12345',
@@ -1132,7 +1140,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(5)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: '1zia9wKshXt80YksLmUdJnr7IHI',
                 Name: 'test_iterable',
                 DestinationDefinition: {
@@ -1245,7 +1253,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(1),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1305,7 +1313,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(2),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1344,6 +1352,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                endpointPath: 'catalogs',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
@@ -1372,7 +1381,7 @@ export const data: RouterTestData[] = [
               metadata: [generateMetadata(1), generateMetadata(2)],
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1420,6 +1429,7 @@ export const data: RouterTestData[] = [
                 type: 'REST' as MessageType,
                 method: 'POST',
                 endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                endpointPath: 'catalogs',
                 headers: {
                   'Content-Type': 'application/json',
                   api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
@@ -1447,7 +1457,7 @@ export const data: RouterTestData[] = [
               },
               metadata: generateMetadata(4),
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 ID: 'default-destination-id',
                 Name: 'Default Destination',
                 DestinationDefinition: {
@@ -1492,6 +1502,7 @@ export const data: RouterTestData[] = [
                   XML: {},
                 },
                 endpoint: 'https://api.eu.iterable.com/api/catalogs/test-ruchira/items',
+                endpointPath: 'catalogs',
                 files: {},
                 headers: {
                   'Content-Type': 'application/json',
@@ -1503,7 +1514,7 @@ export const data: RouterTestData[] = [
                 version: '1',
               },
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   hubID: '22066036',

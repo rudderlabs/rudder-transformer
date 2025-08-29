@@ -68,6 +68,7 @@ const validateMandatoryField = (payload) => {
 const getCategoryWithEndpoint = (categoryConfig, dataCenter) => ({
   ...categoryConfig,
   endpoint: constructEndpoint(dataCenter, categoryConfig),
+  endpointPath: categoryConfig.endpoint,
 });
 
 /**
@@ -309,7 +310,7 @@ const updateCartEventPayloadBuilder = (message, config) => {
  * Combines batched and non batched requests
  * @param {*} apiKey
  * @param {*} metadata
- * @param {*} endPoint
+ * @param {*} endpoint
  * @param {*} destination
  * @param {*} eventResponse
  * @param {*} transformedEvents
@@ -318,13 +319,15 @@ const updateCartEventPayloadBuilder = (message, config) => {
 const combineBatchedAndNonBatchedEvents = (
   apiKey,
   metadata,
-  endPoint,
+  endpoint,
+  endpointPath,
   destination,
   eventResponse,
   nonBatchedRequests,
 ) => {
   const { batchedRequest } = eventResponse;
-  batchedRequest.endpoint = endPoint;
+  batchedRequest.endpoint = endpoint;
+  batchedRequest.endpointPath = endpointPath;
   batchedRequest.headers = {
     'Content-Type': JSON_MIME_TYPE,
     api_key: apiKey,
@@ -445,11 +448,13 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
 
     const { destination, metadata, nonBatchedRequests } = batch;
     const { apiKey, dataCenter } = destination.Config;
-    const IDENTIFY_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'users/bulkUpdate' });
+    const endpointPath = 'users/bulkUpdate';
+    const IDENTIFY_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: endpointPath });
     const batchedResponse = combineBatchedAndNonBatchedEvents(
       apiKey,
       metadata,
       IDENTIFY_BATCH_ENDPOINT,
+      endpointPath,
       destination,
       batchEventResponse,
       nonBatchedRequests,
@@ -522,13 +527,14 @@ const processCatalogBatch = (chunk) => {
 
   const { destination, message } = chunk[0];
   const { apiKey } = destination.Config;
-  const { endpoint } = message;
+  const { endpoint, endpointPath } = message;
 
   // Combine the batch request with any non-batched requests (none in this case)
   return combineBatchedAndNonBatchedEvents(
     apiKey,
     metadata,
     endpoint,
+    endpointPath,
     destination,
     batchEventResponse,
     [],
@@ -611,11 +617,13 @@ const processTrackBatch = (chunk) => {
 
     const { destination, metadata } = batch;
     const { apiKey, dataCenter } = destination.Config;
-    const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: 'events/trackBulk' });
+    const endpointPath = 'events/trackBulk';
+    const TRACK_BATCH_ENDPOINT = constructEndpoint(dataCenter, { endpoint: endpointPath });
     const batchedResponse = combineBatchedAndNonBatchedEvents(
       apiKey,
       metadata,
       TRACK_BATCH_ENDPOINT,
+      endpointPath,
       destination,
       batchEventResponse,
       [],

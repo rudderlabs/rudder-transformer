@@ -97,7 +97,7 @@ const prepareUserIdentifiers = (message, isHashingRequired) => {
   if (isHashingRequired) {
     payload.hashedEmail = normalizeAndHash('hashedEmail', payload.hashedEmail);
     payload.hashedPhoneNumber = normalizeAndHash('hashedPhoneNumber', payload.hashedPhoneNumber, {
-      countryCode: payload.addressInfo?.countryCode,
+      options: payload.addressInfo?.countryCode,
     });
 
     if (!isEmptyObject(payload.addressInfo)) {

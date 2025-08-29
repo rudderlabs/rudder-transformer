@@ -73,6 +73,7 @@ export type ProcessorTransformationOutput = {
   type: string;
   method: string;
   endpoint: string;
+  endpointPath?: string;
   userId?: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
@@ -153,6 +154,7 @@ export type ProxyV0Request = {
   type: string;
   method: string;
   endpoint: string;
+  endpointPath?: string;
   userId: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;

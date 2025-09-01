@@ -255,19 +255,6 @@ describe('IVM Cache Manager', () => {
     });
   });
 
-  describe('isCachingEnabled method', () => {
-    test('should return false for none strategy', () => {
-      expect(IvmCacheManager.isCachingEnabled()).toBe(false);
-    });
-
-    test('should return true for isolate strategy', () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.isCachingEnabled()).toBe(true);
-    });
-  });
-
   describe('integration scenarios', () => {
     test('should handle complete workflow with isolate strategy', async () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';

@@ -168,14 +168,6 @@ class IvmCacheManager {
   getCurrentStrategy() {
     return this.currentStrategyName;
   }
-
-  /**
-   * Check if caching is enabled
-   * @returns {boolean} True if caching is enabled
-   */
-  isCachingEnabled() {
-    return this.currentStrategyName !== 'none';
-  }
 }
 
 // Create singleton instance

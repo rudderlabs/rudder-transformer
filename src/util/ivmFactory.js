@@ -587,7 +587,7 @@ async function getCachedFactory(
         };
 
         // Store in cache for future use (fire and forget)
-        ivmCacheManager.set(cacheKey, cacheableIsolate).catch((error) => {
+        await ivmCacheManager.set(cacheKey, cacheableIsolate).catch((error) => {
           logger.warn('Failed to cache IVM isolate', {
             error: error.message,
             cacheKey,
@@ -639,7 +639,7 @@ async function getCachedFactory(
       try {
         // For cached instances, we don't destroy immediately
         // The cache manager handles cleanup via TTL/LRU
-        if (ivmCacheManager.isCachingEnabled()) {
+        if (ivmCacheManager.getCurrentStrategy() === 'isolate') {
           logger.debug('Skipping immediate destroy for cached IVM', {
             transformationId,
           });

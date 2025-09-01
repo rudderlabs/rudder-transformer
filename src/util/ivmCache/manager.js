@@ -1,4 +1,3 @@
-const NoneStrategy = require('./strategies/none');
 const IsolateStrategy = require('./strategies/isolate');
 const { generateCacheKey } = require('./cacheKey');
 const logger = require('../../logger');
@@ -41,23 +40,7 @@ class IvmCacheManager {
       maxSize: process.env.IVM_CACHE_MAX_SIZE,
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
-
-    switch (strategyName) {
-      case 'none':
-        this.strategy = new NoneStrategy();
-        break;
-
-      case 'isolate':
-        this.strategy = new IsolateStrategy(options);
-        break;
-
-      default:
-        logger.warn(`Unknown IVM cache strategy: ${strategyName}, falling back to 'none'`);
-        this.strategy = new NoneStrategy();
-        this.currentStrategyName = 'none';
-        return;
-    }
-
+    this.strategy = new IsolateStrategy(options);
     this.currentStrategyName = strategyName;
 
     logger.info('IVM Cache Manager initialized', {

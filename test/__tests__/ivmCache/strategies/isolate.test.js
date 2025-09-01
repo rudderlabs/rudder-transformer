@@ -72,7 +72,7 @@ describe('Isolate Cache Strategy', () => {
     test('should use default options when none provided', () => {
       const defaultStrategy = new IsolateStrategy();
       expect(defaultStrategy.name).toBe('isolate');
-      expect(defaultStrategy.cache.maxSize).toBe(50); // default
+      expect(defaultStrategy.cache.maxSize).toBe(10); // default
     });
   });
 

@@ -141,8 +141,8 @@ describe('IVM LRU Cache with TTL', () => {
   describe('constructor', () => {
     test('should initialize with default values', () => {
       const defaultCache = new IvmCache();
-      expect(defaultCache.maxSize).toBe(50);
-      expect(defaultCache.ttlMs).toBe(1800000);
+      expect(defaultCache.maxSize).toBe(10);
+      expect(defaultCache.ttlMs).toBe(300000);
     });
 
     test('should use environment variables', () => {

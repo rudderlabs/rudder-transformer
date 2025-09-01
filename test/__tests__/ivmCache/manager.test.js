@@ -85,10 +85,10 @@ describe('IVM Cache Manager', () => {
       process.env.IVM_CACHE_MAX_SIZE = '100';
       process.env.IVM_CACHE_TTL_MS = '3600000';
       
-      const IsolateStrategy = require('../../../src/util/ivmCache/strategies/isolate');
+      const OneIVMPerTransformationIdStrategy = require('../../../src/util/ivmCache/strategies/isolate');
       IvmCacheManager.initializeStrategy();
       
-      expect(IsolateStrategy).toHaveBeenCalledWith({
+      expect(OneIVMPerTransformationIdStrategy).toHaveBeenCalledWith({
         maxSize: '100',
         ttlMs: '3600000',
       });

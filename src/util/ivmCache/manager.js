@@ -1,4 +1,4 @@
-const IsolateStrategy = require('./strategies/isolate');
+const OneIVMPerTransformationIdStrategy = require('./strategies/isolate');
 const { generateCacheKey } = require('./cacheKey');
 const logger = require('../../logger');
 
@@ -40,7 +40,7 @@ class IvmCacheManager {
       maxSize: process.env.IVM_CACHE_MAX_SIZE,
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
-    this.strategy = new IsolateStrategy(options);
+    this.strategy = new OneIVMPerTransformationIdStrategy(options);
     this.currentStrategyName = strategyName;
 
     logger.info('IVM Cache Manager initialized', {

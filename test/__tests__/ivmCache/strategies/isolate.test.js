@@ -1,4 +1,4 @@
-const IsolateStrategy = require('../../../../src/util/ivmCache/strategies/isolate');
+const OneIVMPerTransformationIdStrategy = require('../../../../src/util/ivmCache/strategies/isolate');
 
 // Mock dependencies
 jest.mock('../../../../src/logger', () => ({
@@ -29,7 +29,7 @@ describe('Isolate Cache Strategy', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     
-    strategy = new IsolateStrategy({ maxSize: 3, ttlMs: 1000 });
+    strategy = new OneIVMPerTransformationIdStrategy({ maxSize: 3, ttlMs: 1000 });
 
     mockIsolateData = {
       isolate: {
@@ -70,7 +70,7 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should use default options when none provided', () => {
-      const defaultStrategy = new IsolateStrategy();
+      const defaultStrategy = new OneIVMPerTransformationIdStrategy();
       expect(defaultStrategy.name).toBe('isolate');
       expect(defaultStrategy.cache.maxSize).toBe(10); // default
     });
@@ -365,7 +365,7 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should expire items after TTL', (done) => {
-      const shortTtlStrategy = new IsolateStrategy({ maxSize: 5, ttlMs: 100 });
+      const shortTtlStrategy = new OneIVMPerTransformationIdStrategy({ maxSize: 5, ttlMs: 100 });
 
       shortTtlStrategy.set('key1', mockIsolateData).then(() => {
         expect(shortTtlStrategy.cache.has('key1')).toBe(true);

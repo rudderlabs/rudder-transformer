@@ -7,7 +7,7 @@ const stats = require('../../stats');
  * Isolate strategy - cache entire isolate with compiled modules
  * Reset context for each execution to ensure clean state
  */
-class IsolateStrategy {
+class OneIVMPerTransformationIdStrategy {
   constructor(options = {}) {
     this.name = 'isolate';
     this.cache = new IvmCache(options);
@@ -226,4 +226,4 @@ class IsolateStrategy {
   }
 }
 
-module.exports = IsolateStrategy;
+module.exports = OneIVMPerTransformationIdStrategy;

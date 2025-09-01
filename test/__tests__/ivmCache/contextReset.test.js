@@ -1,4 +1,4 @@
-const { resetContext, needsContextReset } = require('../../../src/util/ivmCache/contextReset');
+const { createNewContext, needsContextReset } = require('../../../src/util/ivmCache/contextReset');
 
 // Mock dependencies
 jest.mock('../../../src/logger', () => ({
@@ -88,9 +88,9 @@ describe('Context Reset Utilities', () => {
     delete process.env.GEOLOCATION_URL;
   });
 
-  describe('resetContext', () => {
+  describe('createNewContext', () => {
     test('should successfully reset context with default parameters', async () => {
-      const result = await resetContext(mockCachedIsolate);
+      const result = await createNewContext(mockCachedIsolate);
 
       expect(mockCachedIsolate.isolate.createContext).toHaveBeenCalled();
       expect(mockJail.set).toHaveBeenCalledWith('global', {});
@@ -118,14 +118,14 @@ describe('Context Reset Utilities', () => {
         secret: 'test-secret',
       };
 
-      await resetContext(mockCachedIsolate, credentials, false);
+      await createNewContext(mockCachedIsolate, credentials, false);
 
       // Verify _getCredential was injected
       expect(mockJail.set).toHaveBeenCalledWith('_getCredential', expect.any(Function));
     });
 
     test('should handle test mode correctly', async () => {
-      await resetContext(mockCachedIsolate, {});
+      await createNewContext(mockCachedIsolate, {});
 
       // Verify all required APIs were injected (no testMode parameter anymore)
       expect(mockJail.set).toHaveBeenCalledWith('_ivm', expect.any(Object));
@@ -137,7 +137,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should inject all required APIs', async () => {
-      await resetContext(mockCachedIsolate, {});
+      await createNewContext(mockCachedIsolate, {});
 
       const expectedApiCalls = [
         ['global', {}],
@@ -163,7 +163,7 @@ describe('Context Reset Utilities', () => {
         }
       );
 
-      await resetContext(mockCachedIsolate);
+      await createNewContext(mockCachedIsolate);
 
       expect(mockCachedIsolate.customScriptModule.instantiate).toHaveBeenCalledWith(
         mockNewContext,
@@ -172,7 +172,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should release old context', async () => {
-      await resetContext(mockCachedIsolate);
+      await createNewContext(mockCachedIsolate);
 
       expect(mockCachedIsolate.context.release).toHaveBeenCalled();
     });
@@ -180,7 +180,7 @@ describe('Context Reset Utilities', () => {
     test('should handle missing old context gracefully', async () => {
       delete mockCachedIsolate.context;
 
-      await expect(resetContext(mockCachedIsolate)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
     test('should handle context release errors gracefully', async () => {
@@ -188,25 +188,25 @@ describe('Context Reset Utilities', () => {
         throw new Error('Release failed');
       });
 
-      await expect(resetContext(mockCachedIsolate)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
     test('should throw error for invalid cached isolate', async () => {
-      await expect(resetContext(null)).rejects.toThrow('Invalid cached isolate');
-      await expect(resetContext({})).rejects.toThrow('Invalid cached isolate');
-      await expect(resetContext({ isolate: null })).rejects.toThrow('Invalid cached isolate');
+      await expect(createNewContext(null)).rejects.toThrow('Invalid cached isolate');
+      await expect(createNewContext({})).rejects.toThrow('Invalid cached isolate');
+      await expect(createNewContext({ isolate: null })).rejects.toThrow('Invalid cached isolate');
     });
 
     test('should handle context creation failure', async () => {
       mockCachedIsolate.isolate.createContext.mockRejectedValue(new Error('Context creation failed'));
 
-      await expect(resetContext(mockCachedIsolate)).rejects.toThrow('Context creation failed');
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Context creation failed');
     });
 
     test('should handle bootstrap script run failure', async () => {
       mockCachedIsolate.bootstrap.run.mockRejectedValue(new Error('Bootstrap failed'));
 
-      await expect(resetContext(mockCachedIsolate)).rejects.toThrow('Bootstrap failed');
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Bootstrap failed');
     });
 
     test('should handle module instantiation failure', async () => {
@@ -214,7 +214,7 @@ describe('Context Reset Utilities', () => {
         new Error('Module instantiation failed')
       );
 
-      await expect(resetContext(mockCachedIsolate)).rejects.toThrow('Module instantiation failed');
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Module instantiation failed');
     });
 
     test('should handle module evaluation failure', async () => {
@@ -222,7 +222,7 @@ describe('Context Reset Utilities', () => {
         new Error('Module evaluation failed')
       );
 
-      await expect(resetContext(mockCachedIsolate)).rejects.toThrow('Module evaluation failed');
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Module evaluation failed');
     });
   });
 
@@ -231,7 +231,7 @@ describe('Context Reset Utilities', () => {
     let resetResult;
 
     beforeEach(async () => {
-      resetResult = await resetContext(mockCachedIsolate, { testKey: 'testValue' });
+      resetResult = await createNewContext(mockCachedIsolate, { testKey: 'testValue' });
       
       // Extract the injected functions from the jail.set calls
       injectedFunctions = {};
@@ -265,7 +265,7 @@ describe('Context Reset Utilities', () => {
     test('getCredential should handle missing credentials gracefully', async () => {
       // Reset with no credentials
       jest.clearAllMocks();
-      await resetContext(mockCachedIsolate, null);
+      await createNewContext(mockCachedIsolate, null);
       
       const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
       const result = getCredential('anyKey');
@@ -275,7 +275,7 @@ describe('Context Reset Utilities', () => {
     test('getCredential should handle invalid credentials gracefully', async () => {
       // Reset with invalid credentials
       jest.clearAllMocks();
-      await resetContext(mockCachedIsolate, 'invalid');
+      await createNewContext(mockCachedIsolate, 'invalid');
       
       const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
       const result = getCredential('anyKey');
@@ -302,7 +302,7 @@ describe('Context Reset Utilities', () => {
       mockCachedIsolate.compiledModules = {};
 
       // Skip this test for now as it's complex to mock properly
-      await expect(resetContext(mockCachedIsolate)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
     test('should handle large credentials object', async () => {
@@ -311,7 +311,7 @@ describe('Context Reset Utilities', () => {
         largeCredentials[`key${i}`] = `value${i}`;
       }
 
-      await expect(resetContext(mockCachedIsolate, largeCredentials)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate, largeCredentials)).resolves.toBeDefined();
     });
 
     test('should handle special characters in credentials', async () => {
@@ -323,14 +323,14 @@ describe('Context Reset Utilities', () => {
         'unicode-key-测试': 'unicode-value-测试',
       };
 
-      await expect(resetContext(mockCachedIsolate, specialCredentials)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate, specialCredentials)).resolves.toBeDefined();
     });
 
     test('should handle very long transformation and workspace IDs', async () => {
       mockCachedIsolate.transformationId = 'x'.repeat(1000);
       mockCachedIsolate.workspaceId = 'y'.repeat(1000);
 
-      await expect(resetContext(mockCachedIsolate)).resolves.toBeDefined();
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
     test('should handle concurrent reset operations', async () => {
@@ -338,7 +338,7 @@ describe('Context Reset Utilities', () => {
       
       for (let i = 0; i < 10; i++) {
         const isolateCopy = { ...mockCachedIsolate };
-        resetPromises.push(resetContext(isolateCopy, { key: i }, false));
+        resetPromises.push(createNewContext(isolateCopy, { key: i }, false));
       }
 
       await expect(Promise.all(resetPromises)).resolves.toHaveLength(10);
@@ -351,7 +351,7 @@ describe('Context Reset Utilities', () => {
 
       // Perform multiple resets
       for (let i = 0; i < 100; i++) {
-        await resetContext(mockCachedIsolate, { iteration: i }, i % 2 === 0);
+        await createNewContext(mockCachedIsolate, { iteration: i }, i % 2 === 0);
       }
 
       // Force garbage collection if available
@@ -368,7 +368,7 @@ describe('Context Reset Utilities', () => {
 
     test('should complete reset within reasonable time', async () => {
       const startTime = Date.now();
-      await resetContext(mockCachedIsolate);
+      await createNewContext(mockCachedIsolate);
       const endTime = Date.now();
 
       // Reset should complete quickly (allowing for mock overhead)

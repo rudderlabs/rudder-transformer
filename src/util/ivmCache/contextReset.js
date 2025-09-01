@@ -137,7 +137,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
  * @param {Object} credentials Fresh credentials for this execution
  * @returns {Object} Cached isolate with reset context ready for execution
  */
-async function resetContext(cachedIsolate, credentials = {}) {
+async function createNewContext(cachedIsolate, credentials = {}) {
   if (!cachedIsolate?.isolate) {
     throw new Error('Invalid cached isolate provided for context reset');
   }
@@ -221,6 +221,6 @@ function needsContextReset() {
 }
 
 module.exports = {
-  resetContext,
+  createNewContext,
   needsContextReset,
 };

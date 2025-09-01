@@ -1,5 +1,5 @@
 const IvmCache = require('../index');
-const { resetContext } = require('../contextReset');
+const { createNewContext } = require('../contextReset');
 const logger = require('../../../logger');
 const stats = require('../../stats');
 
@@ -39,7 +39,7 @@ class IsolateStrategy {
       }
 
       // Reset context for fresh execution
-      const cachedIsolateWithResetContext = await resetContext(cachedIsolate, credentials);
+      const cachedIsolateWithResetContext = await createNewContext(cachedIsolate, credentials);
 
       stats.timing('ivm_cache_get_duration', startTime, {
         strategy: 'isolate',

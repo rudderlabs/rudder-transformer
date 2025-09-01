@@ -17,10 +17,10 @@ jest.mock('../../../../src/util/stats', () => ({
 }));
 
 jest.mock('../../../../src/util/ivmCache/contextReset', () => ({
-  resetContext: jest.fn(),
+  createNewContext: jest.fn(),
 }));
 
-const { resetContext } = require('../../../../src/util/ivmCache/contextReset');
+const { createNewContext } = require('../../../../src/util/ivmCache/contextReset');
 
 describe('Isolate Cache Strategy', () => {
   let strategy;
@@ -143,7 +143,7 @@ describe('Isolate Cache Strategy', () => {
       const credentials = { apiKey: 'test' };
       const cachedIsolateWithResetContext = { ...mockIsolateData, reset: true };
 
-      resetContext.mockResolvedValue(cachedIsolateWithResetContext);
+      createNewContext.mockResolvedValue(cachedIsolateWithResetContext);
 
       await strategy.set(cacheKey, mockIsolateData);
       
@@ -163,7 +163,7 @@ describe('Isolate Cache Strategy', () => {
       
       const result = await strategy.get(cacheKey, credentials);
 
-      expect(resetContext).toHaveBeenCalledWith(
+      expect(createNewContext).toHaveBeenCalledWith(
         mockCachedData,
         credentials
       );
@@ -172,7 +172,7 @@ describe('Isolate Cache Strategy', () => {
 
     test('should handle reset context errors', async () => {
       const cacheKey = 'test:key:123';
-      resetContext.mockRejectedValue(new Error('Reset failed'));
+      createNewContext.mockRejectedValue(new Error('Reset failed'));
 
       await strategy.set(cacheKey, mockIsolateData);
       const result = await strategy.get(cacheKey);
@@ -202,7 +202,7 @@ describe('Isolate Cache Strategy', () => {
       );
 
       // Test cache hit
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
       await strategy.set(cacheKey, mockIsolateData);
       await strategy.get(cacheKey);
 
@@ -312,7 +312,7 @@ describe('Isolate Cache Strategy', () => {
 
     test('should reflect actual cache state', async () => {
       await strategy.set('key1', mockIsolateData);
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
 
       // Generate some hits and misses
       await strategy.get('key1'); // hit
@@ -384,7 +384,7 @@ describe('Isolate Cache Strategy', () => {
   describe('concurrent operations', () => {
     test('should handle concurrent get operations', async () => {
       const cacheKey = 'test:concurrent:get';
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
 
       await strategy.set(cacheKey, mockIsolateData);
 
@@ -397,7 +397,7 @@ describe('Isolate Cache Strategy', () => {
         expect(result).toBeDefined();
       });
 
-      expect(resetContext).toHaveBeenCalledTimes(10);
+      expect(createNewContext).toHaveBeenCalledTimes(10);
     });
 
     test('should handle concurrent set operations', async () => {
@@ -412,7 +412,7 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should handle mixed concurrent operations', async () => {
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
 
       const operations = [
         strategy.set('key1', mockIsolateData),
@@ -428,8 +428,8 @@ describe('Isolate Cache Strategy', () => {
   });
 
   describe('error scenarios', () => {
-    test('should handle resetContext throwing errors', async () => {
-      resetContext.mockRejectedValue(new Error('Reset context failed'));
+    test('should handle createNewContext throwing errors', async () => {
+      createNewContext.mockRejectedValue(new Error('Reset context failed'));
 
       const cacheKey = 'test:error:key';
       await strategy.set(cacheKey, mockIsolateData);
@@ -464,7 +464,7 @@ describe('Isolate Cache Strategy', () => {
 
   describe('memory and performance', () => {
     test('should not leak memory with frequent operations', async () => {
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
 
       const initialMemory = process.memoryUsage().heapUsed;
 
@@ -489,7 +489,7 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should maintain consistent performance', async () => {
-      resetContext.mockResolvedValue(mockIsolateData);
+      createNewContext.mockResolvedValue(mockIsolateData);
 
       const timings = [];
 

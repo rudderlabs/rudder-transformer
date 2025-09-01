@@ -6,7 +6,7 @@
  */
 function generateCacheKey(transformationVersionId, libraryVersionIds) {
   // Normalize inputs
-  const normalizedLibraryIds = (libraryVersionIds || []).slice().sort((a, b) => a.localeCompare(b));
+  const normalizedLibraryIds = (libraryVersionIds || []).sort();
   // Create hash of library version IDs
   const libsHash = normalizedLibraryIds.join('-');
 
@@ -16,28 +16,6 @@ function generateCacheKey(transformationVersionId, libraryVersionIds) {
   return cacheKey;
 }
 
-/**
- * Extracts components from a cache key for debugging
- * @param {string} cacheKey
- * @returns {Object} Components of the cache key
- */
-function parseCacheKey(cacheKey) {
-  if (typeof cacheKey !== 'string') {
-    throw new Error('cacheKey must be a string');
-  }
-
-  const parts = cacheKey.split(':');
-  if (parts.length !== 2) {
-    throw new Error('Invalid cache key format');
-  }
-
-  return {
-    transformationVersionId: parts[0],
-    libsHash: parts[1],
-  };
-}
-
 module.exports = {
   generateCacheKey,
-  parseCacheKey,
 };

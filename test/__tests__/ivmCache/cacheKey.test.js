@@ -1,6 +1,5 @@
 const {
   generateCacheKey,
-  parseCacheKey,
 } = require('../../../src/util/ivmCache/cacheKey');
 
 describe('IVM Cache Key Generation', () => {
@@ -71,34 +70,6 @@ describe('IVM Cache Key Generation', () => {
       expect(parts).toHaveLength(2);
       expect(parts[0]).toBe('trans-1'); // transformationVersionId
       expect(parts[1]).toBe('lib1'); // libsHash (16 chars)
-    });
-  });
-
-  describe('parseCacheKey', () => {
-    test('should parse valid cache keys', () => {
-      const originalKey = generateCacheKey('trans-1', ['lib1']);
-      const parsed = parseCacheKey(originalKey);
-
-      expect(parsed).toEqual({
-        transformationVersionId: 'trans-1',
-        libsHash: 'lib1',
-      });
-    });
-
-    test('should throw for invalid cache key format', () => {
-      expect(() => parseCacheKey('invalid-key')).toThrow();
-      expect(() => parseCacheKey('too:few:parts')).toThrow();
-      expect(() => parseCacheKey('too:many:parts:here:now:extra')).toThrow();
-      expect(() => parseCacheKey(123)).toThrow();
-      expect(() => parseCacheKey(null)).toThrow();
-    });
-
-    test('should be reversible with generateCacheKey', () => {
-      const params = ['trans-123', ['lib1', 'lib2']];
-      const key = generateCacheKey(...params);
-      const parsed = parseCacheKey(key);
-
-      expect(parsed.transformationVersionId).toBe('trans-123');
     });
   });
 

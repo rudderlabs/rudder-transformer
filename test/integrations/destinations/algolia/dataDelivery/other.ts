@@ -276,7 +276,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   secret: {
                     accessToken: defaultAccessToken,
                   },
-                  dontBatch: true,
+                  dontBatch: false,
                 },
               },
             ],
@@ -333,7 +333,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   secret: {
                     accessToken: defaultAccessToken,
                   },
-                  dontBatch: true,
+                  dontBatch: false,
                 },
               },
             ],
@@ -390,7 +390,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   secret: {
                     accessToken: defaultAccessToken,
                   },
-                  dontBatch: true,
+                  dontBatch: false,
                 },
               },
             ],
@@ -447,7 +447,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   secret: {
                     accessToken: defaultAccessToken,
                   },
-                  dontBatch: true,
+                  dontBatch: false,
                 },
               },
             ],
@@ -505,7 +505,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
                   secret: {
                     accessToken: defaultAccessToken,
                   },
-                  dontBatch: true,
+                  dontBatch: false,
                 },
               },
             ],

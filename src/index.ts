@@ -45,7 +45,7 @@ if (process.env.PYROSCOPE_SERVER_ADDRESS) {
         process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS || '10000',
         10,
       ),
-      collectCpuTime: process.env.PYROSCOPE_WALL_COLLECT_CPU_TIME === 'false' ? false : true,
+      collectCpuTime: process.env.PYROSCOPE_WALL_COLLECT_CPU_TIME !== 'false',
     },
     tags: {
       namespace: process.env.NAMESPACE || '',

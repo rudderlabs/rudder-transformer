@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.107.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.3...v1.107.4) (2025-09-02)
+
+
+### Bug Fixes
+
+* **campaign_manager:** handling normalizePhone function error ([#4592](https://github.com/rudderlabs/rudder-transformer/issues/4592)) ([cb5b92e](https://github.com/rudderlabs/rudder-transformer/commit/cb5b92ee083ea2eed04a53f8f84acd48e286f730))
+* replace --json flag with grep for gh pr create compatibility ([dd1f23e](https://github.com/rudderlabs/rudder-transformer/commit/dd1f23e4680227d2f68b868bb6b3319c915bcdd2))
+* replace --json flag with grep for gh pr create compatibility ([#4579](https://github.com/rudderlabs/rudder-transformer/issues/4579)) ([ef4f64f](https://github.com/rudderlabs/rudder-transformer/commit/ef4f64f09e23a4a2c6e820268cac12e7c9690772))
+
 ### [1.107.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.2...v1.107.3) (2025-08-26)
 
 ### [1.107.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.1...v1.107.2) (2025-08-21)

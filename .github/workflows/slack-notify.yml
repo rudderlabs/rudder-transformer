@@ -19,7 +19,7 @@ jobs:
     if: ${{ inputs.should_notify }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
 
       - name: notify
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2.1.1

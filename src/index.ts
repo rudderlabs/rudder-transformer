@@ -29,25 +29,29 @@ let pyroscopeInitialised = false;
 
 if (process.env.PYROSCOPE_SERVER_ADDRESS) {
   pyroscopeInit({
-    // https://grafana.com/docs/pyroscope/latest/configure-client/language-sdks/nodejs/#configuration-options
     appName: process.env.PYROSCOPE_APPLICATION_NAME || 'rudder-transformer',
     serverAddress: process.env.PYROSCOPE_SERVER_ADDRESS,
-    flushIntervalMs: parseInt(process.env.PYROSCOPE_FLUSH_INTERVAL_MS || '1000', 10),
+    flushIntervalMs: parseInt(process.env.PYROSCOPE_FLUSH_INTERVAL_MS || '60000', 10),
     heap: {
       samplingIntervalBytes: parseInt(
-        process.env.PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES || '512',
+        process.env.PYROSCOPE_HEAP_SAMPLING_INTERVAL_BYTES || '524288',
         10,
       ),
       stackDepth: parseInt(process.env.PYROSCOPE_HEAP_STACK_DEPTH || '64', 10),
     },
     wall: {
-      samplingDurationMs: parseInt(process.env.PYROSCOPE_WALL_SAMPLING_DURATION_MS || '1000', 10),
+      samplingDurationMs: parseInt(process.env.PYROSCOPE_WALL_SAMPLING_DURATION_MS || '60000', 10),
       samplingIntervalMicros: parseInt(
-        process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS || '1000',
+        process.env.PYROSCOPE_WALL_SAMPLING_INTERVAL_MICROS || '10000',
         10,
       ),
-      collectCpuTime: process.env.PYROSCOPE_WALL_COLLECT_CPU_TIME === 'true',
+      collectCpuTime: process.env.PYROSCOPE_WALL_COLLECT_CPU_TIME !== 'false',
     },
+    tags: {
+      namespace: process.env.NAMESPACE || '',
+      instance: process.env.INSTANCE_ID || '',
+      cluster: process.env.CLUSTER || '',
+    }
   });
   pyroscopeStart();
   pyroscopeInitialised = true

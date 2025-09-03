@@ -9,7 +9,6 @@ const logger = require('../../logger');
 class IvmCacheManager {
   constructor() {
     this.strategy = null;
-    this.currentStrategyName = null;
     this.initializeStrategy();
   }
 
@@ -18,13 +17,6 @@ class IvmCacheManager {
    * Only called when strategy needs to be created or changed
    */
   initializeStrategy() {
-    const strategyName = (process.env.IVM_CACHE_STRATEGY || 'none').toLowerCase();
-
-    // If strategy is already initialized and matches, do nothing
-    if (this.currentStrategyName === strategyName && this.strategy) {
-      return;
-    }
-
     // Clean up existing strategy if different
     if (this.strategy && typeof this.strategy.clear === 'function') {
       this.strategy.clear().catch((error) => {
@@ -41,10 +33,8 @@ class IvmCacheManager {
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
     this.strategy = new OneIVMPerTransformationIdStrategy(options);
-    this.currentStrategyName = strategyName;
 
     logger.info('IVM Cache Manager initialized', {
-      strategy: this.currentStrategyName,
       ...options,
     });
   }
@@ -81,7 +71,6 @@ class IvmCacheManager {
       logger.error('Error getting from cache', {
         error: error.message,
         cacheKey,
-        strategy: this.currentStrategyName,
       });
       return null;
     }
@@ -99,7 +88,6 @@ class IvmCacheManager {
       logger.error('Error setting cache', {
         error: error.message,
         cacheKey,
-        strategy: this.currentStrategyName,
       });
     }
   }
@@ -115,7 +103,6 @@ class IvmCacheManager {
       logger.error('Error deleting from cache', {
         error: error.message,
         cacheKey,
-        strategy: this.currentStrategyName,
       });
     }
   }
@@ -129,10 +116,9 @@ class IvmCacheManager {
     } catch (error) {
       logger.error('Error clearing cache', {
         error: error.message,
-        strategy: this.currentStrategyName,
       });
     }
-    logger.info('IVM cache cleared', { strategy: this.currentStrategyName });
+    logger.info('IVM cache cleared');
   }
 
   /**
@@ -145,28 +131,17 @@ class IvmCacheManager {
       return {
         ...stats,
         manager: {
-          currentStrategy: this.currentStrategyName,
-          environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'none',
+          environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'isolate',
         },
       };
     } catch (error) {
       logger.error('Error getting cache stats', {
         error: error.message,
-        strategy: this.currentStrategyName,
       });
       return {
-        strategy: this.currentStrategyName,
         error: error.message,
       };
     }
-  }
-
-  /**
-   * Get current strategy name
-   * @returns {string} Strategy name
-   */
-  getCurrentStrategy() {
-    return this.currentStrategyName;
   }
 }
 

@@ -69,17 +69,6 @@ describe('IVM Cache Manager', () => {
   });
 
   describe('strategy initialization', () => {
-    test('should default to none strategy', () => {
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
-    });
-
-    test('should initialize isolate strategy when configured', () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
-    });
-
     test('should pass options to strategy constructor', () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       process.env.IVM_CACHE_MAX_SIZE = '100';
@@ -208,14 +197,13 @@ describe('IVM Cache Manager', () => {
       const stats = IvmCacheManager.getStats();
       
       expect(stats).toEqual({
-        strategy: 'isolate',
         hits: 5,
         misses: 2,
+        strategy: 'isolate',
         hitRate: 71.43,
         currentSize: 3,
         maxSize: 50,
         manager: {
-          currentStrategy: 'isolate',
           environmentStrategy: 'isolate',
         },
       });
@@ -232,7 +220,6 @@ describe('IVM Cache Manager', () => {
       const stats = IvmCacheManager.getStats();
       
       expect(stats).toEqual({
-        strategy: 'none',
         error: 'Stats error',
       });
       expect(logger.error).toHaveBeenCalledWith(
@@ -241,17 +228,6 @@ describe('IVM Cache Manager', () => {
           error: 'Stats error',
         })
       );
-    });
-  });
-
-  describe('getCurrentStrategy method', () => {
-    test('should return current strategy name', () => {
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('none');
-      
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      expect(IvmCacheManager.getCurrentStrategy()).toBe('isolate');
     });
   });
 

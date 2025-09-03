@@ -639,35 +639,20 @@ async function getCachedFactory(
       try {
         // For cached instances, we don't destroy immediately
         // The cache manager handles cleanup via TTL/LRU
-        if (ivmCacheManager.getCurrentStrategy() === 'isolate') {
-          logger.debug('Skipping immediate destroy for cached IVM', {
-            transformationId,
-          });
-          // Note: Cached instances are cleaned up by cache eviction
-          return;
-        }
-
-        // For non-cached instances or when cache is disabled,
-        // fall back to traditional cleanup
-        await originalDestroy(client);
+        logger.debug('Cached factory destroy called', {
+          transformationId: client.transformationId || 'unknown',
+        });
+        
+        // Note: Cached instances are cleaned up by cache eviction
+        // We don't need to do immediate cleanup here
+        return;
       } catch (error) {
         logger.error('Error in cached factory destroy', {
           error: error.message,
-          transformationId,
+          transformationId: client.transformationId || 'unknown',
         });
-        // Always attempt cleanup even if logging fails
-        await originalDestroy(client);
       }
     },
-  };
-
-  // Store reference to original destroy for fallback
-  const originalDestroy = async (client) => {
-    client.fnRef.release();
-    client.bootstrap.release();
-    client.customScriptModule.release();
-    client.context.release();
-    await client.isolate.dispose();
   };
 
   return factory;

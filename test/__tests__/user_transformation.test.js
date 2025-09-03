@@ -1333,9 +1333,12 @@ describe("User transformation with IVM cache", () => {
     ivmCacheManager.initializeStrategy();
   });
   afterEach(() => {
+    // Verify cache is working correctly
     expect(ivmCacheManager.getStats().hits).toEqual(1);
     expect(ivmCacheManager.getStats().misses).toEqual(1);
     expect(ivmCacheManager.getStats().sets).toEqual(1);
+    
+    // Clear cache for next test
     if (ivmCacheManager && ivmCacheManager.clear) {
       ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
     }

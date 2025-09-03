@@ -155,7 +155,6 @@ describe("User transformation Cache", () => {
       it(`should initialize cache manager`, async () => {
         process.env.IVM_CACHE_STRATEGY = cacheMode;
         ivmCacheManager.initializeStrategy();
-        expect(ivmCacheManager.getCurrentStrategy()).toBe(cacheMode);
         const result = await ivmCacheManager.get(cacheKey, {
             credentials: {
                 user: username,

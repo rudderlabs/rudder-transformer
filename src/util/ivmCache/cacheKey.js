@@ -6,7 +6,7 @@
  */
 function generateCacheKey(transformationVersionId, libraryVersionIds) {
   // Normalize inputs
-  const normalizedLibraryIds = (libraryVersionIds || []).sort();
+  const normalizedLibraryIds = (libraryVersionIds || []).sort((a, b) => a.localeCompare(b));
   // Create hash of library version IDs
   const libsHash = normalizedLibraryIds.join('-');
 

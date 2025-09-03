@@ -61,14 +61,14 @@ jobs:
           npm run lint:fix
 
       - name: Upload Coverage Reports to Codecov
-        uses: codecov/codecov-action@v5.4.3
+        uses: codecov/codecov-action@v5.5.0
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
           directory: ./reports/coverage
 
       - name: Upload TS Coverage Reports to Codecov
-        uses: codecov/codecov-action@v5.4.3
+        uses: codecov/codecov-action@v5.5.0
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
@@ -83,7 +83,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: always()
-        uses: SonarSource/sonarqube-scan-action@v5.3.0
+        uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

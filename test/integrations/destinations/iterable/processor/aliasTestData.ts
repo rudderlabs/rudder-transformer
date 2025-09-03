@@ -110,6 +110,7 @@ export const aliasTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.iterable.com/api/users/updateEmail',
+              endpointPath: 'users/updateEmail',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',
@@ -183,6 +184,7 @@ export const aliasTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.eu.iterable.com/api/users/updateEmail',
+              endpointPath: 'users/updateEmail',
               headers: {
                 api_key: 'testApiKey',
                 'Content-Type': 'application/json',

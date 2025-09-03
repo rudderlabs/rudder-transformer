@@ -94,6 +94,7 @@ const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint =
     category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
+  response.endpointPath = category.endpointPath;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
   response.headers = {

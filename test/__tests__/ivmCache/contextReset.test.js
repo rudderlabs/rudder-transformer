@@ -23,6 +23,7 @@ jest.mock('node-fetch', () => jest.fn());
 jest.mock('isolated-vm', () => ({
   Reference: jest.fn().mockImplementation((fn) => ({
     applyIgnored: jest.fn(),
+    callback: fn, // Store the callback for testing
   })),
   ExternalCopy: jest.fn().mockImplementation((data) => ({
     copyInto: jest.fn().mockReturnValue(data),
@@ -297,6 +298,373 @@ describe('Context Reset Utilities', () => {
     });
   });
 
+  describe('_fetch API injection', () => {
+    let fetchCallback;
+    const mockFetchWithDnsWrapper = require('../../../src/util/utils').fetchWithDnsWrapper;
+    const mockReference = require('isolated-vm').Reference;
+
+    beforeEach(async () => {
+      mockReference.mockClear();
+      await createNewContext(mockCachedIsolate);
+      // Extract the callback function from the mocked Reference constructor
+      fetchCallback = mockReference.mock.calls.find(call => call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+    });
+
+    test('should handle successful fetch call', async () => {
+      const mockResponse = {
+        json: jest.fn().mockResolvedValue({ success: true, data: 'test' }),
+      };
+      mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchCallback(mockResolve, 'https://example.com');
+
+      expect(mockFetchWithDnsWrapper).toHaveBeenCalledWith(
+        {
+          identifier: 'V1',
+          transformationId: 'test-transformation-123',
+          workspaceId: 'test-workspace-456',
+        },
+        'https://example.com'
+      );
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy data
+      );
+    });
+
+    test('should handle fetch error', async () => {
+      mockFetchWithDnsWrapper.mockRejectedValue(new Error('Network error'));
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchCallback(mockResolve, 'https://example.com');
+
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        ["ERROR"] // ERROR string
+      );
+    });
+
+    test('should handle JSON parsing error', async () => {
+      const mockResponse = {
+        json: jest.fn().mockRejectedValue(new Error('Invalid JSON')),
+      };
+      mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchCallback(mockResolve, 'https://example.com');
+
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        ["ERROR"] // ERROR string
+      );
+    });
+  });
+
+  describe('_fetchV2 API injection', () => {
+    let fetchV2Callback;
+    const mockFetchWithDnsWrapper = require('../../../src/util/utils').fetchWithDnsWrapper;
+    const mockReference = require('isolated-vm').Reference;
+
+    beforeEach(async () => {
+      mockReference.mockClear();
+      await createNewContext(mockCachedIsolate);
+      // Extract the fetchV2 callback (should be the second call with resolve/reject params)
+      fetchV2Callback = mockReference.mock.calls.find(call => call[0].toString().includes('resolve') && call[0].toString().includes('reject') && call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+    });
+
+    test('should handle successful fetchV2 call with JSON response', async () => {
+      const mockHeaders = new Map([
+        ['content-type', 'application/json'],
+        ['x-custom', 'test-value'],
+      ]);
+      const mockResponse = {
+        url: 'https://example.com',
+        status: 200,
+        headers: mockHeaders,
+        text: jest.fn().mockResolvedValue('{"success": true}'),
+      };
+      mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
+
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy data
+      );
+    });
+
+    test('should handle successful fetchV2 call with text response', async () => {
+      const mockHeaders = new Map([['content-type', 'text/plain']]);
+      const mockResponse = {
+        url: 'https://example.com',
+        status: 200,
+        headers: mockHeaders,
+        text: jest.fn().mockResolvedValue('plain text response'),
+      };
+      mockFetchWithDnsWrapper.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
+
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy data
+      );
+    });
+
+    test('should handle fetchV2 error', async () => {
+      const error = new Error('Network error');
+      error.code = 'ECONNREFUSED';
+      mockFetchWithDnsWrapper.mockRejectedValue(error);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await fetchV2Callback(mockResolve, mockReject, 'https://example.com');
+
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+  });
+
+  describe('_geolocation API injection', () => {
+    let geolocationCallback;
+    const mockFetch = require('node-fetch');
+    const mockReference = require('isolated-vm').Reference;
+
+    beforeEach(async () => {
+      mockReference.mockClear();
+      await createNewContext(mockCachedIsolate);
+      // Extract the geolocation callback
+      geolocationCallback = mockReference.mock.calls.find(call => call[0].toString().includes('GEOLOCATION_URL'))?.[0];
+    });
+
+    test('should handle successful geolocation call', async () => {
+      const mockGeoData = {
+        country: 'US',
+        city: 'New York',
+        latitude: 40.7128,
+        longitude: -74.0060,
+      };
+      const mockResponse = {
+        status: 200,
+        json: jest.fn().mockResolvedValue(mockGeoData),
+      };
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        'http://geo.example.com/geoip/1.2.3.4',
+        { timeout: 1000 }
+      );
+      expect(mockResolve.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy data
+      );
+    });
+
+    test('should handle missing IP address', async () => {
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject);
+
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+
+    test('should handle missing GEOLOCATION_URL environment variable', async () => {
+      delete process.env.GEOLOCATION_URL;
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
+
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+
+    test('should handle non-200 geolocation response', async () => {
+      const mockResponse = {
+        status: 404,
+      };
+      mockFetch.mockResolvedValue(mockResponse);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
+
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+
+    test('should handle geolocation network error', async () => {
+      const error = new Error('Network timeout');
+      mockFetch.mockRejectedValue(error);
+
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '1.2.3.4');
+
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+  });
+
+  describe('module instantiation and loading', () => {
+    test('should handle module instantiation with callback', async () => {
+      const mockCallback = jest.fn();
+      mockCachedIsolate.customScriptModule.instantiate.mockImplementation(
+        async (context, callback) => {
+          await callback('lodash');
+          await callback('moment');
+        }
+      );
+
+      await createNewContext(mockCachedIsolate);
+
+      expect(mockCachedIsolate.customScriptModule.instantiate).toHaveBeenCalledWith(
+        mockNewContext,
+        expect.any(Function)
+      );
+    });
+
+    test('should handle missing module in instantiation callback', async () => {
+      mockCachedIsolate.customScriptModule.instantiate.mockImplementation(
+        async (context, callback) => {
+          try {
+            await callback('nonexistent-module');
+          } catch (error) {
+            expect(error.message).toContain('import from nonexistent-module failed');
+          }
+        }
+      );
+
+      await createNewContext(mockCachedIsolate);
+    });
+
+    test('should properly copy metadata to reset context', async () => {
+      mockCachedIsolate.bootstrapScriptResult = { some: 'data' };
+      mockCachedIsolate.logs = ['log1', 'log2'];
+
+      const result = await createNewContext(mockCachedIsolate);
+
+      expect(result.bootstrapScriptResult).toEqual({ some: 'data' });
+      expect(result.logs).toEqual(['log1', 'log2']);
+      expect(result.fnRef).toBeDefined();
+    });
+  });
+
+  describe('stats and logging verification', () => {
+    const mockStats = require('../../../src/util/stats');
+
+    test('should call stats timing for fetch operations', async () => {
+      const mockFetchWithDnsWrapper = require('../../../src/util/utils').fetchWithDnsWrapper;
+      mockFetchWithDnsWrapper.mockResolvedValue({
+        json: jest.fn().mockResolvedValue({ data: 'test' }),
+      });
+
+      const mockReference = require('isolated-vm').Reference;
+      mockReference.mockClear();
+      await createNewContext(mockCachedIsolate);
+      const fetchCallback = mockReference.mock.calls.find(call => call[0].toString().includes('fetchWithDnsWrapper'))?.[0];
+
+      const mockResolve = { applyIgnored: jest.fn() };
+      await fetchCallback(mockResolve, 'https://example.com');
+
+      expect(mockStats.timing).toHaveBeenCalledWith(
+        'fetch_call_duration',
+        expect.any(Date),
+        expect.objectContaining({
+          identifier: 'V1',
+          transformationId: 'test-transformation-123',
+          workspaceId: 'test-workspace-456',
+          isSuccess: 'true',
+        })
+      );
+    });
+
+    test('should call stats increment for credential errors', async () => {
+      await createNewContext(mockCachedIsolate, null);
+      const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
+
+      getCredential('someKey');
+
+      expect(mockStats.increment).toHaveBeenCalledWith(
+        'credential_error_total',
+        expect.objectContaining({
+          identifier: 'V1',
+          transformationId: 'test-transformation-123',
+          workspaceId: 'test-workspace-456',
+        })
+      );
+    });
+  });
+
   describe('edge cases and error scenarios', () => {
     test('should handle empty compiledModules', async () => {
       mockCachedIsolate.compiledModules = {};
@@ -338,10 +706,44 @@ describe('Context Reset Utilities', () => {
       
       for (let i = 0; i < 10; i++) {
         const isolateCopy = { ...mockCachedIsolate };
-        resetPromises.push(createNewContext(isolateCopy, { key: i }, false));
+        resetPromises.push(createNewContext(isolateCopy, { key: i }));
       }
 
       await expect(Promise.all(resetPromises)).resolves.toHaveLength(10);
+    });
+
+    test('should handle jail.set failures gracefully', async () => {
+      mockJail.set.mockRejectedValueOnce(new Error('Failed to set global'));
+
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Failed to set global');
+    });
+
+    test('should handle transform wrapper retrieval failure', async () => {
+      mockCachedIsolate.customScriptModule.namespace.get.mockRejectedValue(
+        new Error('Transform wrapper not found')
+      );
+
+      await expect(createNewContext(mockCachedIsolate)).rejects.toThrow('Transform wrapper not found');
+    });
+
+    test('should handle invalid environment variables gracefully', async () => {
+      process.env.GEOLOCATION_TIMEOUT_IN_MS = 'invalid';
+      
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
+      
+      // Should default to 1000ms when invalid
+      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocation')[1];
+      expect(geolocationReference).toBeDefined();
+    });
+
+    test('should handle missing GEOLOCATION_TIMEOUT_IN_MS environment variable', async () => {
+      delete process.env.GEOLOCATION_TIMEOUT_IN_MS;
+      
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
+      
+      // Should default to 1000ms when missing
+      const geolocationReference = mockJail.set.mock.calls.find(([key]) => key === '_geolocation')[1];
+      expect(geolocationReference).toBeDefined();
     });
   });
 
@@ -351,7 +753,7 @@ describe('Context Reset Utilities', () => {
 
       // Perform multiple resets
       for (let i = 0; i < 100; i++) {
-        await createNewContext(mockCachedIsolate, { iteration: i }, i % 2 === 0);
+        await createNewContext(mockCachedIsolate, { iteration: i });
       }
 
       // Force garbage collection if available
@@ -373,6 +775,66 @@ describe('Context Reset Utilities', () => {
 
       // Reset should complete quickly (allowing for mock overhead)
       expect(endTime - startTime).toBeLessThan(1000); // Less than 1 second
+    });
+
+    test('should handle rapid successive resets', async () => {
+      const promises = [];
+      for (let i = 0; i < 50; i++) {
+        promises.push(createNewContext(mockCachedIsolate, { rapid: i }));
+      }
+      
+      await expect(Promise.all(promises)).resolves.toHaveLength(50);
+    });
+  });
+
+  describe('comprehensive error handling', () => {
+    test('should handle all types of invalid isolates', async () => {
+      const invalidIsolates = [
+        null,
+        undefined,
+        {},
+        { isolate: null },
+        { isolate: {} },
+        { isolate: { createContext: null } },
+        { isolate: { createContext: {} } },
+      ];
+
+      for (const invalidIsolate of invalidIsolates) {
+        if (!invalidIsolate?.isolate) {
+          await expect(createNewContext(invalidIsolate)).rejects.toThrow('Invalid cached isolate');
+        } else {
+          // These will fail at createContext call, not at validation
+          await expect(createNewContext(invalidIsolate)).rejects.toThrow();
+        }
+      }
+    });
+
+    test('should handle all types of invalid credentials', async () => {
+      const invalidCredentials = [
+        null,
+        undefined,
+        'string',
+        123,
+        [],
+        () => {},
+      ];
+
+      for (const invalidCredential of invalidCredentials) {
+        await expect(createNewContext(mockCachedIsolate, invalidCredential)).resolves.toBeDefined();
+      }
+    });
+
+    test('should handle missing environment variables gracefully', async () => {
+      const originalEnv = { ...process.env };
+      
+      // Test with various missing env vars
+      delete process.env.GEOLOCATION_TIMEOUT_IN_MS;
+      delete process.env.GEOLOCATION_URL;
+      
+      await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
+      
+      // Restore environment
+      process.env = originalEnv;
     });
   });
 });

@@ -208,21 +208,12 @@ async function createNewContext(cachedIsolate, credentials = {}) {
 }
 
 /**
- * Check if an isolate needs context reset
- * @returns {boolean} True if reset is needed
- */
-function needsContextReset() {
-  // For isolate strategy, we always reset context to ensure clean state
-  return true;
-}
-
-/**
  * Safely release execution-specific resources (context and bootstrapScriptResult)
  * @param {Object} context The IVM context to release
  * @param {Object} bootstrapScriptResult The bootstrap script result to release
  * @param {Object} metadata Metadata for logging (optional)
  */
-function safeReleaseContext(context, bootstrapScriptResult, metadata = {}) {
+function cleanResources(context, bootstrapScriptResult, metadata = {}) {
   // Release context
   if (context) {
     try {
@@ -252,6 +243,5 @@ function safeReleaseContext(context, bootstrapScriptResult, metadata = {}) {
 
 module.exports = {
   createNewContext,
-  needsContextReset,
-  safeReleaseContext,
+  cleanResources,
 };

@@ -1,7 +1,7 @@
 const ivm = require('isolated-vm');
 
 const { getFactory, getCachedFactory } = require('./ivmFactory');
-const { safeReleaseContext } = require('./ivmCache/contextReset');
+const { cleanResources } = require('./ivmCache/contextReset');
 const logger = require('../logger');
 const stats = require('./stats');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
@@ -88,7 +88,6 @@ async function userTransformHandlerV1(
 
   logger.debug(`Creating IsolateVM`);
   const isolatevm = await isolatevmFactory.create();
-
   const invokeTime = new Date();
   let transformedEvents;
   let logs;
@@ -112,7 +111,7 @@ async function userTransformHandlerV1(
 
     // CRITICAL: Clean up the execution context immediately after use
     // This prevents race conditions and ensures proper resource management
-    safeReleaseContext(isolatevm.context, isolatevm.bootstrapScriptResult, {
+    cleanResources(isolatevm.context, isolatevm.bootstrapScriptResult, {
       transformationId: userTransformation.id,
       workspaceId: userTransformation.workspaceId,
     });

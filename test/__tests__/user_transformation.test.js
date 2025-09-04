@@ -1329,7 +1329,6 @@ describe("User transformation with IVM cache", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     process.env.USE_IVM_CACHE = 'true';
-    process.env.IVM_CACHE_STRATEGY = 'isolate';
     ivmCacheManager.initializeStrategy();
   });
   afterEach(() => {
@@ -2377,6 +2376,70 @@ describe("User transformation with IVM cache", () => {
       });
 
     });
+  });
+});
+
+// Generate a user transformation test which runs for around 10000 times and check the performance 
+// when compared to the non-cached version.
+describe("Performance tests", () => {
+  const counter = 1000;
+  it(`Test for performance of user transformation`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const respBody = {
+      versionId,
+      codeVersion: "1",
+      name,
+      code: `
+      export function transformEvent(event) {
+        return event;
+      }
+      `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const start = Date.now();
+    for (let i = 0; i < counter; i++) {
+      await userTransformHandler(inputData, versionId, []);
+    }
+    const end = Date.now();
+    const time = (end - start)/counter;
+    console.log(`Time taken for non-cached version: ${time}ms`);
+  });
+
+
+  it(`Test for performance of user transformation with cached isolate`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    process.env.USE_IVM_CACHE = 'true';
+    ivmCacheManager.initializeStrategy();
+
+    const respBody = {
+      versionId,
+      codeVersion: "1",
+      name,
+      code: `
+      export function transformEvent(event) {
+        return event;
+      }
+      `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const start = Date.now();
+    for (let i = 0; i < counter; i++) {
+      await userTransformHandler(inputData, versionId, []);
+    }
+    const end = Date.now();
+    const time = (end - start)/counter;
+    console.log(`Time taken for cached version: ${time}ms`); 
+    console.log(ivmCacheManager.getStats())
   });
 });
 

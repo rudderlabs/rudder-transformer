@@ -1,4 +1,4 @@
-const { createNewContext, needsContextReset } = require('../../../src/util/ivmCache/contextReset');
+const { createNewContext } = require('../../../src/util/ivmCache/contextReset');
 
 // Mock dependencies
 jest.mock('../../../src/logger', () => ({
@@ -281,20 +281,6 @@ describe('Context Reset Utilities', () => {
       const getCredential = mockJail.set.mock.calls.find(([key]) => key === '_getCredential')[1];
       const result = getCredential('anyKey');
       expect(result).toBeUndefined();
-    });
-  });
-
-  describe('needsContextReset', () => {
-    test('should always return true for isolate strategy', () => {
-      const result = needsContextReset(mockCachedIsolate);
-      expect(result).toBe(true);
-    });
-
-    test('should return true regardless of isolate content', () => {
-      expect(needsContextReset({})).toBe(true);
-      expect(needsContextReset(null)).toBe(true);
-      expect(needsContextReset(undefined)).toBe(true);
-      expect(needsContextReset({ some: 'data' })).toBe(true);
     });
   });
 

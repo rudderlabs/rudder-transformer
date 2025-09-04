@@ -24,6 +24,8 @@ const consentConfigMap = {
   userDataConsent: 'adUserData',
 };
 
+const { GOOGLE_ADS_DEVELOPER_TOKEN } = process.env;
+
 module.exports = {
   API_VERSION,
   BASE_ENDPOINT,
@@ -35,4 +37,5 @@ module.exports = {
   ADDRESS_INFO_ATTRIBUTES,
   consentConfigMap,
   destType: 'google_adwords_remarketing_lists',
+  GOOGLE_ADS_DEVELOPER_TOKEN,
 };

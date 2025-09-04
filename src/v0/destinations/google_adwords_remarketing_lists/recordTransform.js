@@ -5,7 +5,6 @@ const {
   reduceInBatches,
 } = require('@rudderstack/integrations-lib');
 const {
-  getValueFromMessage,
   getAccessToken,
   constructPayload,
   returnArrayOfSubarrays,
@@ -20,7 +19,11 @@ const {
   getOperationAudienceId,
 } = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
-const { offlineDataJobsMapping, consentConfigMap } = require('./config');
+const {
+  offlineDataJobsMapping,
+  consentConfigMap,
+  GOOGLE_ADS_DEVELOPER_TOKEN,
+} = require('./config');
 
 const processRecordEventArray = async (records, context, operationType) => {
   const {
@@ -68,7 +71,7 @@ const processRecordEventArray = async (records, context, operationType) => {
 async function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
-  const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
+  const developerToken = GOOGLE_ADS_DEVELOPER_TOKEN;
 
   const context = {
     message,

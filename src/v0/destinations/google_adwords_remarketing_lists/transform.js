@@ -7,13 +7,16 @@ const logger = require('../../../logger');
 const {
   returnArrayOfSubarrays,
   constructPayload,
-  getValueFromMessage,
   simpleProcessRouterDest,
   getAccessToken,
 } = require('../../util');
 
 const { populateConsentFromConfig } = require('../../util/googleUtils');
-const { offlineDataJobsMapping, consentConfigMap } = require('./config');
+const {
+  offlineDataJobsMapping,
+  consentConfigMap,
+  GOOGLE_ADS_DEVELOPER_TOKEN,
+} = require('./config');
 const { processRecordInputs } = require('./recordTransform');
 const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
 
@@ -118,7 +121,7 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     const accessToken = getAccessToken(metadata, 'access_token');
-    const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
+    const developerToken = GOOGLE_ADS_DEVELOPER_TOKEN;
 
     Object.values(createdPayload).forEach((data) => {
       const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);

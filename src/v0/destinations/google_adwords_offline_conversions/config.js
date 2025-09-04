@@ -47,6 +47,8 @@ const consentConfigMap = {
   userDataConsent: 'adUserData',
 };
 
+const { GOOGLE_ADS_DEVELOPER_TOKEN } = process.env;
+
 module.exports = {
   destType: 'google_adwords_offline_conversions',
   trackClickConversionsMapping:
@@ -66,4 +68,5 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
+  GOOGLE_ADS_DEVELOPER_TOKEN,
 };

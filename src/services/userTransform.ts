@@ -1,6 +1,7 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
 import { isNil } from 'lodash';
+import { generateUUID } from '@rudderstack/integrations-lib';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -73,6 +74,13 @@ export class UserTransformService {
           messageIds,
         };
 
+        const generateNewMetadata = (response: UserTransformationResponse) => ({
+          ...eventsToProcess[0]?.metadata,
+          messageId: generateUUID(),
+          eventName: response.transformedEvent.event,
+          eventType: response.transformedEvent.type,
+        });
+
         const metaTags =
           eventsToProcess.length > 0 && eventsToProcess[0].metadata
             ? getMetadata(eventsToProcess[0].metadata)
@@ -109,6 +117,8 @@ export class UserTransformService {
               messageIdsInOutputSet.add(ev.metadata.messageId);
             } else if (ev.metadata?.messageIds) {
               ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            } else if (ev.error) {
+              commonMetadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
             }
             if (ev.error) {
               transformedEventsWithMetadata.push({
@@ -130,7 +140,10 @@ export class UserTransformService {
             }
             transformedEventsWithMetadata.push({
               output: ev.transformedEvent,
-              metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+              metadata:
+                isEmpty(ev.metadata) || !ev.metadata.messageId
+                  ? generateNewMetadata(ev)
+                  : ev.metadata,
               statusCode: 200,
             } as ProcessorTransformationResponse);
           });

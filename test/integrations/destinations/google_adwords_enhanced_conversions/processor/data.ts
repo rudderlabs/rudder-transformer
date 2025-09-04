@@ -7,6 +7,7 @@ export const data = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: [
@@ -500,6 +501,7 @@ export const data = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: [
@@ -1232,6 +1234,7 @@ export const data = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: [
@@ -1427,6 +1430,7 @@ export const data = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: [

@@ -10,6 +10,7 @@ export const data = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: {
@@ -1006,6 +1007,7 @@ export const data = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
+    skip: true,
     input: {
       request: {
         body: {

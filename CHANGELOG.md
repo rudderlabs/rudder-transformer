@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.107.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.4...v1.107.5) (2025-09-04)
+
+
+### Bug Fixes
+
+* google ads developer token secret ([7a32764](https://github.com/rudderlabs/rudder-transformer/commit/7a3276454c0dbcba69b9db5603aa6c3af7b8d0fd))
+
 ### [1.107.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.3...v1.107.4) (2025-09-02)
 
 

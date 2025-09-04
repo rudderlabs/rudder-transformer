@@ -154,7 +154,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
     await injectFreshApis(jail, cachedIsolate, credentials);
 
     // Set up bootstrap script in the new context
-    await cachedIsolate.bootstrap.run(newContext);
+    const bootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
 
     // Re-instantiate the user's custom script module in the new context
     await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
@@ -172,22 +172,15 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       reference: true,
     });
 
-    // Clean up the old context
-    if (cachedIsolate.context) {
-      try {
-        cachedIsolate.context.release();
-      } catch (error) {
-        logger.warn('Error releasing old context during reset', { error: error.message });
-      }
-    }
-
-    // Create cached isolate with reset context
-    const cachedIsolateWithResetContext = {
+    // Create execution-ready isolate data with fresh context and bootstrapScriptResult
+    // NOTE: We do NOT store execution-specific state (context, bootstrapScriptResult) in the cache
+    // to prevent race conditions and ensure proper cleanup
+    const executionReadyIsolate = {
       isolate: cachedIsolate.isolate,
       bootstrap: cachedIsolate.bootstrap,
       customScriptModule: cachedIsolate.customScriptModule,
-      bootstrapScriptResult: cachedIsolate.bootstrapScriptResult,
-      context: newContext,
+      bootstrapScriptResult, // This is execution-specific, not cached
+      context: newContext, // This context is ONLY for this execution
       fnRef,
       fName: cachedIsolate.fName,
       logs: cachedIsolate.logs,
@@ -195,13 +188,16 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       // Metadata for debugging and tracking
       transformationId: cachedIsolate.transformationId,
       workspaceId: cachedIsolate.workspaceId,
+
+      // Compiled modules for this execution
+      compiledModules: cachedIsolate.compiledModules,
     };
 
-    logger.debug('IVM context reset completed', {
+    logger.debug('IVM context reset completed for execution', {
       transformationId: cachedIsolate.transformationId,
     });
 
-    return cachedIsolateWithResetContext;
+    return executionReadyIsolate;
   } catch (error) {
     logger.error('Error during context reset', {
       error: error.message,
@@ -220,7 +216,42 @@ function needsContextReset() {
   return true;
 }
 
+/**
+ * Safely release execution-specific resources (context and bootstrapScriptResult)
+ * @param {Object} context The IVM context to release
+ * @param {Object} bootstrapScriptResult The bootstrap script result to release
+ * @param {Object} metadata Metadata for logging (optional)
+ */
+function safeReleaseContext(context, bootstrapScriptResult, metadata = {}) {
+  // Release context
+  if (context) {
+    try {
+      context.release();
+      logger.debug('Execution context released successfully', metadata);
+    } catch (error) {
+      logger.warn('Error releasing execution context', {
+        error: error.message,
+        ...metadata,
+      });
+    }
+  }
+
+  // Release bootstrapScriptResult
+  if (bootstrapScriptResult) {
+    try {
+      bootstrapScriptResult.release();
+      logger.debug('Bootstrap script result released successfully', metadata);
+    } catch (error) {
+      logger.warn('Error releasing bootstrap script result', {
+        error: error.message,
+        ...metadata,
+      });
+    }
+  }
+}
+
 module.exports = {
   createNewContext,
   needsContextReset,
+  safeReleaseContext,
 };

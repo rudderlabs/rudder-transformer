@@ -172,10 +172,12 @@ describe('Context Reset Utilities', () => {
       );
     });
 
-    test('should release old context', async () => {
+    test('should not release old context (contexts are not cached)', async () => {
       await createNewContext(mockCachedIsolate);
 
-      expect(mockCachedIsolate.context.release).toHaveBeenCalled();
+      // Since we no longer store contexts in the cache, we don't release old contexts
+      // Each request gets a fresh context that is released after execution
+      expect(mockCachedIsolate.context.release).not.toHaveBeenCalled();
     });
 
     test('should handle missing old context gracefully', async () => {
@@ -184,11 +186,9 @@ describe('Context Reset Utilities', () => {
       await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
-    test('should handle context release errors gracefully', async () => {
-      mockCachedIsolate.context.release.mockImplementation(() => {
-        throw new Error('Release failed');
-      });
-
+    test('should handle context release errors gracefully (no longer applicable)', async () => {
+      // Since we no longer release contexts during reset, this test is no longer applicable
+      // Contexts are released after execution, not during reset
       await expect(createNewContext(mockCachedIsolate)).resolves.toBeDefined();
     });
 
@@ -608,12 +608,13 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should properly copy metadata to reset context', async () => {
-      mockCachedIsolate.bootstrapScriptResult = { some: 'data' };
       mockCachedIsolate.logs = ['log1', 'log2'];
 
       const result = await createNewContext(mockCachedIsolate);
 
-      expect(result.bootstrapScriptResult).toEqual({ some: 'data' });
+      // bootstrapScriptResult is now execution-specific and created fresh for each request
+      // It's no longer copied from the cached isolate to prevent race conditions
+      expect(result.bootstrapScriptResult).toBeDefined(); // Should be a fresh instance
       expect(result.logs).toEqual(['log1', 'log2']);
       expect(result.fnRef).toBeDefined();
     });

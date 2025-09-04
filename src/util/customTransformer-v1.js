@@ -1,9 +1,10 @@
 const ivm = require('isolated-vm');
 
 const { getFactory, getCachedFactory } = require('./ivmFactory');
-const { getMetadata, getTransformationMetadata } = require('../v0/util');
+const { safeReleaseContext } = require('./ivmCache/contextReset');
 const logger = require('../logger');
 const stats = require('./stats');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
@@ -108,7 +109,18 @@ async function userTransformHandlerV1(
     } catch (err) {
       logger.error(`Error encountered while getting heap size: ${err.message}`);
     }
-    isolatevmFactory.destroy(isolatevm);
+
+    // CRITICAL: Clean up the execution context immediately after use
+    // This prevents race conditions and ensures proper resource management
+    safeReleaseContext(isolatevm.context, isolatevm.bootstrapScriptResult, {
+      transformationId: userTransformation.id,
+      workspaceId: userTransformation.workspaceId,
+    });
+
+    if (!useIvmCache || testMode) {
+      isolatevmFactory.destroy(isolatevm);
+    }
+
     // send the observability stats
     const tags = {
       identifier: 'v1',

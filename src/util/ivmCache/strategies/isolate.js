@@ -39,19 +39,20 @@ class OneIVMPerTransformationIdStrategy {
       }
 
       // Reset context for fresh execution
-      const cachedIsolateWithResetContext = await createNewContext(cachedIsolate, credentials);
+      // This creates a NEW context and bootstrapScriptResult for each request, preventing race conditions
+      const executionReadyIsolate = await createNewContext(cachedIsolate, credentials);
 
       stats.timing('ivm_cache_get_duration', startTime, {
         strategy: 'isolate',
         result: 'hit',
       });
 
-      logger.debug('IVM Cache isolate retrieved and reset', {
+      logger.debug('IVM Cache isolate retrieved and execution state reset', {
         cacheKey,
         transformationId: cachedIsolate.transformationId,
       });
 
-      return cachedIsolateWithResetContext;
+      return executionReadyIsolate;
     } catch (error) {
       logger.error('Error getting cached isolate', {
         error: error.message,
@@ -80,12 +81,13 @@ class OneIVMPerTransformationIdStrategy {
 
     try {
       // Prepare isolate for caching by storing essential components
+      // NOTE: We do NOT cache execution-specific state (context, bootstrapScriptResult) to prevent race conditions
+      // Each request will get fresh execution state when retrieved
       const cacheableIsolate = {
         isolate: isolateData.isolate,
         bootstrap: isolateData.bootstrap,
         customScriptModule: isolateData.customScriptModule,
-        bootstrapScriptResult: isolateData.bootstrapScriptResult,
-        context: isolateData.context,
+        // bootstrapScriptResult: isolateData.bootstrapScriptResult, // REMOVED: Execution-specific, not cached
         fnRef: isolateData.fnRef,
         fName: isolateData.fName,
         logs: isolateData.logs,
@@ -120,9 +122,8 @@ class OneIVMPerTransformationIdStrategy {
               isolateData.customScriptModule.release();
             }
 
-            if (isolateData.context) {
-              isolateData.context.release();
-            }
+            // NOTE: Context and bootstrapScriptResult are not stored in cache, so no need to release them here
+            // Each execution context and bootstrapScriptResult are released immediately after use
 
             // Dispose the isolate
             if (isolateData.isolate) {

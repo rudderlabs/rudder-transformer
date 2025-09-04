@@ -642,7 +642,7 @@ async function getCachedFactory(
         logger.debug('Cached factory destroy called', {
           transformationId: client.transformationId || 'unknown',
         });
-        
+
         // Note: Cached instances are cleaned up by cache eviction
         // We don't need to do immediate cleanup here
         return;

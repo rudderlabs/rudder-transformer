@@ -117,7 +117,8 @@ describe('Isolate Cache Strategy', () => {
       expect(mockIsolateData.fnRef.release).toHaveBeenCalled();
       expect(mockIsolateData.bootstrap.release).toHaveBeenCalled();
       expect(mockIsolateData.customScriptModule.release).toHaveBeenCalled();
-      expect(mockIsolateData.context.release).toHaveBeenCalled();
+      // NOTE: Context and bootstrapScriptResult are no longer stored in cache, so no need to release them here
+      // Each execution context and bootstrapScriptResult are released immediately after use
       expect(mockIsolateData.isolate.dispose).toHaveBeenCalled();
     });
 

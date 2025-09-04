@@ -191,8 +191,6 @@ async function createIvm(
     }
   `;
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  const isolateStartWallTime = isolate.wallTime;
-  const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
 
   const compiledModules = {};
@@ -458,16 +456,14 @@ async function createIvm(
 
   return {
     isolate,
-    jail,
-    bootstrapScriptResult,
     bootstrap,
     customScriptModule,
+    bootstrapScriptResult,
     context,
     fnRef,
-    isolateStartWallTime,
-    isolateStartCPUTime,
     fName,
     logs,
+    compiledModules,
   };
 }
 
@@ -486,6 +482,7 @@ async function getFactory(
   secrets,
   testMode,
   transformationName,
+  transformationVersionId,
 ) {
   const factory = {
     create: async () => {
@@ -512,8 +509,158 @@ async function getFactory(
   return factory;
 }
 
+/**
+ * Get a cached factory that integrates with IVM cache manager
+ * Provides the same interface as getFactory but with caching capabilities
+ * @param {string} code - User transformation code
+ * @param {Array<string>} libraryVersionIds - Array of library version IDs
+ * @param {string} transformationId - Transformation identifier
+ * @param {string} workspaceId - Workspace identifier
+ * @param {Object} credentials - User credentials
+ * @param {Object} secrets - User secrets
+ * @param {boolean} testMode - Test mode flag
+ * @param {string} transformationName - Transformation name
+ * @param {string} transformationVersionId - Transformation version identifier
+ * @returns {Object} Factory with create/destroy methods
+ */
+async function getCachedFactory(
+  code,
+  libraryVersionIds,
+  transformationId,
+  workspaceId,
+  credentials,
+  secrets,
+  testMode,
+  transformationName,
+  transformationVersionId,
+) {
+  const ivmCacheManager = require('./ivmCache/manager');
+
+  // Generate cache key for this transformation
+  const cacheKey = ivmCacheManager.generateKey(transformationVersionId, libraryVersionIds);
+
+  const factory = {
+    create: async () => {
+      const startTime = new Date();
+
+      try {
+        // Try to get cached isolate first
+        const cachedIsolate = await ivmCacheManager.get(cacheKey, credentials);
+
+        if (cachedIsolate) {
+          // Cache hit - return cached isolate with reset context
+          logger.debug('IVM Factory cache hit', {
+            cacheKey,
+            transformationId,
+          });
+
+          stats.timing('cached_ivm_create_duration', startTime, {
+            result: 'hit',
+            transformationId,
+          });
+
+          return cachedIsolate;
+        }
+
+        // Cache miss - create new IVM
+        logger.debug('IVM Factory cache miss', {
+          cacheKey,
+          transformationId,
+        });
+
+        const newIsolate = await createIvm(
+          code,
+          libraryVersionIds,
+          transformationId,
+          workspaceId,
+          credentials,
+          secrets,
+          testMode,
+          transformationName,
+        );
+
+        // Prepare isolate for caching with additional metadata
+        const cacheableIsolate = {
+          ...newIsolate,
+          transformationId,
+          workspaceId,
+        };
+
+        // Store in cache for future use (fire and forget)
+        await ivmCacheManager.set(cacheKey, cacheableIsolate).catch((error) => {
+          logger.warn('Failed to cache IVM isolate', {
+            error: error.message,
+            cacheKey,
+            transformationId,
+          });
+        });
+
+        stats.timing('cached_ivm_create_duration', startTime, {
+          result: 'miss',
+          transformationId,
+        });
+
+        // Return the augmented isolate (not the original one)
+        return cacheableIsolate;
+      } catch (error) {
+        logger.error('Error in cached factory create', {
+          error: error.message,
+          cacheKey,
+          transformationId,
+        });
+
+        stats.timing('cached_ivm_create_duration', startTime, {
+          result: 'error',
+          transformationId,
+        });
+
+        // Fallback to non-cached creation on any error
+        const fallbackIsolate = await createIvm(
+          code,
+          libraryVersionIds,
+          transformationId,
+          workspaceId,
+          credentials,
+          secrets,
+          testMode,
+          transformationName,
+        );
+
+        // Add metadata even for fallback to maintain consistency
+        return {
+          ...fallbackIsolate,
+          transformationId,
+          workspaceId,
+        };
+      }
+    },
+
+    destroy: async (client) => {
+      try {
+        // For cached instances, we don't destroy immediately
+        // The cache manager handles cleanup via TTL/LRU
+        logger.debug('Cached factory destroy called', {
+          transformationId: client.transformationId || 'unknown',
+        });
+
+        // Note: Cached instances are cleaned up by cache eviction
+        // We don't need to do immediate cleanup here
+        return;
+      } catch (error) {
+        logger.error('Error in cached factory destroy', {
+          error: error.message,
+          transformationId: client.transformationId || 'unknown',
+        });
+      }
+    },
+  };
+
+  return factory;
+}
+
 module.exports = {
   getFactory,
+  getCachedFactory,
   compileUserLibrary,
   SUPPORTED_FUNC_NAMES,
 };

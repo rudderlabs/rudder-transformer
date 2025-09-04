@@ -11,7 +11,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -40,7 +40,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -100,7 +100,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -135,7 +135,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -196,7 +196,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -257,7 +257,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -287,7 +287,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
       },
       method: 'POST',
     },
@@ -346,7 +346,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
       },
       method: 'POST',
     },
@@ -393,7 +393,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
         'login-customer-id': '0987654321',
       },
       method: 'POST',
@@ -428,7 +428,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
       },
       method: 'POST',
     },
@@ -448,7 +448,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
       },
       method: 'POST',
     },
@@ -508,7 +508,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': 'ijkl91011',
+        'developer-token': 'dummy-dev-token',
       },
       method: 'POST',
     },

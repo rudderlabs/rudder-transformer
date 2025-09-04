@@ -88,6 +88,7 @@ const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [
 ];
 
 beforeAll(async () => {
+  process.env.GOOGLE_ADS_DEVELOPER_TOKEN = 'dummy-dev-token';
   initaliseReport();
   // Setting batch processing defaults to lower values to make the tests use the batch processing
   configureBatchProcessingDefaults({

@@ -15,7 +15,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -135,13 +135,13 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
+                'developer-token': 'dummy-dev-token',
                 'login-customer-id': '1234567890',
               },
               params: {
                 accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
-                developerToken: 'ijkl91011',
+                developerToken: 'dummy-dev-token',
                 customerId: '1234567890',
                 loginCustomerId: '1234567890',
                 subAccount: true,
@@ -197,14 +197,14 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
           },
         ],
       },
-    },
+    }
   },
   {
     name: 'google_adwords_enhanced_conversions',
@@ -220,7 +220,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -335,7 +335,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -368,7 +368,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -475,7 +475,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -508,7 +508,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -629,13 +629,13 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
+                'developer-token': 'dummy-dev-token',
                 'login-customer-id': '11',
               },
               params: {
                 accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Product Added',
-                developerToken: 'ijkl91011',
+                developerToken: 'dummy-dev-token',
                 customerId: '1234567890',
                 loginCustomerId: '11',
                 subAccount: true,
@@ -687,7 +687,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -710,7 +710,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -824,7 +824,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -856,7 +856,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -919,7 +919,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -1091,7 +1091,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1207,7 +1207,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -1240,7 +1240,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1350,13 +1350,13 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
+                'developer-token': 'dummy-dev-token',
                 'login-customer-id': '1234567890',
               },
               params: {
                 accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
-                developerToken: 'ijkl91011',
+                developerToken: 'dummy-dev-token',
                 customerId: '1234567890',
                 loginCustomerId: '1234567890',
                 subAccount: true,
@@ -1412,7 +1412,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -1435,7 +1435,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1545,13 +1545,13 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
+                'developer-token': 'dummy-dev-token',
                 'login-customer-id': '1234567890',
               },
               params: {
                 accessToken: 'google_adwords_enhanced_conversions1',
                 event: 'Page View',
-                developerToken: 'ijkl91011',
+                developerToken: 'dummy-dev-token',
                 customerId: '1234567890',
                 loginCustomerId: '1234567890',
                 subAccount: true,
@@ -1603,7 +1603,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -1626,7 +1626,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1731,7 +1731,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -1763,7 +1763,7 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1811,7 +1811,7 @@ export const data = [
             metadata: {
               secret: {
                 access_token: 'google_adwords_enhanced_conversions1',
-                developer_token: 'ijkl91011',
+                developer_token: 'dummy-dev-token',
                 refresh_token: 'efgh5678',
               },
             },

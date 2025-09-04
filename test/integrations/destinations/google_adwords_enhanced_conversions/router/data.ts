@@ -6,7 +6,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 1,
       userId: 'u1',
@@ -99,7 +99,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 2,
       userId: 'u1',
@@ -233,7 +233,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 4,
       userId: 'u1',
@@ -328,7 +328,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 5,
       userId: 'u1',
@@ -423,7 +423,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 7,
       userId: 'u1',
@@ -460,7 +460,7 @@ const events = [
       secret: {
         access_token: secret1,
         refresh_token: 'efgh5678',
-        developer_token: 'ijkl91011',
+        developer_token: 'dummy-dev-token',
       },
       jobId: 8,
       userId: 'u1',
@@ -663,14 +663,14 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
+                  'developer-token': 'dummy-dev-token',
                   'login-customer-id': '11',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '1234567890',
-                  developerToken: 'ijkl91011',
+                  developerToken: 'dummy-dev-token',
                   event: 'Page View',
                   loginCustomerId: '11',
                   subAccount: true,
@@ -701,7 +701,7 @@ export const data = [
                   jobId: 1,
                   secret: {
                     access_token: secret1,
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
@@ -735,7 +735,7 @@ export const data = [
                   jobId: 2,
                   secret: {
                     access_token: secret1,
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
@@ -841,14 +841,14 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
+                  'developer-token': 'dummy-dev-token',
                   'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '{{event.context.customerID || "" }}',
-                  developerToken: 'ijkl91011',
+                  developerToken: 'dummy-dev-token',
                   event: 'Page View',
                   loginCustomerId: '{{event.context.subaccountID || "" }}',
                   subAccount: true,
@@ -879,7 +879,7 @@ export const data = [
                   jobId: 4,
                   secret: {
                     access_token: secret1,
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
@@ -938,14 +938,14 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
+                  'developer-token': 'dummy-dev-token',
                   'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '{{event.context.customerID || "" }}',
-                  developerToken: 'ijkl91011',
+                  developerToken: 'dummy-dev-token',
                   event: 'Page View',
                   loginCustomerId: '{{event.context.subaccountID || "" }}',
                   subAccount: true,
@@ -976,7 +976,7 @@ export const data = [
                   jobId: 5,
                   secret: {
                     access_token: secret1,
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
@@ -1011,7 +1011,7 @@ export const data = [
                   jobId: 7,
                   secret: {
                     access_token: secret1,
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                     refresh_token: 'efgh5678',
                   },
                   userId: 'u1',
@@ -1044,7 +1044,7 @@ export const data = [
                   secret: {
                     access_token: secret1,
                     refresh_token: 'efgh5678',
-                    developer_token: 'ijkl91011',
+                    developer_token: 'dummy-dev-token',
                   },
                   jobId: 8,
                   userId: 'u1',

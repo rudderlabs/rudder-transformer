@@ -66,7 +66,8 @@ async function userTransformHandlerV1(
     credentialsMap[cred.key] = cred.value;
   });
   // Choose factory based on environment configuration
-  const factoryFunction = useIvmCache && !testMode ? getCachedFactory : getFactory;
+  const canUseIvmCache = useIvmCache && !testMode;
+  const factoryFunction = canUseIvmCache ? getCachedFactory : getFactory;
 
   logger.debug(`Using IVM factory: ${useIvmCache ? 'cached' : 'standard'}`, {
     transformationId: userTransformation.id,
@@ -109,12 +110,12 @@ async function userTransformHandlerV1(
       logger.error(`Error encountered while getting heap size: ${err.message}`);
     }
 
-    // CRITICAL: Clean up the execution context immediately after use
-    // This prevents race conditions and ensures proper resource management
-    cleanResources(isolatevm.context, isolatevm.bootstrapScriptResult, {
-      transformationId: userTransformation.id,
-      workspaceId: userTransformation.workspaceId,
-    });
+    if (canUseIvmCache) {
+      cleanResources(isolatevm.context, isolatevm.bootstrapScriptResult, {
+        transformationId: userTransformation.id,
+        workspaceId: userTransformation.workspaceId,
+      });
+    }
 
     if (!useIvmCache || testMode) {
       isolatevmFactory.destroy(isolatevm);

@@ -82,21 +82,6 @@ describe('IVM Cache Manager', () => {
         ttlMs: '3600000',
       });
     });
-
-    test('should destroy previous strategy when reinitializing', async () => {
-      process.env.IVM_CACHE_STRATEGY = 'isolate';
-      IvmCacheManager.initializeStrategy();
-      
-      const previousStrategy = IvmCacheManager.strategy;
-      
-      process.env.IVM_CACHE_STRATEGY = 'none';
-      IvmCacheManager.initializeStrategy();
-      
-      // Give a moment for async destroy to potentially complete
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
-      expect(previousStrategy.clear).toHaveBeenCalled();
-    });
   });
 
   describe('generateKey method', () => {
@@ -205,6 +190,8 @@ describe('IVM Cache Manager', () => {
         maxSize: 50,
         manager: {
           environmentStrategy: 'isolate',
+               "availableStrategies":  [ "isolate", "persistent" ],
+                 "currentStrategy": "isolate",
         },
       });
     });

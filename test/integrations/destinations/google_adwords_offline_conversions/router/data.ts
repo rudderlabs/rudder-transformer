@@ -494,7 +494,7 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': secret3,
+                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
                   event: 'Sign-up - click',
@@ -629,7 +629,7 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': secret3,
+                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
                   event: 'search',
@@ -745,7 +745,7 @@ export const data = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
-                    'developer-token': secret3,
+                    'developer-token': 'test-developer-token-12345',
                   },
                   params: { event: 'Store sales', customerId: '7693729833' },
                   body: {
@@ -826,7 +826,7 @@ export const data = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
-                    'developer-token': secret3,
+                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     event: 'Order Completed',
@@ -1181,7 +1181,7 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': secret3,
+                  'developer-token': 'test-developer-token-12345',
                 },
                 params: { event: 'Store sales', customerId: '1234556775' },
                 body: {

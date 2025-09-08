@@ -76,7 +76,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -208,7 +208,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8704830944',
               },
               params: {
@@ -327,7 +327,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -1428,7 +1428,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -2822,7 +2822,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -2901,7 +2901,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -4113,7 +4113,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -5412,7 +5412,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -6788,7 +6788,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -8097,7 +8097,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -9396,7 +9396,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -10790,7 +10790,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -10869,7 +10869,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -11043,7 +11043,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -11120,7 +11120,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -11263,7 +11263,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'list111',
@@ -11469,7 +11469,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: 'aud1234',
@@ -11607,7 +11607,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: '830441345',
@@ -11744,7 +11744,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: '830441345',
@@ -11883,7 +11883,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: '830441345',
@@ -12025,7 +12025,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 listId: '830441345',

@@ -184,7 +184,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -475,7 +475,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -765,7 +765,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -1055,7 +1055,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -2029,7 +2029,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Page view',
@@ -2134,7 +2134,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Page view',
@@ -2357,7 +2357,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -2556,7 +2556,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -2791,7 +2791,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -3013,7 +3013,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -3520,7 +3520,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -3763,7 +3763,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               method: 'POST',
@@ -3935,7 +3935,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -4126,7 +4126,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4462,7 +4462,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4660,7 +4660,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4861,7 +4861,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5024,7 +5024,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5183,7 +5183,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5340,7 +5340,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5531,7 +5531,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': secret3,
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {

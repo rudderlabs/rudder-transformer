@@ -47,6 +47,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -69,6 +70,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -124,6 +126,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -188,6 +191,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -232,6 +236,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -249,6 +254,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -279,6 +285,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -314,6 +321,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -688,6 +696,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader2,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -706,6 +715,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader2,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',

@@ -281,6 +281,7 @@ export const v1oauthScenarios = [
             headers: {
               Authorization: authHeader2,
               'Content-Type': 'application/json',
+              'developer-token': 'test-developer-token-12345',
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
@@ -351,6 +352,7 @@ export const v1oauthScenarios = [
             headers: {
               Authorization: authHeader2,
               'Content-Type': 'application/json',
+              'developer-token': 'test-developer-token-12345',
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,

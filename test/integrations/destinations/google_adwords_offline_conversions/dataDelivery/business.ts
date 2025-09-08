@@ -47,6 +47,7 @@ const headers = {
   header1: {
     Authorization: authHeader1,
     'Content-Type': 'application/json',
+    'developer-token': 'test-developer-token-12345',
     'login-customer-id': 'logincustomerid',
   },
   header2: {

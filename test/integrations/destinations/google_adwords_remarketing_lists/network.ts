@@ -260,6 +260,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader2,
         'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
     },

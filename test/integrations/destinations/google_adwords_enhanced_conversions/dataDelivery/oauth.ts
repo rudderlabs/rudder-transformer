@@ -41,7 +41,7 @@ const requestPayload = {
 const headers = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': 'ijkl91011',
+  'developer-token': 'test-developer-token-12345',
   'login-customer-id': '0987654321',
 };
 
@@ -49,7 +49,7 @@ const params = {
   event: 'Product Added',
   customerId: '1234567890',
   destination: 'google_adwords_enhanced_conversions',
-  developerToken: 'ijkl91011',
+  developerToken: 'test-developer-token-12345',
   accessToken: 'google_adwords_enhanced_conversions1',
   loginCustomerId: '0987654321',
   subAccount: true,
@@ -136,7 +136,7 @@ export const v0oauthScenarios = [
           },
           headers,
           params: {
-            developerToken: 'ijkl91011',
+            developerToken: 'test-developer-token-12345',
             accessToken: 'google_adwords_enhanced_conversions1',
             loginCustomerId: '0987654321',
             event: 'Product Added',
@@ -242,7 +242,7 @@ export const v1oauthScenarios = [
           },
           headers,
           params: {
-            developerToken: 'ijkl91011',
+            developerToken: 'test-developer-token-12345',
             accessToken: 'google_adwords_enhanced_conversions1',
             loginCustomerId: '0987654321',
             event: 'Product Added',

@@ -12,7 +12,7 @@ const {
 } = require('../../util');
 
 const { populateConsentFromConfig } = require('../../util/googleUtils');
-const { offlineDataJobsMapping, consentConfigMap, getDeveloperToken } = require('./config');
+const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 const { processRecordInputs } = require('./recordTransform');
 const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
 
@@ -117,7 +117,6 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     const accessToken = getAccessToken(metadata, 'access_token');
-    const developerToken = getDeveloperToken();
 
     Object.values(createdPayload).forEach((data) => {
       const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
@@ -125,7 +124,6 @@ const processEvent = async (metadata, message, destination) => {
       response.push(
         responseBuilder(
           accessToken,
-          developerToken,
           data,
           destination,
           getOperationAudienceId(audienceId, message),

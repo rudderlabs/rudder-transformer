@@ -10,7 +10,7 @@ const {
 // const SqlString = require('sqlstring');
 const { prepareProxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
+const { CONVERSION_ACTION_ID_CACHE_TTL, getDeveloperToken } = require('./config');
 const Cache = require('../../util/cache');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
@@ -87,7 +87,7 @@ const gaecProxyRequest = async (request) => {
     accessToken: params.accessToken,
     customerId: params.customerId,
     loginCustomerId: params.subAccount ? params.loginCustomerId : '',
-    developerToken: params.developerToken,
+    developerToken: getDeveloperToken(),
   });
   const conversionActionId = await getConversionActionId({
     params,

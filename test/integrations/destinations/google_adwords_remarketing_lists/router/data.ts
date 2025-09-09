@@ -39,7 +39,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -159,7 +158,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -279,7 +277,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -375,7 +372,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -471,7 +467,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -522,7 +517,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -640,7 +634,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -738,7 +731,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -866,7 +858,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -1015,7 +1006,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -1132,7 +1122,6 @@ export const data = [
                   headers: {
                     Authorization: authHeader3,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -1234,7 +1223,6 @@ export const data = [
                   headers: {
                     Authorization: 'Bearer commonAccessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -1332,7 +1320,6 @@ export const data = [
                   headers: {
                     Authorization: 'Bearer commonAccessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',
@@ -1460,7 +1447,6 @@ export const data = [
                   headers: {
                     Authorization: 'Bearer commonAccessToken',
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     listId: '7090784486',

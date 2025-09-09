@@ -30,14 +30,7 @@ const hashEncrypt = (object) => {
   });
 };
 
-const responseBuilder = (
-  accessToken,
-  developerToken,
-  body,
-  { Config },
-  audienceId,
-  consentBlock,
-) => {
+const responseBuilder = (accessToken, body, { Config }, audienceId, consentBlock) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -54,7 +47,6 @@ const responseBuilder = (
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
-    'developer-token': developerToken,
   };
   if (Config.subAccount)
     if (Config.loginCustomerId) {

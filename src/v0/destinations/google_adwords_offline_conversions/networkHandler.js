@@ -14,7 +14,12 @@ const {
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
-const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
+const {
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+  SEARCH_STREAM,
+  destType,
+  getDeveloperToken,
+} = require('./config');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -203,6 +208,9 @@ const isValidCustomVariables = (customVariables) => {
  */
 const ProxyRequest = async (request) => {
   const { method, endpoint, headers, params, body, metadata } = request;
+
+  headers['developer-token'] = getDeveloperToken();
+  params.developerToken = getDeveloperToken();
 
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({

@@ -11,7 +11,6 @@ const API_VERSION = 'v19';
 const commonHeaders = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': 'test-developer-token-12345',
   'login-customer-id': 'logincustomerid',
 };
 

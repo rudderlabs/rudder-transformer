@@ -30,7 +30,6 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
-  getDeveloperToken,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -185,7 +184,6 @@ const requestBuilder = (
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
-    'developer-token': getDeveloperToken(),
   };
 
   if (subAccount) {

@@ -12,7 +12,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const { trackMapping, getDeveloperToken } = require('./config');
+const { trackMapping } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -51,7 +51,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   deliveryRequest.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
-    'developer-token': getDeveloperToken(),
   };
   const filteredLoginCustomerId = removeHyphens(loginCustomerId);
   deliveryRequest.params = {
@@ -59,7 +58,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     customerId: filteredCustomerId,
     accessToken,
     loginCustomerId: filteredLoginCustomerId,
-    developerToken: getDeveloperToken(),
     subAccount,
   };
   if (subAccount) {

@@ -1,4 +1,4 @@
-import { authHeader1, secret1, secret3 } from '../maskedSecrets';
+import { authHeader1, secret1 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 
 const API_VERSION = 'v19';
@@ -105,7 +105,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -184,7 +183,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -284,7 +282,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -396,7 +393,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -475,7 +471,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -575,7 +570,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -687,7 +681,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -765,7 +758,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -865,7 +857,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -977,7 +968,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -1055,7 +1045,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -1130,7 +1119,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -1407,7 +1395,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -1481,7 +1468,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -1580,7 +1566,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -1654,7 +1639,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -1754,7 +1738,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -1828,7 +1811,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -1947,7 +1929,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -2029,7 +2010,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Page view',
@@ -2120,7 +2100,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -2134,7 +2113,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Page view',
@@ -2209,7 +2187,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -2277,7 +2254,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -2357,7 +2333,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -2411,7 +2387,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -2478,7 +2453,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -2556,7 +2530,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -2603,7 +2576,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -2713,7 +2685,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -2791,7 +2762,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'search',
@@ -2865,7 +2835,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -2934,7 +2903,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3013,7 +2981,6 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
               },
               params: {
                 event: 'Sign-up - click',
@@ -3065,7 +3032,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -3134,7 +3100,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3209,7 +3174,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -3287,7 +3251,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3362,7 +3325,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -3441,7 +3403,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3520,7 +3481,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -3584,7 +3545,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -3652,7 +3612,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3726,7 +3685,7 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret1,
-                developer_token: secret3,
+
                 refresh_token: 'efgh5678',
               },
             },
@@ -3763,7 +3722,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': '8617859087',
               },
               method: 'POST',
@@ -3856,7 +3815,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -3935,7 +3893,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': '8617859087',
               },
               params: {
@@ -3992,7 +3950,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -4047,7 +4004,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -4126,7 +4082,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4191,7 +4147,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -4246,7 +4201,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -4320,7 +4274,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 400,
@@ -4383,7 +4336,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -4462,7 +4414,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4526,7 +4478,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -4581,7 +4532,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -4660,7 +4610,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4725,7 +4675,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -4782,7 +4731,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -4861,7 +4809,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -4923,7 +4871,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -4980,7 +4927,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5024,7 +4970,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5086,7 +5032,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -5139,7 +5084,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5183,7 +5127,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5245,7 +5189,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -5296,7 +5239,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5340,7 +5282,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5397,7 +5339,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -5452,7 +5393,6 @@ export const data = [
                   secret: {
                     access_token: secret1,
                     refresh_token: 'efgh5678',
-                    developer_token: secret3,
                   },
                 },
                 destination: {
@@ -5487,7 +5427,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5531,7 +5470,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'test-developer-token-12345',
+
                 'login-customer-id': 'logincustomerid',
               },
               params: {
@@ -5588,7 +5527,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             statusCode: 200,
@@ -5698,7 +5636,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5772,7 +5709,7 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret1,
-                developer_token: secret3,
+
                 refresh_token: 'efgh5678',
               },
             },
@@ -5837,7 +5774,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'efgh5678',
-                developer_token: secret3,
               },
             },
             destination: {
@@ -5880,7 +5816,6 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret1,
-                developer_token: secret3,
                 refresh_token: 'efgh5678',
               },
             },

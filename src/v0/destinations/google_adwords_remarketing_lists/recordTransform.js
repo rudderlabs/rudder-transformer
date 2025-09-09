@@ -19,14 +19,13 @@ const {
   getOperationAudienceId,
 } = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
-const { offlineDataJobsMapping, consentConfigMap, getDeveloperToken } = require('./config');
+const { offlineDataJobsMapping, consentConfigMap } = require('./config');
 
 const processRecordEventArray = async (records, context, operationType) => {
   const {
     message,
     destination,
     accessToken,
-    developerToken,
     audienceId,
     typeOfList,
     userSchema,
@@ -58,7 +57,7 @@ const processRecordEventArray = async (records, context, operationType) => {
   );
 
   const toSendEvents = [outputPayload].map((data) =>
-    responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
+    responseBuilder(accessToken, data, destination, audienceId, consentObj),
   );
 
   return getSuccessRespEvents(toSendEvents, metadata, destination, true);
@@ -67,13 +66,11 @@ const processRecordEventArray = async (records, context, operationType) => {
 async function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
-  const developerToken = getDeveloperToken();
 
   const context = {
     message,
     destination,
     accessToken,
-    developerToken,
     ...config,
   };
 

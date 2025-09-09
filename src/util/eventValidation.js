@@ -316,6 +316,7 @@ function handleValidationErrors(validationErrors, metadata, curDropEvent, curVio
       violationTypes.UnknownViolation,
       violationTypes.DatatypeMismatch,
       violationTypes.RequiredMissing,
+      violationTypes.AdvanceRulesViolation,
     ];
 
     const existingViolationType = violationTypesToCheck.find((type) => violationsByType.has(type));

@@ -12,7 +12,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const { trackMapping, GOOGLE_ADS_DEVELOPER_TOKEN } = require('./config');
+const { trackMapping, getDeveloperToken } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -51,7 +51,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   deliveryRequest.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
-    'developer-token': GOOGLE_ADS_DEVELOPER_TOKEN,
+    'developer-token': getDeveloperToken(),
   };
   const filteredLoginCustomerId = removeHyphens(loginCustomerId);
   deliveryRequest.params = {
@@ -59,7 +59,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     customerId: filteredCustomerId,
     accessToken,
     loginCustomerId: filteredLoginCustomerId,
-    developerToken: GOOGLE_ADS_DEVELOPER_TOKEN,
+    developerToken: getDeveloperToken(),
     subAccount,
   };
   if (subAccount) {

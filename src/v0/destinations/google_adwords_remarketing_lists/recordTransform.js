@@ -19,11 +19,7 @@ const {
   getOperationAudienceId,
 } = require('./util');
 const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
-const {
-  offlineDataJobsMapping,
-  consentConfigMap,
-  GOOGLE_ADS_DEVELOPER_TOKEN,
-} = require('./config');
+const { offlineDataJobsMapping, consentConfigMap, getDeveloperToken } = require('./config');
 
 const processRecordEventArray = async (records, context, operationType) => {
   const {
@@ -71,7 +67,7 @@ const processRecordEventArray = async (records, context, operationType) => {
 async function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
-  const developerToken = GOOGLE_ADS_DEVELOPER_TOKEN;
+  const developerToken = getDeveloperToken();
 
   const context = {
     message,

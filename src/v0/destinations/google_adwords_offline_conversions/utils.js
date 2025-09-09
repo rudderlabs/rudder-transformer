@@ -30,7 +30,7 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
-  GOOGLE_ADS_DEVELOPER_TOKEN,
+  getDeveloperToken,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -185,7 +185,7 @@ const requestBuilder = (
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
-    'developer-token': GOOGLE_ADS_DEVELOPER_TOKEN,
+    'developer-token': getDeveloperToken(),
   };
 
   if (subAccount) {

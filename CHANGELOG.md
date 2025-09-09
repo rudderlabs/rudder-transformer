@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.4...v1.108.0) (2025-09-09)
+
+
+### Features
+
+* introduce endpointPath for iterable ([#4599](https://github.com/rudderlabs/rudder-transformer/issues/4599)) ([840ba5c](https://github.com/rudderlabs/rudder-transformer/commit/840ba5cf0d2741416859d1f4783fa9190b9199d7))
+
+
+### Bug Fixes
+
+* transformBatch reporting metrics issue ([#4559](https://github.com/rudderlabs/rudder-transformer/issues/4559)) ([3192141](https://github.com/rudderlabs/rudder-transformer/commit/31921419836adfa44d3f67f8253aac7e7dda1525))
+
 ### [1.107.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.3...v1.107.4) (2025-09-02)
 
 

@@ -205,9 +205,19 @@ describe('Unit test cases for customerio encodePathParameter', () => {
       expectedOutput: 'test%2Fparam',
     },
     {
-      name: "should not encode path parameter without '/'",
-      param: 'some@email.com',
-      expectedOutput: 'some@email.com',
+      name: "should encode email address with '@' and '+'",
+      param: 'test+user@email.com',
+      expectedOutput: 'test%2Buser%40email.com',
+    },
+    {
+      name: "should encode path parameter with spaces",
+      param: 'user with spaces',
+      expectedOutput: 'user%20with%20spaces',
+    },
+    {
+      name: "should encode path parameter with special characters",
+      param: 'user#hash?query=value',
+      expectedOutput: 'user%23hash%3Fquery%3Dvalue',
     },
     {
       name: 'should not encode non-string parameter',
@@ -218,6 +228,11 @@ describe('Unit test cases for customerio encodePathParameter', () => {
       name: 'should not encode null parameter',
       param: null,
       expectedOutput: null,
+    },
+    {
+      name: 'should not encode undefined parameter',
+      param: undefined,
+      expectedOutput: undefined,
     },
   ];
 

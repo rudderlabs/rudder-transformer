@@ -81,6 +81,16 @@ async function createIvm(
 
   const codeWithWrapper =
     // eslint-disable-next-line prefer-template
+
+    `
+    export function createTransformEvent(event, metadata) {
+      return transformEvent(event, metadata);
+    }
+
+    export function createTransformBatch(eventMessages, metadata) {
+      return transformBatch(eventMessages, metadata);
+    } 
+    ` +
     code +
     `
     export async function transformWrapper(transformationPayload) {
@@ -136,7 +146,7 @@ async function createIvm(
         case "transformBatch":
           let transformedEventsBatch;
           try {
-            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+            transformedEventsBatch = await createTransformBatch(eventMessages, metadata);
           } catch (error) {
             outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
             return outputEvents;
@@ -156,7 +166,7 @@ async function createIvm(
           await Promise.all(eventMessages.map(async ev => {
             const currMsgId = ev.messageId;
             try{
-              let transformedOutput = await transformEvent(ev, metadata);
+              let transformedOutput = await createTransformEvent(ev, metadata);
               // if func returns null/undefined drop event
               if (transformedOutput === null || transformedOutput === undefined) return;
               if (Array.isArray(transformedOutput)) {
@@ -190,6 +200,7 @@ async function createIvm(
       return outputEvents
     }
   `;
+
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;

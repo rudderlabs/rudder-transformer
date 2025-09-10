@@ -52,7 +52,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(2);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "ReferenceError: events is not defined\n    at transformEvent (base transformation:2:2)"
+        "ReferenceError: events is not defined\n    at transformEvent (base transformation:10:2)"
       ) });
     });
 
@@ -70,7 +70,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(2);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "Error: Manual Error\n    at transformEvent (base transformation:2:8)"
+        "Error: Manual Error\n    at transformEvent (base transformation:10:8)"
       ) });
     });
 
@@ -107,7 +107,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(2);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "ReferenceError: z2 is not defined\n    at add (library jsLib1:3:28)\n    at transformEvent (base transformation:3:20)"
+        "ReferenceError: z2 is not defined\n    at add (library jsLib1:3:28)\n    at transformEvent (base transformation:11:20)"
       ) });
     });
 
@@ -145,7 +145,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(2);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "Error: Manual Error\n    at add (library jsLib2:3:23)\n    at transformEvent (base transformation:3:20)"
+        "Error: Manual Error\n    at add (library jsLib2:3:23)\n    at transformEvent (base transformation:11:20)"
       ) });
     });
   });
@@ -166,9 +166,9 @@ describe("JS Transformation Error Tests", () => {
       expect(result.transformedEvents.length).toBe(1);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
         `ReferenceError: x is not defined
-    at base transformation:2:37
+    at base transformation:10:37
     at Array.map (<anonymous>)
-    at transformBatch (base transformation:2:16)`
+    at transformBatch (base transformation:10:16)`
       ) });
     });
 
@@ -186,7 +186,7 @@ describe("JS Transformation Error Tests", () => {
 
       expect(result.transformedEvents.length).toBe(1);    
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "Error: Manual Error\n    at transformBatch (base transformation:2:8)"
+        "Error: Manual Error\n    at transformBatch (base transformation:10:8)"
       ) });
     });
 
@@ -223,7 +223,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(1);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "ReferenceError: z is not defined\n    at add (library jsLib1:3:32)\n    at transformBatch (base transformation:3:14)"
+        "ReferenceError: z is not defined\n    at add (library jsLib1:3:32)\n    at transformBatch (base transformation:11:14)"
       ) });
     });
 
@@ -261,7 +261,7 @@ describe("JS Transformation Error Tests", () => {
       
       expect(result.transformedEvents.length).toBe(1);
       result.transformedEvents.forEach(ev => { expect(ev.error).toEqual(
-        "Error: Manual Error 2\n    at add (library jsLib2:3:23)\n    at transformBatch (test-transformation:3:2)"
+        "Error: Manual Error 2\n    at add (library jsLib2:3:23)\n    at transformBatch (test-transformation:11:2)"
       ) });
     });
   });

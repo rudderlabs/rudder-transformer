@@ -41,11 +41,11 @@
     "metadata": {}
   },
   {
-    "error": "Error: Non-identify found\n    at rejectNonIdentifies (url:7:15)\n    at transformEvent (url:10:28)",
+    "error": "Error: Non-identify found\n    at rejectNonIdentifies (url:15:15)\n    at transformEvent (url:18:28)",
     "metadata": {}
   },
   {
-    "error": "Error: Non-identify found\n    at rejectNonIdentifies (url:7:15)\n    at transformEvent (url:10:28)",
+    "error": "Error: Non-identify found\n    at rejectNonIdentifies (url:15:15)\n    at transformEvent (url:18:28)",
     "metadata": {}
   }
 ]

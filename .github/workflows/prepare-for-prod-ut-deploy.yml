@@ -37,7 +37,7 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 
@@ -81,7 +81,7 @@ jobs:
       TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
 

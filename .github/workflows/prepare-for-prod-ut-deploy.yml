@@ -116,19 +116,20 @@ jobs:
           git checkout -b shared-user-transformer-$UT_TAG_NAME
 
           cd helm-charts/shared-services/per-az/environment/production
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" production.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" production.yaml
           yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
           git add production.yaml
 
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" enterprise/enterprise.yaml
           yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
           git add enterprise/enterprise.yaml
 
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" multi-tenant/multi-tenant.yaml
           yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           git add multi-tenant/multi-tenant.yaml
 
-          cd ../../../../config-be-rudder-transformer/environment/prod
+          cd -
+          cd helm-charts/config-be-rudder-transformer/environment/prod
           yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" base.yaml
           git add base.yaml
 
@@ -146,8 +147,8 @@ jobs:
           git checkout -b hosted-user-transformer-$UT_TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
-          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
@@ -173,7 +174,7 @@ jobs:
             for f in "./$directory"/*; do
               [[ -f $f ]] || continue
 
-              enabled="$(yq e '.spec.user_transformer.enabled' $f)"
+              enabled="$(yq e '.spec.user-transformer.enabled' $f)"
               if [ $enabled == "true" ]; then
                   enabled_ut_customers+=( $f )
               fi
@@ -182,8 +183,8 @@ jobs:
 
           # bump up the customers version and repository information
           for customer in "${enabled_ut_customers[@]}"; do
-            yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" $customer
-            yq eval -i ".spec.user_transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
+            yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $customer
+            yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
             git add $customer
           done
 

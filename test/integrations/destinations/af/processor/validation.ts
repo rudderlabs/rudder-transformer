@@ -1,5 +1,5 @@
 import { Destination } from '../../../../../src/types';
-import { ENDPOINT_PATH } from '../../../../../src/v0/destinations/af/config';
+import { ENDPOINT_PATH, ENDPOINT_PATH_V2 } from '../../../../../src/v0/destinations/af/config';
 import { ProcessorTestData } from '../../../testTypes';
 import {
   generateMetadata,
@@ -2270,7 +2270,7 @@ export const newConfigValidationTests: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: commonV2EndPoint,
-              endpointPath: ENDPOINT_PATH,
+              endpointPath: ENDPOINT_PATH_V2,
               headers: { ...commonHeader, authentication: 'dummy' },
               JSON: {
                 bundleIdentifier: 'com.rudderlabs.javascript',

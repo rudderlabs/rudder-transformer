@@ -14,12 +14,8 @@ const {
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
-const {
-  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
-  SEARCH_STREAM,
-  destType,
-  getDeveloperToken,
-} = require('./config');
+const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
+const { getDeveloperToken } = require('../../util/googleUtils/index');
 const {
   processAxiosResponse,
   getDynamicErrorType,

@@ -1,4 +1,3 @@
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { getMappingConfig } = require('../../util');
 
 const API_VERSION = 'v19';
@@ -48,16 +47,6 @@ const consentConfigMap = {
   userDataConsent: 'adUserData',
 };
 
-const getDeveloperToken = () => {
-  const { GOOGLE_ADS_DEVELOPER_TOKEN } = process.env;
-  if (GOOGLE_ADS_DEVELOPER_TOKEN) {
-    return GOOGLE_ADS_DEVELOPER_TOKEN;
-  }
-  throw new ConfigurationError(
-    'GOOGLE_ADS_DEVELOPER_TOKEN is not set, please reach out to support',
-  );
-};
-
 module.exports = {
   destType: 'google_adwords_offline_conversions',
   trackClickConversionsMapping:
@@ -77,5 +66,4 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
-  getDeveloperToken,
 };

@@ -8,7 +8,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
-const { getDeveloperToken } = require('./config');
+const { getDeveloperToken } = require('../../util/googleUtils/index');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint

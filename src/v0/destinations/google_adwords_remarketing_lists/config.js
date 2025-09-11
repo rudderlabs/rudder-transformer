@@ -1,4 +1,3 @@
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { getMappingConfig } = require('../../util');
 
 const API_VERSION = 'v19';
@@ -25,16 +24,6 @@ const consentConfigMap = {
   userDataConsent: 'adUserData',
 };
 
-const getDeveloperToken = () => {
-  const { GOOGLE_ADS_DEVELOPER_TOKEN } = process.env;
-  if (GOOGLE_ADS_DEVELOPER_TOKEN) {
-    return GOOGLE_ADS_DEVELOPER_TOKEN;
-  }
-  throw new ConfigurationError(
-    'GOOGLE_ADS_DEVELOPER_TOKEN is not set, please reach out to support',
-  );
-};
-
 module.exports = {
   API_VERSION,
   BASE_ENDPOINT,
@@ -46,5 +35,4 @@ module.exports = {
   ADDRESS_INFO_ATTRIBUTES,
   consentConfigMap,
   destType: 'google_adwords_remarketing_lists',
-  getDeveloperToken,
 };

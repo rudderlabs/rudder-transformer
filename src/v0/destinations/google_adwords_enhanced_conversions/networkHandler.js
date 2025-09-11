@@ -10,7 +10,8 @@ const {
 // const SqlString = require('sqlstring');
 const { prepareProxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { CONVERSION_ACTION_ID_CACHE_TTL, getDeveloperToken } = require('./config');
+const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
+const { getDeveloperToken } = require('../../util/googleUtils/index');
 const Cache = require('../../util/cache');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);

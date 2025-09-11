@@ -84,6 +84,7 @@ const defaultEngagementTimeMsec = 1;
 const timestamp_micros = 1650950229000000;
 
 const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
+const eventEndPointPath = '/mp/collect';
 
 export const groupTestData: ProcessorTestData[] = [
   {
@@ -124,6 +125,7 @@ export const groupTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -196,6 +198,7 @@ export const groupTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -278,6 +281,7 @@ export const groupTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {

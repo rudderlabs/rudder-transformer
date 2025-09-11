@@ -1,4 +1,5 @@
 import { newConfigValidationTests } from './validation';
+import { ENDPOINT_PATH } from '../../../../../src/v0/destinations/af/config';
 
 const commonPropertiesWithProduct = {
   tax: 2,
@@ -47,7 +48,6 @@ const commonContextWithExternalId = {
 
 const commonHeader = { 'Content-Type': 'application/json', authentication: 'abcde' };
 
-const commonV2EndPoint = 'https://api3.appsflyer.com/inappevent/com.rudderlabs.javascript';
 const commonV1EndPoint = 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript';
 
 export const existingTestCases = [
@@ -189,6 +189,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -283,6 +284,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -550,6 +552,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -646,6 +649,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -740,6 +744,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: 'https://api2.appsflyer.com/inappevent/id123456789',
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -819,6 +824,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -944,6 +950,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1033,6 +1040,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1103,6 +1111,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1212,6 +1221,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1299,6 +1309,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1390,6 +1401,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1489,6 +1501,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1665,6 +1678,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1761,6 +1775,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1837,6 +1852,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {
@@ -1967,6 +1983,7 @@ export const existingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: commonV1EndPoint,
+              endpointPath: ENDPOINT_PATH,
               headers: commonHeader,
               params: {},
               body: {

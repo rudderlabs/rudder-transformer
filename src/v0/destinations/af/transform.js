@@ -19,6 +19,7 @@ const {
 
 const {
   Event,
+  ENDPOINT_PATH,
   ENDPOINT,
   ENDPOINT_V2,
   ConfigCategory,
@@ -95,6 +96,7 @@ function responseBuilderSimple(payload, message, destination) {
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
+  response.endpointPath = ENDPOINT_PATH;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
     authentication: finalAuthentication,

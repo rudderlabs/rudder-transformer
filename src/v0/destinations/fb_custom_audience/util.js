@@ -258,6 +258,7 @@ const responseBuilderSimple = (payload, audienceId) => {
     const responseParams = payload.responseField;
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
+    response.endpointPath = config.ENDPOINT_PATH;
 
     if (payload.operationCategory === 'add') {
       response.method = defaultPostRequestConfig.requestMethod;

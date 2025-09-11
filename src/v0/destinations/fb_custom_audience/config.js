@@ -1,7 +1,9 @@
 const BASE_URL = 'https://graph.facebook.com/v22.0';
 
+const ENDPOINT_PATH = '/users';
+
 function getEndPoint(audienceId) {
-  return `${BASE_URL}/${audienceId}/users`;
+  return `${BASE_URL}/${audienceId}${ENDPOINT_PATH}`;
 }
 
 const schemaFields = [
@@ -100,6 +102,7 @@ and error method we found that 65000 bytes is the maximum payload allowed size b
 */
 const maxPayloadSize = 60000; // bytes
 module.exports = {
+  ENDPOINT_PATH,
   getEndPoint,
   schemaFields,
   USER_ADD,

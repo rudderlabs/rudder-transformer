@@ -1,4 +1,3 @@
-import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
 import {
   generateSimplifiedPageOrScreenPayload,
   overrideDestination,
@@ -7,6 +6,7 @@ import {
 } from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
+import { endpointDetails } from '../common';
 
 const commonDestination: Destination = {
   ID: '12335',
@@ -160,7 +160,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {
@@ -302,7 +303,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {
@@ -386,7 +388,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {
@@ -471,7 +474,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {
@@ -608,7 +612,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {
@@ -692,7 +697,8 @@ export const pageScreenTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              endpoint: endpointDetails.endpoint,
+              endpointPath: endpointDetails.path,
               headers: {},
               params: {},
               FORM: {

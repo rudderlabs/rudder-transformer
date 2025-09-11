@@ -7,6 +7,12 @@ import { ProcessorTestData } from '../../../testTypes';
 import { MessageType } from '../../../../../src/types';
 import { generateMetadata, overrideDestination } from '../../../testUtils';
 import { destinationConfig } from '../common';
+import {
+  TRACK_ENDPOINT,
+  TRACK_ENDPOINT_PATH,
+  trackEndpointV2,
+  trackEndpointV2Path,
+} from '../../../../../src/v0/destinations/tiktok_ads/config';
 
 const commonContents = [
   {
@@ -130,7 +136,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -232,7 +239,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -368,7 +376,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -536,7 +545,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -637,7 +647,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -776,7 +787,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -875,7 +887,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1184,7 +1197,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1282,7 +1296,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1381,7 +1396,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1479,7 +1495,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1685,7 +1702,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1784,7 +1802,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -1883,7 +1902,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2026,7 +2046,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2165,7 +2186,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2317,7 +2339,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2363,7 +2386,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2546,7 +2570,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2654,7 +2679,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2762,7 +2788,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -2881,7 +2908,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3000,7 +3028,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3140,7 +3169,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3285,7 +3315,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3416,7 +3447,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3597,7 +3629,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3717,7 +3750,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -3871,7 +3905,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -4028,7 +4063,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -4216,7 +4252,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -4725,7 +4762,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -4916,7 +4954,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5090,7 +5129,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5273,7 +5313,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5386,7 +5427,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5492,7 +5534,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              endpoint: trackEndpointV2,
+              endpointPath: trackEndpointV2Path,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5643,7 +5686,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5745,7 +5789,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',
@@ -5844,7 +5889,8 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              endpoint: TRACK_ENDPOINT,
+              endpointPath: TRACK_ENDPOINT_PATH,
               headers: {
                 'Access-Token': 'dummyAccessToken',
                 'Content-Type': 'application/json',

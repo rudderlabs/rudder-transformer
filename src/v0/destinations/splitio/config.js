@@ -7,7 +7,7 @@ const endpoints = {
 };
 
 const CONFIG_CATEGORIES = {
-  EVENT: { endPoint: endpoints.eventUrl, name: 'EventConfig' },
+  EVENT: { endPoint: endpoints.eventUrl, name: 'EventConfig', endpointPath: '/events' },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

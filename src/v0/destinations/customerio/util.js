@@ -37,6 +37,12 @@ const deviceRelatedEventNames = [
 
 const deviceDeleteRelatedEventName = 'Application Uninstalled';
 
+const encodePathParameter = (param) => {
+  if (typeof param !== 'string') return param;
+  // return param.includes('/') ? encodeURIComponent(param) : param;
+  return encodeURIComponent(param);
+};
+
 const getSizeInBytes = (obj) => {
   let str = null;
   if (typeof obj === 'string') {
@@ -210,12 +216,6 @@ const groupResponseBuilder = (message) => {
   const endpoint = OBJECT_EVENT_ENDPOINT;
 
   return { rawPayload, endpoint, requestConfig };
-};
-
-const encodePathParameter = (param) => {
-  if (typeof param !== 'string') return param;
-  // return param.includes('/') ? encodeURIComponent(param) : param;
-  return encodeURIComponent(param);
 };
 
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {

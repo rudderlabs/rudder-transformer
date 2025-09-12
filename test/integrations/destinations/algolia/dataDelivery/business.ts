@@ -212,7 +212,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 422,
+            status: 200,
             message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
             destinationResponse: {
               response: {
@@ -271,7 +271,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 422,
+            status: 200,
             message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
             destinationResponse: {
               response: {
@@ -371,7 +371,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 422,
+            status: 200,
             message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
             destinationResponse: {
               response: {

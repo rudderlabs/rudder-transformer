@@ -31,7 +31,7 @@ const responseHandler = (responseParams) => {
   const errorMessage = response?.error?.message || response?.message || 'unknown error format';
   if (status >= 400 && status < 500) {
     return {
-      status,
+      status: 200,
       message: `[ALGOLIA Response V1 Handler] - Request Processed with Errors`,
       destinationResponse,
       response: metaDataArray.map((metadata) => {

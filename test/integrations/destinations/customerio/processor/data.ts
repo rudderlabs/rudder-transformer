@@ -591,7 +591,7 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@gmail.com',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40gmail.com',
               userId: '123456',
               headers: {
                 Authorization: authHeader1,
@@ -910,7 +910,7 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1455,7 +1455,7 @@ export const data = [
               },
               files: {},
               endpoint:
-                'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices/somel',
+                'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices/somel',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1657,7 +1657,7 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -2762,7 +2762,7 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -3407,7 +3407,7 @@ export const data = [
               },
               files: {},
               endpoint:
-                'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/devices',
+                'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -4265,7 +4265,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4475,7 +4475,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4837,7 +4837,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'PUT',
-              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles@hotmail.com',
+              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles%40hotmail.com',
               headers: {
                 Authorization: authHeader2,
               },

@@ -1,6 +1,7 @@
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
+const { CommonUtils } = require('../../../util/common');
 
 const {
   processAxiosResponse,
@@ -12,7 +13,7 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata, destType } = responseParams;
   const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
-  const metaDataArray = Array.isArray(rudderJobMetadata) ? rudderJobMetadata : [rudderJobMetadata];
+  const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
 
   if (isHttpStatusSuccess(status)) {
     return {
@@ -37,7 +38,7 @@ const responseHandler = (responseParams) => {
       statTags: {
         errorCategory: 'network',
         errorType: 'retryable',
-        destType: destType.toUpperCase(),
+        destType: destType && typeof destType === 'string' ? destType.toUpperCase() : '',
         module: 'destination',
         implementation: 'native',
         feature: 'dataDelivery',

@@ -49,7 +49,6 @@ jobs:
 
       - name: Run Tests
         id: run_tests
-        continue-on-error: true
         run: |
           # Supress logging in tests
           LOG_LEVEL=100 npm run test:js:ci

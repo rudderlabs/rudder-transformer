@@ -37,7 +37,7 @@ const responseHandler = (responseParams) => {
       statTags: {
         errorCategory: 'network',
         errorType: 'retryable',
-        destType,
+        destType: destType.toUpperCase(),
         module: 'destination',
         implementation: 'native',
         feature: 'dataDelivery',

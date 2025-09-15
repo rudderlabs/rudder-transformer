@@ -123,6 +123,7 @@ const expectedCampaignOutputParams = {
 };
 
 const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
+const eventEndPointPath = '/mp/collect';
 
 export const trackTestData: ProcessorTestData[] = [
   {
@@ -169,6 +170,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -237,6 +239,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -307,6 +310,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -379,6 +383,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -447,6 +452,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -518,6 +524,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -586,6 +593,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -655,6 +663,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -722,6 +731,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -793,6 +803,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -865,6 +876,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -936,6 +948,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1004,6 +1017,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1073,6 +1087,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1140,6 +1155,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1211,6 +1227,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1280,6 +1297,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1346,6 +1364,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1412,6 +1431,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1481,6 +1501,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1554,6 +1575,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1630,6 +1652,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1706,6 +1729,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1783,6 +1807,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1850,6 +1875,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1915,6 +1941,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1981,6 +2008,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2048,6 +2076,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2115,6 +2144,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2182,6 +2212,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2256,6 +2287,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2334,6 +2366,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2422,6 +2455,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2502,6 +2536,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2587,6 +2622,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2713,6 +2749,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2799,6 +2836,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2877,6 +2915,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2958,6 +2997,7 @@ export const trackTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {

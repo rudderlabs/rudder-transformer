@@ -9,7 +9,7 @@ const {
 const tags = require('../../../v0/util/tags');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
+  const { destinationResponse, rudderJobMetadata, destType } = responseParams;
   const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   const metaDataArray = Array.isArray(rudderJobMetadata) ? rudderJobMetadata : [rudderJobMetadata];
@@ -34,6 +34,16 @@ const responseHandler = (responseParams) => {
       status: 200,
       message: `[ALGOLIA Response V1 Handler] - Request Processed with Errors`,
       destinationResponse,
+      statTags: {
+        errorCategory: 'network',
+        errorType: 'retryable',
+        destType,
+        module: 'destination',
+        implementation: 'native',
+        feature: 'dataDelivery',
+        destinationId: metaDataArray[0]?.destinationId || '',
+        workspaceId: metaDataArray[0]?.workspaceId || '',
+      },
       response: metaDataArray.map((metadata) => {
         const statusCode = !metadata.dontBatch ? 500 : status;
         return {

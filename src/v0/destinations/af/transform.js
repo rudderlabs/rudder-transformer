@@ -19,7 +19,9 @@ const {
 
 const {
   Event,
+  ENDPOINT_PATH,
   ENDPOINT,
+  ENDPOINT_PATH_V2,
   ENDPOINT_V2,
   ConfigCategory,
   mappingConfig,
@@ -44,8 +46,13 @@ function responseBuilderSimple(payload, message, destination) {
     destination.Config;
   const os = get(message, 'context.os.name');
 
-  const finalEndPoint =
-    isDefinedAndNotNull(authVersion) && authVersion === 'v2' ? ENDPOINT_V2 : ENDPOINT;
+  let finalEndPoint = ENDPOINT;
+  let finalEndPointPath = ENDPOINT_PATH;
+
+  if (authVersion === 'v2') {
+    finalEndPoint = ENDPOINT_V2;
+    finalEndPointPath = ENDPOINT_PATH_V2;
+  }
 
   // Extract endpoint determination to reduce complexity
   const endpoint = determineEndpoint(os, finalEndPoint, androidAppId, appleAppId);
@@ -95,6 +102,7 @@ function responseBuilderSimple(payload, message, destination) {
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
+  response.endpointPath = finalEndPointPath;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
     authentication: finalAuthentication,

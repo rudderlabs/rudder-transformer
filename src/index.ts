@@ -50,7 +50,7 @@ if (process.env.PYROSCOPE_SERVER_ADDRESS) {
     tags: {
       namespace: process.env.NAMESPACE || '',
       instance: process.env.INSTANCE_ID || '',
-      cluster: process.env.CLUSTER || '',
+      cluster: process.env.PYROSCOPE_CLUSTER_NAME || '',
     }
   });
   pyroscopeStart();

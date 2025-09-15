@@ -467,6 +467,7 @@ export const transformResultBuilder: any = (matchData) => {
     userId: matchData.userId,
     method: matchData.method || 'POST',
     endpoint: matchData.endpoint || '',
+    endpointPath: matchData.endpointPath,
     headers: matchData.headers || {},
     params: matchData.params || {},
     body: {

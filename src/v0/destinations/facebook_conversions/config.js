@@ -1,8 +1,13 @@
 const { getMappingConfig } = require('../../util');
 
-// TODO: Update to v23.0 - current latest version (released May 29, 2025)
-const ENDPOINT = (datasetId, accessToken) =>
-  `https://graph.facebook.com/v22.0/${datasetId}/events?access_token=${accessToken}`;
+const VERSION = 'v22.0';
+
+const ENDPOINT_PATH = '/events';
+
+const getEndpointDetails = (pixelId, accessToken) => ({
+  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}${ENDPOINT_PATH}?access_token=${accessToken}`,
+  path: ENDPOINT_PATH,
+});
 
 const CONFIG_CATEGORIES = {
   USERDATA: {
@@ -116,7 +121,7 @@ const STANDARD_ECOMM_EVENTS_CATEGORIES = [
 ];
 
 module.exports = {
-  ENDPOINT,
+  getEndpointDetails,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,

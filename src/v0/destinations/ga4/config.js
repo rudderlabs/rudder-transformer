@@ -1,7 +1,9 @@
 const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = 'https://www.google-analytics.com/mp/collect';
-const DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect';
+const ENDPOINT_PATH = 'mp/collect';
+const DEBUG_ENDPOINT_PATH = `debug/${ENDPOINT_PATH}`;
+const ENDPOINT = `https://www.google-analytics.com/${ENDPOINT_PATH}`;
+const DEBUG_ENDPOINT = `https://www.google-analytics.com/${DEBUG_ENDPOINT_PATH}`;
 
 /**
  * config for GA4 events
@@ -177,7 +179,9 @@ const VALID_ITEM_OR_PRODUCT_PROPERTIES = [
 
 module.exports = {
   ENDPOINT,
+  ENDPOINT_PATH,
   DEBUG_ENDPOINT,
+  DEBUG_ENDPOINT_PATH,
   ConfigCategory,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],

@@ -4,6 +4,7 @@ import lodash from 'lodash';
 import { V1BusinessTestScenarion } from './business';
 import { v1OtherScenarios } from './other';
 import { generateProxyV0Payload } from '../../../testUtils';
+import { BATCH_ENDPOINT } from '../../../../../src/v0/destinations/tiktok_ads/config';
 
 const oldV0TestCases = [
   {
@@ -62,7 +63,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -146,7 +147,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -240,7 +241,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -335,7 +336,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -429,7 +430,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -520,7 +521,7 @@ const oldV0TestCases = [
                 'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
             },
           },
-          endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          endpoint: BATCH_ENDPOINT,
           method: 'POST',
           params: {
             destination: 'tiktok_ads',
@@ -557,7 +558,7 @@ const oldV0TestCases = [
     mockFns: (mockAdapter: MockAxiosAdapter) => {
       mockAdapter
         .onPost(
-          'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+          BATCH_ENDPOINT,
           {
             asymmetricMatch: (actual) => {
               const expected = {

@@ -91,6 +91,7 @@ const expectedOutputParams = {
 };
 
 const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
+const eventEndPointPath = '/mp/collect';
 
 export const pageTestData: ProcessorTestData[] = [
   {
@@ -133,6 +134,7 @@ export const pageTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -203,6 +205,7 @@ export const pageTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -276,6 +279,7 @@ export const pageTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -508,6 +512,7 @@ export const pageTestData: ProcessorTestData[] = [
               },
               version: '1',
               endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: '/mp/collect',
             },
             statusCode: 200,
             metadata: generateMetadata(1),

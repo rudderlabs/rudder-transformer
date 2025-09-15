@@ -29,6 +29,7 @@ const config = require('./config');
 
 const {
   trackMappingV2,
+  trackEndpointV2Path,
   trackEndpointV2,
   eventNameMapping,
   PARTNER_NAME,
@@ -128,6 +129,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   // tiktok doc for request: https://business-api.tiktok.com/portal/docs?id=1771100865818625
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = trackEndpointV2;
+  response.endpointPath = trackEndpointV2Path;
   const responseList = [];
   if (standardEventsMap[event]) {
     Object.keys(standardEventsMap).forEach((key) => {
@@ -412,6 +414,7 @@ const buildBatchResponseForEvent = (batch) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   batchedRequest.body.JSON = event;
   batchedRequest.endpoint = trackEndpointV2;
+  batchedRequest.endpointPath = trackEndpointV2Path;
   batchedRequest.headers = {
     'Access-Token': accessToken,
     'Content-Type': 'application/json',

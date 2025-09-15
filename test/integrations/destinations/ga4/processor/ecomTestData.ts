@@ -259,6 +259,7 @@ const shareProductsExpectedOutputParams = {
 };
 
 const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
+const eventEndPointPath = '/mp/collect';
 
 export const ecommTestData: ProcessorTestData[] = [
   {
@@ -303,6 +304,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -374,6 +376,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -447,6 +450,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -518,6 +522,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -589,6 +594,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -663,6 +669,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -738,6 +745,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -812,6 +820,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -888,6 +897,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -963,6 +973,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1038,6 +1049,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1115,6 +1127,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1193,6 +1206,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1268,6 +1282,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1340,6 +1355,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1411,6 +1427,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1483,6 +1500,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1553,6 +1571,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1620,6 +1639,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1687,6 +1707,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1754,6 +1775,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1832,6 +1854,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: {
                 api_secret: 'dummyApiSecret',
@@ -1906,6 +1929,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1977,6 +2001,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2049,6 +2074,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2123,6 +2149,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2201,6 +2228,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2285,6 +2313,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2360,6 +2389,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2450,6 +2480,7 @@ export const ecommTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventEndPoint,
+              endpointPath: eventEndPointPath,
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {

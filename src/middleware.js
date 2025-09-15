@@ -1,14 +1,7 @@
-const Pyroscope = require('@rudderstack/pyroscope-nodejs').default;
-
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
+// eslint-disable-next-line import/no-extraneous-dependencies
+const { wrapWithLabels } = require('@pyroscope/nodejs');
 const stats = require('./util/stats');
-
-Pyroscope.init({
-  appName: 'rudder-transformer',
-  wall: {
-    collectCpuTime: true, // Enable CPU time collection
-  },
-});
 
 function durationMiddleware() {
   return async (ctx, next) => {
@@ -56,12 +49,24 @@ function addRequestSizeMiddleware(app) {
   });
 }
 
-function addProfilingMiddleware(app) {
-  app.use(Pyroscope.koaMiddleware());
+function addProfilingLabelsMiddleware(app) {
+  app.use((ctx, next) => {
+    let resp;
+    wrapWithLabels(
+      {
+        integration_type: ctx.path.includes('/source') ? 'source' : 'destination',
+        integration_name: getDestTypeFromContext(ctx) || 'unknown',
+      },
+      () => {
+        resp = next();
+      },
+    );
+    return resp;
+  });
 }
 
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
-  addProfilingMiddleware,
+  addProfilingLabelsMiddleware,
 };

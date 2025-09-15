@@ -467,6 +467,7 @@ export const transformResultBuilder: any = (matchData) => {
     userId: matchData.userId,
     method: matchData.method || 'POST',
     endpoint: matchData.endpoint || '',
+    endpointPath: matchData.endpointPath,
     headers: matchData.headers || {},
     params: matchData.params || {},
     body: {
@@ -529,6 +530,7 @@ export const generateProxyV0Payload = (
     userId: payloadParameters.userId || 'default-userId',
     method: payloadParameters.method || 'POST',
     endpoint: payloadParameters.endpoint || '',
+    endpointPath: payloadParameters.endpointPath || '',
     headers: payloadParameters.headers || {},
     params: payloadParameters.params || {},
     body: {
@@ -572,6 +574,7 @@ export const generateProxyV1Payload = (
     userId: payloadParameters.userId || 'default-userId',
     method: payloadParameters.method || 'POST',
     endpoint: payloadParameters.endpoint || '',
+    endpointPath: payloadParameters.endpointPath || '',
     headers: payloadParameters.headers || {},
     params: payloadParameters.params || {},
     body: {

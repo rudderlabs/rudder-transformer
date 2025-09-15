@@ -1341,4 +1341,114 @@ export const data = [
       },
     },
   },
+  {
+    name: 'campaign_manager',
+    description:
+      'Test 9: Enhanced Conversions with phone number but no country code and isHashingRequired is true - should throw error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '0572f78fa49c648e',
+                  name: 'generic_x86_arm',
+                  type: 'Android',
+                  model: 'AOSP on IA Emulator',
+                },
+                traits: {
+                  email: 'alex@example.com',
+                  phone: '2025550146',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+              },
+              originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+              properties: {
+                profileId: '34245',
+                floodlightConfigurationId: '213123123',
+                ordinal: 'string',
+                floodlightActivityId: '456543345245',
+                value: '756',
+                encryptedUserIdCandidates: ['dfghjbnm'],
+                quantity: '455678',
+                encryptionSource: 'AD_SERVING',
+                encryptionEntityId: '3564523',
+                encryptionEntityType: 'DCM_ACCOUNT',
+                requestType: 'batchupdate',
+              },
+              type: 'track',
+              event: 'event test',
+              anonymousId: 'randomId',
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'test-refresh',
+                developer_token: 'test-dev',
+              },
+            },
+            destination: {
+              Config: {
+                profileId: '5343234',
+                treatmentForUnderage: false,
+                limitAdTracking: false,
+                childDirectedTreatment: false,
+                nonPersonalizedAd: false,
+                enableEnhancedConversions: true,
+                isHashingRequired: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'test-refresh',
+                developer_token: 'test-dev',
+              },
+            },
+            statusCode: 400,
+            error: 'Invalid phone number with error: ParseError: INVALID_COUNTRY',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'CAMPAIGN_MANAGER',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

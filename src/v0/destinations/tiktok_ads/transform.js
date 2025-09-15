@@ -31,6 +31,8 @@ const {
   eventNameMapping,
   MAX_BATCH_SIZE,
   PARTNER_NAME,
+  TRACK_ENDPOINT_PATH,
+  BATCH_ENDPOINT_PATH,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -121,6 +123,7 @@ const getTrackResponse = (message, Config, event) => {
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = TRACK_ENDPOINT;
+  response.endpointPath = TRACK_ENDPOINT_PATH;
   // add partner name
   response.body.JSON = removeUndefinedAndNullValues({
     ...payload,
@@ -213,6 +216,7 @@ function batchEvents(eventsChunk) {
   };
 
   batchedRequest.endpoint = BATCH_ENDPOINT;
+  batchedRequest.endpointPath = BATCH_ENDPOINT_PATH;
   batchedRequest.headers = {
     'Access-Token': accessToken,
     'Content-Type': 'application/json',

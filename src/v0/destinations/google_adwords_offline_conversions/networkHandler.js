@@ -206,7 +206,6 @@ const ProxyRequest = async (request) => {
   const { method, endpoint, headers, params, body, metadata } = request;
 
   headers['developer-token'] = getDeveloperToken();
-  params.developerToken = getDeveloperToken();
 
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({

@@ -4,7 +4,7 @@ const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
 const get = require('get-value');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const {
   AUTH_STATUS_INACTIVE,
   REFRESH_TOKEN,
@@ -151,9 +151,7 @@ const getDeveloperToken = () => {
   if (GOOGLE_ADS_DEVELOPER_TOKEN) {
     return GOOGLE_ADS_DEVELOPER_TOKEN;
   }
-  throw new ConfigurationError(
-    'GOOGLE_ADS_DEVELOPER_TOKEN is not set, please reach out to support',
-  );
+  throw new PlatformError('GOOGLE_ADS_DEVELOPER_TOKEN is not set, please reach out to support');
 };
 
 module.exports = {

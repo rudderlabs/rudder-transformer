@@ -1,4 +1,3 @@
-import { BATCH_ENDPOINT } from '../../../../../src/v0/destinations/tiktok_ads/config';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
@@ -65,7 +64,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
               'test-dest-response-key': 'successResponse',
             },
             params,
-            endpoint: BATCH_ENDPOINT,
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
             JSON: {
               ...commonParts,
               properties: {
@@ -131,7 +130,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
               ...commonHeaderPart,
               'test-dest-response-key': 'invalidDataTypeResponse',
             },
-            endpoint: BATCH_ENDPOINT,
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
             JSON: {
               properties: {
                 contents: [
@@ -196,7 +195,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             params,
-            endpoint: BATCH_ENDPOINT,
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
             headers: {
               ...commonHeaderPart,
               'test-dest-response-key': 'invalidPermissionsResponse',

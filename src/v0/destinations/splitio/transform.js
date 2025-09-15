@@ -26,6 +26,7 @@ function responseBuilderSimple(payload, category, destination) {
     const responseBody = payload;
     const response = defaultRequestConfig();
     response.endpoint = category.endPoint;
+    response.endpointPath = category.endpointPath;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       'Content-Type': JSON_MIME_TYPE,

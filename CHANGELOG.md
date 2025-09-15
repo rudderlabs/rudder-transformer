@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.107.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.4...v1.107.5) (2025-09-10)
+
+
+### Bug Fixes
+
+* advance rule violation drop event setting ([849e39b](https://github.com/rudderlabs/rudder-transformer/commit/849e39b00e36aad6698dccea149fc597e56cb220))
+
 ### [1.107.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.3...v1.107.4) (2025-09-02)
 
 

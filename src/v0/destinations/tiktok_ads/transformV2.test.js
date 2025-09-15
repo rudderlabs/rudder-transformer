@@ -1,6 +1,7 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const { trackResponseBuilder } = require('./transformV2');
+const { trackEndpointV2, trackEndpointV2Path } = require('./config');
 
 describe('trackResponseBuilder', () => {
   const baseConfig = {
@@ -23,7 +24,8 @@ describe('trackResponseBuilder', () => {
       'Content-Type': 'application/json',
     },
     method: 'POST',
-    endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+    endpoint: trackEndpointV2,
+    endpointPath: trackEndpointV2Path,
   };
 
   const testCases = [
@@ -123,6 +125,7 @@ describe('trackResponseBuilder', () => {
         expect(resp.headers).toMatchObject(expectedResponse.headers);
         expect(resp.method).toBe(expectedResponse.method);
         expect(resp.endpoint).toBe(expectedResponse.endpoint);
+        expect(resp.endpointPath).toBe(expectedResponse.endpointPath);
         expect(resp.body.JSON).toMatchObject({
           event_source: expectedResponse.body.event_source,
           event_source_id: expectedResponse.body.event_source_id,

@@ -527,8 +527,10 @@ const buildDeliverablePayload = (payload, Config) => {
   // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
   if (Config.debugMode) {
     response.endpoint = DEBUG_ENDPOINT;
+    response.endpointPath = '/debug/mp/collect';
   } else {
     response.endpoint = ENDPOINT;
+    response.endpointPath = '/mp/collect';
   }
   response.headers = {
     HOST: 'www.google-analytics.com',

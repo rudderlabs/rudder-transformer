@@ -1,7 +1,7 @@
-/* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
+const { CommonUtils } = require('../../../util/common');
 
 const {
   processAxiosResponse,
@@ -10,53 +10,50 @@ const {
 const tags = require('../../../v0/util/tags');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
+  const { destinationResponse, rudderJobMetadata, destType } = responseParams;
   const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
-  const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
+  const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
 
   if (isHttpStatusSuccess(status)) {
-    for (const mData of rudderJobMetadata) {
-      const proxyOutputObj = {
-        statusCode: 200,
-        metadata: mData,
-        error: 'success',
-      };
-      responseWithIndividualEvents.push(proxyOutputObj);
-    }
-
     return {
       status,
       message,
       destinationResponse,
-      response: responseWithIndividualEvents,
+      response: metaDataArray.map((metadata) => ({
+        statusCode: 200,
+        metadata,
+        error: 'success',
+      })),
     };
   }
 
-  // in case of non 2xx status sending 500 for every event, populate response and update dontBatch to true
+  // If metadata.dontBatch is not set, use status 500, otherwise use the original status of destinationResponse because event already retried
   const errorMessage = response?.error?.message || response?.message || 'unknown error format';
-  for (const metadata of rudderJobMetadata) {
-    metadata.dontBatch = true;
-    responseWithIndividualEvents.push({
-      statusCode: 500,
-      metadata,
-      error: errorMessage,
-    });
-  }
-
-  // At least one event in the batch is invalid.
-  if (status === 422) {
-    // sending back 500 for retry
-    throw new TransformerProxyError(
-      `ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation`,
-      500,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
-      },
+  if (status >= 400 && status < 500) {
+    return {
+      status: 200,
+      message: `[ALGOLIA Response V1 Handler] - Request Processed with Errors`,
       destinationResponse,
-      '',
-      responseWithIndividualEvents,
-    );
+      statTags: {
+        errorCategory: 'network',
+        errorType: 'retryable',
+        destType: destType && typeof destType === 'string' ? destType.toUpperCase() : '',
+        module: 'destination',
+        implementation: 'native',
+        feature: 'dataDelivery',
+        destinationId: metaDataArray[0]?.destinationId || '',
+        workspaceId: metaDataArray[0]?.workspaceId || '',
+      },
+      response: metaDataArray.map((metadata) => {
+        const statusCode = !metadata.dontBatch ? 500 : status;
+        return {
+          statusCode,
+          metadata: { ...metadata, dontBatch: true },
+          error: errorMessage,
+        };
+      }),
+    };
   }
 
   throw new TransformerProxyError(
@@ -67,7 +64,11 @@ const responseHandler = (responseParams) => {
     },
     destinationResponse,
     '',
-    responseWithIndividualEvents,
+    metaDataArray.map((metadata) => ({
+      statusCode: status,
+      metadata,
+      error: errorMessage,
+    })),
   );
 };
 

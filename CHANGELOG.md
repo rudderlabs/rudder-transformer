@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.5...v1.108.0) (2025-09-15)
+
+## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.6...v1.108.0) (2025-09-16)
 
 
 ### Features
@@ -31,6 +32,14 @@ All notable changes to this project will be documented in this file. See [standa
 * update GitHub Actions checkout to v4 for compatibility ([2fd8412](https://github.com/rudderlabs/rudder-transformer/commit/2fd84123d8a1355d8d532c2602166da81909bec2))
 * update GitHub Actions checkout to v4 for compatibility ([#4632](https://github.com/rudderlabs/rudder-transformer/issues/4632)) ([b90af14](https://github.com/rudderlabs/rudder-transformer/commit/b90af1436742906c986d31d16576fd521403b974))
 * update TikTok Ads tests to include endpointPath ([feaf516](https://github.com/rudderlabs/rudder-transformer/commit/feaf516812b4c35c9b2a4acc5340ab1b8db884c4))
+
+=======
+### [1.107.6](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.5...v1.107.6) (2025-09-16)
+
+
+### Bug Fixes
+
+* **linkedin-ads:** update API version and handle 426 status code ([12defb1](https://github.com/rudderlabs/rudder-transformer/commit/12defb16e69d50f68a04dbb0502115fdbffc0028))
 
 ### [1.107.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.4...v1.107.5) (2025-09-10)
 

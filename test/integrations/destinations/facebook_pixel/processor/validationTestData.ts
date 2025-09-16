@@ -6,7 +6,6 @@ import {
   generateTrackPayload,
   overrideDestination,
 } from '../../../testUtils';
-import { endpointDetails } from '../common';
 const commonTimestamp = new Date('2023-10-12');
 const commonDestination: Destination = {
   ID: '12335',
@@ -442,11 +441,11 @@ export const validationTestData = [
                   ],
                 },
                 JSON: {},
-                JSON_ARRAY: {}, 
+                JSON_ARRAY: {},
                 XML: {},
               },
-              endpoint: endpointDetails.endpoint,
-              endpointPath: endpointDetails.path,
+              endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+              endpointPath: 'events',
               files: {},
               headers: {},
               method: 'POST',

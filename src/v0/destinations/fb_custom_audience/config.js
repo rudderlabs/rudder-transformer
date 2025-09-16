@@ -1,9 +1,9 @@
 const BASE_URL = 'https://graph.facebook.com/v22.0';
 
-const ENDPOINT_PATH = '/users';
+const ENDPOINT_PATH = 'users';
 
 function getEndPoint(audienceId) {
-  return `${BASE_URL}/${audienceId}${ENDPOINT_PATH}`;
+  return `${BASE_URL}/${audienceId}/${ENDPOINT_PATH}`;
 }
 
 const schemaFields = [

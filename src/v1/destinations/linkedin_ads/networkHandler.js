@@ -14,6 +14,13 @@ const {
   getAuthErrCategoryFromStCode,
 } = require('../../../cdk/v2/destinations/linkedin_ads/utils');
 
+const parseVersionDeprecationStatusCode = (status) => {
+  if (status === 426) {
+    return 500;
+  }
+  return status;
+};
+
 // eslint-disable-next-line consistent-return
 // ref :
 // 1) https://learn.microsoft.com/en-us/linkedin/shared/api-guide/concepts/error-handling
@@ -24,8 +31,9 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[LINKEDIN_CONVERSION_API Response V1 Handler] - Request Processed Successfully`;
   let responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
+  const { response, status: originalStatus } = destinationResponse;
 
+  const status = parseVersionDeprecationStatusCode(originalStatus);
   // even if a single event is unsuccessful, the entire batch will fail, we will filter that event out and retry others
   if (!isHttpStatusSuccess(status)) {
     const errorMessage = response.message || 'unknown error format';

@@ -1,5 +1,5 @@
 import { defaultMockFns } from '../mocks';
-import { Destination, RudderMessage } from '../../../../../src/types';
+import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateSimplifiedTrackPayload } from '../../../testUtils';
 

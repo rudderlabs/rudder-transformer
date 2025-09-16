@@ -283,7 +283,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',
@@ -386,7 +386,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',
@@ -451,7 +451,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',
@@ -554,7 +554,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',
@@ -681,7 +681,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',
@@ -787,7 +787,7 @@ export const customMappingTestCases = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://www.google-analytics.com/mp/collect',
-              endpointPath: '/mp/collect',
+              endpointPath: 'mp/collect',
               headers: {
                 HOST: 'www.google-analytics.com',
                 'Content-Type': 'application/json',

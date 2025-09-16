@@ -258,9 +258,6 @@ const shareProductsExpectedOutputParams = {
   item_id: 'C_12345',
 };
 
-const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
-const eventEndPointPath = '/mp/collect';
-
 export const ecommTestData: ProcessorTestData[] = [
   {
     id: 'ga4-ecom-test-1',
@@ -303,8 +300,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -375,8 +372,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -449,8 +446,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -521,8 +518,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -593,8 +590,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -668,8 +665,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -744,8 +741,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -819,8 +816,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -896,8 +893,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -972,8 +969,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1048,8 +1045,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1126,8 +1123,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1205,8 +1202,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1281,8 +1278,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1354,8 +1351,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1426,8 +1423,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1499,8 +1496,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1570,8 +1567,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1638,8 +1635,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1706,8 +1703,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1774,8 +1771,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -1853,8 +1850,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: {
                 api_secret: 'dummyApiSecret',
@@ -1928,8 +1925,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2000,8 +1997,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2073,8 +2070,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2148,8 +2145,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2227,8 +2224,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2312,8 +2309,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2388,8 +2385,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -2479,8 +2476,8 @@ export const ecommTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
-              endpointPath: eventEndPointPath,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {

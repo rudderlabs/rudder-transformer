@@ -75,6 +75,7 @@ export const ecomTestData: ProcessorTestData[] = [
                 price: 9.9,
                 categories: ['Fiction', 'Children'],
               },
+              messageId: 'someMessageId',
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             },
@@ -185,6 +186,7 @@ export const ecomTestData: ProcessorTestData[] = [
                   },
                 ],
               },
+              messageId: 'someMessageId',
               anonymousId: '9c6bd77ea9da3e68',
             },
             metadata: generateMetadata(2),
@@ -270,7 +272,6 @@ export const ecomTestData: ProcessorTestData[] = [
                 traits: commonTraits,
               },
               rudderId: 'b7b24f86-f7bf-46d8-b2b4-ccafc080239c',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
               properties: {
                 order_id: '1234',
                 value: 12.12,
@@ -294,6 +295,7 @@ export const ecomTestData: ProcessorTestData[] = [
                   },
                 ],
               },
+              messageId: 'someMessageId',
               anonymousId: '9c6bd77ea9da3e68',
               integrations: {
                 All: true,

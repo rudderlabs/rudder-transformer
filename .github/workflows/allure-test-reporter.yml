@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
 
       - name: Setup Node
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -48,7 +48,7 @@ jobs:
           echo "REPORT_FOLDER=${REPORT_FOLDER}" >> $GITHUB_ENV  # Persist this variable
 
       - name: Checkout Reports Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: rudderlabs/test-reports
           token: ${{ secrets.PAT }}
@@ -94,7 +94,7 @@ jobs:
           done
 
       - name: Add Test Report Link as Comment on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.PAT }}
           script: |

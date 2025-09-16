@@ -258,14 +258,15 @@ const formingFinalResponse = (
   userData,
   commonData,
   customData,
-  endpoint,
+  endpointDetails,
   testDestination,
   testEventCode,
   appData,
 ) => {
   if (userData && commonData) {
     const response = defaultRequestConfig();
-    response.endpoint = endpoint;
+    response.endpoint = endpointDetails.endpoint;
+    response.endpointPath = endpointDetails.path;
     response.method = defaultPostRequestConfig.requestMethod;
     const jsonData = {
       user_data: userData,

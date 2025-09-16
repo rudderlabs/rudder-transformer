@@ -1,5 +1,4 @@
 import { defaultMockFns } from '../mocks';
-
 export const data = [
   {
     name: 'facebook_conversions',
@@ -317,6 +316,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -453,6 +453,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -589,6 +590,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -725,6 +727,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -868,6 +871,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1006,6 +1010,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1144,6 +1149,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1290,6 +1296,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1435,6 +1442,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1585,6 +1593,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1746,6 +1755,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -1873,6 +1883,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {
@@ -2013,6 +2024,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://graph.facebook.com/v22.0/dummyID/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               body: {

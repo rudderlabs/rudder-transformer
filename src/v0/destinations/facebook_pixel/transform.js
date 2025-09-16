@@ -2,12 +2,12 @@
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
-  VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   FB_PIXEL_DEFAULT_EXCLUSION,
   FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING,
   STANDARD_ECOMM_EVENTS_TYPE,
+  getEndpointDetails,
 } = require('./config');
 const { EventType } = require('../../../constants');
 
@@ -65,7 +65,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/${VERSION}/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = getEndpointDetails(pixelId, accessToken);
 
   const userData = fetchUserData(
     message,

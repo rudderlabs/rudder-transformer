@@ -83,8 +83,6 @@ const non_personalized_ads = true;
 const defaultEngagementTimeMsec = 1;
 const timestamp_micros = 1650950229000000;
 
-const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
-
 export const groupTestData: ProcessorTestData[] = [
   {
     id: 'ga4-group-test-1',
@@ -123,7 +121,8 @@ export const groupTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -195,7 +194,8 @@ export const groupTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -277,7 +277,8 @@ export const groupTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {

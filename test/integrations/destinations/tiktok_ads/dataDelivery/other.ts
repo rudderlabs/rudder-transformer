@@ -36,7 +36,7 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             params,
-            endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
             headers: { ...commonHeaderPart, 'test-dest-response-key': 'tooManyRequests' },
             JSON: {
               ...commonParts,
@@ -88,7 +88,7 @@ export const v1OtherScenarios: ProxyV1TestData[] = [
         body: generateProxyV1Payload(
           {
             params,
-            endpoint: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+            endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
             headers: { ...commonHeaderPart, 'test-dest-response-key': '502-BadGateway' },
             JSON: {
               ...commonParts,

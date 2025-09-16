@@ -1,4 +1,5 @@
 const { getDataSource, responseBuilderSimple, getUpdatedDataElement } = require('./util');
+const { getEndPoint, ENDPOINT_PATH } = require('./config');
 
 const basePayload = {
   responseField: {
@@ -18,7 +19,8 @@ const basePayload = {
 const baseResponse = {
   version: '1',
   type: 'REST',
-  endpoint: 'https://graph.facebook.com/v22.0/23848494844100489/users',
+  endpoint: getEndPoint('23848494844100489'),
+  endpointPath: ENDPOINT_PATH,
   headers: {},
   params: {
     access_token: 'ABC',

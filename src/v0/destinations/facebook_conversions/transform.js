@@ -6,7 +6,7 @@ const {
   MAPPING_CONFIG,
   FB_CONVERSIONS_DEFAULT_EXCLUSION,
   DESTINATION,
-  ENDPOINT,
+  getEndpointDetails,
 } = require('./config');
 const { EventType } = require('../../../constants');
 
@@ -108,7 +108,7 @@ const responseBuilderSimple = (message, category, destination) => {
     userData,
     commonData,
     customData,
-    ENDPOINT(datasetId, accessToken),
+    getEndpointDetails(datasetId, accessToken),
     testDestination,
     testEventCode,
     appData,

@@ -600,6 +600,7 @@ export const dataV2: RouterTestData[] = [
                   },
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId1',
                 anonymousId: 'anonTestKlaviyo1',
                 userId: 'testKlaviyo1',
                 event: 'purchase',
@@ -618,6 +619,7 @@ export const dataV2: RouterTestData[] = [
                   traits: {},
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId2',
                 anonymousId: 'anonTestKlaviyo2',
                 event: 'viewed product',
                 properties: {
@@ -662,6 +664,7 @@ export const dataV2: RouterTestData[] = [
                   },
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId3',
                 userId: 'testKlaviyo2',
                 event: 'purchase',
                 properties: {
@@ -743,6 +746,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId1',
                         properties: {
                           price: '12',
                         },
@@ -802,6 +806,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId2',
                         properties: {
                           price: '120',
                         },
@@ -997,6 +1002,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId3',
                         properties: {
                           price: '120',
                         },
@@ -1643,6 +1649,7 @@ export const dataV2: RouterTestData[] = [
                   },
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId1',
                 anonymousId: 'anonTestKlaviyo1',
                 userId: 'testKlaviyo1',
                 event: 'purchase',
@@ -1661,6 +1668,7 @@ export const dataV2: RouterTestData[] = [
                   traits: {},
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId2',
                 anonymousId: 'anonTestKlaviyo2',
                 event: 'viewed product',
                 properties: {
@@ -1705,6 +1713,7 @@ export const dataV2: RouterTestData[] = [
                   },
                 },
                 type: 'track',
+                messageId: 'someTrackMessageId3',
                 userId: 'testKlaviyo2',
                 event: 'purchase',
                 properties: {
@@ -1767,6 +1776,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId1',
                         properties: {
                           price: '12',
                         },
@@ -1826,6 +1836,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId2',
                         properties: {
                           price: '120',
                         },
@@ -2007,6 +2018,7 @@ export const dataV2: RouterTestData[] = [
                     data: {
                       type: 'event',
                       attributes: {
+                        unique_id: 'someTrackMessageId3',
                         properties: {
                           price: '120',
                         },
@@ -2100,6 +2112,7 @@ export const dataV2: RouterTestData[] = [
                 properties: {
                   price: 120,
                 },
+                messageId: 'someTrackMessageId1',
                 originalTimestamp: '2025-01-01T11:11:11.111Z',
               },
               metadata: generateMetadata(2),

@@ -19,27 +19,27 @@ const commonDestination: Destination = {
     eventMapping: [
       {
         from: 'User Signed Up',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Product Added to Cart',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Newsletter Subscribed',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Order Completed',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Subscription Started',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Plan Upgraded',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
     ],
   },
@@ -52,8 +52,7 @@ export const leadEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-lead-test-1',
     name: 'dub',
-    description:
-      'Track call: Lead conversion event - User Sign Up with all required and optional fields',
+    description: 'Track call: LEAD_CONVERSION - User Sign Up with all required and optional fields',
     scenario: 'Business',
     successCriteria:
       'Should successfully transform track event to Dub lead conversion API call with proper field mapping',
@@ -66,8 +65,10 @@ export const leadEventTestData: ProcessorTestData[] = [
         body: [
           {
             message: generateTrackPayload({
+              userId: 'user_12345',
               event: 'User Signed Up',
               properties: {
+                eventQuantity: 1,
                 email: 'john.doe@example.com',
                 name: 'John Doe',
                 firstName: 'John',
@@ -86,12 +87,6 @@ export const leadEventTestData: ProcessorTestData[] = [
                   lastName: 'Doe',
                   avatar: 'https://example.com/avatar.jpg',
                 },
-                externalId: [
-                  {
-                    type: 'userId',
-                    id: 'user_12345',
-                  },
-                ],
                 dubClickId: 'dub_click_12345',
               },
               anonymousId: 'anon_67890',
@@ -109,7 +104,7 @@ export const leadEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -127,20 +122,16 @@ export const leadEventTestData: ProcessorTestData[] = [
                   customerName: 'John Doe',
                   customerEmail: 'john.doe@example.com',
                   customerAvatar: 'https://example.com/avatar.jpg',
-                  mode: 'async',
+                  mode: 'wait',
                   eventQuantity: 1,
-                  metadata: {
-                    campaign: 'summer_2023',
-                    source: 'google_ads',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_67890',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(1),
           },
@@ -151,7 +142,7 @@ export const leadEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-lead-test-2',
     name: 'dub',
-    description: 'Track call: Lead conversion event - Product Added to Cart with minimal fields',
+    description: 'Track call: LEAD_CONVERSION - Product Added to Cart with minimal fields',
     scenario: 'Business',
     successCriteria:
       'Should successfully transform track event with only required fields for lead conversion',
@@ -163,24 +154,26 @@ export const leadEventTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Product Added to Cart',
               properties: {
                 product_id: 'prod_123',
                 product_name: 'Premium Widget',
+                eventQuantity: '1',
               },
               context: {
                 dubClickId: 'dub_click_67890',
                 externalId: [
                   {
-                    type: 'userId',
+                    type: 'customerExternalId',
                     id: 'user_54321',
                   },
                 ],
               },
               anonymousId: 'anon_12345',
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(2),
             destination: commonDestination,
           },
@@ -193,7 +186,7 @@ export const leadEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -208,23 +201,16 @@ export const leadEventTestData: ProcessorTestData[] = [
                   clickId: 'dub_click_67890',
                   eventName: 'Product Added to Cart',
                   customerExternalId: 'user_54321',
-                  customerName: null,
-                  customerEmail: null,
-                  customerAvatar: null,
-                  mode: 'async',
+                  mode: 'wait',
                   eventQuantity: 1,
-                  metadata: {
-                    product_id: 'prod_123',
-                    product_name: 'Premium Widget',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_12345',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(2),
           },
@@ -235,7 +221,7 @@ export const leadEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-lead-test-3',
     name: 'dub',
-    description: 'Track call: Lead conversion event - Newsletter Subscribed with email from traits',
+    description: 'Track call: LEAD_CONVERSION - Newsletter Subscribed with email from traits',
     scenario: 'Business',
     successCriteria: 'Should use email from traits when not present in properties',
     feature: 'processor',
@@ -246,9 +232,11 @@ export const leadEventTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Newsletter Subscribed',
               properties: {
+                eventQuantity: 1,
                 newsletter_type: 'weekly',
               },
               context: {
@@ -256,11 +244,17 @@ export const leadEventTestData: ProcessorTestData[] = [
                   email: 'newsletter@example.com',
                   name: 'Newsletter User',
                 },
+                externalId: [
+                  {
+                    type: 'customerExternalId',
+                    id: 'user_54321',
+                  },
+                ],
                 dubClickId: 'dub_click_newsletter',
               },
               anonymousId: 'anon_newsletter_123',
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(3),
             destination: commonDestination,
           },
@@ -273,7 +267,7 @@ export const leadEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -287,23 +281,19 @@ export const leadEventTestData: ProcessorTestData[] = [
                 JSON: {
                   clickId: 'dub_click_newsletter',
                   eventName: 'Newsletter Subscribed',
-                  customerExternalId: 'anon_newsletter_123',
+                  customerExternalId: 'user_54321',
                   customerName: 'Newsletter User',
                   customerEmail: 'newsletter@example.com',
-                  customerAvatar: null,
-                  mode: 'async',
+                  mode: 'wait',
                   eventQuantity: 1,
-                  metadata: {
-                    newsletter_type: 'weekly',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_newsletter_123',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(3),
           },

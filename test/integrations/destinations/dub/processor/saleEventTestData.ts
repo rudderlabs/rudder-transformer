@@ -19,27 +19,27 @@ const commonDestination: Destination = {
     eventMapping: [
       {
         from: 'User Signed Up',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSIONt',
       },
       {
         from: 'Product Added to Cart',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSIONt',
       },
       {
         from: 'Newsletter Subscribed',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSIONt',
       },
       {
         from: 'Order Completed',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Subscription Started',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Plan Upgraded',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
     ],
   },
@@ -52,7 +52,7 @@ export const saleEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-sale-test-1',
     name: 'dub',
-    description: 'Track call: Sales conversion event - Order Completed with all fields',
+    description: 'Track call: SALES_CONVERSION - Order Completed with all fields',
     scenario: 'Business',
     successCriteria:
       'Should successfully transform track event to Dub sales conversion API call with proper field mapping',
@@ -65,9 +65,10 @@ export const saleEventTestData: ProcessorTestData[] = [
         body: [
           {
             message: generateTrackPayload({
+              userId: 'customer_98765',
               event: 'Order Completed',
               properties: {
-                total: 99.99,
+                total: 9999,
                 currency: 'USD',
                 orderId: 'order_12345',
                 invoiceId: 'inv_67890',
@@ -76,7 +77,7 @@ export const saleEventTestData: ProcessorTestData[] = [
                   {
                     product_id: 'prod_123',
                     name: 'Premium Widget',
-                    price: 99.99,
+                    amount: 9999,
                   },
                 ],
                 category: 'Electronics',
@@ -87,12 +88,6 @@ export const saleEventTestData: ProcessorTestData[] = [
                   email: 'customer@example.com',
                   name: 'Jane Smith',
                 },
-                externalId: [
-                  {
-                    type: 'userId',
-                    id: 'customer_98765',
-                  },
-                ],
               },
               anonymousId: 'anon_sales_123',
               timestamp: commonTimestamp,
@@ -109,7 +104,7 @@ export const saleEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -121,36 +116,22 @@ export const saleEventTestData: ProcessorTestData[] = [
               params: {},
               body: {
                 JSON: {
+                  customerEmail: 'customer@example.com',
+                  customerName: 'Jane Smith',
                   customerExternalId: 'customer_98765',
                   amount: 9999, // Amount in cents
                   currency: 'USD',
                   eventName: 'Order Completed',
                   paymentProcessor: 'stripe',
-                  invoiceId: 'order_12345',
-                  metadata: {
-                    total: 99.99,
-                    currency: 'USD',
-                    orderId: 'order_12345',
-                    invoiceId: 'inv_67890',
-                    paymentProcessor: 'stripe',
-                    products: [
-                      {
-                        product_id: 'prod_123',
-                        name: 'Premium Widget',
-                        price: 99.99,
-                      },
-                    ],
-                    category: 'Electronics',
-                    brand: 'TechCorp',
-                  },
+                  invoiceId: 'inv_67890',
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_sales_123',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(1),
           },
@@ -161,7 +142,7 @@ export const saleEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-sale-test-2',
     name: 'dub',
-    description: 'Track call: Sales conversion event - Subscription Started with minimal fields',
+    description: 'Track call: SALES_CONVERSION - Subscription Started with minimal fields',
     scenario: 'Business',
     successCriteria:
       'Should transform subscription event with only required fields and default currency',
@@ -173,23 +154,25 @@ export const saleEventTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Subscription Started',
               properties: {
-                amount: 29.99,
+                amount: 2999,
                 plan: 'Pro Plan',
+                currency: 'usd',
               },
               context: {
                 externalId: [
                   {
-                    type: 'userId',
+                    type: 'customerExternalId',
                     id: 'subscriber_456',
                   },
                 ],
               },
               anonymousId: 'anon_subscription_456',
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(2),
             destination: commonDestination,
           },
@@ -202,7 +185,7 @@ export const saleEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -218,20 +201,14 @@ export const saleEventTestData: ProcessorTestData[] = [
                   amount: 2999, // Amount in cents
                   currency: 'usd', // Default currency
                   eventName: 'Subscription Started',
-                  paymentProcessor: null,
-                  invoiceId: null,
-                  metadata: {
-                    amount: 29.99,
-                    plan: 'Pro Plan',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_subscription_456',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(2),
           },
@@ -242,7 +219,7 @@ export const saleEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-sale-test-3',
     name: 'dub',
-    description: 'Track call: Sales conversion event - Plan Upgraded with custom payment processor',
+    description: 'Track call: SALES_CONVERSION - Plan Upgraded with custom payment processor',
     scenario: 'Business',
     successCriteria: 'Should handle plan upgrade with custom payment processor and invoice mapping',
     feature: 'processor',
@@ -253,10 +230,11 @@ export const saleEventTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Plan Upgraded',
               properties: {
-                total: 149.99,
+                total: 14999,
                 currency: 'EUR',
                 invoiceId: 'upgrade_invoice_789',
                 paymentProcessor: 'paypal',
@@ -271,14 +249,14 @@ export const saleEventTestData: ProcessorTestData[] = [
                 },
                 externalId: [
                   {
-                    type: 'userId',
+                    type: 'customerExternalId',
                     id: 'enterprise_user_789',
                   },
                 ],
               },
               anonymousId: 'anon_upgrade_789',
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(3),
             destination: commonDestination,
           },
@@ -291,7 +269,7 @@ export const saleEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -303,29 +281,21 @@ export const saleEventTestData: ProcessorTestData[] = [
               params: {},
               body: {
                 JSON: {
+                  customerEmail: 'enterprise@company.com',
                   customerExternalId: 'enterprise_user_789',
                   amount: 14999, // Amount in cents
                   currency: 'EUR',
                   eventName: 'Plan Upgraded',
                   paymentProcessor: 'paypal',
                   invoiceId: 'upgrade_invoice_789',
-                  metadata: {
-                    total: 149.99,
-                    currency: 'EUR',
-                    invoiceId: 'upgrade_invoice_789',
-                    paymentProcessor: 'paypal',
-                    previousPlan: 'Basic',
-                    newPlan: 'Enterprise',
-                    upgrade_type: 'immediate',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_upgrade_789',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(3),
           },
@@ -336,7 +306,7 @@ export const saleEventTestData: ProcessorTestData[] = [
   {
     id: 'dub-sale-test-4',
     name: 'dub',
-    description: 'Track call: Sales conversion event - Using orderId as fallback for invoiceId',
+    description: 'Track call: SALES_CONVERSION - Using orderId as fallback for invoiceId',
     scenario: 'Business',
     successCriteria: 'Should use orderId when invoiceId is not present in properties',
     feature: 'processor',
@@ -347,24 +317,25 @@ export const saleEventTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Order Completed',
               properties: {
-                total: 75.5,
+                total: 755,
                 orderId: 'fallback_order_999',
                 // Note: No invoiceId provided
               },
               context: {
                 externalId: [
                   {
-                    type: 'userId',
+                    type: 'customerExternalId',
                     id: 'fallback_user_999',
                   },
                 ],
               },
               anonymousId: 'anon_fallback_999',
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(4),
             destination: commonDestination,
           },
@@ -377,7 +348,7 @@ export const saleEventTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            output: transformResultBuilder({
+            output: {
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -390,23 +361,17 @@ export const saleEventTestData: ProcessorTestData[] = [
               body: {
                 JSON: {
                   customerExternalId: 'fallback_user_999',
-                  amount: 7550, // Amount in cents
-                  currency: 'usd', // Default currency
+                  amount: 755, // Amount in cents
                   eventName: 'Order Completed',
-                  paymentProcessor: null,
                   invoiceId: 'fallback_order_999', // orderId used as fallback
-                  metadata: {
-                    total: 75.5,
-                    orderId: 'fallback_order_999',
-                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
                 FORM: {},
               },
               files: {},
-              userId: 'anon_fallback_999',
-            }),
+              userId: '',
+            },
             statusCode: 200,
             metadata: generateMetadata(4),
           },

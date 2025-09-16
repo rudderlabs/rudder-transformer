@@ -243,6 +243,7 @@ export const generateTrackPayload: any = (parametersOverride: any) => {
     userId: parametersOverride.userId || 'default-user-id',
     channel: 'web',
     context: removeUndefinedAndNullValues({
+      ...parametersOverride.context,
       externalId: parametersOverride.externalId,
       os: { name: '', version: '1.12.3' },
       app: {

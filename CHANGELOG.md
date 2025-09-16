@@ -2,7 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-
 ## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.6...v1.108.0) (2025-09-16)
 
 
@@ -33,7 +32,6 @@ All notable changes to this project will be documented in this file. See [standa
 * update GitHub Actions checkout to v4 for compatibility ([#4632](https://github.com/rudderlabs/rudder-transformer/issues/4632)) ([b90af14](https://github.com/rudderlabs/rudder-transformer/commit/b90af1436742906c986d31d16576fd521403b974))
 * update TikTok Ads tests to include endpointPath ([feaf516](https://github.com/rudderlabs/rudder-transformer/commit/feaf516812b4c35c9b2a4acc5340ab1b8db884c4))
 
-=======
 ### [1.107.6](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.5...v1.107.6) (2025-09-16)
 
 

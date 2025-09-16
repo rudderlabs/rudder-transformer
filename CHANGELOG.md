@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.6...v1.108.0) (2025-09-16)
+
+
+### Features
+
+* add endpointPath to Facebook Pixel transformation ([#4626](https://github.com/rudderlabs/rudder-transformer/issues/4626)) ([5f41b32](https://github.com/rudderlabs/rudder-transformer/commit/5f41b322beb33765398e9655a781afcdff08c091))
+* add endpointPath to fb custom audience response config ([#4630](https://github.com/rudderlabs/rudder-transformer/issues/4630)) ([0d9e63c](https://github.com/rudderlabs/rudder-transformer/commit/0d9e63c8bbd4fd410c8d83662ed0b4ac0a77a459))
+* **af:** add endpoint path to responses ([#4631](https://github.com/rudderlabs/rudder-transformer/issues/4631)) ([d57091a](https://github.com/rudderlabs/rudder-transformer/commit/d57091ae554977357f7ef185c4e3ec3cc590280f))
+* **af:** update destination config and transform logic ([ed5cd21](https://github.com/rudderlabs/rudder-transformer/commit/ed5cd2120d35c5ff3dbedb821f8d4cb1d1f25114))
+* **af:** update destination config and transform logic ([1fd6bbc](https://github.com/rudderlabs/rudder-transformer/commit/1fd6bbcd8b6675e430b8c49cabbf02a28ae16b9b))
+* **ga4:** add endpointPath field to response and update tests ([#4628](https://github.com/rudderlabs/rudder-transformer/issues/4628)) ([475f0f9](https://github.com/rudderlabs/rudder-transformer/commit/475f0f94b1e9c620466ef9a05d51442511000f69))
+* introduce endpointPath for iterable ([#4599](https://github.com/rudderlabs/rudder-transformer/issues/4599)) ([840ba5c](https://github.com/rudderlabs/rudder-transformer/commit/840ba5cf0d2741416859d1f4783fa9190b9199d7))
+* **splitio:** add endpoint path details ([#4627](https://github.com/rudderlabs/rudder-transformer/issues/4627)) ([73c18df](https://github.com/rudderlabs/rudder-transformer/commit/73c18dfc91fa15c75be7d45f6fb48d82897ab87d))
+* update TikTok Ads to include endpointPath ([#4625](https://github.com/rudderlabs/rudder-transformer/issues/4625)) ([dbacf0a](https://github.com/rudderlabs/rudder-transformer/commit/dbacf0a970d339bdd5d30fac7dc6954afc1a91d2))
+
+
+### Bug Fixes
+
+* algolia proxy handler ([#4600](https://github.com/rudderlabs/rudder-transformer/issues/4600)) ([b2635bf](https://github.com/rudderlabs/rudder-transformer/commit/b2635bf5407ca63cf140515227ff1c8dcaee2a2f))
+* correct tag variable usage in UT deploy workflow ([63bd4e3](https://github.com/rudderlabs/rudder-transformer/commit/63bd4e33483f59760f80906406c425fc1683035e))
+* correct tag variable usage in UT deploy workflow ([#4623](https://github.com/rudderlabs/rudder-transformer/issues/4623)) ([6b30364](https://github.com/rudderlabs/rudder-transformer/commit/6b30364685d5c9a1b9291d92b639accc09de9591))
+* encoding behaviour for customerio endpoints ([d79b67d](https://github.com/rudderlabs/rudder-transformer/commit/d79b67d744e8090c57e47c1e12ede8e7ce44dc83))
+* encoding behaviour for customerio endpoints ([#4615](https://github.com/rudderlabs/rudder-transformer/issues/4615)) ([5f6bad6](https://github.com/rudderlabs/rudder-transformer/commit/5f6bad6e2f0aa1809b0adf4d197c112c66f4f65d))
+* fireHTTPStats to emit metrics about requests only ([#4635](https://github.com/rudderlabs/rudder-transformer/issues/4635)) ([5d8932a](https://github.com/rudderlabs/rudder-transformer/commit/5d8932adc5eee98a9a4c3a006b868efd46a998e2))
+* move encodePathParameter to start of the file ([7ebf21c](https://github.com/rudderlabs/rudder-transformer/commit/7ebf21cb95070ddee4b0952e5760a30c479b84b8))
+* transformBatch reporting metrics issue ([#4559](https://github.com/rudderlabs/rudder-transformer/issues/4559)) ([3192141](https://github.com/rudderlabs/rudder-transformer/commit/31921419836adfa44d3f67f8253aac7e7dda1525))
+* update GitHub Actions checkout to v4 for compatibility ([2fd8412](https://github.com/rudderlabs/rudder-transformer/commit/2fd84123d8a1355d8d532c2602166da81909bec2))
+* update GitHub Actions checkout to v4 for compatibility ([#4632](https://github.com/rudderlabs/rudder-transformer/issues/4632)) ([b90af14](https://github.com/rudderlabs/rudder-transformer/commit/b90af1436742906c986d31d16576fd521403b974))
+* update TikTok Ads tests to include endpointPath ([feaf516](https://github.com/rudderlabs/rudder-transformer/commit/feaf516812b4c35c9b2a4acc5340ab1b8db884c4))
+
 ### [1.107.6](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.5...v1.107.6) (2025-09-16)
 
 

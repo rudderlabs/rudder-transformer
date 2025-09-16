@@ -2,10 +2,10 @@ const { getMappingConfig } = require('../../util');
 
 const VERSION = 'v22.0';
 
-const ENDPOINT_PATH = '/events';
+const ENDPOINT_PATH = 'events';
 
 const getEndpointDetails = (pixelId, accessToken) => ({
-  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}${ENDPOINT_PATH}?access_token=${accessToken}`,
+  endpoint: `https://graph.facebook.com/${VERSION}/${pixelId}/${ENDPOINT_PATH}?access_token=${accessToken}`,
   path: ENDPOINT_PATH,
 });
 

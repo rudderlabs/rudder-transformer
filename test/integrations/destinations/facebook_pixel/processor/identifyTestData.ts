@@ -1,8 +1,6 @@
 import { Destination } from '../../../../../src/types';
 import { generateMetadata, transformResultBuilder, overrideDestination } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
-import { endpointDetails } from '../common';
-
 const commonDestination: Destination = {
   ID: '12335',
   Name: 'sample-destination',
@@ -175,8 +173,8 @@ export const identifyTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: endpointDetails.endpoint,
-              endpointPath: endpointDetails.path,
+              endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               FORM: {

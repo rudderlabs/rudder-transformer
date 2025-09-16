@@ -19,27 +19,27 @@ const commonDestination: Destination = {
     eventMapping: [
       {
         from: 'User Signed Up',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Product Added to Cart',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Newsletter Subscribed',
-        to: 'Lead Conversion Event',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Order Completed',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Subscription Started',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
       {
         from: 'Plan Upgraded',
-        to: 'Sales Conversion Event',
+        to: 'SALES_CONVERSION',
       },
     ],
   },
@@ -98,7 +98,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'API Key not found. Aborting',
+            error: 'API Key not found',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -106,6 +106,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(1),
@@ -157,7 +159,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'dubClickId is required for lead conversion events',
+            error: 'Missing required value from [\"context.dubClickId\"]',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -165,6 +167,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(2),
@@ -188,7 +192,8 @@ export const validationTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: generateTrackPayload({
+            message: {
+              type: 'track',
               event: 'Order Completed',
               properties: {
                 total: 99.99,
@@ -198,7 +203,7 @@ export const validationTestData: ProcessorTestData[] = [
               },
               // Missing anonymousId as fallback
               timestamp: commonTimestamp,
-            }),
+            },
             metadata: generateMetadata(3),
             destination: commonDestination,
           },
@@ -211,7 +216,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'customerExternalId is required for sales conversion events',
+            error: 'customerExternalId is required for SALES_CONVERSIONs',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -219,6 +224,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(3),
@@ -270,7 +277,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'Amount is required for sales conversion events',
+            error: 'Missing required value from [\"properties.total\",\"properties.amount\"]',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -278,6 +285,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(4),
@@ -328,7 +337,8 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'Event "Unmapped Event" is not mapped in destination configuration',
+            error:
+              'Event \"Unmapped Event\" is not mapped to any DUB event type. Aborting message.',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -336,6 +346,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(5),
@@ -387,7 +399,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'Amount must be a valid number for sales conversion events',
+            error: 'Missing required value from [\"properties.total\",\"properties.amount\"]',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -395,6 +407,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(6),
@@ -439,7 +453,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'Message type "identify" is not supported. Only track events are supported.',
+            error: 'Event type \"identify\" is  not supported',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -447,6 +461,8 @@ export const validationTestData: ProcessorTestData[] = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
             metadata: generateMetadata(7),

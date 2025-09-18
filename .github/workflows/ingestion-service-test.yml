@@ -9,10 +9,11 @@ on:
     secrets:
       PAT:
         required: true
-      DOCKERHUB_TOKEN:
-        required: true
       DOCKERHUB_USERNAME:
         required: true
+      DOCKERHUB_TOKEN:
+        required: true
+
 
 permissions:
   contents: read
@@ -22,7 +23,6 @@ jobs:
     name: ingestion-service-test
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
       TRANSFORMER_DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}

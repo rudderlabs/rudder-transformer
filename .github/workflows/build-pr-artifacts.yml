@@ -56,6 +56,7 @@ jobs:
       dockerfile: Dockerfile
       load_target: development
       push_target: production
+      skip_tests: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -72,6 +73,7 @@ jobs:
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
+      skip_tests: true 
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

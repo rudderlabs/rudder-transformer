@@ -19,7 +19,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/stale@v9.1.0
+      - uses: actions/stale@v10.0.0
         with:
           repo-token: ${{ secrets.PAT }}
           operations-per-run: 200

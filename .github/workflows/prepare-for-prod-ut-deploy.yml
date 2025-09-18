@@ -188,11 +188,17 @@ jobs:
             git add $customer
           done
 
-          git commit -m "chore: upgrade dedicated user transformers to $TAG_NAME"
-          git push -u origin dedicated-user-transformer-$TAG_NAME
+          # Check if there are any changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit for dedicated user transformers"
+            echo "DEDICATED_PR_URL=NA" >> $GITHUB_ENV
+          else
+            git commit -m "chore: upgrade dedicated user transformers to $TAG_NAME"
+            git push -u origin dedicated-user-transformer-$TAG_NAME
 
-          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
-          echo "DEDICATED_PR_URL=$PR_URL" >> $GITHUB_ENV
+            PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
+            echo "DEDICATED_PR_URL=$PR_URL" >> $GITHUB_ENV
+          fi
 
       - name: Notify Control Plane Team
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2.1.1

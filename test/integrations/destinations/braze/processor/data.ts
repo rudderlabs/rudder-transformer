@@ -11,7 +11,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -136,7 +136,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -226,7 +226,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -345,7 +345,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -475,7 +475,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -604,7 +604,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -725,7 +725,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -871,7 +871,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1144,7 +1144,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1245,7 +1245,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1316,7 +1316,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1438,7 +1438,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1620,7 +1620,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1802,7 +1802,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2035,7 +2035,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2254,7 +2254,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2386,7 +2386,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2518,7 +2518,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2625,7 +2625,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2709,7 +2709,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2793,7 +2793,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2929,7 +2929,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3151,7 +3151,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3274,7 +3274,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3347,7 +3347,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3480,7 +3480,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3673,7 +3673,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3752,7 +3752,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3926,7 +3926,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4074,7 +4074,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4242,7 +4242,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4343,7 +4343,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4379,6 +4379,184 @@ export const data = [
               implementation: 'native',
               feature: 'processor',
             },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'braze',
+    description: 'Test to check if nested array operations are transforming to $ operations',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                restApiKey: secret1,
+                prefixProperties: true,
+                useNativeSDK: false,
+                enableNestedArrayOperations: true,
+                dataCenter: 'eu-01',
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.5',
+                },
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  city: 'Disney',
+                  country: 'USA',
+                  email: 'mickey@disney.com',
+                  firstName: 'Mickey',
+                  gender: 'woman',
+                  pets: {
+                    add: [
+                      {
+                        age: 27,
+                        id: 1,
+                        name: 'abc',
+                      },
+                    ],
+                    remove: [
+                      {
+                        id: 3,
+                        identifier: 'id',
+                      },
+                      {
+                        id: 4,
+                        identifier: 'id',
+                      },
+                    ],
+                  },
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              event: 'braze revenue test',
+              integrations: {
+                All: true,
+              },
+              messageId: '89140820-c187-4e62-9599-3c633771ee58',
+              originalTimestamp: '2023-03-14T02:06:26.501+05:30',
+              properties: {
+                currency: 'USD',
+                mergeObjectsUpdateOperation: false,
+                revenue: 50,
+              },
+              receivedAt: '2023-03-14T02:06:22.433+05:30',
+              request_ip: '[::1]',
+              rudderId: '2686e376-7e08-42f7-8edc-ff67eb238a91',
+              sentAt: '2023-03-14T02:06:26.501+05:30',
+              timestamp: '2023-03-14T02:06:22.432+05:30',
+              type: 'track',
+              userId: 'finalUserTestCA',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: authHeader1,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  partner: 'RudderStack',
+                  attributes: [
+                    {
+                      email: 'mickey@disney.com',
+                      first_name: 'Mickey',
+                      gender: 'F',
+                      city: 'Disney',
+                      country: 'USA',
+                      pets: {
+                        $remove: [
+                          {
+                            $identifier_key: 'id',
+                            $identifier_value: 3,
+                          },
+                          {
+                            $identifier_key: 'id',
+                            $identifier_value: 4,
+                          },
+                        ],
+                        $add: [
+                          {
+                            age: 27,
+                            id: 1,
+                            name: 'abc',
+                          },
+                        ],
+                      },
+                      external_id: 'finalUserTestCA',
+                    },
+                  ],
+                  events: [
+                    {
+                      name: 'braze revenue test',
+                      time: '2023-03-14T02:06:22.432+05:30',
+                      properties: {
+                        mergeObjectsUpdateOperation: false,
+                        revenue: 50,
+                        currency: 'USD',
+                      },
+                      external_id: 'finalUserTestCA',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'finalUserTestCA',
+            },
+            statusCode: 200,
           },
         ],
       },

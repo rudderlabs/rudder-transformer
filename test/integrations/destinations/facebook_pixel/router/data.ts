@@ -1,5 +1,3 @@
-import { endpointDetails } from '../common';
-
 export const mockFns = (_) => {
   // @ts-ignore
   jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
@@ -126,8 +124,8 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: endpointDetails.endpoint,
-                endpointPath: endpointDetails.path,
+                endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+                endpointPath: 'events',
                 headers: {},
                 params: {},
                 body: {
@@ -174,8 +172,8 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: endpointDetails.endpoint,
-                endpointPath: endpointDetails.path,
+                endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+                endpointPath: 'events',
                 headers: {},
                 params: {},
                 body: {

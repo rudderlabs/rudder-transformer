@@ -1,4 +1,3 @@
-import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { statTags, testParams2 as testParams } from './business';
@@ -18,7 +17,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
@@ -63,7 +62,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'htmlResponse',
           },

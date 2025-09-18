@@ -95,6 +95,7 @@ export const trackTestData: ProcessorTestData[] = [
                 revenue: 3000,
                 currency: 'USD',
               },
+              messageId: 'someTrackMessageId',
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
@@ -117,6 +118,7 @@ export const trackTestData: ProcessorTestData[] = [
                 data: {
                   type: 'event',
                   attributes: {
+                    unique_id: 'someTrackMessageId',
                     metric: {
                       data: {
                         type: 'metric',
@@ -178,6 +180,7 @@ export const trackTestData: ProcessorTestData[] = [
                 },
               },
               properties: commonProps,
+              messageId: 'someTrackMessageId',
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
@@ -200,6 +203,7 @@ export const trackTestData: ProcessorTestData[] = [
                 data: {
                   type: 'event',
                   attributes: {
+                    unique_id: 'someTrackMessageId',
                     metric: {
                       data: {
                         type: 'metric',
@@ -261,6 +265,7 @@ export const trackTestData: ProcessorTestData[] = [
                 },
               },
               properties: { ...commonProps, value: { price: 9.99 } },
+              messageId: 'someTrackMessageId',
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),

@@ -47,7 +47,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -70,7 +70,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -126,7 +126,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -191,7 +191,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -236,7 +236,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -254,7 +254,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -285,7 +285,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -321,7 +321,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -346,7 +346,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -375,7 +375,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -405,7 +405,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -478,7 +478,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -539,7 +539,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -570,7 +570,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -633,7 +633,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader1,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
       },
       method: 'POST',
       params: { destination: 'google_adwords_offline_conversion' },
@@ -696,7 +696,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader2,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',
@@ -715,7 +715,7 @@ export const networkCallsData = [
       headers: {
         Authorization: authHeader2,
         'Content-Type': 'application/json',
-        'developer-token': secret3,
+        'developer-token': 'test-developer-token-12345',
         'login-customer-id': 'logincustomerid',
       },
       method: 'POST',

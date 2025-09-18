@@ -9,7 +9,6 @@ import { ProxyV1TestData } from '../../../testTypes';
 const headers = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': 'ijkl91011',
   'login-customer-id': '0987654321',
 };
 
@@ -17,7 +16,6 @@ const params = {
   event: 'Product Added',
   customerId: '1234567899',
   destination: 'google_adwords_enhanced_conversions',
-  developerToken: 'ijkl91011',
   accessToken: 'google_adwords_enhanced_conversions1',
   loginCustomerId: '0987654321',
   subAccount: true,
@@ -138,7 +136,6 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           ...commonRequestParameters,
           params: {
-            developerToken: 'ijkl91011',
             accessToken: 'google_adwords_enhanced_conversions1',
             loginCustomerId: '0987654321',
             event: 'Product Added',
@@ -285,7 +282,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             params: {
-              developerToken: 'ijkl91011',
               accessToken: 'google_adwords_enhanced_conversions1',
               loginCustomerId: 'wrongLoginCustomerId',
               event: 'Product Added',
@@ -376,7 +372,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             params: {
-              developerToken: 'ijkl91011',
               accessToken: 'google_adwords_enhanced_conversions1',
               event: 'Invalid Conversion',
               customerId: 'validCustomerId',
@@ -443,7 +438,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           {
             ...commonRequestParameters,
             params: {
-              developerToken: 'ijkl91011',
               accessToken: 'google_adwords_enhanced_conversions1',
               event: 'Wrong Conversion',
               customerId: '1234567888',

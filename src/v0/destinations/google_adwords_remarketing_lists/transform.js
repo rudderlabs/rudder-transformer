@@ -7,7 +7,6 @@ const logger = require('../../../logger');
 const {
   returnArrayOfSubarrays,
   constructPayload,
-  getValueFromMessage,
   simpleProcessRouterDest,
   getAccessToken,
 } = require('../../util');
@@ -118,7 +117,6 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     const accessToken = getAccessToken(metadata, 'access_token');
-    const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
     Object.values(createdPayload).forEach((data) => {
       const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
@@ -126,7 +124,6 @@ const processEvent = async (metadata, message, destination) => {
       response.push(
         responseBuilder(
           accessToken,
-          developerToken,
           data,
           destination,
           getOperationAudienceId(audienceId, message),

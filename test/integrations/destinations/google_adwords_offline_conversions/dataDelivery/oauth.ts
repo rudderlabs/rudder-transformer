@@ -11,7 +11,6 @@ const API_VERSION = 'v19';
 const commonHeaders = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': secret3,
   'login-customer-id': 'logincustomerid',
 };
 
@@ -281,7 +280,7 @@ export const v1oauthScenarios = [
             headers: {
               Authorization: authHeader2,
               'Content-Type': 'application/json',
-              'developer-token': secret3,
+              'developer-token': 'test-developer-token-12345',
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
@@ -352,7 +351,7 @@ export const v1oauthScenarios = [
             headers: {
               Authorization: authHeader2,
               'Content-Type': 'application/json',
-              'developer-token': secret3,
+              'developer-token': 'test-developer-token-12345',
               'login-customer-id': 'logincustomerid',
             },
             endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,

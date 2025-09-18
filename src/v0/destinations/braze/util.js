@@ -156,11 +156,15 @@ const CustomAttributeOperationUtil = {
       opsResultArray.push(myObj);
     }
     data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
+    // Delete the original RS-style operator to prevent duplication
+    delete traits[key][CustomAttributeOperationTypes.REMOVE];
   },
 
   customAttributeAddOperation(key, data, traits) {
     data[key][`$${CustomAttributeOperationTypes.ADD}`] =
       traits[key][CustomAttributeOperationTypes.ADD];
+    // Delete the original RS-style operator to prevent duplication
+    delete traits[key][CustomAttributeOperationTypes.ADD];
   },
 };
 

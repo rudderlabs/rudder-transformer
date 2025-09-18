@@ -11,6 +11,8 @@ on:
         required: true
       DOCKERHUB_TOKEN:
         required: true
+      DOCKERHUB_USERNAME:
+        required: true
 
 permissions:
   contents: read
@@ -22,7 +24,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
-      TRANSFORMER_DOCKER_USERNAME: rudderlabs
+      TRANSFORMER_DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
       - name: Checkout

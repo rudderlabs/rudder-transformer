@@ -2,8 +2,9 @@ import get from 'get-value';
 import sha256 from 'sha256';
 import { InstrumentationError, ConfigurationError } from '@rudderstack/integrations-lib';
 import moment from 'moment/moment';
-import logger from '../../../logger';
 
+import logger from '../../../logger';
+import { RudderMessage } from '../../../types';
 import {
   isDefinedAndNotNull,
   getFieldValueFromMessage,
@@ -11,6 +12,7 @@ import {
   getValidDynamicFormConfig,
 } from '../../util';
 import { JSON_MIME_TYPE } from '../../util/constant';
+
 import { ENDPOINT } from './config';
 import {
   SnapchatDestination,
@@ -19,7 +21,6 @@ import {
   EventConversionType,
   SnapchatV2BatchedRequest,
 } from './types';
-import { RudderMessage } from '../../../types';
 
 /**
  * Mapping of channel types to Snapchat conversion types

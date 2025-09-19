@@ -1,9 +1,11 @@
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import { get } from 'lodash';
 import moment from 'moment-timezone';
-import { MAX_BATCH_SIZE } from './config';
-import { isAppleFamily, isObject, removeUndefinedAndNullValues, isEmptyObject } from '../../util';
+
 import { Metadata, RudderMessage } from '../../../types';
+import { isAppleFamily, isObject, removeUndefinedAndNullValues, isEmptyObject } from '../../util';
+
+import { MAX_BATCH_SIZE } from './config';
 import {
   SnapchatV3ProcessedEvent,
   SnapchatDestination,

@@ -1,7 +1,8 @@
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { EventType } from '../../../constants';
 
+import { EventType } from '../../../constants';
+import { RouterTransformationResponse, RudderMessage } from '../../../types';
 import {
   defaultPostRequestConfig,
   constructPayload,
@@ -13,6 +14,8 @@ import {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } from '../../util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+
 import {
   ENDPOINT,
   eventNameMapping,
@@ -34,7 +37,6 @@ import {
   validateEventConfiguration,
   getEventTimestamp,
 } from './util';
-import { JSON_MIME_TYPE } from '../../util/constant';
 import { processV3, processRouterDest as processRouterV3 } from './transformV3';
 import {
   SnapchatDestination,
@@ -48,7 +50,6 @@ import {
   ApiVersionValue,
   MappingConfig,
 } from './types';
-import { RouterTransformationResponse, RudderMessage } from '../../../types';
 
 /**
  * Builds a response object for the Snapchat V2 API

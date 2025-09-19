@@ -1,8 +1,9 @@
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import validator from 'validator';
-import { EventType } from '../../../constants';
 
+import { EventType } from '../../../constants';
+import { RouterTransformationResponse, RudderMessage } from '../../../types';
 import {
   defaultPostRequestConfig,
   constructPayload,
@@ -12,6 +13,8 @@ import {
   handleRtTfSingleEventError,
   getEventType,
 } from '../../util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+
 import {
   ENDPOINT,
   eventNameMapping,
@@ -30,7 +33,6 @@ import {
   validateEventConfiguration,
   getEventTimestamp,
 } from './util';
-import { JSON_MIME_TYPE } from '../../util/constant';
 import { batchResponseBuilder, getExtInfo, productsToContentsMapping } from './utilsV3';
 import {
   SnapchatDestination,
@@ -45,7 +47,6 @@ import {
   SnapchatV3EventType,
   SnapchatV3EventConfigMap,
 } from './types';
-import { RouterTransformationResponse, RudderMessage } from '../../../types';
 
 /**
  * Builds a response object for the Snapchat V3 API
@@ -219,7 +220,7 @@ const addSpecificEventDetails = (
  * @param eventType - The type of event
  * @returns The mapping configuration for the specified event type
  */
-const getEventConfig = (eventType: SnapchatV3EventType): MappingConfig => {
+const getEventConfig = (eventType: SnapchatV3EventType | string): MappingConfig => {
   const configMap: SnapchatV3EventConfigMap = {
     products_searched: mappingConfigV3[ConfigCategoryV3.PRODUCTS_SEARCHED.name],
     product_list_viewed: mappingConfigV3[ConfigCategoryV3.PRODUCT_LIST_VIEWED.name],

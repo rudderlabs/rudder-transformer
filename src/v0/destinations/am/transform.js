@@ -1,6 +1,7 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
+const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
 const get = require('get-value');
 const set = require('set-value');
@@ -26,9 +27,9 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
-  simpleProcessRouterDest,
   isValidInteger,
   handleRtTfSingleEventError,
+  batchMultiplexedEvents,
 } = require('../../util');
 const {
   BASE_URL,
@@ -844,7 +845,7 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
     ? incomingMessageEvent[0]
     : incomingMessageEvent;
   const userId = incomingMessageEvent.user_id;
-
+  // https://amplitude.com/docs/apis/analytics/http-v2#device-ids-and-user-ids-minimum-length
   /* delete the userId as it is less than 5 as AM is giving 400
   that is not a documented behviour where it states if either deviceid or userid is present
   batch request won't return 400
@@ -954,9 +955,82 @@ const batch = (destEvents) => {
   return respList;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
+  const maxBatchSize = 1000;
+  const respList = [];
+  const batchedTransformedEvents = batchMultiplexedEvents(inputs, maxBatchSize);
+  batchedTransformedEvents.forEach((batchedEvent) => {
+    const { events, metadata, destination } = batchedEvent;
+    const batchEventResponse = defaultBatchRequestConfig();
+    batchEventResponse.destination = destination;
+    batchEventResponse.metadata = metadata;
+    const BATCH_ENDPOINT = batchEndpoint(destination.Config);
+    batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
+    batchEventResponse.batched = false;
+    batchEventResponse.statusCode = 200;
+    batchEventResponse.batchedRequest.body.JSON = events[0].body.JSON;
+    batchEventResponse.batchedRequest.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+    };
+    for (let i = 1; i < events.length; i += 1) {
+      batchEventResponse.batchedRequest.body.JSON.events.push(...events[i].body.JSON.events);
+    }
+    respList.push(batchEventResponse);
+  });
   return respList;
+};
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const groupedInputs = lodash.groupBy(
+    inputs,
+    (input) => input.message?.userId || input.message.anonymousId,
+  );
+  const errorRespList = [];
+  const batchRespList = [];
+
+  Object.values(groupedInputs).forEach((groupedInput) => {
+    const transformedInputsCannotDoBatching = [];
+    const transformedInputsCanDoBatching = [];
+    groupedInput.forEach((input) => {
+      try {
+        const transformedEvent = process(input);
+        const firstTransformedEvent = getFirstEvent(transformedEvent);
+        const jsonBody = get(firstTransformedEvent, 'body.JSON');
+        const messageEvent = get(firstTransformedEvent, EVENTS_KEY_PATH);
+        const userId = messageEvent[0]?.user_id ?? undefined;
+        const deviceId = messageEvent[0]?.device_id ?? undefined;
+
+        if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
+          transformedInputsCannotDoBatching.push({
+            message: transformedEvent,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        } else {
+          transformedInputsCanDoBatching.push({
+            message: transformedEvent,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    });
+    batchRespList.push(
+      ...batchEventsBasedOnUserIdOrAnonymousId(transformedInputsCanDoBatching.flat()),
+    );
+    transformedInputsCannotDoBatching.forEach((input) => {
+      const response = defaultBatchRequestConfig();
+      response.batchedRequest = input.message;
+      response.metadata = [input.metadata];
+      response.destination = input.destination;
+      response.batched = false;
+      batchRespList.push(response);
+    });
+  });
+  return [...batchRespList, ...errorRespList];
 };
 
 const responseTransform = (input) => ({

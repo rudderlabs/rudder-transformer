@@ -15,7 +15,7 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
 } = require('../../util');
-const stats = require('../../../util/stats');
+const integrationMetrics = require('../../../util/integrationMetrics');
 
 const config = require('./config');
 
@@ -211,19 +211,28 @@ const prepareDataField = (
     });
 
     if (nullUserData) {
-      stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
+      // Track data quality issues using generic integration metrics
+      integrationMetrics.dataQualityIssue(
         destinationId,
-        nullFields: userSchema,
-      });
+        'fb_custom_audience',
+        'fb_custom_audience',
+        'missing_fields',
+        'user_data',
+      );
     }
 
     data.push(dataElement);
   });
 
   if (nullEvent) {
-    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
+    // Track data quality issues using generic integration metrics
+    integrationMetrics.dataQualityIssue(
       destinationId,
-    });
+      'fb_custom_audience',
+      'fb_custom_audience',
+      'missing_fields',
+      'all_users_data',
+    );
   }
 
   return data;

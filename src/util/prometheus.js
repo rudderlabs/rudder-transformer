@@ -657,18 +657,59 @@ class Prometheus {
           500, 600, 700, 800, 900, 1000,
         ],
       },
+      // Generic integration data quality metrics
       {
-        name: 'fb_custom_audience_event_having_all_null_field_values_for_a_user',
-        help: 'fbcustomaudience event having all null field values for a user',
+        name: 'integration_data_quality_issues',
+        help: 'Data quality issues across integrations',
         type: 'counter',
-        labelNames: ['destinationId', 'nullFields'],
+        labelNames: ['destinationId', 'destType', 'destination', 'issue_type', 'data_category'],
       },
       {
-        name: 'fb_custom_audience_event_having_all_null_field_values_for_all_users',
-        help: 'fbcustomaudience event having all null field values for all users',
+        name: 'integration_missing_data_count',
+        help: 'Count of missing data occurrences across integrations',
         type: 'counter',
-        labelNames: ['destinationId'],
+        labelNames: [
+          'destinationId',
+          'destType',
+          'destination',
+          'missing_field_type',
+          'data_category',
+        ],
       },
+      // Generic integration operation metrics
+      {
+        name: 'integration_operation_failure_count',
+        help: 'Operation failures across integrations',
+        type: 'counter',
+        labelNames: [
+          'destinationId',
+          'destType',
+          'destination',
+          'operation_type',
+          'error_category',
+        ],
+      },
+      {
+        name: 'integration_operation_success_count',
+        help: 'Operation successes across integrations',
+        type: 'counter',
+        labelNames: ['destinationId', 'destType', 'destination', 'operation_type'],
+      },
+      // Generic integration batch and performance metrics
+      {
+        name: 'integration_batch_size',
+        help: 'Batch sizes across integrations',
+        type: 'gauge',
+        labelNames: ['destinationId', 'destType', 'destination', 'batch_type'],
+      },
+      {
+        name: 'integration_operation_latency',
+        help: 'Operation latency across integrations',
+        type: 'histogram',
+        labelNames: ['destinationId', 'destType', 'destination', 'operation_type'],
+        buckets: [1, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000],
+      },
+
       {
         name: 'http_request_size',
         help: 'http_request_size',

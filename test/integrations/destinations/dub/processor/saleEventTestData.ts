@@ -78,6 +78,7 @@ export const saleEventTestData: ProcessorTestData[] = [
                     product_id: 'prod_123',
                     name: 'Premium Widget',
                     amount: 9999,
+                    quantity: 1,
                   },
                 ],
                 category: 'Electronics',

@@ -1,3 +1,9 @@
+
+# run global hook if exists
+if [ -x "$HOME/.git-hooks/pre-commit.d/gitleaks" ]; then
+  "$HOME/.git-hooks/pre-commit.d/gitleaks"
+fi
+
 # Get changed files in test/integrations/sources/
 changed_sources=$(git diff --cached --name-only | grep "test/integrations/sources/" | cut -d'/' -f4 | sort -u)
 

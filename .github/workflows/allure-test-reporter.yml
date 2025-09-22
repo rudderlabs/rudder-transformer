@@ -30,7 +30,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - name: Run Tests and Generate Report
         run: |

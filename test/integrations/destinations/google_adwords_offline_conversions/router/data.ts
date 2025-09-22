@@ -491,6 +491,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+                endpointPath: 'uploadClickConversions',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -626,6 +627,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
+                endpointPath: 'uploadCallConversions',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -742,6 +744,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  endpointPath: 'offlineUserDataJobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -823,6 +826,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833:uploadCallConversions`,
+                  endpointPath: 'uploadCallConversions',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -1178,6 +1182,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234556775/offlineUserDataJobs`,
+                endpointPath: 'offlineUserDataJobs',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 const { mergeCustomAttributes, getCommonDestinationEndpoint } = require('./transform');
-const { endpointEU, endpointUS, endpointIND } = require('./config');
+const { endpoints, endpointPaths } = require('./config');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 describe('mergeCustomAttributes', () => {
@@ -35,40 +35,109 @@ describe('mergeCustomAttributes', () => {
 });
 
 describe('getCommonDestinationEndpoint', () => {
-  test('should return EU endpoint', () => {
-    const result = getCommonDestinationEndpoint({
-      apiId: 'testApiId',
-      region: 'EU',
-      category: { type: 'identify' },
-    });
-    expect(result).toBe(endpointEU.identify + 'testApiId');
+  test.each([
+    {
+      description: 'should return EU endpoint for identify',
+      input: { apiId: 'testApiId', region: 'EU', category: { type: 'identify' } },
+      expectedEndpoint: endpoints.EU.identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return EU endpoint for track',
+      input: { apiId: 'testApiId', region: 'EU', category: { type: 'track' } },
+      expectedEndpoint: endpoints.EU.track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return EU endpoint for device',
+      input: { apiId: 'testApiId', region: 'EU', category: { type: 'device' } },
+      expectedEndpoint: endpoints.EU.device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return EU endpoint for alias',
+      input: { apiId: 'testApiId', region: 'EU', category: { type: 'alias' } },
+      expectedEndpoint: endpoints.EU.alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+    {
+      description: 'should return US endpoint for identify',
+      input: { apiId: 'testApiId', region: 'US', category: { type: 'identify' } },
+      expectedEndpoint: endpoints.US.identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return US endpoint for track',
+      input: { apiId: 'testApiId', region: 'US', category: { type: 'track' } },
+      expectedEndpoint: endpoints.US.track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return US endpoint for device',
+      input: { apiId: 'testApiId', region: 'US', category: { type: 'device' } },
+      expectedEndpoint: endpoints.US.device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return US endpoint for alias',
+      input: { apiId: 'testApiId', region: 'US', category: { type: 'alias' } },
+      expectedEndpoint: endpoints.US.alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+    {
+      description: 'should return IND endpoint for identify',
+      input: { apiId: 'testApiId', region: 'IND', category: { type: 'identify' } },
+      expectedEndpoint: endpoints.IND.identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return IND endpoint for track',
+      input: { apiId: 'testApiId', region: 'IND', category: { type: 'track' } },
+      expectedEndpoint: endpoints.IND.track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return IND endpoint for device',
+      input: { apiId: 'testApiId', region: 'IND', category: { type: 'device' } },
+      expectedEndpoint: endpoints.IND.device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return IND endpoint for alias',
+      input: { apiId: 'testApiId', region: 'IND', category: { type: 'alias' } },
+      expectedEndpoint: endpoints.IND.alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+  ])('$description', ({ input, expectedEndpoint, expectedPath }) => {
+    const result = getCommonDestinationEndpoint(input);
+    expect(result.endpoint).toBe(expectedEndpoint);
+    expect(result.path).toBe(expectedPath);
   });
 
-  test('should return US endpoint', () => {
-    const result = getCommonDestinationEndpoint({
-      apiId: 'testApiId',
-      region: 'US',
-      category: { type: 'track' },
-    });
-    expect(result).toBe(endpointUS.track + 'testApiId');
-  });
-
-  test('should return IND endpoint', () => {
-    const result = getCommonDestinationEndpoint({
-      apiId: 'testApiId',
-      region: 'IND',
-      category: { type: 'device' },
-    });
-    expect(result).toBe(endpointIND.device + 'testApiId');
-  });
-
-  test('should throw ConfigurationError for invalid region', () => {
+  test.each([
+    {
+      description: 'should throw ConfigurationError for invalid region',
+      input: { apiId: 'testApiId', region: 'INVALID', category: { type: 'identify' } },
+      expectedError: new ConfigurationError('The region is not valid'),
+    },
+    {
+      description: 'should throw ConfigurationError for null region',
+      input: { apiId: 'testApiId', region: null, category: { type: 'identify' } },
+      expectedError: new ConfigurationError('The region is not valid'),
+    },
+    {
+      description: 'should throw ConfigurationError for undefined region',
+      input: { apiId: 'testApiId', region: undefined, category: { type: 'identify' } },
+      expectedError: new ConfigurationError('The region is not valid'),
+    },
+    {
+      description: 'should throw ConfigurationError for empty string region',
+      input: { apiId: 'testApiId', region: '', category: { type: 'identify' } },
+      expectedError: new ConfigurationError('The region is not valid'),
+    },
+  ])('$description', ({ input, expectedError }) => {
     expect(() => {
-      getCommonDestinationEndpoint({
-        apiId: 'testApiId',
-        region: 'INVALID',
-        category: { type: 'identify' },
-      });
-    }).toThrow(new ConfigurationError('The region is not valid'));
+      getCommonDestinationEndpoint(input);
+    }).toThrow(expectedError);
   });
 });

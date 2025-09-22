@@ -19,7 +19,6 @@ jobs:
   ingestion-service-test:
     name: ingestion-service-test
     runs-on: ubuntu-latest
-    continue-on-error: true
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}
@@ -48,6 +47,7 @@ jobs:
           cd rudder-ingestion-svc
           go mod download
       - name: 'Run tests'
+        continue-on-error: true
         run: |
           cd rudder-ingestion-svc
           pwd

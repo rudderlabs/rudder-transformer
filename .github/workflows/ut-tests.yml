@@ -39,7 +39,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - name: Create Kind cluster
         run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml

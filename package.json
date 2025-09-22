@@ -49,7 +49,7 @@
     "test:ut:integration:ci": "npm run test:ut:integration -- --expand --maxWorkers=50%",
     "pre-commit": "npm run test:ts:silent && npm run test:js:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
-    "prepare": "node ./scripts/skipPrepareScript.js || husky install",
+    "prepare": "npm --prefix ./node_modules/isolated-vm run rebuild",
     "release": "npx standard-version",
     "release:github": "echo '⚠️  DEPRECATED: Use release:github:modern instead' && DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "release:github:modern": "node scripts/create-github-release.js",

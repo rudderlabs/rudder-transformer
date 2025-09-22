@@ -1,27 +1,33 @@
 const { getMappingConfig } = require('../../util');
 
-const endpointUS = {
-  // track properties, | Track
-  identify: `https://api-01.moengage.com/v1/customer/`,
-  // identify a user| Identify
-  track: `https://api-01.moengage.com/v1/event/`,
-  // identify a user| Device
-  device: `https://api-01.moengage.com/v1/device/`,
-  alias: `https://api-01.moengage.com/v1/customer/merge?app_id=`,
+const endpointPaths = {
+  identify: 'customer',
+  track: 'event',
+  device: 'device',
+  alias: 'customer/merge',
 };
-
-const endpointEU = {
-  identify: `https://api-02.moengage.com/v1/customer/`,
-  track: `https://api-02.moengage.com/v1/event/`,
-  device: `https://api-02.moengage.com/v1/device/`,
-  alias: `https://api-02.moengage.com/v1/customer/merge?app_id=`,
-};
-
-const endpointIND = {
-  identify: `https://api-03.moengage.com/v1/customer/`,
-  track: `https://api-03.moengage.com/v1/event/`,
-  device: `https://api-03.moengage.com/v1/device/`,
-  alias: `https://api-03.moengage.com/v1/customer/merge?app_id=`,
+const endpoints = {
+  US: {
+    // track properties, | Track
+    identify: `https://api-01.moengage.com/v1/${endpointPaths.identify}/`,
+    // identify a user| Identify
+    track: `https://api-01.moengage.com/v1/${endpointPaths.track}/`,
+    // identify a user| Device
+    device: `https://api-01.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-01.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
+  EU: {
+    identify: `https://api-02.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-02.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-02.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-02.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
+  IND: {
+    identify: `https://api-03.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-03.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-03.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-03.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
 };
 
 // moengage supports object types, we added a new mapping for identify, track and device to support object data type
@@ -61,7 +67,6 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  endpointEU,
-  endpointIND,
-  endpointUS,
+  endpointPaths,
+  endpoints,
 };

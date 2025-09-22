@@ -300,6 +300,7 @@ const generateBatchedPayloadForArray = (events, reqMetadata) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const firstEvent = events[0];
   batchedRequest.endpoint = firstEvent.endpoint;
+  batchedRequest.endpointPath = firstEvent.endpointPath;
   batchedRequest.headers = firstEvent.headers;
   batchedRequest.params = firstEvent.params;
 

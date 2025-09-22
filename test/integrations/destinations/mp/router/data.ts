@@ -441,6 +441,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.mixpanel.com/import/',
+                endpointPath: 'import',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader2,
@@ -485,7 +486,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -515,6 +516,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -542,6 +544,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/import/',
+                  endpointPath: 'import',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader2,
@@ -594,7 +597,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -624,6 +627,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -700,6 +704,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/import/',
+                  endpointPath: 'import',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader2,
@@ -733,7 +738,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -763,6 +768,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -789,6 +795,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/groups/',
+                  endpointPath: 'groups',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -815,7 +822,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -853,7 +860,7 @@ export const data = [
                 module: 'destination',
               },
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1317,6 +1324,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.mixpanel.com/import/',
+                endpointPath: 'import',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader2,
@@ -1360,7 +1368,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1390,6 +1398,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -1417,6 +1426,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/import/',
+                  endpointPath: 'import',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader2,
@@ -1468,7 +1478,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1498,6 +1508,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -1574,6 +1585,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/import/',
+                  endpointPath: 'import',
                   headers: {
                     'Content-Type': 'application/json',
                     Authorization: authHeader2,
@@ -1606,7 +1618,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1636,6 +1648,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/engage/',
+                  endpointPath: 'engage',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -1662,6 +1675,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.mixpanel.com/groups/',
+                  endpointPath: 'groups',
                   headers: {
                     'Content-Type': 'application/json',
                   },
@@ -1688,7 +1702,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,
@@ -1726,7 +1740,7 @@ export const data = [
                 module: 'destination',
               },
               destination: {
-                  hasDynamicConfig: false,
+                hasDynamicConfig: false,
                 Config: {
                   apiKey: secret1,
                   apiSecret: secret3,

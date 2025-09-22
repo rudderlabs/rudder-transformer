@@ -59,6 +59,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api.eu.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 1,
@@ -169,6 +170,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api.eu.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 1,
@@ -224,6 +226,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 2,
@@ -279,6 +282,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 3,
@@ -337,6 +341,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 4,
@@ -395,6 +400,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 5,
@@ -438,6 +444,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/groupidentify',
+                endpointPath: 'groupidentify',
               },
               metadata: {
                 jobId: 6,
@@ -475,6 +482,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/usermap',
+                endpointPath: 'usermap',
               },
               metadata: {
                 jobId: 7,
@@ -548,6 +556,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api.eu.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
             },
             metadata: [
               {
@@ -593,6 +602,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
             },
             metadata: [
               {
@@ -632,6 +642,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
             },
             metadata: [
               {
@@ -743,6 +754,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/batch',
+              endpointPath: 'batch',
             },
             metadata: [
               {
@@ -835,6 +847,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 1,
@@ -888,6 +901,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 2,
@@ -941,6 +955,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 3,
@@ -997,6 +1012,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 4,
@@ -1053,6 +1069,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 5,
@@ -1096,6 +1113,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/groupidentify',
+                endpointPath: 'groupidentify',
               },
               metadata: {
                 jobId: 6,
@@ -1133,6 +1151,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/usermap',
+                endpointPath: 'usermap',
               },
               metadata: {
                 jobId: 7,
@@ -1204,6 +1223,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
             },
             metadata: [
               {
@@ -1249,6 +1269,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
             },
             metadata: [
               {
@@ -1288,6 +1309,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
             },
             metadata: [
               {
@@ -1399,6 +1421,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/batch',
+              endpointPath: 'batch',
             },
             metadata: [
               {
@@ -1484,6 +1507,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 userId: '90ca6da0-292e-4e79-9880-f8009e0ae4a3',
@@ -1575,6 +1599,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 userId: '90ca6da0-292e-4e79-9880-f8009e0ae4a3',
@@ -1666,6 +1691,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 userId: '90ca6da0-292e-4e79-9880-f8009e0ae4a3',
@@ -1757,6 +1783,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 userId: '90ca6da0-292e-4e79-9880-f8009e0ae4a3',
@@ -1848,6 +1875,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 userId: '90ca6da0-292e-4e79-9880-f8009e0ae4a3',
@@ -2026,6 +2054,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/batch',
+              endpointPath: 'batch',
             },
             metadata: [
               {
@@ -2179,6 +2208,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 1,
@@ -2234,6 +2264,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 2,
@@ -2289,6 +2320,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 3,
@@ -2347,6 +2379,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 4,
@@ -2405,6 +2438,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 5,
@@ -2448,6 +2482,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/groupidentify',
+                endpointPath: 'groupidentify',
               },
               metadata: {
                 jobId: 6,
@@ -2485,6 +2520,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/usermap',
+                endpointPath: 'usermap',
               },
               metadata: {
                 jobId: 7,
@@ -2558,6 +2594,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
             },
             metadata: [
               {
@@ -2603,6 +2640,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
             },
             metadata: [
               {
@@ -2642,6 +2680,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
             },
             metadata: [
               {
@@ -2753,6 +2792,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/batch',
+              endpointPath: 'batch',
             },
             metadata: [
               {
@@ -2846,6 +2886,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 1,
@@ -2901,6 +2942,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 2,
@@ -2956,6 +2998,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 3,
@@ -3014,6 +3057,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 4,
@@ -3072,6 +3116,7 @@ export const data = [
                 },
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
+                endpointPath: '2/httpapi',
               },
               metadata: {
                 jobId: 5,
@@ -3115,6 +3160,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/groupidentify',
+                endpointPath: 'groupidentify',
               },
               metadata: {
                 jobId: 6,
@@ -3152,6 +3198,7 @@ export const data = [
                 headers: {},
                 version: '1',
                 endpoint: 'https://api2.amplitude.com/usermap',
+                endpointPath: 'usermap',
               },
               metadata: {
                 jobId: 7,
@@ -3224,6 +3271,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
             },
             metadata: [
               {
@@ -3269,6 +3317,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
             },
             metadata: [
               {
@@ -3308,6 +3357,7 @@ export const data = [
               headers: {},
               version: '1',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
             },
             metadata: [
               {
@@ -3419,6 +3469,7 @@ export const data = [
               },
               version: '1',
               endpoint: 'https://api2.amplitude.com/batch',
+              endpointPath: 'batch',
             },
             metadata: [
               {

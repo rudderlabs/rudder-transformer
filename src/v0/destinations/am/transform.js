@@ -60,24 +60,36 @@ const baseEndpoint = (destConfig) => {
   return retVal;
 };
 
-const defaultEndpoint = (destConfig) => {
+const defaultEndpointDetails = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/2/httpapi`;
-  return retVal;
+  return {
+    endpoint: retVal,
+    path: '2/httpapi',
+  };
 };
 
-const batchEndpoint = (destConfig) => {
+const batchEndpointDetails = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/batch`;
-  return retVal;
+  return {
+    endpoint: retVal,
+    path: 'batch',
+  };
 };
 
-const groupEndpoint = (destConfig) => {
+const groupEndpointDetails = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/groupidentify`;
-  return retVal;
+  return {
+    endpoint: retVal,
+    path: 'groupidentify',
+  };
 };
 
-const aliasEndpoint = (destConfig) => {
+const aliasEndpointDetails = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/usermap`;
-  return retVal;
+  return {
+    endpoint: retVal,
+    path: 'usermap',
+  };
 };
 
 const handleSessionIdUnderRoot = (sessionId) => {
@@ -400,7 +412,7 @@ const nonAliasResponsebuilder = (
   const addOptions = 'options';
   const response = defaultRequestConfig();
   const groupResponse = defaultRequestConfig();
-  const endpoint = defaultEndpoint(destination.Config);
+  const endpointDetails = defaultEndpointDetails(destination.Config);
   if (message.channel === 'mobile') {
     buildPayloadForMobileChannel(message, destination, payload);
   }
@@ -442,7 +454,8 @@ const nonAliasResponsebuilder = (
   payload.ip = getParsedIP(message);
   payload.library = 'rudderstack';
   payload = removeUndefinedAndNullValues(payload);
-  response.endpoint = endpoint;
+  response.endpoint = endpointDetails.endpoint;
+  response.endpointPath = endpointDetails.path;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
@@ -458,8 +471,10 @@ const nonAliasResponsebuilder = (
   // https://developers.amplitude.com/docs/group-identify-api
   // Refer (1.), Rudder group call updates group propertiees.
   if (evType === EventType.GROUP && groupInfo) {
+    const { endpoint, path } = groupEndpointDetails(destination.Config);
     groupResponse.method = defaultPostRequestConfig.requestMethod;
-    groupResponse.endpoint = groupEndpoint(destination.Config);
+    groupResponse.endpoint = endpoint;
+    groupResponse.endpointPath = path;
     let groupPayload = cloneDeep(groupInfo);
     groupResponse.userId = message.anonymousId;
     groupPayload = removeUndefinedValues(groupPayload);
@@ -547,8 +562,10 @@ const responseBuilderSimple = (
       delete payload.global_user_id;
       payload.unmap = true;
     }
+    const { endpoint, path } = aliasEndpointDetails(destination.Config);
     aliasResponse.method = defaultPostRequestConfig.requestMethod;
-    aliasResponse.endpoint = aliasEndpoint(destination.Config);
+    aliasResponse.endpoint = endpoint;
+    aliasResponse.endpointPath = path;
     aliasResponse.userId = message.anonymousId;
     payload = removeUndefinedValues(payload);
     aliasResponse.body.FORM = {
@@ -861,15 +878,15 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
   if (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) {
     delete incomingMessageEvent.user_id;
   }
-
   set(message, EVENTS_KEY_PATH, [incomingMessageEvent]);
   // if this is the first event, push to batch and return
-  const BATCH_ENDPOINT = batchEndpoint(destination.Config);
+  const { endpoint, path } = batchEndpointDetails(destination.Config);
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
       batchEventResponse.batchedRequest = message;
-      set(batchEventResponse, 'batchedRequest.endpoint', BATCH_ENDPOINT);
+      set(batchEventResponse, 'batchedRequest.endpoint', endpoint);
+      set(batchEventResponse, 'batchedRequest.endpointPath', path);
       batchEventResponse.metadata = [metadata];
     }
   } else {

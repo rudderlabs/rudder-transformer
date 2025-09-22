@@ -7,6 +7,7 @@ const {
   getCallConversionPayload,
   getAddConversionPayload,
 } = require('./utils');
+const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
 
 const API_VERSION = 'v19';
 
@@ -169,7 +170,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     let expectedOutput = {
       endpointDetails: {
         endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
-        path: undefined,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [
@@ -202,7 +203,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     let expectedOutput = {
       endpointDetails: {
         endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
-        path: undefined,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [
@@ -258,7 +259,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     let expectedOutput = {
       endpointDetails: {
         endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
-        path: undefined,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [
@@ -327,7 +328,7 @@ describe('getCallConversionPayload', () => {
     expect(result).toEqual({
       endpointDetails: {
         endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
-        path: undefined,
+        path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [
@@ -359,7 +360,7 @@ describe('getCallConversionPayload', () => {
     expect(result).toEqual({
       endpointDetails: {
         endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
-        path: undefined,
+        path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [
@@ -388,7 +389,7 @@ describe('getCallConversionPayload', () => {
     expect(result).toEqual({
       endpointDetails: {
         endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
-        path: undefined,
+        path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
         conversions: [

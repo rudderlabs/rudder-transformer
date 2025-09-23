@@ -7,7 +7,6 @@ const isString = require('lodash/isString');
 const {
   constructPayload,
   defaultRequestConfig,
-  getValueFromMessage,
   removeHyphens,
   simpleProcessRouterDest,
   getAccessToken,
@@ -52,7 +51,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   deliveryRequest.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
-    'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   const filteredLoginCustomerId = removeHyphens(loginCustomerId);
   deliveryRequest.params = {
@@ -60,7 +58,6 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
     customerId: filteredCustomerId,
     accessToken,
     loginCustomerId: filteredLoginCustomerId,
-    developerToken: getValueFromMessage(metadata, 'secret.developer_token'),
     subAccount,
   };
   if (subAccount) {

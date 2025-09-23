@@ -191,7 +191,6 @@ const requestBuilder = (
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
-    'developer-token': get(metadata, 'secret.developer_token'),
   };
 
   if (subAccount) {

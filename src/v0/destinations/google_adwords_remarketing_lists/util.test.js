@@ -3,7 +3,6 @@ const { API_VERSION } = require('./config');
 const { generateRandomString } = require('@rudderstack/integrations-lib');
 
 const accessToken = generateRandomString();
-const developerToken = 'ijkl9101';
 const body = {
   operations: [
     {
@@ -73,7 +72,6 @@ const expectedResponse = {
   headers: {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
-    'developer-token': 'ijkl9101',
   },
   params: {
     listId: '7090784486',
@@ -150,7 +148,6 @@ describe('GARL utils test', () => {
     it('Should return correct response for given payload', () => {
       const response = responseBuilder(
         accessToken,
-        developerToken,
         body,
         baseDestination,
         getOperationAudienceId(baseDestination.Config.audienceId, message),
@@ -166,7 +163,6 @@ describe('GARL utils test', () => {
         destination2.Config.loginCustomerId = '';
         const response = responseBuilder(
           accessToken,
-          developerToken,
           body,
           destination2,
           getOperationAudienceId(baseDestination.Config.audienceId, message),
@@ -184,7 +180,6 @@ describe('GARL utils test', () => {
         destination1.Config.audienceId = '';
         const response = responseBuilder(
           accessToken,
-          developerToken,
           body,
           destination1,
           getOperationAudienceId(baseDestination.Config.audienceId, message),

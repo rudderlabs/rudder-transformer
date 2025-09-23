@@ -663,14 +663,12 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
                   'login-customer-id': '11',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '1234567890',
-                  developerToken: 'ijkl91011',
                   event: 'Page View',
                   loginCustomerId: '11',
                   subAccount: true,
@@ -841,14 +839,12 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
                   'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '{{event.context.customerID || "" }}',
-                  developerToken: 'ijkl91011',
                   event: 'Page View',
                   loginCustomerId: '{{event.context.subaccountID || "" }}',
                   subAccount: true,
@@ -938,14 +934,12 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'ijkl91011',
                   'login-customer-id': '{{event.context.subaccountID || "" }}',
                 },
                 method: 'POST',
                 params: {
                   accessToken: 'google_adwords_enhanced_conversions1',
                   customerId: '{{event.context.customerID || "" }}',
-                  developerToken: 'ijkl91011',
                   event: 'Page View',
                   loginCustomerId: '{{event.context.subaccountID || "" }}',
                   subAccount: true,

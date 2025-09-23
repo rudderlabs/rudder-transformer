@@ -7,6 +7,7 @@ const {
   getCallConversionPayload,
   getAddConversionPayload,
 } = require('./utils');
+const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
 
 const API_VERSION = 'v19';
 
@@ -167,7 +168,10 @@ describe('getExisitingUserIdentifier util tests', () => {
 describe('getClickConversionPayloadAndEndpoint util tests', () => {
   it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present', () => {
     let expectedOutput = {
-      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+      endpointDetails: {
+        endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
+      },
       payload: {
         conversions: [
           {
@@ -197,7 +201,10 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+      endpointDetails: {
+        endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
+      },
       payload: {
         conversions: [
           {
@@ -250,7 +257,10 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
       },
     ];
     let expectedOutput = {
-      endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+      endpointDetails: {
+        endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+        path: CLICK_CONVERSION_ENDPOINT_PATH,
+      },
       payload: {
         conversions: [
           {
@@ -312,21 +322,27 @@ describe('getCallConversionPayload', () => {
         conversionDateTime: '2022-01-01 12:32:45-08:00',
       },
     };
-    const result = getCallConversionPayload(message, {
+    const result = getCallConversionPayload(message, '9625812972', {
       adPersonalization: 'GRANTED',
     });
     expect(result).toEqual({
-      conversions: [
-        {
-          callStartDateTime: '2022-01-01 12:32:45-08:00',
-          callerId: '1234',
-          consent: {
-            adPersonalization: 'GRANTED',
-            adUserData: 'UNSPECIFIED',
+      endpointDetails: {
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
+        path: CALL_CONVERSION_ENDPOINT_PATH,
+      },
+      payload: {
+        conversions: [
+          {
+            callStartDateTime: '2022-01-01 12:32:45-08:00',
+            callerId: '1234',
+            consent: {
+              adPersonalization: 'GRANTED',
+              adUserData: 'UNSPECIFIED',
+            },
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
           },
-          conversionDateTime: '2022-01-01 12:32:45-08:00',
-        },
-      ],
+        ],
+      },
     });
   });
   it('should call conversion payload with consent object', () => {
@@ -337,22 +353,28 @@ describe('getCallConversionPayload', () => {
         conversionDateTime: '2022-01-01 12:32:45-08:00',
       },
     };
-    const result = getCallConversionPayload(message, {
+    const result = getCallConversionPayload(message, '9625812972', {
       adUserData: 'GRANTED',
       adPersonalization: 'DENIED',
     });
     expect(result).toEqual({
-      conversions: [
-        {
-          callStartDateTime: '2022-01-01 12:32:45-08:00',
-          callerId: '1234',
-          consent: {
-            adPersonalization: 'DENIED',
-            adUserData: 'GRANTED',
+      endpointDetails: {
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
+        path: CALL_CONVERSION_ENDPOINT_PATH,
+      },
+      payload: {
+        conversions: [
+          {
+            callStartDateTime: '2022-01-01 12:32:45-08:00',
+            callerId: '1234',
+            consent: {
+              adPersonalization: 'DENIED',
+              adUserData: 'GRANTED',
+            },
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
           },
-          conversionDateTime: '2022-01-01 12:32:45-08:00',
-        },
-      ],
+        ],
+      },
     });
   });
   it('should call conversion payload with consent object even if no consent input from UI as well as event level', () => {
@@ -363,19 +385,25 @@ describe('getCallConversionPayload', () => {
         conversionDateTime: '2022-01-01 12:32:45-08:00',
       },
     };
-    const result = getCallConversionPayload(message, {}, {});
+    const result = getCallConversionPayload(message, '9625812972', {});
     expect(result).toEqual({
-      conversions: [
-        {
-          callStartDateTime: '2022-01-01 12:32:45-08:00',
-          callerId: '1234',
-          consent: {
-            adPersonalization: 'UNSPECIFIED',
-            adUserData: 'UNSPECIFIED',
+      endpointDetails: {
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
+        path: CALL_CONVERSION_ENDPOINT_PATH,
+      },
+      payload: {
+        conversions: [
+          {
+            callStartDateTime: '2022-01-01 12:32:45-08:00',
+            callerId: '1234',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
           },
-          conversionDateTime: '2022-01-01 12:32:45-08:00',
-        },
-      ],
+        ],
+      },
     });
   });
 });

@@ -30,6 +30,12 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
+  STORE_CONVERSION_CONFIG,
+  CALL_CONVERSION,
+  CUSTOMER_ID_PARAM,
+  CALL_CONVERSION_ENDPOINT_PATH,
+  CLICK_CONVERSION_ENDPOINT_PATH,
+  STORE_CONVERSION_ENDPOINT_PATH,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -65,7 +71,7 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
     const data = {
       query: queryString,
     };
-    const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
+    const endpoint = SEARCH_STREAM.replace(CUSTOMER_ID_PARAM, params.customerId);
     const requestOptions = {
       headers,
     };
@@ -161,7 +167,7 @@ const buildAndGetAddress = (message, hashUserIdentifier) => {
 // It builds request according to transformer server contract
 const requestBuilder = (
   payload,
-  endpoint,
+  endpointDetails,
   Config,
   metadata,
   event,
@@ -171,7 +177,8 @@ const requestBuilder = (
   const { customVariables, subAccount, loginCustomerId } = Config;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = endpoint;
+  response.endpoint = endpointDetails.endpoint;
+  response.endpointPath = endpointDetails.path;
   response.params = {
     event,
     customerId: filteredCustomerId,
@@ -226,11 +233,15 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
-const getCallConversionPayload = (message, eventLevelConsentsData) => {
+const getCallConversionPayload = (message, filteredCustomerId, eventLevelConsentsData) => {
   const payload = constructPayload(message, trackCallConversionsMapping);
+  const endpointDetails = {
+    endpoint: CALL_CONVERSION.replace(CUSTOMER_ID_PARAM, filteredCustomerId),
+    path: CALL_CONVERSION_ENDPOINT_PATH,
+  };
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
   payload.conversions[0].consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
-  return payload;
+  return { payload, endpointDetails };
 };
 
 /**
@@ -302,16 +313,20 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
   return payload;
 };
 
-const getStoreConversionPayload = (message, Config, event, eventLevelConsentsData) => {
+const getStoreConversionPayload = (message, Config, filteredCustomerId, eventLevelConsentsData) => {
   const { validateOnly } = Config;
+  const endpointDetails = {
+    endpoint: STORE_CONVERSION_CONFIG.replace(CUSTOMER_ID_PARAM, filteredCustomerId),
+    path: STORE_CONVERSION_ENDPOINT_PATH,
+  };
   const payload = {
-    event,
+    event: filteredCustomerId,
     isStoreConversion: true,
     createJobPayload: getCreateJobPayload(message),
     addConversionPayload: getAddConversionPayload(message, Config, eventLevelConsentsData),
     executeJobPayload: { validate_only: validateOnly },
   };
-  return payload;
+  return { payload, endpointDetails };
 };
 
 const hasClickId = (conversion) => {
@@ -381,7 +396,10 @@ const getClickConversionPayloadAndEndpoint = (
 
   let payload = constructPayload(message, updatedClickMapping);
 
-  const endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
+  const endpointDetails = {
+    endpoint: CLICK_CONVERSION.replace(CUSTOMER_ID_PARAM, filteredCustomerId),
+    path: CLICK_CONVERSION_ENDPOINT_PATH,
+  };
 
   const products = get(message, 'properties.products');
   if (Array.isArray(products)) {
@@ -439,7 +457,7 @@ const getClickConversionPayloadAndEndpoint = (
   // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
   set(payload, 'conversions[0].consent', consentObject);
   payload.conversions[0] = updateConversion(payload.conversions[0]);
-  return { payload, endpoint };
+  return { payload, endpointDetails };
 };
 
 const getConsentsDataFromIntegrationObj = (message) => {

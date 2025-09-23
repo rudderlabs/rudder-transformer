@@ -180,6 +180,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -468,6 +469,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -755,6 +757,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -1042,6 +1045,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
+              endpointPath: 'uploadCallConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2007,6 +2011,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2110,6 +2115,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
+              endpointPath: 'uploadCallConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2330,6 +2336,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2527,6 +2534,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
+              endpointPath: 'uploadCallConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2759,6 +2767,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadCallConversions`,
+              endpointPath: 'uploadCallConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -2978,6 +2987,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -3478,6 +3488,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -3718,6 +3729,7 @@ export const data = [
                 XML: {},
               },
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               files: {},
               headers: {
                 Authorization: authHeader1,
@@ -3890,6 +3902,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972:uploadClickConversions`,
+              endpointPath: 'uploadClickConversions',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -4079,6 +4092,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -4411,6 +4425,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -4607,6 +4622,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -4806,6 +4822,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -4967,6 +4984,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -5124,6 +5142,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -5279,6 +5298,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
@@ -5467,6 +5487,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',

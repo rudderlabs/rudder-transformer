@@ -18,8 +18,7 @@ Implementation in Javascript via CDK v2 (Router v1)
 
 ### Implemented Using
 
-- **CDK v2 Router**: `src/cdk/v2/destinations/statsig/procWorkflow.yaml`
-- Legacy v0 shim exists: `src/v0/destinations/statsig/transform.js`
+- **CDK v2**: `src/cdk/v2/destinations/statsig/procWorkflow.yaml`
 
 ### Supported Message Types
 

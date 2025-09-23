@@ -30,6 +30,7 @@ const {
   isValidInteger,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
+  getSuccessRespEvents,
 } = require('../../util');
 const {
   BASE_URL,
@@ -981,33 +982,55 @@ const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  // group by userId or anonymousId as am has rate limit as per userId/deviceId
   const groupedInputs = lodash.groupBy(
     inputs,
-    (input) => input.message?.userId || input.message.anonymousId,
+    (input) => input.message.userId || input.message.anonymousId,
   );
+
   const errorRespList = [];
   const batchRespList = [];
 
   Object.values(groupedInputs).forEach((groupedInput) => {
-    const transformedInputsCannotDoBatching = [];
-    const transformedInputsCanDoBatching = [];
+    const nonBatchableInputs = [];
+    const batchableInputs = [];
     groupedInput.forEach((input) => {
       try {
+        /**
+         * Example of transformed event
+         * [
+         * {
+         *    body: {
+         *      JSON: {
+         *        events: [
+         *          {
+         *            user_id: '123',
+         *            device_id: '456',
+         *          },
+         *        ],
+         *      },
+         *    },
+         *  }
+         * ]
+         */
         const transformedEvent = process(input);
         const firstTransformedEvent = getFirstEvent(transformedEvent);
-        const jsonBody = get(firstTransformedEvent, 'body.JSON');
         const messageEvent = get(firstTransformedEvent, EVENTS_KEY_PATH);
-        const userId = messageEvent[0]?.user_id ?? undefined;
-        const deviceId = messageEvent[0]?.device_id ?? undefined;
+        const jsonBody = get(firstTransformedEvent, 'body.JSON');
+        const userId = messageEvent[0]?.user_id;
+        const deviceId = messageEvent[0]?.device_id;
 
-        if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
-          transformedInputsCannotDoBatching.push({
+        if (
+          checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId) ||
+          input.metadata.dontBatch
+        ) {
+          nonBatchableInputs.push({
             message: transformedEvent,
             metadata: input.metadata,
             destination: input.destination,
           });
         } else {
-          transformedInputsCanDoBatching.push({
+          batchableInputs.push({
             message: transformedEvent,
             metadata: input.metadata,
             destination: input.destination,
@@ -1018,16 +1041,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
         errorRespList.push(errRespEvent);
       }
     });
-    batchRespList.push(
-      ...batchEventsBasedOnUserIdOrAnonymousId(transformedInputsCanDoBatching.flat()),
-    );
-    transformedInputsCannotDoBatching.forEach((input) => {
-      const response = defaultBatchRequestConfig();
-      response.batchedRequest = input.message;
-      response.metadata = [input.metadata];
-      response.destination = input.destination;
-      response.batched = false;
-      batchRespList.push(response);
+    batchRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs.flat()));
+    nonBatchableInputs.forEach((input) => {
+      batchRespList.push(
+        getSuccessRespEvents(input.message, [input.metadata], input.destination, true),
+      );
     });
   });
   return [...batchRespList, ...errorRespList];

@@ -25,7 +25,7 @@ USER node
 COPY package*.json ./
 
 RUN npm ci --ignore-scripts --no-audit --cache .npm && \
-    npm run prepare
+npm run prepare
 
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
@@ -47,8 +47,9 @@ WORKDIR /home/node/app
 USER node
 COPY --chown=node:node --from=development /home/node/app/package*.json ./
 
+# Install production dependencies with scripts disabled for security
 RUN npm ci --ignore-scripts --omit=dev --no-audit --cache .npm && \
-    npm run clean:node
+npm run prepare && npm run clean:node
 
 FROM base as production
 ENV HUSKY 0

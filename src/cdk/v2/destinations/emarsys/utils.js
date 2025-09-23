@@ -75,7 +75,7 @@ const buildIdentifyPayload = (message, destConfig) => {
         `traits.${rudderProperty}`,
         `context.traits.${rudderProperty}`,
       ]);
-      if (value) {
+      if (isDefinedAndNotNull(value)) {
         payload[emersysProperty] = value;
       }
     });

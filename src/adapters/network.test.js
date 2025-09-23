@@ -84,6 +84,7 @@ describe('fireHTTPStats tests', () => {
     stats.timing.mockClear();
     stats.counter.mockClear();
   });
+
   it('should not throw error when metadata is sent as correctly defined object', () => {
     const clientResponse = {
       success: true,
@@ -135,23 +136,24 @@ describe('fireHTTPStats tests', () => {
       },
     };
     const startTime = new Date();
+    const metadataArray = [
+      {
+        destType: 'DT',
+        destinationId: 'd1',
+        workspaceId: 'w1',
+        jobId: 1,
+        sourceId: 's1',
+      },
+      {
+        destType: 'DT',
+        jobId: 2,
+        destinationId: 'd1',
+        workspaceId: 'w2',
+        sourceId: 's2',
+      },
+    ];
     const statTags = {
-      metadata: [
-        {
-          destType: 'DT',
-          destinationId: 'd1',
-          workspaceId: 'w1',
-          jobId: 1,
-          sourceId: 's1',
-        },
-        {
-          destType: 'DT',
-          jobId: 2,
-          destinationId: 'd1',
-          workspaceId: 'w2',
-          sourceId: 's2',
-        },
-      ],
+      metadata: metadataArray,
       destType: 'DT',
       feature: 'feat',
       endpointPath: '/some/url',
@@ -161,24 +163,14 @@ describe('fireHTTPStats tests', () => {
       fireHTTPStats(clientResponse, startTime, statTags);
     }).not.toThrow(Error);
 
-    expect(stats.timing).toHaveBeenCalledTimes(2);
+    expect(stats.timing).toHaveBeenCalledTimes(1);
     expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
       destinationId: 'd1',
       workspaceId: 'w1',
       sourceId: 's1',
-      destType: 'DT',
       feature: 'feat',
       module: '',
-      endpointPath: '/some/url',
-      requestMethod: 'post',
-    });
-    expect(stats.timing).toHaveBeenNthCalledWith(2, 'outgoing_request_latency', startTime, {
-      destinationId: 'd1',
-      workspaceId: 'w2',
-      sourceId: 's2',
-      destType: 'DT',
-      module: '',
-      feature: 'feat',
       endpointPath: '/some/url',
       requestMethod: 'post',
     });
@@ -241,7 +233,14 @@ describe('fireHTTPStats tests', () => {
       fireHTTPStats(clientResponse, startTime, statTags);
     }).not.toThrow(Error);
 
-    expect(stats.timing).toHaveBeenCalledTimes(0);
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
   });
   it('should not throw error when metadata is sent as empty object', () => {
     const clientResponse = {
@@ -302,7 +301,14 @@ describe('fireHTTPStats tests', () => {
       fireHTTPStats(clientResponse, startTime, statTags);
     }).not.toThrow(Error);
 
-    expect(stats.timing).toHaveBeenCalledTimes(0);
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
   });
   it('should not throw error when metadata is sent as [1, 2]', () => {
     const clientResponse = {
@@ -329,15 +335,8 @@ describe('fireHTTPStats tests', () => {
       fireHTTPStats(clientResponse, startTime, statTags);
     }).not.toThrow(Error);
 
-    expect(stats.timing).toHaveBeenCalledTimes(2);
+    expect(stats.timing).toHaveBeenCalledTimes(1);
     expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
-      destType: 'DT',
-      feature: 'feat',
-      module: '',
-      endpointPath: '/some/url',
-      requestMethod: 'post',
-    });
-    expect(stats.timing).toHaveBeenNthCalledWith(2, 'outgoing_request_latency', startTime, {
       destType: 'DT',
       feature: 'feat',
       module: '',
@@ -361,6 +360,184 @@ describe('fireHTTPStats tests', () => {
     const startTime = new Date();
     const statTags = {
       metadata: 1,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    };
+    expect(() => {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }).not.toThrow(Error);
+
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
+  });
+
+  // Additional tests for the simplified fireHTTPStats function
+  it('should handle null metadata correctly', () => {
+    const clientResponse = {
+      success: true,
+      response: {
+        data: { a: 1, b: 2 },
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    };
+    const startTime = new Date();
+    const statTags = {
+      metadata: null,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    };
+    expect(() => {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }).not.toThrow(Error);
+
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
+  });
+
+  it('should handle string metadata correctly', () => {
+    const clientResponse = {
+      success: true,
+      response: {
+        data: { a: 1, b: 2 },
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    };
+    const startTime = new Date();
+    const statTags = {
+      metadata: 'test-metadata',
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    };
+    expect(() => {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }).not.toThrow(Error);
+
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
+  });
+
+  it('should handle boolean metadata correctly', () => {
+    const clientResponse = {
+      success: true,
+      response: {
+        data: { a: 1, b: 2 },
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    };
+    const startTime = new Date();
+    const statTags = {
+      metadata: true,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    };
+    expect(() => {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }).not.toThrow(Error);
+
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
+  });
+
+  it('should handle complex nested object metadata correctly', () => {
+    const clientResponse = {
+      success: true,
+      response: {
+        data: { a: 1, b: 2 },
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    };
+    const startTime = new Date();
+    const complexMetadata = {
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      nested: {
+        level1: {
+          level2: 'deep-value',
+        },
+      },
+      array: [1, 2, { nested: 'value' }],
+    };
+    const statTags = {
+      metadata: complexMetadata,
+      destType: 'DT',
+      feature: 'feat',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    };
+    expect(() => {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }).not.toThrow(Error);
+
+    expect(stats.timing).toHaveBeenCalledTimes(1);
+    expect(stats.timing).toHaveBeenNthCalledWith(1, 'outgoing_request_latency', startTime, {
+      destType: 'DT',
+      destinationId: 'd1',
+      workspaceId: 'w1',
+      sourceId: 's1',
+      feature: 'feat',
+      module: '',
+      endpointPath: '/some/url',
+      requestMethod: 'post',
+    });
+  });
+
+  it('should handle mixed array metadata correctly', () => {
+    const clientResponse = {
+      success: true,
+      response: {
+        data: { a: 1, b: 2 },
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    };
+    const startTime = new Date();
+    const mixedMetadata = [
+      { destType: 'DT', id: 1 },
+      'string-value',
+      42,
+      null,
+      { nested: { value: 'test' } },
+    ];
+    const statTags = {
+      metadata: mixedMetadata,
       destType: 'DT',
       feature: 'feat',
       endpointPath: '/some/url',

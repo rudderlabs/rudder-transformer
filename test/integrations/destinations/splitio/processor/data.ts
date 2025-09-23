@@ -61,6 +61,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -162,6 +163,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -264,6 +266,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -354,6 +357,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -438,6 +442,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -526,6 +531,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -795,6 +801,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
@@ -879,6 +886,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://events.split.io/api/events',
+              endpointPath: 'events',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,

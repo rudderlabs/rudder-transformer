@@ -18,19 +18,19 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
       - name: Setup Node
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: .nvmrc
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - id: files
         uses: Ana06/get-changed-files@v1.2

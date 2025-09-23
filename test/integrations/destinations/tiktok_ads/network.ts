@@ -1,7 +1,7 @@
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+      url: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
       data: {
         pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
         partner_name: 'RudderStack',
@@ -45,7 +45,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+      url: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
       data: {
         pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
         partner_name: 'RudderStack',
@@ -95,7 +95,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+      url: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
       data: {
         pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
         partner_name: 'RudderStack',
@@ -146,7 +146,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+      url: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
       data: {
         pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
         partner_name: 'RudderStack',
@@ -193,7 +193,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/',
+      url: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
       data: {
         pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
         partner_name: 'RudderStack',

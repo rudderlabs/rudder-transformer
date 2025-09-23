@@ -154,6 +154,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
                   authentication: 'ef1d42390426e3f7c90ac78272e74344',
@@ -199,6 +200,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
                   authentication: 'ef1d42390426e3f7c90ac78272e74344',
@@ -243,6 +245,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
                   authentication: 'ef1d42390426e3f7c90ac78272e74344',

@@ -14,18 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Needed to get full commit history
 
       - name: Setup Node
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - name: Print versions
         run: |

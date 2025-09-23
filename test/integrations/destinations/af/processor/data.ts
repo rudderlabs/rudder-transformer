@@ -47,9 +47,6 @@ const commonContextWithExternalId = {
 
 const commonHeader = { 'Content-Type': 'application/json', authentication: 'abcde' };
 
-const commonV2EndPoint = 'https://api3.appsflyer.com/inappevent/com.rudderlabs.javascript';
-const commonV1EndPoint = 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript';
-
 export const existingTestCases = [
   {
     name: 'af',
@@ -188,7 +185,8 @@ export const existingTestCases = [
             output: {
               version: '1',
               type: 'REST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -282,7 +280,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -549,7 +548,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -645,7 +645,8 @@ export const existingTestCases = [
             output: {
               version: '1',
               type: 'REST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -740,6 +741,7 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               endpoint: 'https://api2.appsflyer.com/inappevent/id123456789',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -818,7 +820,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -943,7 +946,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1032,7 +1036,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1102,7 +1107,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1211,7 +1217,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1298,7 +1305,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1389,7 +1397,8 @@ export const existingTestCases = [
             output: {
               version: '1',
               type: 'REST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1488,7 +1497,8 @@ export const existingTestCases = [
             output: {
               version: '1',
               type: 'REST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1664,7 +1674,8 @@ export const existingTestCases = [
             output: {
               version: '1',
               type: 'REST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               method: 'POST',
               params: {},
@@ -1760,7 +1771,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1836,7 +1848,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {
@@ -1966,7 +1979,8 @@ export const existingTestCases = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: commonV1EndPoint,
+              endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+              endpointPath: 'v1/inappevent',
               headers: commonHeader,
               params: {},
               body: {

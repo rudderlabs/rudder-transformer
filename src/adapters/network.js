@@ -5,7 +5,7 @@ const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
-const { isDefinedAndNotNull, PlatformError } = require('@rudderstack/integrations-lib');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const stats = require('../util/stats');
 const {
   removeUndefinedValues,
@@ -82,36 +82,22 @@ const fireOutgoingReqStats = ({
   });
 };
 
-const fireHTTPStats = (clientResponse, startTime, statTags) => {
-  const destType = statTags.destType ? statTags.destType : '';
-  const feature = statTags.feature ? statTags.feature : '';
-  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
-  const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
-  const module = statTags.module ? statTags.module : '';
+const fireHTTPStats = (clientResponse, startTime, statTags = {}) => {
   const statusCode = clientResponse.success
-    ? clientResponse.response.status
+    ? clientResponse.response?.status
     : getErrorStatusCode(clientResponse.response);
-  const defArgs = {
-    destType,
-    endpointPath,
-    feature,
-    module,
-    requestMethod,
+
+  fireOutgoingReqStats({
+    destType: statTags.destType || '',
+    feature: statTags.feature || '',
+    endpointPath: statTags.endpointPath || '',
+    requestMethod: statTags.requestMethod || '',
+    module: statTags.module || '',
+    metadata: statTags.metadata,
     statusCode,
     startTime,
     clientResponse,
-  };
-  if (statTags?.metadata && typeof statTags?.metadata === 'object') {
-    const metadata = !Array.isArray(statTags?.metadata) ? [statTags.metadata] : statTags.metadata;
-    metadata?.filter(isDefinedAndNotNull)?.forEach((m) => {
-      fireOutgoingReqStats({
-        ...defArgs,
-        metadata: m,
-      });
-    });
-    return;
-  }
-  fireOutgoingReqStats(defArgs);
+  });
 };
 
 const enhanceRequestOptions = (options) => {

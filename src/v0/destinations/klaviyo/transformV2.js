@@ -97,6 +97,7 @@ const trackOrScreenRequestHandler = (message, category, destination) => {
       },
     },
   };
+  attributes.unique_id = message.messageId;
   return { event: { data: { type: 'event', attributes } } };
 };
 

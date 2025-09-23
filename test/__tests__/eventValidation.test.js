@@ -39,6 +39,10 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["number"]
+                },
+                prop_string: {
+                  type: ["string"],
+                  pattern: "^[A-Z]+$"
                 }
               },
               type: "object",
@@ -1078,6 +1082,53 @@ const eventValidationTestCases = [
     output: {
       dropEvent: false,
       violationType: "None"
+    }
+  },
+  {
+    testCase:
+      "Track is part of Tracking Plan and anyOtherViolation[AdvanceRules] is set to drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          anyOtherViolation: "drop",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          track: {
+            anyOtherViolation: "drop",
+            ajvOptions: {}
+          },
+          global: {
+            anyOtherViolation: "forward",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          prop_string: "apple123"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      },
+    },
+    trackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdvanceRulesViolation
     }
   },
   {

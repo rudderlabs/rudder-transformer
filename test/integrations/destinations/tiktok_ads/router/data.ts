@@ -3,7 +3,6 @@ import { RouterTestData } from '../../../testTypes';
 import { defaultMockFns } from '../mocks';
 import { overrideDestination } from '../../../testUtils';
 import { destinationConfig } from '../common';
-
 export const data: RouterTestData[] = [
   {
     id: 'tiktok_ads-router-test-0',
@@ -306,6 +305,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
+                endpointPath: 'pixel/batch',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -806,6 +806,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/',
+                endpointPath: 'pixel/batch',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -1110,6 +1111,7 @@ export const data: RouterTestData[] = [
                     XML: {},
                   },
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+                  endpointPath: 'pixel/track',
                   files: {},
                   headers: {
                     'Access-Token': 'dummyAccessToken',
@@ -1369,6 +1371,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -1512,6 +1515,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -1840,6 +1844,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -1984,6 +1989,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -2280,6 +2286,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -2739,6 +2746,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -2911,6 +2919,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                  endpointPath: 'event/track',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -2991,6 +3000,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                endpointPath: 'event/track',
                 headers: {
                   'Access-Token': 'dummyAccessToken',
                   'Content-Type': 'application/json',
@@ -3195,6 +3205,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                  endpointPath: 'event/track',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -3280,6 +3291,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+                  endpointPath: 'event/track',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',

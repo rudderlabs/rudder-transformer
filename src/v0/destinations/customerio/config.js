@@ -1,18 +1,39 @@
 const { getMappingConfig } = require('../../util');
 
-const IDENTITY_ENDPOINT = 'https://track.customer.io/api/v1/customers/:id';
+const BASE_ENDPOINT = 'https://track.customer.io/api';
+const BASE_ENDPOINT_V1 = `${BASE_ENDPOINT}/v1`;
+const BASE_ENDPOINT_V2 = `${BASE_ENDPOINT}/v2`;
 
-const USER_EVENT_ENDPOINT = 'https://track.customer.io/api/v1/customers/:id/events';
-
-const MERGE_USER_ENDPOINT = 'https://track.customer.io/api/v1/merge_customers';
-
-const ANON_EVENT_ENDPOINT = 'https://track.customer.io/api/v1/events';
-
-const DEVICE_REGISTER_ENDPOINT = 'https://track.customer.io/api/v1/customers/:id/devices';
-
-const DEVICE_DELETE_ENDPOINT = 'https://track.customer.io/api/v1/customers/:id/devices/:device_id';
-
-const OBJECT_EVENT_ENDPOINT = 'https://track.customer.io/api/v2/batch';
+const ENDPOINTS = {
+  identity: {
+    endpoint: `${BASE_ENDPOINT_V1}/customers/:id`,
+    path: 'v1/customers',
+  },
+  userEvent: {
+    endpoint: `${BASE_ENDPOINT_V1}/customers/:id/events`,
+    path: 'v1/customers/events',
+  },
+  mergeUser: {
+    endpoint: `${BASE_ENDPOINT_V1}/merge_customers`,
+    path: 'v1/merge_customers',
+  },
+  anonEvent: {
+    endpoint: `${BASE_ENDPOINT_V1}/events`,
+    path: 'v1/events',
+  },
+  deviceRegister: {
+    endpoint: `${BASE_ENDPOINT_V1}/customers/:id/devices`,
+    path: 'v1/customers/devices',
+  },
+  deviceDelete: {
+    endpoint: `${BASE_ENDPOINT_V1}/customers/:id/devices/:device_id`,
+    path: 'v1/customers/devices/delete',
+  },
+  objectEvent: {
+    endpoint: `${BASE_ENDPOINT_V2}/batch`,
+    path: 'v2/batch',
+  },
+};
 
 const CONFIG_CATEGORIES = {
   OBJECT_EVENTS: {
@@ -34,13 +55,7 @@ module.exports = {
   MAPPING_CONFIG,
   OBJECT_ACTIONS,
   CONFIG_CATEGORIES,
-  IDENTITY_ENDPOINT,
-  MERGE_USER_ENDPOINT,
-  USER_EVENT_ENDPOINT,
-  ANON_EVENT_ENDPOINT,
-  OBJECT_EVENT_ENDPOINT,
+  ENDPOINTS,
   DEFAULT_OBJECT_ACTION,
-  DEVICE_DELETE_ENDPOINT,
-  DEVICE_REGISTER_ENDPOINT,
   configFieldsToCheck,
 };

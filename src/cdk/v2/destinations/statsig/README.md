@@ -33,9 +33,9 @@ Source of truth: `rudder-integrations-config/src/configurations/destinations/sta
 
 ### Batching Support
 
-- **Supported**: Yes (Router v1/CDK v2 supports batch mode)
+- **Supported**: No
 - **Message Types**: All supported types
-- **Batch Limits**: NEEDS REVIEW (no public Statsig webhook batching limits found)
+- **Batch Limits**: No public Statsig webhook batching limits found
 
 ### Endpoint and Authentication
 
@@ -50,7 +50,7 @@ Source of truth: `rudder-integrations-config/src/configurations/destinations/sta
 
 ### Proxy Delivery
 
-- NEEDS REVIEW. There is no destination-specific `networkHandler.js`. CDK v2 Router runs through the common v1 router layer.
+- Not Supported. There is no destination-specific `networkHandler.js`.
 
 ### User Deletion
 
@@ -119,5 +119,3 @@ Source of truth: `rudder-integrations-config/src/configurations/destinations/sta
 
 - For RETL-specific functionality, see [docs/retl.md](docs/retl.md)
 - For business logic and validations, see [docs/businesslogic.md](docs/businesslogic.md)
-
-

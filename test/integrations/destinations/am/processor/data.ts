@@ -262,6 +262,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -405,6 +406,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -599,6 +601,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -778,6 +781,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -931,6 +935,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1077,6 +1082,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1232,6 +1238,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1380,6 +1387,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1531,6 +1539,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1634,6 +1643,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1722,6 +1732,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1810,6 +1821,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -1897,6 +1909,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -2046,6 +2059,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -2103,6 +2117,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
               headers: {},
               params: {},
               body: {
@@ -2227,6 +2242,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -2284,6 +2300,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
               headers: {},
               params: {},
               body: {
@@ -2519,6 +2536,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
               headers: {},
               params: {},
               body: {
@@ -2647,6 +2665,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
               headers: {},
               params: {},
               body: {
@@ -2772,6 +2791,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -2910,6 +2930,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3051,6 +3072,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3192,6 +3214,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3334,6 +3357,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3433,6 +3457,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3563,6 +3588,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3618,6 +3644,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3667,6 +3694,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3802,6 +3830,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -3965,6 +3994,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4019,6 +4049,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4069,6 +4100,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4205,6 +4237,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4279,6 +4312,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4329,6 +4363,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4445,6 +4480,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4568,6 +4604,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4691,6 +4728,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4814,6 +4852,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -4961,6 +5000,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5106,6 +5146,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5249,6 +5290,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5392,6 +5434,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5559,6 +5602,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5737,6 +5781,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5811,6 +5856,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -5881,6 +5927,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6064,6 +6111,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6243,6 +6291,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6387,6 +6436,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6550,6 +6600,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6643,6 +6694,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6712,6 +6764,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -6868,6 +6921,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7016,6 +7070,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7158,6 +7213,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7292,6 +7348,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7426,6 +7483,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7572,6 +7630,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7725,6 +7784,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7828,6 +7888,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -7986,6 +8047,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.eu.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -8151,6 +8213,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.eu.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -8208,6 +8271,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.eu.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
               headers: {},
               params: {},
               body: {
@@ -8330,6 +8394,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.eu.amplitude.com/usermap',
+              endpointPath: 'usermap',
               headers: {},
               params: {},
               body: {
@@ -8455,6 +8520,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -8605,6 +8671,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -8755,6 +8822,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -8931,6 +8999,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9109,6 +9178,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9277,6 +9347,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9335,6 +9406,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/groupidentify',
+              endpointPath: 'groupidentify',
               headers: {},
               params: {},
               body: {
@@ -9418,6 +9490,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9553,6 +9626,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9707,6 +9781,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/usermap',
+              endpointPath: 'usermap',
               headers: {},
               params: {},
               body: {
@@ -9831,6 +9906,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -9969,6 +10045,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -10131,6 +10208,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -10276,6 +10354,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -10536,6 +10615,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -10692,6 +10772,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -10849,6 +10930,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -11004,6 +11086,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -11111,6 +11194,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -11198,6 +11282,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -11285,6 +11370,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -11372,6 +11458,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api2.amplitude.com/2/httpapi',
+              endpointPath: '2/httpapi',
               headers: {
                 'Content-Type': 'application/json',
               },

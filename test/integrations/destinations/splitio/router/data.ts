@@ -57,7 +57,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                endpointPath: '/events',
+                endpointPath: 'events',
                 headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {
@@ -141,7 +141,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                endpointPath: '/events',
+                endpointPath: 'events',
                 headers: { 'Content-Type': 'application/json', Authorization: authHeader1 },
                 params: {},
                 body: {

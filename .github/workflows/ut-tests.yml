@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v5.3.0
+        uses: actions/setup-go@v6
         with:
           go-version: 1.17
 
@@ -39,7 +39,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - name: Create Kind cluster
         run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml

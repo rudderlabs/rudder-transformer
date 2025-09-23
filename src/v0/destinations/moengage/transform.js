@@ -7,13 +7,7 @@ const {
   isEmptyObject,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  endpointEU,
-  endpointIND,
-  endpointUS,
-} = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, endpoints, endpointPaths } = require('./config');
 const {
   constructPayload,
   defaultPostRequestConfig,
@@ -37,16 +31,13 @@ const mergeCustomAttributes = (attributes) => {
 
 // check the region and which api end point should be used
 const getCommonDestinationEndpoint = ({ apiId, region, category }) => {
-  switch (region) {
-    case 'EU':
-      return `${endpointEU[category.type]}${apiId}`;
-    case 'US':
-      return `${endpointUS[category.type]}${apiId}`;
-    case 'IND':
-      return `${endpointIND[category.type]}${apiId}`;
-    default:
-      throw new ConfigurationError('The region is not valid');
+  if (endpoints[region]) {
+    return {
+      endpoint: `${endpoints[region][category.type]}${apiId}`,
+      path: endpointPaths[category.type],
+    };
   }
+  throw new ConfigurationError('The region is not valid');
 };
 
 const createDestinationPayload = ({ message, category, useObjectData }) => {
@@ -110,7 +101,9 @@ function responseBuilderSimple(message, category, destination) {
 
   const { apiId, region, apiKey, useObjectData } = destination.Config;
   const response = defaultRequestConfig();
-  response.endpoint = getCommonDestinationEndpoint({ apiId, region, category });
+  const { endpoint, path } = getCommonDestinationEndpoint({ apiId, region, category });
+  response.endpoint = endpoint;
+  response.endpointPath = path;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,

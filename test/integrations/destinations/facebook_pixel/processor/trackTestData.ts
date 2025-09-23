@@ -1,4 +1,3 @@
-import { endpointDetails } from '../common';
 import { generateMetadata, generateTrackPayload, transformResultBuilder } from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
@@ -98,8 +97,8 @@ export const trackTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: endpointDetails.endpoint,
-              endpointPath: endpointDetails.path,
+              endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               FORM: {
@@ -173,8 +172,8 @@ export const trackTestData: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: endpointDetails.endpoint,
-              endpointPath: endpointDetails.path,
+              endpoint: 'https://graph.facebook.com/v22.0/dummyPixelId/events?access_token=09876',
+              endpointPath: 'events',
               headers: {},
               params: {},
               FORM: {

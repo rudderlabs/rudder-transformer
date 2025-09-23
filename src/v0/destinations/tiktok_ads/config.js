@@ -1,10 +1,10 @@
 const { getMappingConfig } = require('../../util');
 
 const BASE_URL = 'https://business-api.tiktok.com/open_api/v1.3';
-const TRACK_ENDPOINT_PATH = '/pixel/track';
-const TRACK_ENDPOINT = `${BASE_URL}${TRACK_ENDPOINT_PATH}/`;
-const BATCH_ENDPOINT_PATH = '/pixel/batch';
-const BATCH_ENDPOINT = `${BASE_URL}${BATCH_ENDPOINT_PATH}/`;
+const TRACK_ENDPOINT_PATH = 'pixel/track';
+const TRACK_ENDPOINT = `${BASE_URL}/${TRACK_ENDPOINT_PATH}/`;
+const BATCH_ENDPOINT_PATH = 'pixel/batch';
+const BATCH_ENDPOINT = `${BASE_URL}/${BATCH_ENDPOINT_PATH}/`;
 const MAX_BATCH_SIZE = 50;
 
 const ConfigCategory = {
@@ -53,8 +53,8 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 // tiktok docs for max batch size for events 2.0: https://business-api.tiktok.com/portal/docs?id=1771100779668482
 const maxBatchSizeV2 = 1000;
-const trackEndpointV2Path = '/event/track';
-const trackEndpointV2 = `${BASE_URL}${trackEndpointV2Path}/`;
+const trackEndpointV2Path = 'event/track';
+const trackEndpointV2 = `${BASE_URL}/${trackEndpointV2Path}/`;
 // Following is the list of standard events for which some parameters are recommended
 // Ref: https://business-api.tiktok.com/portal/docs?id=1771101186666498
 const eventsWithRecommendedParams = ['AddToCart', 'CompletePayment', 'PlaceAnOrder', 'ViewContent'];

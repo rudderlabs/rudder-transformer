@@ -3,7 +3,7 @@ const { getMappingConfig } = require('../../../../v0/util');
 // ref : https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=http#adding-multiple-conversion-events-in-a-batch
 const BATCH_ENDPOINT = 'https://api.linkedin.com/rest/conversionEvents';
 const API_HEADER_METHOD = 'BATCH_CREATE';
-const API_VERSION = '202409'; // yyyymm format
+const API_VERSION = '202509'; // yyyymm format
 const API_PROTOCOL_VERSION = '2.0.0';
 
 const CONFIG_CATEGORIES = {

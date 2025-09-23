@@ -16,6 +16,7 @@ const {
   addressInfoMapping,
   attributeMapping,
   TYPEOFLIST,
+  OFFLINE_USER_DATA_JOBS_ENDPOINT,
   BASE_ENDPOINT,
   hashAttributes,
   ADDRESS_INFO_ATTRIBUTES,
@@ -34,7 +35,8 @@ const responseBuilder = (accessToken, body, { Config }, audienceId, consentBlock
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
-  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
+  response.endpointPath = OFFLINE_USER_DATA_JOBS_ENDPOINT;
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/${OFFLINE_USER_DATA_JOBS_ENDPOINT}`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');

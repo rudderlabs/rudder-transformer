@@ -14,7 +14,6 @@ const {
   getSuccessRespEvents,
   combineBatchRequestsWithSameJobIds,
 } = require('../../util');
-const { CALL_CONVERSION, STORE_CONVERSION_CONFIG } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
@@ -36,8 +35,7 @@ const helper = require('./helper');
  * @returns
  */
 const getConversions = (message, metadata, { Config }, event, conversionType) => {
-  let payload = {};
-  let endpoint;
+  let convertedPayload = {};
   const { customerId } = Config;
   const { properties, timestamp, originalTimestamp } = message;
 
@@ -46,27 +44,28 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
 
   if (conversionType === 'click') {
     // click conversion
-    const convertedPayload = getClickConversionPayloadAndEndpoint(
+    convertedPayload = getClickConversionPayloadAndEndpoint(
       message,
       Config,
       filteredCustomerId,
       eventLevelConsentsData,
     );
-    payload = convertedPayload.payload;
-    endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(
+    convertedPayload = getStoreConversionPayload(
       message,
       Config,
       filteredCustomerId,
       eventLevelConsentsData,
     );
-    endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = getCallConversionPayload(message, eventLevelConsentsData);
-    endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
+    convertedPayload = getCallConversionPayload(
+      message,
+      filteredCustomerId,
+      eventLevelConsentsData,
+    );
   }
+  const { payload, endpointDetails } = convertedPayload;
 
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
@@ -79,7 +78,15 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     }
     payload.partialFailure = true;
   }
-  return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
+  return requestBuilder(
+    payload,
+    endpointDetails,
+    Config,
+    metadata,
+    event,
+    filteredCustomerId,
+    properties,
+  );
 };
 
 /**
@@ -166,10 +173,12 @@ const batchEvents = async (storeSalesEvents) => {
     get(storeSalesEvents[0], 'message.body.JSON.addConversionPayload.operations'),
   ]);
   batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
-  const { params, headers, endpoint } = storeSalesEvents[0].message;
+  const { params, headers, endpoint, endpointPath } = storeSalesEvents[0].message;
   batchEventResponse.batchedRequest.params = params;
   batchEventResponse.batchedRequest.headers = headers;
   batchEventResponse.batchedRequest.endpoint = endpoint;
+  batchEventResponse.batchedRequest.endpointPath = endpointPath;
+
   await forEachInBatches(storeSalesEvents, async (storeSalesEvent, index) => {
     // we are discarding the first event as it is already added
     if (index === 0) {

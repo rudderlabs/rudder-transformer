@@ -65,6 +65,8 @@ describe('Emarsys utils', () => {
           lastName: 'Doe',
           email: 'john.doe@example.com',
           optin: 1,
+          active_customer: 0,
+          welcome_journey: undefined,
         },
       };
       const destination = {
@@ -73,6 +75,9 @@ describe('Emarsys utils', () => {
           { rudderProperty: 'lastName', emersysProperty: '2' },
           { rudderProperty: 'email', emersysProperty: '3' },
           { rudderProperty: 'optin', emersysProperty: '31' },
+          { rudderProperty: 'active_customer', emersysProperty: '32' },
+          { rudderProperty: 'welcome_journey', emersysProperty: '33' },
+          { rudderProperty: 'expiring_5_days_journey', emersysProperty: '34' },
         ],
         defaultContactList: 'dummyContactList',
       };
@@ -84,6 +89,7 @@ describe('Emarsys utils', () => {
             2: 'Doe',
             3: 'john.doe@example.com',
             31: 1,
+            32: 0,
           },
         ],
         key_id: 3,

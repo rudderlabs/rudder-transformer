@@ -186,6 +186,7 @@ export const DubIODestinationConfigSchema = z
         to: z.enum(['LEAD_CONVERSION', 'SALES_CONVERSION']),
       }),
     ),
+    convertAmountToCents: z.boolean().optional().default(true),
   })
   .passthrough();
 

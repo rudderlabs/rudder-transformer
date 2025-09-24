@@ -47,5 +47,27 @@
     "destKey": "customerAvatar",
     "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "total",
+        "amount",
+        "paymentProcessor",
+        "invoiceId",
+        "orderId",
+        "currency",
+        "leadEventName",
+        "email",
+        "name",
+        "phone",
+        "firstName",
+        "lastName"
+      ],
+      "defaultValue": null
+    }
   }
 ]

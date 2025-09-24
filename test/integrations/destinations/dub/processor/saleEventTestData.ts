@@ -16,7 +16,6 @@ export const saleEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -117,7 +116,6 @@ export const saleEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -198,7 +196,6 @@ export const saleEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -290,7 +287,6 @@ export const saleEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [

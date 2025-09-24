@@ -32,5 +32,14 @@
     "metadata": {
       "type": "toNumber"
     }
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": ["eventQuantity", "mode", "email", "name", "phone", "firstName", "lastName"],
+      "defaultValue": null
+    }
   }
 ]

@@ -7,12 +7,13 @@ import {
 } from '../../util';
 import { RudderMessage } from '../../../types';
 
-import { DubIORouterRequest } from './types';
+import { DubIORouterRequest, DubIODestinationConfig } from './types';
 import { LEAD_ENDPOINT, SALES_ENDPOINT } from './config';
 import { createHeader, buildLeadPayload, buildSalePayload } from './utils';
 
-const processLeadEvent = (message: RudderMessage, apiKey: string) => {
+const processLeadEvent = (message: RudderMessage, destinationConfig: DubIODestinationConfig) => {
   // Handle lead event transformation logic using type-safe helper
+  const { apiKey } = destinationConfig;
   const payload = buildLeadPayload(message);
 
   const response = defaultRequestConfig();
@@ -23,9 +24,10 @@ const processLeadEvent = (message: RudderMessage, apiKey: string) => {
   return response;
 };
 
-const processSaleEvent = (message: RudderMessage, apiKey: string) => {
+const processSaleEvent = (message: RudderMessage, destinationConfig: DubIODestinationConfig) => {
   // Handle sale event transformation logic using type-safe helper
-  const payload = buildSalePayload(message);
+  const { apiKey, convertAmountToCents } = destinationConfig;
+  const payload = buildSalePayload(message, convertAmountToCents);
 
   const response = defaultRequestConfig();
   response.endpoint = SALES_ENDPOINT;
@@ -37,7 +39,7 @@ const processSaleEvent = (message: RudderMessage, apiKey: string) => {
 
 const processEvent = (event: DubIORouterRequest) => {
   const { message, destination } = event;
-  const { eventMapping, apiKey } = destination.Config;
+  const { eventMapping } = destination.Config;
   if (!message.event) {
     throw new InstrumentationError('Event name is not present. Aborting message.');
   }
@@ -45,9 +47,9 @@ const processEvent = (event: DubIORouterRequest) => {
   const mappedEvent = getHashFromArray(eventMapping);
   switch (mappedEvent[message.event.toLowerCase()]) {
     case 'LEAD_CONVERSION':
-      return processLeadEvent(message, apiKey);
+      return processLeadEvent(message, destination.Config);
     case 'SALES_CONVERSION':
-      return processSaleEvent(message, apiKey);
+      return processSaleEvent(message, destination.Config);
     default:
       throw new ConfigurationError(
         `Event "${message.event}" is not mapped to any DUB event type. Aborting message.`,

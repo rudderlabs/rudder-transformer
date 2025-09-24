@@ -6,7 +6,7 @@ import {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getFullName,
-  removeUndefinedAndNullValues,
+  removeUndefinedNullValuesAndEmptyObjectArray,
 } from '../../util';
 import { RudderMessage } from '../../../types';
 import { TrackLeadRequestBody, TrackSaleRequestBody } from './types';
@@ -37,11 +37,13 @@ const buildLeadPayload = (message: RudderMessage): TrackLeadRequestBody => {
     throw new InstrumentationError('customerExternalId is required for LEAD_CONVERSIONs');
   }
   rawPayload.mode = 'wait';
-  // Return the payload with proper typing, relying on mapping config correctness
-  return removeUndefinedAndNullValues(rawPayload) as TrackLeadRequestBody;
+  return removeUndefinedNullValuesAndEmptyObjectArray(rawPayload) as TrackLeadRequestBody;
 };
 
-const buildSalePayload = (message: RudderMessage): TrackSaleRequestBody => {
+const buildSalePayload = (
+  message: RudderMessage,
+  convertAmountToCents: boolean,
+): TrackSaleRequestBody => {
   const rawPayload = constructPayload(message, SALES_CONVERSION_MAPPING);
   if (!rawPayload || Object.keys(rawPayload).length === 0) {
     throw new InstrumentationError('Mapped payload is empty. Aborting message.');
@@ -52,8 +54,12 @@ const buildSalePayload = (message: RudderMessage): TrackSaleRequestBody => {
   if (!rawPayload.customerExternalId) {
     throw new InstrumentationError('customerExternalId is required for SALES_CONVERSIONs');
   }
-  // Return the payload with proper typing, relying on mapping config correctness
-  return removeUndefinedAndNullValues(rawPayload) as TrackSaleRequestBody;
+  // convert amount to cents if the flag is set to true
+  // https://dub.co/docs/api-reference/endpoint/track-sale#body-amount
+  if (convertAmountToCents && rawPayload.amount) {
+    rawPayload.amount *= 100;
+  }
+  return removeUndefinedNullValuesAndEmptyObjectArray(rawPayload) as TrackSaleRequestBody;
 };
 
 export {

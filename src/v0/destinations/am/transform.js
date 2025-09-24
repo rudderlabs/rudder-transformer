@@ -1020,9 +1020,8 @@ const mergeEventsIntoFirstEvent = (events, destination) => {
   if (additionalEvents.length > 0) {
     baseEvent.events = baseEvent.events.concat(additionalEvents);
   }
-  stats.counter('am_batch_size_based_on_user_id', baseEvent.length, {
+  stats.histogram('am_batch_size_based_on_user_id', baseEvent.events.length, {
     destination_id: destination.id,
-    user_id: events[0]?.userId,
   });
   return baseEvent;
 };

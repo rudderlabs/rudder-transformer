@@ -972,8 +972,9 @@ class Prometheus {
       {
         name: 'am_batch_size_based_on_user_id',
         help: 'am_batch_size_based_on_user_id',
-        type: 'counter',
-        labelNames: ['destination_id', 'user_id'],
+        type: 'histogram',
+        labelNames: ['destination_id'],
+        buckets: [10, 50, 100, 200, 500, 800, 1000],
       },
     ];
 

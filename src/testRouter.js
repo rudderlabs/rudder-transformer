@@ -2,8 +2,8 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 /* eslint-disable no-shadow */
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const Router = require('@koa/router');
 const { sendToDestination, userTransformHandler } = require('./routerUtils');
 const { JSON_MIME_TYPE } = require('./v0/util/constant');
@@ -33,10 +33,9 @@ const getDestHandler = (ver, destination) =>
 
 const getDestinations = () => fs.readdirSync(path.resolve(__dirname, version, 'destinations'));
 
+const capitalize = (s) => (s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1));
+
 const transformDestination = (dest) => {
-  function capitalize(s) {
-    return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
-  }
   const transformedObj = {};
   const { destinationDefinition } = dest;
   Object.keys(dest).forEach((key) => {

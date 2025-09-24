@@ -342,7 +342,13 @@ const BrazeDedupUtility = {
    * @returns {Object} user object with deduplicated custom attributes
    */
   deduplicate(userData, store) {
-    const excludeKeys = ['external_id', 'user_alias', 'appboy_id', 'braze_id', 'custom_events'];
+    const excludeKeys = new Set([
+      'external_id',
+      'user_alias',
+      'appboy_id',
+      'braze_id',
+      'custom_events',
+    ]);
     const { external_id, user_alias } = userData;
     let storedUserData =
       this.getUserDataFromStore(store, external_id) ||
@@ -357,7 +363,7 @@ const BrazeDedupUtility = {
     delete storedUserData.custom_attributes;
     let deduplicatedUserData = {};
     const keys = Object.keys(userData)
-      .filter((key) => !excludeKeys.includes(key))
+      .filter((key) => !excludeKeys.has(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
       .filter((key) => {
         if (isObject(userData[key])) {
@@ -763,9 +769,9 @@ function getPurchaseObjs(message, config) {
     const { price, quantity, currency: prodCur } = product;
     let purchaseObj = addMandatoryPurchaseProperties(
       String(productId),
-      parseFloat(price),
+      Number.parseFloat(price),
       currencyCode || prodCur,
-      parseInt(quantity, 10),
+      Number.parseInt(quantity, 10),
       timestamp,
     );
     const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);

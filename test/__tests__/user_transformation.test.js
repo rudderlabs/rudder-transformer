@@ -553,7 +553,6 @@ describe("User transformation", () => {
     const versionId = randomID();
     const libraryVersionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
-    // const expectedData = require(`./data/${integration}_async_output.json`);
 
     const respBody = {
       code: `
@@ -816,7 +815,6 @@ describe("User transformation", () => {
       )}};
     `;
 
-    const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
     const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
     when(fetch)
       .calledWith(libraryUrl)
@@ -1693,7 +1691,6 @@ describe("User transformation with IVM cache", () => {
     const versionId = randomID();
     const libraryVersionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
-    // const expectedData = require(`./data/${integration}_async_output.json`);
 
     const respBody = {
       code: `
@@ -1942,7 +1939,6 @@ describe("User transformation with IVM cache", () => {
       )}};
     `;
 
-    const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
     const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
     when(fetch)
       .calledWith(libraryUrl)

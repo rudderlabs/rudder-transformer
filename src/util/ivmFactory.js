@@ -411,7 +411,6 @@ async function createIvm(
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
-  // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
     filename: transformationName,
   });
@@ -420,7 +419,7 @@ async function createIvm(
       return compiledModules[spec].module;
     }
     // Release the isolate context before throwing an error
-    await context.release();
+    context.release();
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });
@@ -642,7 +641,7 @@ async function getCachedFactory(
         logger.debug('Cached factory destroy called', {
           transformationId: client.transformationId || 'unknown',
         });
-        
+
         // Note: Cached instances are cleaned up by cache eviction
         // We don't need to do immediate cleanup here
         return;

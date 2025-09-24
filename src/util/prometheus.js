@@ -969,6 +969,12 @@ class Prometheus {
         type: 'gauge',
         labelNames: [],
       },
+      {
+        name: 'am_batch_size_based_on_user_id',
+        help: 'am_batch_size_based_on_user_id',
+        type: 'counter',
+        labelNames: ['destination_id', 'user_id'],
+      },
     ];
 
     metrics.forEach((metric) => {

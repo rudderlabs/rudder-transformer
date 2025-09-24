@@ -41,7 +41,10 @@ const {
   IDENTIFY_AM,
   AMBatchSizeLimit,
   AMBatchEventLimit,
+  MAX_USERS_DEVICES_PER_BATCH,
 } = require('./config');
+
+const stats = require('../../../util/stats');
 
 const AMUtils = require('./utils');
 
@@ -973,30 +976,76 @@ const batch = (destEvents) => {
   return respList;
 };
 
-const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
-  const maxBatchSize = 1000;
-  const respList = [];
-  const batchedTransformedEvents = batchMultiplexedEvents(inputs, maxBatchSize);
-  batchedTransformedEvents.forEach((batchedEvent) => {
-    const { events, metadata, destination } = batchedEvent;
-    const batchEventResponse = defaultBatchRequestConfig();
-    batchEventResponse.destination = destination;
-    batchEventResponse.metadata = metadata;
-    const { endpoint, path } = batchEndpointDetails(destination.Config);
-    batchEventResponse.batchedRequest.endpoint = endpoint;
-    batchEventResponse.batchedRequest.endpointPath = path;
-    batchEventResponse.batched = false;
-    batchEventResponse.statusCode = 200;
-    batchEventResponse.batchedRequest.body.JSON = events[0].body.JSON;
-    batchEventResponse.batchedRequest.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    for (let i = 1; i < events.length; i += 1) {
-      batchEventResponse.batchedRequest.body.JSON.events.push(...events[i].body.JSON.events);
-    }
-    respList.push(batchEventResponse);
+// const MAX_BATCH_SIZE = 1000;
+
+// Helper Functions
+const validateInputs = (inputs) => {
+  if (!Array.isArray(inputs)) {
+    throw new Error('Inputs must be an array');
+  }
+  return inputs.length === 0 ? [] : inputs;
+};
+
+const createBatchResponse = (destination, metadata, mergedEvent) => {
+  const batchResponse = defaultBatchRequestConfig();
+  const { endpoint, path } = batchEndpointDetails(destination.Config);
+
+  batchResponse.destination = destination;
+  batchResponse.metadata = metadata;
+  batchResponse.batchedRequest.endpoint = endpoint;
+  batchResponse.batchedRequest.endpointPath = path;
+  batchResponse.batched = false;
+  batchResponse.statusCode = 200;
+  batchResponse.batchedRequest.body.JSON = mergedEvent;
+  batchResponse.batchedRequest.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+
+  return batchResponse;
+};
+
+const mergeEventsIntoFirstEvent = (events, destination) => {
+  if (!events || events.length === 0) {
+    throw new Error('Events array cannot be empty');
+  }
+
+  const baseEvent = { ...events[0].body.JSON };
+
+  // Collect all additional events first, then concat once for better performance
+  const additionalEvents = events
+    .slice(1)
+    .filter((event) => event?.body?.JSON?.events)
+    .flatMap((event) => event.body.JSON.events);
+
+  if (additionalEvents.length > 0) {
+    baseEvent.events = baseEvent.events.concat(additionalEvents);
+  }
+  stats.counter('am_batch_size_based_on_user_id', baseEvent.length, {
+    destination_id: destination.id,
+    user_id: events[0]?.userId,
   });
-  return respList;
+  return baseEvent;
+};
+
+// Main Function
+const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
+  const validatedInputs = validateInputs(inputs);
+  if (validatedInputs.length === 0) {
+    return [];
+  }
+
+  const batchResponses = [];
+  const batchedEventGroups = batchMultiplexedEvents(validatedInputs, MAX_USERS_DEVICES_PER_BATCH);
+
+  batchedEventGroups.forEach((eventGroup) => {
+    const { events, metadata, destination } = eventGroup;
+    const mergedEvent = mergeEventsIntoFirstEvent(events, destination);
+    const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
+    batchResponse.batchedRequest.userId = events[0]?.userId;
+    batchResponses.push(batchResponse);
+  });
+
+  return batchResponses;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {

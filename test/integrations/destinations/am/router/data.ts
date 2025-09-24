@@ -1,9 +1,10 @@
 import { secret2 } from '../maskedSecrets';
+import { defaultMockFns } from '../mocks';
 
 export const data = [
   {
     name: 'am',
-    description: 'Test 0',
+    description: 'Test 0: Initial test case to test the router',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -180,6 +181,7 @@ export const data = [
                   FORM: {},
                 },
                 files: {},
+                userId: '123456',
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
@@ -243,6 +245,7 @@ export const data = [
                   FORM: {},
                 },
                 files: {},
+                userId: '00000000000000000000000000',
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
@@ -253,5 +256,452 @@ export const data = [
         },
       },
     },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'am',
+    description: 'Test 1: Test case to test the router with multiple events of differnt userIds',
+    successCriteria:
+      'Inputs has 7 events and the mocked batch limit is 3. There are 3 different userIds. So there should be 3 batches and all events should be transformed successfully and batched correctly as per userIds and status code should be 200',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    trait1: 'value1',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123456',
+                userId: '123456',
+              },
+              metadata: { jobId: 1, userId: '123456' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123',
+                    email: 'test@rudderstack.com',
+                    trait2: 'value2',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123',
+                userId: '123',
+              },
+              metadata: { jobId: 2, userId: '123' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    trait3: 'value3',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123456',
+                userId: '123456',
+              },
+              metadata: { jobId: 3, userId: '123456' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    trait4: 'value4',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123456',
+                userId: '123456',
+              },
+              metadata: { jobId: 4, userId: '123456' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    trait5: 'value5',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123456',
+                userId: '123456',
+              },
+              metadata: { jobId: 5, userId: '123456' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '1234567',
+                    email: 'test@rudderstack.com',
+                    trait6: 'value6',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '1234567',
+                userId: '1234567',
+              },
+              metadata: { jobId: 6, userId: '1234567' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    trait7: 'value7',
+                  },
+                },
+                type: 'identify',
+                anonymousId: '123456',
+                userId: '123456',
+              },
+              metadata: { jobId: 7, userId: '123456' },
+              destination: {
+                Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
+              },
+            },
+          ],
+          destType: 'am',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      api_key: 'am2',
+                      events: [
+                        {
+                          device_id: '123',
+                          event_type: '$identify',
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          session_id: -1,
+                          time: 0,
+                          user_id: '123',
+                          user_properties: {
+                            anonymousId: '123',
+                            email: 'test@rudderstack.com',
+                            trait2: 'value2',
+                          },
+                        },
+                      ],
+                      options: {
+                        min_id_length: 1,
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  files: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  userId: '123',
+                  version: '1',
+                },
+              ],
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: '123',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    api_key: 'am2',
+                    events: [
+                      {
+                        device_id: '123456',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '123456',
+                        user_properties: {
+                          anonymousId: '123456',
+                          email: 'test@rudderstack.com',
+                          trait1: 'value1',
+                        },
+                      },
+                      {
+                        device_id: '123456',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '123456',
+                        user_properties: {
+                          anonymousId: '123456',
+                          email: 'test@rudderstack.com',
+                          trait3: 'value3',
+                        },
+                      },
+                      {
+                        device_id: '123456',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '123456',
+                        user_properties: {
+                          anonymousId: '123456',
+                          email: 'test@rudderstack.com',
+                          trait4: 'value4',
+                        },
+                      },
+                    ],
+                    options: {
+                      min_id_length: 1,
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api2.amplitude.com/batch',
+                endpointPath: 'batch',
+                files: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                userId: '123456',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: '123456',
+                },
+                {
+                  jobId: 3,
+                  userId: '123456',
+                },
+                {
+                  jobId: 4,
+                  userId: '123456',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    api_key: 'am2',
+                    events: [
+                      {
+                        device_id: '123456',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '123456',
+                        user_properties: {
+                          anonymousId: '123456',
+                          email: 'test@rudderstack.com',
+                          trait5: 'value5',
+                        },
+                      },
+                      {
+                        device_id: '123456',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '123456',
+                        user_properties: {
+                          anonymousId: '123456',
+                          email: 'test@rudderstack.com',
+                          trait7: 'value7',
+                        },
+                      },
+                    ],
+                    options: {
+                      min_id_length: 1,
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api2.amplitude.com/batch',
+                endpointPath: 'batch',
+                files: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                userId: '123456',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 5,
+                  userId: '123456',
+                },
+                {
+                  jobId: 7,
+                  userId: '123456',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    api_key: 'am2',
+                    events: [
+                      {
+                        device_id: '1234567',
+                        event_type: '$identify',
+                        library: 'rudderstack',
+                        platform: 'Web',
+                        session_id: -1,
+                        time: 0,
+                        user_id: '1234567',
+                        user_properties: {
+                          anonymousId: '1234567',
+                          email: 'test@rudderstack.com',
+                          trait6: 'value6',
+                        },
+                      },
+                    ],
+                    options: {
+                      min_id_length: 1,
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api2.amplitude.com/batch',
+                endpointPath: 'batch',
+                files: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                userId: '1234567',
+                version: '1',
+              },
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 6,
+                  userId: '1234567',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
   },
 ];

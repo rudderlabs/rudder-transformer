@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.108.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.108.0...v1.108.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **emersys:** remove truth check for custom mapping ([577bf8b](https://github.com/rudderlabs/rudder-transformer/commit/577bf8b850fbcdef06c02f88d06f4709ff2d7c64))
+
 ## [1.108.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.107.6...v1.108.0) (2025-09-16)
 
 

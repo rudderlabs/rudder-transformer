@@ -26,11 +26,21 @@ jest.mock('@rudderstack/integrations-lib', () => ({
 
 // Type the mocked functions
 const mockedHandleHttpRequest = handleHttpRequest as jest.MockedFunction<typeof handleHttpRequest>;
-const mockedGetDynamicErrorType = getDynamicErrorType as jest.MockedFunction<typeof getDynamicErrorType>;
-const mockedIsHttpStatusSuccess = isHttpStatusSuccess as jest.MockedFunction<typeof isHttpStatusSuccess>;
-const mockedCollectStatsForAliasFailure = collectStatsForAliasFailure as jest.MockedFunction<typeof collectStatsForAliasFailure>;
-const mockedGetEndpointFromConfig = getEndpointFromConfig as jest.MockedFunction<typeof getEndpointFromConfig>;
-const mockedGetIdentifyEndpoint = getIdentifyEndpoint as jest.MockedFunction<typeof getIdentifyEndpoint>;
+const mockedGetDynamicErrorType = getDynamicErrorType as jest.MockedFunction<
+  typeof getDynamicErrorType
+>;
+const mockedIsHttpStatusSuccess = isHttpStatusSuccess as jest.MockedFunction<
+  typeof isHttpStatusSuccess
+>;
+const mockedCollectStatsForAliasFailure = collectStatsForAliasFailure as jest.MockedFunction<
+  typeof collectStatsForAliasFailure
+>;
+const mockedGetEndpointFromConfig = getEndpointFromConfig as jest.MockedFunction<
+  typeof getEndpointFromConfig
+>;
+const mockedGetIdentifyEndpoint = getIdentifyEndpoint as jest.MockedFunction<
+  typeof getIdentifyEndpoint
+>;
 const mockedStatsIncrement = stats.increment as jest.MockedFunction<typeof stats.increment>;
 const mockedLoggerError = logger.error as jest.MockedFunction<typeof logger.error>;
 
@@ -78,7 +88,9 @@ interface BrazeResponse {
 }
 
 // Test fixtures
-const createMockDestination = (overrides: Partial<BrazeDestinationConfig> = {}): Destination<BrazeDestinationConfig> => ({
+const createMockDestination = (
+  overrides: Partial<BrazeDestinationConfig> = {},
+): Destination<BrazeDestinationConfig> => ({
   ID: 'test-destination-id',
   Name: 'Test Braze Destination',
   Config: {
@@ -106,14 +118,14 @@ const createMockAliasToIdentify = (overrides: Partial<AliasToIdentify> = {}): Al
 
 const createMockIdentifyCall = (
   aliasCount: number = 1,
-  destinationOverrides: Partial<BrazeDestinationConfig> = {}
+  destinationOverrides: Partial<BrazeDestinationConfig> = {},
 ): IdentifyCall => ({
   identifyPayload: {
-    aliases_to_identify: Array.from({ length: aliasCount }, (_, i) => 
+    aliases_to_identify: Array.from({ length: aliasCount }, (_, i) =>
       createMockAliasToIdentify({
         external_id: `user${i + 1}`,
         alias_name: `anon${i + 1}`,
-      })
+      }),
     ),
   },
   destination: createMockDestination(destinationOverrides),
@@ -122,7 +134,7 @@ const createMockIdentifyCall = (
 
 const createMockBrazeResponse = (
   status: number,
-  responseOverrides: Partial<BrazeResponse['response']> = {}
+  responseOverrides: Partial<BrazeResponse['response']> = {},
 ): { httpResponse: Promise<any>; processedResponse: BrazeResponse } => ({
   httpResponse: Promise.resolve({}),
   processedResponse: {
@@ -137,13 +149,16 @@ const createMockBrazeResponse = (
 describe('identityResolutionUtils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockedGetEndpointFromConfig.mockReturnValue('https://rest.iad-03.braze.com');
-    mockedGetIdentifyEndpoint.mockReturnValue('https://rest.iad-03.braze.com/users/identify');
+    mockedGetIdentifyEndpoint.mockReturnValue({
+      endpoint: 'https://rest.iad-03.braze.com/users/identify',
+      path: 'users/identify',
+    });
     mockedGetDynamicErrorType.mockReturnValue('retryable');
     mockedIsHttpStatusSuccess.mockImplementation((status) => status >= 200 && status < 300);
-    
+
     // Mock IDENTIFY_BRAZE_MAX_REQ_COUNT
     (IDENTIFY_BRAZE_MAX_REQ_COUNT as any) = 50;
   });
@@ -153,11 +168,11 @@ describe('identityResolutionUtils', () => {
       it('should successfully process a single identify call', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(200);
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result).toEqual({ success: true });
         expect(mockedHandleHttpRequest).toHaveBeenCalledWith(
           'post',
@@ -179,7 +194,7 @@ describe('identityResolutionUtils', () => {
             requestMethod: 'POST',
             module: 'router',
             endpointPath: '/users/identify',
-          }
+          },
         );
       });
 
@@ -187,19 +202,19 @@ describe('identityResolutionUtils', () => {
         const identifyCall1 = createMockIdentifyCall(2);
         const identifyCall2 = createMockIdentifyCall(1);
         const mockResponse = createMockBrazeResponse(201);
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall1, identifyCall2], 'test-dest-id');
-        
+
         expect(result).toEqual({ success: true });
-        
+
         // Verify that aliases from both calls are flattened
         const expectedAliases = [
           ...identifyCall1.identifyPayload.aliases_to_identify,
           ...identifyCall2.identifyPayload.aliases_to_identify,
         ];
-        
+
         expect(mockedHandleHttpRequest).toHaveBeenCalledWith(
           'post',
           'https://rest.iad-03.braze.com/users/identify',
@@ -208,18 +223,18 @@ describe('identityResolutionUtils', () => {
             merge_behavior: 'merge',
           },
           expect.any(Object),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
       it('should handle maximum batch size correctly', async () => {
         const identifyCall = createMockIdentifyCall(50); // Max batch size
         const mockResponse = createMockBrazeResponse(200);
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result).toEqual({ success: true });
         expect(identifyCall.identifyPayload.aliases_to_identify).toHaveLength(50);
       });
@@ -229,21 +244,21 @@ describe('identityResolutionUtils', () => {
       it('should handle 4xx client errors', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(400, { message: 'Bad Request' });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result.success).toBe(false);
         expect(result.error).toBeInstanceOf(NetworkError);
         expect(result.error?.message).toContain('Braze identify failed');
         expect(mockedLoggerError).toHaveBeenCalledWith(
           'Braze identity resolution failed',
-          JSON.stringify(mockResponse.processedResponse.response)
+          JSON.stringify(mockResponse.processedResponse.response),
         );
         expect(mockedCollectStatsForAliasFailure).toHaveBeenCalledWith(
           mockResponse.processedResponse.response,
-          identifyCall.destination.ID
+          identifyCall.destination.ID,
         );
         expect(mockedStatsIncrement).toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
@@ -251,18 +266,18 @@ describe('identityResolutionUtils', () => {
             destination_id: 'test-dest-id',
             status: 400,
             error: 'non_2xx_status',
-          }
+          },
         );
       });
 
       it('should handle 5xx server errors', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(500, { message: 'Internal Server Error' });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result.success).toBe(false);
         expect(result.error).toBeInstanceOf(NetworkError);
         expect(mockedStatsIncrement).toHaveBeenCalledWith(
@@ -271,19 +286,19 @@ describe('identityResolutionUtils', () => {
             destination_id: 'test-dest-id',
             status: 500,
             error: 'non_2xx_status',
-          }
+          },
         );
       });
 
       it('should handle 429 rate limit errors', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(429, { message: 'Rate Limited' });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
         mockedGetDynamicErrorType.mockReturnValue('throttled');
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result.success).toBe(false);
         expect(result.error).toBeInstanceOf(NetworkError);
         expect(mockedGetDynamicErrorType).toHaveBeenCalledWith(429);
@@ -292,10 +307,12 @@ describe('identityResolutionUtils', () => {
       it('should handle network timeout/connection errors', async () => {
         const identifyCall = createMockIdentifyCall();
         const networkError = new Error('Network timeout');
-        
+
         mockedHandleHttpRequest.mockRejectedValue(networkError);
-        
-        await expect(processSingleBatch([identifyCall], 'test-dest-id')).rejects.toThrow('Network timeout');
+
+        await expect(processSingleBatch([identifyCall], 'test-dest-id')).rejects.toThrow(
+          'Network timeout',
+        );
       });
     });
 
@@ -303,21 +320,21 @@ describe('identityResolutionUtils', () => {
       it('should handle application-level errors from Braze', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(200, {
-          errors: [
-            { type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }
-          ]
+          errors: [{ type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }],
         });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result.success).toBe(false);
         expect(result.error).toBeInstanceOf(BaseError);
-        expect(result.error?.message).toContain('[Unhandled Identify Resolution Error] invalid_external_id');
+        expect(result.error?.message).toContain(
+          '[Unhandled Identify Resolution Error] invalid_external_id',
+        );
         expect(mockedLoggerError).toHaveBeenCalledWith(
           'Braze Unhandled Identify Resolution Error',
-          JSON.stringify(mockResponse.processedResponse.response)
+          JSON.stringify(mockResponse.processedResponse.response),
         );
         expect(mockedStatsIncrement).toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
@@ -325,7 +342,7 @@ describe('identityResolutionUtils', () => {
             destination_id: 'test-dest-id',
             status: 200,
             error: 'unhandled_error',
-          }
+          },
         );
       });
 
@@ -334,14 +351,14 @@ describe('identityResolutionUtils', () => {
         const mockResponse = createMockBrazeResponse(200, {
           errors: [
             { type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 },
-            { type: 'missing_alias_name', input_array: 'aliases_to_identify', index: 1 }
-          ]
+            { type: 'missing_alias_name', input_array: 'aliases_to_identify', index: 1 },
+          ],
         });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result.success).toBe(false);
         expect(result.error).toBeInstanceOf(BaseError);
         expect(result.error?.message).toContain('invalid_external_id'); // Should use first error
@@ -350,11 +367,11 @@ describe('identityResolutionUtils', () => {
       it('should handle empty errors array as success', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(200, { errors: [] });
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result).toEqual({ success: true });
       });
 
@@ -367,11 +384,11 @@ describe('identityResolutionUtils', () => {
             response: undefined as any,
           },
         };
-        
+
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
-        
+
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
-        
+
         expect(result).toEqual({ success: true });
       });
     });
@@ -383,7 +400,10 @@ describe('identityResolutionUtils', () => {
         const mockResponse = createMockBrazeResponse(200);
 
         mockedGetEndpointFromConfig.mockReturnValue('https://rest.fra-02.braze.eu');
-        mockedGetIdentifyEndpoint.mockReturnValue('https://rest.fra-02.braze.eu/users/identify');
+        mockedGetIdentifyEndpoint.mockReturnValue({
+          endpoint: 'https://rest.fra-02.braze.eu/users/identify',
+          path: 'users/identify',
+        });
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
 
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
@@ -399,7 +419,10 @@ describe('identityResolutionUtils', () => {
         const mockResponse = createMockBrazeResponse(200);
 
         mockedGetEndpointFromConfig.mockReturnValue('https://rest.au-01.braze.com');
-        mockedGetIdentifyEndpoint.mockReturnValue('https://rest.au-01.braze.com/users/identify');
+        mockedGetIdentifyEndpoint.mockReturnValue({
+          endpoint: 'https://rest.au-01.braze.com/users/identify',
+          path: 'users/identify',
+        });
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
 
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
@@ -417,7 +440,7 @@ describe('identityResolutionUtils', () => {
         });
 
         await expect(processSingleBatch([identifyCall], 'test-dest-id')).rejects.toThrow(
-          'Invalid Data Center: valid values are EU, US, AU'
+          'Invalid Data Center: valid values are EU, US, AU',
         );
       });
 
@@ -442,7 +465,7 @@ describe('identityResolutionUtils', () => {
               Authorization: `Bearer ${customApiKey}`,
             },
           },
-          expect.any(Object)
+          expect.any(Object),
         );
       });
     });
@@ -459,7 +482,7 @@ describe('identityResolutionUtils', () => {
         // processSingleBatch should not collect success stats - that's done in processBatchedIdentify
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
 
@@ -478,7 +501,7 @@ describe('identityResolutionUtils', () => {
             destination_id: customDestId,
             status: 400,
             error: 'non_2xx_status',
-          }
+          },
         );
       });
     });
@@ -526,14 +549,14 @@ describe('identityResolutionUtils', () => {
 
         expect(mockedMapInBatches).toHaveBeenCalledWith(
           [identifyCalls], // Should be a single chunk
-          expect.any(Function)
+          expect.any(Function),
         );
         expect(mockedStatsIncrement).toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
           {
             destination_id: 'test-dest-id',
             status: '2xx',
-          }
+          },
         );
       });
 
@@ -561,7 +584,7 @@ describe('identityResolutionUtils', () => {
             expect.arrayContaining([expect.any(Object)]), // Second chunk of 50
             expect.arrayContaining([expect.any(Object)]), // Third chunk of 25
           ]),
-          expect.any(Function)
+          expect.any(Function),
         );
 
         const chunksArg = mockedMapInBatches.mock.calls[0][0];
@@ -618,7 +641,7 @@ describe('identityResolutionUtils', () => {
           {
             destination_id: 'test-dest-id',
             status: '2xx',
-          }
+          },
         );
       });
 
@@ -635,7 +658,7 @@ describe('identityResolutionUtils', () => {
               // Second batch fails
               results.push({
                 success: false,
-                error: new NetworkError('Test error', 500, {}, {})
+                error: new NetworkError('Test error', 500, {}, {}),
               });
             }
           }
@@ -647,7 +670,7 @@ describe('identityResolutionUtils', () => {
         // Should not collect success stats when any batch fails
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
 
@@ -659,7 +682,7 @@ describe('identityResolutionUtils', () => {
           for (const chunk of chunks) {
             results.push({
               success: false,
-              error: new NetworkError('Test error', 500, {}, {})
+              error: new NetworkError('Test error', 500, {}, {}),
             });
           }
           return results;
@@ -670,7 +693,7 @@ describe('identityResolutionUtils', () => {
         // Should not collect success stats when all batches fail
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
 
@@ -683,12 +706,12 @@ describe('identityResolutionUtils', () => {
             if (i === 0) {
               results.push({
                 success: false,
-                error: new NetworkError('Network error', 500, {}, {})
+                error: new NetworkError('Network error', 500, {}, {}),
               });
             } else {
               results.push({
                 success: false,
-                error: new BaseError('Application error')
+                error: new BaseError('Application error'),
               });
             }
           }
@@ -699,7 +722,7 @@ describe('identityResolutionUtils', () => {
 
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
     });
@@ -725,7 +748,7 @@ describe('identityResolutionUtils', () => {
         // Should not collect success stats
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
 
@@ -735,7 +758,7 @@ describe('identityResolutionUtils', () => {
         mockedMapInBatches.mockImplementation(async (chunks: any[], processor: any) => {
           // Simulate application error in processSingleBatch
           const mockResponse = createMockBrazeResponse(200, {
-            errors: [{ type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }]
+            errors: [{ type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }],
           });
           mockedHandleHttpRequest.mockResolvedValue(mockResponse);
 
@@ -751,7 +774,7 @@ describe('identityResolutionUtils', () => {
         // Should not collect success stats
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
     });
@@ -776,7 +799,7 @@ describe('identityResolutionUtils', () => {
           {
             destination_id: customDestId,
             status: '2xx',
-          }
+          },
         );
         expect(mockedStatsIncrement).toHaveBeenCalledTimes(1);
       });
@@ -800,7 +823,7 @@ describe('identityResolutionUtils', () => {
 
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
     });
@@ -855,7 +878,7 @@ describe('identityResolutionUtils', () => {
             merge_behavior: 'merge',
           },
           expect.any(Object),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
@@ -936,7 +959,7 @@ describe('identityResolutionUtils', () => {
           {
             destination_id: 'test-dest-id',
             status: '2xx',
-          }
+          },
         );
       });
 
@@ -950,7 +973,7 @@ describe('identityResolutionUtils', () => {
               // First batch fails
               results.push({
                 success: false,
-                error: new NetworkError('First batch error', 500, {}, {})
+                error: new NetworkError('First batch error', 500, {}, {}),
               });
             } else {
               // Second batch succeeds
@@ -965,7 +988,7 @@ describe('identityResolutionUtils', () => {
         // Should not collect success stats because one batch failed
         expect(mockedStatsIncrement).not.toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
-          expect.objectContaining({ status: '2xx' })
+          expect.objectContaining({ status: '2xx' }),
         );
       });
     });
@@ -999,7 +1022,7 @@ describe('identityResolutionUtils', () => {
             requestMethod: 'POST',
             module: 'router',
             endpointPath: '/users/identify',
-          }
+          },
         );
       });
 
@@ -1013,7 +1036,7 @@ describe('identityResolutionUtils', () => {
 
         expect(mockedLoggerError).toHaveBeenCalledWith(
           'Braze identity resolution failed',
-          JSON.stringify(mockResponse.processedResponse.response)
+          JSON.stringify(mockResponse.processedResponse.response),
         );
       });
 
@@ -1040,7 +1063,7 @@ describe('identityResolutionUtils', () => {
 
         expect(mockedCollectStatsForAliasFailure).toHaveBeenCalledWith(
           mockResponse.processedResponse.response,
-          identifyCall.destination.ID
+          identifyCall.destination.ID,
         );
         expect(mockedStatsIncrement).toHaveBeenCalledWith(
           'braze_batched_identify_func_calls_count',
@@ -1048,7 +1071,7 @@ describe('identityResolutionUtils', () => {
             destination_id: 'test-dest-id',
             status: 500,
             error: 'non_2xx_status',
-          }
+          },
         );
       });
     });
@@ -1106,7 +1129,7 @@ describe('identityResolutionUtils', () => {
             merge_behavior: 'merge', // Should be overridden
           },
           expect.any(Object),
-          expect.any(Object)
+          expect.any(Object),
         );
       });
 
@@ -1121,7 +1144,10 @@ describe('identityResolutionUtils', () => {
           },
         };
 
-        mockedHandleHttpRequest.mockResolvedValue({ httpResponse: Promise.resolve({}), processedResponse: brazeResponse });
+        mockedHandleHttpRequest.mockResolvedValue({
+          httpResponse: Promise.resolve({}),
+          processedResponse: brazeResponse,
+        });
 
         const result = await processSingleBatch([identifyCall], 'test-dest-id');
 
@@ -1148,7 +1174,7 @@ describe('identityResolutionUtils', () => {
       it('should handle BaseError type correctly', async () => {
         const identifyCall = createMockIdentifyCall();
         const mockResponse = createMockBrazeResponse(200, {
-          errors: [{ type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }]
+          errors: [{ type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 }],
         });
 
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
@@ -1159,7 +1185,9 @@ describe('identityResolutionUtils', () => {
         expect(result.error).toBeInstanceOf(BaseError);
 
         const baseError = result.error as BaseError;
-        expect(baseError.message).toContain('[Unhandled Identify Resolution Error] invalid_external_id');
+        expect(baseError.message).toContain(
+          '[Unhandled Identify Resolution Error] invalid_external_id',
+        );
       });
     });
 
@@ -1196,7 +1224,9 @@ describe('identityResolutionUtils', () => {
 
       it('should handle very large batch counts', async () => {
         const largeBatchCount = 1000;
-        const identifyCalls = Array.from({ length: largeBatchCount }, () => createMockIdentifyCall());
+        const identifyCalls = Array.from({ length: largeBatchCount }, () =>
+          createMockIdentifyCall(),
+        );
 
         mockedMapInBatches.mockImplementation(async (chunks: any[], processor: any) => {
           expect(chunks).toHaveLength(20); // 1000 / 50 = 20 chunks
@@ -1216,7 +1246,7 @@ describe('identityResolutionUtils', () => {
           {
             destination_id: 'test-dest-id',
             status: '2xx',
-          }
+          },
         );
       });
 
@@ -1237,7 +1267,7 @@ describe('identityResolutionUtils', () => {
             destination_id: 'test-dest-id',
             status: 418,
             error: 'non_2xx_status',
-          }
+          },
         );
       });
 
@@ -1283,7 +1313,7 @@ describe('identityResolutionUtils', () => {
 
       expect(mockedLoggerError).toHaveBeenCalledWith(
         'Braze identity resolution failed',
-        JSON.stringify(errorResponse)
+        JSON.stringify(errorResponse),
       );
     });
 
@@ -1293,8 +1323,8 @@ describe('identityResolutionUtils', () => {
         message: 'success',
         errors: [
           { type: 'invalid_external_id', input_array: 'aliases_to_identify', index: 0 },
-          { type: 'missing_alias_name', input_array: 'aliases_to_identify', index: 1 }
-        ]
+          { type: 'missing_alias_name', input_array: 'aliases_to_identify', index: 1 },
+        ],
       };
       const mockResponse = createMockBrazeResponse(200, errorResponse);
 
@@ -1304,7 +1334,7 @@ describe('identityResolutionUtils', () => {
 
       expect(mockedLoggerError).toHaveBeenCalledWith(
         'Braze Unhandled Identify Resolution Error',
-        JSON.stringify(errorResponse)
+        JSON.stringify(errorResponse),
       );
     });
 

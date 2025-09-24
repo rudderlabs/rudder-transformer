@@ -11,7 +11,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -89,6 +89,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.au-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -136,7 +137,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -226,7 +227,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -300,6 +301,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -345,7 +347,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -423,6 +425,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -475,7 +478,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -552,6 +555,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -604,7 +608,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -680,6 +684,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -725,7 +730,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -808,6 +813,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -871,7 +877,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -980,6 +986,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -1144,7 +1151,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1245,7 +1252,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1276,6 +1283,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -1316,7 +1324,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1398,6 +1406,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -1438,7 +1447,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1547,6 +1556,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -1620,7 +1630,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1729,6 +1739,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -1802,7 +1813,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -1929,6 +1940,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2035,7 +2047,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2156,6 +2168,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2254,7 +2267,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2334,6 +2347,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2386,7 +2400,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2466,6 +2480,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2518,7 +2533,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2582,6 +2597,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-03.braze.com/users/merge',
+              endpointPath: 'users/merge',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2625,7 +2641,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2709,7 +2725,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2793,7 +2809,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -2874,6 +2890,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -2929,7 +2946,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3035,6 +3052,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -3151,7 +3169,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3183,6 +3201,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+              endpointPath: 'v2/subscription/status/set',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -3274,7 +3293,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3306,6 +3325,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+              endpointPath: 'v2/subscription/status/set',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -3347,7 +3367,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3429,6 +3449,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -3480,7 +3501,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3590,6 +3611,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -3673,7 +3695,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3752,7 +3774,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -3897,6 +3919,7 @@ export const data = [
                 XML: {},
               },
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               files: {},
               headers: {
                 Accept: 'application/json',
@@ -3926,7 +3949,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4002,6 +4025,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -4074,7 +4098,7 @@ export const data = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4135,6 +4159,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
@@ -4242,7 +4267,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,
@@ -4343,7 +4368,7 @@ export const data = [
               originalTimestamp: '2020-09-14T12:09:37.491Z',
             },
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 restApiKey: secret1,
                 prefixProperties: true,

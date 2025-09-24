@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const {
   InstrumentationError,
   ConfigurationError,

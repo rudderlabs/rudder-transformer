@@ -51,9 +51,10 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { processBatchedIdentify } = require('./identityResolutionUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-function buildResponse(message, destination, properties, endpoint) {
+function buildResponse(message, destination, properties, endpointDetails) {
   const response = defaultRequestConfig();
-  response.endpoint = endpoint;
+  response.endpoint = endpointDetails.endpoint;
+  response.endpointPath = endpointDetails.path;
   response.userId = message.userId || message.anonymousId;
   response.body.JSON = removeUndefinedValues(properties);
   return {
@@ -198,10 +199,10 @@ async function processIdentify({ message, destination, metadata, identifyCallsAr
     });
     return;
   }
-  const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
+  const { endpoint } = getIdentifyEndpoint(getEndpointFromConfig(destination));
   const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
     'post',
-    identifyEndpoint,
+    endpoint,
     identifyPayload,
     {
       headers: {
@@ -385,7 +386,9 @@ function processGroup(message, destination) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const subscription_groups = [subscriptionGroup];
     const response = defaultRequestConfig();
-    response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+    const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+    response.endpoint = endpoint;
+    response.endpointPath = path;
     response.body.JSON = removeUndefinedValues({
       subscription_groups,
     });

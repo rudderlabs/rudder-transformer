@@ -9,20 +9,32 @@ const ConfigCategory = {
   },
 };
 
-function getIdentifyEndpoint(endPoint) {
-  return `${endPoint}/users/identify`;
+function getIdentifyEndpoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/identify`,
+    path: 'users/identify',
+  };
 }
 
-function getTrackEndPoint(endPoint) {
-  return `${endPoint}/users/track`;
+function getTrackEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/track`,
+    path: 'users/track',
+  };
 }
 
-function getSubscriptionGroupEndPoint(endPoint) {
-  return `${endPoint}/v2/subscription/status/set`;
+function getSubscriptionGroupEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/v2/subscription/status/set`,
+    path: 'v2/subscription/status/set',
+  };
 }
 
-function getAliasMergeEndPoint(endPoint) {
-  return `${endPoint}/users/merge`;
+function getAliasMergeEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/merge`,
+    path: 'users/merge',
+  };
 }
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);

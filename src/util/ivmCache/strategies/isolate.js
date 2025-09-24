@@ -85,7 +85,6 @@ class OneIVMPerTransformationIdStrategy {
         bootstrap: isolateData.bootstrap,
         customScriptModule: isolateData.customScriptModule,
         bootstrapScriptResult: isolateData.bootstrapScriptResult,
-        context: isolateData.context,
         fnRef: isolateData.fnRef,
         fName: isolateData.fName,
         logs: isolateData.logs,
@@ -120,8 +119,8 @@ class OneIVMPerTransformationIdStrategy {
               isolateData.customScriptModule.release();
             }
 
-            if (isolateData.context) {
-              isolateData.context.release();
+            if (isolateData.bootstrapScriptResult) {
+              isolateData.bootstrapScriptResult.release();
             }
 
             // Dispose the isolate

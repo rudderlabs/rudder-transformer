@@ -172,22 +172,12 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       reference: true,
     });
 
-    // Clean up the old context
-    if (cachedIsolate.context) {
-      try {
-        cachedIsolate.context.release();
-      } catch (error) {
-        logger.warn('Error releasing old context during reset', { error: error.message });
-      }
-    }
-
     // Create cached isolate with reset context
     const cachedIsolateWithResetContext = {
       isolate: cachedIsolate.isolate,
       bootstrap: cachedIsolate.bootstrap,
       customScriptModule: cachedIsolate.customScriptModule,
       bootstrapScriptResult: cachedIsolate.bootstrapScriptResult,
-      context: newContext,
       fnRef,
       fName: cachedIsolate.fName,
       logs: cachedIsolate.logs,
@@ -195,6 +185,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       // Metadata for debugging and tracking
       transformationId: cachedIsolate.transformationId,
       workspaceId: cachedIsolate.workspaceId,
+      compiledModules: cachedIsolate.compiledModules,
     };
 
     logger.debug('IVM context reset completed', {
@@ -212,15 +203,27 @@ async function createNewContext(cachedIsolate, credentials = {}) {
 }
 
 /**
- * Check if an isolate needs context reset
- * @returns {boolean} True if reset is needed
+ * Safely release execution-specific resources (context and bootstrapScriptResult)
+ * @param {Object} context The IVM context to release
+ * @param {Object} bootstrapScriptResult The bootstrap script result to release
+ * @param {Object} metadata Metadata for logging (optional)
  */
-function needsContextReset() {
-  // For isolate strategy, we always reset context to ensure clean state
-  return true;
+function clearContext(context, metadata = {}) {
+  // Release context
+  if (context) {
+    try {
+      context.release();
+      logger.debug('Execution context released successfully', metadata);
+    } catch (error) {
+      logger.warn('Error releasing execution context', {
+        error: error.message,
+        ...metadata,
+      });
+    }
+  }
 }
 
 module.exports = {
   createNewContext,
-  needsContextReset,
+  clearContext,
 };

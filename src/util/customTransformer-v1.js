@@ -2,6 +2,7 @@ const ivm = require('isolated-vm');
 
 const { getFactory, getCachedFactory } = require('./ivmFactory');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
+const { clearContext } = require('./ivmCache/contextReset');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -108,7 +109,15 @@ async function userTransformHandlerV1(
     } catch (err) {
       logger.error(`Error encountered while getting heap size: ${err.message}`);
     }
-    isolatevmFactory.destroy(isolatevm);
+
+    if (!useIvmCache || testMode) {
+      isolatevmFactory.destroy(isolatevm);
+    } else {
+      clearContext(isolatevm.context, {
+        transformationId: userTransformation.id,
+        workspaceId: userTransformation.workspaceId,
+      });
+    }
     // send the observability stats
     const tags = {
       identifier: 'v1',

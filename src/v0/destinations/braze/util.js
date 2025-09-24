@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -27,7 +28,6 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const formatGender = (gender) => {
   if (typeof gender !== 'string') {
@@ -673,7 +673,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
 
 function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
-  const validateForPurchaseEvent = (message) => {
+  const validateForPurchaseEvent = () => {
     const { properties } = message;
     const timestamp = getFieldValueFromMessage(message, 'timestamp');
     if (!properties) {
@@ -751,7 +751,7 @@ function getPurchaseObjs(message, config) {
       }
     });
   };
-  validateForPurchaseEvent(message);
+  validateForPurchaseEvent();
 
   const { products, currency: currencyCode } = message.properties;
   const timestamp = getFieldValueFromMessage(message, 'timestamp');

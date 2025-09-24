@@ -7,15 +7,15 @@
 // ========================================================================
 const Handlebars = require('handlebars');
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const lodash = require('lodash');
 const { setValue: set, groupByInBatches, mapInBatches } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const { v5 } = require('uuid');
 const stableStringify = require('fast-json-stable-stringify');
 const {
@@ -610,7 +610,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
         if (lodash.isNumber(v)) {
           result *= v;
         } else if (lodash.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
-          result *= parseFloat(v);
+          result *= Number.parseFloat(v);
         } else {
           // if there is a non number argument simply return null
           // non numbers can't be operated arithmatically
@@ -803,10 +803,10 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       curFormattedVal = Number(formattedVal);
     },
     toFloat: () => {
-      curFormattedVal = parseFloat(formattedVal);
+      curFormattedVal = Number.parseFloat(formattedVal);
     },
     toInt: () => {
-      curFormattedVal = parseInt(formattedVal, 10);
+      curFormattedVal = Number.parseInt(formattedVal, 10);
     },
     toLower: () => {
       curFormattedVal = formattedVal.toString().toLowerCase();
@@ -854,7 +854,7 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
     },
     isFloat: () => {
       if (isDefinedAndNotNull(formattedVal)) {
-        curFormattedVal = parseFloat(formattedVal);
+        curFormattedVal = Number.parseFloat(formattedVal);
         if (Number.isNaN(curFormattedVal)) {
           throw new InstrumentationError('Invalid float value');
         }
@@ -1379,9 +1379,9 @@ const generateExclusionList = (mappingConfig) =>
 function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
   // Define reserved words
-  const reservedWords = ['__proto__', 'constructor', 'prototype'];
+  const reservedWords = new Set(['__proto__', 'constructor', 'prototype']);
 
-  const isReservedWord = (key) => reservedWords.includes(key);
+  const isReservedWord = (key) => reservedWords.has(key);
 
   if (Array.isArray(keys)) {
     keys.forEach((key) => {

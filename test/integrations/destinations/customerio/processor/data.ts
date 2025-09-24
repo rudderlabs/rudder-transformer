@@ -66,6 +66,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/user%2Fwith%2Fslashes/events',
+              endpointPath: 'v1/customers/events',
               userId: 'user/with/slashes',
               headers: {
                 Authorization: authHeader1,
@@ -133,6 +134,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/cio_1234',
+              endpointPath: 'v1/customers',
               userId: 'cio_1234',
               headers: {
                 Authorization: authHeader1,
@@ -364,6 +366,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/123456',
+              endpointPath: 'v1/customers',
               userId: '123456',
               headers: {
                 Authorization: authHeader1,
@@ -591,7 +594,8 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@gmail.com',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40gmail.com',
+              endpointPath: 'v1/customers',
               userId: '123456',
               headers: {
                 Authorization: authHeader1,
@@ -701,6 +705,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -806,6 +811,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -910,7 +916,8 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
+              endpointPath: 'v1/customers/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1016,6 +1023,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1138,6 +1146,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -1250,6 +1259,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/abcxyz',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -1353,6 +1363,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices/somel',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -1455,7 +1466,8 @@ export const data = [
               },
               files: {},
               endpoint:
-                'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices/somel',
+                'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices/somel',
+              endpointPath: 'v1/customers/devices/delete',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1657,7 +1669,8 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/devices',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/devices',
+              endpointPath: 'v1/customers/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1769,6 +1782,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -1881,6 +1895,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -1992,6 +2007,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2103,6 +2119,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2215,6 +2232,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2319,6 +2337,7 @@ export const data = [
               files: {},
               endpoint:
                 'https://track.customer.io/api/v1/customers/12345/devices/sample_device_token',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2444,6 +2463,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/123456',
+              endpointPath: 'v1/customers',
               userId: '123456',
               headers: {
                 Authorization: authHeader1,
@@ -2553,6 +2573,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2658,6 +2679,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -2762,7 +2784,9 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              endpoint: 'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint:
+                'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/events',
+              endpointPath: 'v1/customers/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -2868,6 +2892,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -2990,6 +3015,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3102,6 +3128,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3205,6 +3232,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices/somel',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3407,7 +3435,8 @@ export const data = [
               },
               files: {},
               endpoint:
-                'https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/devices',
+                'https://track-eu.customer.io/api/v1/customers/test%40rudderstack.com/devices',
+              endpointPath: 'v1/customers/devices',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -3519,6 +3548,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               headers: {
                 Authorization: authHeader1,
@@ -3631,6 +3661,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3742,6 +3773,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3853,6 +3885,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -3965,6 +3998,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track-eu.customer.io/api/v1/customers/12345/devices',
+              endpointPath: 'v1/customers/devices',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -4069,6 +4103,7 @@ export const data = [
               files: {},
               endpoint:
                 'https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token',
+              endpointPath: 'v1/customers/devices/delete',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -4160,6 +4195,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4265,7 +4301,8 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
+              endpointPath: 'v1/customers/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4370,6 +4407,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/events',
+              endpointPath: 'v1/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4475,7 +4513,8 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://track.customer.io/api/v1/customers/test@rudderstack.com/events',
+              endpoint: 'https://track.customer.io/api/v1/customers/test%40rudderstack.com/events',
+              endpointPath: 'v1/customers/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4592,6 +4631,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v1/customers/dummy-user-id-100/events',
+              endpointPath: 'v1/customers/events',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4706,6 +4746,7 @@ export const data = [
               type: 'REST',
               method: 'PUT',
               endpoint: 'https://track-eu.customer.io/api/v1/customers/dummy-user-id-100',
+              endpointPath: 'v1/customers',
               headers: {
                 Authorization: authHeader1,
               },
@@ -4837,7 +4878,8 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'PUT',
-              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles@hotmail.com',
+              endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles%40hotmail.com',
+              endpointPath: 'v1/customers',
               headers: {
                 Authorization: authHeader2,
               },
@@ -4965,6 +5007,7 @@ export const data = [
               type: 'REST',
               method: 'PUT',
               endpoint: 'https://track.customer.io/api/v1/customers/xaviercharles',
+              endpointPath: 'v1/customers',
               headers: {
                 Authorization: authHeader2,
               },
@@ -5140,6 +5183,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -5317,6 +5361,7 @@ export const data = [
               method: 'POST',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
+              endpointPath: 'v1/customers/events',
               headers: {
                 Authorization: authHeader3,
               },
@@ -5493,6 +5538,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -5669,6 +5715,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -5842,6 +5889,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6018,6 +6066,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6195,6 +6244,7 @@ export const data = [
               method: 'POST',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/events',
+              endpointPath: 'v1/customers/events',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6372,6 +6422,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6548,6 +6599,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6721,6 +6773,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -6897,6 +6950,7 @@ export const data = [
               method: 'PUT',
               endpoint:
                 'https://track.customer.io/api/v1/customers/e91e0378-63fe-11ec-82ac-0a028ee659c3/devices',
+              endpointPath: 'v1/customers/devices',
               headers: {
                 Authorization: authHeader3,
               },
@@ -7038,6 +7092,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7191,6 +7246,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7347,6 +7403,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7503,6 +7560,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7659,6 +7717,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7829,6 +7888,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -7999,6 +8059,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://track-eu.customer.io/api/v2/batch',
+              endpointPath: 'v2/batch',
               headers: {
                 Authorization: authHeader4,
               },
@@ -8144,6 +8205,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -8249,6 +8311,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,
@@ -8342,6 +8405,7 @@ export const data = [
               },
               files: {},
               endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+              endpointPath: 'v1/customers/events',
               userId: '12345',
               headers: {
                 Authorization: authHeader1,

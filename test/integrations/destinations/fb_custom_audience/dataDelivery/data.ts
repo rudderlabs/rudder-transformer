@@ -1,4 +1,3 @@
-import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 import { testScenariosForV1API } from './business';
 import { otherScenariosV1 } from './other';
 
@@ -15,7 +14,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'successResponse',
           },
@@ -98,7 +97,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'permissionMissingError',
           },
@@ -180,7 +179,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
@@ -249,7 +248,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
@@ -316,7 +315,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
@@ -384,7 +383,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
@@ -451,7 +450,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
@@ -518,7 +517,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },
@@ -586,7 +585,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError',
           },
@@ -660,7 +659,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'messagingTOSNotAccepted',
           },
@@ -728,7 +727,7 @@ export const existingTestData = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: getEndPoint('aud1'),
+          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError-2',
           },

@@ -16,7 +16,14 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
 } = require('../../util');
-const { mappingConfig, ConfigCategory, DEBUG_ENDPOINT, ENDPOINT } = require('./config');
+const {
+  mappingConfig,
+  ConfigCategory,
+  DEBUG_ENDPOINT,
+  ENDPOINT,
+  DEBUG_ENDPOINT_PATH,
+  ENDPOINT_PATH,
+} = require('./config');
 const { finaliseAnalyticsConsents } = require('../../util/googleUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -527,8 +534,10 @@ const buildDeliverablePayload = (payload, Config) => {
   // ref: https://developers.google.com/analytics/devguides/collection/protocol/ga4/validating-events?client_type=firebase#sending_events_for_validation
   if (Config.debugMode) {
     response.endpoint = DEBUG_ENDPOINT;
+    response.endpointPath = DEBUG_ENDPOINT_PATH;
   } else {
     response.endpoint = ENDPOINT;
+    response.endpointPath = ENDPOINT_PATH;
   }
   response.headers = {
     HOST: 'www.google-analytics.com',

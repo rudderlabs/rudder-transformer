@@ -104,7 +104,10 @@ describe('Unit test cases for customerio isdeviceRelatedEventName', () => {
 describe('Unit test cases for customerio identifyResponseBuilder', () => {
   it('Device token name does not match with event name as well as allowed list', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v1/customers/user1',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/customers/user1',
+        path: 'v1/customers',
+      },
       rawPayload: {
         anonymous_id: 'anonId',
         city: 'kolkata',
@@ -134,12 +137,23 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
       expect(error.message).toEqual(expectedOutput);
     }
   });
+  it('Should throw error for null userId before encoding', async () => {
+    let expectedOutput = 'userId or email is not present';
+    try {
+      identifyResponseBuilder(null, getIdentifyTestMessage());
+    } catch (error) {
+      expect(error.message).toEqual(expectedOutput);
+    }
+  });
 });
 
 describe('Unit test cases for customerio aliasResponseBuilder', () => {
   it('Device token name does not match with event name as well as allowed list', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/merge_customers',
+        path: 'v1/merge_customers',
+      },
       rawPayload: { primary: { id: 'user1' }, secondary: { id: 'user0' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
@@ -147,7 +161,10 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
   });
   it('Merging happending with previous_id as email and present one as id', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/merge_customers',
+        path: 'v1/merge_customers',
+      },
       rawPayload: { primary: { id: 'user1' }, secondary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
@@ -155,7 +172,10 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
   });
   it('Merging happending with userId as email and present one as id', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/merge_customers',
+        path: 'v1/merge_customers',
+      },
       rawPayload: { secondary: { id: 'user1' }, primary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
@@ -163,7 +183,10 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
   });
   it('Merging happending with userId as email and present one as id', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/merge_customers',
+        path: 'v1/merge_customers',
+      },
       rawPayload: { secondary: { email: 'user1@test.com' }, primary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
@@ -176,7 +199,10 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
 describe('Unit test cases for customerio groupResponseBuilder', () => {
   it('Device token name does not match with event name as well as allowed list', async () => {
     let expectedOutput = {
-      endpoint: 'https://track.customer.io/api/v2/batch',
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v2/batch',
+        path: 'v2/batch',
+      },
       rawPayload: {
         action: 'identify',
         attributes: {
@@ -205,9 +231,19 @@ describe('Unit test cases for customerio encodePathParameter', () => {
       expectedOutput: 'test%2Fparam',
     },
     {
-      name: "should not encode path parameter without '/'",
-      param: 'some@email.com',
-      expectedOutput: 'some@email.com',
+      name: "should encode email address with '@' and '+'",
+      param: 'test+user@email.com',
+      expectedOutput: 'test%2Buser%40email.com',
+    },
+    {
+      name: 'should encode path parameter with spaces',
+      param: 'user with spaces',
+      expectedOutput: 'user%20with%20spaces',
+    },
+    {
+      name: 'should encode path parameter with special characters',
+      param: 'user#hash?query=value',
+      expectedOutput: 'user%23hash%3Fquery%3Dvalue',
     },
     {
       name: 'should not encode non-string parameter',
@@ -218,6 +254,11 @@ describe('Unit test cases for customerio encodePathParameter', () => {
       name: 'should not encode null parameter',
       param: null,
       expectedOutput: null,
+    },
+    {
+      name: 'should not encode undefined parameter',
+      param: undefined,
+      expectedOutput: undefined,
     },
   ];
 
@@ -291,7 +332,7 @@ describe('Unit test cases for customerio defaultResponseBuilder with userId cont
       );
 
       // Check that the userId is properly encoded in the endpoint URL
-      expect(result.endpoint).toEqual(testCase.expectedEndpoint);
+      expect(result.endpointDetails.endpoint).toEqual(testCase.expectedEndpoint);
 
       // Verify other parts of the response
       if (testCase.expectedPayloadProps.data) {

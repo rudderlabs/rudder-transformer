@@ -5,7 +5,6 @@ const {
   reduceInBatches,
 } = require('@rudderstack/integrations-lib');
 const {
-  getValueFromMessage,
   getAccessToken,
   constructPayload,
   returnArrayOfSubarrays,
@@ -27,7 +26,6 @@ const processRecordEventArray = async (records, context, operationType) => {
     message,
     destination,
     accessToken,
-    developerToken,
     audienceId,
     typeOfList,
     userSchema,
@@ -59,7 +57,7 @@ const processRecordEventArray = async (records, context, operationType) => {
   );
 
   const toSendEvents = [outputPayload].map((data) =>
-    responseBuilder(accessToken, developerToken, data, destination, audienceId, consentObj),
+    responseBuilder(accessToken, data, destination, audienceId, consentObj),
   );
 
   return getSuccessRespEvents(toSendEvents, metadata, destination, true);
@@ -68,13 +66,11 @@ const processRecordEventArray = async (records, context, operationType) => {
 async function preparePayload(events, config) {
   const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
-  const developerToken = getValueFromMessage(metadata, 'secret.developer_token');
 
   const context = {
     message,
     destination,
     accessToken,
-    developerToken,
     ...config,
   };
 

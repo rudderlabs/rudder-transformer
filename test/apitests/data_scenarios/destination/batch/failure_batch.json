@@ -1423,7 +1423,8 @@
           "Content-Type": "application/json"
         },
         "version": "1",
-        "endpoint": "https://api2.amplitude.com/batch"
+        "endpoint": "https://api2.amplitude.com/batch",
+        "endpointPath": "batch"
       },
       "metadata": [
         {

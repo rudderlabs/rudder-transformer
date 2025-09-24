@@ -212,14 +212,18 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 500,
-            message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
+            status: 200,
+            message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
+            destinationResponse: {
+              response: {
+                status: 422,
+                message: 'EventType must be one of "click", "conversion" or "view"',
+              },
+              status: 422,
+            },
             response: [
               {
-                error: JSON.stringify({
-                  status: 422,
-                  message: `EventType must be one of "click", "conversion" or "view"`,
-                }),
+                error: 'EventType must be one of "click", "conversion" or "view"',
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -277,14 +281,18 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 500,
-            message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
+            status: 200,
+            message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
+            destinationResponse: {
+              response: {
+                status: 422,
+                message: 'EventType must be one of "click", "conversion" or "view"',
+              },
+              status: 422,
+            },
             response: [
               {
-                error: JSON.stringify({
-                  status: 422,
-                  message: `EventType must be one of "click", "conversion" or "view"`,
-                }),
+                error: 'EventType must be one of "click", "conversion" or "view"',
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -298,10 +306,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 500,
               },
               {
-                error: JSON.stringify({
-                  status: 422,
-                  message: `EventType must be one of "click", "conversion" or "view"`,
-                }),
+                error: 'EventType must be one of "click", "conversion" or "view"',
                 metadata: {
                   jobId: 2,
                   attemptNum: 1,
@@ -315,10 +320,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 statusCode: 500,
               },
               {
-                error: JSON.stringify({
-                  status: 422,
-                  message: `EventType must be one of "click", "conversion" or "view"`,
-                }),
+                error: 'EventType must be one of "click", "conversion" or "view"',
                 metadata: {
                   jobId: 3,
                   attemptNum: 1,
@@ -333,6 +335,90 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               },
             ],
             statTags: retryStatTags,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'algolia_v1_bussiness_scenario_4',
+    name: 'algolia',
+    description:
+      '[Proxy v1 API] :: Test invalid event processing when dontBatch flag is explicitly set to true',
+    successCriteria:
+      'Should return output status 422, containing individual response with statusCode 422 for the invalid event, preserving dontBatch=true in metadata',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestProperties.commonHeaders,
+            endpoint: 'https://insights.algolia.io/1/events',
+            JSON: commonRequestProperties.singleInValidEvent,
+          },
+          [
+            {
+              jobId: 1,
+              attemptNum: 1,
+              userId: 'default-userId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              sourceId: 'default-sourceId',
+              secret: {
+                accessToken: defaultAccessToken,
+              },
+              dontBatch: true,
+            },
+          ],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: '[ALGOLIA Response V1 Handler] - Request Processed with Errors',
+            destinationResponse: {
+              response: {
+                status: 422,
+                message: 'EventType must be one of "click", "conversion" or "view"',
+              },
+              status: 422,
+            },
+            response: [
+              {
+                error: 'EventType must be one of "click", "conversion" or "view"',
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  sourceId: 'default-sourceId',
+                  secret: {
+                    accessToken: defaultAccessToken,
+                  },
+                  dontBatch: true,
+                },
+                statusCode: 422,
+              },
+            ],
+            statTags: {
+              errorCategory: 'network',
+              errorType: 'retryable',
+              destType: 'ALGOLIA',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'dataDelivery',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
           },
         },
       },

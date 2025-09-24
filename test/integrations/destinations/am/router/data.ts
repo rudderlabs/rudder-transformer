@@ -136,6 +136,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
                   headers: { 'Content-Type': 'application/json' },
                   params: {},
                   body: {
@@ -197,6 +198,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
                   headers: { 'Content-Type': 'application/json' },
                   params: {},
                   body: {

@@ -17,6 +17,7 @@ const {
 
 const logger = require('../../../logger');
 const {
+  getEndpointDetails,
   getEventChunks,
   identifyResponseBuilder,
   aliasResponseBuilder,
@@ -75,7 +76,8 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   }
 
   const payload = removeUndefinedValues(temporaryResponseDetails.rawPayload);
-  response.endpoint = temporaryResponseDetails.endpoint;
+  response.endpoint = temporaryResponseDetails.endpointDetails.endpoint;
+  response.endpointPath = temporaryResponseDetails.endpointDetails.path;
   response.method = temporaryResponseDetails.requestConfig.requestMethod;
   response.body.JSON = payload;
 
@@ -137,9 +139,11 @@ function process(event) {
 const batchEvents = (successRespList) => {
   const batchedResponseList = [];
   const groupEvents = [];
+  const endpointDetails = getEndpointDetails({ eventType: 'objectEvent' });
+
   // Filtering out group calls to process batching
   successRespList.forEach((resp) => {
-    if (!resp.message.endpoint.includes('v2/batch')) {
+    if (!resp.message.endpoint?.includes(endpointDetails.path)) {
       batchedResponseList.push(
         getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
       );
@@ -151,7 +155,7 @@ const batchEvents = (successRespList) => {
   if (groupEvents.length > 0) {
     // Extracting metadata, destination and message from the first event in a batch
     const { destination, message } = groupEvents[0];
-    const { headers, endpoint } = message;
+    const { headers } = message;
 
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = getEventChunks(groupEvents);
@@ -161,7 +165,8 @@ const batchEvents = (successRespList) => {
      */
     eventChunks.forEach((chunk) => {
       const request = defaultRequestConfig();
-      request.endpoint = endpoint;
+      request.endpoint = endpointDetails.endpoint;
+      request.endpointPath = endpointDetails.path;
       request.headers = { ...headers, 'Content-Type': JSON_MIME_TYPE };
       // Setting the request body to an object with a single property called "batch" containing the batched data
       request.body.JSON = { batch: chunk.data };

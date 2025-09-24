@@ -32,12 +32,12 @@ jobs:
           echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -46,7 +46,7 @@ jobs:
         env:
           HUSKY: 0
         run: |
-          npm ci
+          npm ci && npm run prepare
 
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
@@ -166,7 +166,7 @@ jobs:
 
       - name: Notify Slack Channel
         id: slack
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a  # v2.1.1
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
         continue-on-error: true
         env:
           PROJECT_NAME: 'Rudder Transformer'

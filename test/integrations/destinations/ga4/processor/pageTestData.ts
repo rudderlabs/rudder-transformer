@@ -90,8 +90,6 @@ const expectedOutputParams = {
   page_location: 'http://morkey.in',
 };
 
-const eventEndPoint = 'https://www.google-analytics.com/mp/collect';
-
 export const pageTestData: ProcessorTestData[] = [
   {
     id: 'ga4-page-test-1',
@@ -132,7 +130,8 @@ export const pageTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -202,7 +201,8 @@ export const pageTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -275,7 +275,8 @@ export const pageTestData: ProcessorTestData[] = [
           {
             output: transformResultBuilder({
               method: 'POST',
-              endpoint: eventEndPoint,
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
               headers: commonOutputHeaders,
               params: commonOutputParams,
               JSON: {
@@ -508,6 +509,7 @@ export const pageTestData: ProcessorTestData[] = [
               },
               version: '1',
               endpoint: 'https://www.google-analytics.com/mp/collect',
+              endpointPath: 'mp/collect',
             },
             statusCode: 200,
             metadata: generateMetadata(1),

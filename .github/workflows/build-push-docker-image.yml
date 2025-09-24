@@ -68,7 +68,7 @@ jobs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - id: files
@@ -96,7 +96,7 @@ jobs:
     needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
@@ -111,7 +111,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.11.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.7.0
+        uses: rudderlabs/build-scan-push-action@v1.8.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -131,7 +131,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.7.0
+        uses: rudderlabs/build-scan-push-action@v1.8.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -152,7 +152,7 @@ jobs:
     needs: [get_sha, get_changed_files]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.1
+        uses: actions/checkout@v5
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
@@ -167,7 +167,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.11.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.7.0
+        uses: rudderlabs/build-scan-push-action@v1.8.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -187,7 +187,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.7.0
+        uses: rudderlabs/build-scan-push-action@v1.8.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}

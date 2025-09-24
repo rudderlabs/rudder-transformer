@@ -208,6 +208,7 @@ export const data = [
                 type: 'REST',
                 method: 'PUT',
                 endpoint: 'https://track.customer.io/api/v1/customers/123456',
+                endpointPath: 'v1/customers',
                 headers: { Authorization: authHeader1 },
                 params: {},
                 body: {
@@ -249,6 +250,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://track.customer.io/api/v1/customers/12345/events',
+                endpointPath: 'v1/customers/events',
                 headers: { Authorization: authHeader1 },
                 params: {},
                 body: {
@@ -289,6 +291,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://track.customer.io/api/v2/batch',
+                endpointPath: 'v2/batch',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

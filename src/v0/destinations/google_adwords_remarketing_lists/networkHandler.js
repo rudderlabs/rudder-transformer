@@ -8,6 +8,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
+const { getDeveloperToken } = require('../../util/googleUtils');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -110,6 +111,8 @@ const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
 const gaAudienceProxyRequest = async (request) => {
   const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
+
+  headers['developer-token'] = getDeveloperToken();
 
   // step1: offlineUserDataJobs creation
 

@@ -19,14 +19,8 @@ const {
   MAPPING_CONFIG,
   OBJECT_ACTIONS,
   CONFIG_CATEGORIES,
-  IDENTITY_ENDPOINT,
-  MERGE_USER_ENDPOINT,
-  USER_EVENT_ENDPOINT,
-  ANON_EVENT_ENDPOINT,
-  OBJECT_EVENT_ENDPOINT,
   DEFAULT_OBJECT_ACTION,
-  DEVICE_DELETE_ENDPOINT,
-  DEVICE_REGISTER_ENDPOINT,
+  ENDPOINTS,
 } = require('./config');
 
 const deviceRelatedEventNames = [
@@ -36,6 +30,11 @@ const deviceRelatedEventNames = [
 ];
 
 const deviceDeleteRelatedEventName = 'Application Uninstalled';
+
+const getEndpointDetails = ({ eventType, id, deviceId }) => {
+  const { endpoint, path } = ENDPOINTS[eventType];
+  return { endpoint: endpoint.replace(':id', id).replace(':device_id', deviceId), path };
+};
 
 const encodePathParameter = (param) => {
   if (typeof param !== 'string') return param;
@@ -107,10 +106,10 @@ const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
   const id = userId || getFieldValueFromMessage(message, 'email');
-  const encodedId = encodePathParameter(id);
   if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
+  const encodedId = encodePathParameter(id);
 
   // populate speced traits
   const identityTrailts = getFieldValueFromMessage(message, 'traits') || {};
@@ -165,10 +164,10 @@ const identifyResponseBuilder = (userId, message) => {
   if (message?.anonymousId) {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
-  const endpoint = IDENTITY_ENDPOINT.replace(':id', encodedId);
+  const endpointDetails = getEndpointDetails({ eventType: 'identity', id: encodedId });
   const requestConfig = defaultPutRequestConfig;
 
-  return { rawPayload, endpoint, requestConfig };
+  return { rawPayload, endpointDetails, requestConfig };
 };
 
 const aliasResponseBuilder = (message, userId) => {
@@ -176,7 +175,7 @@ const aliasResponseBuilder = (message, userId) => {
   if (!userId || !message.previousId) {
     throw new InstrumentationError('Both userId and previousId are mandatory for merge operation');
   }
-  const endpoint = MERGE_USER_ENDPOINT;
+  const endpointDetails = getEndpointDetails({ eventType: 'mergeUser' });
   const requestConfig = defaultPostRequestConfig;
   const cioProperty = validator.isEmail(userId) ? 'email' : 'id';
   const prevCioProperty = validator.isEmail(message.previousId) ? 'email' : 'id';
@@ -189,7 +188,7 @@ const aliasResponseBuilder = (message, userId) => {
     },
   };
 
-  return { rawPayload, endpoint, requestConfig };
+  return { rawPayload, endpointDetails, requestConfig };
 };
 
 const groupResponseBuilder = (message) => {
@@ -213,14 +212,14 @@ const groupResponseBuilder = (message) => {
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;
-  const endpoint = OBJECT_EVENT_ENDPOINT;
+  const endpointDetails = getEndpointDetails({ eventType: 'objectEvent' });
 
-  return { rawPayload, endpoint, requestConfig };
+  return { rawPayload, endpointDetails, requestConfig };
 };
 
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
   const rawPayload = {};
-  let endpoint;
+  let endpointDetails;
   let trimmedEvName;
   let requestConfig = defaultPostRequestConfig;
   // any other event type except identify
@@ -234,9 +233,13 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     if (!id || !token) {
       throw new InstrumentationError('userId/email or device_token not present');
     }
-    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', encodedToken);
+    endpointDetails = getEndpointDetails({
+      eventType: 'deviceDelete',
+      id,
+      deviceId: encodedToken,
+    });
     requestConfig = defaultDeleteRequestConfig;
-    return { rawPayload, endpoint, requestConfig };
+    return { rawPayload, endpointDetails, requestConfig };
   }
 
   // DEVICE registration
@@ -273,12 +276,12 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   }
 
   if (id) {
-    endpoint =
+    endpointDetails =
       isDeviceRelatedEvent && token
-        ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
-        : USER_EVENT_ENDPOINT.replace(':id', id);
+        ? getEndpointDetails({ eventType: 'deviceRegister', id })
+        : getEndpointDetails({ eventType: 'userEvent', id });
   } else {
-    endpoint = ANON_EVENT_ENDPOINT;
+    endpointDetails = getEndpointDetails({ eventType: 'anonEvent' });
     // CustomerIO supports 100byte of event name for anonymous users
     if (messageType === EventType.SCREEN) {
       // 100 - len(`Viewed  Screen`) = 86
@@ -298,7 +301,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     set(rawPayload, 'name', trimmedEvName);
   }
 
-  return { rawPayload, endpoint, requestConfig };
+  return { rawPayload, endpointDetails, requestConfig };
 };
 
 const validateConfigFields = (destination) => {
@@ -311,6 +314,7 @@ const validateConfigFields = (destination) => {
 };
 
 module.exports = {
+  getEndpointDetails,
   encodePathParameter,
   getEventChunks,
   identifyResponseBuilder,

@@ -247,6 +247,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: `https://api-01.moengage.com/v1/event/${secret1}`,
+                endpointPath: 'event',
                 headers: {
                   'Content-Type': 'application/json',
                   'MOE-APPKEY': secret1,
@@ -370,6 +371,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: `https://api-01.moengage.com/v1/customer/${secret1}`,
+                endpointPath: 'customer',
                 headers: {
                   'Content-Type': 'application/json',
                   'MOE-APPKEY': secret1,

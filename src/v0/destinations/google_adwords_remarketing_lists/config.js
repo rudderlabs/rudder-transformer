@@ -2,6 +2,7 @@ const { getMappingConfig } = require('../../util');
 
 const API_VERSION = 'v19';
 
+const OFFLINE_USER_DATA_JOBS_ENDPOINT = 'offlineUserDataJobs';
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;
 const CONFIG_CATEGORIES = {
   AUDIENCE_LIST: { type: 'audienceList', name: 'offlineDataJobs' },
@@ -26,6 +27,7 @@ const consentConfigMap = {
 
 module.exports = {
   API_VERSION,
+  OFFLINE_USER_DATA_JOBS_ENDPOINT,
   BASE_ENDPOINT,
   TYPEOFLIST,
   attributeMapping,

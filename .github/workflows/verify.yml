@@ -30,7 +30,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci && npm run prepare
 
       - id: files
         uses: Ana06/get-changed-files@v1.2

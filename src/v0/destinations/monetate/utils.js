@@ -74,7 +74,6 @@ const formatValue = (value, format, required) => {
     let key;
     let val;
     const formatKeys = Object.keys(format);
-    // eslint-disable-next-line no-restricted-syntax
     for (const formatKey of formatKeys) {
       key = formatKey;
       // Object.keys(format).forEach(key => {

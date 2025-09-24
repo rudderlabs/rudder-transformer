@@ -304,7 +304,6 @@ const hasCircularReference = (obj, seen = []) => {
   }
 
   seen.push(obj);
-  // eslint-disable-next-line no-restricted-syntax
   for (const value of Object.values(obj)) {
     if (hasCircularReference(value, seen)) {
       return true;
@@ -607,7 +606,6 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
   switch (operation) {
     case 'multiplication':
       result = 1;
-      // eslint-disable-next-line no-restricted-syntax
       for (const v of argValues) {
         if (lodash.isNumber(v)) {
           result *= v;
@@ -622,7 +620,6 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       return result;
     case 'addition':
       result = 0;
-      // eslint-disable-next-line no-restricted-syntax
       for (const v of argValues) {
         if (lodash.isNumber(v)) {
           result += v;
@@ -644,7 +641,6 @@ const getValueFromMessage = (message, sourceKeys) => {
       logger.warn('List with single element is not ideal. Use it as string instead');
     }
     // got the possible sourceKeys
-    // eslint-disable-next-line no-restricted-syntax
     for (const sourceKey of sourceKeys) {
       let val = null;
       // if the sourceKey is an object we expect it to be a operation
@@ -1058,7 +1054,6 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
 const getIntegrationsObj = (message, destinationName = null) => {
   if (destinationName) {
     const canonicalNames = DestCanonicalNames[destinationName];
-    // eslint-disable-next-line no-restricted-syntax
     for (const canonicalName of canonicalNames) {
       const integrationsObj = get(message, `integrations.${canonicalName}`);
       if (integrationsObj) {
@@ -1848,7 +1843,6 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const respList = [];
-  // eslint-disable-next-line no-restricted-syntax
   for (const input of inputs) {
     try {
       let resp = input.message;

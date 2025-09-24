@@ -128,7 +128,6 @@ const sendEventToDestination = async (curResponse, dest, errorFound) => {
     const destResponseStatuses = [];
 
     const transformedPayloads = curResponse.dest_transformed_payload;
-    // eslint-disable-next-line no-restricted-syntax
     for (const payload of transformedPayloads) {
       // eslint-disable-next-line no-await-in-loop
       const parsedResponse = await sendToDestination(dest, payload);

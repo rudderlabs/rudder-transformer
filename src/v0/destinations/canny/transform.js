@@ -104,20 +104,18 @@ const trackResponseBuilder = async (message, { Config }, metadata) => {
   const event = message.event?.toLowerCase().trim();
   validateEventMapping(configuredEventsMap, event);
 
-  const responseArray = [];
+  const responsePromises = [];
   const configuredSourceEvents = Object.keys(configuredEventsMap);
-  // eslint-disable-next-line no-restricted-syntax
   for (const configuredSourceEvent of configuredSourceEvents) {
     if (configuredSourceEvent === event) {
       const destinationEvents = configuredEventsMap[event];
-      // eslint-disable-next-line no-restricted-syntax
       for (const destinationEvent of destinationEvents) {
-        // eslint-disable-next-line no-await-in-loop
-        const response = await getTrackResponse(apiKey, message, destinationEvent, metadata);
-        responseArray.push(response);
+        responsePromises.push(getTrackResponse(apiKey, message, destinationEvent, metadata));
       }
     }
   }
+
+  const responseArray = await Promise.all(responsePromises);
 
   return responseArray;
 };

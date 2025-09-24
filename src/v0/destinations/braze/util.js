@@ -168,7 +168,6 @@ const BrazeDedupUtility = {
   prepareInputForDedup(inputs) {
     const externalIds = [];
     const aliasIds = [];
-    // eslint-disable-next-line no-restricted-syntax
     for (const input of inputs) {
       const { message } = input;
       const brazeExternalId = getDestinationExternalID(message, 'brazeExternalId');

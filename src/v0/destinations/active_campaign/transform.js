@@ -346,7 +346,6 @@ const customListProcessor = async ({ message, destination, metadata }, category,
   // status information
   // Ref: https://developers.activecampaign.com/reference/update-list-status-for-contact/
   const promises = [];
-  // eslint-disable-next-line no-restricted-syntax
   for (const li of listArr) {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
       const endpoint = `${destination.Config.apiUrl}${mergeListWithContactUrl}`;

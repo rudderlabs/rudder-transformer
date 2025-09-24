@@ -1,50 +1,7 @@
-import { generateMetadata, generateTrackPayload, transformResultBuilder } from '../../../testUtils';
-import { Destination } from '../../../../../src/types';
+import { generateMetadata, generateTrackPayload, overrideDestination } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
 import { apiKey } from './maskedSecrets';
-
-const commonDestination: Destination = {
-  ID: '12335',
-  Name: 'dub-destination',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'dub',
-    DisplayName: 'Dub',
-    Config: {},
-  },
-  WorkspaceID: '123',
-  Transformations: [],
-  Config: {
-    apiKey: apiKey,
-    eventMapping: [
-      {
-        from: 'User Signed Up',
-        to: 'LEAD_CONVERSIONt',
-      },
-      {
-        from: 'Product Added to Cart',
-        to: 'LEAD_CONVERSIONt',
-      },
-      {
-        from: 'Newsletter Subscribed',
-        to: 'LEAD_CONVERSIONt',
-      },
-      {
-        from: 'Order Completed',
-        to: 'SALES_CONVERSION',
-      },
-      {
-        from: 'Subscription Started',
-        to: 'SALES_CONVERSION',
-      },
-      {
-        from: 'Plan Upgraded',
-        to: 'SALES_CONVERSION',
-      },
-    ],
-  },
-  Enabled: true,
-};
+import { destination } from './common';
 
 const commonTimestamp = '2023-10-14T10:00:00.000Z';
 
@@ -68,7 +25,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               userId: 'customer_98765',
               event: 'Order Completed',
               properties: {
-                total: 9999,
+                total: 99.99,
                 currency: 'USD',
                 orderId: 'order_12345',
                 invoiceId: 'inv_67890',
@@ -77,7 +34,6 @@ export const saleEventTestData: ProcessorTestData[] = [
                   {
                     product_id: 'prod_123',
                     name: 'Premium Widget',
-                    amount: 9999,
                     quantity: 1,
                   },
                 ],
@@ -94,7 +50,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             }),
             metadata: generateMetadata(1),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',
@@ -125,6 +81,17 @@ export const saleEventTestData: ProcessorTestData[] = [
                   eventName: 'Order Completed',
                   paymentProcessor: 'stripe',
                   invoiceId: 'inv_67890',
+                  metadata: {
+                    products: [
+                      {
+                        product_id: 'prod_123',
+                        name: 'Premium Widget',
+                        quantity: 1,
+                      },
+                    ],
+                    category: 'Electronics',
+                    brand: 'TechCorp',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -175,7 +142,9 @@ export const saleEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             },
             metadata: generateMetadata(2),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {
+              convertAmountToCents: false,
+            }),
           },
         ],
         method: 'POST',
@@ -202,6 +171,9 @@ export const saleEventTestData: ProcessorTestData[] = [
                   amount: 2999, // Amount in cents
                   currency: 'usd', // Default currency
                   eventName: 'Subscription Started',
+                  metadata: {
+                    plan: 'Pro Plan',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -235,7 +207,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'track',
               event: 'Plan Upgraded',
               properties: {
-                total: 14999,
+                total: 14.78,
                 currency: 'EUR',
                 invoiceId: 'upgrade_invoice_789',
                 paymentProcessor: 'paypal',
@@ -259,7 +231,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             },
             metadata: generateMetadata(3),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',
@@ -284,11 +256,16 @@ export const saleEventTestData: ProcessorTestData[] = [
                 JSON: {
                   customerEmail: 'enterprise@company.com',
                   customerExternalId: 'enterprise_user_789',
-                  amount: 14999, // Amount in cents
+                  amount: 1478, // Amount in cents
                   currency: 'EUR',
                   eventName: 'Plan Upgraded',
                   paymentProcessor: 'paypal',
                   invoiceId: 'upgrade_invoice_789',
+                  metadata: {
+                    previousPlan: 'Basic',
+                    newPlan: 'Enterprise',
+                    upgrade_type: 'immediate',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -322,7 +299,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'track',
               event: 'Order Completed',
               properties: {
-                total: 755,
+                total: 7.55,
                 orderId: 'fallback_order_999',
                 // Note: No invoiceId provided
               },
@@ -338,7 +315,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             },
             metadata: generateMetadata(4),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',

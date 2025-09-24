@@ -1,50 +1,7 @@
-import { generateMetadata, generateTrackPayload, transformResultBuilder } from '../../../testUtils';
-import { Destination } from '../../../../../src/types';
+import { generateMetadata, generateTrackPayload, overrideDestination } from '../../../testUtils';
 import { ProcessorTestData } from '../../../testTypes';
+import { destination } from './common';
 import { apiKey } from './maskedSecrets';
-
-const commonDestination: Destination = {
-  ID: '12335',
-  Name: 'dub-destination',
-  DestinationDefinition: {
-    ID: '123',
-    Name: 'dub',
-    DisplayName: 'Dub',
-    Config: {},
-  },
-  WorkspaceID: '123',
-  Transformations: [],
-  Config: {
-    apiKey: apiKey,
-    eventMapping: [
-      {
-        from: 'User Signed Up',
-        to: 'LEAD_CONVERSION',
-      },
-      {
-        from: 'Product Added to Cart',
-        to: 'LEAD_CONVERSION',
-      },
-      {
-        from: 'Newsletter Subscribed',
-        to: 'LEAD_CONVERSION',
-      },
-      {
-        from: 'Order Completed',
-        to: 'SALES_CONVERSION',
-      },
-      {
-        from: 'Subscription Started',
-        to: 'SALES_CONVERSION',
-      },
-      {
-        from: 'Plan Upgraded',
-        to: 'SALES_CONVERSION',
-      },
-    ],
-  },
-  Enabled: true,
-};
 
 const commonTimestamp = '2023-10-14T10:00:00.000Z';
 
@@ -74,10 +31,8 @@ export const leadEventTestData: ProcessorTestData[] = [
                 firstName: 'John',
                 lastName: 'Doe',
                 avatar: 'https://example.com/avatar.jpg',
-                metadata: {
-                  campaign: 'summer_2023',
-                  source: 'google_ads',
-                },
+                campaign: 'summer_2023',
+                source: 'google_ads',
               },
               context: {
                 traits: {
@@ -93,7 +48,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             }),
             metadata: generateMetadata(1),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',
@@ -124,6 +79,10 @@ export const leadEventTestData: ProcessorTestData[] = [
                   customerAvatar: 'https://example.com/avatar.jpg',
                   mode: 'wait',
                   eventQuantity: 1,
+                  metadata: {
+                    campaign: 'summer_2023',
+                    source: 'google_ads',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -175,7 +134,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             },
             metadata: generateMetadata(2),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',
@@ -203,6 +162,10 @@ export const leadEventTestData: ProcessorTestData[] = [
                   customerExternalId: 'user_54321',
                   mode: 'wait',
                   eventQuantity: 1,
+                  metadata: {
+                    product_id: 'prod_123',
+                    product_name: 'Premium Widget',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -256,7 +219,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               timestamp: commonTimestamp,
             },
             metadata: generateMetadata(3),
-            destination: commonDestination,
+            destination: overrideDestination(destination, {}),
           },
         ],
         method: 'POST',
@@ -286,6 +249,9 @@ export const leadEventTestData: ProcessorTestData[] = [
                   customerEmail: 'newsletter@example.com',
                   mode: 'wait',
                   eventQuantity: 1,
+                  metadata: {
+                    newsletter_type: 'weekly',
+                  },
                 },
                 JSON_ARRAY: {},
                 XML: {},

@@ -664,7 +664,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status),
       },
-      error?.response?.data || error?.response || error,
+      error?.response?.data,
     );
   }
 

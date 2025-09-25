@@ -641,7 +641,18 @@ async function getCachedFactory(
         // The cache manager handles cleanup via TTL/LRU
         logger.debug('Cached factory destroy called', {
           transformationId: client.transformationId || 'unknown',
+          cacheMode: client.mode || 'unknown',
         });
+
+        // For persistent mode, we need to handle execution-specific cleanup differently
+        // since the context and bootstrapScriptResult are reused
+        if (client.mode === 'persistent') {
+          // In persistent mode, the isolate stays cached
+          // Only log the completion of execution
+          logger.debug('Persistent mode execution completed', {
+            transformationId: client.transformationId || 'unknown',
+          });
+        }
 
         // Note: Cached instances are cleaned up by cache eviction
         // We don't need to do immediate cleanup here

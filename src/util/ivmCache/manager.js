@@ -1,4 +1,4 @@
-const OneIVMPerTransformationIdStrategy = require('./strategies/isolate');
+const IvmCacheStrategyFactory = require('./strategyFactory');
 const { generateCacheKey } = require('./cacheKey');
 const logger = require('../../logger');
 
@@ -9,6 +9,8 @@ const logger = require('../../logger');
 class IvmCacheManager {
   constructor() {
     this.strategy = null;
+    this.currentStrategyName = null;
+    this.healthMonitor = null;
     this.initializeStrategy();
   }
 
@@ -17,6 +19,11 @@ class IvmCacheManager {
    * Only called when strategy needs to be created or changed
    */
   initializeStrategy() {
+    const newStrategyName = IvmCacheStrategyFactory.getStrategyName();
+
+    // Note: We don't check if strategy is the same because options might have changed
+    // even if the strategy name is the same
+
     // Clean up existing strategy if different
     if (this.strategy && typeof this.strategy.clear === 'function') {
       this.strategy.clear().catch((error) => {
@@ -27,14 +34,33 @@ class IvmCacheManager {
       });
     }
 
+    const validation = IvmCacheStrategyFactory.validateStrategy(newStrategyName);
+    if (!validation.valid) {
+      logger.error('Invalid cache strategy configuration', validation);
+      throw new Error(`Invalid IVM cache strategy: ${validation.error}`);
+    }
+
+    // Log warnings for persistent strategy
+    if (validation.warnings && validation.warnings.length > 0) {
+      validation.warnings.forEach((warning) => {
+        logger.warn(`IVM Cache Strategy Warning: ${warning}`);
+      });
+    }
+
     // Initialize new strategy
     const options = {
       maxSize: process.env.IVM_CACHE_MAX_SIZE,
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
-    this.strategy = new OneIVMPerTransformationIdStrategy(options);
+
+    this.strategy = IvmCacheStrategyFactory.create(options);
+    this.currentStrategyName = newStrategyName;
 
     logger.info('IVM Cache Manager initialized', {
+      strategy: newStrategyName,
+      description: validation.description?.description,
+      performance: validation.description?.performance,
+      safety: validation.description?.safety,
       ...options,
     });
   }
@@ -131,7 +157,9 @@ class IvmCacheManager {
       return {
         ...stats,
         manager: {
+          currentStrategy: this.currentStrategyName,
           environmentStrategy: process.env.IVM_CACHE_STRATEGY || 'isolate',
+          availableStrategies: Object.keys(IvmCacheStrategyFactory.STRATEGIES),
         },
       };
     } catch (error) {

@@ -307,9 +307,9 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
   const userFields = Object.keys(traits).filter(
     (trait) => !(sourceKeys.includes(trait) || typeof traits[trait] === 'object'),
   );
-  userFields.forEach((field) => {
+  for (const field of userFields) {
     set(payload, `user.user_fields.${field}`, get(traits, field));
-  });
+  }
 
   payload.user = removeUndefinedValues(payload.user);
 
@@ -485,9 +485,10 @@ async function createOrganization(
   const organizationFields = traitKeys.filter(
     (trait) => !(sourceKeys.includes(trait) || typeof message.traits[trait] === 'object'),
   );
-  organizationFields.forEach((field) => {
+
+  for (const field of organizationFields) {
     set(payload, `organization.organization_fields.${field}`, get(message, `traits.${field}`));
-  });
+  }
 
   payload.organization = removeUndefinedValues(payload.organization);
 

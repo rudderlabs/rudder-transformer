@@ -144,6 +144,7 @@ export const identityResolution = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -291,6 +292,7 @@ export const identityResolution = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -483,6 +485,7 @@ export const identityResolution = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -684,6 +687,7 @@ export const identityResolution = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',

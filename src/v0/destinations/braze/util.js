@@ -441,13 +441,17 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
   for (const chunk of arrayChunks) {
     const response = defaultRequestConfig();
     if (type === 'merge') {
-      response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      const { endpoint, path } = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      response.endpoint = endpoint;
+      response.endpointPath = path;
       const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
         merge_updates,
       });
     } else if (type === 'subscription') {
-      response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      response.endpoint = endpoint;
+      response.endpointPath = path;
       const subscription_groups = chunk;
       // maketool transformed event
       logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
@@ -532,7 +536,7 @@ const processBatch = (transformedEvents) => {
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
 
-  const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
+  const { endpoint, path } = getTrackEndPoint(getEndpointFromConfig(destination));
   for (let i = 0; i < maxNumberOfRequest; i += 1) {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
@@ -556,6 +560,7 @@ const processBatch = (transformedEvents) => {
 
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
+    response.endpointPath = path;
     response.body.JSON = removeUndefinedAndNullValues({
       partner: 'RudderStack',
       attributes,

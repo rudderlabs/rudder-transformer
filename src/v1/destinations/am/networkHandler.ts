@@ -75,7 +75,7 @@ const responseHandler = (responseParams) => {
   ) {
     return {
       status: 500,
-      message: 'AM: Error transformer proxy during AM response transformation',
+      message: `Request Failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(response)}", (Retryable)`,
       response: populateResponseWithDontBatch(rudderJobMetadata, response),
     } as DeliveryV1Response;
   }

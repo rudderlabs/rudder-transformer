@@ -403,6 +403,32 @@ export const data = [
                 Config: { apiKey: secret2, groupTypeTrait: 'email', groupValueTrait: 'age' },
               },
             },
+            {
+              message: {
+                type: 'UNSUPPORTED-TYPE',
+                event: 'Order Completed',
+                sentAt: '2020-08-14T05:30:30.118Z',
+                context: {},
+                messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+                timestamp: '2020-08-14T05:30:30.118Z',
+                properties: {},
+                anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                integrations: {
+                  S3: false,
+                  All: true,
+                },
+              },
+              destination: {
+                Config: {
+                  groupTypeTrait: 'email',
+                  apiKey: secret2,
+                  groupValueTrait: 'age',
+                  trackProductsOnce: true,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: { jobId: 8, userId: '50be5c78-6c3f-4b60-be84-97805a316fb1' },
+            },
           ],
           destType: 'am',
         },
@@ -697,6 +723,34 @@ export const data = [
                 },
               ],
               statusCode: 200,
+            },
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                  trackProductsOnce: true,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              error: 'message type not supported',
+              metadata: [
+                {
+                  jobId: 8,
+                  userId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                },
+              ],
+              statTags: {
+                destType: 'AM',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 400,
             },
           ],
         },

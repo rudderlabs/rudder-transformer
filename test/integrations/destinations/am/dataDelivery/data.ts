@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { isMatch } from 'lodash';
+import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
 // Note: This destination makes use of generic network handler
 export const data = [
@@ -1013,6 +1014,230 @@ export const data = [
             'retry-after': '60',
           },
         );
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 10: Should retry for 400 status code with multiple events',
+    successCriteria:
+      'As there are multiple events and failing with 400 status code, it should retry for all events with dontBatch as true',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              api_key: 'failure-api-key',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: '0',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'user@example.com',
+                  },
+                },
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: '0',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'user@example.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'standard-rate-limited',
+            params: {
+              destination: 'am',
+            },
+          },
+          [generateMetadata(1, '0'), generateMetadata(2, '0')],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}", (Retryable)',
+            response: [
+              {
+                error:
+                  '{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '0',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+              {
+                error:
+                  '{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 2,
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '0',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+            ],
+            status: 500,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'failure-api-key';
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          events_with_invalid_fields: {
+            user_id: [0],
+          },
+          error: 'Invalid id provided: omit the user_id or device_id field if they are unknown',
+        });
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 11: Should fail for 400 status code with single events',
+    successCriteria:
+      'As there is single event and failing with 400 status code, it should fail for the event with dontBatch as false',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              api_key: 'failure-api-key',
+              events: [
+                {
+                  app_name: 'Rudder-Amplitude_Example',
+                  app_version: '1.0',
+                  time: 1619006730330,
+                  user_id: '0',
+                  user_properties: {
+                    city: 'San Francisco',
+                    country: 'US',
+                    email: 'user@example.com',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'standard-rate-limited',
+            params: {
+              destination: 'am',
+            },
+          },
+          [generateMetadata(1, '0')],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Request Failed during amplitude response transformation: with status \"400\" due to \"{\"code\":400,\"events_with_invalid_fields\":{\"user_id\":[0]},\"error\":\"Invalid id provided: omit the user_id or device_id field if they are unknown\"}\", (Aborted)',
+            response: [
+              {
+                error:
+                  '{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '0',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 400,
+              },
+            ],
+            statTags: {
+              destType: 'AM',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            // Simple check to match the request body
+            return actual.api_key === 'failure-api-key';
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          events_with_invalid_fields: {
+            user_id: [0],
+          },
+          error: 'Invalid id provided: omit the user_id or device_id field if they are unknown',
+        });
     },
   },
 ];

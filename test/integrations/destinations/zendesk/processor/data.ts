@@ -2368,7 +2368,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Failed to fetch user with email: testemail2@email due to Couldn\'t find user: John Wick","destinationResponse":{"status":400,"statTags":{"errorCategory":"network","errorType":"aborted","meta":"instrumentation"},"destinationResponse":"","authErrorCategory":""}}',
+              '{"message":"Failed to fetch user with email: testemail2@email due to Couldn\'t find user: John Wick","destinationResponse":"Couldn\'t find user: John Wick"}',
             statTags: {
               destType: 'ZENDESK',
               errorCategory: 'network',

@@ -39,7 +39,6 @@ const formatCompositeResponse = (errorEvents) => {
   const resultArray = [];
   const errorMap = new Map();
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const item of errorEvents) {
     if (isDefinedAndNotNull(item.error)) {
       optimizeErrorResponse(item, errorMap, resultArray);

@@ -148,7 +148,6 @@ const userPropertiesPostProcess = (rawPayload) => {
     (key) => !operationList.includes(key),
   );
   const duplicatekeys = new Set();
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
   for (const key of userPropertiesKeys) {
     // check if any of the keys are present in the user_properties $setOnce, $add, $unset, $append, $prepend, $preInsert, $postInsert, $remove keys as well as root level
 
@@ -160,14 +159,12 @@ const userPropertiesPostProcess = (rawPayload) => {
       duplicatekeys.add(key);
     }
   }
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
   for (const key of duplicatekeys) {
     delete user_properties[key];
   }
 
   // Moving root level properties that doesn't belong to any operation under $set
   const setProps = {};
-  // eslint-disable-next-line no-restricted-syntax
   for (const [key, value] of Object.entries(user_properties)) {
     if (!operationList.includes(key)) {
       setProps[key] = value;

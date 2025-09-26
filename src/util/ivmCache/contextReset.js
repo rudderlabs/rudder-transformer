@@ -154,7 +154,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
     await injectFreshApis(jail, cachedIsolate, credentials);
 
     // Set up bootstrap script in the new context
-    await cachedIsolate.bootstrap.run(newContext);
+    const newBootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
 
     // Re-instantiate the user's custom script module in the new context
     await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
@@ -177,7 +177,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       isolate: cachedIsolate.isolate,
       bootstrap: cachedIsolate.bootstrap,
       customScriptModule: cachedIsolate.customScriptModule,
-      bootstrapScriptResult: cachedIsolate.bootstrapScriptResult,
+      bootstrapScriptResult: newBootstrapScriptResult,
       fnRef,
       fName: cachedIsolate.fName,
       logs: cachedIsolate.logs,
@@ -208,7 +208,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
  * @param {Object} bootstrapScriptResult The bootstrap script result to release
  * @param {Object} metadata Metadata for logging (optional)
  */
-function clearContext(context, metadata = {}) {
+function clearContextAndBootstrapScriptResult(context, bootstrapScriptResult, metadata = {}) {
   // Release context
   if (context) {
     try {
@@ -221,9 +221,32 @@ function clearContext(context, metadata = {}) {
       });
     }
   }
+  if (bootstrapScriptResult) {
+    try {
+      bootstrapScriptResult.release();
+      logger.debug('Bootstrap script result released successfully', metadata);
+    } catch (error) {
+      logger.warn('Error releasing bootstrap script result', {
+        error: error.message,
+        ...metadata,
+      });
+    }
+  }
+}
+
+/**
+ * Determines if a cached isolate needs context reset
+ * For isolate strategy, we always reset context for fresh execution
+ * @param {Object} cachedIsolate The cached isolate (unused for isolate strategy)
+ * @returns {boolean} Always true for isolate strategy
+ */
+function needsContextReset(cachedIsolate) {
+  // For isolate strategy, we always reset context to ensure clean state
+  return true;
 }
 
 module.exports = {
   createNewContext,
-  clearContext,
+  clearContextAndBootstrapScriptResult,
+  needsContextReset,
 };

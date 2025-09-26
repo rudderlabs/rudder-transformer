@@ -419,7 +419,11 @@ async function createIvm(
       return compiledModules[spec].module;
     }
     // Release the isolate context before throwing an error
-    context.release();
+    try {
+      context?.release();
+    } catch (e) {
+      logger.debug('context release error in module import:', e.message);
+    }
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });
@@ -497,11 +501,32 @@ async function getFactory(
       );
     },
     destroy: async (client) => {
-      client.fnRef.release();
-      client.bootstrap.release();
-      client.customScriptModule.release();
-      client.context.release();
-      await client.isolate.dispose();
+      // Release resources safely - each in its own try-catch to prevent cascade failures
+      try {
+        client.fnRef?.release();
+      } catch (e) {
+        logger.debug('fnRef release error:', e.message);
+      }
+      try {
+        client.bootstrap?.release();
+      } catch (e) {
+        logger.debug('bootstrap release error:', e.message);
+      }
+      try {
+        client.customScriptModule?.release();
+      } catch (e) {
+        logger.debug('customScriptModule release error:', e.message);
+      }
+      try {
+        client.context?.release();
+      } catch (e) {
+        logger.debug('context release error:', e.message);
+      }
+      try {
+        await client.isolate?.dispose();
+      } catch (e) {
+        logger.debug('isolate dispose error:', e.message);
+      }
     },
   };
 

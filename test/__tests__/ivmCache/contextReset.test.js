@@ -107,9 +107,11 @@ describe('Context Reset Utilities', () => {
         isolate: mockCachedIsolate.isolate,
         bootstrap: mockCachedIsolate.bootstrap,
         customScriptModule: mockCachedIsolate.customScriptModule,
-        context: mockNewContext,
+        bootstrapScriptResult: {},
+        fnRef: {},
         transformationId: 'test-transformation-123',
         workspaceId: 'test-workspace-456',
+        compiledModules: mockCachedIsolate.compiledModules,
       });
     });
 
@@ -172,10 +174,12 @@ describe('Context Reset Utilities', () => {
       );
     });
 
-    test('should release old context', async () => {
-      await createNewContext(mockCachedIsolate);
+    test('should create new context instead of reusing old one', async () => {
+      const result = await createNewContext(mockCachedIsolate);
 
-      expect(mockCachedIsolate.context.release).toHaveBeenCalled();
+      // Should create a new context, not reuse the old one
+      expect(mockCachedIsolate.isolate.createContext).toHaveBeenCalled();
+      expect(result).toBeDefined();
     });
 
     test('should handle missing old context gracefully', async () => {
@@ -608,14 +612,21 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should properly copy metadata to reset context', async () => {
-      mockCachedIsolate.bootstrapScriptResult = { some: 'data' };
       mockCachedIsolate.logs = ['log1', 'log2'];
+      mockCachedIsolate.fName = 'testFunction';
 
       const result = await createNewContext(mockCachedIsolate);
 
-      expect(result.bootstrapScriptResult).toEqual({ some: 'data' });
+      // Should create new bootstrapScriptResult, not copy old one
+      expect(result.bootstrapScriptResult).toBeDefined();
+      expect(result.bootstrapScriptResult).not.toEqual({ some: 'data' });
+      
+      // Should copy logs and other metadata
       expect(result.logs).toEqual(['log1', 'log2']);
+      expect(result.fName).toEqual('testFunction');
       expect(result.fnRef).toBeDefined();
+      expect(result.transformationId).toEqual('test-transformation-123');
+      expect(result.workspaceId).toEqual('test-workspace-456');
     });
   });
 

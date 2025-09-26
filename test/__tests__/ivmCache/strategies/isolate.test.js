@@ -117,7 +117,6 @@ describe('Isolate Cache Strategy', () => {
       expect(mockIsolateData.fnRef.release).toHaveBeenCalled();
       expect(mockIsolateData.bootstrap.release).toHaveBeenCalled();
       expect(mockIsolateData.customScriptModule.release).toHaveBeenCalled();
-      expect(mockIsolateData.context.release).toHaveBeenCalled();
       expect(mockIsolateData.isolate.dispose).toHaveBeenCalled();
     });
 

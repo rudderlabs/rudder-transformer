@@ -106,26 +106,51 @@ class OneIVMPerTransformationIdStrategy {
               transformationId: isolateData.transformationId,
             });
 
-            // Release all references
-            if (isolateData.fnRef) {
-              isolateData.fnRef.release();
+            // Release all references safely - each in its own try-catch to prevent cascade failures
+            try {
+              isolateData.fnRef?.release();
+            } catch (refError) {
+              logger.debug('fnRef already released or invalid', {
+                cacheKey,
+                error: refError.message,
+              });
             }
 
-            if (isolateData.bootstrap) {
-              isolateData.bootstrap.release();
+            try {
+              isolateData.bootstrap?.release();
+            } catch (refError) {
+              logger.debug('bootstrap already released or invalid', {
+                cacheKey,
+                error: refError.message,
+              });
             }
 
-            if (isolateData.customScriptModule) {
-              isolateData.customScriptModule.release();
+            try {
+              isolateData.customScriptModule?.release();
+            } catch (refError) {
+              logger.debug('customScriptModule already released or invalid', {
+                cacheKey,
+                error: refError.message,
+              });
             }
 
-            if (isolateData.bootstrapScriptResult) {
-              isolateData.bootstrapScriptResult.release();
+            try {
+              isolateData.bootstrapScriptResult?.release();
+            } catch (refError) {
+              logger.debug('bootstrapScriptResult already released or invalid', {
+                cacheKey,
+                error: refError.message,
+              });
             }
 
             // Dispose the isolate
-            if (isolateData.isolate) {
-              await isolateData.isolate.dispose();
+            try {
+              await isolateData.isolate?.dispose();
+            } catch (disposeError) {
+              logger.debug('isolate already disposed or invalid', {
+                cacheKey,
+                error: disposeError.message,
+              });
             }
 
             stats.increment('ivm_cache_destroyed_total', {

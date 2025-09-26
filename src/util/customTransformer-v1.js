@@ -2,7 +2,7 @@ const ivm = require('isolated-vm');
 
 const { getFactory, getCachedFactory } = require('./ivmFactory');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const { clearContext } = require('./ivmCache/contextReset');
+const { clearContextAndBootstrapScriptResult } = require('./ivmCache/contextReset');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -113,7 +113,7 @@ async function userTransformHandlerV1(
     if (!useIvmCache || testMode) {
       isolatevmFactory.destroy(isolatevm);
     } else {
-      clearContext(isolatevm.context, {
+      clearContextAndBootstrapScriptResult(isolatevm.context, isolatevm.bootstrapScriptResult, {
         transformationId: userTransformation.id,
         workspaceId: userTransformation.workspaceId,
       });

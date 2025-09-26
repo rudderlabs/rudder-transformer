@@ -278,12 +278,32 @@ async function runUserTransform(
     transformationError = error;
     throw error;
   } finally {
-    // release function, script, context and isolate
-    fnRef.release();
-    customScript.release();
-    bootstrapScriptResult.release();
-    context.release();
-    isolate.dispose();
+    // Release resources safely - each in its own try-catch to prevent cascade failures
+    try {
+      fnRef?.release();
+    } catch (e) {
+      logger.debug('fnRef release error:', e.message);
+    }
+    try {
+      customScript?.release();
+    } catch (e) {
+      logger.debug('customScript release error:', e.message);
+    }
+    try {
+      bootstrapScriptResult?.release();
+    } catch (e) {
+      logger.debug('bootstrapScriptResult release error:', e.message);
+    }
+    try {
+      context?.release();
+    } catch (e) {
+      logger.debug('context release error:', e.message);
+    }
+    try {
+      isolate?.dispose();
+    } catch (e) {
+      logger.debug('isolate dispose error:', e.message);
+    }
 
     const tags = {
       errored: transformationError ? true : false,

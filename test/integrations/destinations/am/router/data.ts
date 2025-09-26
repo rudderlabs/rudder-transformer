@@ -131,58 +131,60 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api2.amplitude.com/batch',
-                endpointPath: 'batch',
-                headers: { 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    api_key: secret2,
-                    events: [
-                      {
-                        os_name: 'Chrome',
-                        os_version: '77.0.3865.90',
-                        device_model: 'Mac',
-                        library: 'rudderstack',
-                        platform: 'Web',
-                        device_id: '123456',
-                        app_name: 'RudderLabs JavaScript SDK',
-                        app_version: '1.0.0',
-                        language: 'en-US',
-                        session_id: -1,
-                        insert_id: '84e26acc-56a5-4835-8233-591137fca468',
-                        city: 'kolkata',
-                        country: 'India',
-                        user_properties: {
-                          initial_referrer: 'https://docs.rudderstack.com',
-                          initial_referring_domain: 'docs.rudderstack.com',
-                          anonymousId: '123456',
-                          email: 'test@rudderstack.com',
-                          postalCode: 712136,
-                          state: 'WB',
-                          street: '',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {
+                      api_key: secret2,
+                      events: [
+                        {
+                          os_name: 'Chrome',
+                          os_version: '77.0.3865.90',
+                          device_model: 'Mac',
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          device_id: '123456',
+                          app_name: 'RudderLabs JavaScript SDK',
+                          app_version: '1.0.0',
+                          language: 'en-US',
+                          session_id: -1,
+                          insert_id: '84e26acc-56a5-4835-8233-591137fca468',
+                          city: 'kolkata',
+                          country: 'India',
+                          user_properties: {
+                            initial_referrer: 'https://docs.rudderstack.com',
+                            initial_referring_domain: 'docs.rudderstack.com',
+                            anonymousId: '123456',
+                            email: 'test@rudderstack.com',
+                            postalCode: 712136,
+                            state: 'WB',
+                            street: '',
+                            ip: '0.0.0.0',
+                            age: 26,
+                          },
+                          event_type: '$identify',
+                          time: 1571043797562,
+                          user_id: '123456',
                           ip: '0.0.0.0',
-                          age: 26,
                         },
-                        event_type: '$identify',
-                        time: 1571043797562,
-                        user_id: '123456',
-                        ip: '0.0.0.0',
-                      },
-                    ],
-                    options: { min_id_length: 1 },
+                      ],
+                      options: { min_id_length: 1 },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  files: {},
+                  userId: '123456',
                 },
-                files: {},
-                userId: '123456',
-              },
+              ],
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
@@ -191,62 +193,64 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api2.amplitude.com/batch',
-                endpointPath: 'batch',
-                headers: { 'Content-Type': 'application/json' },
-                params: {},
-                body: {
-                  JSON: {
-                    api_key: secret2,
-                    events: [
-                      {
-                        os_name: 'Chrome',
-                        os_version: '77.0.3865.90',
-                        device_model: 'Mac',
-                        library: 'rudderstack',
-                        platform: 'Web',
-                        device_id: '00000000000000000000000000',
-                        app_name: 'RudderLabs JavaScript SDK',
-                        app_version: '1.0.0',
-                        language: 'en-US',
-                        event_type: 'Viewed ApplicationLoaded Page',
-                        event_properties: {
-                          path: '/destinations/amplitude',
-                          referrer: '',
-                          search: '',
-                          title: '',
-                          url: 'https://docs.rudderstack.com/destinations/amplitude',
-                          category: 'destination',
-                          initial_referrer: 'https://docs.rudderstack.com',
-                          initial_referring_domain: 'docs.rudderstack.com',
-                          name: 'ApplicationLoaded',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  headers: { 'Content-Type': 'application/json' },
+                  params: {},
+                  body: {
+                    JSON: {
+                      api_key: secret2,
+                      events: [
+                        {
+                          os_name: 'Chrome',
+                          os_version: '77.0.3865.90',
+                          device_model: 'Mac',
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          device_id: '00000000000000000000000000',
+                          app_name: 'RudderLabs JavaScript SDK',
+                          app_version: '1.0.0',
+                          language: 'en-US',
+                          event_type: 'Viewed ApplicationLoaded Page',
+                          event_properties: {
+                            path: '/destinations/amplitude',
+                            referrer: '',
+                            search: '',
+                            title: '',
+                            url: 'https://docs.rudderstack.com/destinations/amplitude',
+                            category: 'destination',
+                            initial_referrer: 'https://docs.rudderstack.com',
+                            initial_referring_domain: 'docs.rudderstack.com',
+                            name: 'ApplicationLoaded',
+                          },
+                          session_id: -1,
+                          insert_id: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+                          ip: '1.1.1.1',
+                          user_properties: {
+                            initial_referrer: 'https://docs.rudderstack.com',
+                            initial_referring_domain: 'docs.rudderstack.com',
+                            email: 'test@rudderstack.com',
+                            anonymousId: '12345',
+                          },
+                          user_id: '12345',
+                          time: 1571051718299,
                         },
-                        session_id: -1,
-                        insert_id: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
-                        ip: '1.1.1.1',
-                        user_properties: {
-                          initial_referrer: 'https://docs.rudderstack.com',
-                          initial_referring_domain: 'docs.rudderstack.com',
-                          email: 'test@rudderstack.com',
-                          anonymousId: '12345',
-                        },
-                        user_id: '12345',
-                        time: 1571051718299,
-                      },
-                    ],
-                    options: { min_id_length: 1 },
+                      ],
+                      options: { min_id_length: 1 },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  files: {},
+                  userId: '00000000000000000000000000',
                 },
-                files: {},
-                userId: '00000000000000000000000000',
-              },
+              ],
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
@@ -441,7 +445,7 @@ export const data = [
         body: {
           output: [
             {
-              batched: true,
+              batched: false,
               batchedRequest: [
                 {
                   body: {
@@ -500,7 +504,7 @@ export const data = [
               statusCode: 200,
             },
             {
-              batched: false,
+              batched: true,
               batchedRequest: {
                 body: {
                   FORM: {},
@@ -593,7 +597,7 @@ export const data = [
               statusCode: 200,
             },
             {
-              batched: false,
+              batched: true,
               batchedRequest: {
                 body: {
                   FORM: {},
@@ -669,46 +673,48 @@ export const data = [
             },
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  FORM: {},
-                  JSON: {
-                    api_key: 'am2',
-                    events: [
-                      {
-                        device_id: '1234567',
-                        event_type: '$identify',
-                        library: 'rudderstack',
-                        platform: 'Web',
-                        session_id: -1,
-                        time: 0,
-                        user_id: '1234567',
-                        user_properties: {
-                          anonymousId: '1234567',
-                          email: 'test@rudderstack.com',
-                          trait6: 'value6',
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      api_key: 'am2',
+                      events: [
+                        {
+                          device_id: '1234567',
+                          event_type: '$identify',
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          session_id: -1,
+                          time: 0,
+                          user_id: '1234567',
+                          user_properties: {
+                            anonymousId: '1234567',
+                            email: 'test@rudderstack.com',
+                            trait6: 'value6',
+                          },
                         },
+                      ],
+                      options: {
+                        min_id_length: 1,
                       },
-                    ],
-                    options: {
-                      min_id_length: 1,
                     },
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  files: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  userId: '1234567',
+                  version: '1',
                 },
-                endpoint: 'https://api2.amplitude.com/batch',
-                endpointPath: 'batch',
-                files: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                userId: '1234567',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   apiKey: 'am2',

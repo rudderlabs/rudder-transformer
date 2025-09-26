@@ -1041,6 +1041,7 @@ const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
     const mergedEvent = mergeEventsIntoFirstEvent(events, destination);
     const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
     batchResponse.batchedRequest.userId = events[0]?.userId;
+    batchResponse.batched = true;
     batchResponses.push(batchResponse);
   });
 
@@ -1081,10 +1082,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
          */
         const transformedEvent = process(input);
         const firstTransformedEvent = getFirstEvent(transformedEvent);
-        const messageEvent = get(firstTransformedEvent, EVENTS_KEY_PATH);
+        const { user_id: userId, device_id: deviceId } =
+          get(firstTransformedEvent, 'body.JSON.events.0') || {};
         const jsonBody = get(firstTransformedEvent, 'body.JSON');
-        const userId = messageEvent[0]?.user_id;
-        const deviceId = messageEvent[0]?.device_id;
 
         if (
           checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId) ||
@@ -1107,10 +1107,15 @@ const processRouterDest = async (inputs, reqMetadata) => {
         errorRespList.push(errRespEvent);
       }
     });
-    batchRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs.flat()));
+    // Skipping single events from batching
+    if (batchableInputs.length > 1) {
+      batchRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
+    } else {
+      nonBatchableInputs.push(...batchableInputs);
+    }
     nonBatchableInputs.forEach((input) => {
       batchRespList.push(
-        getSuccessRespEvents(input.message, [input.metadata], input.destination, true),
+        getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
       );
     });
   });

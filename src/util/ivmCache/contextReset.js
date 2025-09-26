@@ -234,19 +234,7 @@ function clearContextAndBootstrapScriptResult(context, bootstrapScriptResult, me
   }
 }
 
-/**
- * Determines if a cached isolate needs context reset
- * For isolate strategy, we always reset context for fresh execution
- * @param {Object} cachedIsolate The cached isolate (unused for isolate strategy)
- * @returns {boolean} Always true for isolate strategy
- */
-function needsContextReset(cachedIsolate) {
-  // For isolate strategy, we always reset context to ensure clean state
-  return true;
-}
-
 module.exports = {
   createNewContext,
   clearContextAndBootstrapScriptResult,
-  needsContextReset,
 };

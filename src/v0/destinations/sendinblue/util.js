@@ -119,7 +119,7 @@ const transformUserTraits = (traits, contactAttributeMapping) => {
   const attributeMap = getHashFromArray(contactAttributeMapping, 'from', 'to', false);
 
   const userTraits = traits;
-  // Hard validation: userTraits must be a non-empty plain object
+  // Validation: traits must be defined (not null/undefined). Empty object is allowed.
   if (!userTraits) {
     throw new InstrumentationError('Sendinblue: traits should be defined.');
   }

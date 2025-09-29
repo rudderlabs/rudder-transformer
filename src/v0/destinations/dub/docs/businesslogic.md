@@ -4,7 +4,23 @@
 
 The Dub destination transforms RudderStack track events into Dub conversion API calls. It supports two main conversion types: Lead Conversions and Sales Conversions, each with specific field mappings and validation requirements.
 
+**Critical Requirement**: Dub requires **strict event ordering** for proper conversion attribution. The mandatory flow is **Click → Lead → Sale**. Events processed out of order will break the conversion attribution chain.
+
 ## Event Processing Flow
+
+### Event Ordering Requirements
+
+**MANDATORY**: Dub requires strict event ordering for conversion attribution:
+
+1. **Click Event**: Initial user interaction with a Dub short link
+2. **Lead Event**: User performs a conversion action (sign-up, download, etc.)
+3. **Sale Event**: User completes a revenue-generating action
+
+**Processing Sequence**:
+
+- Lead events must be processed before any associated sale events
+- Sale events that reference a `leadEventName` require the lead event to be processed first
+- Out-of-order processing will break the conversion attribution chain
 
 ### Message Type Validation
 

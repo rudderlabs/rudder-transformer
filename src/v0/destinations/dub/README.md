@@ -131,32 +131,36 @@ Implementation in **TypeScript**
 
 #### Track Events (Lead and Sales Conversions)
 
-**Event ordering is generally not critical** for Dub conversion tracking because:
+**Event ordering is MANDATORY** for Dub conversion tracking. The required flow is:
 
-1. **Lead Events**: Each lead event is treated as a discrete conversion milestone
-2. **Sales Events**: Revenue events are typically tied to specific transactions with unique invoice/order IDs
-3. **Timestamp Independence**: Dub doesn't rely on event ordering for conversion attribution
-4. **Idempotency**: Sales events can use `invoiceId` as an idempotency key
+**Click → Lead → Sale**
 
-**Exception**: If using `leadEventName` to associate sales with specific prior lead events, the lead event should be processed before the associated sale event.
+1. **Lead Events**: Must be processed before any associated sale events
+2. **Sales Events**: Can only be processed after the corresponding lead event has been successfully tracked
+3. **Strict Ordering Required**: Dub requires events to be processed in the correct chronological order
+4. **Attribution Chain**: Each conversion event builds upon the previous event in the attribution chain
+
+**Critical Requirement**: RudderStack must ensure that lead events are delivered and processed by Dub before any related sale events are sent. Out-of-order delivery will break the conversion attribution chain.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
 
-- **Feasible**: Yes, for both lead and sales events
-- **Reason**: Since event ordering is not critical, missing historical data can be replayed
-- **Considerations**:
-  - Ensure lead events are replayed before associated sales events if using `leadEventName`
-  - Verify that click attribution windows haven't expired
+- **Complex**: Requires careful orchestration due to strict event ordering requirements
+- **Requirements**:
+  - **Chronological Order**: Events must be replayed in strict chronological order (Click → Lead → Sale)
+  - **Lead Events First**: All missing lead events must be replayed before any associated sale events
+  - **Attribution Windows**: Verify that click attribution windows haven't expired
+  - **Dependency Management**: Ensure proper sequencing to maintain conversion attribution chain
 
 #### Already Delivered Data Replay
 
-- **Sales Events**: Partially feasible with limitations
+- **Not Recommended**: Due to strict event ordering requirements and potential attribution conflicts
+- **Sales Events**:
   - **With `invoiceId`**: Dub uses invoice ID as idempotency key - only one sale per invoice ID
-  - **Without `invoiceId`**: Will create duplicate sales events
-- **Lead Events**: Will create duplicate lead events
-  - **Recommendation**: Not recommended for delivered data
+  - **Without `invoiceId`**: Will create duplicate sales events and break attribution
+- **Lead Events**: Will create duplicate lead events and potentially corrupt attribution chains
+- **Recommendation**: Avoid replaying already delivered data as it may disrupt the conversion flow
 
 ### Rate Limits and Batch Sizes
 
@@ -268,3 +272,7 @@ Rate limits depend on your Dub plan:
 - **Enterprise plan**: Custom limits (contact Dub sales)
 
 If you exceed the rate limit, you'll receive a `429 Too Many Requests` response. Implement exponential backoff retry logic using the `Retry-After` header value.
+
+### Why is event ordering so important for Dub?
+
+Dub requires **strict event ordering** for proper conversion attribution. The mandatory flow is **Click → Lead → Sale**. If events are processed out of order (e.g., sale before lead), the conversion attribution chain will be broken and events may not be properly tracked. RudderStack automatically handles this ordering requirement, but be aware that data replay scenarios require careful chronological sequencing.

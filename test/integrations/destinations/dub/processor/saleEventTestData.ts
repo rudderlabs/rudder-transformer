@@ -204,7 +204,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'track',
               event: 'Plan Upgraded',
               properties: {
-                total: 14.78,
+                total: 14.784,
                 currency: 'EUR',
                 invoiceId: 'upgrade_invoice_789',
                 paymentProcessor: 'paypal',
@@ -370,7 +370,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'track',
               event: 'Order Completed',
               properties: {
-                total: 7.55,
+                total: 7.555,
                 order_id: 'fallback_order_999',
                 // Note: No invoiceId provided
               },
@@ -410,7 +410,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               body: {
                 JSON: {
                   customerExternalId: 'fallback_user_999',
-                  amount: 755, // Amount in cents
+                  amount: 756, // Amount in cents
                   eventName: 'Order Completed',
                   invoiceId: 'fallback_order_999', // orderId used as fallback
                 },

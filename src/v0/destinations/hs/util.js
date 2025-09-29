@@ -684,7 +684,6 @@ const getExistingContactsData = async (inputs, destination, metadata) => {
       Authorization: `Bearer ${Config.accessToken}`,
     },
   };
-  // eslint-disable-next-line no-restricted-syntax
   for (const chunkValue of chunkValues) {
     const requestData = getRequestData(identifierType, chunkValue);
     const searchResults = await performHubSpotSearch(

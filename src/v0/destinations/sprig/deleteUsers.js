@@ -35,7 +35,6 @@ const userDeletionHandler = async (userAttributes, config) => {
    */
   const userIdBatches = getUserIdBatches(userAttributes, 100);
   // Note: we will only get 400 status code when no user deletion is present for given userIds so we will not throw error in that case
-  // eslint-disable-next-line no-restricted-syntax
   for (const curBatch of userIdBatches) {
     // eslint-disable-next-line no-await-in-loop
     const deletionResponse = await httpPOST(

@@ -39,7 +39,6 @@ export function getDestination(filePath: string): string {
 export async function resolveDataFile(basePath: string): Promise<string> {
   const dir = path.dirname(path.resolve(process.cwd(), basePath));
   const candidates = ['data.ts', 'data.js'];
-  // eslint-disable-next-line no-restricted-syntax
   for (const candidate of candidates) {
     const fullPath = path.join(dir, candidate);
     try {

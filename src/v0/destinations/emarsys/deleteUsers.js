@@ -41,7 +41,6 @@ const userDeletionHandler = async (userAttributes, config) => {
    */
   const identifierBatches = getCustomIdBatches(userAttributes, configuredPayloadProperty, 1000);
   // Note: we will only get 400 status code when no user deletion is present for given userIds so we will not throw error in that case
-  // eslint-disable-next-line no-restricted-syntax
   for (const curBatch of identifierBatches) {
     const deleteContactPayload = {
       key_id: customIdentifier,

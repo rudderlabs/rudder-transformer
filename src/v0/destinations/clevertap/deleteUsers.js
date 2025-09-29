@@ -38,7 +38,6 @@ const userDeletionHandler = async (userAttributes, config) => {
   // where all the batch deletion requests are parallelized as
   // simultaneous requests to CleverTap resulted in hitting API rate limits.
   // Also, the rate limit is not clearly documented.
-  // eslint-disable-next-line no-restricted-syntax
   for (const curBatch of userIdBatches) {
     // eslint-disable-next-line no-await-in-loop
     const deletionResponse = await httpPOST(

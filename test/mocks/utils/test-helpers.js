@@ -13,6 +13,9 @@ class TestEnvironment {
     const configPort = await this.configBackend.start();
     const externalApiPort = await this.externalApiServer.start();
 
+    // Configure config backend to replace placeholder URLs
+    this.configBackend.setMockExternalApiUrl(this.externalApiServer.getBaseUrl());
+
     // Store original environment variables
     this.originalEnv = {
       CONFIG_BACKEND_URL: process.env.CONFIG_BACKEND_URL,
@@ -22,6 +25,7 @@ class TestEnvironment {
     // Set environment variables to point to mock servers
     process.env.CONFIG_BACKEND_URL = this.configBackend.getBaseUrl();
     process.env.ENABLE_FUNCTIONS = 'true';
+    process.env.MOCK_EXTERNAL_API_URL = this.externalApiServer.getBaseUrl();
 
     console.log(`[TestEnvironment] Setup complete:`);
     console.log(`  - Config Backend: ${this.configBackend.getBaseUrl()}`);

@@ -154,6 +154,113 @@ const transformationMocks = {
     language: 'javascript',
     workspaceId: 'test-workspace-1',
     imports: []
+  },
+
+  // Real external API call transformation (dynamic URL)
+  'real-fetch-transform': {
+    versionId: 'real-fetch-transform',
+    code: `
+      export async function transformEvent(event, metadata) {
+        try {
+          // This URL will be dynamically replaced in tests
+          const response = await fetchV2('__MOCK_SERVER_URL__/enrich', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              userId: event.userId,
+              eventType: event.type 
+            })
+          });
+          
+          event.properties = event.properties || {};
+          event.properties.enriched = true;
+          event.properties.transformationType = 'real-fetch';
+          event.properties.externalData = response.body;
+          event.properties.fetchStatus = response.status;
+          
+          return event;
+        } catch (error) {
+          event.properties = event.properties || {};
+          event.properties.enrichmentError = error.message;
+          event.properties.transformationType = 'real-fetch-error';
+          return event;
+        }
+      }
+    `,
+    name: 'Real Fetch Transform',
+    codeVersion: '1',
+    language: 'javascript',
+    workspaceId: 'test-workspace-1',
+    imports: []
+  },
+
+  // User profile enrichment transformation
+  'profile-enrichment-transform': {
+    versionId: 'profile-enrichment-transform',
+    code: `
+      export async function transformEvent(event, metadata) {
+        try {
+          const response = await fetchV2('__MOCK_SERVER_URL__/user-profile?userId=' + event.userId, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+          });
+          
+          if (response.status === 200) {
+            event.properties = event.properties || {};
+            event.properties.transformationType = 'profile-enrichment';
+            event.properties.userProfile = response.body.profile;
+            event.properties.enriched = true;
+          } else {
+            event.properties = event.properties || {};
+            event.properties.enrichmentError = 'Profile not found';
+            event.properties.transformationType = 'profile-enrichment-error';
+          }
+          
+          return event;
+        } catch (error) {
+          event.properties = event.properties || {};
+          event.properties.enrichmentError = error.message;
+          event.properties.transformationType = 'profile-enrichment-error';
+          return event;
+        }
+      }
+    `,
+    name: 'Profile Enrichment Transform',
+    codeVersion: '1',
+    language: 'javascript',
+    workspaceId: 'test-workspace-1',
+    imports: []
+  },
+
+  // Error-prone external API call
+  'error-api-transform': {
+    versionId: 'error-api-transform',
+    code: `
+      export async function transformEvent(event, metadata) {
+        try {
+          const response = await fetchV2('__MOCK_SERVER_URL__/error', {
+            method: 'GET'
+          });
+          
+          event.properties = event.properties || {};
+          event.properties.transformationType = 'error-api';
+          event.properties.apiResponse = response.body;
+          event.properties.statusCode = response.status;
+          
+          return event;
+        } catch (error) {
+          event.properties = event.properties || {};
+          event.properties.enrichmentError = error.message;
+          event.properties.transformationType = 'error-api-caught';
+          return event;
+        }
+      }
+    `,
+    name: 'Error API Transform',
+    codeVersion: '1',
+    language: 'javascript',
+    workspaceId: 'test-workspace-1',
+    imports: []
   }
 };
 

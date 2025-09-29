@@ -22,13 +22,12 @@ describe('User Transformation E2E Tests', () => {
     testEnv = new TestEnvironment();
     await testEnv.setup();
 
-    // IMPORTANT: Clear module cache to ensure fresh imports with new env vars
-    delete require.cache[require.resolve('../../src/routes')];
-    delete require.cache[require.resolve('../../src/util/customTransforrmationsStore')];
-    delete require.cache[require.resolve('../../src/util/customTransforrmationsStore-v1')];
+    // Clear module cache to ensure fresh imports with mock env vars
+    delete require.cache[require.resolve('../../dist/src/routes/index.js')];
+    delete require.cache[require.resolve('../../src/util/customTransforrmationsStore.js')];
+    delete require.cache[require.resolve('../../src/util/customTransforrmationsStore-v1.js')];
     
-    // Re-import applicationRoutes after environment is set
-    const { applicationRoutes: freshApplicationRoutes } = require('../../src/routes');
+    const { applicationRoutes: freshApplicationRoutes } = require('../../dist/src/routes/index.js');
 
     // Create Koa app with routes
     app = new Koa();
@@ -159,7 +158,7 @@ describe('User Transformation E2E Tests', () => {
   });
 
   describe('JS Transformations with External API Calls', () => {
-    test('should handle fetchV2 calls in transformation', async () => {
+    test('should handle fetchV2 calls in transformation (simulated)', async () => {
       const testEvent = createTestEvent({
         userId: 'test-user-123',
         properties: { needsEnrichment: true }
@@ -183,6 +182,89 @@ describe('User Transformation E2E Tests', () => {
       expect(props.externalData).toBeDefined();
       expect(props.externalData.enriched).toBe(true);
       expect(props.externalData.source).toBe('external-api');
+    });
+
+    test('should make real external API calls to mock server', async () => {
+      const testEvent = createTestEvent({
+        message: { userId: 'test-user-456' },
+        properties: { needsRealEnrichment: true }
+      });
+      
+      const requestBody = createTransformationRequest([testEvent], 'real-fetch-transform');
+
+      const response = await request(server)
+        .post('/customTransform')
+        .send(requestBody)
+        .expect(200);
+
+      const transformedEvents = validateTransformationResponse(response.body, 1);
+      const successful = getSuccessfulTransformations(transformedEvents);
+      
+      expect(successful).toHaveLength(1);
+      
+      const props = successful[0].output.properties;
+      expect(props.enriched).toBe(true);
+      expect(props.transformationType).toBe('real-fetch');
+      expect(props.externalData).toBeDefined();
+      expect(props.externalData.source).toBe('mock-external-api');
+      expect(props.externalData.originalData).toBeDefined();
+      expect(props.externalData.originalData.userId).toBe('test-user-456');
+      expect(props.fetchStatus).toBe(200);
+    });
+
+    test('should handle user profile enrichment from external API', async () => {
+      const testEvent = createTestEvent({
+        message: { userId: 'profile-user-789' },
+        properties: { requestProfile: true }
+      });
+      
+      const requestBody = createTransformationRequest([testEvent], 'profile-enrichment-transform');
+
+      const response = await request(server)
+        .post('/customTransform')
+        .send(requestBody)
+        .expect(200);
+
+      const transformedEvents = validateTransformationResponse(response.body, 1);
+      const successful = getSuccessfulTransformations(transformedEvents);
+      
+      expect(successful).toHaveLength(1);
+      
+      const props = successful[0].output.properties;
+      expect(props.enriched).toBe(true);
+      expect(props.transformationType).toBe('profile-enrichment');
+      expect(props.userProfile).toBeDefined();
+      expect(props.userProfile.userId).toBe('profile-user-789');
+      expect(props.userProfile.segment).toBe('premium');
+      expect(props.userProfile.preferences).toEqual(['email', 'sms']);
+      expect(props.userProfile.score).toBeGreaterThanOrEqual(0);
+      expect(props.userProfile.score).toBeLessThan(100);
+    });
+
+    test('should handle external API errors gracefully', async () => {
+      const testEvent = createTestEvent({
+        message: { userId: 'error-user-123' },
+        properties: { causeError: true }
+      });
+      
+      const requestBody = createTransformationRequest([testEvent], 'error-api-transform');
+
+      const response = await request(server)
+        .post('/customTransform')
+        .send(requestBody)
+        .expect(200);
+
+      const transformedEvents = validateTransformationResponse(response.body, 1);
+      const successful = getSuccessfulTransformations(transformedEvents);
+      
+      expect(successful).toHaveLength(1);
+      
+      const props = successful[0].output.properties;
+      expect(props.transformationType).toBe('error-api');
+      expect(props.statusCode).toBe(500);
+      expect(props.apiResponse).toBeDefined();
+      expect(props.apiResponse.error).toBe('Internal server error');
+      expect(props.apiResponse.message).toContain('simulated error');
     });
   });
 

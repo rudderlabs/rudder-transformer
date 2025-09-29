@@ -9,14 +9,19 @@ class MockConfigBackend {
     this.router = new Router();
     this.server = null;
     this.port = null;
+    this.mockExternalApiUrl = null;
     this.setupRoutes();
+  }
+
+  setMockExternalApiUrl(url) {
+    this.mockExternalApiUrl = url;
   }
 
   setupRoutes() {
     // Middleware for JSON parsing and logging
     this.app.use(bodyParser());
     this.app.use(async (ctx, next) => {
-      console.log(`[MockConfigBackend] ${ctx.method} ${ctx.url} - Query:`, ctx.query);
+      console.log('[MockConfigBackend] %s %s - Query:', ctx.method, ctx.url, ctx.query);
       await next();
     });
 
@@ -38,7 +43,17 @@ class MockConfigBackend {
       }
 
       console.log(`[MockConfigBackend] Returning transformation for versionId: ${versionId}`);
-      ctx.body = mockData;
+      
+      // Replace placeholder URL with actual mock server URL if available
+      let transformationData = { ...mockData };
+      if (this.mockExternalApiUrl && transformationData.code) {
+        transformationData.code = transformationData.code.replace(
+          /__MOCK_SERVER_URL__/g,
+          this.mockExternalApiUrl
+        );
+      }
+      
+      ctx.body = transformationData;
     });
 
     // Mock transformation library endpoint

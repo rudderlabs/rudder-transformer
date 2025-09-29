@@ -58,7 +58,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -125,7 +124,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -159,7 +157,7 @@ export const validationTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error: 'Missing required value from [\"context.dubClickId\"]',
+            error: 'Missing required value from \"context.dubClickId\"',
             statTags: {
               destType: 'DUB',
               errorCategory: 'dataValidation',
@@ -187,7 +185,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -243,7 +240,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -304,7 +300,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -365,7 +360,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -426,7 +420,6 @@ export const validationTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [

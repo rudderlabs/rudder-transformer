@@ -56,7 +56,7 @@ const buildSalePayload = (
   }
   // convert amount to cents if the flag is set to true
   // https://dub.co/docs/api-reference/endpoint/track-sale#body-amount
-  if (convertAmountToCents && rawPayload.amount) {
+  if (convertAmountToCents && typeof rawPayload.amount === 'number') {
     rawPayload.amount = Math.round(rawPayload.amount * 100);
   }
   return removeUndefinedNullValuesAndEmptyObjectArray(rawPayload) as TrackSaleRequestBody;

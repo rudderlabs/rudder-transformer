@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { Destination, RouterTransformationRequestData, RudderMessage } from '../../../types';
 
+// Refer link for type definition: https://dub.co/docs/api-reference/endpoint/track-lead
 export interface TrackLeadRequestBody {
   /**
    * The unique ID of the click that the lead conversion event is attributed to.
@@ -77,7 +78,7 @@ export interface TrackLeadResponse {
     externalId: string;
   };
 }
-
+// Refer link for type definition: https://dub.co/docs/api-reference/endpoint/track-sale
 export interface TrackSaleRequestBody {
   /**
    * The unique ID of the customer in your system. Will be used to identify and

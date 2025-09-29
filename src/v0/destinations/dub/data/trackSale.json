@@ -19,7 +19,7 @@
   },
   {
     "destKey": "invoiceId",
-    "sourceKeys": ["properties.invoiceId", "properties.orderId"],
+    "sourceKeys": ["properties.invoiceId", "properties.orderId", "properties.order_id"],
     "required": false
   },
   {
@@ -59,6 +59,7 @@
         "paymentProcessor",
         "invoiceId",
         "orderId",
+        "order_id",
         "currency",
         "leadEventName",
         "email",

@@ -353,4 +353,79 @@ export const saleEventTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'dub-sale-test-4',
+    name: 'dub',
+    description: 'Track call: SALES_CONVERSION - Using order_id',
+    scenario: 'Business',
+    successCriteria: 'Should use order_id when invoiceId is not present in properties',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              properties: {
+                total: 7.55,
+                order_id: 'fallback_order_999',
+                // Note: No invoiceId provided
+              },
+              context: {
+                externalId: [
+                  {
+                    type: 'customerExternalId',
+                    id: 'fallback_user_999',
+                  },
+                ],
+              },
+              anonymousId: 'anon_fallback_999',
+              timestamp: commonTimestamp,
+            },
+            metadata: generateMetadata(4),
+            destination: overrideDestination(destination, {}),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.dub.co/track/sale',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  customerExternalId: 'fallback_user_999',
+                  amount: 755, // Amount in cents
+                  eventName: 'Order Completed',
+                  invoiceId: 'fallback_order_999', // orderId used as fallback
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: generateMetadata(4),
+          },
+        ],
+      },
+    },
+  },
 ];

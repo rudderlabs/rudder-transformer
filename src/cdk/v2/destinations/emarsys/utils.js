@@ -69,7 +69,6 @@ const buildIdentifyPayload = (message, destConfig) => {
     );
   }
   if (fieldMapping) {
-    // eslint-disable-next-line no-restricted-syntax
     for (const trait of fieldMapping) {
       const { rudderProperty, emersysProperty } = trait;
       const value = getValueFromMessage(message, [
@@ -207,8 +206,6 @@ const createSingleIdentifyPayload = (keyId, contacts, contactListId) => ({
 const ensureSizeConstraints = (contacts) => {
   const chunks = [];
   let currentBatch = [];
-
-  // eslint-disable-next-line no-restricted-syntax
   for (const contact of contacts) {
     if (
       currentBatch.length === 0 ||
@@ -351,7 +348,6 @@ function processEventBatches(typedEventGroups, constants) {
   const finalOutput = [];
 
   // Process each event group based on type
-  // eslint-disable-next-line no-restricted-syntax
   for (const eventType of Object.keys(typedEventGroups)) {
     switch (eventType) {
       case EventType.IDENTIFY:

@@ -41,7 +41,6 @@ function responseBuilder(payload, message, destination, category) {
 }
 
 function getCategoryAndName(rudderEventName) {
-  // eslint-disable-next-line no-restricted-syntax
   for (const category of categoriesList) {
     let requiredName = null;
     let requiredCategory = null;

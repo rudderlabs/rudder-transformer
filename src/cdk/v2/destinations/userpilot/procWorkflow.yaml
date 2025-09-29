@@ -35,7 +35,7 @@ steps:
     template: |
       $.assert(.message.userId, "User ID is required for Userpilot identify calls");
 
-      const userTraits = .message.traits ?? .message.context.traits ?? {};
+      const userTraits = .message.context.traits ?? .message.traits ?? {};
       const companyTraits = userTraits.company ?? {};
 
       $.context.payload = {

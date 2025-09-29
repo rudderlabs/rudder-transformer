@@ -94,24 +94,25 @@ async function transform(isolatevm, events) {
     const transformationPayload = {};
     transformationPayload.events = events;
     transformationPayload.transformationType = isolatevm.fName;
-    const executionPromise = new Promise(async (resolve, reject) => {
-      const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
-        transferIn: true,
-      });
-      try {
-        await isolatevm.bootstrapScriptResult.apply(
-          undefined,
-          [
-            isolatevm.fnRef,
-            new ivm.Reference(resolve),
-            new ivm.Reference(reject),
-            sharedTransformationPayload,
-          ],
-          { timeout: ivmExecutionTimeout },
-        );
-      } catch (error) {
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
+      transferIn: true,
+    });
+    
+    const executionPromise = new Promise((resolve, reject) => {
+      isolatevm.bootstrapScriptResult.apply(
+        undefined,
+        [
+          isolatevm.fnRef,
+          new ivm.Reference(resolve),
+          new ivm.Reference(reject),
+          sharedTransformationPayload,
+        ],
+        { timeout: ivmExecutionTimeout },
+      ).then(() => {
+       
+      }).catch((error) => {
         reject(error.message);
-      }
+      });
     });
   
     let setTimeoutHandle;
@@ -173,6 +174,7 @@ describe("User transformation Cache", () => {
         const bootstrap = await isolate.compileScript(bootstrapCode);
         const bootstrapScriptResult = await bootstrap.run(context);
         const codeWithWrapper = code + wrapperCode;
+        const compiledModules = {}; 
         const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
             filename: transformationName,
         });
@@ -222,6 +224,11 @@ describe("User transformation Cache", () => {
             fName: fName,
             transformationId: transformationId,
             workspaceId: workspaceId,
+            moduleSource: {
+              codeWithWrapper: codeWithWrapper,
+              transformationName: transformationName,
+              librariesMap: {}, 
+            },
         });
 
       })

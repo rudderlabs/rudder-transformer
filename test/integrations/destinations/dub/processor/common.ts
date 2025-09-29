@@ -19,15 +19,15 @@ export const destination: Destination = {
     eventMapping: [
       {
         from: 'User Signed Up',
-        to: 'LEAD_CONVERSIONt',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Product Added to Cart',
-        to: 'LEAD_CONVERSIONt',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Newsletter Subscribed',
-        to: 'LEAD_CONVERSIONt',
+        to: 'LEAD_CONVERSION',
       },
       {
         from: 'Order Completed',

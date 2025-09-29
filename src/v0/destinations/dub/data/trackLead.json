@@ -1,0 +1,45 @@
+[
+  {
+    "destKey": "clickId",
+    "sourceKeys": "context.dubClickId",
+    "required": true
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "customerEmail",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "customerAvatar",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "required": false
+  },
+  {
+    "destKey": "mode",
+    "sourceKeys": "properties.mode",
+    "required": false
+  },
+  {
+    "destKey": "eventQuantity",
+    "sourceKeys": "properties.eventQuantity",
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": ["eventQuantity", "mode", "email", "name", "phone", "firstName", "lastName"],
+      "defaultValue": null
+    }
+  }
+]

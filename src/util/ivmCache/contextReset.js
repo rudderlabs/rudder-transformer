@@ -11,6 +11,22 @@ const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require
  */
 
 /**
+ * Load a module in the given isolate and context
+ * @param {Object} isolate The IVM isolate
+ * @param {Object} context The IVM context
+ * @param {string} moduleName Name of the module
+ * @param {string} moduleCode Source code of the module
+ * @returns {Object} Compiled module
+ */
+async function loadModule(isolate, context, moduleName, moduleCode) {
+  const module = await isolate.compileModule(moduleCode, {
+    filename: `library ${moduleName}`,
+  });
+  await module.instantiate(context, () => {});
+  return module;
+}
+
+/**
  * Inject fresh APIs into the jail for a new execution
  * @param {Object} jail The context jail
  * @param {Object} cachedIsolate The cached isolate
@@ -156,19 +172,55 @@ async function createNewContext(cachedIsolate, credentials = {}) {
     // Set up bootstrap script in the new context
     const newBootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
 
-    // Re-instantiate the user's custom script module in the new context
-    await cachedIsolate.customScriptModule.instantiate(newContext, async (spec) => {
-      if (cachedIsolate.compiledModules[spec]) {
-        return cachedIsolate.compiledModules[spec].module;
+    if (cachedIsolate.customScriptModule) {
+      try {
+        cachedIsolate.customScriptModule.release();
+        logger.debug('Old customScriptModule released successfully', {
+          transformationId: cachedIsolate.transformationId,
+        });
+      } catch (error) {
+        logger.warn('Error releasing old customScriptModule', {
+          error: error.message,
+          transformationId: cachedIsolate.transformationId,
+        });
+      }
+    }
+
+    // Recompile all library modules for the new context
+    const newCompiledModules = {};
+    if (cachedIsolate.moduleSource.librariesMap) {
+      await Promise.all(
+        Object.entries(cachedIsolate.moduleSource.librariesMap).map(
+          async ([moduleName, moduleCode]) => {
+            newCompiledModules[moduleName] = {
+              module: await loadModule(cachedIsolate.isolate, newContext, moduleName, moduleCode),
+            };
+          },
+        ),
+      );
+    }
+
+    // Compile fresh customScriptModule from cached moduleSource
+    const newCustomScriptModule = await cachedIsolate.isolate.compileModule(
+      cachedIsolate.moduleSource.codeWithWrapper,
+      {
+        filename: cachedIsolate.moduleSource.transformationName,
+      },
+    );
+
+    // Instantiate the fresh module with the new context and fresh library modules
+    await newCustomScriptModule.instantiate(newContext, async (spec) => {
+      if (newCompiledModules[spec]) {
+        return newCompiledModules[spec].module;
       }
       throw new Error(`import from ${spec} failed. Module not found.`);
     });
 
-    // Re-evaluate the custom script module
-    await cachedIsolate.customScriptModule.evaluate();
+    // Evaluate the fresh module
+    await newCustomScriptModule.evaluate();
 
-    // Get fresh function reference
-    const fnRef = await cachedIsolate.customScriptModule.namespace.get('transformWrapper', {
+    // Get fresh function reference from the new module
+    const fnRef = await newCustomScriptModule.namespace.get('transformWrapper', {
       reference: true,
     });
 
@@ -176,7 +228,7 @@ async function createNewContext(cachedIsolate, credentials = {}) {
     const cachedIsolateWithResetContext = {
       isolate: cachedIsolate.isolate,
       bootstrap: cachedIsolate.bootstrap,
-      customScriptModule: cachedIsolate.customScriptModule,
+      customScriptModule: newCustomScriptModule, // Use the fresh module
       bootstrapScriptResult: newBootstrapScriptResult,
       fnRef,
       fName: cachedIsolate.fName,
@@ -185,7 +237,8 @@ async function createNewContext(cachedIsolate, credentials = {}) {
       // Metadata for debugging and tracking
       transformationId: cachedIsolate.transformationId,
       workspaceId: cachedIsolate.workspaceId,
-      compiledModules: cachedIsolate.compiledModules,
+      compiledModules: newCompiledModules, // Use fresh compiled modules
+      moduleSource: cachedIsolate.moduleSource, // Keep moduleSource for future resets
     };
 
     logger.debug('IVM context reset completed', {

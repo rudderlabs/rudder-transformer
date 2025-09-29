@@ -34,6 +34,7 @@ describe('Context Reset Utilities', () => {
   let mockCachedIsolate;
   let mockNewContext;
   let mockJail;
+  let mockFreshModule;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -50,10 +51,21 @@ describe('Context Reset Utilities', () => {
       release: jest.fn(),
     };
 
+    // Mock fresh module (returned by compileModule)
+    mockFreshModule = {
+      instantiate: jest.fn().mockResolvedValue(undefined),
+      evaluate: jest.fn().mockResolvedValue(undefined),
+      namespace: {
+        get: jest.fn().mockResolvedValue({}),
+      },
+      release: jest.fn(),
+    };
+
     // Mock cached isolate
     mockCachedIsolate = {
       isolate: {
         createContext: jest.fn().mockResolvedValue(mockNewContext),
+        compileModule: jest.fn().mockResolvedValue(mockFreshModule),
         wallTime: [1, 500000000],
         cpuTime: [0, 100000000],
       },
@@ -66,6 +78,7 @@ describe('Context Reset Utilities', () => {
         namespace: {
           get: jest.fn().mockResolvedValue({}),
         },
+        release: jest.fn(),
       },
       compiledModules: {
         lodash: { module: {} },
@@ -73,6 +86,14 @@ describe('Context Reset Utilities', () => {
       },
       context: {
         release: jest.fn(),
+      },
+      moduleSource: {
+        codeWithWrapper: 'function transformEvent(event) { return event; }',
+        transformationName: 'test-transformation',
+        librariesMap: {
+          lodash: 'export default function() { return {}; }',
+          moment: 'export default function() { return {}; }',
+        },
       },
       transformationId: 'test-transformation-123',
       workspaceId: 'test-workspace-456',
@@ -96,9 +117,15 @@ describe('Context Reset Utilities', () => {
       expect(mockCachedIsolate.isolate.createContext).toHaveBeenCalled();
       expect(mockJail.set).toHaveBeenCalledWith('global', {});
       expect(mockCachedIsolate.bootstrap.run).toHaveBeenCalledWith(mockNewContext);
-      expect(mockCachedIsolate.customScriptModule.instantiate).toHaveBeenCalled();
-      expect(mockCachedIsolate.customScriptModule.evaluate).toHaveBeenCalled();
-      expect(mockCachedIsolate.customScriptModule.namespace.get).toHaveBeenCalledWith(
+      expect(mockCachedIsolate.customScriptModule.release).toHaveBeenCalled();
+      expect(mockCachedIsolate.isolate.compileModule).toHaveBeenCalledWith(
+        mockCachedIsolate.moduleSource.codeWithWrapper,
+        { filename: mockCachedIsolate.moduleSource.transformationName }
+      );
+      // Check that the fresh module was used
+      expect(mockFreshModule.instantiate).toHaveBeenCalled();
+      expect(mockFreshModule.evaluate).toHaveBeenCalled();
+      expect(mockFreshModule.namespace.get).toHaveBeenCalledWith(
         'transformWrapper',
         { reference: true }
       );
@@ -106,13 +133,17 @@ describe('Context Reset Utilities', () => {
       expect(result).toMatchObject({
         isolate: mockCachedIsolate.isolate,
         bootstrap: mockCachedIsolate.bootstrap,
-        customScriptModule: mockCachedIsolate.customScriptModule,
+        customScriptModule: mockFreshModule,
         bootstrapScriptResult: {},
         fnRef: {},
         transformationId: 'test-transformation-123',
         workspaceId: 'test-workspace-456',
-        compiledModules: mockCachedIsolate.compiledModules,
+        moduleSource: mockCachedIsolate.moduleSource,
       });
+      
+      // Verify that compiledModules is recreated (should be an object but not necessarily match the old one)
+      expect(result.compiledModules).toBeDefined();
+      expect(typeof result.compiledModules).toBe('object');
     });
 
     test('should inject fresh credentials', async () => {
@@ -159,7 +190,7 @@ describe('Context Reset Utilities', () => {
 
     test('should handle module instantiation correctly', async () => {
       const instantiateCallback = jest.fn();
-      mockCachedIsolate.customScriptModule.instantiate.mockImplementation(
+      mockFreshModule.instantiate.mockImplementation(
         (context, callback) => {
           instantiateCallback.mockImplementation(callback);
           return Promise.resolve();
@@ -168,7 +199,7 @@ describe('Context Reset Utilities', () => {
 
       await createNewContext(mockCachedIsolate);
 
-      expect(mockCachedIsolate.customScriptModule.instantiate).toHaveBeenCalledWith(
+      expect(mockFreshModule.instantiate).toHaveBeenCalledWith(
         mockNewContext,
         expect.any(Function)
       );
@@ -215,7 +246,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should handle module instantiation failure', async () => {
-      mockCachedIsolate.customScriptModule.instantiate.mockRejectedValue(
+      mockFreshModule.instantiate.mockRejectedValue(
         new Error('Module instantiation failed')
       );
 
@@ -223,7 +254,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should handle module evaluation failure', async () => {
-      mockCachedIsolate.customScriptModule.evaluate.mockRejectedValue(
+      mockFreshModule.evaluate.mockRejectedValue(
         new Error('Module evaluation failed')
       );
 
@@ -233,10 +264,9 @@ describe('Context Reset Utilities', () => {
 
   describe('injected API functions', () => {
     let injectedFunctions;
-    let resetResult;
 
     beforeEach(async () => {
-      resetResult = await createNewContext(mockCachedIsolate, { testKey: 'testValue' });
+      await createNewContext(mockCachedIsolate, { testKey: 'testValue' });
       
       // Extract the injected functions from the jail.set calls
       injectedFunctions = {};
@@ -568,8 +598,7 @@ describe('Context Reset Utilities', () => {
 
   describe('module instantiation and loading', () => {
     test('should handle module instantiation with callback', async () => {
-      const mockCallback = jest.fn();
-      mockCachedIsolate.customScriptModule.instantiate.mockImplementation(
+      mockFreshModule.instantiate.mockImplementation(
         async (context, callback) => {
           await callback('lodash');
           await callback('moment');
@@ -578,7 +607,7 @@ describe('Context Reset Utilities', () => {
 
       await createNewContext(mockCachedIsolate);
 
-      expect(mockCachedIsolate.customScriptModule.instantiate).toHaveBeenCalledWith(
+      expect(mockFreshModule.instantiate).toHaveBeenCalledWith(
         mockNewContext,
         expect.any(Function)
       );
@@ -717,7 +746,7 @@ describe('Context Reset Utilities', () => {
     });
 
     test('should handle transform wrapper retrieval failure', async () => {
-      mockCachedIsolate.customScriptModule.namespace.get.mockRejectedValue(
+      mockFreshModule.namespace.get.mockRejectedValue(
         new Error('Transform wrapper not found')
       );
 

@@ -3,10 +3,10 @@ const logger = require('../../logger');
 const stats = require('../stats');
 
 /**
- * IVM Cache implementation using battle-tested lru-cache library
+ * Least Recently Used Cache implementation using battle-tested lru-cache library
  * Handles caching of IVM isolates with TTL support and proper cleanup
  */
-class IvmCache {
+class LeastRecentlyUsedCache {
   constructor(options = {}) {
     this.maxSize = parseInt(
       options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '10',
@@ -240,4 +240,4 @@ class IvmCache {
   }
 }
 
-module.exports = IvmCache;
+module.exports = LeastRecentlyUsedCache;

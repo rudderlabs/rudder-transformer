@@ -2104,8 +2104,11 @@ describe("User transformation with IVM cache", () => {
         codeVersion: "1",
         name,
         code: `
+          var i = 1;
           export function transformEvent(event, metadata) {
               event.credentialValue = getCredential('key1');
+              event.variable = i;
+              i++
               return event;
             }
             `
@@ -2120,9 +2123,11 @@ describe("User transformation with IVM cache", () => {
         `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
       );
       expect(output[0].transformedEvent.credentialValue).toEqual("value1");
+      expect(output[0].transformedEvent.variable).toEqual(1);
 
       const outputCached = await userTransformHandler(inputData, versionId, []);
       expect(outputCached[0].transformedEvent.credentialValue).toEqual("value1");
+      expect(outputCached[0].transformedEvent.variable).toEqual(1);
     });
 
     it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {

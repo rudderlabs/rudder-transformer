@@ -122,14 +122,14 @@ jest.mock('lru-cache', () => ({
   })
 }));
 
-const IvmCache = require('../../../src/util/ivmCache/index');
+const LeastRecentlyUsedCache = require('../../../src/util/ivmCache/index');
 
 describe('IVM LRU Cache with TTL', () => {
   let cache;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    cache = new IvmCache({ maxSize: 3, ttlMs: 1000 });
+    cache = new LeastRecentlyUsedCache({ maxSize: 3, ttlMs: 1000 });
   });
 
   afterEach(() => {
@@ -140,7 +140,7 @@ describe('IVM LRU Cache with TTL', () => {
 
   describe('constructor', () => {
     test('should initialize with default values', () => {
-      const defaultCache = new IvmCache();
+      const defaultCache = new LeastRecentlyUsedCache();
       expect(defaultCache.maxSize).toBe(10);
       expect(defaultCache.ttlMs).toBe(300000);
     });
@@ -149,7 +149,7 @@ describe('IVM LRU Cache with TTL', () => {
       process.env.IVM_CACHE_MAX_SIZE = '100';
       process.env.IVM_CACHE_TTL_MS = '3600000';
       
-      const envCache = new IvmCache();
+      const envCache = new LeastRecentlyUsedCache();
       expect(envCache.maxSize).toBe(100);
       expect(envCache.ttlMs).toBe(3600000);
       
@@ -158,7 +158,7 @@ describe('IVM LRU Cache with TTL', () => {
     });
 
     test('should use provided options over defaults', () => {
-      const customCache = new IvmCache({ maxSize: 25, ttlMs: 5000 });
+      const customCache = new LeastRecentlyUsedCache({ maxSize: 25, ttlMs: 5000 });
       expect(customCache.maxSize).toBe(25);
       expect(customCache.ttlMs).toBe(5000);
     });
@@ -281,7 +281,7 @@ describe('IVM LRU Cache with TTL', () => {
   
     test('should expire items after TTL', () => {
       // Note: No more `done` callback
-      cache = new IvmCache({ maxSize: 5, ttlMs: 100 });
+      cache = new LeastRecentlyUsedCache({ maxSize: 5, ttlMs: 100 });
       
       cache.set('key1', 'value1');
       expect(cache.get('key1')).toBe('value1');
@@ -293,7 +293,7 @@ describe('IVM LRU Cache with TTL', () => {
     });
   
     test('should call destroy method on TTL expired items', () => {
-      cache = new IvmCache({ maxSize: 5, ttlMs: 100 });
+      cache = new LeastRecentlyUsedCache({ maxSize: 5, ttlMs: 100 });
       const mockDestroy = jest.fn();
       const itemWithDestroy = { data: 'test', destroy: mockDestroy };
       
@@ -305,7 +305,7 @@ describe('IVM LRU Cache with TTL', () => {
     });
   
     test('should reset TTL when item is overwritten', () => {
-      cache = new IvmCache({ maxSize: 5, ttlMs: 200 });
+      cache = new LeastRecentlyUsedCache({ maxSize: 5, ttlMs: 200 });
       
       cache.set('key1', 'value1');
       
@@ -416,7 +416,7 @@ describe('IVM LRU Cache with TTL', () => {
     });
 
     test('should handle TTL destroy errors gracefully', (done) => {
-      cache = new IvmCache({ maxSize: 5, ttlMs: 100 });
+      cache = new LeastRecentlyUsedCache({ maxSize: 5, ttlMs: 100 });
       const mockDestroy = jest.fn().mockImplementation(() => {
         throw new Error('TTL Destroy failed');
       });
@@ -433,7 +433,7 @@ describe('IVM LRU Cache with TTL', () => {
 
   describe('memory management', () => {
     test('should handle zero max size', () => {
-      const zeroCache = new IvmCache({ maxSize: 0, ttlMs: 1000 });
+      const zeroCache = new LeastRecentlyUsedCache({ maxSize: 0, ttlMs: 1000 });
       zeroCache.set('key1', 'value1');
       // With maxSize 0, item gets added then immediately evicted
       expect(zeroCache.cache.size).toBe(0);
@@ -442,7 +442,7 @@ describe('IVM LRU Cache with TTL', () => {
     });
 
     test('should handle max size of 1', () => {
-      const singleCache = new IvmCache({ maxSize: 1, ttlMs: 1000 });
+      const singleCache = new LeastRecentlyUsedCache({ maxSize: 1, ttlMs: 1000 });
       
       singleCache.set('key1', 'value1');
       expect(singleCache.get('key1')).toBe('value1');

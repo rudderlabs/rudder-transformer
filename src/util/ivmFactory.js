@@ -453,6 +453,14 @@ async function createIvm(
     reference: true,
   });
   const fName = availableFuncNames[0];
+
+  // Create moduleSource object for recompilation in context resets
+  const moduleSource = {
+    codeWithWrapper,
+    transformationName,
+    librariesMap, // Include library source code for recompilation
+  };
+
   stats.timing('createivm_duration', createIvmStartTime, trTags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
@@ -467,6 +475,7 @@ async function createIvm(
     fName,
     logs,
     compiledModules,
+    moduleSource,
   };
 }
 
@@ -570,7 +579,6 @@ async function getCachedFactory(
       try {
         // Try to get cached isolate first
         const cachedIsolate = await ivmCacheManager.get(cacheKey, credentials);
-
         if (cachedIsolate) {
           // Cache hit - return cached isolate with reset context
           logger.debug('IVM Factory cache hit', {
@@ -587,7 +595,7 @@ async function getCachedFactory(
         }
 
         // Cache miss - create new IVM
-        logger.debug('IVM Factory cache miss', {
+        logger.info('IVM Factory cache miss', {
           cacheKey,
           transformationId,
         });

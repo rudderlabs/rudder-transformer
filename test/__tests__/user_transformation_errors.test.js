@@ -505,7 +505,7 @@ describe("JS Transformation Error Tests when using ivm cache", () => {
         
         expect(resultCached.length).toBe(1);
         resultCached.forEach(ev => { expect(ev.error).toEqual(
-          `ReferenceError: x is not defined\n    at base transformation:2:37\n    at transformBatch (base transformation:2:16)`
+          `ReferenceError: x is not defined\n    at base transformation:2:37\n    at Array.map (<anonymous>)\n    at transformBatch (base transformation:2:16)`
         ) });
     });
 

@@ -82,6 +82,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -114,6 +115,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -227,6 +229,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -262,6 +265,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -379,6 +383,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -413,6 +418,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',

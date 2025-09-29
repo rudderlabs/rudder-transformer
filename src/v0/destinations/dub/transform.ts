@@ -8,7 +8,7 @@ import {
 import { RudderMessage } from '../../../types';
 
 import { DubIORouterRequest, DubIODestinationConfig } from './types';
-import { LEAD_ENDPOINT, SALES_ENDPOINT } from './config';
+import { LEAD_ENDPOINT, SALES_ENDPOINT, LEAD_ENDPOINT_PATH, SALES_ENDPOINT_PATH } from './config';
 import { createHeader, buildLeadPayload, buildSalePayload } from './utils';
 
 const processLeadEvent = (message: RudderMessage, destinationConfig: DubIODestinationConfig) => {
@@ -18,6 +18,7 @@ const processLeadEvent = (message: RudderMessage, destinationConfig: DubIODestin
 
   const response = defaultRequestConfig();
   response.endpoint = LEAD_ENDPOINT;
+  response.endpointPath = LEAD_ENDPOINT_PATH;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = createHeader(apiKey);
   response.body.JSON = payload;
@@ -31,6 +32,7 @@ const processSaleEvent = (message: RudderMessage, destinationConfig: DubIODestin
 
   const response = defaultRequestConfig();
   response.endpoint = SALES_ENDPOINT;
+  response.endpointPath = SALES_ENDPOINT_PATH;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = createHeader(apiKey);
   response.body.JSON = payload;

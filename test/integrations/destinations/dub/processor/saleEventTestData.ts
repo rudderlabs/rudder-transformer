@@ -65,6 +65,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/sale',
+              endpointPath: '/track/sale',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -158,6 +159,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/sale',
+              endpointPath: '/track/sale',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -244,6 +246,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/sale',
+              endpointPath: '/track/sale',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -327,6 +330,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/sale',
+              endpointPath: '/track/sale',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -402,6 +406,7 @@ export const saleEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/sale',
+              endpointPath: '/track/sale',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',

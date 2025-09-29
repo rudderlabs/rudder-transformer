@@ -62,6 +62,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -147,6 +148,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -231,6 +233,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -316,6 +319,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',

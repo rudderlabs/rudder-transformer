@@ -119,16 +119,12 @@ const transformUserTraits = (traits, contactAttributeMapping) => {
   const attributeMap = getHashFromArray(contactAttributeMapping, 'from', 'to', false);
 
   const userTraits = traits;
-  // Validation: traits must be defined (not null/undefined). Empty object is allowed.
-  if (!userTraits) {
-    throw new InstrumentationError('Sendinblue: traits should be defined.');
-  }
-  for (const key of Object.keys(attributeMap)) {
+  Object.keys(attributeMap).forEach((key) => {
     const traitValue = traits[key];
     if (traitValue) {
       userTraits[attributeMap[key]] = traitValue;
     }
-  }
+  });
 
   return refineUserTraits(userTraits, attributeMap);
 };

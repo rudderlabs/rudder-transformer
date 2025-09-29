@@ -1,0 +1,74 @@
+[
+  {
+    "destKey": "amount",
+    "sourceKeys": ["properties.total", "properties.amount"],
+    "required": true,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "paymentProcessor",
+    "sourceKeys": "properties.paymentProcessor",
+    "required": false
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "invoiceId",
+    "sourceKeys": ["properties.invoiceId", "properties.orderId", "properties.order_id"],
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "leadEventName",
+    "sourceKeys": "properties.leadEventName",
+    "required": false
+  },
+  {
+    "destKey": "clickId",
+    "sourceKeys": "context.dubClickId",
+    "required": false
+  },
+  {
+    "destKey": "customerEmail",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "customerAvatar",
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "required": false
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "total",
+        "amount",
+        "paymentProcessor",
+        "invoiceId",
+        "orderId",
+        "order_id",
+        "currency",
+        "leadEventName",
+        "email",
+        "name",
+        "phone",
+        "firstName",
+        "lastName"
+      ],
+      "defaultValue": null
+    }
+  }
+]

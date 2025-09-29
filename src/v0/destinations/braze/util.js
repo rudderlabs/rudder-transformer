@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -27,7 +28,6 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const formatGender = (gender) => {
   if (typeof gender !== 'string') {
@@ -168,7 +168,6 @@ const BrazeDedupUtility = {
   prepareInputForDedup(inputs) {
     const externalIds = [];
     const aliasIds = [];
-    // eslint-disable-next-line no-restricted-syntax
     for (const input of inputs) {
       const { message } = input;
       const brazeExternalId = getDestinationExternalID(message, 'brazeExternalId');
@@ -343,7 +342,13 @@ const BrazeDedupUtility = {
    * @returns {Object} user object with deduplicated custom attributes
    */
   deduplicate(userData, store) {
-    const excludeKeys = ['external_id', 'user_alias', 'appboy_id', 'braze_id', 'custom_events'];
+    const excludeKeys = new Set([
+      'external_id',
+      'user_alias',
+      'appboy_id',
+      'braze_id',
+      'custom_events',
+    ]);
     const { external_id, user_alias } = userData;
     let storedUserData =
       this.getUserDataFromStore(store, external_id) ||
@@ -358,7 +363,7 @@ const BrazeDedupUtility = {
     delete storedUserData.custom_attributes;
     let deduplicatedUserData = {};
     const keys = Object.keys(userData)
-      .filter((key) => !excludeKeys.includes(key))
+      .filter((key) => !excludeKeys.has(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
       .filter((key) => {
         if (isObject(userData[key])) {
@@ -674,7 +679,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
 
 function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
-  const validateForPurchaseEvent = (message) => {
+  const validateForPurchaseEvent = () => {
     const { properties } = message;
     const timestamp = getFieldValueFromMessage(message, 'timestamp');
     if (!properties) {
@@ -752,7 +757,7 @@ function getPurchaseObjs(message, config) {
       }
     });
   };
-  validateForPurchaseEvent(message);
+  validateForPurchaseEvent();
 
   const { products, currency: currencyCode } = message.properties;
   const timestamp = getFieldValueFromMessage(message, 'timestamp');
@@ -764,9 +769,9 @@ function getPurchaseObjs(message, config) {
     const { price, quantity, currency: prodCur } = product;
     let purchaseObj = addMandatoryPurchaseProperties(
       String(productId),
-      parseFloat(price),
+      Number.parseFloat(price),
       currencyCode || prodCur,
-      parseInt(quantity, 10),
+      Number.parseInt(quantity, 10),
       timestamp,
     );
     const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);

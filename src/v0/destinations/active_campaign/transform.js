@@ -1,5 +1,4 @@
-/* eslint-disable  array-callback-return */
-/* eslint-disable  no-empty */
+/* eslint-disable  array-callback-return, no-empty */
 const get = require('get-value');
 const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
@@ -122,8 +121,8 @@ const customTagProcessor = async ({ message, destination, metadata }, category, 
     // We are retrieving 100 tags which is the maximum limit, in each iteration, until all tags are retrieved.
     // Ref - https://developers.activecampaign.com/reference/pagination
     const promises = [];
-    if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
-      const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
+    if (Number.parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
+      const limit = Math.floor(Number.parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
         endpoint = `${destination.Config.apiUrl}${tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
         requestOptions = {
@@ -250,8 +249,8 @@ const customFieldProcessor = async ({ message, destination, metadata }, category
   responseStaging.push(res.response.status === 200 ? res.response.data.fields : []);
 
   const promises = [];
-  const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
-  if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
+  const limit = Math.floor(Number.parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
+  if (Number.parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
       endpoint = `${destination.Config.apiUrl}${fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
       const requestOpt = {
@@ -346,7 +345,6 @@ const customListProcessor = async ({ message, destination, metadata }, category,
   // status information
   // Ref: https://developers.activecampaign.com/reference/update-list-status-for-contact/
   const promises = [];
-  // eslint-disable-next-line no-restricted-syntax
   for (const li of listArr) {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
       const endpoint = `${destination.Config.apiUrl}${mergeListWithContactUrl}`;

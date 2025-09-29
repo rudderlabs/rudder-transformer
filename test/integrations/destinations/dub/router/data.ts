@@ -15,7 +15,6 @@ export const data: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -32,7 +31,7 @@ export const data: RouterTestData[] = [
                 context: {
                   traits: {
                     email: 'john.doe@example.com',
-                    fullName: 'John Doe',
+                    name: 'John Doe',
                   },
                   dubClickId: 'dub_click_12345',
                 },
@@ -83,6 +82,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -115,6 +115,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -157,7 +158,6 @@ export const data: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -229,6 +229,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/lead',
+                endpointPath: '/track/lead',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -264,6 +265,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -305,7 +307,6 @@ export const data: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -382,6 +383,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -416,6 +418,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.dub.co/track/sale',
+                endpointPath: '/track/sale',
                 headers: {
                   Authorization: `Bearer ${apiKey}`,
                   'Content-Type': 'application/json',
@@ -460,7 +463,6 @@ export const data: RouterTestData[] = [
     feature: 'router',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: {
@@ -492,14 +494,17 @@ export const data: RouterTestData[] = [
           output: [
             {
               batched: false,
-              error: 'Event "Unmapped Event" is not mapped to any conversion type',
+              error:
+                'Event \"Unmapped Event\" is not mapped to any DUB event type. Aborting message.',
               statTags: {
-                destType: 'dub',
+                destType: 'DUB',
+                destinationId: 'default-destinationId',
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',
+                workspaceId: 'default-workspaceId',
               },
               statusCode: 400,
               metadata: [generateMetadata(1)],

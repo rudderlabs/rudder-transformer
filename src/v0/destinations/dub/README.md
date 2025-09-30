@@ -53,9 +53,9 @@ Implementation in **TypeScript**
 
 ### Batching Support
 
-- **Supported**: Yes (via router destination)
+- **Supported**: No - Dub does not support traditional batching
+- **Router Processing**: Yes - Can process multiple events in a single router request
 - **Message Types**: Track events only
-- **Batch Limits**: Standard router batching applies (processed via `simpleProcessRouterDest`)
 
 ### Authentication
 
@@ -65,8 +65,9 @@ Implementation in **TypeScript**
 ### Router Destination
 
 - **Type**: Router destination (`config.transformAtV1: "router"`)
-- **Batching**: Supported via `processRouterDest` function
-- **Processing**: Uses `simpleProcessRouterDest` for batch processing
+- **Batching**: No traditional batching support - each event generates individual API calls
+- **Router Processing**: Uses `simpleProcessRouterDest` to process multiple events in a single router request
+- **Event Processing**: Each track event results in one API call to either `/track/lead` or `/track/sale`
 
 ### Proxy Delivery
 
@@ -190,9 +191,9 @@ Dub follows the [IETF standard](https://datatracker.ietf.org/doc/html/draft-ietf
 
 **Batch Sizes:**
 
-- **Router Batching**: Standard RudderStack router batching applies
-- **No API-specific Batch Limits**: Dub doesn't specify batch size limits for conversion endpoints
-- **Recommendation**: Monitor rate limits and adjust batch sizes accordingly
+- **No Batching Support**: Dub destination does not support traditional batching
+- **Router Processing**: Handles multiple events in router requests but sends individual API calls
+- **Rate Limit Consideration**: Each event generates one API call, so monitor rate limits accordingly
 
 ### Multiplexing
 

@@ -16,7 +16,6 @@ export const leadEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -30,7 +29,6 @@ export const leadEventTestData: ProcessorTestData[] = [
                 name: 'John Doe',
                 firstName: 'John',
                 lastName: 'Doe',
-                avatar: 'https://example.com/avatar.jpg',
                 campaign: 'summer_2023',
                 source: 'google_ads',
               },
@@ -64,6 +62,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -108,7 +107,6 @@ export const leadEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -150,6 +148,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -190,7 +189,6 @@ export const leadEventTestData: ProcessorTestData[] = [
     feature: 'processor',
     module: 'destination',
     version: 'v0',
-    skip: true,
     input: {
       request: {
         body: [
@@ -235,6 +233,7 @@ export const leadEventTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
               headers: {
                 Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
@@ -262,6 +261,89 @@ export const leadEventTestData: ProcessorTestData[] = [
             },
             statusCode: 200,
             metadata: generateMetadata(3),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'dub-lead-test-4',
+    name: 'dub',
+    description: 'Track call: LEAD_CONVERSION - User Signed Up without metadata fields',
+    scenario: 'Business',
+    successCriteria:
+      'Should successfully transform track event without metadata object when no metadata fields are present',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'User Signed Up',
+              properties: {
+                eventQuantity: 1,
+              },
+              context: {
+                traits: {
+                  email: 'minimal@example.com',
+                  name: 'Minimal User',
+                },
+                externalId: [
+                  {
+                    type: 'customerExternalId',
+                    id: 'user_minimal_123',
+                  },
+                ],
+                dubClickId: 'dub_click_minimal',
+              },
+              anonymousId: 'anon_minimal_456',
+              timestamp: commonTimestamp,
+            },
+            metadata: generateMetadata(4),
+            destination: overrideDestination(destination, {}),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.dub.co/track/lead',
+              endpointPath: '/track/lead',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  clickId: 'dub_click_minimal',
+                  eventName: 'User Signed Up',
+                  customerExternalId: 'user_minimal_123',
+                  customerName: 'Minimal User',
+                  customerEmail: 'minimal@example.com',
+                  mode: 'wait',
+                  eventQuantity: 1,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: generateMetadata(4),
           },
         ],
       },

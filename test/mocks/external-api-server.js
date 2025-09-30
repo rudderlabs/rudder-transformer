@@ -103,7 +103,7 @@ class MockExternalApiServer {
   async start() {
     return new Promise((resolve, reject) => {
       // Let the system assign a free port
-      this.server = this.app.listen(0, 'localhost', (err) => {
+      this.server = this.app.listen(0, '127.0.0.1', (err) => {
         if (err) {
           reject(err);
           return;
@@ -128,7 +128,8 @@ class MockExternalApiServer {
   }
 
   getBaseUrl() {
-    return `http://localhost:${this.port}`;
+    // Use 127.0.0.1 instead of localhost for Docker compatibility
+    return `http://127.0.0.1:${this.port}`;
   }
 
   // Helper method to add custom API mocks during tests

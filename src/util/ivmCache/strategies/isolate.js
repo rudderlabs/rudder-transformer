@@ -1,4 +1,4 @@
-const LeastRecentlyUsedCache = require('../index');
+const DisposableCache = require('../index');
 const { createNewContext } = require('../contextReset');
 const logger = require('../../../logger');
 const stats = require('../../stats');
@@ -10,7 +10,7 @@ const stats = require('../../stats');
 class OneIVMPerTransformationIdStrategy {
   constructor(options = {}) {
     this.name = 'isolate';
-    this.cache = new LeastRecentlyUsedCache(options);
+    this.cache = new DisposableCache(options);
 
     logger.info('IVM Cache strategy: isolate', {
       maxSize: this.cache.maxSize,

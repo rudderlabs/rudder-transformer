@@ -6,7 +6,7 @@ const stats = require('../stats');
  * Least Recently Used Cache implementation using battle-tested lru-cache library
  * Handles caching of IVM isolates with TTL support and proper cleanup
  */
-class LeastRecentlyUsedCache {
+class DisposableCache {
   constructor(options = {}) {
     this.maxSize = parseInt(
       options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '10',
@@ -240,4 +240,4 @@ class LeastRecentlyUsedCache {
   }
 }
 
-module.exports = LeastRecentlyUsedCache;
+module.exports = DisposableCache;

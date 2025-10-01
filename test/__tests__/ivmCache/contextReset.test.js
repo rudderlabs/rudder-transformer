@@ -117,7 +117,6 @@ describe('Context Reset Utilities', () => {
       expect(mockCachedIsolate.isolate.createContext).toHaveBeenCalled();
       expect(mockJail.set).toHaveBeenCalledWith('global', {});
       expect(mockCachedIsolate.bootstrap.run).toHaveBeenCalledWith(mockNewContext);
-      expect(mockCachedIsolate.customScriptModule.release).toHaveBeenCalled();
       expect(mockCachedIsolate.isolate.compileModule).toHaveBeenCalledWith(
         mockCachedIsolate.moduleSource.codeWithWrapper,
         { filename: mockCachedIsolate.moduleSource.transformationName }

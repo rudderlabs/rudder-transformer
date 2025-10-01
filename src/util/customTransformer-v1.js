@@ -110,14 +110,7 @@ async function userTransformHandlerV1(
       logger.error(`Error encountered while getting heap size: ${err.message}`);
     }
 
-    if (!useIvmCache || testMode) {
-      isolatevmFactory.destroy(isolatevm);
-    } else {
-      clearContextAndBootstrapScriptResult(isolatevm.context, isolatevm.bootstrapScriptResult, {
-        transformationId: userTransformation.id,
-        workspaceId: userTransformation.workspaceId,
-      });
-    }
+    isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {
       identifier: 'v1',

@@ -513,28 +513,15 @@ async function getFactory(
       // Release resources safely - each in its own try-catch to prevent cascade failures
       try {
         client.fnRef?.release();
-      } catch (e) {
-        logger.debug('fnRef release error:', e.message);
-      }
-      try {
         client.bootstrap?.release();
-      } catch (e) {
-        logger.debug('bootstrap release error:', e.message);
-      }
-      try {
         client.customScriptModule?.release();
-      } catch (e) {
-        logger.debug('customScriptModule release error:', e.message);
-      }
-      try {
         client.context?.release();
-      } catch (e) {
-        logger.debug('context release error:', e.message);
-      }
-      try {
         await client.isolate?.dispose();
       } catch (e) {
-        logger.debug('isolate dispose error:', e.message);
+        logger.error('Error in factory destroy', {
+          error: e.message,
+          transformationId: client.transformationId || 'unknown',
+        });
       }
     },
   };
@@ -669,12 +656,9 @@ async function getCachedFactory(
 
     destroy: async (client) => {
       try {
-        // For cached instances, we don't destroy immediately
-        // The cache manager handles cleanup via TTL/LRU
-        logger.debug('Cached factory destroy called', {
-          transformationId: client.transformationId || 'unknown',
-        });
-
+        client.fnRef?.release();
+        client.customScriptModule?.release();
+        client.context?.release();
         // Note: Cached instances are cleaned up by cache eviction
         // We don't need to do immediate cleanup here
         return;

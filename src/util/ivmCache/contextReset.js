@@ -172,20 +172,6 @@ async function createNewContext(cachedIsolate, credentials = {}) {
     // Set up bootstrap script in the new context
     const newBootstrapScriptResult = await cachedIsolate.bootstrap.run(newContext);
 
-    if (cachedIsolate.customScriptModule) {
-      try {
-        cachedIsolate.customScriptModule.release();
-        logger.debug('Old customScriptModule released successfully', {
-          transformationId: cachedIsolate.transformationId,
-        });
-      } catch (error) {
-        logger.warn('Error releasing old customScriptModule', {
-          error: error.message,
-          transformationId: cachedIsolate.transformationId,
-        });
-      }
-    }
-
     // Recompile all library modules for the new context
     const newCompiledModules = {};
     if (cachedIsolate.moduleSource.librariesMap) {
@@ -255,39 +241,6 @@ async function createNewContext(cachedIsolate, credentials = {}) {
   }
 }
 
-/**
- * Safely release execution-specific resources (context and bootstrapScriptResult)
- * @param {Object} context The IVM context to release
- * @param {Object} bootstrapScriptResult The bootstrap script result to release
- * @param {Object} metadata Metadata for logging (optional)
- */
-function clearContextAndBootstrapScriptResult(context, bootstrapScriptResult, metadata = {}) {
-  // Release context
-  if (context) {
-    try {
-      context.release();
-      logger.debug('Execution context released successfully', metadata);
-    } catch (error) {
-      logger.warn('Error releasing execution context', {
-        error: error.message,
-        ...metadata,
-      });
-    }
-  }
-  if (bootstrapScriptResult) {
-    try {
-      bootstrapScriptResult.release();
-      logger.debug('Bootstrap script result released successfully', metadata);
-    } catch (error) {
-      logger.warn('Error releasing bootstrap script result', {
-        error: error.message,
-        ...metadata,
-      });
-    }
-  }
-}
-
 module.exports = {
   createNewContext,
-  clearContextAndBootstrapScriptResult,
 };

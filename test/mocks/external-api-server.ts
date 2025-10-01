@@ -1,9 +1,27 @@
-const Koa = require('koa');
-const Router = require('@koa/router');
-const bodyParser = require('koa-bodyparser');
-const { externalApiMocks } = require('./user_transformation/test-data/api-responses');
+import Koa from 'koa';
+import Router from '@koa/router';
+import bodyParser from 'koa-bodyparser';
+import { Server } from 'http';
+import { AddressInfo } from 'net';
+import { externalApiMocks } from './user_transformation/test-data/api-responses';
+
+interface MockApiResponse {
+  status: number;
+  body: any;
+  headers?: Record<string, string>;
+}
+
+interface MockApiConfig {
+  method?: string;
+  response: MockApiResponse;
+}
 
 class MockExternalApiServer {
+  private app: Koa;
+  private router: Router;
+  private server: Server | null;
+  private port: number | null;
+
   constructor() {
     this.app = new Koa();
     this.router = new Router();
@@ -12,7 +30,7 @@ class MockExternalApiServer {
     this.setupRoutes();
   }
 
-  setupRoutes() {
+  private setupRoutes(): void {
     // Middleware for JSON parsing and logging
     this.app.use(bodyParser());
     this.app.use(async (ctx, next) => {
@@ -23,7 +41,7 @@ class MockExternalApiServer {
     // Dynamic route handler for external API mocks
     this.app.use(async (ctx) => {
       console.log(`[MockExternalAPI] Request: ${ctx.method} ${ctx.path}`);
-      
+
       // Handle specific endpoints
       if (ctx.path === '/enrich' && ctx.method === 'POST') {
         console.log(`[MockExternalAPI] Handling enrich request with body:`, ctx.request.body);
@@ -33,11 +51,11 @@ class MockExternalApiServer {
           enriched: true,
           timestamp: new Date().toISOString(),
           source: 'mock-external-api',
-          originalData: ctx.request.body
+          originalData: ctx.request.body,
         };
         return;
       }
-      
+
       if (ctx.path.startsWith('/user-profile') && ctx.method === 'GET') {
         const userId = ctx.query.userId;
         console.log(`[MockExternalAPI] Handling user profile request for userId: ${userId}`);
@@ -49,27 +67,27 @@ class MockExternalApiServer {
             segment: 'premium',
             preferences: ['email', 'sms'],
             lastSeen: new Date().toISOString(),
-            score: Math.floor(Math.random() * 100)
-          }
+            score: Math.floor(Math.random() * 100),
+          },
         };
         return;
       }
-      
+
       if (ctx.path === '/error' && ctx.method === 'GET') {
         console.log(`[MockExternalAPI] Handling error endpoint`);
         ctx.status = 500;
         ctx.set('content-type', 'application/json');
-        ctx.body = { 
+        ctx.body = {
           error: 'Internal server error',
-          message: 'This is a simulated error from the mock API'
+          message: 'This is a simulated error from the mock API',
         };
         return;
       }
-      
+
       // Fallback to original mock system for backwards compatibility
       const fullUrl = `${ctx.protocol}://api.example.com${ctx.path}`;
-      const mockConfig = externalApiMocks[fullUrl];
-      
+      const mockConfig = externalApiMocks[fullUrl] as MockApiConfig | undefined;
+
       if (mockConfig) {
         // Check if method matches (if specified in mock)
         if (mockConfig.method && mockConfig.method !== ctx.method) {
@@ -79,7 +97,7 @@ class MockExternalApiServer {
         }
 
         const { response } = mockConfig;
-        
+
         // Set headers
         if (response.headers) {
           Object.entries(response.headers).forEach(([key, value]) => {
@@ -92,7 +110,7 @@ class MockExternalApiServer {
         ctx.body = response.body;
         return;
       }
-      
+
       // No mock found
       console.log(`[MockExternalAPI] No mock found for: ${ctx.method} ${ctx.path}`);
       ctx.status = 404;
@@ -100,26 +118,27 @@ class MockExternalApiServer {
     });
   }
 
-  async start() {
+  async start(): Promise<number> {
     return new Promise((resolve, reject) => {
       // Let the system assign a free port
-      this.server = this.app.listen(0, '127.0.0.1', (err) => {
+      this.server = this.app.listen(0, '127.0.0.1', (err?: Error) => {
         if (err) {
           reject(err);
           return;
         }
-        
-        this.port = this.server.address().port;
+
+        const address = this.server?.address() as AddressInfo;
+        this.port = address.port;
         console.log(`[MockExternalAPI] Started on port ${this.port}`);
         resolve(this.port);
       });
     });
   }
 
-  async stop() {
+  async stop(): Promise<void> {
     if (this.server) {
       return new Promise((resolve) => {
-        this.server.close(() => {
+        this.server?.close(() => {
           console.log(`[MockExternalAPI] Stopped`);
           resolve();
         });
@@ -127,15 +146,14 @@ class MockExternalApiServer {
     }
   }
 
-  getBaseUrl() {
-    // Use 127.0.0.1 instead of localhost for Docker compatibility
+  getBaseUrl(): string {
     return `http://127.0.0.1:${this.port}`;
   }
 
   // Helper method to add custom API mocks during tests
-  addApiMock(url, mockConfig) {
+  addApiMock(url: string, mockConfig: MockApiConfig): void {
     externalApiMocks[url] = mockConfig;
   }
 }
 
-module.exports = MockExternalApiServer;
+export default MockExternalApiServer;

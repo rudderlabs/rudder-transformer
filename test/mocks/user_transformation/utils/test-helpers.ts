@@ -1,14 +1,91 @@
-const MockConfigBackend = require('../../config-backend-server');
-const MockExternalApiServer = require('../../external-api-server');
+import MockConfigBackend from '../../config-backend-server';
+import MockExternalApiServer from '../../external-api-server';
 
-class TestEnvironment {
+interface EnvironmentSetupResult {
+  configBackendUrl: string;
+  externalApiUrl: string;
+  configPort: number;
+  externalApiPort: number;
+}
+
+interface TestEventMessage {
+  messageId: string;
+  type: string;
+  event: string;
+  userId: string;
+  properties: Record<string, any>;
+  timestamp: string;
+  [key: string]: any;
+}
+
+interface TestEventMetadata {
+  sourceId: string;
+  sourceName: string;
+  workspaceId: string;
+  sourceType: string;
+  sourceCategory: string;
+  destinationId: string;
+  destinationType: string;
+  destinationName: string;
+  transformationId: string;
+  transformationVersionId: string;
+  [key: string]: any;
+}
+
+interface TestEventDestination {
+  ID: string;
+  Name: string;
+  Config: Record<string, any>;
+  [key: string]: any;
+}
+
+interface TestEvent {
+  message: TestEventMessage;
+  metadata: TestEventMetadata;
+  destination: TestEventDestination;
+}
+
+interface TestEventOverrides {
+  message?: Partial<TestEventMessage>;
+  metadata?: Partial<TestEventMetadata>;
+  destination?: Partial<TestEventDestination>;
+  properties?: Record<string, any>;
+}
+
+interface TransformationRequest {
+  message: TestEventMessage;
+  metadata: TestEventMetadata;
+  destination: TestEventDestination & {
+    Transformations: Array<{ VersionID: string }>;
+  };
+  libraries: Array<{ VersionID: string }>;
+}
+
+interface TransformationResponseItem {
+  statusCode: number;
+  metadata: Record<string, any>;
+  output?: {
+    messageId: string;
+    type: string;
+    properties?: Record<string, any>;
+    [key: string]: any;
+  };
+  error?: string;
+  [key: string]: any;
+}
+
+export class TestEnvironment {
+  private configBackend: MockConfigBackend;
+  private externalApiServer: MockExternalApiServer;
+  private originalEnv: Record<string, string | undefined>;
+
   constructor() {
     this.configBackend = new MockConfigBackend();
     this.externalApiServer = new MockExternalApiServer();
     this.originalEnv = {};
   }
 
-  async setup() {
+  async setup(): Promise<EnvironmentSetupResult> {
     // Start mock servers
     const configPort = await this.configBackend.start();
     const externalApiPort = await this.externalApiServer.start();
@@ -35,11 +112,11 @@ class TestEnvironment {
       configBackendUrl: this.configBackend.getBaseUrl(),
       externalApiUrl: this.externalApiServer.getBaseUrl(),
       configPort,
-      externalApiPort
+      externalApiPort,
     };
   }
 
-  async teardown() {
+  async teardown(): Promise<void> {
     // Stop mock servers
     await this.configBackend.stop();
     await this.externalApiServer.stop();
@@ -57,25 +134,25 @@ class TestEnvironment {
   }
 
   // Helper methods to add mocks during tests
-  addTransformationMock(versionId, mockData) {
+  addTransformationMock(versionId: string, mockData: any): void {
     this.configBackend.addTransformationMock(versionId, mockData);
   }
 
-  addLibraryMock(versionId, mockData) {
+  addLibraryMock(versionId: string, mockData: any): void {
     this.configBackend.addLibraryMock(versionId, mockData);
   }
 
-  addRudderLibraryMock(name, mockData) {
+  addRudderLibraryMock(name: string, mockData: any): void {
     this.configBackend.addRudderLibraryMock(name, mockData);
   }
 
-  addExternalApiMock(url, mockConfig) {
+  addExternalApiMock(url: string, mockConfig: any): void {
     this.externalApiServer.addApiMock(url, mockConfig);
   }
 }
 
 // Helper function to create test events
-function createTestEvent(overrides = {}) {
+export function createTestEvent(overrides: TestEventOverrides = {}): TestEvent {
   return {
     message: {
       messageId: 'test-message-id-' + Date.now(),
@@ -84,10 +161,10 @@ function createTestEvent(overrides = {}) {
       userId: 'test-user-id',
       properties: {
         testProperty: 'testValue',
-        ...overrides.properties
+        ...overrides.properties,
       },
       timestamp: new Date().toISOString(),
-      ...overrides.message
+      ...overrides.message,
     },
     metadata: {
       sourceId: 'test-source-id',
@@ -100,49 +177,56 @@ function createTestEvent(overrides = {}) {
       destinationName: 'Test Destination',
       transformationId: 'test-transformation-id',
       transformationVersionId: 'test-version-id',
-      ...overrides.metadata
+      ...overrides.metadata,
     },
     destination: {
       ID: 'test-destination-id',
       Name: 'Test Destination',
       Config: {},
-      ...overrides.destination
-    }
+      ...overrides.destination,
+    },
   };
 }
 
 // Helper function to create transformation request
-function createTransformationRequest(events, versionId, libraryVersionIds = []) {
-  if (!Array.isArray(events)) {
-    events = [events];
-  }
+export function createTransformationRequest(
+  events: TestEvent | TestEvent[],
+  versionId: string,
+  libraryVersionIds: string[] = [],
+): TransformationRequest[] {
+  const eventArray = Array.isArray(events) ? events : [events];
 
-  return events.map(event => ({
+  return eventArray.map((event) => ({
     message: event.message,
     metadata: event.metadata,
     destination: {
       ...event.destination,
-      Transformations: [{
-        VersionID: versionId
-      }]
+      Transformations: [
+        {
+          VersionID: versionId,
+        },
+      ],
     },
-    libraries: libraryVersionIds.map(id => ({ VersionID: id }))
+    libraries: libraryVersionIds.map((id) => ({ VersionID: id })),
   }));
 }
 
 // Helper function to validate transformation response
-function validateTransformationResponse(response, expectedCount) {
+export function validateTransformationResponse(
+  response: TransformationResponseItem[],
+  expectedCount?: number,
+): TransformationResponseItem[] {
   expect(Array.isArray(response)).toBe(true);
-  
+
   if (expectedCount !== undefined) {
     expect(response).toHaveLength(expectedCount);
   }
 
-  response.forEach(item => {
+  response.forEach((item) => {
     // All responses should have these properties
     expect(item).toHaveProperty('statusCode');
     expect(item).toHaveProperty('metadata');
-    
+
     if (item.statusCode === 200) {
       // Success response structure
       expect(item).toHaveProperty('output');
@@ -158,20 +242,15 @@ function validateTransformationResponse(response, expectedCount) {
 }
 
 // Helper function to extract successful transformations
-function getSuccessfulTransformations(response) {
-  return response.filter(item => item.statusCode === 200);
+export function getSuccessfulTransformations(
+  response: TransformationResponseItem[],
+): TransformationResponseItem[] {
+  return response.filter((item) => item.statusCode === 200);
 }
 
 // Helper function to extract failed transformations
-function getFailedTransformations(response) {
-  return response.filter(item => item.statusCode !== 200);
+export function getFailedTransformations(
+  response: TransformationResponseItem[],
+): TransformationResponseItem[] {
+  return response.filter((item) => item.statusCode !== 200);
 }
-
-module.exports = {
-  TestEnvironment,
-  createTestEvent,
-  createTransformationRequest,
-  validateTransformationResponse,
-  getSuccessfulTransformations,
-  getFailedTransformations
-};

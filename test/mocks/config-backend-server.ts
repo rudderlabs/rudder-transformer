@@ -1,9 +1,37 @@
-const Koa = require('koa');
-const Router = require('@koa/router');
-const bodyParser = require('koa-bodyparser');
-const { transformationMocks, libraryMocks, rudderLibraryMocks } = require('./user_transformation/test-data/api-responses');
+import Koa from 'koa';
+import Router from '@koa/router';
+import bodyParser from 'koa-bodyparser';
+import { Server } from 'http';
+import { AddressInfo } from 'net';
+import {
+  transformationMocks,
+  libraryMocks,
+  rudderLibraryMocks,
+} from './user_transformation/test-data/api-responses';
+
+interface TransformationMock {
+  codeVersion: string;
+  name: string;
+  versionId: string;
+  code: string;
+  language?: string;
+  [key: string]: any;
+}
+
+interface LibraryMock {
+  versionId: string;
+  name: string;
+  code: string;
+  [key: string]: any;
+}
 
 class MockConfigBackend {
+  private app: Koa;
+  private router: Router;
+  private server: Server | null;
+  private port: number | null;
+  private mockExternalApiUrl: string | null;
+
   constructor() {
     this.app = new Koa();
     this.router = new Router();
@@ -13,11 +41,11 @@ class MockConfigBackend {
     this.setupRoutes();
   }
 
-  setMockExternalApiUrl(url) {
+  setMockExternalApiUrl(url: string): void {
     this.mockExternalApiUrl = url;
   }
 
-  setupRoutes() {
+  private setupRoutes(): void {
     // Middleware for JSON parsing and logging
     this.app.use(bodyParser());
     this.app.use(async (ctx, next) => {
@@ -28,14 +56,14 @@ class MockConfigBackend {
     // Mock transformation endpoint
     this.router.get('/transformation/getByVersionId', async (ctx) => {
       const { versionId } = ctx.query;
-      
-      if (!versionId) {
+
+      if (!versionId || typeof versionId !== 'string') {
         ctx.status = 400;
         ctx.body = { error: 'versionId is required' };
         return;
       }
 
-      const mockData = transformationMocks[versionId];
+      const mockData = transformationMocks[versionId] as TransformationMock | undefined;
       if (!mockData) {
         ctx.status = 404;
         ctx.body = { error: `Transformation not found for versionId: ${versionId}` };
@@ -43,30 +71,30 @@ class MockConfigBackend {
       }
 
       console.log(`[MockConfigBackend] Returning transformation for versionId: ${versionId}`);
-      
+
       // Replace placeholder URL with actual mock server URL if available
       let transformationData = { ...mockData };
       if (this.mockExternalApiUrl && transformationData.code) {
         transformationData.code = transformationData.code.replace(
           /__MOCK_SERVER_URL__/g,
-          this.mockExternalApiUrl
+          this.mockExternalApiUrl,
         );
       }
-      
+
       ctx.body = transformationData;
     });
 
     // Mock transformation library endpoint
     this.router.get('/transformationLibrary/getByVersionId', async (ctx) => {
       const { versionId } = ctx.query;
-      
-      if (!versionId) {
+
+      if (!versionId || typeof versionId !== 'string') {
         ctx.status = 400;
         ctx.body = { error: 'versionId is required' };
         return;
       }
 
-      const mockData = libraryMocks[versionId];
+      const mockData = libraryMocks[versionId] as LibraryMock | undefined;
       if (!mockData) {
         ctx.status = 404;
         ctx.body = { error: `Library not found for versionId: ${versionId}` };
@@ -81,7 +109,7 @@ class MockConfigBackend {
     this.router.get('/rudderstackTransformationLibraries/:name', async (ctx) => {
       const { name } = ctx.params;
       const { version } = ctx.query;
-      
+
       if (!name) {
         ctx.status = 400;
         ctx.body = { error: 'library name is required' };
@@ -90,7 +118,7 @@ class MockConfigBackend {
 
       const libraryKey = version ? `${name}@${version}` : name;
       const mockData = rudderLibraryMocks[libraryKey] || rudderLibraryMocks[name];
-      
+
       if (!mockData) {
         const versionSuffix = version ? `@${version}` : '';
         ctx.status = 404;
@@ -119,26 +147,27 @@ class MockConfigBackend {
     });
   }
 
-  async start() {
+  async start(): Promise<number> {
     return new Promise((resolve, reject) => {
       // Let the system assign a free port
-      this.server = this.app.listen(0, '127.0.0.1', (err) => {
+      this.server = this.app.listen(0, '127.0.0.1', (err?: Error) => {
         if (err) {
           reject(err);
           return;
         }
-        
-        this.port = this.server.address().port;
+
+        const address = this.server?.address() as AddressInfo;
+        this.port = address.port;
         console.log(`[MockConfigBackend] Started on port ${this.port}`);
         resolve(this.port);
       });
     });
   }
 
-  async stop() {
+  async stop(): Promise<void> {
     if (this.server) {
       return new Promise((resolve) => {
-        this.server.close(() => {
+        this.server?.close(() => {
           console.log(`[MockConfigBackend] Stopped`);
           resolve();
         });
@@ -146,23 +175,23 @@ class MockConfigBackend {
     }
   }
 
-  getBaseUrl() {
+  getBaseUrl(): string {
     // Use 127.0.0.1 instead of localhost for Docker compatibility
     return `http://127.0.0.1:${this.port}`;
   }
 
   // Helper method to add custom mocks during tests
-  addTransformationMock(versionId, mockData) {
+  addTransformationMock(versionId: string, mockData: TransformationMock): void {
     transformationMocks[versionId] = mockData;
   }
 
-  addLibraryMock(versionId, mockData) {
+  addLibraryMock(versionId: string, mockData: LibraryMock): void {
     libraryMocks[versionId] = mockData;
   }
 
-  addRudderLibraryMock(name, mockData) {
+  addRudderLibraryMock(name: string, mockData: any): void {
     rudderLibraryMocks[name] = mockData;
   }
 }
 
-module.exports = MockConfigBackend;
+export default MockConfigBackend;

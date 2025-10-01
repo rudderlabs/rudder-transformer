@@ -1,5 +1,5 @@
 // Mock transformation codes for different test scenarios
-const transformationMocks = {
+export const transformationMocks: Record<string, any> = {
   // Simple JS transformation
   'simple-js-transform': {
     versionId: 'simple-js-transform',
@@ -15,7 +15,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // Async JS transformation
@@ -37,7 +37,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // JS transformation with lodash library
@@ -67,7 +67,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: ['lodash']
+    imports: ['lodash'],
   },
 
   // Batch transformation
@@ -89,7 +89,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // Error-prone transformation
@@ -105,7 +105,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // Transformation that returns null (drops event)
@@ -127,7 +127,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // Real external API call transformation (dynamic URL)
@@ -165,7 +165,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // User profile enrichment transformation
@@ -203,7 +203,7 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
+    imports: [],
   },
 
   // Error-prone external API call
@@ -234,12 +234,12 @@ const transformationMocks = {
     codeVersion: '1',
     language: 'javascript',
     workspaceId: 'test-workspace-1',
-    imports: []
-  }
+    imports: [],
+  },
 };
 
 // Mock library codes
-const libraryMocks = {
+export const libraryMocks: Record<string, any> = {
   'lodash-lib-v1': {
     versionId: 'lodash-lib-v1',
     code: `// Lodash library mock - simplified version
@@ -266,7 +266,7 @@ const libraryMocks = {
       export default _;
     `,
     name: 'lodash',
-    importName: 'lodash'
+    importName: 'lodash',
   },
 
   'moment-lib-v1': {
@@ -281,12 +281,12 @@ const libraryMocks = {
       export default moment;
     `,
     name: 'moment',
-    importName: 'moment'
-  }
+    importName: 'moment',
+  },
 };
 
 // Mock Rudder library codes
-const rudderLibraryMocks = {
+export const rudderLibraryMocks: Record<string, any> = {
   'urlParser@v1': {
     code: `// URL Parser library mock
       const URLSearchParams = class {
@@ -313,7 +313,7 @@ const rudderLibraryMocks = {
       export default { URLSearchParams };
     `,
     name: 'urlParser',
-    importName: '@rs/urlParser/v1'
+    importName: '@rs/urlParser/v1',
   },
 
   'crypto@v1': {
@@ -344,12 +344,12 @@ const rudderLibraryMocks = {
       export default crypto;
     `,
     name: 'crypto',
-    importName: '@rs/crypto/v1'
-  }
+    importName: '@rs/crypto/v1',
+  },
 };
 
 // Mock external API responses for fetch calls made by user transformations
-const externalApiMocks = {
+export const externalApiMocks: Record<string, any> = {
   'https://api.example.com/enrich': {
     method: 'POST',
     response: {
@@ -358,9 +358,9 @@ const externalApiMocks = {
       body: {
         enriched: true,
         timestamp: '2023-01-01T00:00:00Z',
-        source: 'external-api'
-      }
-    }
+        source: 'external-api',
+      },
+    },
   },
 
   'https://api.example.com/user-profile': {
@@ -372,10 +372,10 @@ const externalApiMocks = {
         profile: {
           segment: 'premium',
           preferences: ['email', 'sms'],
-          lastSeen: '2023-01-01T00:00:00Z'
-        }
-      }
-    }
+          lastSeen: '2023-01-01T00:00:00Z',
+        },
+      },
+    },
   },
 
   'https://api.example.com/error': {
@@ -383,14 +383,7 @@ const externalApiMocks = {
     response: {
       status: 500,
       headers: { 'content-type': 'application/json' },
-      body: { error: 'Internal server error' }
-    }
-  }
-};
-
-module.exports = {
-  transformationMocks,
-  libraryMocks,
-  rudderLibraryMocks,
-  externalApiMocks
+      body: { error: 'Internal server error' },
+    },
+  },
 };

@@ -40,32 +40,6 @@ const transformationMocks = {
     imports: []
   },
 
-  // JS transformation with fetch calls
-  'fetch-js-transform': {
-    versionId: 'fetch-js-transform',
-    code: `
-      export async function transformEvent(event, metadata) {
-        // For e2e testing, simulate external API call result
-        // In a real scenario, this would make an actual fetchV2 call
-        event.properties = event.properties || {};
-        event.properties.enriched = true;
-        event.properties.transformationType = 'fetch';
-        event.properties.externalData = {
-          enriched: true,
-          timestamp: '2023-01-01T00:00:00Z',
-          source: 'external-api'
-        };
-        
-        return event;
-      }
-    `,
-    name: 'Fetch Transform',
-    codeVersion: '1',
-    language: 'javascript',
-    workspaceId: 'test-workspace-1',
-    imports: []
-  },
-
   // JS transformation with lodash library
   'lodash-js-transform': {
     versionId: 'lodash-js-transform',

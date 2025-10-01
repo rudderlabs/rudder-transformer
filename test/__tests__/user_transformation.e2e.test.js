@@ -158,32 +158,6 @@ describe('User Transformation E2E Tests', () => {
   });
 
   describe('JS Transformations with External API Calls', () => {
-    test('should handle fetchV2 calls in transformation (simulated)', async () => {
-      const testEvent = createTestEvent({
-        userId: 'test-user-123',
-        properties: { needsEnrichment: true }
-      });
-      
-      const requestBody = createTransformationRequest([testEvent], 'fetch-js-transform');
-
-      const response = await request(server)
-        .post('/customTransform')
-        .send(requestBody)
-        .expect(200);
-
-      const transformedEvents = validateTransformationResponse(response.body, 1);
-      const successful = getSuccessfulTransformations(transformedEvents);
-      
-      expect(successful).toHaveLength(1);
-      
-      const props = successful[0].output.properties;
-      expect(props.enriched).toBe(true);
-      expect(props.transformationType).toBe('fetch');
-      expect(props.externalData).toBeDefined();
-      expect(props.externalData.enriched).toBe(true);
-      expect(props.externalData.source).toBe('external-api');
-    });
-
     test('should make real external API calls to mock server', async () => {
       const testEvent = createTestEvent({
         message: { userId: 'test-user-456' },

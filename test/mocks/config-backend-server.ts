@@ -3,11 +3,6 @@ import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
-import {
-  transformationMocks,
-  libraryMocks,
-  rudderLibraryMocks,
-} from './user_transformation/test-data/api-responses';
 
 interface TransformationMock {
   codeVersion: string;
@@ -25,19 +20,31 @@ interface LibraryMock {
   [key: string]: any;
 }
 
+interface MockConfigBackendOptions {
+  transformationMocks?: Record<string, any>;
+  libraryMocks?: Record<string, any>;
+  rudderLibraryMocks?: Record<string, any>;
+}
+
 class MockConfigBackend {
   private app: Koa;
-  private router: Router;
+  private router;
   private server: Server | null;
   private port: number | null;
   private mockExternalApiUrl: string | null;
+  private transformationMocks: Record<string, any>;
+  private libraryMocks: Record<string, any>;
+  private rudderLibraryMocks: Record<string, any>;
 
-  constructor() {
+  constructor(options: MockConfigBackendOptions = {}) {
     this.app = new Koa();
     this.router = new Router();
     this.server = null;
     this.port = null;
     this.mockExternalApiUrl = null;
+    this.transformationMocks = options.transformationMocks || {};
+    this.libraryMocks = options.libraryMocks || {};
+    this.rudderLibraryMocks = options.rudderLibraryMocks || {};
     this.setupRoutes();
   }
 
@@ -63,7 +70,7 @@ class MockConfigBackend {
         return;
       }
 
-      const mockData = transformationMocks[versionId] as TransformationMock | undefined;
+      const mockData = this.transformationMocks[versionId] as TransformationMock | undefined;
       if (!mockData) {
         ctx.status = 404;
         ctx.body = { error: `Transformation not found for versionId: ${versionId}` };
@@ -94,7 +101,7 @@ class MockConfigBackend {
         return;
       }
 
-      const mockData = libraryMocks[versionId] as LibraryMock | undefined;
+      const mockData = this.libraryMocks[versionId] as LibraryMock | undefined;
       if (!mockData) {
         ctx.status = 404;
         ctx.body = { error: `Library not found for versionId: ${versionId}` };
@@ -117,7 +124,7 @@ class MockConfigBackend {
       }
 
       const libraryKey = version ? `${name}@${version}` : name;
-      const mockData = rudderLibraryMocks[libraryKey] || rudderLibraryMocks[name];
+      const mockData = this.rudderLibraryMocks[libraryKey] || this.rudderLibraryMocks[name];
 
       if (!mockData) {
         const versionSuffix = version ? `@${version}` : '';
@@ -182,15 +189,15 @@ class MockConfigBackend {
 
   // Helper method to add custom mocks during tests
   addTransformationMock(versionId: string, mockData: TransformationMock): void {
-    transformationMocks[versionId] = mockData;
+    this.transformationMocks[versionId] = mockData;
   }
 
   addLibraryMock(versionId: string, mockData: LibraryMock): void {
-    libraryMocks[versionId] = mockData;
+    this.libraryMocks[versionId] = mockData;
   }
 
   addRudderLibraryMock(name: string, mockData: any): void {
-    rudderLibraryMocks[name] = mockData;
+    this.rudderLibraryMocks[name] = mockData;
   }
 }
 

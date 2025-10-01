@@ -1,11 +1,24 @@
 import MockConfigBackend from '../../config-backend-server';
 import MockExternalApiServer from '../../external-api-server';
+import {
+  transformationMocks,
+  libraryMocks,
+  rudderLibraryMocks,
+  externalApiMocks,
+} from '../test-data';
 
 interface EnvironmentSetupResult {
   configBackendUrl: string;
   externalApiUrl: string;
   configPort: number;
   externalApiPort: number;
+}
+
+interface TestEnvironmentOptions {
+  transformationMocks?: Record<string, any>;
+  libraryMocks?: Record<string, any>;
+  rudderLibraryMocks?: Record<string, any>;
+  externalApiMocks?: Record<string, any>;
 }
 
 interface TestEventMessage {
@@ -79,9 +92,16 @@ export class TestEnvironment {
   private externalApiServer: MockExternalApiServer;
   private originalEnv: Record<string, string | undefined>;
 
-  constructor() {
-    this.configBackend = new MockConfigBackend();
-    this.externalApiServer = new MockExternalApiServer();
+  constructor(options: TestEnvironmentOptions = {}) {
+    // Inject mock data into servers
+    this.configBackend = new MockConfigBackend({
+      transformationMocks: options.transformationMocks || transformationMocks,
+      libraryMocks: options.libraryMocks || libraryMocks,
+      rudderLibraryMocks: options.rudderLibraryMocks || rudderLibraryMocks,
+    });
+    this.externalApiServer = new MockExternalApiServer({
+      externalApiMocks: options.externalApiMocks || externalApiMocks,
+    });
     this.originalEnv = {};
   }
 

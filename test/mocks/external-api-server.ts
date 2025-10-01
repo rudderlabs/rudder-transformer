@@ -3,7 +3,6 @@ import Router from '@koa/router';
 import bodyParser from 'koa-bodyparser';
 import { Server } from 'http';
 import { AddressInfo } from 'net';
-import { externalApiMocks } from './user_transformation/test-data/api-responses';
 
 interface MockApiResponse {
   status: number;
@@ -16,17 +15,23 @@ interface MockApiConfig {
   response: MockApiResponse;
 }
 
+interface MockExternalApiServerOptions {
+  externalApiMocks?: Record<string, any>;
+}
+
 class MockExternalApiServer {
   private app: Koa;
-  private router: Router;
+  private router;
   private server: Server | null;
   private port: number | null;
+  private externalApiMocks: Record<string, any>;
 
-  constructor() {
+  constructor(options: MockExternalApiServerOptions = {}) {
     this.app = new Koa();
     this.router = new Router();
     this.server = null;
     this.port = null;
+    this.externalApiMocks = options.externalApiMocks || {};
     this.setupRoutes();
   }
 
@@ -86,7 +91,7 @@ class MockExternalApiServer {
 
       // Fallback to original mock system for backwards compatibility
       const fullUrl = `${ctx.protocol}://api.example.com${ctx.path}`;
-      const mockConfig = externalApiMocks[fullUrl] as MockApiConfig | undefined;
+      const mockConfig = this.externalApiMocks[fullUrl] as MockApiConfig | undefined;
 
       if (mockConfig) {
         // Check if method matches (if specified in mock)
@@ -152,7 +157,7 @@ class MockExternalApiServer {
 
   // Helper method to add custom API mocks during tests
   addApiMock(url: string, mockConfig: MockApiConfig): void {
-    externalApiMocks[url] = mockConfig;
+    this.externalApiMocks[url] = mockConfig;
   }
 }
 

@@ -65,11 +65,15 @@ Event-specific:
 
 ### Proxy Delivery
 
-- Not applicable. This destination uses CDK v2 Router; no custom proxy `networkHandler.js` is present.
+- Supported (proxy implementation present)
+- Source Code Paths:
+  - `src/v0/destinations/intercom/networkHandler.js`
 
 ### User Deletion
 
-- Not implemented in transformer code for Intercom. NEEDS REVIEW if supported elsewhere.
+- Supported
+- Source Code Path: `src/v0/destinations/intercom/deleteUsers.js`
+- Endpoint used: `POST /user_delete_requests` (permanently delete a user)
 
 ### Validations and Requirements
 

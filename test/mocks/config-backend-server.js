@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
-const { transformationMocks, libraryMocks, rudderLibraryMocks } = require('./test-data/api-responses');
+const { transformationMocks, libraryMocks, rudderLibraryMocks } = require('./user_transformation/test-data/api-responses');
 
 class MockConfigBackend {
   constructor() {

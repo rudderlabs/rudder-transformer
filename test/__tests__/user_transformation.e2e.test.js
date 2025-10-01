@@ -9,7 +9,7 @@ const {
   validateTransformationResponse,
   getSuccessfulTransformations,
   getFailedTransformations
-} = require('../mocks/utils/test-helpers');
+} = require('../mocks/user_transformation/utils/test-helpers');
 
 describe('User Transformation E2E Tests', () => {
   let testEnv;
@@ -23,7 +23,6 @@ describe('User Transformation E2E Tests', () => {
     await testEnv.setup();
 
     // Clear module cache to ensure fresh imports with mock env vars
-    delete require.cache[require.resolve('../../dist/src/routes/index.js')];
     delete require.cache[require.resolve('../../src/util/customTransforrmationsStore.js')];
     delete require.cache[require.resolve('../../src/util/customTransforrmationsStore-v1.js')];
     

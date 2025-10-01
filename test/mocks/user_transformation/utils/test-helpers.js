@@ -1,5 +1,5 @@
-const MockConfigBackend = require('../config-backend-server');
-const MockExternalApiServer = require('../external-api-server');
+const MockConfigBackend = require('../../config-backend-server');
+const MockExternalApiServer = require('../../external-api-server');
 
 class TestEnvironment {
   constructor() {

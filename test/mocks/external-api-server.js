@@ -1,7 +1,7 @@
 const Koa = require('koa');
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
-const { externalApiMocks } = require('./test-data/api-responses');
+const { externalApiMocks } = require('./user_transformation/test-data/api-responses');
 
 class MockExternalApiServer {
   constructor() {

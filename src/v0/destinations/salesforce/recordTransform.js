@@ -59,38 +59,40 @@ async function processVDMV2RecordEvents(groupedRecordInputs) {
   const responses = [];
   const metadata = [];
 
-  // Process each action type
-  for (const action of ['insert', 'update', 'delete']) {
-    const actionRecords = groupedByAction[action];
-    if (!actionRecords) continue;
+  // Process each action type in parallel
+  await Promise.all(
+    ['insert', 'update', 'delete'].map(async (action) => {
+      const actionRecords = groupedByAction[action];
+      if (!actionRecords) return;
 
-    await mapInBatches(actionRecords, async (record) => {
-      const { message: recordMessage } = record;
+      await mapInBatches(actionRecords, async (record) => {
+        const { message: recordMessage } = record;
 
-      // Build Salesforce payload from fields
-      const payload = recordMessage.fields || {};
+        // Build Salesforce payload from fields
+        const payload = recordMessage.fields || {};
 
-      // Add identifiers to payload if not already present
-      if (recordMessage.identifiers) {
-        Object.keys(recordMessage.identifiers).forEach((key) => {
-          if (payload[key] === undefined) {
-            payload[key] = recordMessage.identifiers[key];
-          }
-        });
-      }
+        // Add identifiers to payload if not already present
+        if (recordMessage.identifiers) {
+          Object.keys(recordMessage.identifiers).forEach((key) => {
+            if (payload[key] === undefined) {
+              payload[key] = recordMessage.identifiers[key];
+            }
+          });
+        }
 
-      const response = defaultRequestConfig();
-      response.body.JSON = payload;
-      response.endpoint = '/bulk'; // Placeholder
-      response.method = 'POST';
-      response.headers = {
-        'Content-Type': JSON_MIME_TYPE,
-      };
+        const response = defaultRequestConfig();
+        response.body.JSON = payload;
+        response.endpoint = '/bulk'; // Placeholder
+        response.method = 'POST';
+        response.headers = {
+          'Content-Type': JSON_MIME_TYPE,
+        };
 
-      responses.push(response);
-      metadata.push(record.metadata);
-    });
-  }
+        responses.push(response);
+        metadata.push(record.metadata);
+      });
+    }),
+  );
 
   return getSuccessRespEvents(responses, metadata, groupedRecordInputs[0].destination, true);
 }
@@ -123,4 +125,3 @@ async function processRecordInputs(groupedRecordInputs) {
 module.exports = {
   processRecordInputs,
 };
-

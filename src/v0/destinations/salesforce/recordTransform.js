@@ -9,7 +9,6 @@ const {
   getSuccessRespEvents,
   defaultRequestConfig,
 } = require('../../util');
-const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -21,7 +20,7 @@ async function processVDMV1RecordEvents(groupedRecordInputs) {
   const metadata = [];
 
   await mapInBatches(groupedRecordInputs, async (record) => {
-    const { message, destination } = record;
+    const { message } = record;
 
     // For VDM v1, fields are already in the message structure
     // Transform handles field mapping via existing Salesforce logic
@@ -47,9 +46,6 @@ async function processVDMV2RecordEvents(groupedRecordInputs) {
   if (!destinationConfig) {
     throw new InstrumentationError('VDM v2: connection.config.destination is required');
   }
-
-  // Derive user schema from identifiers
-  const userSchema = message?.identifiers ? Object.keys(message.identifiers) : [];
 
   // Group records by action (insert, update, delete)
   const groupedByAction = await groupByInBatches(groupedRecordInputs, (record) =>

@@ -8,14 +8,8 @@ const stats = require('../stats');
  */
 class DisposableCache {
   constructor(options = {}) {
-    this.maxSize = parseInt(
-      options.maxSize !== undefined ? options.maxSize : process.env.IVM_CACHE_MAX_SIZE || '10',
-      10,
-    );
-    this.ttlMs = parseInt(
-      options.ttlMs !== undefined ? options.ttlMs : process.env.IVM_CACHE_TTL_MS || '300000',
-      10,
-    );
+    this.maxSize = Number.parseInt(options.maxSize ?? process.env.IVM_CACHE_MAX_SIZE ?? '10', 10);
+    this.ttlMs = Number.parseInt(options.ttlMs ?? process.env.IVM_CACHE_TTL_MS ?? '300000', 10);
 
     this.cache = new LRUCache({
       max: this.maxSize,

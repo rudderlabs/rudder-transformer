@@ -6,8 +6,8 @@ const { clearContextAndBootstrapScriptResult } = require('./ivmCache/contextRese
 const logger = require('../logger');
 const stats = require('./stats');
 
-const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
-const ivmExecutionTimeout = parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
+const userTransformTimeout = Number.parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
+const ivmExecutionTimeout = Number.parseInt(process.env.IVM_EXECUTION_TIMEOUT || '4000', 10);
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
@@ -62,9 +62,10 @@ async function userTransformHandlerV1(
   }
 
   const credentialsMap = {};
-  (events[0]?.credentials || []).forEach((cred) => {
+  const credentials = events[0]?.credentials || [];
+  for (const cred of credentials) {
     credentialsMap[cred.key] = cred.value;
-  });
+  }
   // Choose factory based on environment configuration
   const factoryFunction = useIvmCache && !testMode ? getCachedFactory : getFactory;
 

@@ -141,7 +141,7 @@ class Prometheus {
         );
         metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
-      metric.observe(tags, (new Date() - start) / 1000);
+      metric.observe(tags, (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
     }
@@ -156,7 +156,7 @@ class Prometheus {
         );
         metric = this.newSummaryStat(name, name, Object.keys(tags));
       }
-      metric.observe(tags, (new Date() - start) / 1000);
+      metric.observe(tags, (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
     }
@@ -1025,7 +1025,7 @@ class Prometheus {
       },
     ];
 
-    metrics.forEach((metric) => {
+    for (const metric of metrics) {
       try {
         if (metric.type === 'counter') {
           this.newCounterStat(appendPrefix(metric.name), metric.help, metric.labelNames);
@@ -1057,7 +1057,7 @@ class Prometheus {
       } catch (e) {
         logger.error(`Prometheus: Metric creation failed. Name: ${metric.name}. Error ${e}`);
       }
-    });
+    }
   }
 }
 

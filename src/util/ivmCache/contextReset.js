@@ -39,7 +39,10 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
     workspaceId: cachedIsolate.workspaceId,
   };
 
-  const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+  const GEOLOCATION_TIMEOUT_IN_MS = Number.parseInt(
+    process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000',
+    10,
+  );
 
   await jail.set('_ivm', ivm);
 
@@ -71,9 +74,9 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
       try {
         const res = await fetchWithDnsWrapper(fetchTags, ...args);
         const headersContent = {};
-        res.headers.forEach((value, header) => {
+        for (const [header, value] of res.headers) {
           headersContent[header] = value;
-        });
+        }
         const data = {
           url: res.url,
           status: res.status,

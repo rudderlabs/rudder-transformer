@@ -8,9 +8,12 @@ const logger = require('../logger');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const ISOLATE_VM_MEMORY = Number.parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
-const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+const GEOLOCATION_TIMEOUT_IN_MS = Number.parseInt(
+  process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000',
+  10,
+);
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
@@ -59,13 +62,12 @@ async function createIvm(
       ),
     );
 
-    // TODO: Check if this should this be &&
-    libraries.forEach((library) => {
+    for (const library of libraries) {
       const libHandleName = camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
-    });
+    }
 
     // Extract ruddder libraries from import names
     const rudderLibImportNames = extractedLibraries.filter((name) =>
@@ -74,9 +76,9 @@ async function createIvm(
     const rudderLibraries = await Promise.all(
       rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName)),
     );
-    rudderLibraries.forEach((library) => {
+    for (const library of rudderLibraries) {
       librariesMap[library.importName] = library.code;
-    });
+    }
   }
 
   const codeWithWrapper =
@@ -242,9 +244,9 @@ async function createIvm(
       try {
         const res = await fetchWithDnsWrapper(fetchTags, ...args);
         const headersContent = {};
-        res.headers.forEach((value, header) => {
+        for (const [header, value] of res.headers) {
           headersContent[header] = value;
-        });
+        }
         const data = {
           url: res.url,
           status: res.status,
@@ -316,9 +318,9 @@ async function createIvm(
   await jail.set('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
-      args.forEach((arg) => {
+      for (const arg of args) {
         logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      });
+      }
       logs.push(logString);
     }
   });
@@ -516,7 +518,6 @@ async function getFactory(
         client.bootstrap?.release();
         client.customScriptModule?.release();
         client.context?.release();
-        client.bootstrapScriptResult?.release();
         await client.isolate?.dispose();
       } catch (e) {
         logger.error('Error in factory destroy', {

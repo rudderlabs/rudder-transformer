@@ -9,8 +9,11 @@ const stats = require('./stats');
 const logger = require('../logger');
 const { fetchWithDnsWrapper } = require('./utils');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
-const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+const ISOLATE_VM_MEMORY = Number.parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const GEOLOCATION_TIMEOUT_IN_MS = Number.parseInt(
+  process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000',
+  10,
+);
 
 async function runUserTransform(
   events,
@@ -61,9 +64,10 @@ async function runUserTransform(
       try {
         const res = await fetchWithDnsWrapper(trTags, ...args);
         const headersContent = {};
-        res.headers.forEach((value, header) => {
+        const headers = res.headers;
+        for (const [header, value] of headers) {
           headersContent[header] = value;
-        });
+        }
         const data = {
           url: res.url,
           status: res.status,
@@ -122,9 +126,9 @@ async function runUserTransform(
   jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
-      args.forEach((arg) => {
+      for (const arg of args) {
         logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      });
+      }
       logs.push(logString);
     }
   });
@@ -335,9 +339,9 @@ async function userTransformHandler(
       // And put back the destination after transforrmation
       const eventMessages = events.map((event) => event.message);
       const eventsMetadata = {};
-      events.forEach((ev) => {
+      for (const ev of events) {
         eventsMetadata[ev.message.messageId] = ev.metadata;
-      });
+      }
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {

@@ -147,7 +147,7 @@ class OneIVMPerTransformationIdStrategy {
             try {
               await isolateData.isolate?.dispose();
             } catch (disposeError) {
-              logger.debug('isolate already disposed or invalid', {
+              logger.error('isolate already disposed or invalid', {
                 cacheKey,
                 error: disposeError.message,
               });
@@ -196,11 +196,7 @@ class OneIVMPerTransformationIdStrategy {
   async delete(cacheKey) {
     try {
       const cachedIsolate = this.cache.get(cacheKey);
-
-      if (cachedIsolate && typeof cachedIsolate.destroy === 'function') {
-        await cachedIsolate.destroy();
-      }
-
+      await cachedIsolate.destroy();
       this.cache.delete(cacheKey);
 
       logger.debug('IVM cached isolate deleted', { cacheKey });
@@ -221,9 +217,7 @@ class OneIVMPerTransformationIdStrategy {
       const entries = Array.from(this.cache.cache.entries());
       await Promise.all(
         entries.map(async ([, cachedIsolate]) => {
-          if (cachedIsolate && typeof cachedIsolate.destroy === 'function') {
-            await cachedIsolate.destroy();
-          }
+          await cachedIsolate.destroy();
         }),
       );
 

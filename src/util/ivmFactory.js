@@ -516,6 +516,7 @@ async function getFactory(
         client.bootstrap?.release();
         client.customScriptModule?.release();
         client.context?.release();
+        client.bootstrapScriptResult?.release();
         await client.isolate?.dispose();
       } catch (e) {
         logger.error('Error in factory destroy', {

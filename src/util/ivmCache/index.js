@@ -54,19 +54,14 @@ class DisposableCache {
       if (reason === 'evict') {
         this.stats.evictions += 1;
       }
-
-      // Perform async cleanup if destroy method exists
-      if (value && typeof value.destroy === 'function') {
-        // Fire and forget the async cleanup - don't await
-        value.destroy().catch((error) => {
-          logger.error('Error in async destroy during disposal', {
-            key,
-            reason,
-            error: error.message,
-          });
+      value.destroy().catch((error) => {
+        logger.error('Error in async destroy during disposal', {
+          key,
+          reason,
+          error: error.message,
         });
-        logger.debug('IVM Cache item disposed', { key, reason });
-      }
+      });
+      logger.debug('IVM Cache item disposed', { key, reason });
     } catch (error) {
       logger.error('Error disposing cache item', {
         key,

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.109.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.108.2...v1.109.0) (2025-09-29)
+
+
+### Features
+
+* onboard dub ([#4678](https://github.com/rudderlabs/rudder-transformer/issues/4678)) ([fc5b055](https://github.com/rudderlabs/rudder-transformer/commit/fc5b055daf2bffb04ba272d8319f3c9cf0670bd7))
+
+### [1.108.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.108.1...v1.108.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* stop propagating entire error in networkError ([#4679](https://github.com/rudderlabs/rudder-transformer/issues/4679)) ([f05a41c](https://github.com/rudderlabs/rudder-transformer/commit/f05a41c49ace7141e3b22dedf3d8690f66824479))
+
 ### [1.108.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.108.0...v1.108.1) (2025-09-22)
 
 

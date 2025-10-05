@@ -433,6 +433,78 @@ export const data = [
               },
               metadata: { jobId: 8, userId: '50be5c78-6c3f-4b60-be84-97805a316fb1' },
             },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.5',
+                  },
+                  traits: {
+                    name: 'Shehan Study',
+                    category: 'SampleIdentify',
+                    email: 'test@rudderstack.com',
+                    plan: 'Open source',
+                    logins: 5,
+                    createdAt: 1599264000,
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.5',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
+                  locale: 'en-US',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 0.8999999761581421,
+                  },
+                  campaign: {
+                    source: 'google',
+                    medium: 'medium',
+                    term: 'keyword',
+                    content: 'some content',
+                    name: 'some campaign',
+                    test: 'other value',
+                  },
+                  page: {
+                    path: '/destinations/amplitude',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: 'https://docs.rudderstack.com/destinations/amplitude',
+                    category: 'destination',
+                    initial_referrer: 'https://docs.rudderstack.com',
+                    initial_referring_domain: 'docs.rudderstack.com',
+                  },
+                },
+                type: 'alias',
+                messageId: 'dd46338d-5f83-493b-bd28-3b48f55d0be8',
+                originalTimestamp: '2020-10-20T08:14:28.778Z',
+                anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                integrations: {
+                  All: true,
+                },
+                previousId: 'sampleusrRudder3',
+                sentAt: '2020-10-20T08:14:28.778Z',
+              },
+              destination: {
+                Config: {
+                  groupTypeTrait: 'email',
+                  apiKey: secret2,
+                  groupValueTrait: 'age',
+                  trackProductsOnce: true,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: { jobId: 9, userId: '50be5c78-6c3f-4b60-be84-97805a316fb1' },
+            },
           ],
           destType: 'am',
         },
@@ -726,6 +798,49 @@ export const data = [
                 {
                   jobId: 6,
                   userId: '1234567',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {
+                      api_key: 'am2',
+                      mapping: [
+                        '{"user_id":"sampleusrRudder3","user_properties":{"initial_referrer":"https://docs.rudderstack.com","initial_referring_domain":"docs.rudderstack.com","utm_source":"google","utm_medium":"medium","utm_term":"keyword","utm_content":"some content","utm_name":"some campaign","utm_test":"other value"}}',
+                      ],
+                    },
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  endpoint: 'https://api2.amplitude.com/usermap',
+                  endpointPath: 'usermap',
+                  files: {},
+                  headers: {},
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  userId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                  version: '1',
+                },
+              ],
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                  trackProductsOnce: true,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 9,
+                  userId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
                 },
               ],
               statusCode: 200,

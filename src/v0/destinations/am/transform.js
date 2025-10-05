@@ -1004,7 +1004,7 @@ const createBatchResponse = (destination, metadata, mergedEvent) => {
   return batchResponse;
 };
 
-const mergeEventsIntoFirstEvent = (events, destination) => {
+const mergeEvents = (events, destination) => {
   if (!events || events.length === 0) {
     throw new Error('Events array cannot be empty');
   }
@@ -1038,7 +1038,7 @@ const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
 
   batchedEventGroups.forEach((eventGroup) => {
     const { events, metadata, destination } = eventGroup;
-    const mergedEvent = mergeEventsIntoFirstEvent(events, destination);
+    const mergedEvent = mergeEvents(events, destination);
     const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
     batchResponse.batchedRequest.userId = events[0]?.userId;
     batchResponse.batched = true;
@@ -1082,14 +1082,14 @@ const processRouterDest = async (inputs, reqMetadata) => {
          */
         const transformedEvent = process(input);
         const firstTransformedEvent = getFirstEvent(transformedEvent);
-        const { user_id: userId, device_id: deviceId } =
-          get(firstTransformedEvent, 'body.JSON.events.0') || {};
-        const jsonBody = get(firstTransformedEvent, 'body.JSON');
-
-        if (
-          checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId) ||
-          input.metadata.dontBatch
-        ) {
+        const jsonBody = firstTransformedEvent.body?.JSON ?? {};
+        const isAliasEvent = firstTransformedEvent.endpointPath === 'usermap';
+        /**
+         * If the event is an alias event or the event has no JSON body or the metadata.dontBatch is true,
+         * push the event to the nonBatchableInputs array.
+         * Skipping alias events from batching as we are already grouping on userId/anonymousId.
+         */
+        if (Object.keys(jsonBody).length === 0 || input.metadata.dontBatch || isAliasEvent) {
           nonBatchableInputs.push({
             message: transformedEvent,
             metadata: input.metadata,

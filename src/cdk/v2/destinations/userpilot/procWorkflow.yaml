@@ -35,12 +35,15 @@ steps:
     template: |
       $.assert(.message.userId, "User ID is required for Userpilot identify calls");
 
+      const userTraits = .message.context.traits ?? .message.traits ?? {};
+      const companyTraits = userTraits.company ?? {};
+
       $.context.payload = {
         "user_id": .message.userId,
-        "company": $.isDefinedAndNotNull(.message.context.traits.company.id) ? .message.context.traits.company : null,
+        "company": $.isDefinedAndNotNull(companyTraits.id) ? companyTraits : null,
       };
 
-      let traits = $.transformTraits(.message.context.traits || {});
+      let traits = $.transformTraits(userTraits);
       $.context.payload.metadata = $.removeUndefinedAndNullValues(traits);      
       $.context.endpoint = $.getEndpoints(.destination.Config).IDENTIFY;
 

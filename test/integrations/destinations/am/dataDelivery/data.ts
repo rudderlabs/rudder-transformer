@@ -1082,7 +1082,7 @@ export const data = [
             response: [
               {
                 error:
-                  '{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}',
+                  'Invalid id provided: omit the user_id or device_id field if they are unknown',
                 metadata: {
                   attemptNum: 1,
                   destinationId: 'default-destinationId',
@@ -1099,7 +1099,7 @@ export const data = [
               },
               {
                 error:
-                  '{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}',
+                  'Invalid id provided: omit the user_id or device_id field if they are unknown',
                 metadata: {
                   attemptNum: 1,
                   destinationId: 'default-destinationId',
@@ -1188,7 +1188,7 @@ export const data = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status \"400\" due to \"{\"code\":400,\"events_with_invalid_fields\":{\"user_id\":[0]},\"error\":\"Invalid id provided: omit the user_id or device_id field if they are unknown\"}\", (Aborted)',
+              'Request Failed during amplitude response transformation: with status \"400\" due to \"\"Invalid id provided: omit the user_id or device_id field if they are unknown\"\", (Aborted)',
             response: [
               {
                 error:

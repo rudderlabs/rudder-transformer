@@ -13,7 +13,8 @@ const logger = require('../../../logger');
 
 const DESTINATION = 'amplitude';
 const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
-  const errorMessage = JSON.stringify(response);
+  const { error } = response;
+  const errorMessage = error || 'unknown error';
   const responseWithIndividualEvents: DeliveryJobState[] = [];
 
   rudderJobMetadata.forEach((metadata) => {
@@ -80,7 +81,7 @@ const responseHandler = (responseParams) => {
     } as DeliveryV1Response;
   }
   throw new AbortedError(
-    `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(response)}", (Aborted)`,
+    `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(response.error)}", (Aborted)`,
     400,
     destinationResponse,
   );

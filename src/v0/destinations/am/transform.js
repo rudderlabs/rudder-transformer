@@ -976,16 +976,6 @@ const batch = (destEvents) => {
   return respList;
 };
 
-// const MAX_BATCH_SIZE = 1000;
-
-// Helper Functions
-const validateInputs = (inputs) => {
-  if (!Array.isArray(inputs)) {
-    throw new Error('Inputs must be an array');
-  }
-  return inputs.length === 0 ? [] : inputs;
-};
-
 const createBatchResponse = (destination, metadata, mergedEvent) => {
   const batchResponse = defaultBatchRequestConfig();
   const { endpoint, path } = batchEndpointDetails(destination.Config);
@@ -1005,21 +995,13 @@ const createBatchResponse = (destination, metadata, mergedEvent) => {
 };
 
 const mergeEvents = (events, destination) => {
-  if (!events || events.length === 0) {
-    throw new Error('Events array cannot be empty');
-  }
+  const baseEvent = { ...(events[0].body.JSON || {}) };
 
-  const baseEvent = { ...events[0].body.JSON };
-
-  // Collect all additional events first, then concat once for better performance
-  const additionalEvents = events
-    .slice(1)
-    .filter((event) => event?.body?.JSON?.events)
-    .flatMap((event) => event.body.JSON.events);
-
-  if (additionalEvents.length > 0) {
-    baseEvent.events = baseEvent.events.concat(additionalEvents);
-  }
+  const allEvents = [
+    ...(baseEvent.events || []),
+    ...events.slice(1).flatMap((event) => event?.body?.JSON?.events || []),
+  ];
+  baseEvent.events = allEvents;
   stats.histogram('am_batch_size_based_on_user_id', baseEvent.events.length, {
     destination_id: destination.id,
   });
@@ -1028,13 +1010,8 @@ const mergeEvents = (events, destination) => {
 
 // Main Function
 const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
-  const validatedInputs = validateInputs(inputs);
-  if (validatedInputs.length === 0) {
-    return [];
-  }
-
   const batchResponses = [];
-  const batchedEventGroups = batchMultiplexedEvents(validatedInputs, MAX_USERS_DEVICES_PER_BATCH);
+  const batchedEventGroups = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
 
   batchedEventGroups.forEach((eventGroup) => {
     const { events, metadata, destination } = eventGroup;

@@ -21,15 +21,22 @@ const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
   return responseWithIndividualEvents;
 };
 
-const responseHandler = (responseParams) => {
+const responseHandler = (responseParams): DeliveryV1Response => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
+    const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
+      statusCode: 200,
+      metadata,
+      error: 'success',
+    }));
+
     return {
-      destinationResponse: response,
-      message,
       status,
+      message,
+      destinationResponse,
+      response: responseWithIndividualEvents,
     };
   }
   if (isHttpStatusRetryable(status)) {
@@ -47,8 +54,9 @@ const responseHandler = (responseParams) => {
     return {
       status: 500,
       message: `Request Failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(response)}", (Retryable)`,
+      destinationResponse,
       response: populateResponseWithDontBatch(rudderJobMetadata, response),
-    } as DeliveryV1Response;
+    };
   }
   throw new AbortedError(
     `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(response.error)}", (Aborted)`,

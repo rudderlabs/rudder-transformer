@@ -1077,6 +1077,17 @@ export const data = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              response: {
+                code: 400,
+                error:
+                  'Invalid id provided: omit the user_id or device_id field if they are unknown',
+                events_with_invalid_fields: {
+                  user_id: [0],
+                },
+              },
+              status: 400,
+            },
             message:
               'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"events_with_invalid_fields":{"user_id":[0]},"error":"Invalid id provided: omit the user_id or device_id field if they are unknown"}", (Retryable)',
             response: [

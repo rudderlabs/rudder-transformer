@@ -1057,24 +1057,23 @@ const processRouterDest = async (inputs, reqMetadata) => {
          *  }
          * ]
          */
-        const transformedEvent = process(input);
-        const firstTransformedEvent = getFirstEvent(transformedEvent);
-        const jsonBody = firstTransformedEvent.body?.JSON ?? {};
-        const isAliasEvent = firstTransformedEvent.endpointPath === 'usermap';
-        /**
-         * If the event is an alias event or the event has no JSON body or the metadata.dontBatch is true,
-         * push the event to the nonBatchableInputs array.
-         * Skipping alias events from batching as we are already grouping on userId/anonymousId.
-         */
-        if (Object.keys(jsonBody).length === 0 || input.metadata.dontBatch || isAliasEvent) {
-          nonBatchableInputs.push({
-            message: transformedEvent,
+        const transformedEvents = process(input);
+        let isBatchable = true;
+        if (Array.isArray(transformedEvents)) {
+          isBatchable = !transformedEvents.some((transformedEvent) => {
+            const jsonBody = transformedEvent.body?.JSON ?? {};
+            return Object.keys(jsonBody).length === 0;
+          });
+        }
+        if (isBatchable && !input.metadata.dontBatch) {
+          batchableInputs.push({
+            message: transformedEvents,
             metadata: input.metadata,
             destination: input.destination,
           });
         } else {
-          batchableInputs.push({
-            message: transformedEvent,
+          nonBatchableInputs.push({
+            message: transformedEvents,
             metadata: input.metadata,
             destination: input.destination,
           });

@@ -54,12 +54,14 @@ const populateRevenueField = (eventType, properties) => {
   let revenueInCents;
   switch (eventType) {
     case 'Purchase':
+    case 'PURCHASE':
       revenueInCents =
         properties.revenue && !Number.isNaN(properties.revenue)
           ? Math.round(Number(properties?.revenue) * 100)
           : null;
       break;
     case 'AddToCart':
+    case 'ADD_TO_CART':
       revenueInCents =
         properties.price && !Number.isNaN(properties.price)
           ? Math.round(Number(properties?.price) * Number(properties?.quantity || 1) * 100)
@@ -104,10 +106,25 @@ const removeUnsupportedFields = (eventType, eventMetadata) => {
   return updatedEventMetadata;
 };
 
+const convertToUpperSnakeCase = (type) => {
+  const trackingTypeMap = {
+    Purchase: 'PURCHASE',
+    AddToCart: 'ADD_TO_CART',
+    ViewContent: 'VIEW_CONTENT',
+    AddToWishlist: 'ADD_TO_WISHLIST',
+    Search: 'SEARCH',
+    Lead: 'LEAD',
+    SignUp: 'SIGN_UP',
+    PageVisit: 'PAGE_VISIT',
+  };
+  return trackingTypeMap[type];
+};
+
 module.exports = {
   batchEvents,
   batchEventChunks,
   populateRevenueField,
   calculateDefaultRevenue,
   removeUnsupportedFields,
+  convertToUpperSnakeCase,
 };

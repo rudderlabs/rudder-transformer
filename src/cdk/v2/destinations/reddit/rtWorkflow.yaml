@@ -1,19 +1,46 @@
 bindings:
   - path: ./utils
   - path: ./config
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
-  - name: transform
+  - name: decideVersion
+    template: |
+      const version = $.isDefinedAndNotNull(^.[0].destination.Config.version) ? ^.[0].destination.Config.version : "v2";
+      version;
+
+  - name: transformWithV2
+    condition: $.outputs.decideVersion === "v2"
     externalWorkflow:
       path: ./procWorkflow.yaml
       bindings:
         - name: batchMode
           value: true
     loopOverInput: true
+
+  - name: transformWithV3
+    condition: $.outputs.decideVersion === "v3"
+    externalWorkflow:
+      path: ./procWorkflowV3.yaml
+      bindings:
+        - name: batchMode
+          value: true
+    loopOverInput: true
+
+  - name: transform
+    condition: $.outputs.decideVersion === "v2"
+    template: |
+      $.outputs.transformWithV2
+    else:
+      name: transformV3Output
+      template: |
+        $.outputs.transformWithV3
+
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({

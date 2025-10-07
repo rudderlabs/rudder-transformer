@@ -995,7 +995,7 @@ const createBatchResponse = (destination, metadata, mergedEvent) => {
 };
 
 const mergeEvents = (events, destination) => {
-  const baseEvent = { ...(events[0].body.JSON || {}) };
+  const baseEvent = { ...events[0].body.JSON };
 
   const allEvents = [
     ...(baseEvent.events || []),

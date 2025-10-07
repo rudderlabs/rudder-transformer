@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { isMatch } from 'lodash';
+import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
 // Note: This destination makes use of generic network handler
 export const data = [
@@ -1013,6 +1014,846 @@ export const data = [
             'retry-after': '60',
           },
         );
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 10: for http endpoint single event success scenario',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          JSON: {
+            api_key: 'dummy-api-key',
+            events: [
+              {
+                time: 1619006730330,
+                user_id: 'gabi_userId_45',
+                user_properties: {
+                  email: 'gabi29@gmail.com',
+                  zip: '100-0001',
+                },
+              },
+            ],
+            options: {
+              min_id_length: 1,
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          endpoint: 'https://api2.amplitude.com/2/httpapi',
+          params: {
+            destination: 'am',
+          },
+        }),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: {
+                code: 200,
+                events_ingested: 50,
+                payload_size_bytes: 50,
+                server_upload_time: 1396381378123,
+              },
+              status: 200,
+            },
+            message: '[amplitude Response Handler] - Request Processed Successfully',
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+            ],
+            status: 200,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/2/httpapi', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              api_key: 'dummy-api-key',
+              events: [
+                {
+                  time: 1619006730330,
+                  user_id: 'gabi_userId_45',
+                  user_properties: {
+                    email: 'gabi29@gmail.com',
+                    zip: '100-0001',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(200, {
+          code: 200,
+          events_ingested: 50,
+          payload_size_bytes: 50,
+          server_upload_time: 1396381378123,
+        });
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 11: for http endpoint single event failure scenario',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          JSON: {
+            api_key: 'dummy-api-key-failure',
+            events: [
+              {
+                time: 1619006730330,
+                user_id: 'gabi_userId_45',
+                user_properties: {
+                  email: 'gabi29@gmail.com',
+                  zip: '100-0001',
+                },
+              },
+            ],
+            options: {
+              min_id_length: 1,
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          endpoint: 'https://api2.amplitude.com/2/httpapi',
+          endpointPath: 'httpapi',
+          params: {
+            destination: 'am',
+          },
+        }),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Request Failed during amplitude response transformation: with status "400" due to ""Request missing required field"", (Aborted)',
+            response: [
+              {
+                error:
+                  '{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_missing_fields":{"event_type":[3]}}',
+                metadata: generateMetadata(1),
+                statusCode: 400,
+              },
+            ],
+            statTags: {
+              destType: 'AM',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/2/httpapi', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              api_key: 'dummy-api-key-failure',
+              events: [
+                {
+                  time: 1619006730330,
+                  user_id: 'gabi_userId_45',
+                  user_properties: {
+                    email: 'gabi29@gmail.com',
+                    zip: '100-0001',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          error: 'Request missing required field',
+          missing_field: 'api_key',
+          events_with_missing_fields: {
+            event_type: [3],
+          },
+        });
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 11: for http endpoint single event throttled scenario',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          JSON: {
+            api_key: 'dummy-api-key-throttled',
+            events: [
+              {
+                time: 1619006730330,
+                user_id: 'gabi_userId_45',
+                user_properties: {
+                  email: 'gabi29@gmail.com',
+                  zip: '100-0001',
+                },
+              },
+            ],
+            options: {
+              min_id_length: 1,
+            },
+          },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          endpoint: 'https://api2.amplitude.com/2/httpapi',
+          params: {
+            destination: 'am',
+          },
+        }),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Retryable)',
+            response: [
+              {
+                error:
+                  '{"code":429,"error":"Too many requests for some devices and users","eps_threshold":30,"throttled_devices":{"C8F9E604-F01A-4BD9-95C6-8E5357DF265D":31},"throttled_users":{"datamonster@amplitude.com":32},"throttled_events":[3,4,7]}',
+                metadata: generateMetadata(1),
+                statusCode: 500,
+              },
+            ],
+            statTags: {
+              destType: 'AM',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 500,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/2/httpapi', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              api_key: 'dummy-api-key-throttled',
+              events: [
+                {
+                  time: 1619006730330,
+                  user_id: 'gabi_userId_45',
+                  user_properties: {
+                    email: 'gabi29@gmail.com',
+                    zip: '100-0001',
+                  },
+                },
+              ],
+              options: {
+                min_id_length: 1,
+              },
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(429, {
+          code: 429,
+          error: 'Too many requests for some devices and users',
+          eps_threshold: 30,
+          throttled_devices: {
+            'C8F9E604-F01A-4BD9-95C6-8E5357DF265D': 31,
+          },
+          throttled_users: {
+            'datamonster@amplitude.com': 32,
+          },
+          throttled_events: [3, 4, 7],
+        });
+    },
+  },
+  {
+    name: 'am',
+    description: 'Test 13: for groupIdentify call success scenario',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          FORM: {
+            api_key: 'dummy-api-key-groupIdentify-success',
+            identification: [JSON.stringify({ group_type: 'Company', group_value: 'ABC' })],
+          },
+          headers: {},
+          endpoint: 'https://api2.amplitude.com/groupidentify',
+          endpointPath: 'groupidentify',
+          params: {
+            destination: 'am',
+          },
+        }),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: '',
+              status: 200,
+            },
+            message: '[amplitude Response Handler] - Request Processed Successfully',
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+            ],
+            status: 200,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/groupidentify', {
+          asymmetricMatch: (actual) => {
+            const actualString = actual.toString();
+            return actualString.includes('api_key=dummy-api-key-groupIdentify-success');
+          },
+        })
+        .replyOnce(200);
+    },
+  },
+  {
+    name: 'am',
+    description:
+      'Test 14: for batch endpoint call success scenario with multiple events, batched through /batch endpoint not routerTransform',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132726413,
+                  groups: {
+                    Company: 'Comapny-ABC',
+                  },
+                  os_name: '',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132726413,
+                  groups: {
+                    Company: 'Comapny-ABC',
+                  },
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'batch',
+            params: {
+              destination: 'am',
+            },
+          },
+          [generateMetadata(1), generateMetadata(2), generateMetadata(3), generateMetadata(4)],
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: {
+                code: 200,
+                events_ingested: 50,
+                payload_size_bytes: 50,
+                server_upload_time: 1396381378123,
+              },
+              status: 200,
+            },
+            message: '[amplitude Response Handler] - Request Processed Successfully',
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+              {
+                error: 'success',
+                metadata: generateMetadata(2),
+                statusCode: 200,
+              },
+              {
+                error: 'success',
+                metadata: generateMetadata(3),
+                statusCode: 200,
+              },
+              {
+                error: 'success',
+                metadata: generateMetadata(4),
+                statusCode: 200,
+              },
+            ],
+            status: 200,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132726413,
+                  groups: {
+                    Company: 'Comapny-ABC',
+                  },
+                  os_name: '',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132726413,
+                  groups: {
+                    Company: 'Comapny-ABC',
+                  },
+                  os_name: '',
+                  user_id: 'sampleusrRudder3',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(200, {
+          code: 200,
+          events_ingested: 50,
+          payload_size_bytes: 50,
+          server_upload_time: 1396381378123,
+        });
+    },
+  },
+  {
+    name: 'am',
+    description:
+      'Test 15: for batch endpoint call failure scenario with multiple events, batched through /batch endpoint not routerTransform and dontBatch is false',
+    successCriteria:
+      'Event should be retried with dontBatch set to true and status code should be 500',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    skip: true,
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'batch',
+            params: {
+              destination: 'am',
+            },
+          },
+          [
+            {
+              jobId: 1,
+              attemptNum: 1,
+              userId: '1',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              secret: {
+                accessToken: 'defaultAccessToken',
+              },
+              dontBatch: false,
+            },
+            {
+              jobId: 2,
+              attemptNum: 1,
+              userId: '2',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              secret: {
+                accessToken: 'defaultAccessToken',
+              },
+              dontBatch: false,
+            },
+          ],
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: {
+                code: 400,
+                error: 'Request missing required field',
+                events_with_invalid_fields: {
+                  time: [3, 4, 7],
+                },
+                events_with_missing_fields: {
+                  event_type: [3, 4, 7],
+                },
+                missing_field: 'api_key',
+              },
+              status: 400,
+            },
+            message:
+              'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
+            response: [
+              {
+                error: 'Request missing required field',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '1',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+              {
+                error: 'Request missing required field',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 2,
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '2',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 500,
+              },
+            ],
+            status: 400,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          error: 'Request missing required field',
+          missing_field: 'api_key',
+          events_with_invalid_fields: {
+            time: [3, 4, 7],
+          },
+          events_with_missing_fields: {
+            event_type: [3, 4, 7],
+          },
+        });
+    },
+  },
+  {
+    name: 'am',
+    description:
+      'Test 16: for batch endpoint call failure scenario with multiple events, batched through /batch endpoint not routerTransform and dontBatch is true',
+    successCriteria: 'Event should be failed with status code should be 400',
+    feature: 'dataDelivery',
+    module: 'destination',
+    skip: true,
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            },
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            endpoint: 'https://api2.amplitude.com/batch',
+            endpointPath: 'batch',
+            params: {
+              destination: 'am',
+            },
+          },
+          [
+            {
+              jobId: 1,
+              attemptNum: 1,
+              userId: '1',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              secret: {
+                accessToken: 'defaultAccessToken',
+              },
+              dontBatch: true,
+            },
+            {
+              jobId: 2,
+              attemptNum: 1,
+              userId: '2',
+              sourceId: 'default-sourceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+              secret: {
+                accessToken: 'defaultAccessToken',
+              },
+              dontBatch: true,
+            },
+          ],
+        ),
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: {
+                code: 400,
+                error: 'Request missing required field',
+                events_with_invalid_fields: {
+                  time: [3, 4, 7],
+                },
+                events_with_missing_fields: {
+                  event_type: [3, 4, 7],
+                },
+                missing_field: 'api_key',
+              },
+              status: 400,
+            },
+            message:
+              'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
+            response: [
+              {
+                error: 'Request missing required field',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '1',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 400,
+              },
+              {
+                error: 'Request missing required field',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: true,
+                  jobId: 2,
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: '2',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 400,
+              },
+            ],
+            status: 400,
+          },
+        },
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost('https://api2.amplitude.com/batch', {
+          asymmetricMatch: (actual) => {
+            const expected = {
+              events: [
+                {
+                  ip: '[::1]',
+                  time: 1603132712347,
+                  os_name: '',
+                  user_id: '1',
+                },
+                {
+                  ip: '[::1]',
+                  time: 1603132719505,
+                  os_name: '',
+                  user_id: '2',
+                },
+              ],
+              api_key: 'dummy-api-key-batch-success',
+            };
+            const isMatched = isMatch(actual, expected);
+            return isMatched;
+          },
+        })
+        .replyOnce(400, {
+          code: 400,
+          error: 'Request missing required field',
+          missing_field: 'api_key',
+          events_with_invalid_fields: {
+            time: [3, 4, 7],
+          },
+          events_with_missing_fields: {
+            event_type: [3, 4, 7],
+          },
+        });
     },
   },
 ];

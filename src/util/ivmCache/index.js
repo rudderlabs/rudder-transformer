@@ -15,7 +15,7 @@ class DisposableCache {
       max: this.maxSize,
       ttl: this.ttlMs,
       allowStale: false,
-      updateAgeOnGet: true,
+      updateAgeOnGet: false,
       updateAgeOnHas: false,
       dispose: this.handleDispose.bind(this),
     });
@@ -225,7 +225,7 @@ class DisposableCache {
     }
 
     // Emit current cache size
-    stats.gauge('ivm_cache_size', this.stats.currentSize, tags);
+    stats.gauge('ivm_cache_size', this.stats.currentSize);
   }
 }
 

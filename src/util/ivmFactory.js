@@ -8,9 +8,12 @@ const logger = require('../logger');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 
-const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const ISOLATE_VM_MEMORY = Number.parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
-const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+const GEOLOCATION_TIMEOUT_IN_MS = Number.parseInt(
+  process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000',
+  10,
+);
 
 const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
@@ -59,13 +62,12 @@ async function createIvm(
       ),
     );
 
-    // TODO: Check if this should this be &&
-    libraries.forEach((library) => {
+    for (const library of libraries) {
       const libHandleName = camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
-    });
+    }
 
     // Extract ruddder libraries from import names
     const rudderLibImportNames = extractedLibraries.filter((name) =>
@@ -74,9 +76,9 @@ async function createIvm(
     const rudderLibraries = await Promise.all(
       rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName)),
     );
-    rudderLibraries.forEach((library) => {
+    for (const library of rudderLibraries) {
       librariesMap[library.importName] = library.code;
-    });
+    }
   }
 
   const codeWithWrapper =
@@ -191,8 +193,6 @@ async function createIvm(
     }
   `;
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
-  const isolateStartWallTime = isolate.wallTime;
-  const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
 
   const compiledModules = {};
@@ -244,9 +244,9 @@ async function createIvm(
       try {
         const res = await fetchWithDnsWrapper(fetchTags, ...args);
         const headersContent = {};
-        res.headers.forEach((value, header) => {
+        for (const [header, value] of res.headers) {
           headersContent[header] = value;
-        });
+        }
         const data = {
           url: res.url,
           status: res.status,
@@ -318,9 +318,9 @@ async function createIvm(
   await jail.set('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
-      args.forEach((arg) => {
+      for (const arg of args) {
         logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
-      });
+      }
       logs.push(logString);
     }
   });
@@ -413,7 +413,6 @@ async function createIvm(
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
-  // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
     filename: transformationName,
   });
@@ -422,7 +421,11 @@ async function createIvm(
       return compiledModules[spec].module;
     }
     // Release the isolate context before throwing an error
-    await context.release();
+    try {
+      context?.release();
+    } catch (e) {
+      logger.debug('context release error in module import:', e.message);
+    }
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });
@@ -452,22 +455,29 @@ async function createIvm(
     reference: true,
   });
   const fName = availableFuncNames[0];
+
+  // Create moduleSource object for recompilation in context resets
+  const moduleSource = {
+    codeWithWrapper,
+    transformationName,
+    librariesMap, // Include library source code for recompilation
+  };
+
   stats.timing('createivm_duration', createIvmStartTime, trTags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
 
   return {
     isolate,
-    jail,
-    bootstrapScriptResult,
     bootstrap,
     customScriptModule,
+    bootstrapScriptResult,
     context,
     fnRef,
-    isolateStartWallTime,
-    isolateStartCPUTime,
     fName,
     logs,
+    compiledModules,
+    moduleSource,
   };
 }
 
@@ -486,6 +496,7 @@ async function getFactory(
   secrets,
   testMode,
   transformationName,
+  transformationVersionId,
 ) {
   const factory = {
     create: async () => {
@@ -501,11 +512,164 @@ async function getFactory(
       );
     },
     destroy: async (client) => {
-      client.fnRef.release();
-      client.bootstrap.release();
-      client.customScriptModule.release();
-      client.context.release();
-      await client.isolate.dispose();
+      // Release resources safely - each in its own try-catch to prevent cascade failures
+      try {
+        client.fnRef?.release();
+        client.bootstrap?.release();
+        client.customScriptModule?.release();
+        client.context?.release();
+        await client.isolate?.dispose();
+      } catch (e) {
+        logger.error('Error in factory destroy', {
+          error: e.message,
+          transformationId: client.transformationId || 'unknown',
+        });
+      }
+    },
+  };
+
+  return factory;
+}
+
+/**
+ * Get a cached factory that integrates with IVM cache manager
+ * Provides the same interface as getFactory but with caching capabilities
+ * @param {string} code - User transformation code
+ * @param {Array<string>} libraryVersionIds - Array of library version IDs
+ * @param {string} transformationId - Transformation identifier
+ * @param {string} workspaceId - Workspace identifier
+ * @param {Object} credentials - User credentials
+ * @param {Object} secrets - User secrets
+ * @param {boolean} testMode - Test mode flag
+ * @param {string} transformationName - Transformation name
+ * @param {string} transformationVersionId - Transformation version identifier
+ * @returns {Object} Factory with create/destroy methods
+ */
+async function getCachedFactory(
+  code,
+  libraryVersionIds,
+  transformationId,
+  workspaceId,
+  credentials,
+  secrets,
+  testMode,
+  transformationName,
+  transformationVersionId,
+) {
+  const ivmCacheManager = require('./ivmCache/manager');
+
+  // Generate cache key for this transformation
+  const cacheKey = ivmCacheManager.generateKey(transformationVersionId, libraryVersionIds);
+
+  const factory = {
+    create: async () => {
+      const startTime = new Date();
+
+      try {
+        // Try to get cached isolate first
+        const cachedIsolate = await ivmCacheManager.get(cacheKey, credentials);
+        if (cachedIsolate) {
+          // Cache hit - return cached isolate with reset context
+          logger.debug('IVM Factory cache hit', {
+            cacheKey,
+            transformationId,
+          });
+
+          stats.timing('cached_ivm_create_duration', startTime, {
+            result: 'hit',
+            transformationId,
+          });
+
+          return cachedIsolate;
+        }
+
+        // Cache miss - create new IVM
+        logger.info('IVM Factory cache miss', {
+          cacheKey,
+          transformationId,
+        });
+
+        const newIsolate = await createIvm(
+          code,
+          libraryVersionIds,
+          transformationId,
+          workspaceId,
+          credentials,
+          secrets,
+          testMode,
+          transformationName,
+        );
+
+        // Prepare isolate for caching with additional metadata
+        const cacheableIsolate = {
+          ...newIsolate,
+          transformationId,
+          workspaceId,
+        };
+
+        // Store in cache for future use (fire and forget)
+        await ivmCacheManager.set(cacheKey, cacheableIsolate).catch((error) => {
+          logger.warn('Failed to cache IVM isolate', {
+            error: error.message,
+            cacheKey,
+            transformationId,
+          });
+        });
+
+        stats.timing('cached_ivm_create_duration', startTime, {
+          result: 'miss',
+          transformationId,
+        });
+
+        // Return the augmented isolate (not the original one)
+        return cacheableIsolate;
+      } catch (error) {
+        logger.error('Error in cached factory create', {
+          error: error.message,
+          cacheKey,
+          transformationId,
+        });
+
+        stats.timing('cached_ivm_create_duration', startTime, {
+          result: 'error',
+          transformationId,
+        });
+
+        // Fallback to non-cached creation on any error
+        const fallbackIsolate = await createIvm(
+          code,
+          libraryVersionIds,
+          transformationId,
+          workspaceId,
+          credentials,
+          secrets,
+          testMode,
+          transformationName,
+        );
+
+        // Add metadata even for fallback to maintain consistency
+        return {
+          ...fallbackIsolate,
+          transformationId,
+          workspaceId,
+        };
+      }
+    },
+
+    destroy: async (client) => {
+      try {
+        client.fnRef?.release();
+        client.customScriptModule?.release();
+        client.context?.release();
+        // Note: Cached instances are cleaned up by cache eviction
+        // We don't need to do immediate cleanup here
+        return;
+      } catch (error) {
+        logger.error('Error in cached factory destroy', {
+          error: error.message,
+          transformationId: client.transformationId || 'unknown',
+        });
+      }
     },
   };
 
@@ -514,6 +678,7 @@ async function getFactory(
 
 module.exports = {
   getFactory,
+  getCachedFactory,
   compileUserLibrary,
   SUPPORTED_FUNC_NAMES,
 };

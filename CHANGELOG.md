@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.110.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.109.0...v1.110.0) (2025-10-07)
+
+
+### Features
+
+* add endpoint path details to AM destination responses ([#4668](https://github.com/rudderlabs/rudder-transformer/issues/4668)) ([412f3f5](https://github.com/rudderlabs/rudder-transformer/commit/412f3f5507460541eb5e1e327800bc8024bdb12d))
+* add endpoint path to Braze response objects ([#4677](https://github.com/rudderlabs/rudder-transformer/issues/4677)) ([e6acf3e](https://github.com/rudderlabs/rudder-transformer/commit/e6acf3e1ff2b28f9c166b83f37d522b6ad18c99d))
+* add endpointPath to Google AdWords Remarketing Lists destination ([#4662](https://github.com/rudderlabs/rudder-transformer/issues/4662)) ([c6d26c4](https://github.com/rudderlabs/rudder-transformer/commit/c6d26c42e17935a17ff2edaefe47569973c4375b))
+* **braze:** optimize Track API batching algorithm ([#4685](https://github.com/rudderlabs/rudder-transformer/issues/4685)) ([49ee4e0](https://github.com/rudderlabs/rudder-transformer/commit/49ee4e04dba7111009337c577bbaac8faad9664f))
+* **customerio:** add endpoint paths to responses ([#4671](https://github.com/rudderlabs/rudder-transformer/issues/4671)) ([0606b3e](https://github.com/rudderlabs/rudder-transformer/commit/0606b3ed8f39792fe0e0093e13e2701263d01bcd))
+* ivm cache ([#4675](https://github.com/rudderlabs/rudder-transformer/issues/4675)) ([1a4f1d7](https://github.com/rudderlabs/rudder-transformer/commit/1a4f1d7e46259cbb6136e741009249b77465cdbe))
+* **moengage:** add endpoint paths to transformer responses ([#4661](https://github.com/rudderlabs/rudder-transformer/issues/4661)) ([f2f8072](https://github.com/rudderlabs/rudder-transformer/commit/f2f80723218bcb023c2648ea7a964ed101c414ac))
+* **mp:** add endpointPath to transformer responses ([#4649](https://github.com/rudderlabs/rudder-transformer/issues/4649)) ([ff66dbf](https://github.com/rudderlabs/rudder-transformer/commit/ff66dbf55aa2b6fa3c319b16f51b6329eb0e288f))
+* onboard dub ([#4678](https://github.com/rudderlabs/rudder-transformer/issues/4678)) ([fdb1210](https://github.com/rudderlabs/rudder-transformer/commit/fdb12105d8df23d906db2d68635ba78cf4412ba5))
+* onboard google developer token ([#4613](https://github.com/rudderlabs/rudder-transformer/issues/4613)) ([893da92](https://github.com/rudderlabs/rudder-transformer/commit/893da92a4f99efef5475a51038c84a94308c0d47))
+
+
+### Bug Fixes
+
+* add validation for null/undefined traits ([#4684](https://github.com/rudderlabs/rudder-transformer/issues/4684)) ([f909a8f](https://github.com/rudderlabs/rudder-transformer/commit/f909a8fe4a6522e05717eaa8759c85d3b1527224))
+* check on traits and traits.context ([#4682](https://github.com/rudderlabs/rudder-transformer/issues/4682)) ([#4698](https://github.com/rudderlabs/rudder-transformer/issues/4698)) ([b8d180a](https://github.com/rudderlabs/rudder-transformer/commit/b8d180a50491bf5d07925bcd2e338f4f96361c59))
+* isolated vm process for prod build ([#4670](https://github.com/rudderlabs/rudder-transformer/issues/4670)) ([f805cdc](https://github.com/rudderlabs/rudder-transformer/commit/f805cdc9220f95925f5b460634e37340eb30d3aa))
+* move continue-on-error to specific test step in ingestion-service-test workflow ([#4656](https://github.com/rudderlabs/rudder-transformer/issues/4656)) ([8afe5e6](https://github.com/rudderlabs/rudder-transformer/commit/8afe5e6994451be387bbb3c3253fdeb3d9fd7e5a))
+
 ## [1.109.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.108.2...v1.109.0) (2025-09-29)
 
 

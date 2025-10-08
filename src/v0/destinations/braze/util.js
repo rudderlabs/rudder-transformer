@@ -1,6 +1,7 @@
-/* eslint-disable */
+/* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const stats = require('../../../util/stats');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -15,6 +16,7 @@ const {
 } = require('../../util');
 const {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
+  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
   CustomAttributeOperationTypes,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
@@ -27,7 +29,6 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const formatGender = (gender) => {
   if (typeof gender !== 'string') {
@@ -168,7 +169,6 @@ const BrazeDedupUtility = {
   prepareInputForDedup(inputs) {
     const externalIds = [];
     const aliasIds = [];
-    // eslint-disable-next-line no-restricted-syntax
     for (const input of inputs) {
       const { message } = input;
       const brazeExternalId = getDestinationExternalID(message, 'brazeExternalId');
@@ -343,7 +343,13 @@ const BrazeDedupUtility = {
    * @returns {Object} user object with deduplicated custom attributes
    */
   deduplicate(userData, store) {
-    const excludeKeys = ['external_id', 'user_alias', 'appboy_id', 'braze_id', 'custom_events'];
+    const excludeKeys = new Set([
+      'external_id',
+      'user_alias',
+      'appboy_id',
+      'braze_id',
+      'custom_events',
+    ]);
     const { external_id, user_alias } = userData;
     let storedUserData =
       this.getUserDataFromStore(store, external_id) ||
@@ -358,7 +364,7 @@ const BrazeDedupUtility = {
     delete storedUserData.custom_attributes;
     let deduplicatedUserData = {};
     const keys = Object.keys(userData)
-      .filter((key) => !excludeKeys.includes(key))
+      .filter((key) => !excludeKeys.has(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
       .filter((key) => {
         if (isObject(userData[key])) {
@@ -441,13 +447,17 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
   for (const chunk of arrayChunks) {
     const response = defaultRequestConfig();
     if (type === 'merge') {
-      response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      const { endpoint, path } = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      response.endpoint = endpoint;
+      response.endpointPath = path;
       const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
         merge_updates,
       });
     } else if (type === 'subscription') {
-      response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      response.endpoint = endpoint;
+      response.endpointPath = path;
       const subscription_groups = chunk;
       // maketool transformed event
       logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
@@ -473,6 +483,95 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     });
   }
 }
+
+const createTrackChunk = () => ({
+  attributes: [],
+  events: [],
+  purchases: [],
+  externalIds: new Set(),
+});
+
+const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
+  const allItems = [];
+  const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
+
+  const addItem = (item, type) => {
+    if (item) {
+      allItems.push({
+        data: item,
+        type,
+        externalId: item.external_id,
+      });
+    }
+  };
+
+  const canAddToChunk = (item, chunk) => {
+    const { type, externalId } = item;
+    return (
+      (chunk.externalIds.has(externalId) ||
+        chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
+      chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
+    );
+  };
+
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < maxLength; i++) {
+    addItem(attributesArray[i], 'attributes');
+    addItem(eventsArray[i], 'events');
+    addItem(purchasesArray[i], 'purchases');
+  }
+  const sortedItems = _.sortBy(allItems, 'externalId');
+  let currentChunk = createTrackChunk();
+  const trackChunks = [];
+  for (const item of sortedItems) {
+    if (canAddToChunk(item, currentChunk)) {
+      currentChunk[item.type].push(item.data);
+      currentChunk.externalIds.add(item.externalId);
+    } else {
+      trackChunks.push(currentChunk);
+      currentChunk = createTrackChunk();
+      currentChunk[item.type].push(item.data);
+      currentChunk.externalIds.add(item.externalId);
+    }
+  }
+  if (currentChunk.externalIds.size > 0) {
+    trackChunks.push(currentChunk);
+  }
+  return trackChunks;
+};
+
+const cleanTrackChunk = ({ attributes, events, purchases }) => {
+  const cleanChunk = {};
+  if (attributes.length > 0) {
+    cleanChunk.attributes = attributes;
+  }
+  if (events.length > 0) {
+    cleanChunk.events = events;
+  }
+  if (purchases.length > 0) {
+    cleanChunk.purchases = purchases;
+  }
+  return cleanChunk;
+};
+
+const addTrackStats = (chunk, destination) => {
+  const { attributes, events, purchases } = chunk;
+  if (attributes) {
+    stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+      destination_id: destination.ID,
+    });
+  }
+  if (events) {
+    stats.gauge('braze_batch_events_pack_size', events.length, {
+      destination_id: destination.ID,
+    });
+  }
+  if (purchases) {
+    stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+      destination_id: destination.ID,
+    });
+  }
+};
 
 const processBatch = (transformedEvents) => {
   const { destination } = transformedEvents[0];
@@ -513,17 +612,10 @@ const processBatch = (transformedEvents) => {
       successMetadata.push(...transformedEvent.metadata);
     }
   }
-  const attributeArrayChunks = _.chunk(attributesArray, TRACK_BRAZE_MAX_REQ_COUNT);
-  const eventsArrayChunks = _.chunk(eventsArray, TRACK_BRAZE_MAX_REQ_COUNT);
-  const purchaseArrayChunks = _.chunk(purchaseArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const trackChunks = batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
   const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
-  const maxNumberOfRequest = Math.max(
-    attributeArrayChunks.length,
-    eventsArrayChunks.length,
-    purchaseArrayChunks.length,
-  );
   const responseArray = [];
   const finalResponse = [];
   const headers = {
@@ -532,36 +624,20 @@ const processBatch = (transformedEvents) => {
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
 
-  const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
-  for (let i = 0; i < maxNumberOfRequest; i += 1) {
-    const attributes = attributeArrayChunks[i];
-    const events = eventsArrayChunks[i];
-    const purchases = purchaseArrayChunks[i];
-
-    if (attributes) {
-      stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
-        destination_id: destination.ID,
-      });
-    }
-    if (events) {
-      stats.gauge('braze_batch_events_pack_size', events.length, {
-        destination_id: destination.ID,
-      });
-    }
-    if (purchases) {
-      stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
-        destination_id: destination.ID,
-      });
-    }
+  const { endpoint, path } = getTrackEndPoint(getEndpointFromConfig(destination));
+  for (const chunk of trackChunks) {
+    const { attributes, events, purchases } = cleanTrackChunk(chunk);
+    addTrackStats(chunk, destination);
 
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
-    response.body.JSON = removeUndefinedAndNullValues({
+    response.endpointPath = path;
+    response.body.JSON = {
       partner: 'RudderStack',
       attributes,
       events,
       purchases,
-    });
+    };
     responseArray.push({
       ...response,
       headers,
@@ -669,7 +745,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
 
 function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
-  const validateForPurchaseEvent = (message) => {
+  const validateForPurchaseEvent = () => {
     const { properties } = message;
     const timestamp = getFieldValueFromMessage(message, 'timestamp');
     if (!properties) {
@@ -747,7 +823,7 @@ function getPurchaseObjs(message, config) {
       }
     });
   };
-  validateForPurchaseEvent(message);
+  validateForPurchaseEvent();
 
   const { products, currency: currencyCode } = message.properties;
   const timestamp = getFieldValueFromMessage(message, 'timestamp');
@@ -759,9 +835,9 @@ function getPurchaseObjs(message, config) {
     const { price, quantity, currency: prodCur } = product;
     let purchaseObj = addMandatoryPurchaseProperties(
       String(productId),
-      parseFloat(price),
+      Number.parseFloat(price),
       currencyCode || prodCur,
-      parseInt(quantity, 10),
+      Number.parseInt(quantity, 10),
       timestamp,
     );
     const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);
@@ -840,4 +916,5 @@ module.exports = {
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
   combineSubscriptionGroups,
+  batchForTrackAPI,
 };

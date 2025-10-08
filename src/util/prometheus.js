@@ -141,7 +141,7 @@ class Prometheus {
         );
         metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
-      metric.observe(tags, (new Date() - start) / 1000);
+      metric.observe(tags, (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
     }
@@ -156,7 +156,7 @@ class Prometheus {
         );
         metric = this.newSummaryStat(name, name, Object.keys(tags));
       }
-      metric.observe(tags, (new Date() - start) / 1000);
+      metric.observe(tags, (Date.now() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
     }
@@ -865,6 +865,60 @@ class Prometheus {
         labelNames: ['identifier', 'transformationId', 'workspaceId'],
       },
       {
+        name: 'cached_ivm_create_duration',
+        help: 'cached_ivm_create_duration',
+        type: 'histogram',
+        labelNames: ['result', 'transformationId'],
+      },
+      {
+        name: 'ivm_cache_get_duration',
+        help: 'ivm_cache_get_duration',
+        type: 'histogram',
+        labelNames: ['strategy', 'result'],
+      },
+      {
+        name: 'ivm_cache_destroyed_total',
+        help: 'ivm_cache_destroyed_total',
+        type: 'counter',
+        labelNames: ['strategy'],
+      },
+      {
+        name: 'ivm_cache_set_duration',
+        help: 'ivm_cache_set_duration',
+        type: 'histogram',
+        labelNames: ['strategy', 'result'],
+      },
+      {
+        name: 'ivm_cache_hits_total',
+        help: 'ivm_cache_hits_total',
+        type: 'counter',
+        labelNames: ['cache', 'operation'],
+      },
+      {
+        name: 'ivm_cache_misses_total',
+        help: 'ivm_cache_misses_total',
+        type: 'counter',
+        labelNames: ['cache', 'operation'],
+      },
+      {
+        name: 'ivm_cache_sets_total',
+        help: 'ivm_cache_sets_total',
+        type: 'counter',
+        labelNames: ['cache', 'operation'],
+      },
+      {
+        name: 'ivm_cache_disposals_total',
+        help: 'ivm_cache_disposals_total',
+        type: 'counter',
+        labelNames: ['cache', 'operation'],
+      },
+      {
+        name: 'ivm_cache_size',
+        help: 'ivm_cache_size',
+        type: 'gauge',
+        labelNames: ['cache', 'operation'],
+      },
+      {
         name: 'fetchV2_call_duration',
         help: 'fetchV2_call_duration',
         type: 'histogram',
@@ -971,7 +1025,7 @@ class Prometheus {
       },
     ];
 
-    metrics.forEach((metric) => {
+    for (const metric of metrics) {
       try {
         if (metric.type === 'counter') {
           this.newCounterStat(appendPrefix(metric.name), metric.help, metric.labelNames);
@@ -1003,7 +1057,7 @@ class Prometheus {
       } catch (e) {
         logger.error(`Prometheus: Metric creation failed. Name: ${metric.name}. Error ${e}`);
       }
-    });
+    }
   }
 }
 

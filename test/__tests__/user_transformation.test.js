@@ -14,6 +14,7 @@ const { generateFunctionName } = require('../../src/util/customTransformer-faas.
 const { Response, Headers } = jest.requireActual("node-fetch");
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
+const ivmCacheManager = require("../../src/util/ivmCache/manager");
 const unsupportedFuncNames = [
   "_",
   "extend",
@@ -552,7 +553,6 @@ describe("User transformation", () => {
     const versionId = randomID();
     const libraryVersionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
-    // const expectedData = require(`./data/${integration}_async_output.json`);
 
     const respBody = {
       code: `
@@ -815,7 +815,6 @@ describe("User transformation", () => {
       )}};
     `;
 
-    const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
     const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
     when(fetch)
       .calledWith(libraryUrl)
@@ -1321,6 +1320,1470 @@ describe("User transformation", () => {
         expect(e).toEqual('getCredential is not defined');
       }
     });
+  });
+});
+
+describe("User transformation with IVM cache", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    process.env.USE_IVM_CACHE = 'true';
+    process.env.IVM_CACHE_STRATEGY = 'isolate';
+    ivmCacheManager.initializeStrategy();
+  });
+  afterEach(() => {
+    // Verify cache is working correctly
+    expect(ivmCacheManager.getStats().hits).toEqual(1);
+    expect(ivmCacheManager.getStats().misses).toEqual(1);
+    expect(ivmCacheManager.getStats().sets).toEqual(1);
+    
+    // Clear cache for next test
+    if (ivmCacheManager && ivmCacheManager.clear) {
+      ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
+    }
+  });
+
+  it(`Simple ${name} async fetchV2 test for V1 transformation - transformEvent`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const respBody = {
+      code: `
+      export async function transformEvent(event, metadata) {
+          try{
+            const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
+            return res;
+          } catch (err) {
+            return err;
+          }
+        }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
+    const jsonResponse = { type: "json" };
+    const textResponse = "200 OK";
+    when(fetch)
+      .calledWith(dummyUrl)
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValueOnce(new Error("Timed Out"))
+      // Second execution (cached isolate) - same sequence
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValue(new Error("Timed Out"));
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(transformerUrl);
+    expect(fetch).toHaveBeenCalledWith(dummyUrl);
+
+    expect(output[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(output[1].transformedEvent.body).toEqual(textResponse);
+    expect(output[2].transformedEvent.message).toEqual("Timed Out");
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(transformerUrl);
+    expect(fetch).toHaveBeenCalledWith(dummyUrl);
+    
+    expect(outputCached[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(outputCached[1].transformedEvent.body).toEqual(textResponse);
+    expect(outputCached[2].transformedEvent.message).toEqual("Timed Out");
+    expect(outputCached.length).toEqual(output.length);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformBatch`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformBatch(events, metadata) {
+          const pr = await foo();
+          const modifiedEvents = events.map(event => {
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformBatch returning an array containing error`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformBatch(events, metadata) {
+          const pr = await foo();
+          const modifiedEvents = events.map((event, index) => {
+            if (index === 0) return null;
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    const x = _.cloneDeep(expectedData);
+    x[0] = {
+      error:
+        "returned event in events array from transformBatch(events) is not an object",
+      metadata: {}
+    };
+
+    expect(output).toEqual(x);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(x);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformEvent`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformEvent returning array of events`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return [event, {duplicate: true, ...event}];
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    const matchData = [];
+    expectedData.forEach(e => {
+      matchData.push(e);
+      const clonedData = _.cloneDeep(e);
+      clonedData.transformedEvent.duplicate = true;
+      matchData.push(clonedData);
+    });
+
+    expect(output).toEqual(matchData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(matchData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformEvent returning non array/objects`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return [event, 1];
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    const matchData = [];
+    inputData.forEach(e => {
+      matchData.push({
+        error:
+          "returned event in events array from transformEvent(event) is not an object",
+        metadata: {}
+      });
+    });
+
+    expect(output).toEqual(matchData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(matchData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformEvent - event ordering`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input_large.json`);
+    const expectedData = require(`./data/${integration}_async_output_large.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation - transformEvent with some failures for some events`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output_with_errors.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function rejectNonIdentifies(eventType) {
+        if(eventType === 'identify') {
+          return 'resolved';
+        }
+        throw new Error("Non-identify found")
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await rejectNonIdentifies(event.type);
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} Test for lodash functions`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_lodash_output.json`);
+
+    const respBody = {
+      codeVersion: "1",
+      name: "lodash",
+      code: `
+      import * as lodash from 'lodash';
+      export function transformBatch(events, metadata) {
+          const modifiedEvents = events.map(event => {
+            event.max = lodash.max([2,3,5,6,7,8]);
+            event.min = lodash.min([-2,3,5,6,7,8]);
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `
+    };
+
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const lodashCode = `
+      ${fs.readFileSync(
+        path.resolve(__dirname, "../../src/util/lodash-es-core.js"),
+        "utf8"
+      )};
+      ;
+      // Not exporting the unsupported functions
+      export {${Object.keys(lodashCore).filter(
+        funcName => !unsupportedFuncNames.includes(funcName)
+      )}};
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: lodashCode, name: "lodash" })
+      });
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} Test for URLSearchParams library`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_url_search_params_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      export function transformBatch(events) {
+          const modifiedEvents = events.map(event => {
+            if(event.properties && event.properties.url){
+              event.properties.client = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+
+    // Should get the same output when using cached isolate vm
+    const outputCached = await userTransformHandler(inputData, versionId, [
+      libraryVersionId
+    ]);
+
+    expect(outputCached).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} async test for V1 transformation code`, async () => {
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_code_test_output.json`);
+
+    const trRevCode = {
+      code: `
+        import url from 'url';
+        async function foo() {
+          return 'resolved';
+        }
+        export async function transformEvent(event, metadata) {
+            const pr = await foo();
+            log('Transformation test');
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          }
+      `,
+      codeVersion: "1",
+      versionId: "testVersionId"
+    };
+
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${trRevCode.versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(trRevCode)
+      });
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      [libraryVersionId],
+    );
+
+    expect(fetch).toHaveBeenCalledWith(libraryUrl);
+    expect(output.length).toEqual(expectedData.transformedEvents.length);
+    output.forEach((event, index) => {
+      expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
+    });
+
+    const outputCached = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId]);
+    expect(outputCached.length).toEqual(expectedData.transformedEvents.length);
+    output.forEach((event, index) => {
+      expect(event.transformedEvent).toEqual(expectedData.transformedEvents[index]);
+    });
+  });
+
+  describe("UserTransformation With Credentials for code version 1", () => {
+    it(`successfully executes transformation with credential lookup with valid key`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          var i = 1;
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1');
+              event.variable = i;
+              i++
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
+      expect(output[0].transformedEvent.variable).toEqual(1);
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].transformedEvent.credentialValue).toEqual("value1");
+      expect(outputCached[0].transformedEvent.variable).toEqual(1);
+    });
+
+    it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential();
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].error).toMatch(/Key should be valid and defined/);
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].error).toMatch(/Key should be valid and defined/);
+    });
+
+    it(`allows user to pass multiple arguments to functions and performs lookup with first key passed`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1', 'key2');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].transformedEvent.credentialValue).toEqual("value1");
+    });
+
+    it(`allows user to pass valid key of any type and performs lookup accordingly`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValueForNumkey = getCredential(1);
+              event.credentialValueForBoolkey = getCredential(true);
+              event.credentialValueForArraykey = getCredential([]);
+              event.credentialValueForObjkey = getCredential({});
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValueForNumkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForBoolkey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForArraykey).toBeUndefined();
+      expect(output[0].transformedEvent.credentialValueForObjkey).toBeUndefined();
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].transformedEvent.credentialValueForNumkey).toBeUndefined();
+      expect(outputCached[0].transformedEvent.credentialValueForBoolkey).toBeUndefined();
+      expect(outputCached[0].transformedEvent.credentialValueForArraykey).toBeUndefined();
+      expect(outputCached[0].transformedEvent.credentialValueForObjkey).toBeUndefined();
+    });
+
+    it(`returns undefined when the key doesn't match any credential lookup`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input_credentials.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key3');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].transformedEvent.credentialValue).toBeUndefined();
+    });
+
+    it(`returns undefined when the credentials are not passed in the request`, async () => {
+      const versionId = randomID();
+
+      const inputData = require(`./data/${integration}_input.json`);
+
+      const respBody = {
+        versionId: versionId,
+        codeVersion: "1",
+        name,
+        code: `
+          export function transformEvent(event, metadata) {
+              event.credentialValue = getCredential('key1');
+              return event;
+            }
+            `
+      };
+      fetch.mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      
+      expect(fetch).toHaveBeenCalledWith(
+        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+      );
+      expect(output[0].transformedEvent.credentialValue).toBeUndefined();
+
+      const outputCached = await userTransformHandler(inputData, versionId, []);
+      expect(outputCached[0].transformedEvent.credentialValue).toBeUndefined();
+    });
+
+    describe('Batch UserTransformation with Credentials', () => {
+      it(`successfully executes transformation with credential lookup with valid key`, async () => {
+        const versionId = randomID();
+
+        const inputData = require(`./data/${integration}_input_credentials.json`);
+
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue1 = getCredential("key1");
+                event.credentialValue2 = getCredential("key3");
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+          const output = await userTransformHandler(inputData, versionId, []);
+          expect(fetch).toHaveBeenCalledWith(
+            `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+          );
+          expect(output[0].transformedEvent.credentialValue1).toEqual("value1");
+          expect(output[0].transformedEvent.credentialValue2).toBeUndefined();
+
+          // Call the same function to use the cached isolate vm
+          const outputCached = await userTransformHandler(inputData, versionId, []);
+          expect(fetch).toHaveBeenCalledWith(
+            `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+          );
+          expect(outputCached[0].transformedEvent.credentialValue1).toEqual("value1");
+          expect(outputCached[0].transformedEvent.credentialValue2).toBeUndefined();
+      });
+
+      it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
+        const versionId = randomID();
+
+        const inputData = require(`./data/${integration}_input_credentials.json`);
+
+        const respBody = {
+          versionId: versionId,
+          codeVersion: "1",
+          name,
+          code: `
+            export function transformBatch(events, metadata) {
+              events.forEach((event) => {
+                event.credentialValue = getCredential();
+              });
+              return events;
+            }
+            `
+        };
+        fetch.mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+        const output = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(output[0].error).toMatch(/Key should be valid and defined/);
+
+        // Call the same function to use the cached isolate vm
+        const outputCached = await userTransformHandler(inputData, versionId, []);
+        expect(fetch).toHaveBeenCalledWith(
+          `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+        );
+        expect(outputCached[0].error).toMatch(/Key should be valid and defined/);
+      });
+
+    });
+  });
+});
+
+
+describe("User transformation with IVM cache TTL expiration", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    process.env.USE_IVM_CACHE = 'true';
+    process.env.IVM_CACHE_STRATEGY = 'isolate';
+    process.env.IVM_CACHE_TTL_MS = '1000'; // 1 second TTL
+    ivmCacheManager.initializeStrategy();
+  });
+
+  afterEach(() => {
+    // Clear cache for next test
+    if (ivmCacheManager && ivmCacheManager.clear) {
+      ivmCacheManager.clear().catch(() => {}); // Clear cache but don't fail tests
+    }
+    delete process.env.IVM_CACHE_TTL_MS;
+  });
+
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  it(`${name} async fetchV2 test - cache expires and recreates isolate`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const respBody = {
+      code: `
+      export async function transformEvent(event, metadata) {
+          try{
+            const res = await fetchV2('https://api.rudderlabs.com/dummyUrl');
+            return res;
+          } catch (err) {
+            return err;
+          }
+        }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const dummyUrl = `https://api.rudderlabs.com/dummyUrl`;
+    const jsonResponse = { type: "json" };
+    const textResponse = "200 OK";
+    when(fetch)
+      .calledWith(dummyUrl)
+      // First execution (cache miss)
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValueOnce(new Error("Timed Out"))
+      // Second execution (cache hit)
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValueOnce(new Error("Timed Out"))
+      // Third execution after TTL expiry (cache miss - new isolate)
+      .mockResolvedValueOnce(getfetchResponse(jsonResponse, dummyUrl))
+      .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
+      .mockRejectedValue(new Error("Timed Out"));
+
+    // First call - should be cache miss
+    const output1 = await userTransformHandler(inputData, versionId, []);
+    expect(output1[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(output1[1].transformedEvent.body).toEqual(textResponse);
+    expect(output1[2].transformedEvent.message).toEqual("Timed Out");
+    
+    const stats1 = ivmCacheManager.getStats();
+    expect(stats1.misses).toEqual(1);
+    expect(stats1.sets).toEqual(1);
+    expect(stats1.hits).toEqual(0);
+
+    // Second call immediately - should be cache hit
+    const output2 = await userTransformHandler(inputData, versionId, []);
+    expect(output2[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(output2[1].transformedEvent.body).toEqual(textResponse);
+    expect(output2[2].transformedEvent.message).toEqual("Timed Out");
+    
+    const stats2 = ivmCacheManager.getStats();
+    expect(stats2.misses).toEqual(1);
+    expect(stats2.sets).toEqual(1);
+    expect(stats2.hits).toEqual(1);
+
+    // Wait for TTL to expire (1 second + buffer)
+    await sleep(1500);
+
+    // Third call after TTL expiry - should be cache miss and recreate isolate
+    const output3 = await userTransformHandler(inputData, versionId, []);
+    expect(output3[0].transformedEvent.body).toEqual(jsonResponse);
+    expect(output3[1].transformedEvent.body).toEqual(textResponse);
+    expect(output3[2].transformedEvent.message).toEqual("Timed Out");
+    
+    const stats3 = ivmCacheManager.getStats();
+    expect(stats3.misses).toEqual(2); // 2 misses (initial + after TTL)
+    expect(stats3.sets).toEqual(2); // 2 sets (initial + after TTL)
+    expect(stats3.hits).toEqual(1); // 1 hit (second call)
+  });
+
+  it(`${name} async transformBatch test - cache expires and recreates isolate with library`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformBatch(events, metadata) {
+          const pr = await foo();
+          const modifiedEvents = events.map(event => {
+            if(event.properties && event.properties.url){
+              const x = new url.URLSearchParams(event.properties.url).get("client");
+            }
+            event.promise = pr;
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    // First call - cache miss
+    const output1 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output1).toEqual(expectedData);
+    
+    const stats1 = ivmCacheManager.getStats();
+    expect(stats1.misses).toEqual(1);
+    expect(stats1.sets).toEqual(1);
+    expect(stats1.hits).toEqual(0);
+
+    // Second call immediately - cache hit
+    const output2 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output2).toEqual(expectedData);
+    
+    const stats2 = ivmCacheManager.getStats();
+    expect(stats2.misses).toEqual(1);
+    expect(stats2.sets).toEqual(1);
+    expect(stats2.hits).toEqual(1);
+
+    // Wait for TTL to expire
+    await sleep(1500);
+
+    // Third call after TTL expiry - cache miss, isolate recreated
+    const output3 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output3).toEqual(expectedData);
+    
+    const stats3 = ivmCacheManager.getStats();
+    expect(stats3.misses).toEqual(2);
+    expect(stats3.sets).toEqual(2);
+    expect(stats3.hits).toEqual(1);
+  });
+
+  it(`${name} transformEvent with credentials - cache expires and recreates isolate`, async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input_credentials.json`);
+
+    const respBody = {
+      versionId: versionId,
+      codeVersion: "1",
+      name,
+      code: `
+        var i = 1;
+        export function transformEvent(event, metadata) {
+            event.credentialValue = getCredential('key1');
+            event.variable = i;
+            i++
+            return event;
+          }
+          `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    // First call - cache miss
+    const output1 = await userTransformHandler(inputData, versionId, []);
+    expect(output1[0].transformedEvent.credentialValue).toEqual("value1");
+    expect(output1[0].transformedEvent.variable).toEqual(1);
+    
+    const stats1 = ivmCacheManager.getStats();
+    expect(stats1.misses).toEqual(1);
+    expect(stats1.sets).toEqual(1);
+    expect(stats1.hits).toEqual(0);
+
+    // Second call immediately - cache hit (variable should reset to 1, not increment to 2)
+    const output2 = await userTransformHandler(inputData, versionId, []);
+    expect(output2[0].transformedEvent.credentialValue).toEqual("value1");
+    expect(output2[0].transformedEvent.variable).toEqual(1); // Still 1 because of isolate reset
+    
+    const stats2 = ivmCacheManager.getStats();
+    expect(stats2.misses).toEqual(1);
+    expect(stats2.sets).toEqual(1);
+    expect(stats2.hits).toEqual(1);
+
+    // Wait for TTL to expire
+    await sleep(1500);
+
+    // Third call after TTL expiry - cache miss, new isolate created
+    const output3 = await userTransformHandler(inputData, versionId, []);
+    expect(output3[0].transformedEvent.credentialValue).toEqual("value1");
+    expect(output3[0].transformedEvent.variable).toEqual(1); // Back to 1 with new isolate
+    
+    const stats3 = ivmCacheManager.getStats();
+    expect(stats3.misses).toEqual(2);
+    expect(stats3.sets).toEqual(2);
+    expect(stats3.hits).toEqual(1);
+  });
+
+  it(`${name} lodash functions - cache expires and recreates isolate`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_lodash_output.json`);
+
+    const respBody = {
+      codeVersion: "1",
+      name: "lodash",
+      code: `
+      import * as lodash from 'lodash';
+      export function transformBatch(events, metadata) {
+          const modifiedEvents = events.map(event => {
+            event.max = lodash.max([2,3,5,6,7,8]);
+            event.min = lodash.min([-2,3,5,6,7,8]);
+            return event;
+          });
+            return modifiedEvents;
+          }
+          `
+    };
+
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const lodashCode = `
+      ${fs.readFileSync(
+        path.resolve(__dirname, "../../src/util/lodash-es-core.js"),
+        "utf8"
+      )};
+      ;
+      // Not exporting the unsupported functions
+      export {${Object.keys(lodashCore).filter(
+        funcName => !unsupportedFuncNames.includes(funcName)
+      )}};
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: lodashCode, name: "lodash" })
+      });
+
+    // First call - cache miss
+    const output1 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output1).toEqual(expectedData);
+    
+    const stats1 = ivmCacheManager.getStats();
+    expect(stats1.misses).toEqual(1);
+    expect(stats1.sets).toEqual(1);
+    expect(stats1.hits).toEqual(0);
+
+    // Second call immediately - cache hit
+    const output2 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output2).toEqual(expectedData);
+    
+    const stats2 = ivmCacheManager.getStats();
+    expect(stats2.misses).toEqual(1);
+    expect(stats2.sets).toEqual(1);
+    expect(stats2.hits).toEqual(1);
+
+    // Wait for TTL to expire
+    await sleep(1500);
+
+    // Third call after TTL expiry - cache miss, isolate recreated with libraries
+    const output3 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output3).toEqual(expectedData);
+    
+    const stats3 = ivmCacheManager.getStats();
+    expect(stats3.misses).toEqual(2);
+    expect(stats3.sets).toEqual(2);
+    expect(stats3.hits).toEqual(1);
+  });
+
+  it(`${name} transformEvent with errors - cache expires and recreates isolate`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const expectedData = require(`./data/${integration}_async_output_with_errors.json`);
+
+    const respBody = {
+      code: `
+      import url from 'url';
+      async function rejectNonIdentifies(eventType) {
+        if(eventType === 'identify') {
+          return 'resolved';
+        }
+        throw new Error("Non-identify found")
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await rejectNonIdentifies(event.type);
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
+      });
+
+    // First call - cache miss
+    const output1 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output1).toEqual(expectedData);
+    
+    const stats1 = ivmCacheManager.getStats();
+    expect(stats1.misses).toEqual(1);
+    expect(stats1.sets).toEqual(1);
+    expect(stats1.hits).toEqual(0);
+
+    // Second call immediately - cache hit
+    const output2 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output2).toEqual(expectedData);
+    
+    const stats2 = ivmCacheManager.getStats();
+    expect(stats2.misses).toEqual(1);
+    expect(stats2.sets).toEqual(1);
+    expect(stats2.hits).toEqual(1);
+
+    // Wait for TTL to expire
+    await sleep(1500);
+
+    // Third call after TTL expiry - cache miss, isolate recreated (errors still work)
+    const output3 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    expect(output3).toEqual(expectedData);
+    
+    const stats3 = ivmCacheManager.getStats();
+    expect(stats3.misses).toEqual(2);
+    expect(stats3.sets).toEqual(2);
+    expect(stats3.hits).toEqual(1);
   });
 });
 

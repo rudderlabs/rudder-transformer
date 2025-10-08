@@ -1,3 +1,17 @@
+
+# run global hook
+GITLEAKS_HOOK="$HOME/.git-hooks/pre-commit.d/gitleaks"
+
+if [ -x "$GITLEAKS_HOOK" ]; then
+  if ! "$GITLEAKS_HOOK"; then
+    printf 'Global gitleaks pre-commit hook failed. Aborting commit.\n' >&2
+    exit 1
+  fi
+else
+  printf 'Error: Global gitleaks hook is not a file or not executable: %s\n' "$GITLEAKS_HOOK" >&2
+  exit 1
+fi
+
 # Get changed files in test/integrations/sources/
 changed_sources=$(git diff --cached --name-only | grep "test/integrations/sources/" | cut -d'/' -f4 | sort -u)
 

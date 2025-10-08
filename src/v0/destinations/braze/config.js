@@ -9,20 +9,32 @@ const ConfigCategory = {
   },
 };
 
-function getIdentifyEndpoint(endPoint) {
-  return `${endPoint}/users/identify`;
+function getIdentifyEndpoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/identify`,
+    path: 'users/identify',
+  };
 }
 
-function getTrackEndPoint(endPoint) {
-  return `${endPoint}/users/track`;
+function getTrackEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/track`,
+    path: 'users/track',
+  };
 }
 
-function getSubscriptionGroupEndPoint(endPoint) {
-  return `${endPoint}/v2/subscription/status/set`;
+function getSubscriptionGroupEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/v2/subscription/status/set`,
+    path: 'v2/subscription/status/set',
+  };
 }
 
-function getAliasMergeEndPoint(endPoint) {
-  return `${endPoint}/users/merge`;
+function getAliasMergeEndPoint(baseEndpoint) {
+  return {
+    endpoint: `${baseEndpoint}/users/merge`,
+    path: 'users/merge',
+  };
 }
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
@@ -32,6 +44,7 @@ const BRAZE_PARTNER_NAME = 'RudderStack';
 // max requests per batch
 // Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/
 const TRACK_BRAZE_MAX_REQ_COUNT = 75;
+const TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
 
@@ -68,6 +81,7 @@ module.exports = {
   BRAZE_PARTNER_NAME,
   BRAZE_PURCHASE_STANDARD_PROPERTIES,
   TRACK_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
   CustomAttributeOperationTypes,

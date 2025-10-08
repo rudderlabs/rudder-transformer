@@ -16,6 +16,7 @@ const {
   addressInfoMapping,
   attributeMapping,
   TYPEOFLIST,
+  OFFLINE_USER_DATA_JOBS_ENDPOINT,
   BASE_ENDPOINT,
   hashAttributes,
   ADDRESS_INFO_ATTRIBUTES,
@@ -30,18 +31,12 @@ const hashEncrypt = (object) => {
   });
 };
 
-const responseBuilder = (
-  accessToken,
-  developerToken,
-  body,
-  { Config },
-  audienceId,
-  consentBlock,
-) => {
+const responseBuilder = (accessToken, body, { Config }, audienceId, consentBlock) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
-  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
+  response.endpointPath = OFFLINE_USER_DATA_JOBS_ENDPOINT;
+  response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/${OFFLINE_USER_DATA_JOBS_ENDPOINT}`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
@@ -54,7 +49,6 @@ const responseBuilder = (
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
-    'developer-token': developerToken,
   };
   if (Config.subAccount)
     if (Config.loginCustomerId) {

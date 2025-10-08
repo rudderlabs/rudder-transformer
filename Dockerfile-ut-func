@@ -31,8 +31,9 @@ RUN chown -R node:node /home/node/app
 USER node
 
 COPY package*.json ./
-COPY scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
-RUN npm ci --no-audit --cache .npm
+RUN npm ci --ignore-scripts --no-audit --cache .npm && \
+npm run prepare
+
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
 RUN npm run copy
@@ -49,12 +50,10 @@ FROM base AS prodDepsBuilder
 WORKDIR /home/node/app
 USER node
 COPY --chown=node:node --from=development /home/node/app/package*.json ./
-COPY --chown=node:node --from=development /home/node/app/scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
 
-ENV SKIP_PREPARE_SCRIPT='true'
-
-RUN npm ci --omit=dev --no-audit --cache .npm
-RUN npm run clean:node
+RUN npm ci --ignore-scripts --omit=dev --no-audit --cache .npm && \
+npm run prepare && \
+npm run clean:node
 
 FROM base as production
 ENV HUSKY 0

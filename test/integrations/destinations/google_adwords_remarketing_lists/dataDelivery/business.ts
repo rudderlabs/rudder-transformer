@@ -10,7 +10,7 @@ const API_VERSION = 'v19';
 export const commonHeaders = {
   Authorization: authHeader1,
   'Content-Type': 'application/json',
-  'developer-token': 'dummy-dev-token',
+  'developer-token': 'test-developer-token-12345',
 };
 
 export const commonParams = {

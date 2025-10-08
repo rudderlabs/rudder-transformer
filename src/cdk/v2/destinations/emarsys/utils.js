@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const {
   InstrumentationError,
   ConfigurationError,
@@ -69,7 +69,7 @@ const buildIdentifyPayload = (message, destConfig) => {
     );
   }
   if (fieldMapping) {
-    fieldMapping.forEach((trait) => {
+    for (const trait of fieldMapping) {
       const { rudderProperty, emersysProperty } = trait;
       const value = getValueFromMessage(message, [
         `traits.${rudderProperty}`,
@@ -78,7 +78,7 @@ const buildIdentifyPayload = (message, destConfig) => {
       if (isDefinedAndNotNull(value)) {
         payload[emersysProperty] = value;
       }
-    });
+    }
   }
   const emersysIdentifier = deduceCustomIdentifier(integrationObject, emersysCustomIdentifier);
   const finalPayload =
@@ -206,9 +206,7 @@ const createSingleIdentifyPayload = (keyId, contacts, contactListId) => ({
 const ensureSizeConstraints = (contacts) => {
   const chunks = [];
   let currentBatch = [];
-
-  contacts.forEach((contact) => {
-    // Start a new batch if adding the next contact exceeds size limits
+  for (const contact of contacts) {
     if (
       currentBatch.length === 0 ||
       estimateJsonSize([...currentBatch, contact]) < MAX_BATCH_SIZE_BYTES
@@ -218,7 +216,7 @@ const ensureSizeConstraints = (contacts) => {
       chunks.push(currentBatch);
       currentBatch = [contact];
     }
-  });
+  }
 
   // Add the remaining batch if not empty
   if (currentBatch.length > 0) {
@@ -350,7 +348,7 @@ function processEventBatches(typedEventGroups, constants) {
   const finalOutput = [];
 
   // Process each event group based on type
-  Object.keys(typedEventGroups).forEach((eventType) => {
+  for (const eventType of Object.keys(typedEventGroups)) {
     switch (eventType) {
       case EventType.IDENTIFY:
         batchesOfIdentifyEvents = createIdentifyBatches(typedEventGroups[eventType]);
@@ -368,7 +366,7 @@ function processEventBatches(typedEventGroups, constants) {
       default:
         break;
     }
-  });
+  }
 
   // Convert batches into requests for each event type and push to final output
   appendRequestsToOutput(groupedSuccessfulPayload.identify, finalOutput, constants);

@@ -1,0 +1,54 @@
+---
+alwaysApply: false
+---
+# PR Review Comments Handler
+
+When addressing PR review comments, follow this systematic approach:
+
+## 1. Checkout the PR Branch
+
+
+## 2. Get PR Comments
+Retrieve all comments on the PR.
+
+## 3. Process Each Comment Sequentially
+
+For **EACH** comment, follow this exact process:
+
+### Step A: Display Comment Information
+Print the comment in this format:
+```
+(index). From [user] on [file]:[lines] — [body]
+```
+
+### Step B: Analyze the Context
+- Read the file and understand the line range mentioned
+- Understand the code context around the comment
+- Identify what change is being requested
+
+### Step C: Decision Making
+**If you don't understand the comment:**
+- Do NOT make any changes
+- Ask the user for clarification
+- Or ask the user to implement it themselves
+- Move to the next comment
+
+**If you understand the comment:**
+- Make the change BEFORE moving to the next comment
+- Ensure the change addresses the specific feedback
+- Test that the change doesn't break existing functionality
+
+### Step D: Move to Next Comment
+Only after completing the current comment (either by making a change or asking for clarification), move to the next comment.
+
+## 4. Final Summary
+After processing all comments:
+- Summarize what changes were made
+- List which comments need the USER's attention (clarification needed or user implementation required)
+- Provide a clear status of the PR review process
+
+## Important Notes:
+- Process comments **one at a time** - don't batch changes
+- Always understand the context before making changes
+- When in doubt, ask for clarification rather than guessing
+- Keep track of which comments were addressed vs. need user attention

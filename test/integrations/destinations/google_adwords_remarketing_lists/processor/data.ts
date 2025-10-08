@@ -16,7 +16,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -73,10 +72,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -124,7 +123,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -147,7 +145,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -205,10 +202,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
+
                 'login-customer-id': '8704830944',
               },
               params: {
@@ -242,7 +240,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -265,7 +262,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -324,10 +320,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -360,7 +356,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -383,7 +378,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -458,7 +452,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -491,7 +484,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -548,7 +540,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -581,7 +572,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -637,7 +627,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -669,7 +658,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -713,7 +701,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -745,7 +732,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -809,7 +795,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -841,7 +826,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -1425,10 +1409,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -2713,7 +2697,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -2736,7 +2719,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -2819,10 +2801,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -2887,7 +2869,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -2898,10 +2879,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -2966,7 +2947,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -2989,7 +2969,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -4110,10 +4089,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -5398,7 +5377,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -5409,10 +5387,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -6697,7 +6675,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -6720,7 +6697,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -6785,10 +6761,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -6853,7 +6829,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -6876,7 +6851,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -6940,7 +6914,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 400,
@@ -6973,7 +6946,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -8094,10 +8066,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -9382,7 +9354,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -9393,10 +9364,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -10681,7 +10652,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -10704,7 +10674,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -10787,10 +10756,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -10855,7 +10824,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -10866,10 +10834,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -10934,7 +10902,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -10957,7 +10924,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11040,10 +11006,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -11106,7 +11072,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11117,10 +11082,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -11180,7 +11145,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11203,7 +11167,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11260,10 +11223,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'list111',
@@ -11305,7 +11268,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11409,7 +11371,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11466,10 +11427,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: 'aud1234',
@@ -11511,7 +11472,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11534,7 +11494,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11604,10 +11563,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: '830441345',
@@ -11648,7 +11607,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11671,7 +11629,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11741,10 +11698,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: '830441345',
@@ -11785,7 +11742,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11808,7 +11764,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -11880,10 +11835,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: '830441345',
@@ -11927,7 +11882,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,
@@ -11950,7 +11904,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             destination: {
@@ -12022,10 +11975,10 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+              endpointPath: 'offlineUserDataJobs',
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-                'developer-token': 'dummy-dev-token',
               },
               params: {
                 listId: '830441345',
@@ -12066,7 +12019,6 @@ export const data = [
               secret: {
                 access_token: secret1,
                 refresh_token: 'dummy-refresh',
-                developer_token: 'dummy-dev-token',
               },
             },
             statusCode: 200,

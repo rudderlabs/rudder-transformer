@@ -275,6 +275,7 @@ const basicRouterTests = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -327,6 +328,7 @@ const basicRouterTests = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+                  endpointPath: 'v2/subscription/status/set',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -361,6 +363,7 @@ const basicRouterTests = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.fra-01.braze.eu/users/merge',
+                  endpointPath: 'users/merge',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -423,7 +426,7 @@ const basicRouterTests = [
     },
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
-    }
+    },
   },
   {
     name: 'braze',
@@ -754,6 +757,7 @@ const basicRouterTests = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://rest.iad-03.braze.com/users/track',
+                  endpointPath: 'users/track',
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
@@ -902,7 +906,7 @@ const basicRouterTests = [
     },
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
-    }
+    },
   },
 ];
 
@@ -911,7 +915,7 @@ const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map(
     ...test,
     envOverrides: {
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'true',
-    }
+    },
   };
 });
 

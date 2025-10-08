@@ -67,7 +67,7 @@ async function processSingleBatch(
   destinationId: string,
 ): Promise<BatchIdentifyResult> {
   const { destination } = identifyCallsChunk[0];
-  const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
+  const { endpoint } = getIdentifyEndpoint(getEndpointFromConfig(destination));
 
   const aliasesToIdentify = identifyCallsChunk.flatMap(
     (identifyCall) => identifyCall.identifyPayload.aliases_to_identify,
@@ -76,7 +76,7 @@ async function processSingleBatch(
   const { processedResponse: brazeIdentifyResp }: { processedResponse: BrazeResponse } =
     await handleHttpRequest(
       'post',
-      identifyEndpoint,
+      endpoint,
       { aliases_to_identify: aliasesToIdentify, merge_behavior: 'merge' },
       {
         headers: {

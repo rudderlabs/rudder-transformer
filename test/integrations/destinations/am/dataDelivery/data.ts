@@ -14,7 +14,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -50,15 +50,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                code: 200,
-                events_ingested: 50,
-                payload_size_bytes: 50,
-                server_upload_time: 1396381378123,
-              },
-              status: 200,
-            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -113,7 +104,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     successCriteria: 'Should return 400 with error with destination response',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -218,7 +209,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 500 with error with destination response',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -326,7 +317,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 200 with success',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -349,10 +340,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: '',
-              status: 200,
-            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -387,7 +374,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 200 with success, metadata should contain dontBatch as false',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload(
@@ -445,15 +432,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                code: 200,
-                events_ingested: 50,
-                payload_size_bytes: 50,
-                server_upload_time: 1396381378123,
-              },
-              status: 200,
-            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -543,7 +521,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload(
@@ -609,20 +587,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                code: 400,
-                error: 'Request missing required field',
-                events_with_invalid_fields: {
-                  time: [3, 4, 7],
-                },
-                events_with_missing_fields: {
-                  event_type: [3, 4, 7],
-                },
-                missing_field: 'api_key',
-              },
-              status: 400,
-            },
             message:
               'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
             response: [
@@ -633,9 +597,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
                   destinationId: 'default-destinationId',
                   dontBatch: true,
                   jobId: 1,
-                  secret: {
-                    accessToken: 'defaultAccessToken',
-                  },
                   sourceId: 'default-sourceId',
                   userId: '1',
                   workspaceId: 'default-workspaceId',
@@ -649,9 +610,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
                   destinationId: 'default-destinationId',
                   dontBatch: true,
                   jobId: 2,
-                  secret: {
-                    accessToken: 'defaultAccessToken',
-                  },
                   sourceId: 'default-sourceId',
                   userId: '2',
                   workspaceId: 'default-workspaceId',
@@ -711,7 +669,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     scenario: 'Business',
-    skip: true,
+    skip: false,
     version: 'v1',
     input: {
       request: {
@@ -778,20 +736,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                code: 400,
-                error: 'Request missing required field',
-                events_with_invalid_fields: {
-                  time: [3, 4, 7],
-                },
-                events_with_missing_fields: {
-                  event_type: [3, 4, 7],
-                },
-                missing_field: 'api_key',
-              },
-              status: 400,
-            },
             message:
               'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
             response: [
@@ -802,9 +746,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
                   destinationId: 'default-destinationId',
                   dontBatch: true,
                   jobId: 1,
-                  secret: {
-                    accessToken: 'defaultAccessToken',
-                  },
                   sourceId: 'default-sourceId',
                   userId: '1',
                   workspaceId: 'default-workspaceId',
@@ -818,9 +759,6 @@ const proxyV1TestData: ProxyV1TestData[] = [
                   destinationId: 'default-destinationId',
                   dontBatch: true,
                   jobId: 2,
-                  secret: {
-                    accessToken: 'defaultAccessToken',
-                  },
                   sourceId: 'default-sourceId',
                   userId: '2',
                   workspaceId: 'default-workspaceId',

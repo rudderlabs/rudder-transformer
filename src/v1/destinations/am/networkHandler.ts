@@ -1,3 +1,4 @@
+import { AbortedError, RetryableError, ThrottledError } from '@rudderstack/integrations-lib';
 import { DeliveryJobState, DeliveryV1Response, ProxyMetdata } from '../../../types';
 import {
   isHttpStatusSuccess,
@@ -5,12 +6,11 @@ import {
   isHttpStatusThrottled,
 } from '../../../v0/util';
 
-const { AbortedError, RetryableError, ThrottledError } = require('@rudderstack/integrations-lib');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 
 const DESTINATION = 'amplitude';
-const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
+const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], response: any) => {
   const { error } = response;
   const errorMessage = error || 'unknown error';
   const responseWithIndividualEvents: DeliveryJobState[] = [];

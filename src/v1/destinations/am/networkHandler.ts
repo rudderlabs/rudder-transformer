@@ -10,7 +10,7 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 
 const DESTINATION = 'amplitude';
-const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], response) => {
+const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
   const { error } = response;
   const errorMessage = error || 'unknown error';
   const responseWithIndividualEvents: DeliveryJobState[] = [];
@@ -21,7 +21,6 @@ const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], respon
       metadata: {
         ...metadata,
         dontBatch: true,
-        secret: undefined,
       },
       error: errorMessage,
     });
@@ -29,13 +28,14 @@ const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], respon
   return responseWithIndividualEvents;
 };
 
-const responseHandler = (responseParams): DeliveryV1Response => {
+const responseHandler = (responseParams: {
+  rudderJobMetadata: ProxyMetdata[];
+  destinationResponse: any;
+}): DeliveryV1Response => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
-  console.log('responseParams here', responseParams);
   const message = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
-    console.log('responseParams here', responseParams);
     const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: 200,
       metadata,

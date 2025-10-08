@@ -50,6 +50,15 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              response: {
+                code: 200,
+                events_ingested: 50,
+                payload_size_bytes: 50,
+                server_upload_time: 1396381378123,
+              },
+              status: 200,
+            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -340,6 +349,10 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              status: 200,
+              response: '',
+            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -432,6 +445,15 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              status: 200,
+              response: {
+                code: 200,
+                events_ingested: 50,
+                payload_size_bytes: 50,
+                server_upload_time: 1396381378123,
+              },
+            },
             message: '[amplitude Response Handler] - Request Processed Successfully',
             response: [
               {
@@ -552,32 +574,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
               destination: 'am',
             },
           },
-          [
-            {
-              jobId: 1,
-              attemptNum: 1,
-              userId: '1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'defaultAccessToken',
-              },
-              dontBatch: false,
-            },
-            {
-              jobId: 2,
-              attemptNum: 1,
-              userId: '2',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'defaultAccessToken',
-              },
-              dontBatch: false,
-            },
-          ],
+          [generateMetadata(1), generateMetadata(2)],
         ),
         method: 'POST',
       },
@@ -587,32 +584,36 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              status: 400,
+              response: {
+                code: 400,
+                error: 'Request missing required field',
+                missing_field: 'api_key',
+                events_with_invalid_fields: {
+                  time: [3, 4, 7],
+                },
+                events_with_missing_fields: {
+                  event_type: [3, 4, 7],
+                },
+              },
+            },
             message:
               'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
             response: [
               {
                 error: 'Request missing required field',
                 metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
+                  ...generateMetadata(1),
                   dontBatch: true,
-                  jobId: 1,
-                  sourceId: 'default-sourceId',
-                  userId: '1',
-                  workspaceId: 'default-workspaceId',
                 },
                 statusCode: 500,
               },
               {
                 error: 'Request missing required field',
                 metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
+                  ...generateMetadata(2),
                   dontBatch: true,
-                  jobId: 2,
-                  sourceId: 'default-sourceId',
-                  userId: '2',
-                  workspaceId: 'default-workspaceId',
                 },
                 statusCode: 500,
               },
@@ -736,12 +737,29 @@ const proxyV1TestData: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              status: 400,
+              response: {
+                code: 400,
+                error: 'Request missing required field',
+                missing_field: 'api_key',
+                events_with_invalid_fields: {
+                  time: [3, 4, 7],
+                },
+                events_with_missing_fields: {
+                  event_type: [3, 4, 7],
+                },
+              },
+            },
             message:
               'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "{"code":400,"error":"Request missing required field","missing_field":"api_key","events_with_invalid_fields":{"time":[3,4,7]},"events_with_missing_fields":{"event_type":[3,4,7]}}", (Retryable)',
             response: [
               {
                 error: 'Request missing required field',
                 metadata: {
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
                   attemptNum: 1,
                   destinationId: 'default-destinationId',
                   dontBatch: true,
@@ -755,6 +773,9 @@ const proxyV1TestData: ProxyV1TestData[] = [
               {
                 error: 'Request missing required field',
                 metadata: {
+                  secret: {
+                    accessToken: 'defaultAccessToken',
+                  },
                   attemptNum: 1,
                   destinationId: 'default-destinationId',
                   dontBatch: true,

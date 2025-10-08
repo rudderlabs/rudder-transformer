@@ -40,7 +40,7 @@ async function processVDMV1RecordEvents(groupedRecordInputs) {
  * Uses connection.config.destination and message.identifiers
  */
 async function processVDMV2RecordEvents(groupedRecordInputs) {
-  const { connection, message } = groupedRecordInputs[0];
+  const { connection } = groupedRecordInputs[0];
   const destinationConfig = connection?.config?.destination;
 
   if (!destinationConfig) {

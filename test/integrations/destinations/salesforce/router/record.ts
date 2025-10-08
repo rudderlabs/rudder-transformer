@@ -246,4 +246,3 @@ export const data = [
     output: vdmV2RecordOutput,
   },
 ];
-

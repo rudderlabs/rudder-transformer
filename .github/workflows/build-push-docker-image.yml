@@ -50,6 +50,11 @@ jobs:
     outputs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout SHA
         id: getSHA
         run: |
@@ -67,6 +72,11 @@ jobs:
     outputs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
@@ -95,6 +105,11 @@ jobs:
     runs-on: [self-hosted, Linux, ARM64, ubuntu-22]
     needs: [get_sha, get_changed_files]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
@@ -151,6 +166,11 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     needs: [get_sha, get_changed_files]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v5
         with:
@@ -208,6 +228,11 @@ jobs:
     needs: [build-transformer-image-amd64, build-transformer-image-arm64]
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Login to DockerHub
         uses: docker/login-action@v3.5.0
         with:

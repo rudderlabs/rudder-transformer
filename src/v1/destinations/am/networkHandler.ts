@@ -10,9 +10,7 @@ import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 
 const DESTINATION = 'amplitude';
-const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], response: any) => {
-  const { error } = response;
-  const errorMessage = error || 'unknown error';
+const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], errorMessage: string) => {
   const responseWithIndividualEvents: DeliveryJobState[] = [];
 
   rudderJobMetadata.forEach((metadata) => {
@@ -30,11 +28,13 @@ const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], respon
 
 const responseHandler = (responseParams: {
   rudderJobMetadata: ProxyMetdata[];
-  destinationResponse: any;
+  destinationResponse: { response: any; status: number };
 }): DeliveryV1Response => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { status, response } = destinationResponse;
+  const { error } = response;
+  const errorMessage = JSON.stringify(error) || 'unknown error';
   if (isHttpStatusSuccess(status)) {
     const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: 200,
@@ -51,19 +51,13 @@ const responseHandler = (responseParams: {
   }
   if (isHttpStatusRetryable(status)) {
     throw new RetryableError(
-      `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to ${JSON.stringify(
-        response,
-      )}, (Retryable)`,
+      `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage}, (Retryable)`,
       500,
       destinationResponse,
     );
   }
   if (isHttpStatusThrottled(status)) {
-    const {
-      error,
-      throttled_users: throttledUsers,
-      throttled_devices: throttledDevices,
-    } = response;
+    const { throttled_users: throttledUsers, throttled_devices: throttledDevices } = response;
 
     const hasThrottledItems = (obj: Record<string, number>) =>
       typeof obj === 'object' && obj !== null && Object.keys(obj).length > 0;
@@ -88,11 +82,9 @@ const responseHandler = (responseParams: {
   ) {
     return {
       status, // this status is not used by server, server uses the status of response
-      message: `Request Failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to "${JSON.stringify(
-        response,
-      )}", (Retryable)`,
+      message: `Request Failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Retryable)`,
       destinationResponse,
-      response: populateResponseWithDontBatch(rudderJobMetadata, response),
+      response: populateResponseWithDontBatch(rudderJobMetadata, errorMessage),
     };
   }
   throw new AbortedError(

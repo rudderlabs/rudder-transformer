@@ -17,23 +17,14 @@ class IvmCacheManager {
    * Only called when strategy needs to be created or changed
    */
   initializeStrategy() {
-    // Clean up existing strategy if different
-    if (this.strategy && typeof this.strategy.clear === 'function') {
-      this.strategy.clear().catch((error) => {
-        logger.error('Error destroying previous cache strategy', {
-          error: error.message,
-          strategy: this.currentStrategyName,
-        });
-      });
-    }
-
     // Initialize new strategy
     const options = {
       maxSize: process.env.IVM_CACHE_MAX_SIZE,
       ttlMs: process.env.IVM_CACHE_TTL_MS,
     };
-    this.strategy = new OneIVMPerTransformationIdStrategy(options);
 
+    // Always create fresh strategy (tests expect this behavior)
+    this.strategy = new OneIVMPerTransformationIdStrategy(options);
     logger.info('IVM Cache Manager initialized', {
       ...options,
     });

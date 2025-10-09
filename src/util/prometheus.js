@@ -916,7 +916,7 @@ class Prometheus {
         name: 'ivm_cache_size',
         help: 'ivm_cache_size',
         type: 'gauge',
-        labelNames: ['cache', 'operation'],
+        labelNames: [],
       },
       {
         name: 'fetchV2_call_duration',

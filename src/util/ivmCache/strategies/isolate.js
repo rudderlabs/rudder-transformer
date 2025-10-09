@@ -1,11 +1,10 @@
 const DisposableCache = require('../index');
-const { createNewContext } = require('../contextReset');
 const logger = require('../../../logger');
 const stats = require('../../stats');
 
 /**
  * Isolate strategy - cache entire isolate with compiled modules
- * Reset context for each execution to ensure clean state
+ * Returns the same isolate instance for all executions (credentials frozen to first request)
  */
 class OneIVMPerTransformationIdStrategy {
   constructor(options = {}) {
@@ -19,12 +18,11 @@ class OneIVMPerTransformationIdStrategy {
   }
 
   /**
-   * Get cached isolate and reset context for fresh execution
+   * Get cached isolate directly without context reset
    * @param {string} cacheKey Cache key
-   * @param {Object} credentials Fresh credentials for this execution
-   * @returns {Object|null} Reset isolate ready for execution or null if not cached
+   * @returns {Object|null} Cached isolate ready for execution or null if not cached
    */
-  async get(cacheKey, credentials = {}) {
+  async get(cacheKey) {
     const startTime = new Date();
 
     try {
@@ -38,20 +36,17 @@ class OneIVMPerTransformationIdStrategy {
         return null;
       }
 
-      // Reset context for fresh execution
-      const cachedIsolateWithResetContext = await createNewContext(cachedIsolate, credentials);
-
       stats.timing('ivm_cache_get_duration', startTime, {
         strategy: 'isolate',
         result: 'hit',
       });
 
-      logger.debug('IVM Cache isolate retrieved and reset', {
+      logger.debug('IVM Cache isolate retrieved', {
         cacheKey,
         transformationId: cachedIsolate.transformationId,
       });
 
-      return cachedIsolateWithResetContext;
+      return cachedIsolate;
     } catch (error) {
       logger.error('Error getting cached isolate', {
         error: error.message,
@@ -79,36 +74,48 @@ class OneIVMPerTransformationIdStrategy {
     const startTime = new Date();
 
     try {
+      // Capture references at cache time to prevent issues with object mutations
+      const capturedReferences = {
+        isolate: isolateData.isolate,
+        context: isolateData.context,
+        bootstrap: isolateData.bootstrap,
+        customScriptModule: isolateData.customScriptModule,
+        bootstrapScriptResult: isolateData.bootstrapScriptResult,
+        fnRef: isolateData.fnRef,
+        transformationId: isolateData.transformationId,
+        workspaceId: isolateData.workspaceId,
+      };
+
       // Prepare isolate for caching by storing essential components
       const cacheableIsolate = {
         isolate: isolateData.isolate,
+        context: isolateData.context,
         bootstrap: isolateData.bootstrap,
         customScriptModule: isolateData.customScriptModule,
         bootstrapScriptResult: isolateData.bootstrapScriptResult,
         fnRef: isolateData.fnRef,
         fName: isolateData.fName,
         logs: isolateData.logs,
-
         compiledModules: isolateData.compiledModules,
 
-        // Metadata for debugging and reset
+        // Metadata for debugging
         transformationId: isolateData.transformationId,
         workspaceId: isolateData.workspaceId,
-        moduleSource: isolateData.moduleSource,
+
         // Cache metadata
         cachedAt: Date.now(),
 
-        // Cleanup function for cache eviction
+        // Cleanup function for cache eviction - uses captured references
         destroy: async () => {
           try {
             logger.debug('Destroying cached isolate', {
               cacheKey,
-              transformationId: isolateData.transformationId,
+              transformationId: capturedReferences.transformationId,
             });
 
             // Release all references safely - each in its own try-catch to prevent cascade failures
             try {
-              isolateData.fnRef?.release();
+              capturedReferences.fnRef?.release();
             } catch (refError) {
               logger.debug('fnRef already released or invalid', {
                 cacheKey,
@@ -117,7 +124,7 @@ class OneIVMPerTransformationIdStrategy {
             }
 
             try {
-              isolateData.bootstrap?.release();
+              capturedReferences.bootstrap?.release();
             } catch (refError) {
               logger.debug('bootstrap already released or invalid', {
                 cacheKey,
@@ -126,7 +133,7 @@ class OneIVMPerTransformationIdStrategy {
             }
 
             try {
-              isolateData.customScriptModule?.release();
+              capturedReferences.customScriptModule?.release();
             } catch (refError) {
               logger.debug('customScriptModule already released or invalid', {
                 cacheKey,
@@ -135,7 +142,7 @@ class OneIVMPerTransformationIdStrategy {
             }
 
             try {
-              isolateData.bootstrapScriptResult?.release();
+              capturedReferences.bootstrapScriptResult?.release();
             } catch (refError) {
               logger.debug('bootstrapScriptResult already released or invalid', {
                 cacheKey,
@@ -143,9 +150,19 @@ class OneIVMPerTransformationIdStrategy {
               });
             }
 
+            // Release context before disposing isolate
+            try {
+              capturedReferences.context?.release();
+            } catch (refError) {
+              logger.error('context already released or invalid', {
+                cacheKey,
+                error: refError.message,
+              });
+            }
+
             // Dispose the isolate
             try {
-              await isolateData.isolate?.dispose();
+              await capturedReferences.isolate?.dispose();
             } catch (disposeError) {
               logger.error('isolate already disposed or invalid', {
                 cacheKey,
@@ -213,14 +230,8 @@ class OneIVMPerTransformationIdStrategy {
    */
   async clear() {
     try {
-      // Destroy all cached isolates
-      const entries = Array.from(this.cache.cache.entries());
-      await Promise.all(
-        entries.map(async ([, cachedIsolate]) => {
-          await cachedIsolate.destroy();
-        }),
-      );
-
+      // The cache.clear() will trigger handleDispose for each item,
+      // which will call destroy() on each isolate
       this.cache.clear();
 
       logger.info('IVM isolate cache cleared');

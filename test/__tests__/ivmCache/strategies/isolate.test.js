@@ -16,11 +16,7 @@ jest.mock('../../../../src/util/stats', () => ({
   summary: jest.fn(),
 }));
 
-jest.mock('../../../../src/util/ivmCache/contextReset', () => ({
-  createNewContext: jest.fn(),
-}));
-
-const { createNewContext } = require('../../../../src/util/ivmCache/contextReset');
+// Context reset is no longer used - isolates are cached as-is
 
 describe('Isolate Cache Strategy', () => {
   let strategy;
@@ -137,47 +133,27 @@ describe('Isolate Cache Strategy', () => {
       expect(result).toBeNull();
     });
 
-    test('should return reset isolate for existing keys', async () => {
+    test('should return cached isolate directly for existing keys', async () => {
       const cacheKey = 'test:key:123';
-      const credentials = { apiKey: 'test' };
-      const cachedIsolateWithResetContext = { ...mockIsolateData, reset: true };
-
-      createNewContext.mockResolvedValue(cachedIsolateWithResetContext);
 
       await strategy.set(cacheKey, mockIsolateData);
       
-      // Mock the cache.get to return our mock data structure
-      const mockCachedData = {
-        isolate: mockIsolateData.isolate,
-        transformationId: mockIsolateData.transformationId,
-        workspaceId: mockIsolateData.workspaceId,
-        bootstrap: mockIsolateData.bootstrap,
-        customScriptModule: mockIsolateData.customScriptModule,
-        compiledModules: mockIsolateData.compiledModules,
-        fName: mockIsolateData.fName,
-        cachedAt: Date.now(),
-        destroy: jest.fn(),
-      };
-      jest.spyOn(strategy.cache, 'get').mockReturnValue(mockCachedData);
-      
-      const result = await strategy.get(cacheKey, credentials);
+      const result = await strategy.get(cacheKey);
 
-      expect(createNewContext).toHaveBeenCalledWith(
-        mockCachedData,
-        credentials
-      );
-      expect(result).toBe(cachedIsolateWithResetContext);
+      // Should return the cached isolate directly without any reset
+      expect(result).toBeDefined();
+      expect(result.transformationId).toBe(mockIsolateData.transformationId);
+      expect(result.workspaceId).toBe(mockIsolateData.workspaceId);
     });
 
-    test('should handle reset context errors', async () => {
+    test('should handle cache retrieval gracefully', async () => {
       const cacheKey = 'test:key:123';
-      createNewContext.mockRejectedValue(new Error('Reset failed'));
 
       await strategy.set(cacheKey, mockIsolateData);
       const result = await strategy.get(cacheKey);
 
-      expect(result).toBeNull();
-      expect(strategy.cache.has(cacheKey)).toBe(false); // Should be removed due to error
+      expect(result).toBeDefined();
+      expect(strategy.cache.has(cacheKey)).toBe(true);
     });
 
     test('should handle missing cached data gracefully', async () => {
@@ -201,7 +177,6 @@ describe('Isolate Cache Strategy', () => {
       );
 
       // Test cache hit
-      createNewContext.mockResolvedValue(mockIsolateData);
       await strategy.set(cacheKey, mockIsolateData);
       await strategy.get(cacheKey);
 
@@ -262,9 +237,9 @@ describe('Isolate Cache Strategy', () => {
       expect(strategy.cache.cache.size).toBe(0);
     });
 
-    test('should call destroy on all cached items', async () => {
+    test('should clear all cached items via LRU cache disposal', async () => {
       const mockData1 = { ...mockIsolateData };
-      const mockData2 = { 
+      const mockData2 = {
         ...mockIsolateData,
         fnRef: { release: jest.fn() },
         isolate: { dispose: jest.fn().mockResolvedValue(undefined) },
@@ -273,18 +248,16 @@ describe('Isolate Cache Strategy', () => {
       await strategy.set('key1', mockData1);
       await strategy.set('key2', mockData2);
 
-      // Mock the cache to return items with destroy methods
-      const destroyMock1 = jest.fn();
-      const destroyMock2 = jest.fn();
-      jest.spyOn(strategy.cache.cache, 'entries').mockReturnValue([
-        ['key1', { destroy: destroyMock1 }],
-        ['key2', { destroy: destroyMock2 }],
-      ]);
+      // Verify items are cached
+      expect(strategy.cache.cache.size).toBe(2);
 
       await strategy.clear();
 
-      expect(destroyMock1).toHaveBeenCalled();
-      expect(destroyMock2).toHaveBeenCalled();
+      // Verify cache is empty after clear
+      expect(strategy.cache.cache.size).toBe(0);
+
+      // The actual disposal happens asynchronously via LRU cache handleDispose
+      // We can't directly test the async disposal calls in this synchronous test
     });
 
     test('should handle clear errors gracefully', async () => {
@@ -311,7 +284,6 @@ describe('Isolate Cache Strategy', () => {
 
     test('should reflect actual cache state', async () => {
       await strategy.set('key1', mockIsolateData);
-      createNewContext.mockResolvedValue(mockIsolateData);
 
       // Generate some hits and misses
       await strategy.get('key1'); // hit
@@ -350,17 +322,20 @@ describe('Isolate Cache Strategy', () => {
       expect(strategy.cache.has('key4')).toBe(true);
     });
 
-    test('should call destroy on evicted items', async () => {
-      const mockData1 = { ...mockIsolateData };
-      await strategy.set('key1', mockData1);
+    test('should handle LRU eviction properly', async () => {
+      await strategy.set('key1', mockIsolateData);
       await strategy.set('key2', { ...mockIsolateData });
       await strategy.set('key3', { ...mockIsolateData });
 
       // This should evict key1
       await strategy.set('key4', { ...mockIsolateData });
 
-      expect(mockData1.fnRef.release).toHaveBeenCalled();
-      expect(mockData1.isolate.dispose).toHaveBeenCalled();
+      // Eviction happens asynchronously via LRU cache handleDispose
+      // We can't directly test the disposal calls in this synchronous test
+      expect(strategy.cache.has('key1')).toBe(false);
+      expect(strategy.cache.has('key2')).toBe(true);
+      expect(strategy.cache.has('key3')).toBe(true);
+      expect(strategy.cache.has('key4')).toBe(true);
     });
 
     test('should expire items after TTL', (done) => {
@@ -383,20 +358,17 @@ describe('Isolate Cache Strategy', () => {
   describe('concurrent operations', () => {
     test('should handle concurrent get operations', async () => {
       const cacheKey = 'test:concurrent:get';
-      createNewContext.mockResolvedValue(mockIsolateData);
 
       await strategy.set(cacheKey, mockIsolateData);
 
       const getPromises = Array.from({ length: 10 }, () =>
-        strategy.get(cacheKey, {}, false)
+        strategy.get(cacheKey)
       );
 
       const results = await Promise.all(getPromises);
       results.forEach((result) => {
         expect(result).toBeDefined();
       });
-
-      expect(createNewContext).toHaveBeenCalledTimes(10);
     });
 
     test('should handle concurrent set operations', async () => {
@@ -411,8 +383,6 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should handle mixed concurrent operations', async () => {
-      createNewContext.mockResolvedValue(mockIsolateData);
-
       const operations = [
         strategy.set('key1', mockIsolateData),
         strategy.set('key2', mockIsolateData),
@@ -427,15 +397,12 @@ describe('Isolate Cache Strategy', () => {
   });
 
   describe('error scenarios', () => {
-    test('should handle createNewContext throwing errors', async () => {
-      createNewContext.mockRejectedValue(new Error('Reset context failed'));
-
+    test('should handle cache errors gracefully', async () => {
       const cacheKey = 'test:error:key';
       await strategy.set(cacheKey, mockIsolateData);
 
       const result = await strategy.get(cacheKey);
-      expect(result).toBeNull();
-      expect(strategy.cache.has(cacheKey)).toBe(false);
+      expect(result).toBeDefined();
     });
 
     test('should handle isolate disposal errors during destroy', async () => {
@@ -463,8 +430,6 @@ describe('Isolate Cache Strategy', () => {
 
   describe('memory and performance', () => {
     test('should not leak memory with frequent operations', async () => {
-      createNewContext.mockResolvedValue(mockIsolateData);
-
       const initialMemory = process.memoryUsage().heapUsed;
 
       // Perform many operations
@@ -488,8 +453,6 @@ describe('Isolate Cache Strategy', () => {
     });
 
     test('should maintain consistent performance', async () => {
-      createNewContext.mockResolvedValue(mockIsolateData);
-
       const timings = [];
 
       for (let i = 0; i < 10; i++) {

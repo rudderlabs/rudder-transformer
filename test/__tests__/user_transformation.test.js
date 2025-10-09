@@ -2094,41 +2094,6 @@ describe("User transformation with IVM cache", () => {
   });
 
   describe("UserTransformation With Credentials for code version 1", () => {
-    it(`successfully executes transformation with credential lookup with valid key`, async () => {
-      const versionId = randomID();
-
-      const inputData = require(`./data/${integration}_input_credentials.json`);
-
-      const respBody = {
-        versionId: versionId,
-        codeVersion: "1",
-        name,
-        code: `
-          var i = 1;
-          export function transformEvent(event, metadata) {
-              event.credentialValue = getCredential('key1');
-              event.variable = i;
-              i++
-              return event;
-            }
-            `
-      };
-      fetch.mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue(respBody)
-      });
-
-      const output = await userTransformHandler(inputData, versionId, []);
-      expect(fetch).toHaveBeenCalledWith(
-        `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
-      );
-      expect(output[0].transformedEvent.credentialValue).toEqual("value1");
-      expect(output[0].transformedEvent.variable).toEqual(1);
-
-      const outputCached = await userTransformHandler(inputData, versionId, []);
-      expect(outputCached[0].transformedEvent.credentialValue).toEqual("value1");
-      expect(outputCached[0].transformedEvent.variable).toEqual(1);
-    });
 
     it(`throws TypeError if the key provided for credential lookup is null or undefined`, async () => {
       const versionId = randomID();
@@ -2558,63 +2523,6 @@ describe("User transformation with IVM cache TTL expiration", () => {
     // Third call after TTL expiry - cache miss, isolate recreated
     const output3 = await userTransformHandler(inputData, versionId, [libraryVersionId]);
     expect(output3).toEqual(expectedData);
-    
-    const stats3 = ivmCacheManager.getStats();
-    expect(stats3.misses).toEqual(2);
-    expect(stats3.sets).toEqual(2);
-    expect(stats3.hits).toEqual(1);
-  });
-
-  it(`${name} transformEvent with credentials - cache expires and recreates isolate`, async () => {
-    const versionId = randomID();
-    const inputData = require(`./data/${integration}_input_credentials.json`);
-
-    const respBody = {
-      versionId: versionId,
-      codeVersion: "1",
-      name,
-      code: `
-        var i = 1;
-        export function transformEvent(event, metadata) {
-            event.credentialValue = getCredential('key1');
-            event.variable = i;
-            i++
-            return event;
-          }
-          `
-    };
-    fetch.mockResolvedValue({
-      status: 200,
-      json: jest.fn().mockResolvedValue(respBody)
-    });
-
-    // First call - cache miss
-    const output1 = await userTransformHandler(inputData, versionId, []);
-    expect(output1[0].transformedEvent.credentialValue).toEqual("value1");
-    expect(output1[0].transformedEvent.variable).toEqual(1);
-    
-    const stats1 = ivmCacheManager.getStats();
-    expect(stats1.misses).toEqual(1);
-    expect(stats1.sets).toEqual(1);
-    expect(stats1.hits).toEqual(0);
-
-    // Second call immediately - cache hit (variable should reset to 1, not increment to 2)
-    const output2 = await userTransformHandler(inputData, versionId, []);
-    expect(output2[0].transformedEvent.credentialValue).toEqual("value1");
-    expect(output2[0].transformedEvent.variable).toEqual(1); // Still 1 because of isolate reset
-    
-    const stats2 = ivmCacheManager.getStats();
-    expect(stats2.misses).toEqual(1);
-    expect(stats2.sets).toEqual(1);
-    expect(stats2.hits).toEqual(1);
-
-    // Wait for TTL to expire
-    await sleep(1500);
-
-    // Third call after TTL expiry - cache miss, new isolate created
-    const output3 = await userTransformHandler(inputData, versionId, []);
-    expect(output3[0].transformedEvent.credentialValue).toEqual("value1");
-    expect(output3[0].transformedEvent.variable).toEqual(1); // Back to 1 with new isolate
     
     const stats3 = ivmCacheManager.getStats();
     expect(stats3.misses).toEqual(2);

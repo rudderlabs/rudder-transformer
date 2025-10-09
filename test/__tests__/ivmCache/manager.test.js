@@ -83,19 +83,18 @@ describe('IVM Cache Manager', () => {
       });
     });
 
-    test('should destroy previous strategy when reinitializing', async () => {
+    test('should create fresh strategy when reinitializing', async () => {
       process.env.IVM_CACHE_STRATEGY = 'isolate';
       IvmCacheManager.initializeStrategy();
-      
+
       const previousStrategy = IvmCacheManager.strategy;
-      
-      process.env.IVM_CACHE_STRATEGY = 'none';
+
+      // Reinitialize with same strategy - should create fresh instance
       IvmCacheManager.initializeStrategy();
-      
-      // Give a moment for async destroy to potentially complete
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
-      expect(previousStrategy.clear).toHaveBeenCalled();
+
+      // A new strategy should be created (always fresh instance)
+      expect(IvmCacheManager.strategy).not.toBe(previousStrategy);
+      expect(IvmCacheManager.strategy.name).toBe('isolate');
     });
   });
 

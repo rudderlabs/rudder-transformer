@@ -456,13 +456,6 @@ async function createIvm(
   });
   const fName = availableFuncNames[0];
 
-  // Create moduleSource object for recompilation in context resets
-  const moduleSource = {
-    codeWithWrapper,
-    transformationName,
-    librariesMap, // Include library source code for recompilation
-  };
-
   stats.timing('createivm_duration', createIvmStartTime, trTags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
@@ -477,7 +470,6 @@ async function createIvm(
     fName,
     logs,
     compiledModules,
-    moduleSource,
   };
 }
 
@@ -567,9 +559,9 @@ async function getCachedFactory(
 
       try {
         // Try to get cached isolate first
-        const cachedIsolate = await ivmCacheManager.get(cacheKey, credentials);
+        const cachedIsolate = await ivmCacheManager.get(cacheKey);
         if (cachedIsolate) {
-          // Cache hit - return cached isolate with reset context
+          // Cache hit - return cached isolate directly
           logger.debug('IVM Factory cache hit', {
             cacheKey,
             transformationId,
@@ -657,19 +649,12 @@ async function getCachedFactory(
     },
 
     destroy: async (client) => {
-      try {
-        client.fnRef?.release();
-        client.customScriptModule?.release();
-        client.context?.release();
-        // Note: Cached instances are cleaned up by cache eviction
-        // We don't need to do immediate cleanup here
-        return;
-      } catch (error) {
-        logger.error('Error in cached factory destroy', {
-          error: error.message,
-          transformationId: client.transformationId || 'unknown',
-        });
-      }
+      // For cached isolates, we don't destroy anything immediately
+      // The cache manager will handle cleanup during eviction
+      // Just log for debugging purposes
+      logger.debug('Cached factory destroy called (no-op)', {
+        transformationId: client.transformationId || 'unknown',
+      });
     },
   };
 

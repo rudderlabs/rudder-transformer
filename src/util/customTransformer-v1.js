@@ -2,7 +2,6 @@ const ivm = require('isolated-vm');
 
 const { getFactory, getCachedFactory } = require('./ivmFactory');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const { clearContextAndBootstrapScriptResult } = require('./ivmCache/contextReset');
 const logger = require('../logger');
 const stats = require('./stats');
 

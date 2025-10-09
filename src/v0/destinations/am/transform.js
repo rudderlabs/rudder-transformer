@@ -2,9 +2,11 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 const cloneDeep = require('lodash/cloneDeep');
+const groupBy = require('lodash/groupBy');
 const get = require('get-value');
 const set = require('set-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const {
   EventType,
   SpecedTraits,
@@ -26,9 +28,10 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
-  simpleProcessRouterDest,
   isValidInteger,
   handleRtTfSingleEventError,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
 } = require('../../util');
 const {
   BASE_URL,
@@ -39,6 +42,7 @@ const {
   IDENTIFY_AM,
   AMBatchSizeLimit,
   AMBatchEventLimit,
+  MAX_USERS_DEVICES_PER_BATCH,
 } = require('./config');
 
 const AMUtils = require('./utils');
@@ -971,9 +975,126 @@ const batch = (destEvents) => {
   return respList;
 };
 
+const createBatchResponse = (destination, metadata, mergedEvent) => {
+  const batchResponse = defaultBatchRequestConfig();
+  const { endpoint, path } = batchEndpointDetails(destination.Config);
+
+  batchResponse.destination = destination;
+  batchResponse.metadata = metadata;
+  batchResponse.batchedRequest.endpoint = endpoint;
+  batchResponse.batchedRequest.endpointPath = path;
+  batchResponse.batched = false;
+  batchResponse.statusCode = 200;
+  batchResponse.batchedRequest.body.JSON = mergedEvent;
+  batchResponse.batchedRequest.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+
+  return batchResponse;
+};
+
+const mergeEvents = (events, destination) => {
+  const baseEvent = { ...events[0].body.JSON };
+
+  const allEvents = [
+    ...(baseEvent.events || []),
+    ...events.slice(1).flatMap((event) => event?.body?.JSON?.events || []),
+  ];
+  baseEvent.events = allEvents;
+  stats.histogram('am_batch_size_based_on_user_id', baseEvent.events.length, {
+    destination_id: destination.id,
+  });
+  return baseEvent;
+};
+
+// Main Function
+const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
+  const batchResponses = [];
+  const batchedEventGroups = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
+
+  batchedEventGroups.forEach((eventGroup) => {
+    const { events, metadata, destination } = eventGroup;
+    const mergedEvent = mergeEvents(events, destination);
+    const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
+    batchResponse.batchedRequest.userId = events[0]?.userId;
+    batchResponse.batched = true;
+    batchResponses.push(batchResponse);
+  });
+
+  return batchResponses;
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  // group by userId or anonymousId as am has rate limit as per userId/deviceId
+  const groupedInputs = groupBy(
+    inputs,
+    (input) => input.message.userId || input.message.anonymousId,
+  );
+
+  const errorRespList = [];
+  const batchRespList = [];
+
+  Object.values(groupedInputs).forEach((groupedInput) => {
+    const nonBatchableInputs = [];
+    const batchableInputs = [];
+    groupedInput.forEach((input) => {
+      try {
+        /**
+         * Example of transformed event
+         * [
+         * {
+         *    body: {
+         *      JSON: {
+         *        events: [
+         *          {
+         *            user_id: '123',
+         *            device_id: '456',
+         *          },
+         *        ],
+         *      },
+         *    },
+         *  }
+         * ]
+         */
+        const transformedEvents = process(input);
+        let isBatchable = true;
+        if (Array.isArray(transformedEvents)) {
+          isBatchable = !transformedEvents.some((transformedEvent) => {
+            const jsonBody = transformedEvent.body?.JSON ?? {};
+            return Object.keys(jsonBody).length === 0;
+          });
+        }
+        if (isBatchable && !input.metadata.dontBatch) {
+          batchableInputs.push({
+            message: transformedEvents,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        } else {
+          nonBatchableInputs.push({
+            message: transformedEvents,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    });
+    // Skipping single events from batching
+    if (batchableInputs.length > 1) {
+      batchRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
+    } else {
+      nonBatchableInputs.push(...batchableInputs);
+    }
+    nonBatchableInputs.forEach((input) => {
+      batchRespList.push(
+        getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
+      );
+    });
+  });
+  return [...batchRespList, ...errorRespList];
 };
 
 const responseTransform = (input) => ({

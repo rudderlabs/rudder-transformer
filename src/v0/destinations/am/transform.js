@@ -1087,7 +1087,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     // Skipping single events from batching
     if (batchableInputs.length > 1) {
       successRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
-    } else {
+    } else if (batchableInputs.length === 1) {
       nonBatchableInputs.push(batchableInputs[0]);
     }
     nonBatchableInputs.forEach((input) => {

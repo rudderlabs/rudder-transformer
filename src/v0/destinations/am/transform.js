@@ -32,6 +32,7 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const {
   BASE_URL,
@@ -1094,7 +1095,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       );
     });
   });
-  return [...batchRespList, ...errorRespList];
+  return sortBatchesByMinJobId([...batchRespList, ...errorRespList]);
 };
 
 const responseTransform = (input) => ({

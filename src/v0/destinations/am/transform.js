@@ -977,6 +977,10 @@ const batch = (destEvents) => {
 };
 
 const createBatchResponse = (destination, metadata, mergedEvent) => {
+  stats.histogram('am_batch_size_based_on_user_id', mergedEvent.events.length, {
+    destination_id: destination.id,
+    source_id: metadata[0].sourceId,
+  });
   const batchResponse = defaultBatchRequestConfig();
   const { endpoint, path } = batchEndpointDetails(destination.Config);
 
@@ -994,7 +998,7 @@ const createBatchResponse = (destination, metadata, mergedEvent) => {
   return batchResponse;
 };
 
-const mergeEvents = (events, destination) => {
+const mergeEvents = (events) => {
   const baseEvent = { ...events[0].body.JSON };
 
   const allEvents = [
@@ -1002,20 +1006,17 @@ const mergeEvents = (events, destination) => {
     ...events.slice(1).flatMap((event) => event?.body?.JSON?.events || []),
   ];
   baseEvent.events = allEvents;
-  stats.histogram('am_batch_size_based_on_user_id', baseEvent.events.length, {
-    destination_id: destination.id,
-  });
   return baseEvent;
 };
 
 // Main Function
 const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
   const batchResponses = [];
-  const batchedEventGroups = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
+  const multiplexedInputsBatches = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
 
-  batchedEventGroups.forEach((eventGroup) => {
-    const { events, metadata, destination } = eventGroup;
-    const mergedEvent = mergeEvents(events, destination);
+  multiplexedInputsBatches.forEach((multiplexedInputsBatch) => {
+    const { events, metadata, destination } = multiplexedInputsBatch;
+    const mergedEvent = mergeEvents(events);
     const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
     batchResponse.batchedRequest.userId = events[0]?.userId;
     batchResponse.batched = true;
@@ -1033,7 +1034,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   const errorRespList = [];
-  const batchRespList = [];
+  const successRespList = [];
 
   Object.values(groupedInputs).forEach((groupedInput) => {
     const nonBatchableInputs = [];
@@ -1085,17 +1086,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
     });
     // Skipping single events from batching
     if (batchableInputs.length > 1) {
-      batchRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
+      successRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
     } else {
-      nonBatchableInputs.push(...batchableInputs);
+      nonBatchableInputs.push(batchableInputs[0]);
     }
     nonBatchableInputs.forEach((input) => {
-      batchRespList.push(
+      successRespList.push(
         getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
       );
     });
   });
-  return sortBatchesByMinJobId([...batchRespList, ...errorRespList]);
+  return sortBatchesByMinJobId([...successRespList, ...errorRespList]);
 };
 
 const responseTransform = (input) => ({

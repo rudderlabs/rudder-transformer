@@ -9,6 +9,7 @@ interface FeaturesConfig {
 
 const defaultFeaturesConfig: FeaturesConfig = {
   routerTransform: {
+    AM: true,
     ACTIVE_CAMPAIGN: true,
     ALGOLIA: true,
     CANDU: true,

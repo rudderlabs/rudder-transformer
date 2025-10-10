@@ -979,7 +979,7 @@ const batch = (destEvents) => {
 const createBatchResponse = (destination, metadata, mergedEvent) => {
   stats.histogram('am_batch_size_based_on_user_id', mergedEvent.events.length, {
     destination_id: destination.id,
-    source_id: metadata[0].sourceId,
+    source_id: metadata?.[0]?.sourceId,
   });
   const batchResponse = defaultBatchRequestConfig();
   const { endpoint, path } = batchEndpointDetails(destination.Config);
@@ -1055,11 +1055,27 @@ const processRouterDest = async (inputs, reqMetadata) => {
          *        ],
          *      },
          *    },
+         *  },
+         * {
+         *    body: {
+         *      FORM:{
+         *         api_key: 'apiKey123',
+         *         mapping: [
+         *           JSON.stringify({
+         *             user_id: '123',
+         *             device_id: '456',
+         *           }),
+         *         ],
+         *      },
          *  }
          * ]
          */
         const transformedEvents = process(input);
         let isBatchable = true;
+        /**
+         * We are applying batching only for identify, track, page and screen events. These events will get transformed and stored in the body.JSON.
+         * For alias and group events, we are not applying batching. These events will not get transformed and stored in the body.FORM.
+         */
         if (Array.isArray(transformedEvents)) {
           isBatchable = !transformedEvents.some((transformedEvent) => {
             const jsonBody = transformedEvent.body?.JSON ?? {};

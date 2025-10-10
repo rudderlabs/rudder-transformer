@@ -502,59 +502,6 @@ export const data: RouterTestData[] = [
         body: {
           output: [
             {
-              batched: false,
-              batchedRequest: [
-                {
-                  body: {
-                    FORM: {},
-                    JSON: {
-                      api_key: 'am2',
-                      events: [
-                        {
-                          device_id: '123',
-                          event_type: '$identify',
-                          library: 'rudderstack',
-                          platform: 'Web',
-                          session_id: -1,
-                          time: 0,
-                          user_id: '123',
-                          user_properties: {
-                            anonymousId: '123',
-                            email: 'test@rudderstack.com',
-                            trait2: 'value2',
-                          },
-                        },
-                      ],
-                      options: {
-                        min_id_length: 1,
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                  },
-                  endpoint: 'https://api2.amplitude.com/2/httpapi',
-                  endpointPath: '2/httpapi',
-                  files: {},
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  method: 'POST',
-                  params: {},
-                  type: 'REST',
-                  userId: '123',
-                  version: '1',
-                },
-              ],
-              destination,
-              metadata: [
-                {
-                  jobId: 2,
-                  userId: '123',
-                },
-              ],
-              statusCode: 200,
-            },
-            {
               batched: true,
               batchedRequest: {
                 body: {
@@ -624,7 +571,24 @@ export const data: RouterTestData[] = [
                 userId: '123456',
                 version: '1',
               },
-              destination,
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'am',
+                  ID: '123',
+                  Name: 'am',
+                },
+                Enabled: true,
+                ID: '123',
+                Name: 'am',
+                Transformations: [],
+                WorkspaceID: '123',
+              },
               metadata: [
                 {
                   jobId: 1,
@@ -637,6 +601,76 @@ export const data: RouterTestData[] = [
                 {
                   jobId: 4,
                   userId: '123456',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      api_key: 'am2',
+                      events: [
+                        {
+                          device_id: '123',
+                          event_type: '$identify',
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          session_id: -1,
+                          time: 0,
+                          user_id: '123',
+                          user_properties: {
+                            anonymousId: '123',
+                            email: 'test@rudderstack.com',
+                            trait2: 'value2',
+                          },
+                        },
+                      ],
+                      options: {
+                        min_id_length: 1,
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  files: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  userId: '123',
+                  version: '1',
+                },
+              ],
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'am',
+                  ID: '123',
+                  Name: 'am',
+                },
+                Enabled: true,
+                ID: '123',
+                Name: 'am',
+                Transformations: [],
+                WorkspaceID: '123',
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: '123',
                 },
               ],
               statusCode: 200,
@@ -697,7 +731,24 @@ export const data: RouterTestData[] = [
                 userId: '123456',
                 version: '1',
               },
-              destination,
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'am',
+                  ID: '123',
+                  Name: 'am',
+                },
+                Enabled: true,
+                ID: '123',
+                Name: 'am',
+                Transformations: [],
+                WorkspaceID: '123',
+              },
               metadata: [
                 {
                   jobId: 5,
@@ -709,6 +760,43 @@ export const data: RouterTestData[] = [
                 },
               ],
               statusCode: 200,
+            },
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'am',
+                  ID: '123',
+                  Name: 'am',
+                },
+                Enabled: true,
+                ID: '123',
+                Name: 'am',
+                Transformations: [],
+                WorkspaceID: '123',
+              },
+              error: 'message type not supported',
+              metadata: [
+                {
+                  jobId: 7,
+                  userId: '123456',
+                },
+              ],
+              statTags: {
+                destType: 'AM',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 400,
             },
             {
               batched: false,
@@ -736,7 +824,24 @@ export const data: RouterTestData[] = [
                   version: '1',
                 },
               ],
-              destination,
+              destination: {
+                Config: {
+                  apiKey: 'am2',
+                  groupTypeTrait: 'email',
+                  groupValueTrait: 'age',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'am',
+                  ID: '123',
+                  Name: 'am',
+                },
+                Enabled: true,
+                ID: '123',
+                Name: 'am',
+                Transformations: [],
+                WorkspaceID: '123',
+              },
               metadata: [
                 {
                   jobId: 8,
@@ -744,26 +849,6 @@ export const data: RouterTestData[] = [
                 },
               ],
               statusCode: 200,
-            },
-            {
-              batched: false,
-              destination,
-              error: 'message type not supported',
-              metadata: [
-                {
-                  jobId: 7,
-                  userId: '123456',
-                },
-              ],
-              statTags: {
-                destType: 'AM',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
             },
           ],
         },
@@ -777,9 +862,9 @@ export const data: RouterTestData[] = [
     description:
       'Test 2: Test case to test the router with multiple events of same userIds but with different event types',
     scenario:
-      'The input contains 5 events distributed across 1 different user ID - 5 events belong to userId=12345. Among these, there is 1 group event, 1 track event, 1 identify event, 1 alias event and 1 page event. The mock configuration sets the maximum batch limit to 3 events per batch. The track call is multiplexed to 3 events and group call is multiplexed to 2 events. Based on these constraints, the expected output should have 4 batches: the first batch contains the track events, the second batch contains the rest of the events.',
+      'The input contains 5 events distributed across 1 different user ID - 5 events belong to userId=12345. Among these, there is 1 group event, 1 track event, 1 identify event, 1 alias event and 1 page event. The mock configuration sets the maximum batch limit to 3 events per batch. The track call is multiplexed to 3 events and group call is multiplexed to 2 events. Based on these constraints, the expected output should have 4 batches: the first batch contains the group events, the second batch contains the multiplexed track events, the third batch contains identify, page and screen events and the fourth batch contains the alias event.',
     successCriteria:
-      'We should have 2 batches and all events should be transformed successfully and batched correctly as per userIds and status code should be 200',
+      'We should have 4 batches and all events should be transformed successfully and batched correctly as per userIds and status code should be 200',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -832,7 +917,7 @@ export const data: RouterTestData[] = [
                 },
               },
               metadata: {
-                jobId: 5,
+                jobId: 1,
                 userId: '12345',
               },
             },
@@ -903,7 +988,7 @@ export const data: RouterTestData[] = [
                 },
               },
               metadata: {
-                jobId: 1,
+                jobId: 2,
                 userId: '12345',
               },
             },
@@ -922,7 +1007,7 @@ export const data: RouterTestData[] = [
                 userId: '12345',
               },
               metadata: {
-                jobId: 2,
+                jobId: 3,
                 userId: '12345',
               },
               destination: {
@@ -932,6 +1017,111 @@ export const data: RouterTestData[] = [
                   trackProductsOnce: false,
                   trackRevenuePerProduct: false,
                 },
+              },
+            },
+            {
+              message: {
+                type: 'screen',
+                userId: '12345',
+                anonymousId: 'anon-id-new',
+                event: 'Screen View',
+                properties: {
+                  prop1: '5',
+                },
+                context: {
+                  ip: '14.5.67.21',
+                  library: {
+                    name: 'http',
+                  },
+                },
+                timestamp: '2020-02-02T00:23:09.544Z',
+              },
+              destination: {
+                ...destination,
+                Config: {
+                  apiKey: 'secret2',
+                  trackProductsOnce: false,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: {
+                jobId: 4,
+                userId: '12345',
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.0.0',
+                  },
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    anonymousId: '12345',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.0.0',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  locale: 'en-US',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  screen: {
+                    density: 2,
+                  },
+                  page: {
+                    path: '/destinations/amplitude',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: 'https://docs.rudderstack.com/destinations/amplitude',
+                    category: 'destination',
+                    initial_referrer: 'https://docs.rudderstack.com',
+                    initial_referring_domain: 'docs.rudderstack.com',
+                  },
+                },
+                request_ip: '1.1.1.1',
+                type: 'page',
+                messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                originalTimestamp: '2019-10-14T11:15:18.299Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12345',
+                properties: {
+                  path: '/destinations/amplitude',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/amplitude',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+                integrations: {
+                  All: true,
+                },
+                name: 'ApplicationLoaded',
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              destination: {
+                ...destination,
+                Config: {
+                  apiKey: 'secret2',
+                  trackProductsOnce: false,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: {
+                jobId: 5,
+                userId: '12345',
               },
             },
             {
@@ -1008,111 +1198,6 @@ export const data: RouterTestData[] = [
                 userId: '12345',
               },
             },
-            {
-              message: {
-                channel: 'web',
-                context: {
-                  app: {
-                    build: '1.0.0',
-                    name: 'RudderLabs JavaScript SDK',
-                    namespace: 'com.rudderlabs.javascript',
-                    version: '1.0.0',
-                  },
-                  traits: {
-                    email: 'test@rudderstack.com',
-                    anonymousId: '12345',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '/destinations/amplitude',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: 'https://docs.rudderstack.com/destinations/amplitude',
-                    category: 'destination',
-                    initial_referrer: 'https://docs.rudderstack.com',
-                    initial_referring_domain: 'docs.rudderstack.com',
-                  },
-                },
-                request_ip: '1.1.1.1',
-                type: 'page',
-                messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
-                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
-                originalTimestamp: '2019-10-14T11:15:18.299Z',
-                anonymousId: '00000000000000000000000000',
-                userId: '12345',
-                properties: {
-                  path: '/destinations/amplitude',
-                  referrer: '',
-                  search: '',
-                  title: '',
-                  url: 'https://docs.rudderstack.com/destinations/amplitude',
-                  category: 'destination',
-                  initial_referrer: 'https://docs.rudderstack.com',
-                  initial_referring_domain: 'docs.rudderstack.com',
-                },
-                integrations: {
-                  All: true,
-                },
-                name: 'ApplicationLoaded',
-                sentAt: '2019-10-14T11:15:53.296Z',
-              },
-              destination: {
-                ...destination,
-                Config: {
-                  apiKey: 'secret2',
-                  trackProductsOnce: false,
-                  trackRevenuePerProduct: false,
-                },
-              },
-              metadata: {
-                jobId: 3,
-                userId: '12345',
-              },
-            },
-            {
-              message: {
-                type: 'screen',
-                userId: '12345',
-                anonymousId: 'anon-id-new',
-                event: 'Screen View',
-                properties: {
-                  prop1: '5',
-                },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-              destination: {
-                ...destination,
-                Config: {
-                  apiKey: 'secret2',
-                  trackProductsOnce: false,
-                  trackRevenuePerProduct: false,
-                },
-              },
-              metadata: {
-                jobId: 4,
-                userId: '12345',
-              },
-            },
           ],
           destType: 'am',
         },
@@ -1124,6 +1209,84 @@ export const data: RouterTestData[] = [
         status: 200,
         body: {
           output: [
+            {
+              batched: false,
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      api_key: 'secret2',
+                      events: [
+                        {
+                          event_type: '$identify',
+                          groups: {
+                            Company: 'ABC',
+                          },
+                          library: 'rudderstack',
+                          platform: 'Web',
+                          session_id: -1,
+                          time: 0,
+                          user_id: '12345',
+                          user_properties: {
+                            Company: 'ABC',
+                          },
+                        },
+                      ],
+                      options: {
+                        min_id_length: 1,
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  endpoint: 'https://api2.amplitude.com/2/httpapi',
+                  endpointPath: '2/httpapi',
+                  files: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
+                },
+                {
+                  body: {
+                    FORM: {
+                      api_key: 'secret2',
+                      identification: ['{"group_type":"Company","group_value":"ABC"}'],
+                    },
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  endpoint: 'https://api2.amplitude.com/groupidentify',
+                  endpointPath: 'groupidentify',
+                  files: {},
+                  headers: {},
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
+                },
+              ],
+              destination: {
+                ...destination,
+                Config: {
+                  apiKey: 'secret2',
+                  trackProductsOnce: false,
+                  trackRevenuePerProduct: false,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: '12345',
+                },
+              ],
+              statusCode: 200,
+            },
             {
               batched: true,
               batchedRequest: {
@@ -1228,7 +1391,7 @@ export const data: RouterTestData[] = [
               },
               metadata: [
                 {
-                  jobId: 1,
+                  jobId: 2,
                   userId: '12345',
                 },
               ],
@@ -1255,6 +1418,20 @@ export const data: RouterTestData[] = [
                           email: 'test@rudderstack.com',
                           trait1: 'value1',
                         },
+                      },
+                      {
+                        device_id: 'anon-id-new',
+                        event_properties: {
+                          name: 'Screen View',
+                          prop1: '5',
+                        },
+                        event_type: 'Viewed Screen View Screen',
+                        ip: '14.5.67.21',
+                        library: 'rudderstack',
+                        session_id: -1,
+                        time: 1580602989544,
+                        user_id: '12345',
+                        user_properties: {},
                       },
                       {
                         app_name: 'RudderLabs JavaScript SDK',
@@ -1290,20 +1467,6 @@ export const data: RouterTestData[] = [
                           initial_referring_domain: 'docs.rudderstack.com',
                         },
                       },
-                      {
-                        device_id: 'anon-id-new',
-                        event_properties: {
-                          name: 'Screen View',
-                          prop1: '5',
-                        },
-                        event_type: 'Viewed Screen View Screen',
-                        ip: '14.5.67.21',
-                        library: 'rudderstack',
-                        session_id: -1,
-                        time: 1580602989544,
-                        user_id: '12345',
-                        user_properties: {},
-                      },
                     ],
                     options: {
                       min_id_length: 1,
@@ -1334,10 +1497,6 @@ export const data: RouterTestData[] = [
               },
               metadata: [
                 {
-                  jobId: 2,
-                  userId: '12345',
-                },
-                {
                   jobId: 3,
                   userId: '12345',
                 },
@@ -1345,80 +1504,6 @@ export const data: RouterTestData[] = [
                   jobId: 4,
                   userId: '12345',
                 },
-              ],
-              statusCode: 200,
-            },
-            {
-              batched: false,
-              batchedRequest: [
-                {
-                  body: {
-                    FORM: {},
-                    JSON: {
-                      api_key: 'secret2',
-                      events: [
-                        {
-                          event_type: '$identify',
-                          groups: {
-                            Company: 'ABC',
-                          },
-                          library: 'rudderstack',
-                          platform: 'Web',
-                          session_id: -1,
-                          time: 0,
-                          user_id: '12345',
-                          user_properties: {
-                            Company: 'ABC',
-                          },
-                        },
-                      ],
-                      options: {
-                        min_id_length: 1,
-                      },
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                  },
-                  endpoint: 'https://api2.amplitude.com/2/httpapi',
-                  endpointPath: '2/httpapi',
-                  files: {},
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  method: 'POST',
-                  params: {},
-                  type: 'REST',
-                  version: '1',
-                },
-                {
-                  body: {
-                    FORM: {
-                      api_key: 'secret2',
-                      identification: ['{"group_type":"Company","group_value":"ABC"}'],
-                    },
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                  },
-                  endpoint: 'https://api2.amplitude.com/groupidentify',
-                  endpointPath: 'groupidentify',
-                  files: {},
-                  headers: {},
-                  method: 'POST',
-                  params: {},
-                  type: 'REST',
-                  version: '1',
-                },
-              ],
-              destination: {
-                ...destination,
-                Config: {
-                  apiKey: 'secret2',
-                  trackProductsOnce: false,
-                  trackRevenuePerProduct: false,
-                },
-              },
-              metadata: [
                 {
                   jobId: 5,
                   userId: '12345',

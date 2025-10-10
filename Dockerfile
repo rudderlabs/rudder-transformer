@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM node:20.19.5-alpine3.21@sha256:f838a8eabffcfbdf4276294401a56e6e1ce02a638865a1f6ef1e9556f3bd0786 AS base
+FROM node:24.10.0-alpine3.21@sha256:24085db06725487642885c4d4f7f156aeac0dc4b881b10dabb38cb8d5e142577 AS base
 ENV HUSKY 0
 
 RUN apk update

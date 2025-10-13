@@ -15,6 +15,7 @@ const populateResponseWithDontBatch = (rudderJobMetadata: ProxyMetdata[], errorM
 
   rudderJobMetadata.forEach((metadata) => {
     responseWithIndividualEvents.push({
+      // dontBatch will only exist if it is in batch + proxy flow.
       statusCode: metadata.dontBatch ? 400 : 500,
       metadata: {
         ...metadata,

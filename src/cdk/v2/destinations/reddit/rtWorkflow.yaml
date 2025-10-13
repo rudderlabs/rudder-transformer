@@ -11,8 +11,7 @@ steps:
 
   - name: decideVersion
     template: |
-      const version = $.isDefinedAndNotNull(^.[0].destination.Config.version) ? ^.[0].destination.Config.version : "v2";
-      version;
+      $.decideVersion(^.[0].destination)
 
   - name: transformWithV2
     condition: $.outputs.decideVersion === "v2"
@@ -66,8 +65,8 @@ steps:
       const dontBatchTrueEvents =  $.outputs.successfulEvents{.metadata.dontBatch}[];
       const dontBatchFalseEvents = $.outputs.successfulEvents{!.metadata.dontBatch}[];
       const dontBatchTrueEventsChunks = $.chunk(dontBatchTrueEvents, 1);
-
-      let batches = [...$.batchEvents(dontBatchFalseEvents), ...$.batchEventChunks(dontBatchTrueEventsChunks)];
+      const dontBatchFalseEventsChunks = $.chunk(dontBatchFalseEvents, $.maxBatchSize);
+      let batches = [...$.batchEventChunks(dontBatchFalseEventsChunks), ...$.batchEventChunks(dontBatchTrueEventsChunks)];
       batches@batch.({
         "batchedRequest": {
           "body": {

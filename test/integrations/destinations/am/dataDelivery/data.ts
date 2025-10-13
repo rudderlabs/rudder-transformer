@@ -53,7 +53,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
             destinationResponse: {
               response: {
                 code: 200,
-                events_ingested: 50,
+                events_ingested: 1,
                 payload_size_bytes: 50,
                 server_upload_time: 1396381378123,
               },
@@ -98,7 +98,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         })
         .replyOnce(200, {
           code: 200,
-          events_ingested: 50,
+          events_ingested: 1,
           payload_size_bytes: 50,
           server_upload_time: 1396381378123,
         });

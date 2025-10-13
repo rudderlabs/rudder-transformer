@@ -1071,17 +1071,14 @@ const processRouterDest = async (inputs, reqMetadata) => {
          * ]
          */
         const transformedEvents = process(input);
-        let isBatchable = true;
         /**
          * We are applying batching only for identify, track, page and screen events. These events will get transformed and stored in the body.JSON.
          * For alias and group events, we are not applying batching. These events will not get transformed and stored in the body.FORM.
          */
-        if (Array.isArray(transformedEvents)) {
-          isBatchable = !transformedEvents.some((transformedEvent) => {
-            const jsonBody = transformedEvent.body?.JSON ?? {};
-            return Object.keys(jsonBody).length === 0;
-          });
-        }
+        const isBatchable = transformedEvents.every((transformedEvent) => {
+          const jsonBody = transformedEvent.body?.JSON ?? {};
+          return Object.keys(jsonBody).length > 0;
+        });
         if (isBatchable && !input.metadata.dontBatch) {
           batchableInputs.push({
             message: transformedEvents,

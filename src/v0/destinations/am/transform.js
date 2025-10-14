@@ -1003,7 +1003,7 @@ const mergeEvents = (events) => {
 
   const allEvents = [
     ...(baseEvent.events || []),
-    ...events.slice(1).flatMap((event) => event?.body?.JSON?.events || []),
+    ...events.slice(1).flatMap((event) => event.body.JSON?.events || []),
   ];
   baseEvent.events = allEvents;
   return baseEvent;

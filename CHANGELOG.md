@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.111.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.110.0...v1.111.0) (2025-10-14)
+
+
+### Features
+
+* onboard batching through router transform for AM ([#4711](https://github.com/rudderlabs/rudder-transformer/issues/4711)) ([0d65e17](https://github.com/rudderlabs/rudder-transformer/commit/0d65e17c0bfc39a21dd2499cd046af134889afec))
+
 ## [1.110.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.109.0...v1.110.0) (2025-10-07)
 
 

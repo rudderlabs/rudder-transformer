@@ -14,7 +14,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -113,7 +113,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     successCriteria: 'Should return 400 with error with destination response',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -218,7 +218,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 500 with error with destination response',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -326,7 +326,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 200 with success',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -387,7 +387,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 200 with success, metadata should contain dontBatch as false',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload(
@@ -543,7 +543,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload(
@@ -670,7 +670,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     scenario: 'Business',
-    skip: true,
+    skip: false,
     version: 'v1',
     input: {
       request: {
@@ -839,7 +839,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -936,7 +936,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -1033,7 +1033,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     scenario: 'Business',
     successCriteria: 'Should return 400 with error',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({
@@ -1103,7 +1103,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
-    skip: true,
+    skip: false,
     input: {
       request: {
         body: generateProxyV1Payload({

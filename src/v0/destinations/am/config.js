@@ -124,6 +124,7 @@ const DESTINATION = 'amplitude';
 const IDENTIFY_AM = '$identify';
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
+const MAX_USERS_DEVICES_PER_BATCH = 1000;
 module.exports = {
   DESTINATION,
   Event,
@@ -137,4 +138,5 @@ module.exports = {
   IDENTIFY_AM,
   AMBatchSizeLimit,
   AMBatchEventLimit,
+  MAX_USERS_DEVICES_PER_BATCH,
 };

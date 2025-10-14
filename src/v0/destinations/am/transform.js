@@ -999,6 +999,10 @@ const createBatchResponse = (destination, metadata, mergedEvent) => {
 };
 
 const mergeEvents = (events) => {
+  if (!Array.isArray(events) || events.length === 0) {
+    // Safeguard: Return empty object if events array is empty or invalid
+    return {};
+  }
   const baseEvent = { ...events[0].body.JSON };
 
   const allEvents = [

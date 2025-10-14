@@ -467,6 +467,19 @@ The V1 network handler provides individual status for each event in a batch:
 - `NOT_FOUND` - Resource not found
   - Verify Floodlight configuration and activity IDs exist
 
+**Quota and Rate Limit Errors** (status code 403):
+- `dailyLimitExceeded` - Daily quota exceeded
+  - Review usage in Google API Console
+  - Optimize workflow to reduce requests
+  - Request additional quota if usage is legitimate
+- `userRateLimitExceeded` - Rate limit exceeded
+  - Implement exponential backoff
+  - Reduce request rate (stay under 10 QPS recommended)
+  - Avoid concurrent write requests
+- `quotaExceeded` - Specific quota limits exceeded
+  - Check error message for specific quota type
+  - Contact account manager for report quotas
+
 **Success** (status code 200):
 - No errors in the event status
 - Conversion successfully recorded in Campaign Manager
@@ -527,6 +540,7 @@ The V0 handler checks `hasFailures` flag and determines retry/abort for the enti
 2. **Detailed Diagnostics**: Each event includes specific error messages for troubleshooting
 3. **Cost Optimization**: Avoid re-sending successful conversions
 4. **Better Monitoring**: Track success rate at individual event level
+5. **Quota Efficiency**: Only failed events are retried, not the entire batch - if 10 out of 1000 fail, only 10 are retried instead of all 1000
 
 ## Configuration Options
 
@@ -605,14 +619,136 @@ The mapping configuration is defined in JSON files within the destination direct
 - `CampaignManagerTrackConfig.json`: Mapping for Track events and conversion fields
 - `CampaignManagerEnhancedConversionConfig.json`: Mapping for enhanced conversion user identifiers
 
+## Rate Limits and Quotas
+
+Campaign Manager 360 API enforces quotas to protect infrastructure and ensure fair usage across all developers. Understanding and respecting these limits is crucial for reliable integration.
+
+### API Quota Limits
+
+According to [Campaign Manager 360 Quotas documentation](https://developers.google.com/doubleclick-advertisers/quotas):
+
+**Default Quotas**:
+- **Daily Requests**: 50,000 requests per project per day
+  - Can be increased by requesting additional quota
+  - Quota refreshes at midnight PST
+- **Rate Limit**: 1 query per second (QPS) per project
+  - Displayed as "Queries per minute per user" in Google API Console (default: 60)
+  - Can be increased up to 600 queries per minute (10 QPS maximum)
+  - **Important**: Not recommended to exceed 10 QPS or use concurrent write requests
+
+### Quota Error Codes
+
+| HTTP Code | Error Reason | Description | Recommended Action |
+|-----------|--------------|-------------|-------------------|
+| 403 | `dailyLimitExceeded` | Exceeded daily quota of 50,000 requests | Do not retry without fixing. Review usage in Google API Console, optimize workflow, or request higher quota |
+| 403 | `userRateLimitExceeded` | Exceeded rate limit (requests per second) | Implement exponential backoff, reduce request rate to ≤10 QPS |
+| 403 | `quotaExceeded` | Various quota types exceeded (reports, etc.) | Check specific error message, contact account manager if needed |
+
+### Rate Limiting Strategy
+
+**Exponential Backoff Algorithm**:
+
+When receiving `userRateLimitExceeded` errors, implement exponential backoff:
+
+```javascript
+function exponentialBackoff(retryCount) {
+  const baseDelay = 1000; // 1 second
+  const maxDelay = 32000; // 32 seconds
+  const delay = Math.min(baseDelay * Math.pow(2, retryCount), maxDelay);
+  return delay + Math.random() * 1000; // Add jitter
+}
+
+// Usage:
+let retryCount = 0;
+while (retryCount < maxRetries) {
+  try {
+    await sendConversions(batch);
+    break;
+  } catch (error) {
+    if (error.code === 403 && error.reason === 'userRateLimitExceeded') {
+      await sleep(exponentialBackoff(retryCount));
+      retryCount++;
+    } else {
+      throw error;
+    }
+  }
+}
+```
+
+### Optimizing for Quotas
+
+**Batch Size Optimization**:
+- Maximum batch size: 1000 conversions per request
+- Sending 10,000 conversions: 10 API calls (vs 10,000 individual calls)
+- With batching: 10 calls/day vs without: 10,000 calls/day
+- Batching reduces quota usage by 99.9%
+
+**Calculate Daily Capacity**:
+```
+Daily Quota: 50,000 requests
+Batch Size: 1000 conversions
+Daily Capacity: 50,000 × 1,000 = 50,000,000 conversions/day
+```
+
+**Rate Limit Calculation**:
+```
+Rate Limit: 10 QPS (recommended maximum)
+Batch Size: 1000 conversions
+Throughput: 10 × 1,000 = 10,000 conversions/second
+Daily at Max Rate: 10,000 × 60 × 60 × 24 = 864,000,000 conversions/day
+```
+
+### Requesting Higher Quota
+
+If you legitimately need more than 50,000 requests per day:
+
+1. **Navigate to Google API Console**:
+   - Go to Campaign Manager 360 API settings
+   - Review **Metrics** page to verify usage patterns
+
+2. **Verify Normal Usage**:
+   - Check that usage is expected and not due to errors
+   - Look for unexpected spikes or excessive calls
+   - Optimize code before requesting more quota
+
+3. **Apply for Higher Quota**:
+   - Navigate to **Quotas** page
+   - Click edit icon next to "Queries per day"
+   - Click "Apply for higher quota"
+   - Complete form with business justification
+
+4. **Provide Details**:
+   - Expected daily request volume
+   - Business use case justification
+   - Steps taken to optimize usage
+   - Active monitoring email address
+
+### Monitoring Quota Usage
+
+**Google API Console Metrics**:
+- Track daily request count
+- Monitor request patterns by method
+- Identify quota-consuming operations
+- Set up alerts for approaching limits
+
+**RudderStack Metrics**:
+- Track batch sizes and frequency
+- Monitor retry rates
+- Identify failed/aborted events
+- Calculate effective throughput
+
 ## Best Practices
 
 1. **Use Unique Ordinals**: Ensure ordinals are unique per conversion to prevent duplicate counting
 2. **Include User Identifiers**: Always include at least one user identifier (preferably gclid or dclid)
 3. **Enable Enhanced Conversions**: For better attribution, enable enhanced conversions and send hashed PII
 4. **Set Proper Privacy Flags**: Configure privacy flags appropriately based on your use case and regulations
-5. **Batch Conversions**: Take advantage of batching for high-volume conversion imports
+5. **Batch Conversions**: Take advantage of batching for high-volume conversion imports (up to 1000 per batch)
 6. **Monitor Failures**: Check Campaign Manager for conversion import failures and retry as needed
 7. **Use batchupdate Carefully**: Only use batchupdate for conversions that already exist in Campaign Manager
 8. **Validate Floodlight IDs**: Ensure floodlightConfigurationId and floodlightActivityId are correct
+9. **Respect Rate Limits**: Stay at or below 10 QPS, avoid concurrent write requests
+10. **Implement Exponential Backoff**: Handle rate limit errors with exponential backoff strategy
+11. **Monitor Quota Usage**: Regularly check Google API Console for quota consumption
+12. **Plan for Scale**: Request higher quota in advance if expecting significant usage increases
 

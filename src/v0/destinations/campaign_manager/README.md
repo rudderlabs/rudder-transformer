@@ -219,7 +219,7 @@ Batch: [Event 1, Event 2, ..., Event 1000]
 **Benefits**:
 - **Partial Success**: Successful conversions are acknowledged even if others fail
 - **Detailed Errors**: Each failed event includes specific error messages
-- **Cost Savings**: Avoid re-sending successful conversions
+- **Quota Savings**: Only failed events are retried - if 10 out of 1000 fail, retry 10 events instead of the entire 1000-event batch
 
 ### Error Types
 
@@ -232,6 +232,11 @@ Batch: [Event 1, Event 2, ..., Event 1000]
 - `PERMISSION_DENIED`: Check OAuth credentials and Campaign Manager permissions
 - `INVALID_ARGUMENT`: Verify floodlight IDs, ordinal format, and required fields
 - `NOT_FOUND`: Verify Floodlight configuration and activity IDs exist
+
+**Quota and Rate Limit Errors**:
+- `dailyLimitExceeded` (403): Daily quota exceeded - review usage and request higher quota if needed
+- `userRateLimitExceeded` (403): Rate limit exceeded - implement exponential backoff
+- `quotaExceeded` (403): Specific quota limits exceeded (reports, scheduled reports, etc.)
 
 **Example**:
 If you send 100 conversions and 2 fail with `INVALID_ARGUMENT`, you'll receive:
@@ -382,7 +387,53 @@ See [RETL Documentation](./docs/retl.md) for detailed setup guide.
 
 7. **Test Thoroughly**: Use Campaign Manager's test mode to verify conversions before production
 
-8. **Handle Errors Gracefully**: Implement retry logic for transient failures
+8. **Handle Errors Gracefully**: Implement retry logic with exponential backoff for transient failures
+
+9. **Respect Rate Limits**: Stay under 10 QPS and avoid concurrent write requests
+
+10. **Batch Efficiently**: Use full batches (up to 1000) to minimize API calls and stay within quota
+
+11. **Monitor Quota Usage**: Regularly check your API usage in Google API Console
+
+12. **Plan for Scale**: Request higher quota in advance if expecting significant usage increases
+
+## Rate Limits and Quotas
+
+Campaign Manager 360 API enforces quotas to protect Google's infrastructure and ensure fair usage. See [Campaign Manager 360 Quotas](https://developers.google.com/doubleclick-advertisers/quotas) for details.
+
+### Default Quota Limits
+
+- **Daily Requests**: 50,000 requests per project per day (can be increased)
+- **Rate Limit**: 1 query per second (QPS) per project
+  - Shown as "Queries per minute per user" in Google API Console (default: 60)
+  - Can be increased up to 600 (maximum 10 QPS)
+  - **Not recommended** to use concurrent write requests or exceed 10 QPS
+- **Quota Refresh**: Daily quotas reset at midnight PST
+
+### Rate Limiting Best Practices
+
+1. **Implement Exponential Backoff**: When receiving `userRateLimitExceeded` (403) errors
+2. **Monitor Usage**: Check usage statistics in Google API Console regularly
+3. **Batch Efficiently**: Use batches of up to 1000 conversions to reduce API calls
+4. **Avoid Concurrent Writes**: Sequential processing is recommended for conversion writes
+5. **Stay Under 10 QPS**: Campaign Manager API performs best with ≤10 requests per second
+6. **Request Higher Quota**: If legitimately exceeding limits, apply for increased quota
+
+### Handling Quota Errors
+
+| Error Code | Reason | Action |
+|------------|--------|--------|
+| 403 | `dailyLimitExceeded` | Review usage, optimize workflow, request additional quota |
+| 403 | `userRateLimitExceeded` | Implement exponential backoff, reduce request rate |
+| 403 | `quotaExceeded` | Check specific quota message, contact account manager if needed |
+
+### Requesting Additional Quota
+
+If you encounter `dailyLimitExceeded`:
+1. Navigate to Campaign Manager 360 API in Google API Console
+2. Review **Metrics** page to verify expected behavior
+3. Go to **Quotas** page and click "Apply for higher quota" next to "Queries per day"
+4. Complete the quota request form with business justification
 
 ## Limitations
 
@@ -393,6 +444,7 @@ See [RETL Documentation](./docs/retl.md) for detailed setup guide.
 - Requires OAuth 2.0 authentication
 - No VDM (Visual Data Mapper) v1 or v2 support
 - RETL uses standard track event transformation (not `record` message type)
+- Subject to Campaign Manager 360 API quotas and rate limits
 
 ## Authentication
 

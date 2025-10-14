@@ -92,7 +92,7 @@ const responseHandler = (responseParams: {
     `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${
       JSON.stringify(response.error) || 'unknown error'
     }", (Aborted)`,
-    400,
+    status,
     destinationResponse,
   );
 };

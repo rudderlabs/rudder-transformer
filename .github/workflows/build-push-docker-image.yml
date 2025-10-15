@@ -112,6 +112,7 @@ jobs:
 
       - name: Build Docker Image
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -132,6 +133,7 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -168,6 +170,7 @@ jobs:
 
       - name: Build Docker Image
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -188,6 +191,7 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}

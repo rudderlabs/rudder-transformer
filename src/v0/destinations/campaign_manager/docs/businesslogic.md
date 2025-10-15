@@ -1,281 +1,814 @@
-# Campaign Manager (DCM) Business Logic and Mappings
+# Campaign Manager 360 Business Logic and Mappings
 
 ## Overview
 
-This document outlines the business logic and mappings used in the Campaign Manager (formerly DoubleClick Campaign Manager - DCM) destination integration. It covers how RudderStack events are mapped to Campaign Manager's API format, the specific API endpoints used, and special handling for various conversion types.
-
-Campaign Manager is Google's ad management and serving platform. This integration allows you to send conversion data from RudderStack to Campaign Manager for conversion tracking and attribution.
-
-## API Reference
-
-**Base URL**: `https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/{requestType}`
-
-**API Documentation**: [Google Campaign Manager 360 Conversions API](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions)
-
-**Supported Request Types**:
-- `batchinsert` - [Insert new conversions](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
-- `batchupdate` - [Update existing conversions](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
-
-## Field Mappings
-
-### Required Fields
-
-| RudderStack Field | Campaign Manager Field | Notes |
-|-------------------|------------------------|-------|
-| `properties.floodlightConfigurationId` | `floodlightConfigurationId` | Required. The Floodlight configuration ID |
-| `properties.floodlightActivityId` | `floodlightActivityId` | Required. The Floodlight activity ID |
-| `properties.ordinal` | `ordinal` | Required. Unique identifier for deduplication |
-| `properties.quantity` | `quantity` | Required. Quantity of conversions |
-| `timestamp` | `timestampMicros` | Required. Converted to microseconds |
-
-### User Identifiers
-
-At least one of the following user identifiers is required:
-
-| RudderStack Field | Campaign Manager Field | Notes |
-|-------------------|------------------------|-------|
-| `properties.gclid` | `gclid` | Google Click ID |
-| `properties.matchId` | `matchId` | Match ID from Floodlight tag |
-| `properties.dclid` | `dclid` | DoubleClick Click ID |
-| `properties.mobileDeviceId` | `mobileDeviceId` | Mobile device ID |
-| `properties.impressionId` | `impressionId` | Impression ID |
-| `properties.encryptedUserId` | `encryptedUserId` | Encrypted user ID |
-| `properties.encryptedUserIdCandidates` | `encryptedUserIdCandidates` | Array of encrypted user ID candidates |
-
-### Conversion Value
-
-| RudderStack Field | Campaign Manager Field | Notes |
-|-------------------|------------------------|-------|
-| `properties.value` | `value` | Conversion value (monetary) |
-| `properties.total` | `value` | Fallback to total if value not present |
-| `properties.revenue` | `value` | Fallback to revenue if value/total not present |
-
-### Custom Variables
-
-| RudderStack Field | Campaign Manager Field | Notes |
-|-------------------|------------------------|-------|
-| `properties.customVariables` | `customVariables` | Array of custom Floodlight variables |
-
-### Privacy and Compliance Fields
-
-| RudderStack Field | Campaign Manager Field | Notes |
-|-------------------|------------------------|-------|
-| `properties.limitAdTracking` | `limitAdTracking` | Limit Ad Tracking flag (batchinsert only) |
-| `properties.childDirectedTreatment` | `childDirectedTreatment` | COPPA compliance flag (batchinsert only) |
-| `properties.treatmentForUnderage` | `treatmentForUnderage` | Treatment for underage users |
-| `properties.nonPersonalizedAd` | `nonPersonalizedAd` | Non-personalized ad flag |
-
-**Note**: `limitAdTracking` and `childDirectedTreatment` cannot be updated and are only supported for `batchinsert` requests.
+This document outlines the business logic and mappings used in the Campaign Manager 360 destination integration. It covers how RudderStack track events are mapped to Campaign Manager 360's Conversions API format, the specific API endpoints used, validation rules, and special handling for enhanced conversions.
 
 ## API Endpoints and Request Flow
 
-### Batch Insert Conversions
+### Track Events → Conversion API
 
-**Endpoint**: `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+**Primary Endpoints**:
+1. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+2. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
 
-**Documentation**: [batchinsert API](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
+**Documentation**: 
+- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchinsert)
+- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchupdate)
+- [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
 
-**Request Flow**:
-1. Track events with `properties.requestType = "batchinsert"` are sent to the batchinsert endpoint
-2. Conversions are batched (up to 1000 per request)
-3. Each conversion is validated for required fields and at least one user identifier
-4. Privacy and compliance flags are included if configured
-5. Timestamp is converted to microseconds
-6. Authentication is done via OAuth 2.0 Bearer token
+### Request Flow for Track Events
 
-**Example Payload**:
+```
+Track Event
+    ↓
+Validate Event (validateRequest)
+    ↓
+Process Track (processTrack)
+    ↓
+  - Apply Track Config mapping
+  - Convert timestamp to microseconds
+  - Apply destination config defaults
+  - Handle Enhanced Conversions (if enabled)
+  - Prepare encryption info (if needed)
+    ↓
+Build Response (buildResponse)
+    ↓
+Post-validate (postValidateRequest)
+    ↓
+Router Batching (processRouterDest)
+    ↓
+  - Group by request type (batchinsert/batchupdate)
+  - Chunk into batches of 1000 conversions
+  - Generate batch requests
+    ↓
+API Delivery via Proxy
+```
+
+## Message Type Handling
+
+### Track Events
+
+**Supported**: ✅ Yes
+
+**Purpose**: Send conversion events to Campaign Manager 360
+
+**Implementation**: `processTrack()` function in `transform.js`
+
+**Required Fields**:
+```javascript
+{
+  type: 'track',
+  properties: {
+    requestType: 'batchinsert' | 'batchupdate',  // Required
+    floodlightConfigurationId: string,            // Required
+    floodlightActivityId: string,                 // Required
+    ordinal: string,                              // Required
+    quantity: number,                             // Required
+    profileId: string,                            // Optional (uses destination config if not provided)
+    
+    // At least one user identifier required:
+    gclid: string,                                // Google Click ID
+    matchId: string,                              // Match ID
+    dclid: string,                                // DoubleClick Click ID
+    mobileDeviceId: string,                       // Mobile Device ID
+    impressionId: string,                         // Impression ID
+    encryptedUserId: string,                      // Encrypted User ID
+    encryptedUserIdCandidates: string[],          // Encrypted User ID Candidates
+  },
+  timestamp: string | number,                     // Required (ISO 8601 or Unix)
+}
+```
+
+### Unsupported Message Types
+
+- **Identify**: ❌ Not supported
+- **Page**: ❌ Not supported
+- **Screen**: ❌ Not supported
+- **Group**: ❌ Not supported
+- **Alias**: ❌ Not supported
+
+All unsupported message types will throw an error: `Message type {messageType} not supported`
+
+## Field Mappings
+
+### Track Event → Conversion Object
+
+Mapping configuration: `data/CampaignManagerTrackConfig.json`
+
+| Source Field | Destination Field | Type | Required | Notes |
+|-------------|------------------|------|----------|-------|
+| `properties.floodlightConfigurationId` | `floodlightConfigurationId` | string | ✅ Yes | Floodlight configuration ID |
+| `properties.ordinal` | `ordinal` | string | ✅ Yes | Unique ordinal for deduplication |
+| `timestamp` | `timestampMicros` | string | ✅ Yes | Converted to microseconds |
+| `properties.floodlightActivityId` | `floodlightActivityId` | string | ✅ Yes | Floodlight activity ID |
+| `properties.quantity` | `quantity` | number | ✅ Yes | Conversion quantity |
+| `properties.value` or `properties.total` or `properties.revenue` | `value` | number | ❌ No | Conversion value (to number) |
+| `properties.customVariables` | `customVariables` | array | ❌ No | Custom variables |
+| `properties.mobileDeviceId` | `mobileDeviceId` | string | ❌ No | Mobile device ID |
+| `properties.encryptedUserIdCandidates` | `encryptedUserIdCandidates` | array | ❌ No | Encrypted user ID candidates |
+| `properties.gclid` | `gclid` | string | ❌ No | Google Click ID |
+| `properties.matchId` | `matchId` | string | ❌ No | Match ID |
+| `properties.dclid` | `dclid` | string | ❌ No | DoubleClick Click ID |
+| `properties.impressionId` | `impressionId` | string | ❌ No | Impression ID |
+| `properties.limitAdTracking` | `limitAdTracking` | boolean | ❌ No | Limit ad tracking flag |
+| `properties.treatmentForUnderage` | `treatmentForUnderage` | boolean | ❌ No | GDPR underage treatment |
+| `properties.childDirectedTreatment` | `childDirectedTreatment` | boolean | ❌ No | COPPA child treatment |
+| `properties.nonPersonalizedAd` | `nonPersonalizedAd` | boolean | ❌ No | Non-personalized ad flag |
+
+### Destination Config Defaults
+
+Some fields can be overridden at the event level or use destination config defaults:
+
+```javascript
+// Priority: event properties > destination config
+requestJson.nonPersonalizedAd = isDefinedAndNotNull(requestJson.nonPersonalizedAd)
+  ? requestJson.nonPersonalizedAd
+  : destination.Config.nonPersonalizedAd;
+
+requestJson.treatmentForUnderage = isDefinedAndNotNull(requestJson.treatmentForUnderage)
+  ? requestJson.treatmentForUnderage
+  : destination.Config.treatmentForUnderage;
+
+requestJson.childDirectedTreatment = isDefinedAndNotNull(requestJson.childDirectedTreatment)
+  ? requestJson.childDirectedTreatment
+  : destination.Config.childDirectedTreatment;
+
+requestJson.limitAdTracking = isDefinedAndNotNull(requestJson.limitAdTracking)
+  ? requestJson.limitAdTracking
+  : destination.Config.limitAdTracking;
+```
+
+**Note**: For `batchupdate` requests, `childDirectedTreatment` and `limitAdTracking` are removed from the payload as updating these fields is not allowed.
+
+### Profile ID Resolution
+
+Profile ID is resolved with the following priority:
+
+```javascript
+const profileId = message.properties.profileId
+  ? Number(message.properties.profileId)
+  : Number(destination.Config.profileId);
+```
+
+1. Event-level: `properties.profileId` (highest priority)
+2. Destination config: `destination.Config.profileId` (fallback)
+
+## Enhanced Conversions
+
+### Overview
+
+Enhanced Conversions allow you to provide user identifiers (email, phone, address) to improve conversion matching accuracy. This feature is only available for `batchupdate` requests.
+
+### Configuration
+
+- **Enable Enhanced Conversions**: `destination.Config.enableEnhancedConversions` must be `true`
+- **Hash User Identifiers**: `destination.Config.isHashingRequired` (default: `true`)
+- **Request Type**: Must be `batchupdate`
+
+### Enhanced Conversion Field Mappings
+
+Mapping configuration: `data/CampaignManagerEnhancedConversionConfig.json`
+
+| Source Field | Destination Field | Hashed | Required | Notes |
+|-------------|------------------|--------|----------|-------|
+| `traits.email` or `context.traits.email` | `hashedEmail` | ✅ Yes | ❌ No | SHA-256 hash of normalized email |
+| `traits.phone` or `context.traits.phone` | `hashedPhoneNumber` | ✅ Yes | ❌ No | SHA-256 hash of E.164 phone |
+| `traits.firstName` or `context.traits.firstName` | `addressInfo.hashedFirstName` | ✅ Yes | ❌ No | SHA-256 hash of first name |
+| `traits.lastName` or `context.traits.lastName` | `addressInfo.hashedLastName` | ✅ Yes | ❌ No | SHA-256 hash of last name |
+| `traits.street` or `context.traits.address.street` | `addressInfo.hashedStreetAddress` | ✅ Yes | ❌ No | SHA-256 hash of street |
+| `traits.city` or `context.traits.address.city` | `addressInfo.city` | ❌ No | ❌ No | Plain text city |
+| `traits.state` or `context.traits.address.state` | `addressInfo.state` | ❌ No | ❌ No | Plain text state |
+| `traits.country` or `context.traits.address.country` | `addressInfo.countryCode` | ❌ No | ❌ No | Plain text country code |
+| `traits.zip` or `context.traits.address.zip` | `addressInfo.postalCode` | ✅ Yes | ❌ No | SHA-256 hash of postal code |
+
+### Normalization and Hashing Logic
+
+#### Email Normalization
+
+```javascript
+const normalizeEmail = (email) => {
+  const domains = ['@gmail.com', '@googlemail.com'];
+  const matchingDomain = domains.find((domain) => email.endsWith(domain));
+  
+  if (matchingDomain) {
+    // Remove dots from local part for Gmail addresses
+    const localPart = email.split('@')[0].replace(/\./g, '');
+    return `${localPart}${matchingDomain}`;
+  }
+  
+  return email;
+};
+```
+
+**Examples**:
+- `john.doe@gmail.com` → `johndoe@gmail.com`
+- `j.o.h.n@gmail.com` → `john@gmail.com`
+- `john.doe@example.com` → `john.doe@example.com` (unchanged)
+
+#### Phone Normalization
+
+```javascript
+const normalizePhone = (phone, countryCode) => {
+  const phoneNumberObject = parsePhoneNumber(phone, countryCode);
+  if (phoneNumberObject && phoneNumberObject.isValid()) {
+    return phoneNumberObject.format('E.164');
+  }
+  throw new InstrumentationError('Invalid phone number');
+};
+```
+
+**Examples**:
+- `4155552671` with `US` → `+14155552671`
+- `9876543210` with `IN` → `+919876543210`
+- `123` with `US` → Error: Invalid phone number
+
+#### Text Normalization (Names, Street Address)
+
+```javascript
+const normalizedValue = value.trim().toLowerCase();
+```
+
+**Examples**:
+- `  John  ` → `john`
+- `SMITH` → `smith`
+- `123 Main St` → `123 main st`
+
+#### Hashing
+
+All sensitive fields are hashed using SHA-256:
+
+```javascript
+const hashedValue = sha256(normalizedValue);
+```
+
+**Example**:
+- `john@gmail.com` → normalize → `john@gmail.com` → hash → `96a8f4d3e8c5b4f7...`
+
+### Enhanced Conversion Processing Flow
+
+```javascript
+// In processTrack function
+if (
+  destination.Config.enableEnhancedConversions &&
+  message.properties.requestType === 'batchupdate'
+) {
+  const userIdentifiers = CommonUtils.toArray(
+    prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true)
+  );
+  
+  if (userIdentifiers.length > 0) {
+    requestJson.userIdentifiers = userIdentifiers;
+  }
+}
+```
+
+### User Identifiers Structure
+
+The `userIdentifiers` array can contain up to 3 objects:
+
+```javascript
+[
+  {
+    hashedEmail: "sha256_hash_of_normalized_email"
+  },
+  {
+    hashedPhoneNumber: "sha256_hash_of_e164_phone"
+  },
+  {
+    addressInfo: {
+      hashedFirstName: "sha256_hash_of_firstname",
+      hashedLastName: "sha256_hash_of_lastname",
+      hashedStreetAddress: "sha256_hash_of_street",
+      city: "San Francisco",          // Plain text
+      state: "CA",                     // Plain text
+      countryCode: "US",               // Plain text
+      postalCode: "sha256_hash_of_zip"
+    }
+  }
+]
+```
+
+**Note**: Each type of identifier is added as a separate object in the array. If email is present, one object with `hashedEmail`. If phone is present, one object with `hashedPhoneNumber`. If address info is present, one object with `addressInfo`.
+
+## Encryption Support
+
+### When to Use Encryption
+
+Use encrypted user IDs when you need to send conversions for users whose IDs are encrypted by Google's DoubleClick system.
+
+### Required Fields
+
+```javascript
+{
+  properties: {
+    // One of these:
+    encryptedUserId: "encrypted_id_string",
+    encryptedUserIdCandidates: ["encrypted_id_1", "encrypted_id_2"],
+    
+    // All of these are required:
+    encryptionEntityType: "DCM_ACCOUNT" | "DCM_ADVERTISER" | "DBM_PARTNER" | "DBM_ADVERTISER" | "ADWORDS_CUSTOMER" | "DFP_NETWORK_CODE",
+    encryptionSource: "AD_SERVING" | "DATA_TRANSFER",
+    encryptionEntityId: "entity_id_string"
+  }
+}
+```
+
+### Encryption Info Processing
+
+```javascript
+const encryptionInfo = {};
+
+if (message.properties.encryptedUserId || message.properties.encryptedUserIdCandidates) {
+  // Validate and set encryption entity type
+  if (EncryptionEntityType.includes(message.properties.encryptionEntityType)) {
+    encryptionInfo.encryptionEntityType = message.properties.encryptionEntityType;
+  }
+  
+  // Validate and set encryption source
+  if (EncryptionSource.includes(message.properties.encryptionSource)) {
+    encryptionInfo.encryptionSource = message.properties.encryptionSource;
+  }
+  
+  // Set encryption entity ID
+  encryptionInfo.encryptionEntityId = message.properties.encryptionEntityId;
+  
+  // Validate all required fields are present
+  if (
+    isDefinedAndNotNull(encryptionInfo.encryptionSource) &&
+    isDefinedAndNotNull(encryptionInfo.encryptionEntityType) &&
+    isDefinedAndNotNull(encryptionInfo.encryptionEntityId)
+  ) {
+    encryptionInfo.kind = 'dfareporting#encryptionInfo';
+  } else {
+    throw new InstrumentationError(
+      'If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for ' +
+      'properties.encryptionEntityType, properties.encryptionSource and properties.encryptionEntityId'
+    );
+  }
+}
+```
+
+### Encryption Info in Request
+
+If encryption info is provided, it's added at the batch level:
+
+```javascript
+{
+  "kind": "dfareporting#conversionsBatchInsertRequest",
+  "encryptionInfo": {
+    "kind": "dfareporting#encryptionInfo",
+    "encryptionEntityType": "DCM_ACCOUNT",
+    "encryptionSource": "AD_SERVING",
+    "encryptionEntityId": "123456"
+  },
+  "conversions": [
+    {
+      "encryptedUserId": "encrypted_id_string",
+      // ... other conversion fields
+    }
+  ]
+}
+```
+
+## Timestamp Conversion
+
+### Conversion Logic
+
+Campaign Manager 360 requires timestamps in microseconds. The `convertToMicroseconds` function handles various input formats:
+
+```javascript
+function convertToMicroseconds(input) {
+  const timestamp = Date.parse(input);
+  
+  if (!Number.isNaN(timestamp)) {
+    // Valid date string
+    if (input.includes('Z')) {
+      // ISO 8601 with 'Z' → milliseconds
+      return timestamp * 1000;
+    }
+    // Other date strings
+    return timestamp.toString().length === 13 
+      ? timestamp * 1000      // milliseconds
+      : timestamp * 1000000;  // seconds
+  }
+  
+  if (/^\d+$/.test(input)) {
+    // Numeric string
+    if (input.length === 13) {
+      return parseInt(input, 10) * 1000;        // milliseconds
+    }
+    if (input.length === 10) {
+      return parseInt(input, 10) * 1000000;     // seconds
+    }
+    return parseInt(input, 10);                 // assume microseconds
+  }
+  
+  return timestamp;
+}
+```
+
+### Examples
+
+| Input | Type | Output (microseconds) |
+|-------|------|----------------------|
+| `2021-01-04T08:25:04.780Z` | ISO 8601 with Z | `1609748704780000` |
+| `2022-11-17T00:22:02.903+05:30` | ISO 8601 with offset | `1668624722903000` |
+| `1697013935` | Unix seconds (10 digits) | `1697013935000000` |
+| `1697013935000` | Unix milliseconds (13 digits) | `1697013935000000` |
+| `1668624722903333` | Unix microseconds (16 digits) | `1668624722903333` |
+
+## Batching Logic
+
+### Router-level Batching
+
+Campaign Manager 360 implements batching at the router level in `processRouterDest`:
+
+```javascript
+const processRouterDest = async (inputs, reqMetadata) => {
+  const batchErrorRespList = [];
+  const eventChunksArray = [];
+  
+  // Process each event
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        const proccessedRespList = process(event);
+        eventChunksArray.push({
+          message: proccessedRespList,
+          metadata: event.metadata,
+          destination,
+        });
+      } catch (error) {
+        batchErrorRespList.push(handleRtTfSingleEventError(event, error, reqMetadata));
+      }
+    })
+  );
+  
+  // Batch successful events
+  let batchResponseList = [];
+  if (eventChunksArray.length > 0) {
+    batchResponseList = batchEvents(eventChunksArray);
+  }
+  
+  return [...batchResponseList, ...batchErrorRespList];
+};
+```
+
+### Batching Strategy
+
+1. **Group by Request Type**:
+   ```javascript
+   const groupedEventChunks = lodash.groupBy(
+     eventChunksArray,
+     (event) => event.message.body.JSON.kind
+   );
+   // Results in:
+   // {
+   //   'dfareporting#conversionsBatchInsertRequest': [...],
+   //   'dfareporting#conversionsBatchUpdateRequest': [...]
+   // }
+   ```
+
+2. **Chunk by Size**:
+   ```javascript
+   const eventChunks = lodash.chunk(
+     groupedEventChunks[eventKind], 
+     MAX_BATCH_CONVERSATIONS_SIZE  // 1000
+   );
+   ```
+
+3. **Generate Batch Requests**:
+   ```javascript
+   eventChunks.forEach((chunk) => {
+     const batchEventResponse = generateBatch(eventKind, chunk);
+     batchedResponseList.push(getSuccessRespEvents(...));
+   });
+   ```
+
+### Batch Request Structure
+
+```javascript
+{
+  "batchedRequest": {
+    "body": {
+      "JSON": {
+        "kind": "dfareporting#conversionsBatchInsertRequest",
+        "conversions": [
+          // Up to 1000 conversion objects
+        ],
+        "encryptionInfo": {
+          // Only if any conversion uses encrypted user IDs
+        }
+      }
+    },
+    "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert",
+    "headers": {
+      "Authorization": "Bearer {access_token}",
+      "Content-Type": "application/json"
+    }
+  },
+  "metadata": [ /* array of metadata for all batched events */ ],
+  "destination": { /* destination config */ }
+}
+```
+
+### Batching Constraints
+
+- **Maximum batch size**: 1000 conversions
+- **Separate batches**: `batchinsert` and `batchupdate` requests are batched separately
+- **Shared encryption info**: If any conversion in the batch uses encrypted user IDs, the encryption info is shared at batch level
+
+## Validation Rules
+
+### Pre-request Validation (validateRequest)
+
+```javascript
+function validateRequest(message) {
+  // 1. Properties must exist
+  if (!message.properties) {
+    throw new InstrumentationError(
+      '[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message'
+    );
+  }
+  
+  // 2. Request type must be valid
+  if (
+    message.properties.requestType !== 'batchinsert' &&
+    message.properties.requestType !== 'batchupdate'
+  ) {
+    throw new InstrumentationError(
+      '[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.'
+    );
+  }
+}
+```
+
+### Post-request Validation (postValidateRequest)
+
+```javascript
+function postValidateRequest(response) {
+  const conversion = response.body.JSON.conversions[0];
+  
+  // 1. Encryption info validation
+  if (
+    (conversion.encryptedUserId || conversion.encryptedUserIdCandidates) &&
+    !response.body.JSON.encryptionInfo
+  ) {
+    throw new InstrumentationError(
+      '[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId or encryptedUserIdCandidates is used.'
+    );
+  }
+  
+  // 2. User identifier validation
+  if (
+    !conversion.gclid &&
+    !conversion.matchId &&
+    !conversion.dclid &&
+    !conversion.encryptedUserId &&
+    !conversion.encryptedUserIdCandidates &&
+    !conversion.mobileDeviceId &&
+    !conversion.impressionId
+  ) {
+    throw new InstrumentationError(
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId, encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.'
+    );
+  }
+}
+```
+
+### Message Type Validation
+
+```javascript
+if (!message.type) {
+  throw new InstrumentationError(
+    '[CAMPAIGN MANAGER (DCM)]: Message Type missing. Aborting message.'
+  );
+}
+
+const messageType = message.type.toLowerCase();
+if (messageType !== EventType.TRACK) {
+  throw new InstrumentationError(`Message type ${messageType} not supported`);
+}
+```
+
+## Error Handling
+
+### Network Handler Response Handling
+
+The `networkHandler.js` implements custom error handling for Campaign Manager 360 responses:
+
+```javascript
+function checkIfFailuresAreRetryable(response) {
+  const { status } = response;
+  
+  if (Array.isArray(status)) {
+    for (const st of status) {
+      for (const err of st.errors) {
+        // Non-retryable error codes
+        if (
+          err.code === 'PERMISSION_DENIED' ||
+          err.code === 'INVALID_ARGUMENT' ||
+          err.code === 'NOT_FOUND'
+        ) {
+          return false;
+        }
+      }
+    }
+  }
+  
+  return true;  // All other errors are retryable
+}
+```
+
+### Response Handler
+
+```javascript
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
+  const { response, status } = destinationResponse;
+  
+  if (isHttpStatusSuccess(status)) {
+    // Check for partial failures
+    if (response.hasFailures === true) {
+      if (checkIfFailuresAreRetryable(response)) {
+        throw new RetryableError(
+          `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
+          500,
+          destinationResponse
+        );
+      } else {
+        throw new AbortedError(
+          `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
+          400,
+          destinationResponse
+        );
+      }
+    }
+    
+    return {
+      status,
+      message: `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`,
+      destinationResponse,
+    };
+  }
+  
+  throw new NetworkError(
+    `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
+    500,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    destinationResponse,
+    getAuthErrCategoryFromStCode(status)
+  );
+};
+```
+
+### Error Categories
+
+| Error Type | Code | Retryable | Description |
+|-----------|------|-----------|-------------|
+| Permission Denied | `PERMISSION_DENIED` | ❌ No | Insufficient permissions |
+| Invalid Argument | `INVALID_ARGUMENT` | ❌ No | Invalid data format or values |
+| Not Found | `NOT_FOUND` | ❌ No | Resource not found (e.g., conversion doesn't exist for batchupdate) |
+| Other API Errors | Various | ✅ Yes | Temporary failures, rate limits, etc. |
+| HTTP 4xx | 400-499 | ❌ No | Client errors (except specific retryable cases) |
+| HTTP 5xx | 500-599 | ✅ Yes | Server errors |
+
+## Common Use Cases
+
+### Use Case 1: Basic Conversion Tracking (batchinsert)
+
+**Scenario**: Track new conversions with Google Click ID
+
+**Event Structure**:
+```javascript
+{
+  type: 'track',
+  event: 'Conversion',
+  timestamp: '2024-10-14T10:30:00.000Z',
+  properties: {
+    requestType: 'batchinsert',
+    floodlightConfigurationId: '12345',
+    floodlightActivityId: '67890',
+    ordinal: 'order_12345',
+    quantity: 1,
+    value: 99.99,
+    gclid: 'Tester_GwAcC12345'
+  }
+}
+```
+
+**Generated Conversion**:
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
-  "conversions": [
-    {
-      "floodlightConfigurationId": "12345678",
-      "floodlightActivityId": "87654321",
-      "ordinal": "20231015-123456",
-      "timestampMicros": "1697376000000000",
-      "quantity": 1,
-      "value": 99.99,
-      "gclid": "TeSter-123",
-      "limitAdTracking": false,
-      "childDirectedTreatment": false,
-      "treatmentForUnderage": false,
-      "nonPersonalizedAd": false,
-      "customVariables": [
-        {
-          "kind": "dfareporting#customFloodlightVariable",
-          "type": "U1",
-          "value": "custom_value"
-        }
-      ]
-    }
-  ]
+  "conversions": [{
+    "floodlightConfigurationId": "12345",
+    "floodlightActivityId": "67890",
+    "ordinal": "order_12345",
+    "timestampMicros": "1697279400000000",
+    "quantity": 1,
+    "value": 99.99,
+    "gclid": "Tester_GwAcC12345"
+  }]
 }
 ```
 
-### Batch Update Conversions
+### Use Case 2: Enhanced Conversion Update (batchupdate)
 
-**Endpoint**: `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+**Scenario**: Add user identifiers to existing conversion
 
-**Documentation**: [batchupdate API](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
+**Event Structure**:
+```javascript
+{
+  type: 'track',
+  event: 'Conversion Update',
+  timestamp: '2024-10-14T10:30:00.000Z',
+  traits: {
+    email: 'john.doe@gmail.com',
+    phone: '+14155552671',
+    firstName: 'John',
+    lastName: 'Doe',
+    city: 'San Francisco',
+    state: 'CA',
+    country: 'US',
+    zip: '94102'
+  },
+  properties: {
+    requestType: 'batchupdate',
+    floodlightConfigurationId: '12345',
+    floodlightActivityId: '67890',
+    ordinal: 'order_12345',
+    quantity: 1,
+    gclid: 'Tester_GwAcC12345'
+  }
+}
+```
 
-**Request Flow**:
-1. Track events with `properties.requestType = "batchupdate"` are sent to the batchupdate endpoint
-2. Conversions are batched (up to 1000 per request)
-3. `childDirectedTreatment` and `limitAdTracking` fields are removed (cannot be updated)
-4. Enhanced conversions (user identifiers) can be added to existing conversions
-5. Timestamp is converted to microseconds
-6. Authentication is done via OAuth 2.0 Bearer token
-
-**Example Payload**:
+**Generated Conversion** (with hashing):
 ```json
 {
   "kind": "dfareporting#conversionsBatchUpdateRequest",
-  "conversions": [
-    {
-      "floodlightConfigurationId": "12345678",
-      "floodlightActivityId": "87654321",
-      "ordinal": "20231015-123456",
-      "timestampMicros": "1697376000000000",
-      "quantity": 1,
-      "value": 99.99,
-      "gclid": "TeSter-123",
-      "treatmentForUnderage": false,
-      "nonPersonalizedAd": false
-    }
-  ]
+  "conversions": [{
+    "floodlightConfigurationId": "12345",
+    "floodlightActivityId": "67890",
+    "ordinal": "order_12345",
+    "timestampMicros": "1697279400000000",
+    "quantity": 1,
+    "gclid": "Tester_GwAcC12345",
+    "userIdentifiers": [
+      {
+        "hashedEmail": "96a8f4d3e8c5b4f7..."  // SHA-256 of johndoe@gmail.com
+      },
+      {
+        "hashedPhoneNumber": "f3b2c5d8a1e4..."  // SHA-256 of +14155552671
+      },
+      {
+        "addressInfo": {
+          "hashedFirstName": "a1b2c3d4e5f6...",    // SHA-256 of john
+          "hashedLastName": "b2c3d4e5f6a1...",     // SHA-256 of doe
+          "city": "San Francisco",                  // Plain text
+          "state": "CA",                            // Plain text
+          "countryCode": "US",                      // Plain text
+          "postalCode": "c3d4e5f6a1b2..."         // SHA-256 of 94102
+        }
+      }
+    ]
+  }]
 }
 ```
 
-## Special Handling
+### Use Case 3: Mobile Conversion with Encrypted User ID
 
-### Enhanced Conversions
+**Scenario**: Track mobile app conversion with encrypted user ID
 
-**Supported For**: `batchupdate` requests only
-
-Enhanced conversions allow you to send first-party customer data (hashed) to improve conversion measurement and attribution.
-
-**Configuration**:
-- `destination.Config.enableEnhancedConversions`: Must be set to `true`
-- `destination.Config.isHashingRequired`: Set to `true` (default) to automatically hash PII data
-
-**Supported User Identifiers**:
-
-| RudderStack Field | Enhanced Conversion Field | Hashing Required |
-|-------------------|---------------------------|------------------|
-| `context.traits.email` | `hashedEmail` | Yes (SHA-256) |
-| `properties.email` | `hashedEmail` | Yes (SHA-256) |
-| `context.traits.phone` | `hashedPhoneNumber` | Yes (SHA-256) |
-| `properties.phone` | `hashedPhoneNumber` | Yes (SHA-256) |
-| `context.traits.firstName` | `addressInfo.hashedFirstName` | Yes (SHA-256) |
-| `properties.firstName` | `addressInfo.hashedFirstName` | Yes (SHA-256) |
-| `context.traits.lastName` | `addressInfo.hashedLastName` | Yes (SHA-256) |
-| `properties.lastName` | `addressInfo.hashedLastName` | Yes (SHA-256) |
-| `context.traits.street` | `addressInfo.hashedStreetAddress` | Yes (SHA-256) |
-| `properties.street` | `addressInfo.hashedStreetAddress` | Yes (SHA-256) |
-| `context.traits.city` | `addressInfo.city` | No |
-| `properties.city` | `addressInfo.city` | No |
-| `context.traits.state` | `addressInfo.state` | No |
-| `properties.state` | `addressInfo.state` | No |
-| `context.traits.zip` | `addressInfo.postalCode` | No |
-| `properties.zip` | `addressInfo.postalCode` | No |
-| `context.traits.country` | `addressInfo.countryCode` | No |
-| `properties.country` | `addressInfo.countryCode` | No |
-
-**Normalization and Hashing**:
-
-1. **Email Normalization**:
-   - Convert to lowercase
-   - Remove leading/trailing whitespace
-   - For Gmail addresses: remove dots from local part
-   - Hash with SHA-256
-
-2. **Phone Number Normalization**:
-   - Parse using libphonenumber-js
-   - Format to E.164 standard
-   - Hash with SHA-256
-
-3. **Name and Address Normalization**:
-   - Convert to lowercase
-   - Remove leading/trailing whitespace
-   - Hash with SHA-256
-
-**Example Transformation**:
+**Event Structure**:
 ```javascript
-// Original event
 {
-  "type": "track",
-  "event": "Order Completed",
-  "properties": {
-    "requestType": "batchupdate",
-    "floodlightConfigurationId": "12345678",
-    "floodlightActivityId": "87654321",
-    "ordinal": "20231015-123456",
-    "quantity": 1,
-    "value": 99.99,
-    "gclid": "TeSter-123",
-    "email": "user@example.com",
-    "phone": "+1-555-123-4567",
-    "firstName": "John",
-    "lastName": "Doe"
+  type: 'track',
+  event: 'In-App Purchase',
+  timestamp: '2024-10-14T10:30:00.000Z',
+  properties: {
+    requestType: 'batchinsert',
+    floodlightConfigurationId: '12345',
+    floodlightActivityId: '67890',
+    ordinal: 'transaction_abc123',
+    quantity: 1,
+    value: 4.99,
+    mobileDeviceId: 'ABC123-456-DEF',
+    encryptedUserId: 'encrypted_user_id_string',
+    encryptionEntityType: 'DCM_ADVERTISER',
+    encryptionSource: 'AD_SERVING',
+    encryptionEntityId: '789012',
+    limitAdTracking: true,
+    nonPersonalizedAd: true
   }
 }
-
-// Transformed to Campaign Manager event
-{
-  "kind": "dfareporting#conversionsBatchUpdateRequest",
-  "conversions": [
-    {
-      "floodlightConfigurationId": "12345678",
-      "floodlightActivityId": "87654321",
-      "ordinal": "20231015-123456",
-      "timestampMicros": "1697376000000000",
-      "quantity": 1,
-      "value": 99.99,
-      "gclid": "TeSter-123",
-      "userIdentifiers": [
-        {
-          "hashedEmail": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3"
-        },
-        {
-          "hashedPhoneNumber": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
-        },
-        {
-          "addressInfo": {
-            "hashedFirstName": "96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a",
-            "hashedLastName": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-          }
-        }
-      ]
-    }
-  ]
-}
 ```
 
-### Encrypted User IDs
-
-For privacy-sensitive conversions, you can use encrypted user IDs instead of plain identifiers.
-
-**Required Configuration**:
-- `properties.encryptedUserId` or `properties.encryptedUserIdCandidates`: The encrypted user ID(s)
-- `properties.encryptionEntityType`: Type of encryption entity (e.g., "DCM_ADVERTISER")
-- `properties.encryptionSource`: Source of encryption (e.g., "AD_SERVING")
-- `properties.encryptionEntityId`: ID of the encryption entity
-
-**Supported Encryption Entity Types**:
-- `ENCRYPTION_ENTITY_TYPE_UNKNOWN`
-- `DCM_ACCOUNT`
-- `DCM_ADVERTISER`
-- `DBM_PARTNER`
-- `DBM_ADVERTISER`
-- `ADWORDS_CUSTOMER`
-- `DFP_NETWORK_CODE`
-
-**Supported Encryption Sources**:
-- `ENCRYPTION_SCOPE_UNKNOWN`
-- `AD_SERVING`
-- `DATA_TRANSFER`
-
-**Example Payload**:
+**Generated Conversion**:
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
@@ -283,472 +816,81 @@ For privacy-sensitive conversions, you can use encrypted user IDs instead of pla
     "kind": "dfareporting#encryptionInfo",
     "encryptionEntityType": "DCM_ADVERTISER",
     "encryptionSource": "AD_SERVING",
-    "encryptionEntityId": "123456"
+    "encryptionEntityId": "789012"
   },
-  "conversions": [
-    {
-      "floodlightConfigurationId": "12345678",
-      "floodlightActivityId": "87654321",
-      "ordinal": "20231015-123456",
-      "timestampMicros": "1697376000000000",
-      "quantity": 1,
-      "value": 99.99,
-      "encryptedUserId": "encrypted_user_id_string",
-      "encryptedUserIdCandidates": ["candidate1", "candidate2"]
-    }
-  ]
+  "conversions": [{
+    "floodlightConfigurationId": "12345",
+    "floodlightActivityId": "67890",
+    "ordinal": "transaction_abc123",
+    "timestampMicros": "1697279400000000",
+    "quantity": 1,
+    "value": 4.99,
+    "mobileDeviceId": "ABC123-456-DEF",
+    "encryptedUserId": "encrypted_user_id_string",
+    "limitAdTracking": true,
+    "nonPersonalizedAd": true
+  }]
 }
 ```
 
-### Timestamp Handling
+### Use Case 4: Offline Conversion with Custom Variables
 
-Campaign Manager requires timestamps in microseconds (Unix timestamp with microsecond precision).
+**Scenario**: Track offline conversion with custom data
 
-**Conversion Logic**:
-1. **ISO 8601 with Z (UTC)**: `"2023-10-15T12:00:00.000Z"` → Parse and multiply by 1000
-2. **ISO 8601 with timezone**: `"2023-10-15T12:00:00.000+05:30"` → Parse and convert to microseconds
-3. **13-digit string (milliseconds)**: `"1697376000000"` → Multiply by 1000
-4. **10-digit string (seconds)**: `"1697376000"` → Multiply by 1,000,000
-5. **Microseconds**: `"1697376000000000"` → Use as-is
-
-**Example Transformations**:
+**Event Structure**:
 ```javascript
-// Input: "2023-10-15T12:00:00.000Z"
-// Output: "1697371200000000"
-
-// Input: "1697371200000" (milliseconds)
-// Output: "1697371200000000"
-
-// Input: "1697371200" (seconds)
-// Output: "1697371200000000"
-```
-
-### Custom Variables
-
-Campaign Manager supports custom Floodlight variables to pass additional data with conversions.
-
-**Format**:
-```json
 {
-  "customVariables": [
-    {
-      "kind": "dfareporting#customFloodlightVariable",
-      "type": "U1",
-      "value": "custom_value_1"
-    },
-    {
-      "kind": "dfareporting#customFloodlightVariable",
-      "type": "U2",
-      "value": "custom_value_2"
-    }
-  ]
+  type: 'track',
+  event: 'Store Purchase',
+  timestamp: '2024-10-14T10:30:00.000Z',
+  properties: {
+    requestType: 'batchinsert',
+    floodlightConfigurationId: '12345',
+    floodlightActivityId: '67890',
+    ordinal: 'store_sale_xyz789',
+    quantity: 2,
+    value: 149.98,
+    matchId: 'customer_loyalty_456',
+    customVariables: [
+      { kind: 'dfareporting#customFloodlightVariable', type: 'U1', value: 'premium_member' },
+      { kind: 'dfareporting#customFloodlightVariable', type: 'U2', value: 'store_123' }
+    ]
+  }
 }
 ```
 
-**Variable Types**:
-- `U1` to `U100`: Custom user variables
-- `NUM1` to `NUM100`: Custom numeric variables
-
-### Batching
-
-**Batch Size**: Up to 1000 conversions per request
-
-**Batching Logic**:
-1. Events are grouped by request type (`batchinsert` or `batchupdate`)
-2. Each group is chunked into batches of up to 1000 conversions
-3. Separate requests are made for each batch
-4. If any event in a batch has `encryptionInfo`, it's included in the batch request
-
-**Example Batched Request**:
+**Generated Conversion**:
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
-  "conversions": [
-    { /* conversion 1 */ },
-    { /* conversion 2 */ },
-    { /* ... up to 1000 conversions */ }
-  ]
+  "conversions": [{
+    "floodlightConfigurationId": "12345",
+    "floodlightActivityId": "67890",
+    "ordinal": "store_sale_xyz789",
+    "timestampMicros": "1697279400000000",
+    "quantity": 2,
+    "value": 149.98,
+    "matchId": "customer_loyalty_456",
+    "customVariables": [
+      { "kind": "dfareporting#customFloodlightVariable", "type": "U1", "value": "premium_member" },
+      { "kind": "dfareporting#customFloodlightVariable", "type": "U2", "value": "store_123" }
+    ]
+  }]
 }
 ```
 
-**Granular Response Handling** (V1 Router):
-
-The V1 network handler provides individual status for each conversion in a batch:
-
-```json
-{
-  "status": [
-    {
-      "conversion": { /* conversion 1 data */ },
-      "kind": "dfareporting#conversionStatus"
-      // No errors = success
-    },
-    {
-      "conversion": { /* conversion 2 data */ },
-      "errors": [
-        {
-          "code": "INVALID_ARGUMENT",
-          "message": "Invalid floodlight activity ID"
-        }
-      ],
-      "kind": "dfareporting#conversionStatus"
-    }
-  ],
-  "hasFailures": true
-}
-```
-
-**Benefits**:
-- Individual event tracking: Know exactly which conversions succeeded or failed
-- Partial batch success: Some events can succeed while others fail
-- Detailed error messages: Each failed event includes specific error information
-- Automatic retry logic: Only retryable events are retried, aborted events are filtered out
-
-## Validations
-
-### Pre-Transformation Validations
-
-1. **Message Type**: Must be `track`
-   - Error: `"Message Type missing. Aborting message."`
-
-2. **Properties Object**: Must be present
-   - Error: `"properties must be present in event. Aborting message"`
-
-3. **Request Type**: Must be either `batchinsert` or `batchupdate`
-   - Error: `"properties.requestType must be one of batchinsert or batchupdate."`
-
-### Post-Transformation Validations
-
-1. **User Identifier**: At least one of the following must be present:
-   - `gclid`
-   - `matchId`
-   - `dclid`
-   - `encryptedUserId`
-   - `encryptedUserIdCandidates`
-   - `mobileDeviceId`
-   - `impressionId`
-   
-   Error: `"Atleast one of encryptedUserId, encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId."`
-
-2. **Encryption Info Validation**: If `encryptedUserId` or `encryptedUserIdCandidates` is used, `encryptionInfo` must be complete
-   - Must include: `encryptionEntityType`, `encryptionSource`, `encryptionEntityId`
-   - Error: `"If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for properties.encryptionEntityType, properties.encryptionSource and properties.encryptionEntityId"`
-
-## Error Handling
-
-### Network Handler
-
-The Campaign Manager integration includes custom error handling for batch conversion responses with **granular per-event status reporting**.
-
-#### V1 Router (Recommended)
-
-The V1 network handler provides individual status for each event in a batch:
-
-**Process Flow**:
-1. Send batch of up to 1000 conversions
-2. Receive `response.status` array with individual event results
-3. Iterate through each event status
-4. Classify each event as success, retryable, or abortable
-5. Return individual status per event to RudderStack
-
-**Error Classification**:
-
-**Retryable Errors** (status code 500):
-- `INTERNAL` - Internal server errors
-- `UNAVAILABLE` - Service temporarily unavailable
-- Any other errors not in abortable list
-- Events will be automatically retried by RudderStack
-
-**Non-Retryable Errors** (status code 400 - Aborted):
-- `PERMISSION_DENIED` - Authentication or permission issues
-  - Check OAuth credentials and Campaign Manager permissions
-- `INVALID_ARGUMENT` - Invalid request parameters
-  - Verify floodlight IDs, ordinal format, and required fields
-- `NOT_FOUND` - Resource not found
-  - Verify Floodlight configuration and activity IDs exist
-
-**Quota and Rate Limit Errors** (status code 403):
-- `dailyLimitExceeded` - Daily quota exceeded
-  - Review usage in Google API Console
-  - Optimize workflow to reduce requests
-  - Request additional quota if usage is legitimate
-- `userRateLimitExceeded` - Rate limit exceeded
-  - Implement exponential backoff
-  - Reduce request rate (stay under 10 QPS recommended)
-  - Avoid concurrent write requests
-- `quotaExceeded` - Specific quota limits exceeded
-  - Check error message for specific quota type
-  - Contact account manager for report quotas
-
-**Success** (status code 200):
-- No errors in the event status
-- Conversion successfully recorded in Campaign Manager
-
-**Example Response Handling**:
-
-```javascript
-// Batch with 3 conversions
-// Response from Campaign Manager:
-{
-  "hasFailures": true,
-  "status": [
-    {
-      "conversion": { "ordinal": "order-1" },
-      "kind": "dfareporting#conversionStatus"
-      // Event 1: Success (no errors)
-    },
-    {
-      "conversion": { "ordinal": "order-2" },
-      "errors": [
-        {
-          "code": "INVALID_ARGUMENT",
-          "message": "Invalid floodlight activity ID"
-        }
-      ],
-      "kind": "dfareporting#conversionStatus"
-      // Event 2: Aborted (400)
-    },
-    {
-      "conversion": { "ordinal": "order-3" },
-      "errors": [
-        {
-          "code": "INTERNAL",
-          "message": "Internal server error"
-        }
-      ],
-      "kind": "dfareporting#conversionStatus"
-      // Event 3: Retryable (500)
-    }
-  ]
-}
-
-// RudderStack receives:
-[
-  { statusCode: 200, metadata: {...}, error: "success" },       // Event 1
-  { statusCode: 400, metadata: {...}, error: "Invalid..." },    // Event 2
-  { statusCode: 500, metadata: {...}, error: "Internal..." }    // Event 3
-]
-```
-
-#### V0 Processor (Legacy)
-
-The V0 handler checks `hasFailures` flag and determines retry/abort for the entire batch based on error codes found in any event.
-
-### Benefits of Granular Error Handling
-
-1. **Partial Batch Success**: Successfully processed conversions are acknowledged even if others fail
-2. **Detailed Diagnostics**: Each event includes specific error messages for troubleshooting
-3. **Cost Optimization**: Avoid re-sending successful conversions
-4. **Better Monitoring**: Track success rate at individual event level
-5. **Quota Efficiency**: Only failed events are retried, not the entire batch - if 10 out of 1000 fail, only 10 are retried instead of all 1000
-
-## Configuration Options
-
-### Destination Config
-
-| Config Field | Type | Required | Default | Description |
-|-------------|------|----------|---------|-------------|
-| `profileId` | string | Yes | - | Campaign Manager Profile ID |
-| `nonPersonalizedAd` | boolean | No | false | Default non-personalized ad flag |
-| `treatmentForUnderage` | boolean | No | false | Default underage treatment flag |
-| `childDirectedTreatment` | boolean | No | false | Default child-directed treatment flag (batchinsert only) |
-| `limitAdTracking` | boolean | No | false | Default limit ad tracking flag (batchinsert only) |
-| `enableEnhancedConversions` | boolean | No | false | Enable enhanced conversions with user identifiers |
-| `isHashingRequired` | boolean | No | true | Automatically hash PII data for enhanced conversions |
-
-### Event-Level Overrides
-
-Event-level properties can override destination config defaults:
-
-```javascript
-{
-  "type": "track",
-  "event": "Order Completed",
-  "properties": {
-    "profileId": "987654321",  // Override config profileId
-    "requestType": "batchinsert",
-    "floodlightConfigurationId": "12345678",
-    "floodlightActivityId": "87654321",
-    "ordinal": "unique-ordinal-123",
-    "quantity": 1,
-    "value": 99.99,
-    "gclid": "TeSter-123",
-    "nonPersonalizedAd": true,  // Override config default
-    "treatmentForUnderage": false,
-    "childDirectedTreatment": false,
-    "limitAdTracking": false
-  }
-}
-```
-
-## General Use Cases
-
-### Conversion Tracking
-
-Campaign Manager is primarily used for tracking conversions from advertising campaigns:
-
-- **Standard Conversions**: Track purchases, sign-ups, form submissions
-- **Custom Conversions**: Track custom events with Floodlight activities
-- **Cross-Device Conversions**: Track conversions across devices using encrypted IDs
-- **Offline Conversions**: Import offline conversions with match IDs
-
-### Attribution and Measurement
-
-- **Multi-Touch Attribution**: Track user journey across multiple touchpoints
-- **Cross-Channel Attribution**: Attribute conversions to the correct advertising channel
-- **Conversion Path Analysis**: Analyze the path users take before converting
-
-### Privacy-Compliant Tracking
-
-- **Enhanced Conversions**: Improve attribution while maintaining privacy with hashed PII
-- **Encrypted User IDs**: Use encrypted identifiers for privacy-sensitive use cases
-- **COPPA Compliance**: Flag conversions from children for COPPA compliance
-- **Limited Ad Tracking**: Respect user privacy preferences with LAT flags
-
-### E-commerce Use Cases
-
-- **Purchase Tracking**: Track completed purchases with value and quantity
-- **Shopping Cart Events**: Track cart additions and abandonments
-- **Dynamic Remarketing**: Track product views for dynamic remarketing campaigns
-- **Revenue Attribution**: Attribute revenue to advertising campaigns
-
-## Mapping Configuration Files
-
-The mapping configuration is defined in JSON files within the destination directory:
-
-- `CampaignManagerTrackConfig.json`: Mapping for Track events and conversion fields
-- `CampaignManagerEnhancedConversionConfig.json`: Mapping for enhanced conversion user identifiers
-
-## Rate Limits and Quotas
-
-Campaign Manager 360 API enforces quotas to protect infrastructure and ensure fair usage across all developers. Understanding and respecting these limits is crucial for reliable integration.
-
-### API Quota Limits
-
-According to [Campaign Manager 360 Quotas documentation](https://developers.google.com/doubleclick-advertisers/quotas):
-
-**Default Quotas**:
-- **Daily Requests**: 50,000 requests per project per day
-  - Can be increased by requesting additional quota
-  - Quota refreshes at midnight PST
-- **Rate Limit**: 1 query per second (QPS) per project
-  - Displayed as "Queries per minute per user" in Google API Console (default: 60)
-  - Can be increased up to 600 queries per minute (10 QPS maximum)
-  - **Important**: Not recommended to exceed 10 QPS or use concurrent write requests
-
-### Quota Error Codes
-
-| HTTP Code | Error Reason | Description | Recommended Action |
-|-----------|--------------|-------------|-------------------|
-| 403 | `dailyLimitExceeded` | Exceeded daily quota of 50,000 requests | Do not retry without fixing. Review usage in Google API Console, optimize workflow, or request higher quota |
-| 403 | `userRateLimitExceeded` | Exceeded rate limit (requests per second) | Implement exponential backoff, reduce request rate to ≤10 QPS |
-| 403 | `quotaExceeded` | Various quota types exceeded (reports, etc.) | Check specific error message, contact account manager if needed |
-
-### Rate Limiting Strategy
-
-**Exponential Backoff Algorithm**:
-
-When receiving `userRateLimitExceeded` errors, implement exponential backoff:
-
-```javascript
-function exponentialBackoff(retryCount) {
-  const baseDelay = 1000; // 1 second
-  const maxDelay = 32000; // 32 seconds
-  const delay = Math.min(baseDelay * Math.pow(2, retryCount), maxDelay);
-  return delay + Math.random() * 1000; // Add jitter
-}
-
-// Usage:
-let retryCount = 0;
-while (retryCount < maxRetries) {
-  try {
-    await sendConversions(batch);
-    break;
-  } catch (error) {
-    if (error.code === 403 && error.reason === 'userRateLimitExceeded') {
-      await sleep(exponentialBackoff(retryCount));
-      retryCount++;
-    } else {
-      throw error;
-    }
-  }
-}
-```
-
-### Optimizing for Quotas
-
-**Batch Size Optimization**:
-- Maximum batch size: 1000 conversions per request
-- Sending 10,000 conversions: 10 API calls (vs 10,000 individual calls)
-- With batching: 10 calls/day vs without: 10,000 calls/day
-- Batching reduces quota usage by 99.9%
-
-**Calculate Daily Capacity**:
-```
-Daily Quota: 50,000 requests
-Batch Size: 1000 conversions
-Daily Capacity: 50,000 × 1,000 = 50,000,000 conversions/day
-```
-
-**Rate Limit Calculation**:
-```
-Rate Limit: 10 QPS (recommended maximum)
-Batch Size: 1000 conversions
-Throughput: 10 × 1,000 = 10,000 conversions/second
-Daily at Max Rate: 10,000 × 60 × 60 × 24 = 864,000,000 conversions/day
-```
-
-### Requesting Higher Quota
-
-If you legitimately need more than 50,000 requests per day:
-
-1. **Navigate to Google API Console**:
-   - Go to Campaign Manager 360 API settings
-   - Review **Metrics** page to verify usage patterns
-
-2. **Verify Normal Usage**:
-   - Check that usage is expected and not due to errors
-   - Look for unexpected spikes or excessive calls
-   - Optimize code before requesting more quota
-
-3. **Apply for Higher Quota**:
-   - Navigate to **Quotas** page
-   - Click edit icon next to "Queries per day"
-   - Click "Apply for higher quota"
-   - Complete form with business justification
-
-4. **Provide Details**:
-   - Expected daily request volume
-   - Business use case justification
-   - Steps taken to optimize usage
-   - Active monitoring email address
-
-### Monitoring Quota Usage
-
-**Google API Console Metrics**:
-- Track daily request count
-- Monitor request patterns by method
-- Identify quota-consuming operations
-- Set up alerts for approaching limits
-
-**RudderStack Metrics**:
-- Track batch sizes and frequency
-- Monitor retry rates
-- Identify failed/aborted events
-- Calculate effective throughput
-
-## Best Practices
-
-1. **Use Unique Ordinals**: Ensure ordinals are unique per conversion to prevent duplicate counting
-2. **Include User Identifiers**: Always include at least one user identifier (preferably gclid or dclid)
-3. **Enable Enhanced Conversions**: For better attribution, enable enhanced conversions and send hashed PII
-4. **Set Proper Privacy Flags**: Configure privacy flags appropriately based on your use case and regulations
-5. **Batch Conversions**: Take advantage of batching for high-volume conversion imports (up to 1000 per batch)
-6. **Monitor Failures**: Check Campaign Manager for conversion import failures and retry as needed
-7. **Use batchupdate Carefully**: Only use batchupdate for conversions that already exist in Campaign Manager
-8. **Validate Floodlight IDs**: Ensure floodlightConfigurationId and floodlightActivityId are correct
-9. **Respect Rate Limits**: Stay at or below 10 QPS, avoid concurrent write requests
-10. **Implement Exponential Backoff**: Handle rate limit errors with exponential backoff strategy
-11. **Monitor Quota Usage**: Regularly check Google API Console for quota consumption
-12. **Plan for Scale**: Request higher quota in advance if expecting significant usage increases
+## Summary
+
+The Campaign Manager 360 destination processes track events to send conversion data to Google's Campaign Manager 360 API. Key characteristics:
+
+- **Message Type**: Track events only
+- **Request Types**: batchinsert (new) and batchupdate (existing)
+- **Batching**: Up to 1000 conversions per batch, grouped by request type
+- **Enhanced Conversions**: Supported for batchupdate with automatic PII hashing
+- **User Identifiers**: Flexible support (gclid, matchId, mobileDeviceId, encryptedUserId, etc.)
+- **Encryption**: Full support for encrypted user IDs with required encryption info
+- **Timestamp Handling**: Automatic conversion to microseconds from various formats
+- **Validation**: Comprehensive pre and post-request validation
+- **Error Handling**: Smart retry logic based on error types
+- **Privacy Compliance**: Support for COPPA, GDPR, and ad tracking limitations
 

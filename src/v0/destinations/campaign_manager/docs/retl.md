@@ -1,394 +1,494 @@
-# Campaign Manager RETL Functionality
+# Campaign Manager 360 RETL Functionality
 
 ## Is RETL supported at all?
 
-**RETL (Reverse ETL) Support**: **Yes - Supported**
+**RETL (Reverse ETL) Support**: **Yes**
 
-The Campaign Manager destination supports RETL functionality for warehouse sources. Evidence from `db-config.json`:
-- ✅ `supportedSourceTypes` includes `warehouse`
-- ✅ `supportedConnectionModes` includes `warehouse: ["cloud"]`
-- ✅ Warehouse configuration section is present
-- ✅ Supports batch conversion imports from warehouse data
+The Campaign Manager 360 destination supports RETL functionality. Evidence:
+- `supportedSourceTypes` includes `warehouse` in `db-config.json`
+- JSON mapper is supported by default (no `disableJsonMapper: true` in config)
+- Supports data flow from warehouses/databases to Campaign Manager 360
+- Connection mode `warehouse: ["cloud"]` is configured
 
 ## RETL Support Analysis
 
-### Which type of RETL support does it have?
-- **JSON Mapper**: Supported via standard track event transformation
-- **VDM V1**: Not explicitly configured (`supportsVisualMapper` not set)
-- **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
+### Which type of retl support does it have?
 
-**Type**: **Standard RETL with Track Events**
+- **JSON Mapper**: ✅ Supported (default, no `disableJsonMapper: true`)
+- **VDM V1**: ❌ Not supported (`supportsVisualMapper` not present in `db-config.json`)
+- **VDM V2**: ❌ Not supported (no `record` in `supportedMessageTypes`)
 
-Campaign Manager uses standard track event processing for RETL. Warehouse data is transformed into track events with conversion data, which are then sent to Campaign Manager's batchinsert or batchupdate APIs.
+### Does it have vdm support?
 
-### Does it have VDM support?
-**No** - No visual data mapper (VDM V1) is explicitly configured for this destination.
+**No** - `supportsVisualMapper` is not present in `db-config.json`, indicating no VDM V1 support.
 
-### Does it have VDM v2 support?
-**No** - Missing both:
-- `supportedMessageTypes > record` in configuration
-- Record event type handling in transformer code
+### Does it have vdm v2 support?
 
-### Connection config
-**Supported**: `warehouse` source with `cloud` connection mode
+**No** - Missing both requirements:
+- `supportedMessageTypes > record` not present in `db-config.json`
+- No record event type handling in transformer code
 
-The warehouse source type is configured to use cloud mode, meaning:
-- Warehouse data is synced to RudderStack
-- Data is transformed into track events
-- Events are sent via cloud mode to Campaign Manager API
-- Batching is handled automatically (up to 1000 conversions per batch)
+### Connection Config
 
-## How RETL Works with Campaign Manager
+Standard Campaign Manager 360 configuration applies for RETL:
 
-Since Campaign Manager supports warehouse sources, you can sync conversion data directly from your warehouse to Campaign Manager. Here's how to implement RETL for conversion tracking:
+**Required Settings**:
+- **OAuth 2.0 Authentication**: 
+  - Must be configured with Campaign Manager role
+  - Requires appropriate scopes (ddmconversions, dfareporting, dfatrafficking)
+- **Profile ID**: Campaign Manager profile ID for API requests
 
-### 1. Configure Warehouse Source
+**Optional Settings**:
+- **Limit Ad Tracking**: Default false
+- **Child Directed Treatment**: Default false
+- **Non Personalized Ad**: Default false
+- **Treatment for Underage**: Default false
+- **Enable Enhanced Conversions**: Default false
+- **Hash User Identifiers**: Default true (requires Enhanced Conversions enabled)
 
-Set up a warehouse source in RudderStack:
+## RETL Flow Implementation
 
-1. **Create Warehouse Source**: In RudderStack dashboard, add your warehouse (Snowflake, BigQuery, Redshift, etc.) as a source
-2. **Connect to Campaign Manager**: Add Campaign Manager as a destination for the warehouse source
-3. **Configure Sync Settings**: Set up the sync schedule and table/view to sync from
+### Warehouse Integration
 
-### 2. Prepare Warehouse Data
+Campaign Manager 360 supports RETL through warehouse sources with JSON mapper functionality:
 
-Structure your warehouse table/view with the required conversion fields:
+- **Supported**: Yes, warehouse sources can send data to Campaign Manager 360 via RETL
+- **Connection Mode**: Cloud mode only
+- **Message Types**: Track events only (conversions)
+- **Data Flow**: Warehouse/Database → RudderStack → Campaign Manager 360 (via REST API)
+- **Mapping**: JSON mapper transforms warehouse data to Campaign Manager 360 format
 
-```sql
--- Example warehouse table for conversions
-CREATE TABLE conversions_to_sync (
-  id VARCHAR(255),
-  event_name VARCHAR(255),
-  user_id VARCHAR(255),
-  timestamp TIMESTAMP,
-  request_type VARCHAR(50),
-  floodlight_configuration_id VARCHAR(255),
-  floodlight_activity_id VARCHAR(255),
-  ordinal VARCHAR(255),
-  quantity INTEGER,
-  value DECIMAL(10,2),
-  gclid VARCHAR(255),
-  email VARCHAR(255),
-  phone VARCHAR(255),
-  first_name VARCHAR(255),
-  last_name VARCHAR(255)
-);
-```
+### Supported Message Types for RETL
 
-### 3. Map Warehouse Columns to RudderStack Event
-
-The warehouse columns are mapped to track event properties:
-
-```javascript
-// Warehouse row is automatically transformed to:
+```json
 {
-  "type": "track",
-  "event": "Order Completed",  // from event_name column
-  "userId": "user123",          // from user_id column
-  "timestamp": "2023-10-15T12:00:00Z",  // from timestamp column
-  "properties": {
-    "requestType": "batchinsert",  // from request_type column
-    "floodlightConfigurationId": "12345678",  // from floodlight_configuration_id
-    "floodlightActivityId": "87654321",  // from floodlight_activity_id
-    "ordinal": "order-20231015-123456",  // from ordinal column
-    "quantity": 1,  // from quantity column
-    "value": 99.99,  // from value column
-    "gclid": "TeSter-123",  // from gclid column
-    "email": "customer@example.com",  // from email column (for enhanced conversions)
-    "phone": "+1-555-123-4567",  // from phone column
-    "firstName": "John",  // from first_name column
-    "lastName": "Doe"  // from last_name column
+  "supportedMessageTypes": {
+    "cloud": ["track"]
   }
 }
 ```
 
-### 4. Configure Column Mappings
+**Only track events** are supported from warehouse sources, which are used to send conversion data to Campaign Manager 360.
 
-In RudderStack's warehouse source configuration, map your warehouse columns to the expected event structure:
+### Supported Source Types
 
-| Warehouse Column | RudderStack Field | Campaign Manager Field |
-|------------------|-------------------|------------------------|
-| `event_name` | `event` | - |
-| `user_id` | `userId` | - |
-| `timestamp` | `timestamp` | `timestampMicros` |
-| `request_type` | `properties.requestType` | - |
-| `floodlight_configuration_id` | `properties.floodlightConfigurationId` | `floodlightConfigurationId` |
-| `floodlight_activity_id` | `properties.floodlightActivityId` | `floodlightActivityId` |
-| `ordinal` | `properties.ordinal` | `ordinal` |
-| `quantity` | `properties.quantity` | `quantity` |
-| `value` | `properties.value` | `value` |
-| `gclid` | `properties.gclid` | `gclid` |
-| `email` | `properties.email` | `userIdentifiers.hashedEmail` |
-| `phone` | `properties.phone` | `userIdentifiers.hashedPhoneNumber` |
-
-### 5. Automatic Batching and Sync
-
-Once configured, RudderStack handles:
-- ✅ **Automatic Syncing**: Regularly syncs data from warehouse based on schedule
-- ✅ **Event Transformation**: Converts warehouse rows to track events
-- ✅ **Batching**: Groups up to 1000 conversions per API request
-- ✅ **Error Handling**: Retries failed conversions automatically
-- ✅ **Deduplication**: Uses ordinal for deduplication on Campaign Manager side
-
-**Data Flow**:
-```
-Warehouse → RudderStack Warehouse Source → Track Events → Campaign Manager API
+```json
+{
+  "supportedSourceTypes": [
+    "android",
+    "ios", 
+    "web",
+    "unity",
+    "amp",
+    "cloud",
+    "warehouse",    // ← RETL support
+    "reactnative",
+    "flutter",
+    "cordova",
+    "shopify"
+  ]
+}
 ```
 
-## RETL Use Cases
+### RETL Event Processing
 
-### Use Case 1: Offline Conversion Import
+Campaign Manager 360 processes RETL events (from warehouse sources) the same way as regular cloud events:
 
-Import offline conversions (in-store purchases, phone orders) from your warehouse:
+1. **Event Type**: Only `track` events are supported
+2. **Validation**: Same validation rules apply (required fields, user identifiers, etc.)
+3. **Request Type**: Must specify `properties.requestType` as `batchinsert` or `batchupdate`
+4. **Batching**: Events are batched with limit of 1000 conversions per batch
+5. **API Delivery**: Sent to Campaign Manager 360 via conversions API
 
-**Warehouse Query**:
+**No Special RETL Logic**: Unlike some destinations (e.g., Braze), Campaign Manager 360 does not have special handling for `context.mappedToDestination` flag. All events are processed uniformly regardless of source type.
+
+## RETL Data Mapping
+
+### Warehouse Table Structure
+
+For RETL to work effectively, warehouse tables should include the following columns:
+
+#### Required Columns
+
+| Warehouse Column | Event Property | Description |
+|-----------------|----------------|-------------|
+| `floodlight_configuration_id` | `properties.floodlightConfigurationId` | Floodlight configuration ID |
+| `floodlight_activity_id` | `properties.floodlightActivityId` | Floodlight activity ID |
+| `ordinal` | `properties.ordinal` | Unique ordinal for deduplication |
+| `timestamp` | `timestamp` | Conversion timestamp (converted to microseconds) |
+| `quantity` | `properties.quantity` | Conversion quantity |
+| `request_type` | `properties.requestType` | Either `batchinsert` or `batchupdate` |
+| `profile_id` | `properties.profileId` (optional) | Override destination config profile ID |
+
+#### User Identifier Columns (At least one required)
+
+| Warehouse Column | Event Property | Description |
+|-----------------|----------------|-------------|
+| `gclid` | `properties.gclid` | Google Click ID |
+| `match_id` | `properties.matchId` | Match ID |
+| `dclid` | `properties.dclid` | DoubleClick Click ID |
+| `mobile_device_id` | `properties.mobileDeviceId` | Mobile device ID |
+| `impression_id` | `properties.impressionId` | Impression ID |
+| `encrypted_user_id` | `properties.encryptedUserId` | Encrypted user ID |
+| `encrypted_user_id_candidates` | `properties.encryptedUserIdCandidates` | Array of encrypted user ID candidates |
+
+#### Optional Columns
+
+| Warehouse Column | Event Property | Description |
+|-----------------|----------------|-------------|
+| `value` | `properties.value` | Conversion value |
+| `revenue` | `properties.revenue` | Alternative to value |
+| `total` | `properties.total` | Alternative to value |
+| `custom_variables` | `properties.customVariables` | Custom variables array |
+| `limit_ad_tracking` | `properties.limitAdTracking` | Override destination setting |
+| `child_directed_treatment` | `properties.childDirectedTreatment` | Override destination setting |
+| `non_personalized_ad` | `properties.nonPersonalizedAd` | Override destination setting |
+| `treatment_for_underage` | `properties.treatmentForUnderage` | Override destination setting |
+
+#### Enhanced Conversion Columns (When enabled)
+
+| Warehouse Column | Event Property | Description |
+|-----------------|----------------|-------------|
+| `email` | `traits.email` or `context.traits.email` | User email (will be hashed) |
+| `phone` | `traits.phone` or `context.traits.phone` | User phone (will be hashed) |
+| `first_name` | `traits.firstName` or `context.traits.firstName` | First name (will be hashed) |
+| `last_name` | `traits.lastName` or `context.traits.lastName` | Last name (will be hashed) |
+| `street` | `traits.street` or `context.traits.address.street` | Street address (will be hashed) |
+| `city` | `traits.city` or `context.traits.address.city` | City (plain text) |
+| `state` | `traits.state` or `context.traits.address.state` | State (plain text) |
+| `country` | `traits.country` or `context.traits.address.country` | Country code (plain text) |
+| `zip` | `traits.zip` or `context.traits.address.zip` | Postal code (will be hashed) |
+
+#### Encryption Info Columns (If using encrypted user IDs)
+
+| Warehouse Column | Event Property | Description |
+|-----------------|----------------|-------------|
+| `encryption_entity_type` | `properties.encryptionEntityType` | One of: DCM_ACCOUNT, DCM_ADVERTISER, DBM_PARTNER, etc. |
+| `encryption_source` | `properties.encryptionSource` | One of: AD_SERVING, DATA_TRANSFER |
+| `encryption_entity_id` | `properties.encryptionEntityId` | Encryption entity ID |
+
+### Example Warehouse Query for RETL
+
 ```sql
-SELECT
-  'In-Store Purchase' as event_name,
-  customer_id as user_id,
-  purchase_date as timestamp,
+SELECT 
+  -- Required fields
+  floodlight_configuration_id,
+  floodlight_activity_id,
+  ordinal,
+  conversion_timestamp as timestamp,
+  quantity,
   'batchinsert' as request_type,
-  '12345678' as floodlight_configuration_id,
-  '87654321' as floodlight_activity_id,
-  CONCAT('store-', transaction_id) as ordinal,
-  1 as quantity,
-  total_amount as value,
-  crm_match_id as match_id
-FROM offline_purchases
-WHERE synced_to_campaign_manager = false
-```
-
-### Use Case 2: Enhanced Conversions from CRM Data
-
-Enhance existing online conversions with customer data from your CRM/warehouse:
-
-**Warehouse Query**:
-```sql
-SELECT
-  'Order Completed' as event_name,
-  customer_id as user_id,
-  conversion_date as timestamp,
-  'batchupdate' as request_type,
-  '12345678' as floodlight_configuration_id,
-  '87654321' as floodlight_activity_id,
-  order_id as ordinal,
-  1 as quantity,
-  order_total as value,
-  click_id as gclid,
+  
+  -- User identifier (at least one)
+  gclid,
+  
+  -- Optional fields
+  revenue as value,
+  
+  -- Enhanced conversion fields (if enabled)
   email,
   phone,
   first_name,
   last_name,
   city,
   state,
-  zip_code as zip,
-  country_code as country
-FROM crm_conversions
-WHERE enhanced_conversion_sent = false
+  country,
+  postal_code as zip,
+  
+  -- Tracking fields
+  user_id,
+  anonymous_id
+  
+FROM conversions_warehouse_table
+WHERE conversion_date >= CURRENT_DATE - INTERVAL '7 days'
+  AND gclid IS NOT NULL
 ```
 
-### Use Case 3: Aggregated Conversion Reporting
+## RETL Processing Flow
 
-Send aggregated conversion data from warehouse analytics:
+### 1. Data Extraction from Warehouse
+
+```
+Warehouse Table
+    ↓
+RudderStack Sync
+    ↓
+JSON Mapper applies mappings
+    ↓
+Track Event Generated
+```
+
+### 2. Event Validation
+
+- Validates message type is `track`
+- Validates `properties.requestType` is `batchinsert` or `batchupdate`
+- Validates required fields present
+- Validates at least one user identifier present
+- Validates encryption info if using encrypted user IDs
+
+### 3. Event Transformation
+
+```javascript
+// Track Config mapping applied
+{
+  floodlightConfigurationId: properties.floodlightConfigurationId,
+  ordinal: properties.ordinal,
+  timestampMicros: convertToMicroseconds(timestamp),
+  floodlightActivityId: properties.floodlightActivityId,
+  quantity: properties.quantity,
+  value: properties.value || properties.total || properties.revenue,
+  gclid: properties.gclid,
+  // ... other mappings
+}
+```
+
+### 4. Enhanced Conversions (if enabled)
+
+For `batchupdate` requests with `enableEnhancedConversions: true`:
+
+```javascript
+// Enhanced Conversion Config mapping applied
+{
+  userIdentifiers: [
+    { hashedEmail: sha256(normalizeEmail(traits.email)) },
+    { hashedPhoneNumber: sha256(normalizePhone(traits.phone, countryCode)) },
+    { 
+      addressInfo: {
+        hashedFirstName: sha256(traits.firstName.toLowerCase().trim()),
+        hashedLastName: sha256(traits.lastName.toLowerCase().trim()),
+        hashedStreetAddress: sha256(traits.street.toLowerCase().trim()),
+        city: traits.city,
+        state: traits.state,
+        countryCode: traits.country,
+        postalCode: sha256(traits.zip)
+      }
+    }
+  ]
+}
+```
+
+### 5. Batching
+
+- Events grouped by `requestType` (batchinsert vs batchupdate)
+- Each group chunked into batches of 1000 conversions
+- Separate API request for each batch
+
+### 6. API Delivery
+
+```
+POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/{requestType}
+
+Authorization: Bearer {access_token}
+Content-Type: application/json
+
+{
+  "kind": "dfareporting#conversionsBatchInsertRequest",
+  "conversions": [ /* up to 1000 conversions */ ],
+  "encryptionInfo": { /* if applicable */ }
+}
+```
+
+## Rate Limits and Constraints
+
+### Campaign Manager 360 API Limits
+
+**Default Quota Limits** (from [Campaign Manager 360 API Quotas](https://developers.google.com/doubleclick-advertisers/quotas)):
+- **Queries Per Day**: 50,000 requests per project per day (can be increased)
+- **Queries Per Second**: 1 QPS per project (default)
+  - In Google API Console: "Queries per minute per user" = 60 (default)
+  - Can be increased up to 600 (10 QPS maximum)
+- **Daily Quota Refresh**: Midnight PST
+
+**Endpoints Used**:
+1. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+   - Batch size: Up to 1000 conversions
+   - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
+
+2. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
+   - Batch size: Up to 1000 conversions
+   - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
+   - Additional constraint: Can only update existing conversions
+
+### RETL Processing Constraints
+
+- **Message Types**: Only `track` events supported
+- **Cloud Mode Only**: Device mode not applicable for warehouse sources
+- **JSON Mapper Only**: No VDM v1 or v2 support
+- **No mappedToDestination Handling**: Events processed uniformly regardless of source
+
+## Common RETL Use Cases
+
+### Use Case 1: Historical Conversion Upload
+
+**Scenario**: Upload historical conversions from data warehouse to Campaign Manager 360
 
 **Warehouse Query**:
 ```sql
-SELECT
-  event_type as event_name,
-  user_id,
-  event_timestamp as timestamp,
-  'batchinsert' as request_type,
-  floodlight_config_id as floodlight_configuration_id,
+SELECT 
+  floodlight_configuration_id,
   floodlight_activity_id,
-  CONCAT(event_type, '-', DATE(event_timestamp), '-', user_id) as ordinal,
-  conversion_count as quantity,
-  total_revenue as value,
-  google_click_id as gclid
-FROM warehouse_conversions_aggregated
-WHERE date >= CURRENT_DATE - 7
+  conversion_ordinal as ordinal,
+  conversion_timestamp,
+  1 as quantity,
+  conversion_value as value,
+  google_click_id as gclid,
+  'batchinsert' as request_type
+FROM historical_conversions
+WHERE conversion_date BETWEEN '2024-01-01' AND '2024-12-31'
+  AND google_click_id IS NOT NULL
 ```
 
-## Technical Details
+**Considerations**:
+- Use `batchinsert` request type
+- Ensure `ordinal` values are unique per conversion
+- Maintain chronological order for accurate reporting
+- Verify conversions are within attribution window
 
-### RETL Implementation
+### Use Case 2: Enhanced Conversion Enrichment
 
-Campaign Manager RETL support uses standard track event processing:
+**Scenario**: Add user identifiers to existing conversions for better matching
 
-1. **Warehouse Source**: Configured as a supported source type
-2. **Connection Mode**: Cloud mode (server-side processing)
-3. **Message Type**: Standard `track` events (not `record` type)
-4. **Transformation**: Uses existing track event transformation logic
-5. **Batching**: Automatic batching up to 1000 conversions per request
-
-### Capabilities with RETL
-
-- ✅ **Track Events**: Supports track message type for conversions
-- ✅ **Two Request Types**: `batchinsert` for new conversions, `batchupdate` for updating existing ones
-- ✅ **Automatic Batching**: Up to 1000 conversions per batch
-- ✅ **Enhanced Conversions**: Support for first-party customer data with automatic hashing
-- ✅ **Scheduled Syncs**: Regular warehouse-to-Campaign Manager syncs
-- ✅ **Multiple User Identifiers**: Support for gclid, dclid, matchId, mobileDeviceId, etc.
-- ✅ **Custom Variables**: Pass custom Floodlight variables from warehouse data
-- ✅ **Privacy Flags**: Configure privacy compliance flags from warehouse data
-
-### Limitations
-
-- ❌ **No VDM v1 Support**: No visual data mapper interface
-- ❌ **No VDM v2 Support**: No `record` message type support
-- ❌ **Track Events Only**: Only conversion tracking, no profile/audience updates
-- ⚠️ **Schema Requirements**: Warehouse data must include all required conversion fields
-
-## Recommended Integration Patterns
-
-### Pattern 1: Real-Time Conversion Tracking
-
-**Use Case**: Track conversions as they happen on your website or app
-
-```
-User Action → RudderStack SDK → Campaign Manager
+**Warehouse Query**:
+```sql
+SELECT 
+  c.floodlight_configuration_id,
+  c.floodlight_activity_id,
+  c.ordinal,
+  c.conversion_timestamp,
+  c.quantity,
+  c.gclid,
+  'batchupdate' as request_type,
+  
+  -- Enhanced conversion data
+  u.email,
+  u.phone,
+  u.first_name,
+  u.last_name,
+  u.city,
+  u.state,
+  u.country
+  
+FROM conversions c
+JOIN users u ON c.user_id = u.id
+WHERE c.conversion_date >= CURRENT_DATE - INTERVAL '30 days'
+  AND u.email IS NOT NULL
 ```
 
-**Implementation**:
-- Install RudderStack SDK on your website/app
-- Configure Campaign Manager destination in RudderStack
-- Send track events for conversion actions
+**Configuration**:
+- Set `enableEnhancedConversions: true`
+- Set `isHashingRequired: true` (RudderStack will hash PII)
+- Use `batchupdate` request type
 
-### Pattern 2: Batch Conversion Import
+**Considerations**:
+- Only works with `batchupdate`
+- Conversions must already exist in Campaign Manager 360
+- User identifiers will be hashed automatically
+- Phone numbers normalized to E.164 format
 
-**Use Case**: Import conversions from external systems or offline sources
+### Use Case 3: Offline Conversion Tracking
 
-```
-External System → Batch Job → RudderStack HTTP API → Campaign Manager
-```
+**Scenario**: Send offline conversion data (e.g., in-store purchases) to Campaign Manager 360
 
-**Implementation**:
-- Create scheduled batch job to extract conversions
-- Transform to RudderStack track events
-- Send via RudderStack HTTP API
-- Monitor for failures and retry
-
-### Pattern 3: Enhanced Conversion Pipeline
-
-**Use Case**: Enhance online conversions with offline customer data
-
-```
-Online Conversion → Campaign Manager (initial)
-Warehouse Data → Batch Job → RudderStack → Campaign Manager (update)
-```
-
-**Implementation**:
-1. Track initial conversions in real-time with gclid/dclid
-2. Join with warehouse customer data (email, phone, address)
-3. Send batchupdate events with enhanced data
-4. Campaign Manager improves attribution with first-party data
-
-### Pattern 4: Multi-Source Conversion Aggregation
-
-**Use Case**: Aggregate conversions from multiple sources
-
-```
-Website → RudderStack → Campaign Manager
-Mobile App → RudderStack → Campaign Manager
-CRM System → Batch Job → RudderStack → Campaign Manager
+**Warehouse Query**:
+```sql
+SELECT 
+  '12345' as floodlight_configuration_id,
+  '67890' as floodlight_activity_id,
+  CONCAT(order_id, '_', transaction_timestamp) as ordinal,
+  transaction_timestamp as timestamp,
+  1 as quantity,
+  order_total as value,
+  customer_match_id as match_id,
+  'batchinsert' as request_type
+FROM offline_sales
+WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
+  AND customer_match_id IS NOT NULL
 ```
 
-**Implementation**:
-- Configure RudderStack SDKs on all digital properties
-- Create batch jobs for offline/CRM conversions
-- Use consistent ordinal format across sources
-- Campaign Manager deduplicates based on ordinals
+**Considerations**:
+- Use `matchId` if gclid not available
+- Ensure ordinal is unique for each conversion
+- Include conversion value for ROI tracking
+
+## Troubleshooting RETL
+
+### Issue: "Properties must be present in event"
+
+**Cause**: Track event doesn't have properties object
+
+**Solution**: Ensure warehouse mapping includes properties fields:
+```json
+{
+  "type": "track",
+  "properties": {
+    "floodlightConfigurationId": "...",
+    "requestType": "batchinsert",
+    // ... other properties
+  }
+}
+```
+
+### Issue: "At least one of gclid, matchId, ... must be present"
+
+**Cause**: No user identifier provided
+
+**Solution**: Ensure at least one user identifier column is mapped:
+- `gclid`
+- `matchId`
+- `dclid`
+- `mobileDeviceId`
+- `impressionId`
+- `encryptedUserId` (with encryption info)
+
+### Issue: "encryptionInfo is required if encryptedUserId is used"
+
+**Cause**: Using encrypted user IDs without providing encryption info
+
+**Solution**: Provide all three encryption fields:
+```json
+{
+  "properties": {
+    "encryptedUserId": "...",
+    "encryptionEntityType": "DCM_ACCOUNT",
+    "encryptionSource": "AD_SERVING",
+    "encryptionEntityId": "123456"
+  }
+}
+```
+
+### Issue: Enhanced conversions not working
+
+**Cause**: Multiple possible causes
+
+**Solution Checklist**:
+1. ✅ `enableEnhancedConversions: true` in destination config
+2. ✅ `requestType: 'batchupdate'` in event
+3. ✅ User identifier fields (email, phone, etc.) present in traits
+4. ✅ Conversion already exists in Campaign Manager 360
 
 ## Summary
 
-The Campaign Manager destination **supports RETL functionality** for warehouse sources. Key points:
+The Campaign Manager 360 destination supports RETL functionality with the following characteristics:
 
-- ✅ **RETL Supported**: Warehouse source type is supported
-- ✅ **Warehouse Sync**: Direct sync from warehouse to Campaign Manager
-- ✅ **Track Events**: Uses standard track event transformation
-- ✅ **Automatic Batching**: Up to 1000 conversions per batch
-- ✅ **Enhanced Conversions**: Supports first-party data with automatic hashing
-- ❌ **No VDM v1**: No visual data mapper configuration
-- ❌ **No VDM v2**: No `record` message type support
+- **RETL Support**: ✅ Yes, via warehouse source type support
+- **JSON Mapper**: ✅ Supported for data transformation
+- **VDM v1**: ❌ Not supported
+- **VDM v2**: ❌ Not supported (no record message type)
+- **Supported Events**: Track events only (conversions)
+- **API Integration**: Campaign Manager 360 Conversions API (v4)
+- **Batching**: Up to 1000 conversions per batch
+- **Enhanced Conversions**: ✅ Supported for batchupdate requests
 
-**Configuration**: Warehouse source → Cloud connection mode → Campaign Manager destination
+**Key Features**:
+- Historical conversion uploads via `batchinsert`
+- Enhanced conversion enrichment via `batchupdate`
+- Automatic PII hashing for user identifiers
+- Flexible user identifier support (gclid, matchId, mobileDeviceId, etc.)
+- Encrypted user ID support
 
-**Best For**:
-- Offline conversion imports from CRM/POS systems
-- Enhanced conversions with warehouse customer data
-- Scheduled batch conversion syncs
-- Aggregated conversion reporting
-- Multi-source conversion aggregation
-
-## Warehouse Table Schema Best Practices
-
-### Required Columns
-
-Every warehouse table for Campaign Manager RETL should include:
-
-```sql
-CREATE TABLE campaign_manager_conversions (
-  -- Event metadata
-  event_name VARCHAR(255) NOT NULL,
-  user_id VARCHAR(255),
-  timestamp TIMESTAMP NOT NULL,
-  
-  -- Campaign Manager required fields
-  request_type VARCHAR(50) NOT NULL,  -- 'batchinsert' or 'batchupdate'
-  floodlight_configuration_id VARCHAR(255) NOT NULL,
-  floodlight_activity_id VARCHAR(255) NOT NULL,
-  ordinal VARCHAR(255) NOT NULL,  -- Must be unique
-  quantity INTEGER NOT NULL,
-  
-  -- Conversion value (optional but recommended)
-  value DECIMAL(10,2),
-  
-  -- User identifiers (at least one required)
-  gclid VARCHAR(255),
-  dclid VARCHAR(255),
-  match_id VARCHAR(255),
-  mobile_device_id VARCHAR(255),
-  impression_id VARCHAR(255),
-  
-  -- Enhanced conversion fields (optional)
-  email VARCHAR(255),
-  phone VARCHAR(50),
-  first_name VARCHAR(255),
-  last_name VARCHAR(255),
-  street VARCHAR(255),
-  city VARCHAR(255),
-  state VARCHAR(255),
-  zip VARCHAR(20),
-  country VARCHAR(10),
-  
-  -- Privacy flags (optional)
-  limit_ad_tracking BOOLEAN,
-  child_directed_treatment BOOLEAN,
-  treatment_for_underage BOOLEAN,
-  non_personalized_ad BOOLEAN,
-  
-  -- Sync tracking
-  synced_at TIMESTAMP,
-  sync_status VARCHAR(50)
-);
-```
-
-### Indexes for Performance
-
-```sql
--- Index on sync status for efficient querying
-CREATE INDEX idx_sync_status ON campaign_manager_conversions(sync_status);
-
--- Index on timestamp for date-based filtering
-CREATE INDEX idx_timestamp ON campaign_manager_conversions(timestamp);
-
--- Unique index on ordinal for deduplication
-CREATE UNIQUE INDEX idx_ordinal ON campaign_manager_conversions(ordinal);
-```
-
-## Additional Resources
-
-- [Google Campaign Manager 360 API Documentation](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions)
-- [RudderStack Warehouse Sources Documentation](https://www.rudderstack.com/docs/sources/reverse-etl/)
-- [Campaign Manager Enhanced Conversions Guide](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
-- [RudderStack RETL Best Practices](https://www.rudderstack.com/docs/sources/reverse-etl/common-settings/)
+**Limitations**:
+- Only track events supported (no identify, page, etc.)
+- No VDM v1 or v2 support
+- No special `mappedToDestination` handling
+- Enhanced conversions only work with `batchupdate`
 

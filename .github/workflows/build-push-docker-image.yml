@@ -124,11 +124,29 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
+      - name: Verify Docker Image is Available
+        run: |
+          echo "Checking if Docker image ${{ inputs.build_tag }} is available..."
+          docker images | grep "${{ inputs.build_tag }}" || echo "Image not found in docker images list"
+          
+          # Try to inspect the image
+          if ! docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1; then
+            echo "Image not found, trying to load from buildx"
+            # Force load the image into Docker daemon
+            docker buildx build --load --tag ${{ inputs.build_tag }} --file ${{ inputs.dockerfile }} --target ${{ inputs.load_target }} .
+          fi
+          
+          # Verify the image is now available
+          docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1 && echo "✓ Image is now accessible" || (echo "✗ Image still not accessible" && exit 1)
+
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          echo "Running tests on Docker image: ${{ inputs.build_tag }}"
+          echo "Running JavaScript tests..."
+          docker run --rm ${{ inputs.build_tag }} npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
@@ -180,11 +198,29 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
+      - name: Verify Docker Image is Available
+        run: |
+          echo "Checking if Docker image ${{ inputs.build_tag }} is available..."
+          docker images | grep "${{ inputs.build_tag }}" || echo "Image not found in docker images list"
+          
+          # Try to inspect the image
+          if ! docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1; then
+            echo "Image not found, trying to load from buildx"
+            # Force load the image into Docker daemon
+            docker buildx build --load --tag ${{ inputs.build_tag }} --file ${{ inputs.dockerfile }} --target ${{ inputs.load_target }} .
+          fi
+          
+          # Verify the image is now available
+          docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1 && echo "✓ Image is now accessible" || (echo "✗ Image still not accessible" && exit 1)
+
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          echo "Running tests on Docker image: ${{ inputs.build_tag }}"
+          echo "Running JavaScript tests..."
+          docker run --rm ${{ inputs.build_tag }} npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1

@@ -2,20 +2,34 @@ import {
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
 } from '@rudderstack/integrations-lib';
-import { RedditRouterRequest } from './types';
+import {
+  RedditResponse,
+  RedditRouterRequest,
+  RedditConversionEventsPayload,
+  RedditEventType,
+  RedditEventMetadata,
+  RedditUserData,
+} from './types';
 import userDataMapping from './data/userDataMapping.json';
 import { constructPayload, defaultRequestConfig, isAppleFamily } from '../../../../v0/util';
 import { RudderMessage } from '../../../../types';
 import { ecomEventMaps, V3_ENDPOINT } from './config';
-import { convertToUpperSnakeCase, populateRevenueField } from './utils';
+import {
+  convertToUpperSnakeCase,
+  populateRevenueField,
+  generateAndValidateTimestamp,
+} from './utils';
 
 const sha256 = require('sha256');
 
-const prepareUserObject = (message: RudderMessage, hashData: boolean) => {
+const prepareUserObject = (
+  message: RudderMessage,
+  hashData: boolean,
+): RedditUserData | undefined => {
   const userData = constructPayload(message, userDataMapping);
   const os = (message.context as { os?: { name?: string } })?.os?.name?.toLowerCase() || null;
   if (!userData) {
-    return null;
+    return undefined;
   }
   if (isAppleFamily(os)) {
     userData.idfa = (
@@ -36,7 +50,7 @@ const prepareUserObject = (message: RudderMessage, hashData: boolean) => {
     userData.aaid = userData?.aaid ? sha256(userData.aaid) : null;
   }
 
-  return removeUndefinedAndNullValues(userData);
+  return removeUndefinedAndNullValues(userData) as RedditUserData;
 };
 
 /**
@@ -48,28 +62,25 @@ const prepareUserObject = (message: RudderMessage, hashData: boolean) => {
 const prepareEventType = (
   message: RudderMessage,
   eventsMapping: Record<string, string>[],
-):
-  | { tracking_type: string }
-  | { tracking_type: string }[]
-  | { tracking_type: 'CUSTOM'; custom_event_name: string } => {
+): RedditEventType | RedditEventType[] => {
   const { event } = message;
   if (!event) {
     throw new Error('Event name is required in the message');
   }
   const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
-  const eventNames = new Set((eventsMap?.[event] as string[]) || []);
+  const eventNames = new Set((eventsMap?.[event.toLowerCase()] as string[]) || []);
   if (eventNames.size === 0) {
     for (const ecomEventMap of ecomEventMaps) {
       if (ecomEventMap.src.includes(event)) {
-        return { tracking_type: convertToUpperSnakeCase(ecomEventMap.dest) };
+        return { tracking_type: convertToUpperSnakeCase(ecomEventMap.dest) } as RedditEventType;
       }
     }
   } else {
-    const eventTypes: { tracking_type: string }[] = [];
+    const eventTypes: RedditEventType[] = [];
     eventNames.forEach((eventName: string) => {
       eventTypes.push({
         tracking_type: convertToUpperSnakeCase(eventName),
-      });
+      } as RedditEventType);
     });
     return eventTypes;
   }
@@ -77,7 +88,7 @@ const prepareEventType = (
   return { tracking_type: 'CUSTOM', custom_event_name: event };
 };
 
-const prepareProductsArray = (message: RudderMessage) => {
+const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventMetadata => {
   const { properties } = message;
   if ((properties as { products: any[] })?.products?.length > 0) {
     let itemCount = 0;
@@ -107,7 +118,7 @@ const prepareProductsArray = (message: RudderMessage) => {
   };
 };
 
-const prepareOtherFields = (message: RudderMessage, type: string): Record<string, any> => {
+const prepareOtherMetadataFields = (message: RudderMessage, type: string): RedditEventMetadata => {
   const { properties, messageId } = message;
   const value = populateRevenueField(type, properties);
   const conversionId = (properties as { conversionId: string })?.conversionId || messageId;
@@ -126,12 +137,12 @@ const prepareOtherFields = (message: RudderMessage, type: string): Record<string
   return removeUndefinedAndNullValues(otherFields) as Record<string, any>;
 };
 
-const prepareMetadata = (message: RudderMessage, type: string) => {
-  const productsArray = prepareProductsArray(message);
-  const otherFields = prepareOtherFields(message, type);
+const prepareMetadata = (message: RudderMessage, type: string): RedditEventMetadata => {
+  const productsArray = prepareProductsArrayWithItemCount(message);
+  const otherMetadataFields = prepareOtherMetadataFields(message, type);
   return {
     ...productsArray,
-    ...otherFields,
+    ...otherMetadataFields,
   };
 };
 
@@ -139,15 +150,17 @@ const prepareMetadata = (message: RudderMessage, type: string) => {
  * Processes a track event for Reddit destination.
  * @param event - RedditRouterRequest containing message and destination config.
  */
-const processTrackEvent = (event: RedditRouterRequest) => {
+const processTrackEvent = (event: RedditRouterRequest): RedditConversionEventsPayload[] => {
   const { message, destination } = event;
   const { eventsMapping, hashData } = destination.Config;
   const userObject = prepareUserObject(message, hashData);
   const type = prepareEventType(message, eventsMapping);
-  const finalPayload: Record<string, any>[] = [];
+  const finalPayload: RedditConversionEventsPayload[] = [];
   const clickId = (message.properties as { clickId: string })?.clickId;
-  const eventAt = (message.properties as { timestamp: string })?.timestamp;
-  const actionSource = 'WEBSITE';
+  const timestamp = message.timestamp || message.originalTimestamp;
+  const eventAt = generateAndValidateTimestamp(timestamp);
+  const actionSource = 'WEBSITE' as const;
+  const testId = (message.properties as { test_id: string })?.test_id;
   if (Array.isArray(type)) {
     for (const t of type) {
       const metadata = prepareMetadata(message, t.tracking_type);
@@ -159,7 +172,11 @@ const processTrackEvent = (event: RedditRouterRequest) => {
         type: t,
         metadata,
       };
-      finalPayload.push(payload);
+      if (testId) {
+        finalPayload.push({ data: { events: [payload], test_id: testId } });
+      } else {
+        finalPayload.push({ data: { events: [payload] } });
+      }
     }
   } else {
     const metadata = prepareMetadata(message, type.tracking_type);
@@ -171,12 +188,16 @@ const processTrackEvent = (event: RedditRouterRequest) => {
       type,
       metadata,
     };
-    finalPayload.push(payload);
+    if (testId) {
+      finalPayload.push({ data: { events: [payload], test_id: testId } });
+    } else {
+      finalPayload.push({ data: { events: [payload] } });
+    }
   }
   return finalPayload;
 };
 
-export const process = (event: RedditRouterRequest) => {
+export const process = (event: RedditRouterRequest): RedditResponse[] => {
   const { message, destination, metadata } = event;
 
   if (!message.type) {
@@ -184,16 +205,19 @@ export const process = (event: RedditRouterRequest) => {
   }
 
   if (message.type === 'track') {
-    return processTrackEvent(event).map((finalPayload) => {
-      const response = defaultRequestConfig();
-      response.body.JSON = { data: { events: [finalPayload] } };
-      response.endpoint = V3_ENDPOINT + destination.Config.accountId;
+    const finalPayload = processTrackEvent(event);
+    const finalResponse: RedditResponse[] = [];
+    finalPayload.forEach((payload) => {
+      const response = defaultRequestConfig() as unknown as RedditResponse;
+      response.body.JSON = payload as RedditConversionEventsPayload;
+      response.endpoint = `${V3_ENDPOINT}${destination.Config.accountId}/conversion_events`;
       response.headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${metadata.secret.accessToken}`,
       };
-      return response;
+      finalResponse.push(response);
     });
+    return finalResponse;
   }
 
   throw new Error(`Message type ${message.type} is not supported`);

@@ -112,14 +112,12 @@ jobs:
 
       - name: Build Docker Image
         uses: rudderlabs/build-scan-push-action@v1.8.1
-        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
-          push: true
           platforms: |
             linux/arm64
           # cache-from: type=gha
@@ -133,12 +131,11 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
-        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: true
+          push: ${{ github.actor != 'dependabot[bot]' }}
           tags: ${{ inputs.push_tags }}-arm64
           platforms: |
             linux/arm64
@@ -170,14 +167,12 @@ jobs:
 
       - name: Build Docker Image
         uses: rudderlabs/build-scan-push-action@v1.8.1
-        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
-          push: true
           platforms: |
             linux/amd64
           # cache-from: type=gha
@@ -191,12 +186,11 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
-        if: github.actor != 'dependabot[bot]'
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: true
+          push: ${{ github.actor != 'dependabot[bot]' }}
           tags: ${{ inputs.push_tags }}-amd64
           platforms: |
             linux/amd64

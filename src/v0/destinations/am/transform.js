@@ -1018,14 +1018,14 @@ const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
   const batchResponses = [];
   const multiplexedInputsBatches = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
 
-  multiplexedInputsBatches.forEach((multiplexedInputsBatch) => {
+  for (const multiplexedInputsBatch of multiplexedInputsBatches) {
     const { events, metadata, destination } = multiplexedInputsBatch;
     const mergedEvent = mergeEvents(events);
     const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
     batchResponse.batchedRequest.userId = events[0]?.userId;
     batchResponse.batched = true;
     batchResponses.push(batchResponse);
-  });
+  }
 
   return batchResponses;
 };
@@ -1039,11 +1039,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const errorRespList = [];
   const successRespList = [];
-
-  Object.values(groupedInputs).forEach((groupedInput) => {
+  for (const groupedInput of Object.values(groupedInputs)) {
     const nonBatchableInputs = [];
     const batchableInputs = [];
-    groupedInput.forEach((input) => {
+    for (const input of groupedInput) {
       try {
         /**
          * Example of transformed event
@@ -1100,19 +1099,19 @@ const processRouterDest = async (inputs, reqMetadata) => {
         const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);
       }
-    });
+    }
     // Skipping single events from batching
     if (batchableInputs.length > 1) {
       successRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
     } else if (batchableInputs.length === 1) {
       nonBatchableInputs.push(batchableInputs[0]);
     }
-    nonBatchableInputs.forEach((input) => {
+    for (const input of nonBatchableInputs) {
       successRespList.push(
         getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
       );
-    });
-  });
+    }
+  }
   return sortBatchesByMinJobId([...successRespList, ...errorRespList]);
 };
 

@@ -112,7 +112,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.11.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@chore.load_image
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -145,7 +145,7 @@ jobs:
           docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@chore.load_image
         with:
           context: .
           file: ${{ inputs.dockerfile }}

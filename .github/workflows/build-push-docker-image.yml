@@ -44,6 +44,23 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
+  check_actor:
+    runs-on: ubuntu-latest
+    name: Check if actor is dependabot
+    outputs:
+      is_dependabot: ${{ steps.check.outputs.is_dependabot }}
+    steps:
+      - name: Check actor
+        id: check
+        run: |
+          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+            echo "is_dependabot=true" >> $GITHUB_OUTPUT
+            echo "Actor is dependabot[bot] - skipping certain steps"
+          else
+            echo "is_dependabot=false" >> $GITHUB_OUTPUT
+            echo "Actor is ${{ github.actor }} - proceeding normally"
+          fi
+
   get_sha:
     runs-on: ubuntu-latest
     name: Get SHA information
@@ -93,7 +110,7 @@ jobs:
   build-transformer-image-arm64:
     name: Build Transformer Docker Image ARM64
     runs-on: [self-hosted, Linux, ARM64, ubuntu-22]
-    needs: [get_sha, get_changed_files]
+    needs: [check_actor, get_sha, get_changed_files]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -102,7 +119,7 @@ jobs:
           fetch-depth: 1
 
       - name: Login to DockerHub
-        if: ${{ github.actor != 'dependabot[bot]' }}  
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         uses: docker/login-action@v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
@@ -116,7 +133,6 @@ jobs:
       # because it's designed for building and pushing images, not loading them locally.  
       - name: Build and load Docker Image
         id: build-and-push
-        if: success()
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -142,7 +158,7 @@ jobs:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: ${{ github.actor != 'dependabot[bot]' }}
+          push: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
           tags: ${{ inputs.push_tags }}-arm64
           platforms: |
             linux/arm64
@@ -155,7 +171,7 @@ jobs:
   build-transformer-image-amd64:
     name: Build Transformer Docker Image AMD64
     runs-on: [self-hosted, Linux, X64]
-    needs: [get_sha, get_changed_files]
+    needs: [check_actor, get_sha, get_changed_files]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -164,7 +180,7 @@ jobs:
           fetch-depth: 1
 
       - name: Login to DockerHub
-        if: ${{ github.actor != 'dependabot[bot]' }}
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         uses: docker/login-action@v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
@@ -178,7 +194,6 @@ jobs:
       # because it's designed for building and pushing images, not loading them locally.
       - name: Build and load Docker Image
         id: build-and-push
-        if: success()
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -204,7 +219,7 @@ jobs:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: ${{ github.actor != 'dependabot[bot]' }}
+          push: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
           tags: ${{ inputs.push_tags }}-amd64
           platforms: |
             linux/amd64
@@ -217,11 +232,11 @@ jobs:
   create-manifest:
     name: Create multi-arch manifest
     runs-on: ubuntu-latest
-    needs: [build-transformer-image-amd64, build-transformer-image-arm64]
+    needs: [check_actor, build-transformer-image-amd64, build-transformer-image-arm64]
+    if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
 
     steps:
       - name: Login to DockerHub
-        if: ${{ github.actor != 'dependabot[bot]' }}
         uses: docker/login-action@v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}

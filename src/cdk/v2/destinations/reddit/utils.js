@@ -1,4 +1,4 @@
-const { isDefinedAndNotNull } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNull, InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 
 const decideVersion = ({ Config }) => {
@@ -128,6 +128,31 @@ const convertToUpperSnakeCase = (type) => {
   return trackingTypeMap[type];
 };
 
+const generateAndValidateTimestamp = (timestamp) => {
+  if (!timestamp) {
+    throw new InstrumentationError('Timestamp is not present.');
+  }
+
+  const eventAt = new Date(timestamp).getTime();
+  if (Number.isNaN(eventAt)) {
+    throw new InstrumentationError('Invalid timestamp format.');
+  }
+
+  const now = Date.now();
+  const maxPastMs = 168 * 60 * 60 * 1000; // 168h * 60m * 60s * 1000ms = 7 days in ms
+  const maxFutureMs = 5 * 60 * 1000; // 5 minutes in ms
+
+  if (now - eventAt > maxPastMs) {
+    throw new InstrumentationError('event_at timestamp must be less than 168 hours (7 days) old.');
+  }
+  if (eventAt - now > maxFutureMs) {
+    throw new InstrumentationError(
+      'event_at timestamp must not be more than 5 minutes in the future.',
+    );
+  }
+
+  return eventAt;
+};
 module.exports = {
   batchEventChunks,
   populateRevenueField,
@@ -135,4 +160,5 @@ module.exports = {
   removeUnsupportedFields,
   convertToUpperSnakeCase,
   decideVersion,
+  generateAndValidateTimestamp,
 };

@@ -3,6 +3,8 @@ bindings:
   - path: ./config
   - name: isDefinedAndNotNull
     path: ../../../../v0/util
+  - name: combineBatchRequestsWithSameJobIds
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -59,14 +61,14 @@ steps:
       })[]
 
   - name: batchSuccessfulEvents
-    description: Batches the successfulEvents using endpoint
+    description: Batches the successfulEvents based on the dontBatch in metadata and test_id in message body. If test_id is present in any of the transformed events, it is not batched.
     condition: $.outputs.successfulEvents.length
     template: |
-      const dontBatchTrueEvents =  $.outputs.successfulEvents{.metadata.dontBatch}[];
-      const dontBatchFalseEvents = $.outputs.successfulEvents{!.metadata.dontBatch}[];
-      const dontBatchTrueEventsChunks = $.chunk(dontBatchTrueEvents, 1);
-      const dontBatchFalseEventsChunks = $.chunk(dontBatchFalseEvents, $.maxBatchSize);
-      let batches = [...$.batchEventChunks(dontBatchFalseEventsChunks), ...$.batchEventChunks(dontBatchTrueEventsChunks)];
+      const nonBatchableEvents =  $.outputs.successfulEvents{.metadata.dontBatch || .message.[0].body.JSON.data.test_id}[];
+      const batchableEvents = $.outputs.successfulEvents{!.metadata.dontBatch && !.message.[0].body.JSON.data.test_id}[];
+      const nonBatchableEventsChunks = $.chunk(nonBatchableEvents, 1);
+      const batchableEventsChunks = $.chunk(batchableEvents, $.maxBatchSize);
+      let batches = [...$.batchEventChunks(nonBatchableEventsChunks), ...$.batchEventChunks(batchableEventsChunks)];
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -94,4 +96,4 @@ steps:
 
   - name: finalPayload
     template: |
-      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+      [...$.combineBatchRequestsWithSameJobIds($.outputs.batchSuccessfulEvents), ...$.outputs.failedEvents]

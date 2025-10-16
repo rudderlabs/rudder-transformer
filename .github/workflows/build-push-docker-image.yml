@@ -124,20 +124,16 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Verify Docker Image is Available
+      - name: Load Docker Image from Tar
         run: |
-          echo "Checking if Docker image ${{ inputs.build_tag }} is available..."
-          docker images | grep "${{ inputs.build_tag }}" || echo "Image not found in docker images list"
-          
-          # Try to inspect the image
-          if ! docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1; then
-            echo "Image not found, trying to load from buildx"
-            # Force load the image into Docker daemon
-            docker buildx build --load --tag ${{ inputs.build_tag }} --file ${{ inputs.dockerfile }} --target ${{ inputs.load_target }} .
+          echo "Loading Docker image from tar file..."
+          if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
+            docker load -i "${{ runner.temp }}/local-docker-image.tar"
+            echo "✓ Docker image loaded successfully"
+          else
+            echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
+            exit 1
           fi
-          
-          # Verify the image is now available
-          docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1 && echo "✓ Image is now accessible" || (echo "✗ Image still not accessible" && exit 1)
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
@@ -198,20 +194,16 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Verify Docker Image is Available
+      - name: Load Docker Image from Tar
         run: |
-          echo "Checking if Docker image ${{ inputs.build_tag }} is available..."
-          docker images | grep "${{ inputs.build_tag }}" || echo "Image not found in docker images list"
-          
-          # Try to inspect the image
-          if ! docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1; then
-            echo "Image not found, trying to load from buildx"
-            # Force load the image into Docker daemon
-            docker buildx build --load --tag ${{ inputs.build_tag }} --file ${{ inputs.dockerfile }} --target ${{ inputs.load_target }} .
+          echo "Loading Docker image from tar file..."
+          if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
+            docker load -i "${{ runner.temp }}/local-docker-image.tar"
+            echo "✓ Docker image loaded successfully"
+          else
+            echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
+            exit 1
           fi
-          
-          # Verify the image is now available
-          docker inspect ${{ inputs.build_tag }} > /dev/null 2>&1 && echo "✓ Image is now accessible" || (echo "✗ Image still not accessible" && exit 1)
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}

@@ -1,4 +1,5 @@
 import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
+import { generateMetadata } from '../../../testUtils';
 
 const destination: Destination = {
   Config: {
@@ -45,11 +46,7 @@ export const vdmV1RecordRequest: RouterTransformationRequest = {
         },
         recordId: '1',
       },
-      metadata: {
-        destinationId: 'salesforce-dest-id',
-        workspaceId: 'test-workspace-id',
-        jobId: 1,
-      },
+      metadata: generateMetadata(1),
     },
     {
       destination,
@@ -74,11 +71,7 @@ export const vdmV1RecordRequest: RouterTransformationRequest = {
         },
         recordId: '2',
       },
-      metadata: {
-        destinationId: 'salesforce-dest-id',
-        workspaceId: 'test-workspace-id',
-        jobId: 2,
-      },
+      metadata: generateMetadata(2),
     },
   ],
   destType: 'salesforce_bulk_upload',
@@ -102,6 +95,7 @@ export const vdmV1RecordOutput = {
               FirstName: 'John',
               LastName: 'Doe',
               Company: 'Acme Corp',
+              rudderOperation: 'insert',
             },
             JSON_ARRAY: {},
             XML: {},
@@ -130,6 +124,7 @@ export const vdmV1RecordOutput = {
               FirstName: 'Jane',
               LastName: 'Smith',
               Company: 'Beta Inc',
+              rudderOperation: 'insert',
             },
             JSON_ARRAY: {},
             XML: {},
@@ -179,11 +174,7 @@ export const vdmV2RecordRequest: RouterTransformationRequest = {
         },
         recordId: '3',
       },
-      metadata: {
-        destinationId: 'salesforce-dest-id',
-        workspaceId: 'test-workspace-id',
-        jobId: 3,
-      },
+      metadata: generateMetadata(3),
     },
   ],
   destType: 'salesforce_bulk_upload',
@@ -209,6 +200,7 @@ export const vdmV2RecordOutput = {
               FirstName: 'VDM',
               LastName: 'Two',
               email: 'vdm2test@example.com',
+              rudderOperation: 'insert',
             },
             JSON_ARRAY: {},
             XML: {},
@@ -222,6 +214,189 @@ export const vdmV2RecordOutput = {
           jobId: 3,
         },
         statusCode: 200,
+      },
+    ],
+  },
+};
+
+// VDM v2 with multiple operations - tests separate batching
+export const vdmV2MultiOperationRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination,
+      connection: connectionV2,
+      message: {
+        type: 'record',
+        action: 'insert',
+        fields: {
+          Email: 'insert1@example.com',
+          FirstName: 'Insert',
+          LastName: 'One',
+        },
+        identifiers: {
+          email: 'insert1@example.com',
+        },
+        recordId: '4',
+      },
+      metadata: generateMetadata(4),
+    },
+    {
+      destination,
+      connection: connectionV2,
+      message: {
+        type: 'record',
+        action: 'update',
+        fields: {
+          Email: 'update1@example.com',
+          FirstName: 'Update',
+          LastName: 'One',
+        },
+        identifiers: {
+          email: 'update1@example.com',
+        },
+        recordId: '5',
+      },
+      metadata: generateMetadata(5),
+    },
+    {
+      destination,
+      connection: connectionV2,
+      message: {
+        type: 'record',
+        action: 'delete',
+        fields: {
+          Email: 'delete1@example.com',
+          FirstName: 'Delete',
+          LastName: 'One',
+        },
+        identifiers: {
+          email: 'delete1@example.com',
+        },
+        recordId: '6',
+      },
+      metadata: generateMetadata(6),
+    },
+  ],
+  destType: 'salesforce_bulk_upload',
+};
+
+export const vdmV2MultiOperationOutput = {
+  response: {
+    status: 200,
+    body: [
+      // Batch 1: Delete operations (processed first)
+      {
+        batchedRequest: [
+          {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: '/bulk',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {},
+            body: {
+              JSON: {
+                Email: 'delete1@example.com',
+                FirstName: 'Delete',
+                LastName: 'One',
+                email: 'delete1@example.com',
+                rudderOperation: 'delete',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+            files: {},
+          },
+        ],
+        metadata: [
+          {
+            destinationId: 'salesforce-dest-id',
+            workspaceId: 'test-workspace-id',
+            jobId: 6,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination,
+      },
+      // Batch 2: Insert operations
+      {
+        batchedRequest: [
+          {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: '/bulk',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {},
+            body: {
+              JSON: {
+                Email: 'insert1@example.com',
+                FirstName: 'Insert',
+                LastName: 'One',
+                email: 'insert1@example.com',
+                rudderOperation: 'insert',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+            files: {},
+          },
+        ],
+        metadata: [
+          {
+            destinationId: 'salesforce-dest-id',
+            workspaceId: 'test-workspace-id',
+            jobId: 4,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination,
+      },
+      // Batch 3: Update operations
+      {
+        batchedRequest: [
+          {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: '/bulk',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            params: {},
+            body: {
+              JSON: {
+                Email: 'update1@example.com',
+                FirstName: 'Update',
+                LastName: 'One',
+                email: 'update1@example.com',
+                rudderOperation: 'update',
+              },
+              JSON_ARRAY: {},
+              XML: {},
+              FORM: {},
+            },
+            files: {},
+          },
+        ],
+        metadata: [
+          {
+            destinationId: 'salesforce-dest-id',
+            workspaceId: 'test-workspace-id',
+            jobId: 5,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination,
       },
     ],
   },
@@ -244,5 +419,13 @@ export const data = [
     version: 'v0',
     input: vdmV2RecordRequest,
     output: vdmV2RecordOutput,
+  },
+  {
+    name: 'salesforce_bulk_upload',
+    description: 'VDM v2 with multiple operations - separate batches',
+    module: 'router',
+    version: 'v0',
+    input: vdmV2MultiOperationRequest,
+    output: vdmV2MultiOperationOutput,
   },
 ];

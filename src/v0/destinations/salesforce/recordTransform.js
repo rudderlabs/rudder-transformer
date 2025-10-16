@@ -9,94 +9,198 @@ const {
   getSuccessRespEvents,
   defaultRequestConfig,
 } = require('../../util');
+const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
- * Process record events for VDM v1 flow
- * Uses context.mappedToDestination and destination.Config
+ * Process records for a specific action and return response
+ * @param {Array} actionRecords - Records for this action
+ * @param {Object} destination - Destination config
+ * @param {string} operation - Operation type (insert, update, delete)
+ * @returns {Object|null} - Response for this action or null if no records
  */
-async function processVDMV1RecordEvents(groupedRecordInputs) {
+async function processRecordsForAction(actionRecords, destination, operation) {
+  if (!actionRecords || actionRecords.length === 0) {
+    return null;
+  }
+
   const responses = [];
   const metadata = [];
 
-  await mapInBatches(groupedRecordInputs, async (record) => {
+  await mapInBatches(actionRecords, async (record) => {
     const { message } = record;
 
-    // For VDM v1, fields are already in the message structure
-    // Transform handles field mapping via existing Salesforce logic
     const response = defaultRequestConfig();
     response.body.JSON = message.fields || message.traits || {};
-    response.endpoint = '/bulk'; // Placeholder - actual endpoint handled by bulk uploader
+    response.endpoint = '/bulk';
+    response.body.JSON.rudderOperation = operation;
 
     responses.push(response);
     metadata.push(record.metadata);
   });
 
-  return getSuccessRespEvents(responses, metadata, groupedRecordInputs[0].destination, true);
+  return getSuccessRespEvents(responses, metadata, destination, true);
+}
+
+/**
+ * Process record events for VDM v1 flow
+ */
+async function processVDMV1RecordEvents(groupedRecordInputs) {
+  const { destination } = groupedRecordInputs[0];
+
+  const groupedByAction = await groupByInBatches(groupedRecordInputs, (record) =>
+    record.message.action?.toLowerCase(),
+  );
+
+  const actions = Object.keys(groupedByAction).filter((key) => key && key !== 'undefined');
+  const hasActions = actions.some((action) => action !== 'undefined');
+
+  if (!hasActions) {
+    const responses = [];
+    const metadata = [];
+
+    await mapInBatches(groupedRecordInputs, async (record) => {
+      const { message } = record;
+
+      const response = defaultRequestConfig();
+      response.body.JSON = message.fields || message.traits || {};
+      response.endpoint = '/bulk';
+
+      responses.push(response);
+      metadata.push(record.metadata);
+    });
+
+    return getSuccessRespEvents(responses, metadata, destination, true);
+  }
+
+  const deleteResponse = await processRecordsForAction(
+    groupedByAction.delete,
+    destination,
+    'delete',
+  );
+  const insertResponse = await processRecordsForAction(
+    groupedByAction.insert,
+    destination,
+    'insert',
+  );
+  const updateResponse = await processRecordsForAction(
+    groupedByAction.update,
+    destination,
+    'update',
+  );
+
+  const errorResponse = getErrorResponse(groupedByAction);
+
+  const finalResponse = createFinalResponse(
+    deleteResponse,
+    insertResponse,
+    updateResponse,
+    errorResponse,
+  );
+
+  if (finalResponse.length === 0) {
+    throw new InstrumentationError(
+      'Missing valid parameters, unable to generate transformed payload',
+    );
+  }
+
+  return finalResponse;
+}
+
+/**
+ * Process records for a specific action (VDM v2) and return response
+ * @param {Array} actionRecords - Records for this action
+ * @param {Object} destination - Destination config
+ * @param {string} operation - Operation type (insert, update, delete)
+ * @returns {Object|null} - Response for this action or null if no records
+ */
+async function processRecordsForActionV2(actionRecords, destination, operation) {
+  if (!actionRecords || actionRecords.length === 0) {
+    return null;
+  }
+
+  const responses = [];
+  const metadata = [];
+
+  await mapInBatches(actionRecords, async (record) => {
+    const { message: recordMessage } = record;
+
+    const payload = recordMessage.fields || {};
+
+    if (recordMessage.identifiers) {
+      Object.keys(recordMessage.identifiers).forEach((key) => {
+        if (payload[key] === undefined) {
+          payload[key] = recordMessage.identifiers[key];
+        }
+      });
+    }
+
+    payload.rudderOperation = operation;
+
+    const response = defaultRequestConfig();
+    response.body.JSON = payload;
+    response.endpoint = '/bulk';
+    response.method = 'POST';
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+    };
+
+    responses.push(response);
+    metadata.push(record.metadata);
+  });
+
+  return getSuccessRespEvents(responses, metadata, destination, true);
 }
 
 /**
  * Process record events for VDM v2 flow
- * Uses connection.config.destination and message.identifiers
  */
 async function processVDMV2RecordEvents(groupedRecordInputs) {
-  const { connection } = groupedRecordInputs[0];
+  const { connection, destination } = groupedRecordInputs[0];
   const destinationConfig = connection?.config?.destination;
 
   if (!destinationConfig) {
     throw new InstrumentationError('VDM v2: connection.config.destination is required');
   }
 
-  // Group records by action (insert, update, delete)
   const groupedByAction = await groupByInBatches(groupedRecordInputs, (record) =>
     record.message.action?.toLowerCase(),
   );
 
-  const responses = [];
-  const metadata = [];
-
-  // Process each action type in parallel
-  await Promise.all(
-    ['insert', 'update', 'delete'].map(async (action) => {
-      const actionRecords = groupedByAction[action];
-      if (!actionRecords) return;
-
-      await mapInBatches(actionRecords, async (record) => {
-        const { message: recordMessage } = record;
-
-        // Build Salesforce payload from fields
-        const payload = recordMessage.fields || {};
-
-        // Add identifiers to payload if not already present
-        if (recordMessage.identifiers) {
-          Object.keys(recordMessage.identifiers).forEach((key) => {
-            if (payload[key] === undefined) {
-              payload[key] = recordMessage.identifiers[key];
-            }
-          });
-        }
-
-        const response = defaultRequestConfig();
-        response.body.JSON = payload;
-        response.endpoint = '/bulk'; // Placeholder
-        response.method = 'POST';
-        response.headers = {
-          'Content-Type': JSON_MIME_TYPE,
-        };
-
-        responses.push(response);
-        metadata.push(record.metadata);
-      });
-    }),
+  const deleteResponse = await processRecordsForActionV2(
+    groupedByAction.delete,
+    destination,
+    'delete',
+  );
+  const insertResponse = await processRecordsForActionV2(
+    groupedByAction.insert,
+    destination,
+    'insert',
+  );
+  const updateResponse = await processRecordsForActionV2(
+    groupedByAction.update,
+    destination,
+    'update',
   );
 
-  return getSuccessRespEvents(responses, metadata, groupedRecordInputs[0].destination, true);
+  const errorResponse = getErrorResponse(groupedByAction);
+
+  const finalResponse = createFinalResponse(
+    deleteResponse,
+    insertResponse,
+    updateResponse,
+    errorResponse,
+  );
+
+  if (finalResponse.length === 0) {
+    throw new InstrumentationError(
+      'Missing valid parameters, unable to generate transformed payload',
+    );
+  }
+
+  return finalResponse;
 }
 
-/**
- * Main entry point for processing record events
- * Detects VDM v1, VDM v2, or event stream flow
- */
 async function processRecordInputs(groupedRecordInputs) {
   if (!groupedRecordInputs || groupedRecordInputs.length === 0) {
     throw new InstrumentationError('No record inputs to process');
@@ -104,7 +208,6 @@ async function processRecordInputs(groupedRecordInputs) {
 
   const event = groupedRecordInputs[0];
 
-  // Detect flow type and route accordingly
   if (isEventSentByVDMV1Flow(event)) {
     return processVDMV1RecordEvents(groupedRecordInputs);
   }
@@ -113,8 +216,6 @@ async function processRecordInputs(groupedRecordInputs) {
     return processVDMV2RecordEvents(groupedRecordInputs);
   }
 
-  // Fallback to VDM v1 for event stream record events
-  // (Salesforce doesn't have a separate event stream record flow)
   return processVDMV1RecordEvents(groupedRecordInputs);
 }
 

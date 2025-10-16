@@ -154,11 +154,12 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+          push: true
           tags: ${{ inputs.push_tags }}-arm64
           platforms: |
             linux/arm64
@@ -215,11 +216,12 @@ jobs:
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
-          push: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+          push: true
           tags: ${{ inputs.push_tags }}-amd64
           platforms: |
             linux/amd64

@@ -124,16 +124,16 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Load Docker Image from Tar
-        run: |
-          echo "Loading Docker image from tar file..."
-          if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
-            docker load -i "${{ runner.temp }}/local-docker-image.tar"
-            echo "✓ Docker image loaded successfully"
-          else
-            echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
-            exit 1
-          fi
+      # - name: Load Docker Image from Tar
+      #   run: |
+      #     echo "Loading Docker image from tar file..."
+      #     if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
+      #       docker load -i "${{ runner.temp }}/local-docker-image.tar"
+      #       echo "✓ Docker image loaded successfully"
+      #     else
+      #       echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
+      #       exit 1
+      #     fi
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
@@ -182,7 +182,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.11.1
 
       - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@chore.load_image
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -194,16 +194,16 @@ jobs:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
 
-      - name: Load Docker Image from Tar
-        run: |
-          echo "Loading Docker image from tar file..."
-          if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
-            docker load -i "${{ runner.temp }}/local-docker-image.tar"
-            echo "✓ Docker image loaded successfully"
-          else
-            echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
-            exit 1
-          fi
+      # - name: Load Docker Image from Tar
+      #   run: |
+      #     echo "Loading Docker image from tar file..."
+      #     if [ -f "${{ runner.temp }}/local-docker-image.tar" ]; then
+      #       docker load -i "${{ runner.temp }}/local-docker-image.tar"
+      #       echo "✓ Docker image loaded successfully"
+      #     else
+      #       echo "✗ Tar file not found at ${{ runner.temp }}/local-docker-image.tar"
+      #       exit 1
+      #     fi
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
@@ -215,7 +215,7 @@ jobs:
           docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@chore.load_image
         with:
           context: .
           file: ${{ inputs.dockerfile }}

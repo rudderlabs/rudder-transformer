@@ -130,7 +130,9 @@ const convertToUpperSnakeCase = (type) => {
 
 const generateAndValidateTimestamp = (timestamp) => {
   if (!timestamp) {
-    throw new InstrumentationError('Timestamp is not present.');
+    throw new InstrumentationError(
+      'Required field "timestamp" or "originalTimestamp" is missing from the message.',
+    );
   }
 
   const eventAt = new Date(timestamp).getTime();

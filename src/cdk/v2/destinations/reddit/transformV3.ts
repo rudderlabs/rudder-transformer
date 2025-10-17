@@ -1,7 +1,9 @@
 import {
   getHashFromArrayWithDuplicate,
+  InstrumentationError,
   removeUndefinedAndNullValues,
 } from '@rudderstack/integrations-lib';
+import sha256 from 'sha256';
 import {
   RedditResponse,
   RedditRouterRequest,
@@ -19,8 +21,6 @@ import {
   populateRevenueField,
   generateAndValidateTimestamp,
 } from './utils';
-
-const sha256 = require('sha256');
 
 const prepareUserObject = (
   message: RudderMessage,
@@ -123,17 +123,18 @@ const prepareOtherMetadataFields = (message: RudderMessage, type: string): Reddi
   const value = populateRevenueField(type, properties);
   const conversionId = (properties as { conversionId: string })?.conversionId || messageId;
   let otherFields = {};
-  if (type in ['PURCHASE', 'ADD_TO_CART', 'VIEW_CONTENT']) {
+  if (['PURCHASE', 'ADD_TO_CART', 'VIEW_CONTENT'].includes(type)) {
     otherFields = {
       conversion_id: conversionId,
       currency: (properties as { currency: string })?.currency,
       item_count: (properties as { itemCount: number })?.itemCount,
       value: value ? value / 100 : null,
     };
+  } else {
+    otherFields = {
+      conversion_id: conversionId,
+    };
   }
-  otherFields = {
-    conversion_id: conversionId,
-  };
   return removeUndefinedAndNullValues(otherFields) as Record<string, any>;
 };
 
@@ -201,7 +202,7 @@ export const process = (event: RedditRouterRequest): RedditResponse[] => {
   const { message, destination, metadata } = event;
 
   if (!message.type) {
-    throw new Error('Message type is required');
+    throw new InstrumentationError('Message type is required');
   }
 
   if (message.type === 'track') {
@@ -220,5 +221,5 @@ export const process = (event: RedditRouterRequest): RedditResponse[] => {
     return finalResponse;
   }
 
-  throw new Error(`Message type ${message.type} is not supported`);
+  throw new InstrumentationError(`Message type ${message.type} is not supported`);
 };

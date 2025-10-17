@@ -144,7 +144,7 @@ jobs:
           target: ${{ inputs.load_target }}
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
         run: |
           echo "Running tests on Docker image: ${{ inputs.build_tag }}"
           echo "Running JavaScript tests..."
@@ -206,7 +206,7 @@ jobs:
           target: ${{ inputs.load_target }}
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
         run: |
           echo "Running tests on Docker image: ${{ inputs.build_tag }}"
           echo "Running JavaScript tests..."

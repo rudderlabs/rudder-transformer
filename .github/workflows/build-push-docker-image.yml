@@ -145,12 +145,14 @@ jobs:
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ inputs.build_tag }}
         run: |
-          echo "Running tests on Docker image: ${{ inputs.build_tag }}"
+          echo "Running tests on Docker image: $BUILD_TAG"
           echo "Running JavaScript tests..."
-          docker run --rm ${{ inputs.build_tag }} npm run test:js:ci
+          docker run --rm $BUILD_TAG npm run test:js:ci
           echo "Running TypeScript tests..."
-          docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
+          docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1
@@ -207,12 +209,14 @@ jobs:
 
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ inputs.build_tag }}
         run: |
-          echo "Running tests on Docker image: ${{ inputs.build_tag }}"
+          echo "Running tests on Docker image: $BUILD_TAG"
           echo "Running JavaScript tests..."
-          docker run --rm ${{ inputs.build_tag }} npm run test:js:ci
+          docker run --rm $BUILD_TAG npm run test:js:ci
           echo "Running TypeScript tests..."
-          docker run --rm ${{ inputs.build_tag }} npm run test:ts:ci
+          docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: rudderlabs/build-scan-push-action@v1.8.1

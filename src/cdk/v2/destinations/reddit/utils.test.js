@@ -672,13 +672,13 @@ describe('generateAndValidateTimestamp', () => {
   it('should throw error when timestamp is null', () => {
     expect(() => {
       generateAndValidateTimestamp(null);
-    }).toThrow('Timestamp is not present.');
+    }).toThrow('Required field "timestamp" or "originalTimestamp" is missing from the message.');
   });
 
   it('should throw error when timestamp is undefined', () => {
     expect(() => {
       generateAndValidateTimestamp(undefined);
-    }).toThrow('Timestamp is not present.');
+    }).toThrow('Required field "timestamp" or "originalTimestamp" is missing from the message.');
   });
 
   // Throws error for invalid timestamp format

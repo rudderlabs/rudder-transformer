@@ -1,6 +1,9 @@
 import { z } from 'zod';
 import { Destination, RouterTransformationRequestData, RudderMessage } from '../../../../types';
 
+// All the types are based on the following documentation:
+// https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
+
 export const RedditDestinationConfigSchema = z
   .object({
     rudderAccountId: z.string(),
@@ -66,7 +69,7 @@ export const RedditEventMetadataSchema = z.object({
   conversion_id: z.string().optional(),
   currency: z.string().optional(),
   item_count: z.number().optional(),
-  value: z.string().optional(),
+  value: z.number().optional(),
   products: z.array(RedditProductSchema).optional(),
 });
 

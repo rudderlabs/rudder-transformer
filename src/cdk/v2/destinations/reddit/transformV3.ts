@@ -65,7 +65,7 @@ const prepareEventType = (
 ): RedditEventType | RedditEventType[] => {
   const { event } = message;
   if (!event) {
-    throw new Error('Event name is required in the message');
+    throw new InstrumentationError('Event name is required in the message');
   }
   const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
   const eventNames = new Set((eventsMap?.[event.toLowerCase()] as string[]) || []);

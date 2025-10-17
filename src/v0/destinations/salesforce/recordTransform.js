@@ -128,11 +128,11 @@ async function processRecordsForActionV2(actionRecords, destination, operation) 
     const payload = recordMessage.fields || {};
 
     if (recordMessage.identifiers) {
-      Object.keys(recordMessage.identifiers).forEach((key) => {
+      for (const key of Object.keys(recordMessage.identifiers)) {
         if (payload[key] === undefined) {
           payload[key] = recordMessage.identifiers[key];
         }
-      });
+      }
     }
 
     payload.rudderOperation = operation;

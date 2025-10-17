@@ -1,6 +1,18 @@
 import { Connection, Destination, RouterTransformationRequest } from '../../../../../src/types';
 import { generateMetadata } from '../../../testUtils';
 
+const emptyHeaders = {};
+const emptyParams = {};
+const emptyBodyFormats = {
+  JSON_ARRAY: {},
+  XML: {},
+  FORM: {},
+};
+const emptyFiles = {};
+const jsonHeaders = {
+  'Content-Type': 'application/json',
+};
+
 const destination: Destination = {
   Config: {
     rudderAccountId: 'test-account-123',
@@ -87,8 +99,8 @@ export const vdmV1RecordOutput = {
           type: 'REST',
           method: 'POST',
           endpoint: '/bulk',
-          headers: {},
-          params: {},
+          headers: emptyHeaders,
+          params: emptyParams,
           body: {
             JSON: {
               Email: 'test1@example.com',
@@ -97,11 +109,9 @@ export const vdmV1RecordOutput = {
               Company: 'Acme Corp',
               rudderOperation: 'insert',
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            ...emptyBodyFormats,
           },
-          files: {},
+          files: emptyFiles,
         },
         metadata: {
           destinationId: 'salesforce-dest-id',
@@ -116,8 +126,8 @@ export const vdmV1RecordOutput = {
           type: 'REST',
           method: 'POST',
           endpoint: '/bulk',
-          headers: {},
-          params: {},
+          headers: emptyHeaders,
+          params: emptyParams,
           body: {
             JSON: {
               Email: 'test2@example.com',
@@ -126,11 +136,9 @@ export const vdmV1RecordOutput = {
               Company: 'Beta Inc',
               rudderOperation: 'insert',
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            ...emptyBodyFormats,
           },
-          files: {},
+          files: emptyFiles,
         },
         metadata: {
           destinationId: 'salesforce-dest-id',
@@ -190,10 +198,8 @@ export const vdmV2RecordOutput = {
           type: 'REST',
           method: 'POST',
           endpoint: '/bulk',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          params: {},
+          headers: jsonHeaders,
+          params: emptyParams,
           body: {
             JSON: {
               Email: 'vdm2test@example.com',
@@ -202,11 +208,9 @@ export const vdmV2RecordOutput = {
               email: 'vdm2test@example.com',
               rudderOperation: 'insert',
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            ...emptyBodyFormats,
           },
-          files: {},
+          files: emptyFiles,
         },
         metadata: {
           destinationId: 'salesforce-dest-id',
@@ -292,10 +296,8 @@ export const vdmV2MultiOperationOutput = {
             type: 'REST',
             method: 'POST',
             endpoint: '/bulk',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            params: {},
+            headers: jsonHeaders,
+            params: emptyParams,
             body: {
               JSON: {
                 Email: 'delete1@example.com',
@@ -304,11 +306,9 @@ export const vdmV2MultiOperationOutput = {
                 email: 'delete1@example.com',
                 rudderOperation: 'delete',
               },
-              JSON_ARRAY: {},
-              XML: {},
-              FORM: {},
+              ...emptyBodyFormats,
             },
-            files: {},
+            files: emptyFiles,
           },
         ],
         metadata: [
@@ -330,10 +330,8 @@ export const vdmV2MultiOperationOutput = {
             type: 'REST',
             method: 'POST',
             endpoint: '/bulk',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            params: {},
+            headers: jsonHeaders,
+            params: emptyParams,
             body: {
               JSON: {
                 Email: 'insert1@example.com',
@@ -342,11 +340,9 @@ export const vdmV2MultiOperationOutput = {
                 email: 'insert1@example.com',
                 rudderOperation: 'insert',
               },
-              JSON_ARRAY: {},
-              XML: {},
-              FORM: {},
+              ...emptyBodyFormats,
             },
-            files: {},
+            files: emptyFiles,
           },
         ],
         metadata: [
@@ -368,10 +364,8 @@ export const vdmV2MultiOperationOutput = {
             type: 'REST',
             method: 'POST',
             endpoint: '/bulk',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            params: {},
+            headers: jsonHeaders,
+            params: emptyParams,
             body: {
               JSON: {
                 Email: 'update1@example.com',
@@ -380,11 +374,9 @@ export const vdmV2MultiOperationOutput = {
                 email: 'update1@example.com',
                 rudderOperation: 'update',
               },
-              JSON_ARRAY: {},
-              XML: {},
-              FORM: {},
+              ...emptyBodyFormats,
             },
-            files: {},
+            files: emptyFiles,
           },
         ],
         metadata: [

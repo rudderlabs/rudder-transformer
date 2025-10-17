@@ -13,8 +13,8 @@ This document outlines the business logic and mappings used in the Campaign Mana
 2. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
 
 **Documentation**: 
-- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchinsert)
-- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchupdate)
+- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
+- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
 - [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
 
 ### Request Flow for Track Events

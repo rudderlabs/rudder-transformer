@@ -316,9 +316,9 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 
 **Note**: While multiple conversions are batched together, this is batching, not multiplexing. Each input event maps to exactly one output conversion.
 
-### Version Deprecation Cadence
+## Version Information
 
-#### Current Version Being Used
+### Current Version
 
 **API Version**: `v4` (Campaign Manager 360 API, formerly DCM/DFA Reporting API)
 
@@ -327,7 +327,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 - API endpoints use `/dfareporting/v4/` path
 - Implementation uses v4-specific payload structures
 
-#### End-of-Life Information
+### Version Deprecation
 
 **API v4 Deprecation Timeline**:
 - **Deprecation Date**: September 2, 2025
@@ -335,7 +335,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 - Google typically provides 6+ months between deprecation and sunset for migration
 - Migration to v5 is recommended before the sunset date
 
-#### Is There a New Version Available?
+### Available Versions
 
 **Yes** - Campaign Manager 360 API v5 is available
 
@@ -345,18 +345,20 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 - Plan migration timeline to complete before February 26, 2026
 - v5 endpoint format: `https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/{profileId}/conversions/{requestType}`
 
+## Documentation Links
 
-#### Documentation Links
+### Campaign Manager 360 API Documentation
 
 **Current Version Documentation**:
-- Campaign Manager 360 API Overview: [https://developers.google.com/doubleclick-advertisers/](https://developers.google.com/doubleclick-advertisers/)
-- Conversions API: [https://developers.google.com/doubleclick-advertisers/guides/conversions_overview](https://developers.google.com/doubleclick-advertisers/guides/conversions_overview)
-- Enhanced Conversions: [https://developers.google.com/doubleclick-advertisers/guides/conversions_ec](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
-- OAuth 2.0 Authorization: [https://developers.google.com/doubleclick-advertisers/authorizing](https://developers.google.com/doubleclick-advertisers/authorizing)
+- [Campaign Manager 360 API Overview](https://developers.google.com/doubleclick-advertisers/)
+- [Conversions API](https://developers.google.com/doubleclick-advertisers/guides/conversions_overview)
+- [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
+- [OAuth 2.0 Authorization](https://developers.google.com/doubleclick-advertisers/authorizing)
+- [API Quotas](https://developers.google.com/doubleclick-advertisers/quotas)
 
 **API Reference**:
-- Conversions: batchinsert: [https://developers.google.com/doubleclick-advertisers/v4/conversions/batchinsert](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchinsert)
-- Conversions: batchupdate: [https://developers.google.com/doubleclick-advertisers/v4/conversions/batchupdate](https://developers.google.com/doubleclick-advertisers/v4/conversions/batchupdate)
+- [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
+- [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
 
 ## RETL Functionality
 

@@ -110,12 +110,13 @@ export const RedditResponseSchema = z.object({
   type: z.string(),
   method: z.string(),
   endpoint: z.string(),
-  headers: z.record(z.unknown()),
-  params: z.record(z.unknown()),
+  headers: z.object({
+    'Content-Type': z.string(),
+    Authorization: z.string(),
+  }),
   body: z.object({
     JSON: RedditConversionEventsPayloadSchema,
   }),
-  files: z.record(z.unknown()),
 });
 
 export type RedditDestinationConfig = z.infer<typeof RedditDestinationConfigSchema>;

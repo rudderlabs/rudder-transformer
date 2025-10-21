@@ -2,9 +2,11 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
 const cloneDeep = require('lodash/cloneDeep');
+const groupBy = require('lodash/groupBy');
 const get = require('get-value');
 const set = require('set-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const stats = require('../../../util/stats');
 const {
   EventType,
   SpecedTraits,
@@ -26,9 +28,11 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
-  simpleProcessRouterDest,
   isValidInteger,
   handleRtTfSingleEventError,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  sortBatchesByMinJobId,
 } = require('../../util');
 const {
   BASE_URL,
@@ -39,6 +43,7 @@ const {
   IDENTIFY_AM,
   AMBatchSizeLimit,
   AMBatchEventLimit,
+  MAX_USERS_DEVICES_PER_BATCH,
 } = require('./config');
 
 const AMUtils = require('./utils');
@@ -971,9 +976,143 @@ const batch = (destEvents) => {
   return respList;
 };
 
+const createBatchResponse = (destination, metadata, mergedEvent) => {
+  stats.histogram('am_batch_size_based_on_user_id', mergedEvent.events.length, {
+    destination_id: destination.id,
+    source_id: metadata?.[0]?.sourceId,
+  });
+  const batchResponse = defaultBatchRequestConfig();
+  const { endpoint, path } = batchEndpointDetails(destination.Config);
+
+  batchResponse.destination = destination;
+  batchResponse.metadata = metadata;
+  batchResponse.batchedRequest.endpoint = endpoint;
+  batchResponse.batchedRequest.endpointPath = path;
+  batchResponse.batched = false;
+  batchResponse.statusCode = 200;
+  batchResponse.batchedRequest.body.JSON = mergedEvent;
+  batchResponse.batchedRequest.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+
+  return batchResponse;
+};
+
+const mergeEvents = (events) => {
+  if (!Array.isArray(events) || events.length === 0) {
+    // Safeguard: Return empty object if events array is empty or invalid
+    return {};
+  }
+  const baseEvent = { ...events[0].body.JSON };
+
+  const allEvents = [
+    ...(baseEvent.events || []),
+    ...events.slice(1).flatMap((event) => event.body.JSON?.events || []),
+  ];
+  baseEvent.events = allEvents;
+  return baseEvent;
+};
+
+// Main Function
+const batchEventsBasedOnUserIdOrAnonymousId = (inputs) => {
+  const batchResponses = [];
+  const multiplexedInputsBatches = batchMultiplexedEvents(inputs, MAX_USERS_DEVICES_PER_BATCH);
+
+  for (const multiplexedInputsBatch of multiplexedInputsBatches) {
+    const { events, metadata, destination } = multiplexedInputsBatch;
+    const mergedEvent = mergeEvents(events);
+    const batchResponse = createBatchResponse(destination, metadata, mergedEvent);
+    batchResponse.batchedRequest.userId = events[0]?.userId;
+    batchResponse.batched = true;
+    batchResponses.push(batchResponse);
+  }
+
+  return batchResponses;
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  // group by userId or anonymousId as am has rate limit as per userId/deviceId
+  const groupedInputs = groupBy(
+    inputs,
+    (input) => input.message.userId || input.message.anonymousId,
+  );
+
+  const errorRespList = [];
+  const successRespList = [];
+  for (const groupedInput of Object.values(groupedInputs)) {
+    const nonBatchableInputs = [];
+    const batchableInputs = [];
+    for (const input of groupedInput) {
+      try {
+        /**
+         * Example of transformed event
+         * [
+         * {
+         *    body: {
+         *      JSON: {
+         *        events: [
+         *          {
+         *            user_id: '123',
+         *            device_id: '456',
+         *          },
+         *        ],
+         *      },
+         *    },
+         *  },
+         * {
+         *    body: {
+         *      FORM:{
+         *         api_key: 'apiKey123',
+         *         mapping: [
+         *           JSON.stringify({
+         *             user_id: '123',
+         *             device_id: '456',
+         *           }),
+         *         ],
+         *      },
+         *  }
+         * ]
+         */
+        const transformedEvents = process(input);
+        /**
+         * We are applying batching only for identify, track, page and screen events. These events will get transformed and stored in the body.JSON.
+         * For alias and group events, we are not applying batching. These events will not get transformed and stored in the body.FORM.
+         */
+        const isBatchable = transformedEvents.every((transformedEvent) => {
+          const jsonBody = transformedEvent.body?.JSON ?? {};
+          return Object.keys(jsonBody).length > 0;
+        });
+        if (isBatchable && !input.metadata.dontBatch) {
+          batchableInputs.push({
+            message: transformedEvents,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        } else {
+          nonBatchableInputs.push({
+            message: transformedEvents,
+            metadata: input.metadata,
+            destination: input.destination,
+          });
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    }
+    // Skipping single events from batching
+    if (batchableInputs.length > 1) {
+      successRespList.push(...batchEventsBasedOnUserIdOrAnonymousId(batchableInputs));
+    } else if (batchableInputs.length === 1) {
+      nonBatchableInputs.push(batchableInputs[0]);
+    }
+    for (const input of nonBatchableInputs) {
+      successRespList.push(
+        getSuccessRespEvents(input.message, [input.metadata], input.destination, false),
+      );
+    }
+  }
+  return sortBatchesByMinJobId([...successRespList, ...errorRespList]);
 };
 
 const responseTransform = (input) => ({

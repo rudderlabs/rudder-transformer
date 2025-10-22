@@ -48,7 +48,7 @@ const scAudienceProxyRequest = async (request) => {
     requestMethod: requestOptions?.method,
     module: 'dataDelivery',
     metadata,
-  });
+  }, true);
   return response;
 };
 

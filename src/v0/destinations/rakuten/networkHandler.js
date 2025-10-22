@@ -26,7 +26,7 @@ const proxyRequest = async (request, destType) => {
     endpointPath: '/ep',
     requestMethod: 'GET',
     module: 'dataDelivery',
-  });
+  }, true);
   return response;
 };
 const extractContent = (xmlPayload, tagName) => {

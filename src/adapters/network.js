@@ -147,7 +147,7 @@ const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
       return [requestOptions];
   }
 };
-const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
+const commonHandler = async (axiosMethod, { statTags, method, ...args }, disableMetrics = false) => {
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
@@ -171,7 +171,9 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
       metadata: statTags?.metadata,
       responseDetails: getResponseDetails(clientResponse),
     });
-    fireHTTPStats(clientResponse, startTime, statTags);
+    if (!disableMetrics) {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }
   }
 
   setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
@@ -183,9 +185,9 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
  * @param {*} options
  * @returns
  */
-const httpSend = async (options, statTags = {}) => {
+const httpSend = async (options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios, { statTags, options, requestOptions });
+  return commonHandler(axios, { statTags, options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -196,9 +198,9 @@ const httpSend = async (options, statTags = {}) => {
  *
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpGET = async (url, options, statTags = {}) => {
+const httpGET = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions });
+  return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -209,9 +211,9 @@ const httpGET = async (url, options, statTags = {}) => {
  *
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpDELETE = async (url, options, statTags = {}) => {
+const httpDELETE = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions });
+  return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -223,7 +225,7 @@ const httpDELETE = async (url, options, statTags = {}) => {
  *
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPOST = async (url, data, options, statTags = {}) => {
+const httpPOST = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios.post, {
     statTags,
@@ -232,7 +234,7 @@ const httpPOST = async (url, data, options, statTags = {}) => {
     data,
     options,
     requestOptions,
-  });
+  }, disableMetrics);
 };
 
 /**
@@ -244,9 +246,9 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  *
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPUT = async (url, data, options, statTags = {}) => {
+const httpPUT = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions });
+  return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -258,7 +260,7 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  *
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPATCH = async (url, data, options, statTags = {}) => {
+const httpPATCH = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
   return commonHandler(axios.patch, {
     statTags,
@@ -267,7 +269,7 @@ const httpPATCH = async (url, data, options, statTags = {}) => {
     data,
     options,
     requestOptions,
-  });
+  }, disableMetrics);
 };
 
 const getPayloadData = (body) => {
@@ -448,7 +450,7 @@ const proxyRequest = async (request, destType) => {
     feature: 'proxy',
     destType,
     metadata,
-  });
+  }, true);
   return response;
 };
 

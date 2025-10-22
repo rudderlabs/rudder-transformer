@@ -25,6 +25,11 @@ jobs:
       TRANSFORMER_DOCKER_USERNAME: rudderlabs
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v5
       - name: 'Clone ingestion service'

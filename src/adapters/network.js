@@ -6,7 +6,12 @@ const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const { PlatformError } = require('@rudderstack/integrations-lib');
-const { removeUndefinedValues, isDefinedAndNotNullAndNotEmpty } = require('../v0/util');
+const stats = require('../util/stats');
+const {
+  removeUndefinedValues,
+  getErrorStatusCode,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../v0/util');
 const logger = require('../logger');
 const { processAxiosResponse } = require('./utils/networkUtils');
 // Only for tests
@@ -43,6 +48,56 @@ const networkClientConfigs = {
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
   httpsAgent: new https.Agent({ keepAlive: true }),
+};
+
+const fireOutgoingReqStats = ({
+  destType,
+  feature,
+  endpointPath,
+  requestMethod,
+  module,
+  metadata = {},
+  startTime,
+  statusCode,
+  clientResponse,
+}) => {
+  const logMetaInfo = logger.getLogMetadata(metadata);
+  stats.timing('outgoing_request_latency', startTime, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    requestMethod,
+    module,
+  });
+  stats.counter('outgoing_request_count', 1, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
+    requestMethod,
+    module,
+  });
+};
+
+const fireHTTPStats = (clientResponse, startTime, statTags = {}) => {
+  const statusCode = clientResponse.success
+    ? clientResponse.response?.status
+    : getErrorStatusCode(clientResponse.response);
+
+  fireOutgoingReqStats({
+    destType: statTags.destType || '',
+    feature: statTags.feature || '',
+    endpointPath: statTags.endpointPath || '',
+    requestMethod: statTags.requestMethod || '',
+    module: statTags.module || '',
+    metadata: statTags.metadata,
+    statusCode,
+    startTime,
+    clientResponse,
+  });
 };
 
 const enhanceRequestOptions = (options) => {
@@ -105,6 +160,7 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
       method,
     },
   });
+  const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
     clientResponse = { success: true, response };
@@ -115,6 +171,7 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
       metadata: statTags?.metadata,
       responseDetails: getResponseDetails(clientResponse),
     });
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
 
   setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
@@ -408,5 +465,6 @@ module.exports = {
   getFormData,
   handleHttpRequest,
   enhanceRequestOptions,
+  fireHTTPStats,
   getZippedPayload,
 };

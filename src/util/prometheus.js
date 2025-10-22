@@ -1023,6 +1023,13 @@ class Prometheus {
         type: 'gauge',
         labelNames: [],
       },
+      {
+        name: 'am_batch_size_based_on_user_id',
+        help: 'am_batch_size_based_on_user_id',
+        type: 'histogram',
+        labelNames: ['destination_id', 'source_id'],
+        buckets: [10, 50, 100, 200, 500, 800, 1000],
+      },
     ];
 
     for (const metric of metrics) {

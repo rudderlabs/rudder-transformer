@@ -77,6 +77,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'bluecore',
   'postscript',
   'attentive_tag',
+  'dub',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [

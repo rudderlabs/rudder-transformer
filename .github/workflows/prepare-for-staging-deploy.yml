@@ -129,6 +129,12 @@ jobs:
             yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             git add base.yaml
 
+            # Check if there are actual changes to commit
+            if git diff --cached --exit-code > /dev/null; then
+              echo "No changes detected in staging environment. Version $TAG_NAME is already deployed. Skipping commit."
+              exit 0
+            fi
+
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME
             gh pr create --fill

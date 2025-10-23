@@ -45,7 +45,7 @@ const proxyRequest = async (request) => {
     requestMethod: 'POST',
     module: 'dataDelivery',
     metadata,
-  });
+  }, true);
   return response;
 };
 

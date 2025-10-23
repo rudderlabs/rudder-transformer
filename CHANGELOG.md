@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.111.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.0...v1.111.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* enable metrics for intermediate calls ([9cf8f05](https://github.com/rudderlabs/rudder-transformer/commit/9cf8f05abf39d2090fb33d0364dd18a9bfc8e959))
+* enable metrics for intermediate calls ([#4724](https://github.com/rudderlabs/rudder-transformer/issues/4724)) ([f3f5bb5](https://github.com/rudderlabs/rudder-transformer/commit/f3f5bb577c891b765bcb5de86c08dcdb82de01fd))
+
 ## [1.111.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.110.0...v1.111.0) (2025-10-14)
 
 

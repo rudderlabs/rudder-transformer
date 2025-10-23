@@ -132,7 +132,7 @@ const pardotProxyRequest = async (request) => {
     feature: 'proxy',
     destType: 'pardot',
     metadata,
-  });
+  }, true);
   return response;
 };
 

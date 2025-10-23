@@ -12,6 +12,8 @@ bindings:
   - name: validateEventName
     path: ../../../../v0/util
   - path: '@rudderstack/integrations-lib'
+  - name: getFeatureFlagService
+    path: ../../../../featureFlagService
 
 steps:
   - name: checkIfProcessed
@@ -46,6 +48,8 @@ steps:
       Builds common fields in destination payload.
       ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
     template: |
+      const featureFlagService = await $.getFeatureFlagService();
+      const pinterestAdFlag = featureFlagService ? await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId },'pinterest-advertising-enabled') : { enabled: true, value: true };
       let commonFields = .message.().({
         "event_time": $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
         "event_source_url": {{{{$.getGenericPaths("pageUrl")}}}} || undefined,
@@ -65,6 +69,7 @@ steps:
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
+        "advertiser_tracking_enabled": pinterestAdFlag.enabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled) : undefined,
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,

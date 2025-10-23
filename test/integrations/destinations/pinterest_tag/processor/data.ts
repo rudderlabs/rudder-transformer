@@ -1,4 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { mockPinterestAdvertisingDisabled, mockPinterestAdvertisingEnabled } from '../mocks';
 export const data = [
   {
     name: 'pinterest_tag',
@@ -86,7 +87,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 tagId: '123456789',
                 advertiserId: '429047995',
@@ -193,6 +194,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -269,7 +271,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -364,6 +366,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -422,7 +425,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -501,6 +504,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -621,6 +625,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -696,7 +701,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -740,6 +745,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -818,7 +824,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -912,6 +918,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -990,7 +997,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1034,6 +1041,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1111,7 +1119,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1155,6 +1163,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1233,7 +1242,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1277,6 +1286,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1355,7 +1365,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1450,6 +1460,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1492,7 +1503,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1563,6 +1574,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1606,7 +1618,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1677,6 +1689,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1720,7 +1733,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1736,7 +1749,10 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              workspaceId: 'test-workspace-id',
+            },
           },
         ],
         method: 'POST',
@@ -1748,7 +1764,10 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              workspaceId: 'test-workspace-id',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1760,6 +1779,7 @@ export const data = [
                 JSON: {
                   event_time: 1597383030,
                   opt_out: false,
+                  advertiser_tracking_enabled: true,
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                   action_source: 'web',
                   event_name: 'view_category',
@@ -1792,6 +1812,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingEnabled,
   },
   {
     name: 'pinterest_tag',
@@ -1835,7 +1856,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1904,6 +1925,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1951,7 +1973,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2020,6 +2042,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2067,7 +2090,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2136,6 +2159,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2234,7 +2258,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2302,6 +2326,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2358,7 +2383,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2438,6 +2463,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2506,7 +2532,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2594,6 +2620,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2649,7 +2676,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2727,6 +2754,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2806,7 +2834,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2909,6 +2937,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2988,7 +3017,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3088,6 +3117,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3173,7 +3203,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3297,6 +3327,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3339,7 +3370,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3386,6 +3417,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3428,7 +3460,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3475,6 +3507,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3530,7 +3563,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3617,6 +3650,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3657,7 +3691,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3704,6 +3738,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3783,7 +3818,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3830,6 +3865,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3917,7 +3953,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 tagId: '123456789',
                 advertiserId: '429047995',
@@ -4024,5 +4060,6 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
 ];

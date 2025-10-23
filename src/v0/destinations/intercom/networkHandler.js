@@ -54,7 +54,7 @@ const intercomProxyRequest = async (request) => {
     requestMethod: 'POST',
     module: 'router',
     metadata,
-  });
+  }, true);
   return response;
 };
 

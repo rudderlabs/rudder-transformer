@@ -3,7 +3,7 @@ import logger from './logger';
 
 export const productionFlags = [
   {
-    key: 'pinterest-advertising-enabled',
+    key: 'enable-pinterest-advertising-tracking-mapping',
     name: 'Pinterest Advertising',
     description: 'Enable pinterest tag advertising tracking mapping',
     defaultValue: false,

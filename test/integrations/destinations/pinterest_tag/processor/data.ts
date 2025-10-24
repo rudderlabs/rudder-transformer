@@ -3558,7 +3558,7 @@ export const data = [
   },
   {
     name: 'pinterest_tag',
-    description: 'Test 23',
+    description: 'Test 24',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3648,7 +3648,7 @@ export const data = [
   },
   {
     name: 'pinterest_tag',
-    description: 'Test 24',
+    description: 'Test 25',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3738,7 +3738,7 @@ export const data = [
   },
   {
     name: 'pinterest_tag',
-    description: 'Test 25',
+    description: 'Test 26',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3881,7 +3881,7 @@ export const data = [
   },
   {
     name: 'pinterest_tag',
-    description: 'Test 26',
+    description: 'Test 27',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

@@ -74,7 +74,7 @@ steps:
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
-        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisementMappingEnabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled) : undefined,
+        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisementMappingEnabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled),
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,

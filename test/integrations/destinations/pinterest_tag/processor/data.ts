@@ -1705,7 +1705,7 @@ export const data = [
               type: 'page',
               name: 'ApplicationLoaded',
               category: 'test category',
-              channel: 'web',
+              channel: 'app_ios',
               sentAt: '2020-08-14T05:30:30.118Z',
               context: {
                 source: 'test',
@@ -1780,7 +1780,7 @@ export const data = [
                   event_time: 1597383030,
                   opt_out: false,
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
-                  action_source: 'web',
+                  action_source: 'app_ios',
                   event_name: 'view_category',
                   app_id: '429047995',
                   advertiser_id: '123456',

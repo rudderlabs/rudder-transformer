@@ -220,7 +220,7 @@ steps:
       const payload = $.outputs.commonFields;
       payload.user_data = $.outputs.userFields;
       $.outputs.ecomFields ? payload.custom_data = $.outputs.ecomFields;
-      $.outputs.deviceInfo ? payload.device_info = $.outputs.deviceInfo;
+      $.outputs.deviceInfo && Object.keys($.outputs.deviceInfo).length > 0 ? payload.device_info = $.outputs.deviceInfo;
       payload
 
   - name: eventNames

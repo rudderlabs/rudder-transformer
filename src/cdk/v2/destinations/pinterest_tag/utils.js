@@ -4,7 +4,8 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const { API_VERSION } = require('./config');
 const { CommonUtils } = require('../../../../util/common');
 
-const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
+const VALID_IN_APP_EVENTS_ACTION_SOURCES = ['app_android', 'app_ios'];
+const VALID_ACTION_SOURCES = [...VALID_IN_APP_EVENTS_ACTION_SOURCES, 'web', 'offline'];
 
 const ecomEventMaps = [
   {
@@ -133,6 +134,7 @@ const validateInput = (message, { Config }) => {
 module.exports = {
   processUserPayload,
   processHashedUserPayload,
+  VALID_IN_APP_EVENTS_ACTION_SOURCES,
   VALID_ACTION_SOURCES,
   ecomEventMaps,
   convertToSnakeCase,

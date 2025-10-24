@@ -43,13 +43,18 @@ steps:
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       $.assert(.message.event || .message.name, "event_name could not be mapped. Aborting.")
+
+  - name: isAdvertisementMappingEnabled
+    template: |
+      const featureFlagService = await $.getFeatureFlagService();
+      const pinterestAdFlag = await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId },'enable-pinterest-advertising-tracking-mapping');
+      pinterestAdFlag.enabled;
+
   - name: commonFields
     description: |
       Builds common fields in destination payload.
       ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
     template: |
-      const featureFlagService = await $.getFeatureFlagService();
-      const pinterestAdFlag = await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId },'enable-pinterest-advertising-tracking-mapping');
       let commonFields = .message.().({
         "event_time": $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
         "event_source_url": {{{{$.getGenericPaths("pageUrl")}}}} || undefined,
@@ -69,7 +74,7 @@ steps:
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
-        "advertiser_tracking_enabled": pinterestAdFlag.enabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled) : undefined,
+        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisementMappingEnabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled) : undefined,
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,
@@ -184,11 +189,38 @@ steps:
       - name: combineAllEcomFields
         template: |
           {...$.outputs.ecomFields.productFields, ...$.outputs.ecomFields.customFields}
+
+  - name: deviceInfo
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisementMappingEnabled && $.VALID_IN_APP_EVENTS_ACTION_SOURCES.includes($.outputs.commonFields.action_source)
+    template: |
+      const deviceInfo = .message.().({
+        "platform": .context.device.type,
+        "app_package_name": .context.app.namespace,
+        "short_version": .properties.appVersion ?? .context.app.version,
+        "long_version": .properties.appVersion ?? .context.app.version,
+        "os_version": .context.os.version,
+        "device_model_name": .properties.deviceModel ?? .context.device.model,
+        "locale": .properties.language ??
+                        .context.traits.language ??
+                        .context.locale,
+        "timezone": .context.timezone,
+        "carrier": .context.carrier,
+        "screen_width": .context.screen.width,
+        "screen_height": .context.screen.height,
+        "screen_density": .context.screen.density,
+        "cpu_cores": .context.cpuCores,
+        "external_storage_size": .context.externalStorageSize,
+        "external_storage_free_space": .context.externalStorageFreeSpace,
+        "device_timezone": .context.device_timezone,
+      });
+      $.removeUndefinedValues(deviceInfo);
+
   - name: basePayload
     template: |
       const payload = $.outputs.commonFields;
       payload.user_data = $.outputs.userFields;
       $.outputs.ecomFields ? payload.custom_data = $.outputs.ecomFields;
+      $.outputs.deviceInfo ? payload.device_info = $.outputs.deviceInfo;
       payload
 
   - name: eventNames

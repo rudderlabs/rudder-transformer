@@ -1,4 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { mockPinterestAdvertisingDisabled } from '../mocks';
 export const data = [
   {
     destType: 'pinterest_tag',
@@ -1048,6 +1049,7 @@ export const data = [
         },
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     destType: 'pinterest_tag',
@@ -1607,6 +1609,7 @@ export const data = [
         },
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     destType: 'pinterest_tag',
@@ -1768,5 +1771,6 @@ export const data = [
         },
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
 ];

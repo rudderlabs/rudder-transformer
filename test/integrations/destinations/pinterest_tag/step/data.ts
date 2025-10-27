@@ -1,4 +1,5 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { mockPinterestAdvertisingDisabled } from '../mocks';
 export const data = [
   {
     name: 'pinterest_tag',
@@ -174,6 +175,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -346,6 +348,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -484,6 +487,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -605,6 +609,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -725,6 +730,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -898,6 +904,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1021,6 +1028,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1143,6 +1151,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1266,6 +1275,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1440,6 +1450,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1554,6 +1565,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1669,6 +1681,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1785,6 +1798,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -1898,6 +1912,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2015,6 +2030,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2132,6 +2148,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2299,6 +2316,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2436,6 +2454,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2593,6 +2612,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2727,6 +2747,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -2910,6 +2931,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3090,6 +3112,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3300,6 +3323,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3390,6 +3414,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3480,6 +3505,7 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
   {
     name: 'pinterest_tag',
@@ -3623,5 +3649,6 @@ export const data = [
         ],
       },
     },
+    mockFns: mockPinterestAdvertisingDisabled,
   },
 ];

@@ -1,0 +1,44 @@
+output:
+  - results:
+      - event:
+          context:
+            traits:
+              page_id: 'page_id'
+              form_id: 'form_id'
+              full_name: 'Joe Example'
+              email: 'joe@example.com'
+              selected_dealer: '99213450'
+          type: identify
+          userId: 'leadgen_id'
+          anonymousId: 'uuid'
+          timestamp: '1970-01-01T00:00:00.000Z'
+          messageId: 'page_id-form_id-leadgen_id'
+          originalTimestamp: '1970-01-01T00:00:00.000Z'
+          sentAt: '1970-01-01T00:00:00.000Z'
+          integrations:
+            All: true
+        success: true
+      - event:
+          context:
+            traits:
+              page_id: 'page_id'
+              form_id: 'form_id'
+              full_name: 'Joe 2 Example'
+              email: 'joe2@example.com'
+              selected_dealer: '99213451'
+          type: identify
+          userId: 'leadgen_id'
+          anonymousId: 'uuid'
+          timestamp: '1970-01-01T00:00:00.000Z'
+          messageId: 'page_id-form_id-leadgen_id'
+          originalTimestamp: '1970-01-01T00:00:00.000Z'
+          sentAt: '1970-01-01T00:00:00.000Z'
+          integrations:
+            All: true
+        success: true
+    source:
+      id: 'source_id'
+      config:
+        page_access_token: 'page_access_token'
+      sourceDefinition:
+        name: FACEBOOK_LEAD_ADS_NATIVE

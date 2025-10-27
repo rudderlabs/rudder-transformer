@@ -1,0 +1,50 @@
+title: Source Hydration Request
+type: object
+required:
+  - input
+  - metadata
+properties:
+  input:
+    type: array
+    items:
+      type: object
+      required:
+        - events
+        - source
+      properties:
+        events:
+          type: array
+          items:
+            $ref: './rudderMessage.yaml'
+        source:
+          type: object
+          description: The source object
+          required:
+            - id
+            - config
+            - sourceDefinition
+          properties:
+            id:
+              type: string
+              description: The id of the source
+            config:
+              type: object
+              description: The source configuration object
+            sourceDefinition:
+              type: object
+              description: The source definition object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: The name of the source definition
+  metadata:
+    type: object
+    description: The metadata object
+    required:
+      - workspaceId
+    properties:
+      workspaceId:
+        type: string
+        description: The workspace id associated with the hydration request

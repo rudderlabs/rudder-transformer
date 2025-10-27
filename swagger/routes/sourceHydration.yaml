@@ -1,0 +1,74 @@
+/{version}/sources/{source}/hydrate:
+  post:
+    tags:
+      - Source Hydration
+    summary: Hydrates the source events with additional data
+    parameters:
+      - in: path
+        name: version
+        required: true
+        description: The version of the API
+        schema:
+          type: string
+          enum:
+            - v2
+      - in: path
+        name: source
+        description: The source type. The lowercase value of the source name in the definition.
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/sourceHydrationRequest.yaml'
+      examples:
+        request:
+          summary: Source Hydration Request
+          $ref: '../components/examples/sourceHydration/request.yaml'
+    responses:
+      400:
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorMessage:
+                  type: string
+                  example: 'Bad Request'
+      404:
+        description: Source type not supported
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorMessage:
+                  type: string
+                  example: 'Source type not supported'
+      200:
+        description: Success (either all or some of the events were hydrated successfully). The failure reason is returned in the errorMessage field.
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '../components/schemas/sourceHydrationResponse.yaml'
+            examples:
+              success:
+                summary: Source Hydration Success
+                $ref: '../components/examples/sourceHydration/success.yaml'
+              failure:
+                summary: Source Hydration Partial Success
+                $ref: '../components/examples/sourceHydration/failure.yaml'
+      500:
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errorMessage:
+                  type: string
+                  example: 'Error message'

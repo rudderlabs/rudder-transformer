@@ -33,17 +33,17 @@ async function createFeatureFlagService(): Promise<FeatureFlagService> {
       enableCache: process.env.FEATURE_FLAG_ENABLE_CACHE === 'true',
       cacheTtlSeconds:
         process.env.FEATURE_FLAG_CACHE_TTL_SECONDS &&
-        !Number.isNaN(Number(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS))
+        !Number.isNaN(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS)
           ? Number(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS)
           : 600,
       timeoutSeconds:
         process.env.FEATURE_FLAG_TIMEOUT_SECONDS &&
-        Number.isNaN(Number(process.env.FEATURE_FLAG_TIMEOUT_SECONDS))
+        !Number.isNaN(process.env.FEATURE_FLAG_TIMEOUT_SECONDS)
           ? Number(process.env.FEATURE_FLAG_TIMEOUT_SECONDS)
           : 10,
       retryAttempts:
         process.env.FEATURE_FLAG_RETRY_ATTEMPTS &&
-        !Number.isNaN(Number(process.env.FEATURE_FLAG_RETRY_ATTEMPTS))
+        !Number.isNaN(process.env.FEATURE_FLAG_RETRY_ATTEMPTS)
           ? Number(process.env.FEATURE_FLAG_RETRY_ATTEMPTS)
           : 3,
       enableAnalytics: process.env.FEATURE_FLAG_ENABLE_ANALYTICS !== 'false',

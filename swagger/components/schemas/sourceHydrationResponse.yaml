@@ -1,0 +1,52 @@
+title: Source Hydration Response
+type: object
+required:
+  - output
+properties:
+  output:
+    type: array
+    items:
+      type: object
+      required:
+        - results
+        - source
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            required:
+              - success
+            properties:
+              event:
+                $ref: './rudderMessage.yaml'
+                description: The hydrated RudderStack event object
+              errorMessage:
+                type: string
+                description: The error message of the event hydration operation
+              success:
+                type: boolean
+                description: Indicates if the event hydration operation was successful for the event
+        source:
+          type: object
+          description: The source object
+          required:
+            - id
+            - config
+            - sourceDefinition
+          properties:
+            id:
+              type: string
+              description: The id of the source
+            config:
+              type: object
+              description: The source configuration object
+            sourceDefinition:
+              type: object
+              description: The source definition object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: The name of the source definition

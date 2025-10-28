@@ -281,7 +281,11 @@ const searchContact = async (message, destination, metadata) => {
     lookupFieldValue = message?.context?.traits?.[lookupField];
   }
   // we are mapping user_id to external_id in the message for rEtl flow when email is not present in traits
-  if (message.context?.mappedToDestination && message.traits?.external_id) {
+  if (
+    message.context?.mappedToDestination &&
+    message.traits?.external_id &&
+    !message.traits?.email
+  ) {
     lookupField = 'external_id';
     lookupFieldValue = message.traits.external_id;
   }

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const VERSION = 'v23.0';
+const VERSION = 'v24.0';
 
 const ENDPOINT_PATH = 'events';
 

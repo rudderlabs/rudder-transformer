@@ -1,4 +1,4 @@
-const BASE_URL = 'https://graph.facebook.com/v23.0';
+const BASE_URL = 'https://graph.facebook.com/v24.0';
 
 const ENDPOINT_PATH = 'users';
 

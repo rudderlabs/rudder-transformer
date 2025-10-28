@@ -21,6 +21,9 @@ properties:
               event:
                 $ref: './rudderMessage.yaml'
                 description: The hydrated RudderStack event object
+              statusCode:
+                type: number
+                description: The status code of the event hydration operation. This is the normalised status code from the N/W request.
               errorMessage:
                 type: string
                 description: The error message of the event hydration operation

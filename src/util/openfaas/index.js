@@ -43,7 +43,7 @@ const PARENT_NAMESPACE = process.env.NAMESPACE || 'default';
 const PARENT_CLUSTER = process.env.FAAS_FN_PARENT_CLUSTER || 'default';
 const FAAS_CONN_POOL_ENABLE = process.env.FAAS_CONN_POOL_ENABLE || 'false';
 const FAAS_CONN_POOL_CLEAR_INTERVAL_S = process.env.FAAS_CONN_POOL_CLEAR_INTERVAL_S || '600';
-const FAAS_CONN_POOL_MAX_SIZE = process.env.FAAS_CONN_POOL_SIZE || '2';
+const FAAS_CONN_POOL_MAX_SIZE = process.env.FAAS_CONN_POOL_MAX_SIZE || '2';
 const FAAS_CONN_POOL_BLOCK = process.env.FAAS_CONN_POOL_BLOCK || 'false';
 
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';

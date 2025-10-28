@@ -1,15 +1,6 @@
 import { FeatureFlagService, FeatureFlagProvider } from '@rudderstack/integrations-lib';
+import { productionFlags } from './featureFlagList';
 import logger from './logger';
-
-export const productionFlags = [
-  {
-    key: 'enable-pinterest-advertising-tracking-mapping',
-    name: 'Pinterest Advertising',
-    description: 'Enable pinterest tag advertising tracking mapping',
-    defaultValue: false,
-    type: 'boolean' as const,
-  },
-];
 
 // Global instance holder
 let featureFlagInstance: FeatureFlagService | null = null;
@@ -23,7 +14,7 @@ const handleNumericEnvVar = (envVar: string | undefined, defaultValue: number): 
 };
 
 // Create feature flag service using static create method (singleton pattern)
-async function createFeatureFlagService(): Promise<FeatureFlagService> {
+export async function createFeatureFlagService(): Promise<FeatureFlagService> {
   if (featureFlagInstance) {
     return featureFlagInstance;
   }
@@ -54,6 +45,3 @@ async function createFeatureFlagService(): Promise<FeatureFlagService> {
 
   return initializationPromise;
 }
-
-// Export the singleton instance getter function
-export const getFeatureFlagService = createFeatureFlagService;

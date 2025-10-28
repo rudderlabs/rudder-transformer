@@ -12,8 +12,6 @@ jest.mock('../../src/logger', () => ({
   info: mockLoggerInfo,
 }));
 
-import { productionFlags } from '../../src/featureFlagService';
-
 describe('FeatureFlagService', () => {
   let mockServiceInstance: any;
 
@@ -44,9 +42,9 @@ describe('FeatureFlagService', () => {
       process.env = {};
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      const service = await getFeatureFlagService();
+      const service = await createFeatureFlagService();
 
       expect(mockCreate).toHaveBeenCalledWith(
         {
@@ -90,9 +88,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      await getFeatureFlagService();
+      await createFeatureFlagService();
 
       expect(mockCreate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -115,9 +113,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      await getFeatureFlagService();
+      await createFeatureFlagService();
 
       expect(mockCreate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -137,9 +135,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      await getFeatureFlagService();
+      await createFeatureFlagService();
 
       // Invalid numeric environment variables should fall back to default values
       expect(mockCreate).toHaveBeenCalledWith(
@@ -158,9 +156,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      await getFeatureFlagService();
+      await createFeatureFlagService();
 
       expect(mockLoggerInfo).toHaveBeenCalledWith(
         'Initializing FeatureFlagService with config:',
@@ -180,12 +178,12 @@ describe('FeatureFlagService', () => {
     it('should return the same instance on multiple calls without resetting modules', async () => {
       // Reset modules to start fresh
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
       // Make multiple calls to the service
-      const service1 = await getFeatureFlagService();
-      const service2 = await getFeatureFlagService();
-      const service3 = await getFeatureFlagService();
+      const service1 = await createFeatureFlagService();
+      const service2 = await createFeatureFlagService();
+      const service3 = await createFeatureFlagService();
 
       // All should return the same instance
       expect(service1).toBe(service2);
@@ -202,14 +200,14 @@ describe('FeatureFlagService', () => {
     it('should handle concurrent calls correctly with singleton pattern', async () => {
       // Reset modules to start fresh
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
       // Make concurrent calls
       const promises = [
-        getFeatureFlagService(),
-        getFeatureFlagService(),
-        getFeatureFlagService(),
-        getFeatureFlagService(),
+        createFeatureFlagService(),
+        createFeatureFlagService(),
+        createFeatureFlagService(),
+        createFeatureFlagService(),
       ];
 
       const services = await Promise.all(promises);
@@ -234,9 +232,9 @@ describe('FeatureFlagService', () => {
       mockCreate.mockRejectedValueOnce(error);
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      const { createFeatureFlagService } = require('../../src/featureFlagService');
 
-      await expect(getFeatureFlagService()).rejects.toThrow(
+      await expect(createFeatureFlagService()).rejects.toThrow(
         'Failed to initialize feature flag service',
       );
     });

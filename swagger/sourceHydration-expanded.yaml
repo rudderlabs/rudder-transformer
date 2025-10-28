@@ -239,6 +239,9 @@ paths:
                                     type: object
                                   traits:
                                     type: object
+                              statusCode:
+                                type: number
+                                description: The status code of the event hydration operation. This is the normalised status code from the N/W request.
                               errorMessage:
                                 type: string
                                 description: The error message of the event hydration operation
@@ -292,6 +295,7 @@ paths:
                               integrations:
                                 All: true
                             success: true
+                            statusCode: 200
                           - event:
                               context:
                                 traits:
@@ -310,6 +314,7 @@ paths:
                               integrations:
                                 All: true
                             success: true
+                            statusCode: 200
                         source:
                           id: 'source_id'
                           config:
@@ -336,7 +341,8 @@ paths:
                               integrations:
                                 All: true
                             success: false
-                            errorMessage: 'Invalid access token'
+                            statusCode: 429
+                            errorMessage: 'Too many requests'
                           - event:
                               context:
                                 traits:
@@ -355,6 +361,7 @@ paths:
                               integrations:
                                 All: true
                             success: true
+                            statusCode: 200
                         source:
                           id: 'source_id'
                           config:

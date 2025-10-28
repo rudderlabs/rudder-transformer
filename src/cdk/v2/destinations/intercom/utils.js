@@ -275,10 +275,15 @@ const filterCustomAttributes = (payload, type, destination, message) => {
  * @returns
  */
 const searchContact = async (message, destination, metadata) => {
-  const lookupField = getLookUpField(message);
+  let lookupField = getLookUpField(message);
   let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
   if (!lookupFieldValue) {
     lookupFieldValue = message?.context?.traits?.[lookupField];
+  }
+  // we are mapping user_id to external_id in the message for rEtl flow when email is not present in traits
+  if (message.context?.mappedToDestination && message.traits?.external_id) {
+    lookupField = 'external_id';
+    lookupFieldValue = message.traits.external_id;
   }
   const data = JSON.stringify({
     query: {

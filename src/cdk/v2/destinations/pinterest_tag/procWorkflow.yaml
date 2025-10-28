@@ -46,7 +46,7 @@ steps:
 
   - name: isAdvertisingMappingEnabled
     template: |
-      const featureFlagService = await $.getFeatureFlagService();
+      const featureFlagService = await $.createFeatureFlagService();
       const pinterestAdFlag = await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId },'enable-pinterest-advertising-tracking-mapping');
       pinterestAdFlag.enabled;
 

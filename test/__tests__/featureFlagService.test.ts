@@ -51,7 +51,7 @@ describe('FeatureFlagService', () => {
           provider: 'local',
           apiKey: undefined,
           enableLocalEvaluation: true,
-          enableCache: false,
+          enableCache: true,
           cacheTtlSeconds: 600,
           timeoutSeconds: 10,
           retryAttempts: 3,

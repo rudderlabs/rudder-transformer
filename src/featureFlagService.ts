@@ -28,7 +28,7 @@ export async function getFeatureFlagService(): Promise<FeatureFlagService> {
       provider: (process.env.FEATURE_FLAG_PROVIDER as FeatureFlagProvider) || 'local',
       apiKey: process.env.FLAGSMITH_API_KEY,
       enableLocalEvaluation: true,
-      enableCache: process.env.FEATURE_FLAG_ENABLE_CACHE === 'true',
+      enableCache: process.env.FEATURE_FLAG_ENABLE_CACHE !== 'false',
       cacheTtlSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS, 600),
       timeoutSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_TIMEOUT_SECONDS, 10),
       retryAttempts: handleNumericEnvVar(process.env.FEATURE_FLAG_RETRY_ATTEMPTS, 3),

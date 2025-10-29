@@ -25,6 +25,7 @@ scripts/skipPrepareScript.js
 scripts/create-github-release.js
 *.yaml
 *.yml
+*.env
 .eslintignore
 .prettierignore
 *.json

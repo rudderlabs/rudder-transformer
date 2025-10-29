@@ -17,7 +17,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
@@ -62,7 +62,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v22.0/aud1/users',
+          endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
           headers: {
             'test-dest-response-key': 'htmlResponse',
           },

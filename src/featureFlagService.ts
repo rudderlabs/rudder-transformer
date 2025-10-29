@@ -1,5 +1,5 @@
 import { FeatureFlagService, FeatureFlagProvider } from '@rudderstack/integrations-lib';
-import { productionFlags } from './featureFlagList';
+import { featureFlags } from './featureFlagList';
 import logger from './logger';
 
 // Global instance holder
@@ -14,7 +14,7 @@ const handleNumericEnvVar = (envVar: string | undefined, defaultValue: number): 
 };
 
 // Create feature flag service using static create method (singleton pattern)
-export async function createFeatureFlagService(): Promise<FeatureFlagService> {
+export async function getFeatureFlagService(): Promise<FeatureFlagService> {
   if (featureFlagInstance) {
     return featureFlagInstance;
   }
@@ -35,11 +35,8 @@ export async function createFeatureFlagService(): Promise<FeatureFlagService> {
       enableAnalytics: process.env.FEATURE_FLAG_ENABLE_ANALYTICS !== 'false',
     };
 
-    logger.info(
-      'Initializing FeatureFlagService with config:',
-      JSON.stringify({ ...featureFlagConfig, apiKey: '[REDACTED]' }),
-    );
-    featureFlagInstance = await FeatureFlagService.create(featureFlagConfig, productionFlags);
+    logger.info('Initializing FeatureFlagService with provider as: ', featureFlagConfig.provider);
+    featureFlagInstance = await FeatureFlagService.create(featureFlagConfig, featureFlags);
     return featureFlagInstance;
   })();
 

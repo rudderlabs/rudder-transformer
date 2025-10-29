@@ -12,7 +12,7 @@ bindings:
   - name: validateEventName
     path: ../../../../v0/util
   - path: '@rudderstack/integrations-lib'
-  - name: createFeatureFlagService
+  - name: getFeatureFlagService
     path: ../../../../featureFlagService
 
 steps:
@@ -46,8 +46,9 @@ steps:
 
   - name: isAdvertisingMappingEnabled
     template: |
-      const featureFlagService = await $.createFeatureFlagService();
-      const pinterestAdFlag = await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId },'enable-pinterest-advertising-tracking-mapping');
+      const flagName = 'enable-pinterest-advertising-tracking-mapping';
+      const featureFlagService = await $.getFeatureFlagService();
+      const pinterestAdFlag = await featureFlagService.isFeatureEnabled({ workspaceId: .metadata.workspaceId }, flagName);
       pinterestAdFlag.enabled;
 
   - name: commonFields
@@ -74,7 +75,7 @@ steps:
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
-        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisingMappingEnabled && .context.device.adTrackingEnabled !== undefined ? Boolean(.context.device.adTrackingEnabled) : undefined,
+        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && $.outputs.isAdvertisingMappingEnabled && typeof .context.device.adTrackingEnabled === "boolean" ? .context.device.adTrackingEnabled : undefined,
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,

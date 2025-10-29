@@ -1,4 +1,4 @@
-export const productionFlags = [
+export const featureFlags = [
   {
     key: 'enable-pinterest-advertising-tracking-mapping',
     name: 'Pinterest Advertising Tracking Mapping',

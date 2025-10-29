@@ -42,9 +42,9 @@ describe('FeatureFlagService', () => {
       process.env = {};
 
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
-      const service = await createFeatureFlagService();
+      const service = await getFeatureFlagService();
 
       expect(mockCreate).toHaveBeenCalledWith(
         {
@@ -69,8 +69,8 @@ describe('FeatureFlagService', () => {
       );
 
       expect(mockLoggerInfo).toHaveBeenCalledWith(
-        'Initializing FeatureFlagService with config:',
-        expect.stringContaining('"provider":"local"'),
+        'Initializing FeatureFlagService with provider as: ',
+        'local',
       );
 
       expect(service).toBe(mockServiceInstance);
@@ -88,9 +88,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
-      await createFeatureFlagService();
+      await getFeatureFlagService();
 
       expect(mockCreate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -106,27 +106,6 @@ describe('FeatureFlagService', () => {
       );
     });
 
-    it('should use default values when numeric environment variables are missing', async () => {
-      process.env = {
-        // Only set non-numeric env vars, let numeric ones use defaults
-        FEATURE_FLAG_PROVIDER: 'local',
-      };
-
-      jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
-
-      await createFeatureFlagService();
-
-      expect(mockCreate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          cacheTtlSeconds: 600, // default value
-          timeoutSeconds: 10, // default value
-          retryAttempts: 3, // default value
-        }),
-        expect.any(Array),
-      );
-    });
-
     it('should handle invalid numeric environment variables correctly', async () => {
       process.env = {
         FEATURE_FLAG_CACHE_TTL_SECONDS: 'invalid',
@@ -135,9 +114,9 @@ describe('FeatureFlagService', () => {
       };
 
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
-      await createFeatureFlagService();
+      await getFeatureFlagService();
 
       // Invalid numeric environment variables should fall back to default values
       expect(mockCreate).toHaveBeenCalledWith(
@@ -149,41 +128,18 @@ describe('FeatureFlagService', () => {
         expect.any(Array),
       );
     });
-
-    it('should redact API key in logged configuration', async () => {
-      process.env = {
-        FLAGSMITH_API_KEY: 'dummy-test-api-key',
-      };
-
-      jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
-
-      await createFeatureFlagService();
-
-      expect(mockLoggerInfo).toHaveBeenCalledWith(
-        'Initializing FeatureFlagService with config:',
-        expect.stringContaining('"apiKey":"[REDACTED]"'),
-      );
-
-      // Ensure the actual API key is not logged
-      const logCalls = mockLoggerInfo.mock.calls;
-      const configLog = logCalls.find(
-        (call) => call[0] === 'Initializing FeatureFlagService with config:',
-      );
-      expect(configLog[1]).not.toContain('secret-key-12345');
-    });
   });
 
   describe('singleton behavior', () => {
     it('should return the same instance on multiple calls without resetting modules', async () => {
       // Reset modules to start fresh
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
       // Make multiple calls to the service
-      const service1 = await createFeatureFlagService();
-      const service2 = await createFeatureFlagService();
-      const service3 = await createFeatureFlagService();
+      const service1 = await getFeatureFlagService();
+      const service2 = await getFeatureFlagService();
+      const service3 = await getFeatureFlagService();
 
       // All should return the same instance
       expect(service1).toBe(service2);
@@ -200,14 +156,14 @@ describe('FeatureFlagService', () => {
     it('should handle concurrent calls correctly with singleton pattern', async () => {
       // Reset modules to start fresh
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
       // Make concurrent calls
       const promises = [
-        createFeatureFlagService(),
-        createFeatureFlagService(),
-        createFeatureFlagService(),
-        createFeatureFlagService(),
+        getFeatureFlagService(),
+        getFeatureFlagService(),
+        getFeatureFlagService(),
+        getFeatureFlagService(),
       ];
 
       const services = await Promise.all(promises);
@@ -232,9 +188,9 @@ describe('FeatureFlagService', () => {
       mockCreate.mockRejectedValueOnce(error);
 
       jest.resetModules();
-      const { createFeatureFlagService } = require('../../src/featureFlagService');
+      const { getFeatureFlagService } = require('../../src/featureFlagService');
 
-      await expect(createFeatureFlagService()).rejects.toThrow(
+      await expect(getFeatureFlagService()).rejects.toThrow(
         'Failed to initialize feature flag service',
       );
     });

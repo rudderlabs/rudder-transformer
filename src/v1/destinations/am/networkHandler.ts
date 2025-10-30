@@ -58,19 +58,9 @@ const responseHandler = (responseParams: {
     );
   }
   if (isHttpStatusThrottled(status)) {
-    const { throttled_users: throttledUsers, throttled_devices: throttledDevices } = response;
-
-    const hasThrottledItems = (obj: Record<string, number>) =>
-      typeof obj === 'object' && obj !== null && Object.keys(obj).length > 0;
-
-    if (hasThrottledItems(throttledUsers) || hasThrottledItems(throttledDevices)) {
-      throw new RetryableError(
-        `Request Failed during ${DESTINATION} response transformation: ${error} - due to Request Limit exceeded, (Retryable)`,
-        500,
-        destinationResponse,
-      );
-    }
-    // throw a ThrottledError in other 429 cases
+    // we don't need to check for throttled users or devices in response and update 429 status code to 500,
+    // we can throw a ThrottledError in 429 cases.
+    // as there guaranteeUserEventOrder is false for amplitude, 429 status code is not used by server.
     throw new ThrottledError(
       `Request Failed during ${DESTINATION} response transformation: ${error} - due to Request Limit exceeded, (Throttled)`,
       destinationResponse,
@@ -90,7 +80,7 @@ const responseHandler = (responseParams: {
   }
   throw new AbortedError(
     `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${
-      JSON.stringify(response.error) || 'unknown error'
+      JSON.stringify(error) || 'unknown error'
     }", (Aborted)`,
     status,
     destinationResponse,

@@ -140,8 +140,8 @@ The Amplitude destination does not make any intermediate API calls. All events a
 - **Source Code Path**: `src/v0/destinations/am/networkHandler.js`
 - **Implementation**: Custom network handler with error handling and retry logic
 - **Features**:
-  - Handles rate limiting (429 errors) with appropriate retry logic
-  - Processes throttled users and devices
+  - Handles rate limiting (429 errors) by throwing ThrottledError
+  - Does not require complex throttled user/device processing since event ordering is not guaranteed for Amplitude
   - Supports both retryable and non-retryable error handling
 
 ### User Deletion
@@ -230,7 +230,7 @@ These event types update user profiles in Amplitude. While Amplitude doesn't exp
 
 Amplitude events include a timestamp field, which is populated with the event's timestamp. Amplitude processes events based on this timestamp, not the order in which they are received.
 
-> **Recommendation**: Maintain event ordering for all event types to ensure accurate user profiles and event sequencing.
+> **Note**: Amplitude does not guarantee event ordering. Since the `guaranteeUserEventOrder` flag is set to false for Amplitude, 429 throttled responses are handled with simple retry logic without the complexity of checking individual throttled users/devices or converting status codes to 500.
 
 ### Data Replay Feasibility
 
@@ -345,7 +345,7 @@ Group properties are updated using the Group call, which sets the group type and
 
 ### What happens when I exceed rate limits?
 
-When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by implementing retry logic with exponential backoff. The response includes information about which users/devices are throttled.
+When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by throwing a ThrottledError, which triggers retry logic. Since Amplitude does not guarantee event ordering (`guaranteeUserEventOrder` is false), the destination uses simplified throttle handling without checking individual throttled users/devices or converting 429s to 500s.
 
 ### How does batching work in the Amplitude destination?
 

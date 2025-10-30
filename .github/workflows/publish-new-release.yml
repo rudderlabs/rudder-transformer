@@ -26,7 +26,7 @@ jobs:
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
         with:
           egress-policy: audit
-
+    
       - name: Extract Version
         id: extract-version
         run: |
@@ -89,6 +89,23 @@ jobs:
 
           echo "✅ Release process completed successfully!"
           echo "DATE=$(date)" >> $GITHUB_ENV
+
+      - name: Tag Go Module Version
+        env:
+          VERSION: ${{ steps.extract-version.outputs.release_version }}
+        run: |
+          echo "🏷️ Creating Go module tag go/v${VERSION}..."
+          git fetch --tags origin
+
+          if git rev-parse --verify "go/v${VERSION}" >/dev/null 2>&1; then
+            echo "✅ Tag go/v${VERSION} already exists, skipping"
+          else
+            git tag -a "go/v${VERSION}" -m "chore(go): release go module v${VERSION}"
+            git push origin "refs/tags/go/v${VERSION}"
+            echo "✅ Tag go/v${VERSION} created and pushed successfully"
+          fi
+
+          echo "go_tag=go/v${VERSION}" >> $GITHUB_OUTPUT
 
       - name: Verify Release Creation
         id: verify_release

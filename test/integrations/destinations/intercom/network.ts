@@ -1079,5 +1079,84 @@ const deliveryCallsData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'external_id', operator: '=', value: 'user@1' }],
+        },
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer intercom1',
+        Accept: 'application/json',
+        'Intercom-Version': '2.10',
+        'User-Agent': 'RudderStack',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 200,
+        statusText: 'ok',
+        data: {
+          type: 'list',
+          total_count: 0,
+          pages: {
+            type: 'pages',
+            page: 1,
+            per_page: 50,
+            total_pages: 1,
+          },
+          data: [],
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'external_id', operator: '=', value: 'user@2' }],
+        },
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer intercom1',
+        Accept: 'application/json',
+        'Intercom-Version': '2.10',
+        'User-Agent': 'RudderStack',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '70701240741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@2',
+            role: 'user',
+          },
+        ],
+      },
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

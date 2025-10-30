@@ -34,18 +34,44 @@ const handleDestinationRequest = (destinationRequest: ProxyRequest): Event[] | u
 };
 
 /**
+ * Creates an index (Map) of failed records by $insert_id for O(1) lookup performance
+ *
+ * @param failedRecords - The array of failed records from Mixpanel
+ * @returns Map with $insert_id as key and FailedRecord as value
+ */
+export const createFailedRecordsIndex = (
+  failedRecords: FailedRecord[] | null,
+): Map<string, FailedRecord> => {
+  const index = new Map<string, FailedRecord>();
+
+  if (!failedRecords || !Array.isArray(failedRecords)) {
+    return index;
+  }
+
+  failedRecords.forEach((record) => {
+    if (record.$insert_id) {
+      index.set(record.$insert_id, record);
+    }
+  });
+
+  return index;
+};
+
+/**
  * Checks if an event has failed in the Mixpanel Import API response,
  * we are doing this by comparing the $insert_id of the event with the $insert_id of the failed records
  *
  * @param event - The event to check
- * @param failedRecords - The array of failed records from Mixpanel
+ * @param failedRecords - The array of failed records from Mixpanel (deprecated, use failedRecordsIndex for better performance)
+ * @param failedRecordsIndex - Optional pre-computed index of failed records for O(1) lookup
  * @returns Object containing isAbortable and errorMsg
  */
 export const checkIfEventIsAbortableInImport = (
   event: Event | null,
   failedRecords: FailedRecord[] | null,
+  failedRecordsIndex?: Map<string, FailedRecord>,
 ): { isAbortable: boolean; errorMsg: string } => {
-  if (!event || !failedRecords || !Array.isArray(failedRecords)) {
+  if (!event) {
     return { isAbortable: false, errorMsg: '' };
   }
 
@@ -54,7 +80,15 @@ export const checkIfEventIsAbortableInImport = (
     return { isAbortable: false, errorMsg: '' };
   }
 
-  const failedRecord = failedRecords.find((record) => record.$insert_id === insertId);
+  // Use the index if provided for O(1) lookup, otherwise fall back to O(n) find
+  let failedRecord: FailedRecord | undefined;
+
+  if (failedRecordsIndex) {
+    failedRecord = failedRecordsIndex.get(insertId);
+  } else if (failedRecords && Array.isArray(failedRecords)) {
+    failedRecord = failedRecords.find((record) => record.$insert_id === insertId);
+  }
+
   if (!failedRecord) {
     return { isAbortable: false, errorMsg: '' };
   }
@@ -225,10 +259,17 @@ export const handleImportApiResponse = (
     const failedRecords = get(response, 'failed_records', []);
     const numRecordsImported = get(response, 'num_records_imported', 0);
 
+    // Create an index of failed records for O(1) lookup performance instead of O(n) for each event
+    const failedRecordsIndex = createFailedRecordsIndex(failedRecords);
+
     // For each event in the batch, check if it failed and create appropriate response
     const importResponses = metadata.map((metadataItem, index) => {
       const event = index < events.length ? events[index] : null;
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(event, failedRecords);
+      const { isAbortable, errorMsg } = checkIfEventIsAbortableInImport(
+        event,
+        failedRecords,
+        failedRecordsIndex,
+      );
 
       return {
         statusCode: isAbortable ? 400 : 200,
@@ -297,6 +338,7 @@ export const handleEndpointSpecificResponses = (
 };
 
 export default {
+  createFailedRecordsIndex,
   checkIfEventIsAbortableInImport,
   createResponsesForAllEvents,
   createSuccessResponse,

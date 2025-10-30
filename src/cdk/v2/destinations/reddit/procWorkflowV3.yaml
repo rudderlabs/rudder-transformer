@@ -1,0 +1,8 @@
+bindings:
+  - name: process
+    path: ./transformV3
+
+steps:
+  - name: preparePayload
+    template: |
+      $.process(.)

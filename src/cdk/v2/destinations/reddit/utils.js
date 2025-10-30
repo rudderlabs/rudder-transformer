@@ -1,11 +1,21 @@
+const { isDefinedAndNotNull, InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
-const { maxBatchSize } = require('./config');
+
+const decideVersion = ({ Config }) => {
+  const configVersion = Config.version;
+  let version = 'v2';
+  if (isDefinedAndNotNull(configVersion) && configVersion === 'v3') {
+    version = 'v3';
+  }
+  return version;
+};
 
 const batchEventChunks = (eventChunks) => {
   const batchedEvents = [];
   if (Array.isArray(eventChunks)) {
     eventChunks.forEach((chunk) => {
       const response = { destination: chunk[0].destination };
+      const version = decideVersion(chunk[0].destination);
       chunk.forEach((event, index) => {
         if (index === 0) {
           const [firstMessage] = event.message;
@@ -13,19 +23,17 @@ const batchEventChunks = (eventChunks) => {
           response.destination = event.destination;
           response.metadata = [event.metadata];
         } else {
-          response.message.body.JSON.events.push(...event.message[0].body.JSON.events);
+          if (version === 'v3') {
+            response.message.body.JSON.data.events.push(...event.message[0].body.JSON.data.events);
+          } else {
+            response.message.body.JSON.events.push(...event.message[0].body.JSON.events);
+          }
           response.metadata.push(event.metadata);
         }
       });
       batchedEvents.push(response);
     });
   }
-  return batchedEvents;
-};
-
-const batchEvents = (successfulEvents) => {
-  const eventChunks = lodash.chunk(successfulEvents, maxBatchSize);
-  const batchedEvents = batchEventChunks(eventChunks);
   return batchedEvents;
 };
 
@@ -54,12 +62,14 @@ const populateRevenueField = (eventType, properties) => {
   let revenueInCents;
   switch (eventType) {
     case 'Purchase':
+    case 'PURCHASE':
       revenueInCents =
         properties.revenue && !Number.isNaN(properties.revenue)
           ? Math.round(Number(properties?.revenue) * 100)
           : null;
       break;
     case 'AddToCart':
+    case 'ADD_TO_CART':
       revenueInCents =
         properties.price && !Number.isNaN(properties.price)
           ? Math.round(Number(properties?.price) * Number(properties?.quantity || 1) * 100)
@@ -104,10 +114,53 @@ const removeUnsupportedFields = (eventType, eventMetadata) => {
   return updatedEventMetadata;
 };
 
+const convertToUpperSnakeCase = (type) => {
+  const trackingTypeMap = {
+    Purchase: 'PURCHASE',
+    AddToCart: 'ADD_TO_CART',
+    ViewContent: 'VIEW_CONTENT',
+    AddToWishlist: 'ADD_TO_WISHLIST',
+    Search: 'SEARCH',
+    Lead: 'LEAD',
+    SignUp: 'SIGN_UP',
+    PageVisit: 'PAGE_VISIT',
+  };
+  return trackingTypeMap[type];
+};
+
+const generateAndValidateTimestamp = (timestamp) => {
+  if (!timestamp) {
+    throw new InstrumentationError(
+      'Required field "timestamp" or "originalTimestamp" is missing from the message.',
+    );
+  }
+
+  const eventAt = new Date(timestamp).getTime();
+  if (Number.isNaN(eventAt)) {
+    throw new InstrumentationError('Invalid timestamp format.');
+  }
+
+  const now = Date.now();
+  const maxPastMs = 168 * 60 * 60 * 1000; // 168h * 60m * 60s * 1000ms = 7 days in ms
+  const maxFutureMs = 5 * 60 * 1000; // 5 minutes in ms
+
+  if (now - eventAt > maxPastMs) {
+    throw new InstrumentationError('event_at timestamp must be less than 168 hours (7 days) old.');
+  }
+  if (eventAt - now > maxFutureMs) {
+    throw new InstrumentationError(
+      'event_at timestamp must not be more than 5 minutes in the future.',
+    );
+  }
+
+  return eventAt;
+};
 module.exports = {
-  batchEvents,
   batchEventChunks,
   populateRevenueField,
   calculateDefaultRevenue,
   removeUnsupportedFields,
+  convertToUpperSnakeCase,
+  decideVersion,
+  generateAndValidateTimestamp,
 };

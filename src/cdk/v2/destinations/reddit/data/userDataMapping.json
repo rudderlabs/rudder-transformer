@@ -1,0 +1,65 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "external_id",
+    "sourceKeys": "userId",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ip_address",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false,
+    "metadata": {
+      "type": "trim"
+    }
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  },
+  {
+    "destKey": "uuid",
+    "sourceKeys": "properties.uuid",
+    "required": false
+  },
+  {
+    "destKey": "data_processing_options.country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data_processing_options.region",
+    "sourceKeys": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data_processing_options.modes",
+    "sourceKeys": "properties.modes",
+    "required": false
+  },
+  {
+    "destKey": "screen_dimensions.width",
+    "sourceKeys": "context.screen.width",
+    "required": false
+  },
+  {
+    "destKey": "screen_dimensions.height",
+    "sourceKeys": "context.screen.height",
+    "required": false
+  }
+]

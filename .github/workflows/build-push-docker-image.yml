@@ -135,7 +135,7 @@ jobs:
 
       - name: Login to DockerHub
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
-        uses: docker/login-action@v3.5.0
+        uses: docker/login-action@v3.6.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -204,7 +204,7 @@ jobs:
 
       - name: Login to DockerHub
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
-        uses: docker/login-action@v3.5.0
+        uses: docker/login-action@v3.6.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -268,7 +268,7 @@ jobs:
           egress-policy: audit
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3.5.0
+        uses: docker/login-action@v3.6.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}

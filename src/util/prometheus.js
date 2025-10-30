@@ -250,6 +250,12 @@ class Prometheus {
         ],
       },
       {
+        name: 'feature_flag_initialization_failure',
+        help: 'Feature flag service initialization failures count',
+        type: 'counter',
+        labelNames: ['provider', 'errorType'],
+      },
+      {
         name: 'dest_transform_requests',
         help: 'dest_transform_requests',
         type: 'counter',

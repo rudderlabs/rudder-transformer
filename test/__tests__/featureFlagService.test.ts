@@ -1,15 +1,31 @@
+import exp from 'constants';
+
 // Mock the integrations-lib module
 const mockCreate = jest.fn();
 jest.mock('@rudderstack/integrations-lib', () => ({
   FeatureFlagService: {
     create: mockCreate,
   },
+  PlatformError: jest.fn().mockImplementation((message, statusCode) => {
+    const error = new Error(message);
+    (error as any).statusCode = statusCode;
+    (error as any).name = 'PlatformError';
+    return error;
+  }),
 }));
 
 // Mock logger
 const mockLoggerInfo = jest.fn();
+const mockLoggerError = jest.fn();
 jest.mock('../../src/logger', () => ({
   info: mockLoggerInfo,
+  error: mockLoggerError,
+}));
+
+// Mock stats
+const mockStatsIncrement = jest.fn();
+jest.mock('../../src/util/stats', () => ({
+  increment: mockStatsIncrement,
 }));
 
 describe('FeatureFlagService', () => {
@@ -149,8 +165,8 @@ describe('FeatureFlagService', () => {
       // FeatureFlagService.create should only be called once due to singleton pattern
       expect(mockCreate).toHaveBeenCalledTimes(1);
 
-      // Logger should only be called once during initialization
-      expect(mockLoggerInfo).toHaveBeenCalledTimes(1);
+      // Logger should be called twice: once for initialization start, once for success
+      expect(mockLoggerInfo).toHaveBeenCalledTimes(2);
     });
 
     it('should handle concurrent calls correctly with singleton pattern', async () => {
@@ -177,22 +193,53 @@ describe('FeatureFlagService', () => {
       // FeatureFlagService.create should only be called once even with concurrent calls
       expect(mockCreate).toHaveBeenCalledTimes(1);
 
-      // Logger should only be called once during initialization
-      expect(mockLoggerInfo).toHaveBeenCalledTimes(1);
+      // Logger should be called twice: once for initialization start, once for success
+      expect(mockLoggerInfo).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('error handling', () => {
-    it('should handle FeatureFlagService.create rejection', async () => {
-      const error = new Error('Failed to initialize feature flag service');
-      mockCreate.mockRejectedValueOnce(error);
+    it('should handle initialization failures with proper error handling, metrics and logging', async () => {
+      const standardError = new Error('Failed to initialize feature flag service');
+      mockCreate.mockRejectedValueOnce(standardError);
+
+      process.env.FEATURE_FLAG_PROVIDER = 'flagsmith';
+      process.env.FLAGSMITH_API_KEY = 'test-key';
 
       jest.resetModules();
-      const { getFeatureFlagService } = require('../../src/featureFlagService');
+      let { getFeatureFlagService } = require('../../src/featureFlagService');
 
-      await expect(getFeatureFlagService()).rejects.toThrow(
-        'Failed to initialize feature flag service',
-      );
+      expect.assertions(6);
+      try {
+        await getFeatureFlagService();
+      } catch (error: any) {
+        // Verify metrics tracking
+        expect(mockStatsIncrement).toHaveBeenCalledWith('feature_flag_initialization_failure', {
+          provider: 'flagsmith',
+          errorType: 'Error',
+        });
+
+        // Verify error logging
+        expect(mockLoggerError).toHaveBeenCalledWith(
+          'Failed to initialize FeatureFlagService',
+          expect.objectContaining({
+            error: 'Failed to initialize feature flag service',
+            provider: 'flagsmith',
+            apiKeyPresent: true,
+          }),
+        );
+
+        // Verify success logging was called before error
+        expect(mockLoggerInfo).toHaveBeenCalledWith(
+          'Initializing FeatureFlagService with provider as: ',
+          'flagsmith',
+        );
+        expect(error.name).toBe('PlatformError');
+        expect(error.statusCode).toBe(500);
+        expect(error.message).toContain(
+          'FeatureFlagService initialization failed: Failed to initialize feature flag service',
+        );
+      }
     });
   });
 });

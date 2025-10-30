@@ -230,8 +230,13 @@ These event types update user profiles in Amplitude. While Amplitude doesn't exp
 
 Amplitude events include a timestamp field, which is populated with the event's timestamp. Amplitude processes events based on this timestamp, not the order in which they are received.
 
-> **Note**: Amplitude does not guarantee event ordering. Since the `guaranteeUserEventOrder` flag is set to false for Amplitude, 429 throttled responses are handled with simple retry logic without the complexity of checking individual throttled users/devices or converting status codes to 500.
-
+> **Note**: We have disabled event ordering for Amplitude by setting the guaranteeUserEventOrder flag to false on the server.
+>
+> When event ordering is enabled, the server attempts to preserve the order of events. In such cases, if a 429 (Too Many Requests) error occurs, the server throttles further events until all queued events (from the beginning) are successfully processed.
+>
+> Previously, a 429 at the userId/deviceId level caused throttling across the entire destination. To mitigate this, we temporarily updated the 429 response to a 500.
+>
+> However, since event ordering is now disabled, we can safely return 429 as is—it will no longer cause throttling for the entire destination.
 ### Data Replay Feasibility
 
 #### Missing Data Replay

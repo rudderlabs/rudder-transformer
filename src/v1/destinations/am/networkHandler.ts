@@ -34,8 +34,8 @@ const responseHandler = (responseParams: {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { status, response } = destinationResponse;
-  const { error } = response;
-  const errorMessage = JSON.stringify(error) || 'unknown error';
+  const { error: errorResponse } = response;
+  const errorMessage = JSON.stringify(errorResponse) || 'unknown error';
   if (isHttpStatusSuccess(status)) {
     const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: 200,
@@ -62,7 +62,7 @@ const responseHandler = (responseParams: {
     // we can throw a ThrottledError in 429 cases.
     // as there guaranteeUserEventOrder is false for amplitude, 429 status code is not used by server.
     throw new ThrottledError(
-      `Request Failed during ${DESTINATION} response transformation: ${error} - due to Request Limit exceeded, (Throttled)`,
+      `Request Failed during ${DESTINATION} response transformation: ${errorResponse} - due to Request Limit exceeded, (Throttled)`,
       destinationResponse,
     );
   }
@@ -80,7 +80,7 @@ const responseHandler = (responseParams: {
   }
   throw new AbortedError(
     `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to "${
-      JSON.stringify(error) || 'unknown error'
+      JSON.stringify(errorResponse) || 'unknown error'
     }", (Aborted)`,
     status,
     destinationResponse,

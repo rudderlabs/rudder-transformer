@@ -216,7 +216,6 @@ describe('FeatureFlagService', () => {
         // Verify metrics tracking
         expect(mockStatsIncrement).toHaveBeenCalledWith('feature_flag_initialization_failure', {
           provider: 'flagsmith',
-          errorType: 'Error',
         });
 
         // Verify error logging

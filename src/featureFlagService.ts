@@ -29,27 +29,26 @@ export async function getFeatureFlagService(): Promise<FeatureFlagService> {
   }
 
   initializationPromise = (async () => {
-    try {
-      const featureFlagConfig = {
-        provider: (process.env.FEATURE_FLAG_PROVIDER as FeatureFlagProvider) || 'local',
-        apiKey: process.env.FLAGSMITH_API_KEY,
-        enableLocalEvaluation: true,
-        enableCache: process.env.FEATURE_FLAG_ENABLE_CACHE !== 'false',
-        cacheTtlSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS, 600),
-        timeoutSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_TIMEOUT_SECONDS, 10),
-        retryAttempts: handleNumericEnvVar(process.env.FEATURE_FLAG_RETRY_ATTEMPTS, 3),
-        enableAnalytics: process.env.FEATURE_FLAG_ENABLE_ANALYTICS !== 'false',
-      };
+    const featureFlagConfig = {
+      provider: (process.env.FEATURE_FLAG_PROVIDER as FeatureFlagProvider) || 'local',
+      apiKey: process.env.FLAGSMITH_API_KEY,
+      enableLocalEvaluation: true,
+      enableCache: process.env.FEATURE_FLAG_ENABLE_CACHE !== 'false',
+      cacheTtlSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_CACHE_TTL_SECONDS, 600),
+      timeoutSeconds: handleNumericEnvVar(process.env.FEATURE_FLAG_TIMEOUT_SECONDS, 10),
+      retryAttempts: handleNumericEnvVar(process.env.FEATURE_FLAG_RETRY_ATTEMPTS, 3),
+      enableAnalytics: process.env.FEATURE_FLAG_ENABLE_ANALYTICS !== 'false',
+    };
 
-      logger.info('Initializing FeatureFlagService with provider as: ', featureFlagConfig.provider);
+    logger.info('Initializing FeatureFlagService with provider as: ', featureFlagConfig.provider);
+    try {
       featureFlagInstance = await FeatureFlagService.create(featureFlagConfig, featureFlags);
       logger.info('FeatureFlagService initialized successfully');
       return featureFlagInstance;
     } catch (error: any) {
       // Track feature flag initialization failure metric
       stats.increment('feature_flag_initialization_failure', {
-        provider: (process.env.FEATURE_FLAG_PROVIDER as string) || 'local',
-        errorType: error?.constructor?.name || 'UnknownError',
+        provider: featureFlagConfig.provider,
       });
 
       // Log detailed error for debugging

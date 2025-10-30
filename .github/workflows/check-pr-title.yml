@@ -26,4 +26,4 @@ jobs:
           egress-policy: audit
 
       - name: Check PR Title
-        uses: rudderlabs/github-action-check-pr-title@v1.0.7
+        uses: rudderlabs/github-action-check-pr-title@29308e12984bdb3f3dcf8dcec3308f4f4652529c # v1.0.7

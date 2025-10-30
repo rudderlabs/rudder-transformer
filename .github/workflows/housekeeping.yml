@@ -24,7 +24,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/stale@v10.0.0
+      - uses: actions/stale@v10.1.0
         with:
           repo-token: ${{ secrets.PAT }}
           operations-per-run: 200

@@ -46,6 +46,12 @@ const FAAS_CONN_POOL_CLEAR_INTERVAL_S = process.env.FAAS_CONN_POOL_CLEAR_INTERVA
 const FAAS_CONN_POOL_MAX_SIZE = process.env.FAAS_CONN_POOL_MAX_SIZE || '2';
 const FAAS_CONN_POOL_BLOCK = process.env.FAAS_CONN_POOL_BLOCK || 'false';
 
+const FAAS_CONN_POOL_ENABLE = process.env.FAAS_CONN_POOL_ENABLE || 'false';
+const FAAS_CONN_POOL_CLEAR_INTERVAL_S = process.env.FAAS_CONN_POOL_CLEAR_INTERVAL_S || '600';
+const FAAS_CONN_POOL_TRACKER_MAX_COUNT = process.env.FAAS_CONN_TRACKER_COUNT || '100';
+const FAAS_CONN_POOL_MAX_SIZE = process.env.FAAS_CONN_POOL_SIZE || '2';
+const FAAS_CONN_POOL_BLOCK = process.env.FAAS_CONN_POOL_BLOCK || 'false';
+
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';

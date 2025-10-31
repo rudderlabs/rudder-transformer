@@ -255,26 +255,26 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Retryable)',
+              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Throttled)',
             response: [
               {
                 error:
                   '{"code":429,"error":"Too many requests for some devices and users","eps_threshold":30,"throttled_devices":{"C8F9E604-F01A-4BD9-95C6-8E5357DF265D":31},"throttled_users":{"datamonster@amplitude.com":32},"throttled_events":[3,4,7]}',
                 metadata: generateMetadata(1),
-                statusCode: 500,
+                statusCode: 429,
               },
             ],
             statTags: {
               destType: 'AM',
               destinationId: 'default-destinationId',
               errorCategory: 'network',
-              errorType: 'retryable',
+              errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
               workspaceId: 'default-workspaceId',
             },
-            status: 500,
+            status: 429,
           },
         },
       },

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.111.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.1...v1.111.2) (2025-10-30)
+
+
+### Bug Fixes
+
+* remove userid/deviceid level throttler handler for am ([#4743](https://github.com/rudderlabs/rudder-transformer/issues/4743)) ([085098c](https://github.com/rudderlabs/rudder-transformer/commit/085098c16992009abcd1138a63b8513697d15307))
+
 ### [1.111.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.0...v1.111.1) (2025-10-23)
 
 

@@ -2,10 +2,8 @@ import { TransformationError } from '@rudderstack/integrations-lib';
 import { EventType } from '../../constants';
 import { InputEventType, OutputEventType, FacebookEntry, FacebookChange } from './type';
 import { SourceInputV2 } from '../../types';
-import { generateUUID } from '../../v0/util';
+import { generateUUID, getBodyFromV2SpecPayload } from '../../v0/util';
 import logger from '../../logger';
-
-const { getBodyFromV2SpecPayload } = require('../../v0/util');
 
 function processEvent(inputEvent: InputEventType): OutputEventType[] {
   if (inputEvent.object !== 'page') {

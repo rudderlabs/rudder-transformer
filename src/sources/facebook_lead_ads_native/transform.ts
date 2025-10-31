@@ -2,7 +2,7 @@ import { TransformationError } from '@rudderstack/integrations-lib';
 import { EventType } from '../../constants';
 import { InputEventType, OutputEventType, FacebookEntry, FacebookChange } from './type';
 import { SourceInputV2 } from '../../types';
-import { generateUUID, getBodyFromV2SpecPayload } from '../../v0/util';
+import { getBodyFromV2SpecPayload } from '../../v0/util';
 import logger from '../../logger';
 
 function processEvent(inputEvent: InputEventType): OutputEventType[] {
@@ -42,8 +42,7 @@ function processEvent(inputEvent: InputEventType): OutputEventType[] {
       // Create the RudderStack identify event
       const event: OutputEventType = {
         type: EventType.IDENTIFY,
-        userId: value.leadgen_id,
-        anonymousId: generateUUID(),
+        anonymousId: value.leadgen_id,
         messageId: `${value.page_id}-${value.form_id}-${value.leadgen_id}`,
         context: {
           traits: {

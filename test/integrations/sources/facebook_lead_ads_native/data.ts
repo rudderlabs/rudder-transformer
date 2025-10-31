@@ -1,16 +1,4 @@
-import utils from '../../../../src/v0/util';
-
-const defaultMockFns = () => {
-  const mockUUIDs = [
-    'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-    'b2c3d4e5-f6a7-8901-bcde-f12345678901',
-    'c3d4e5f6-a789-0123-cdef-234567890123',
-  ] as `${string}-${string}-${string}-${string}-${string}`[];
-  let callCount = 0;
-  jest
-    .spyOn(utils, 'generateUUID')
-    .mockImplementation(() => mockUUIDs[callCount++ % mockUUIDs.length]);
-};
+const defaultMockFns = () => {};
 
 export const data = [
   {
@@ -90,8 +78,7 @@ export const data = [
                       form_id: '1616801872291121',
                     },
                   },
-                  userId: '1459076748710713',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710713',
                   messageId: '112464600187556-1616801872291121-1459076748710713',
                   originalTimestamp: '2025-09-25T10:05:28.000Z',
                   sentAt: '2025-09-25T10:05:33.000Z',
@@ -104,8 +91,7 @@ export const data = [
                       form_id: '1616801872291122',
                     },
                   },
-                  userId: '1459076748710714',
-                  anonymousId: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+                  anonymousId: '1459076748710714',
                   messageId: '112464600187556-1616801872291122-1459076748710714',
                   originalTimestamp: '2025-09-25T10:05:30.000Z',
                   sentAt: '2025-09-25T10:05:33.000Z',
@@ -118,8 +104,7 @@ export const data = [
                       form_id: '1616801872291123',
                     },
                   },
-                  userId: '1459076748710715',
-                  anonymousId: 'c3d4e5f6-a789-0123-cdef-234567890123',
+                  anonymousId: '1459076748710715',
                   messageId: '112464600187557-1616801872291123-1459076748710715',
                   originalTimestamp: '2025-09-25T10:05:32.000Z',
                   sentAt: '2025-09-25T10:05:35.000Z',
@@ -246,8 +231,7 @@ export const data = [
                       form_id: '1616801872291122',
                     },
                   },
-                  userId: '1459076748710714',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710714',
                   messageId: '112464600187556-1616801872291122-1459076748710714',
                   originalTimestamp: '2025-09-25T10:05:30.000Z',
                   sentAt: '2025-09-25T10:05:33.000Z',
@@ -485,8 +469,7 @@ export const data = [
                       form_id: '1616801872291122',
                     },
                   },
-                  userId: '1459076748710714',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710714',
                   messageId: '112464600187556-1616801872291122-1459076748710714',
                   originalTimestamp: '2025-09-25T10:05:30.000Z',
                   sentAt: '2025-09-25T10:05:33.000Z',
@@ -558,8 +541,7 @@ export const data = [
                       form_id: '1616801872291122',
                     },
                   },
-                  userId: '1459076748710714',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710714',
                   messageId: '112464600187556-1616801872291122-1459076748710714',
                   originalTimestamp: '2025-09-25T10:05:30.000Z',
                   sentAt: '2025-09-25T10:05:33.000Z',
@@ -622,8 +604,7 @@ export const data = [
                       form_id: '1616801872291121',
                     },
                   },
-                  userId: '1459076748710713',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710713',
                   messageId: '112464600187556-1616801872291121-1459076748710713',
                   sentAt: '2025-09-25T10:05:33.000Z',
                 },
@@ -685,8 +666,7 @@ export const data = [
                       form_id: '1616801872291121',
                     },
                   },
-                  userId: '1459076748710713',
-                  anonymousId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+                  anonymousId: '1459076748710713',
                   messageId: '112464600187556-1616801872291121-1459076748710713',
                   originalTimestamp: '2025-09-25T10:05:28.000Z',
                 },

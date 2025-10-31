@@ -21,7 +21,6 @@ export type InputEventType = {
 };
 
 export type OutputEventType = {
-  userId: string;
   anonymousId: string;
   messageId: string;
   type: string;

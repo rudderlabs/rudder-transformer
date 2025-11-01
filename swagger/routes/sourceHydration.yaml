@@ -11,7 +11,7 @@
         schema:
           type: string
           enum:
-            - v2
+            - v1
       - in: path
         name: source
         description: The source type. The lowercase value of the source name in the definition.
@@ -28,47 +28,29 @@
           summary: Source Hydration Request
           $ref: '../components/examples/sourceHydration/request.yaml'
     responses:
-      400:
-        description: Bad Request
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errorMessage:
-                  type: string
-                  example: 'Bad Request'
-      404:
-        description: Source type not supported
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                errorMessage:
-                  type: string
-                  example: 'Source type not supported'
       200:
-        description: Success (either all or some of the events were hydrated successfully). The failure reason is returned in the errorMessage field.
+        description: Success (all events in the batch were hydrated successfully).
         content:
           application/json:
             schema:
               type: object
-              $ref: '../components/schemas/sourceHydrationResponse.yaml'
+              $ref: '../components/schemas/sourceHydrationSuccessResponse.yaml'
             examples:
               success:
                 summary: Source Hydration Success
                 $ref: '../components/examples/sourceHydration/success.yaml'
-              failure:
-                summary: Source Hydration Partial Success
-                $ref: '../components/examples/sourceHydration/failure.yaml'
-      500:
-        description: Internal Server Error
+      default:
+        description: |
+          Failure (one or more events in the batch were not hydrated successfully). 
+          The response will contain the jobs that were hydrated successfully and the jobs that were not hydrated successfully.
+          The first non-200 status code of the events hydration operation is returned as the status code of the response.
+
         content:
           application/json:
             schema:
               type: object
-              properties:
-                errorMessage:
-                  type: string
-                  example: 'Error message'
+              $ref: '../components/schemas/sourceHydrationFailureResponse.yaml'
+            examples:
+              failure:
+                summary: Source Hydration Failure
+                $ref: '../components/examples/sourceHydration/failure.yaml'

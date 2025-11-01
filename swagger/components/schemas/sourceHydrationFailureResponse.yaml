@@ -1,4 +1,4 @@
-title: Source Hydration Request
+title: Source Hydration Response
 type: object
 required:
   - jobs
@@ -11,13 +11,21 @@ properties:
       required:
         - jobId
         - event
+        - statusCode
+        - errorMessage
       properties:
         jobId:
           type: string
           description: The id of the job in database
         event:
           $ref: './rudderMessage.yaml'
-          description: The event object
+          description: The input event object
+        statusCode:
+          type: number
+          description: Normalised status code for the hydration operation (always non-200 for failure)
+        errorMessage:
+          type: string
+          description: Error message for the hydration operation
   source:
     type: object
     description: The source object
@@ -35,7 +43,7 @@ properties:
         description: The source configuration object
       workspaceId:
         type: string
-        description: The workspace id associated with the source
+        description: The workspace id associated with the hydration request
       sourceDefinition:
         type: object
         description: The source definition object

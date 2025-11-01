@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: RudderStack Source Hydration API
-  version: v2
+  version: v1
   description: API for hydrating source events with additional data
 paths:
   /{version}/sources/{source}/hydrate:
@@ -17,7 +17,7 @@ paths:
           schema:
             type: string
             enum:
-              - v2
+              - v1
         - in: path
           name: source
           description: The source type. The lowercase value of the source name in the definition.
@@ -31,22 +31,155 @@ paths:
               title: Source Hydration Request
               type: object
               required:
-                - input
-                - metadata
+                - jobs
+                - source
               properties:
-                input:
+                jobs:
                   type: array
                   items:
                     type: object
                     required:
-                      - events
-                      - source
+                      - jobId
+                      - event
                     properties:
-                      events:
-                        type: array
-                        items:
+                      jobId:
+                        type: string
+                        description: The id of the job in database
+                      event:
+                        title: RudderMessage schema
+                        type: object
+                        description: The event object
+                        properties:
+                          userId:
+                            type: string
+                          anonymousId:
+                            type: string
+                          type:
+                            type: string
+                            enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+                          channel:
+                            type: string
+                          context:
+                            type: object
+                          originalTimestamp:
+                            type: string
+                            format: date-time
+                            pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                          sentAt:
+                            type: string
+                            format: date-time
+                            pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                          timestamp:
+                            type: string
+                            format: date-time
+                            pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                          event:
+                            type: string
+                          integrations:
+                            type: object
+                            example: { 'All': true }
+                          messageId:
+                            type: string
+                          properties:
+                            type: object
+                          traits:
+                            type: object
+                source:
+                  type: object
+                  description: The source object
+                  required:
+                    - id
+                    - config
+                    - workspaceId
+                    - sourceDefinition
+                  properties:
+                    id:
+                      type: string
+                      description: The id of the source
+                    config:
+                      type: object
+                      description: The source configuration object
+                    workspaceId:
+                      type: string
+                      description: The workspace id associated with the source
+                    sourceDefinition:
+                      type: object
+                      description: The source definition object
+                      required:
+                        - name
+                      properties:
+                        name:
+                          type: string
+                          description: The name of the source definition
+            examples:
+              request:
+                summary: Source Hydration Request
+                value:
+                  jobs:
+                    - jobId: 'job_id_1'
+                      event:
+                        context:
+                          traits:
+                            page_id: 'page_id'
+                            form_id: 'form_id'
+                        type: identify
+                        anonymousId: 'leadgen_id'
+                        timestamp: '1970-01-01T00:00:00.000Z'
+                        messageId: 'page_id-form_id-leadgen_id'
+                        originalTimestamp: '1970-01-01T00:00:00.000Z'
+                        sentAt: '1970-01-01T00:00:00.000Z'
+                        integrations:
+                          All: true
+                    - jobId: 'job_id_2'
+                      event:
+                        context:
+                          traits:
+                            page_id: 'page_id'
+                            form_id: 'form_id'
+                        type: identify
+                        anonymousId: 'leadgen_id'
+                        timestamp: '1970-01-01T00:00:00.000Z'
+                        messageId: 'page_id-form_id-leadgen_id'
+                        originalTimestamp: '1970-01-01T00:00:00.000Z'
+                        sentAt: '1970-01-01T00:00:00.000Z'
+                        integrations:
+                          All: true
+                  source:
+                    id: 'source_id'
+                    config:
+                      internalSecrets:
+                        accessToken: 'access_token'
+                    workspaceId: 'workspace_id'
+                    sourceDefinition:
+                      name: FACEBOOK_LEAD_ADS_NATIVE
+      responses:
+        200:
+          description: Success (all events in the batch were hydrated successfully).
+          content:
+            application/json:
+              schema:
+                title: Source Hydration Response
+                type: object
+                required:
+                  - jobs
+                  - source
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - jobId
+                        - event
+                        - statusCode
+                      properties:
+                        jobId:
+                          type: string
+                          description: The id of the job in database
+                        event:
                           title: RudderMessage schema
                           type: object
+                          description: The hydrated event object
                           properties:
                             userId:
                               type: string
@@ -82,299 +215,229 @@ paths:
                               type: object
                             traits:
                               type: object
-                      source:
+                        statusCode:
+                          enum:
+                            - 200
+                          type: number
+                          description: Normalised status code for the hydration operation (always 200 for success)
+                  source:
+                    type: object
+                    description: The source object
+                    required:
+                      - id
+                      - config
+                      - workspaceId
+                      - sourceDefinition
+                    properties:
+                      id:
+                        type: string
+                        description: The id of the source
+                      config:
                         type: object
-                        description: The source object
+                        description: The source configuration object
+                      workspaceId:
+                        type: string
+                        description: The workspace id associated with the hydration request
+                      sourceDefinition:
+                        type: object
+                        description: The source definition object
                         required:
-                          - id
-                          - config
-                          - sourceDefinition
+                          - name
                         properties:
-                          id:
+                          name:
                             type: string
-                            description: The id of the source
-                          config:
-                            type: object
-                            description: The source configuration object
-                          sourceDefinition:
-                            type: object
-                            description: The source definition object
-                            required:
-                              - name
-                            properties:
-                              name:
-                                type: string
-                                description: The name of the source definition
-                metadata:
-                  type: object
-                  description: The metadata object
-                  required:
-                    - workspaceId
-                  properties:
-                    workspaceId:
-                      type: string
-                      description: The workspace id associated with the hydration request
-            examples:
-              request:
-                summary: Source Hydration Request
-                value:
-                  input:
-                    - events:
-                        - context:
+                            description: The name of the source definition
+              examples:
+                success:
+                  summary: Source Hydration Success
+                  value:
+                    jobs:
+                      - jobId: 'job_id_1'
+                        event:
+                          context:
                             traits:
                               page_id: 'page_id'
                               form_id: 'form_id'
+                              full_name: 'Joe Example'
+                              email: 'joe@example.com'
+                              selected_dealer: '99213450'
                           type: identify
-                          userId: 'leadgen_id'
-                          anonymousId: 'uuid'
+                          anonymousId: 'leadgen_id'
                           timestamp: '1970-01-01T00:00:00.000Z'
                           messageId: 'page_id-form_id-leadgen_id'
                           originalTimestamp: '1970-01-01T00:00:00.000Z'
                           sentAt: '1970-01-01T00:00:00.000Z'
                           integrations:
                             All: true
-                        - context:
+                        statusCode: 200
+                      - jobId: 'job_id_2'
+                        event:
+                          context:
                             traits:
                               page_id: 'page_id'
                               form_id: 'form_id'
+                              full_name: 'Joe 2 Example'
+                              email: 'joe2@example.com'
+                              selected_dealer: '99213451'
                           type: identify
-                          userId: 'leadgen_id'
-                          anonymousId: 'uuid'
+                          anonymousId: 'leadgen_id'
                           timestamp: '1970-01-01T00:00:00.000Z'
                           messageId: 'page_id-form_id-leadgen_id'
                           originalTimestamp: '1970-01-01T00:00:00.000Z'
                           sentAt: '1970-01-01T00:00:00.000Z'
                           integrations:
                             All: true
-                      source:
-                        id: 'source_id'
-                        config:
-                          page_access_token: 'page_access_token'
-                        sourceDefinition:
-                          name: FACEBOOK_LEAD_ADS_NATIVE
-                  metadata:
-                    workspaceId: 'workspace_id'
-      responses:
-        400:
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: 'Bad Request'
-        404:
-          description: Source type not supported
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: 'Source type not supported'
-        200:
-          description: Success (either all or some of the events were hydrated successfully). The failure reason is returned in the errorMessage field.
+                        statusCode: 200
+                    source:
+                      id: 'source_id'
+                      config:
+                        internalSecrets:
+                          accessToken: 'access_token'
+                      workspaceId: 'workspace_id'
+                      sourceDefinition:
+                        name: FACEBOOK_LEAD_ADS_NATIVE
+        default:
+          description: |
+            Failure (one or more events in the batch were not hydrated successfully).
+            The response will contain the jobs that were hydrated successfully and the jobs that were not hydrated successfully.
+            The first non-200 status code of the events hydration operation is returned as the status code of the response.
+
           content:
             application/json:
               schema:
                 title: Source Hydration Response
                 type: object
                 required:
-                  - output
+                  - jobs
+                  - source
                 properties:
-                  output:
+                  jobs:
                     type: array
                     items:
                       type: object
                       required:
-                        - results
-                        - source
+                        - jobId
+                        - event
+                        - statusCode
+                        - errorMessage
                       properties:
-                        results:
-                          type: array
-                          items:
-                            type: object
-                            required:
-                              - success
-                            properties:
-                              event:
-                                title: RudderMessage schema
-                                type: object
-                                description: The hydrated RudderStack event object
-                                properties:
-                                  userId:
-                                    type: string
-                                  anonymousId:
-                                    type: string
-                                  type:
-                                    type: string
-                                    enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
-                                  channel:
-                                    type: string
-                                  context:
-                                    type: object
-                                  originalTimestamp:
-                                    type: string
-                                    format: date-time
-                                    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
-                                  sentAt:
-                                    type: string
-                                    format: date-time
-                                    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
-                                  timestamp:
-                                    type: string
-                                    format: date-time
-                                    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
-                                  event:
-                                    type: string
-                                  integrations:
-                                    type: object
-                                    example: { 'All': true }
-                                  messageId:
-                                    type: string
-                                  properties:
-                                    type: object
-                                  traits:
-                                    type: object
-                              statusCode:
-                                type: number
-                                description: The status code of the event hydration operation. This is the normalised status code from the N/W request.
-                              errorMessage:
-                                type: string
-                                description: The error message of the event hydration operation
-                              success:
-                                type: boolean
-                                description: Indicates if the event hydration operation was successful for the event
-                        source:
+                        jobId:
+                          type: string
+                          description: The id of the job in database
+                        event:
+                          title: RudderMessage schema
                           type: object
-                          description: The source object
-                          required:
-                            - id
-                            - config
-                            - sourceDefinition
+                          description: The input event object
                           properties:
-                            id:
+                            userId:
                               type: string
-                              description: The id of the source
-                            config:
+                            anonymousId:
+                              type: string
+                            type:
+                              type: string
+                              enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+                            channel:
+                              type: string
+                            context:
                               type: object
-                              description: The source configuration object
-                            sourceDefinition:
+                            originalTimestamp:
+                              type: string
+                              format: date-time
+                              pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                            sentAt:
+                              type: string
+                              format: date-time
+                              pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                            timestamp:
+                              type: string
+                              format: date-time
+                              pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+                            event:
+                              type: string
+                            integrations:
                               type: object
-                              description: The source definition object
-                              required:
-                                - name
-                              properties:
-                                name:
-                                  type: string
-                                  description: The name of the source definition
+                              example: { 'All': true }
+                            messageId:
+                              type: string
+                            properties:
+                              type: object
+                            traits:
+                              type: object
+                        statusCode:
+                          type: number
+                          description: Normalised status code for the hydration operation (always non-200 for failure)
+                        errorMessage:
+                          type: string
+                          description: Error message for the hydration operation
+                  source:
+                    type: object
+                    description: The source object
+                    required:
+                      - id
+                      - config
+                      - workspaceId
+                      - sourceDefinition
+                    properties:
+                      id:
+                        type: string
+                        description: The id of the source
+                      config:
+                        type: object
+                        description: The source configuration object
+                      workspaceId:
+                        type: string
+                        description: The workspace id associated with the hydration request
+                      sourceDefinition:
+                        type: object
+                        description: The source definition object
+                        required:
+                          - name
+                        properties:
+                          name:
+                            type: string
+                            description: The name of the source definition
               examples:
-                success:
-                  summary: Source Hydration Success
-                  value:
-                    output:
-                      - results:
-                          - event:
-                              context:
-                                traits:
-                                  page_id: 'page_id'
-                                  form_id: 'form_id'
-                                  full_name: 'Joe Example'
-                                  email: 'joe@example.com'
-                                  selected_dealer: '99213450'
-                              type: identify
-                              userId: 'leadgen_id'
-                              anonymousId: 'uuid'
-                              timestamp: '1970-01-01T00:00:00.000Z'
-                              messageId: 'page_id-form_id-leadgen_id'
-                              originalTimestamp: '1970-01-01T00:00:00.000Z'
-                              sentAt: '1970-01-01T00:00:00.000Z'
-                              integrations:
-                                All: true
-                            success: true
-                            statusCode: 200
-                          - event:
-                              context:
-                                traits:
-                                  page_id: 'page_id'
-                                  form_id: 'form_id'
-                                  full_name: 'Joe 2 Example'
-                                  email: 'joe2@example.com'
-                                  selected_dealer: '99213451'
-                              type: identify
-                              userId: 'leadgen_id'
-                              anonymousId: 'uuid'
-                              timestamp: '1970-01-01T00:00:00.000Z'
-                              messageId: 'page_id-form_id-leadgen_id'
-                              originalTimestamp: '1970-01-01T00:00:00.000Z'
-                              sentAt: '1970-01-01T00:00:00.000Z'
-                              integrations:
-                                All: true
-                            success: true
-                            statusCode: 200
-                        source:
-                          id: 'source_id'
-                          config:
-                            page_access_token: 'page_access_token'
-                          sourceDefinition:
-                            name: FACEBOOK_LEAD_ADS_NATIVE
                 failure:
-                  summary: Source Hydration Partial Success
+                  summary: Source Hydration Failure
                   value:
-                    output:
-                      - results:
-                          - event:
-                              context:
-                                traits:
-                                  page_id: 'page_id'
-                                  form_id: 'form_id'
-                              type: identify
-                              userId: 'leadgen_id'
-                              anonymousId: 'uuid'
-                              timestamp: '1970-01-01T00:00:00.000Z'
-                              messageId: 'page_id-form_id-leadgen_id'
-                              originalTimestamp: '1970-01-01T00:00:00.000Z'
-                              sentAt: '1970-01-01T00:00:00.000Z'
-                              integrations:
-                                All: true
-                            success: false
-                            statusCode: 429
-                            errorMessage: 'Too many requests'
-                          - event:
-                              context:
-                                traits:
-                                  page_id: 'page_id'
-                                  form_id: 'form_id'
-                                  full_name: 'Joe 2 Example'
-                                  email: 'joe2@example.com'
-                                  selected_dealer: '99213451'
-                              type: identify
-                              userId: 'leadgen_id'
-                              anonymousId: 'uuid'
-                              timestamp: '1970-01-01T00:00:00.000Z'
-                              messageId: 'page_id-form_id-leadgen_id'
-                              originalTimestamp: '1970-01-01T00:00:00.000Z'
-                              sentAt: '1970-01-01T00:00:00.000Z'
-                              integrations:
-                                All: true
-                            success: true
-                            statusCode: 200
-                        source:
-                          id: 'source_id'
-                          config:
-                            page_access_token: 'page_access_token'
-                          sourceDefinition:
-                            name: FACEBOOK_LEAD_ADS_NATIVE
-        500:
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  errorMessage:
-                    type: string
-                    example: 'Error message'
+                    jobs:
+                      - jobId: 'job_id_1'
+                        event:
+                          context:
+                            traits:
+                              page_id: 'page_id'
+                              form_id: 'form_id'
+                          type: identify
+                          anonymousId: 'leadgen_id'
+                          timestamp: '1970-01-01T00:00:00.000Z'
+                          messageId: 'page_id-form_id-leadgen_id'
+                          originalTimestamp: '1970-01-01T00:00:00.000Z'
+                          sentAt: '1970-01-01T00:00:00.000Z'
+                          integrations:
+                            All: true
+                        statusCode: 429
+                        errorMessage: 'Too many requests'
+                      - jobId: 'job_id_2'
+                        event:
+                          context:
+                            traits:
+                              page_id: 'page_id'
+                              form_id: 'form_id'
+                          type: identify
+                          anonymousId: 'leadgen_id'
+                          timestamp: '1970-01-01T00:00:00.000Z'
+                          messageId: 'page_id-form_id-leadgen_id'
+                          originalTimestamp: '1970-01-01T00:00:00.000Z'
+                          sentAt: '1970-01-01T00:00:00.000Z'
+                          integrations:
+                            All: true
+                        statusCode: 400
+                        errorMessage: 'Page access token is invalid'
+                    source:
+                      id: 'source_id'
+                      config:
+                        internalSecrets:
+                          accessToken: 'access_token'
+                      workspaceId: 'workspace_id'
+                      sourceDefinition:
+                        name: FACEBOOK_LEAD_ADS_NATIVE

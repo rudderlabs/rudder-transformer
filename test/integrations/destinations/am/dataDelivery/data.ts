@@ -151,7 +151,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status "400" due to ""Request missing required field"", (Aborted)',
+              'Request Failed during amplitude response transformation: with status "400" due to "Request missing required field", (Aborted)',
             response: [
               {
                 error:
@@ -255,7 +255,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: Too many requests for some devices and users - due to Request Limit exceeded, (Throttled)',
+              'Request Failed during amplitude response transformation: "Too many requests for some devices and users" - due to Request Limit exceeded, (Throttled)',
             response: [
               {
                 error:
@@ -1057,7 +1057,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status "400" due to ""Missing group_value"", (Aborted)',
+              'Request Failed during amplitude response transformation: with status "400" due to "Missing group_value", (Aborted)',
             response: [
               {
                 error: '{"error":"Missing group_value"}',
@@ -1139,7 +1139,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: Rate limit exceeded - due to Request Limit exceeded, (Throttled)',
+              'Request Failed during amplitude response transformation: "Rate limit exceeded" - due to Request Limit exceeded, (Throttled)',
             response: [
               {
                 error:

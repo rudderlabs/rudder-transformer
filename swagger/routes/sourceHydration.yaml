@@ -11,7 +11,7 @@
         schema:
           type: string
           enum:
-            - v1
+            - v2
       - in: path
         name: source
         description: The source type. The lowercase value of the source name in the definition.

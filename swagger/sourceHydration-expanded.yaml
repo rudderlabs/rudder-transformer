@@ -17,7 +17,7 @@ paths:
           schema:
             type: string
             enum:
-              - v1
+              - v2
         - in: path
           name: source
           description: The source type. The lowercase value of the source name in the definition.
@@ -56,7 +56,16 @@ paths:
                             type: string
                           type:
                             type: string
-                            enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+                            enum:
+                              [
+                                'identify',
+                                'track',
+                                'page',
+                                'screen',
+                                'group',
+                                'alias',
+                                'audiencelist',
+                              ]
                           channel:
                             type: string
                           context:
@@ -187,7 +196,16 @@ paths:
                               type: string
                             type:
                               type: string
-                              enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+                              enum:
+                                [
+                                  'identify',
+                                  'track',
+                                  'page',
+                                  'screen',
+                                  'group',
+                                  'alias',
+                                  'audiencelist',
+                                ]
                             channel:
                               type: string
                             context:
@@ -335,7 +353,16 @@ paths:
                               type: string
                             type:
                               type: string
-                              enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+                              enum:
+                                [
+                                  'identify',
+                                  'track',
+                                  'page',
+                                  'screen',
+                                  'group',
+                                  'alias',
+                                  'audiencelist',
+                                ]
                             channel:
                               type: string
                             context:

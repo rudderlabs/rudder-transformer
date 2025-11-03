@@ -140,8 +140,8 @@ The Amplitude destination does not make any intermediate API calls. All events a
 - **Source Code Path**: `src/v0/destinations/am/networkHandler.js`
 - **Implementation**: Custom network handler with error handling and retry logic
 - **Features**:
-  - Handles rate limiting (429 errors) with appropriate retry logic
-  - Processes throttled users and devices
+  - Handles rate limiting (429 errors) by throwing ThrottledError
+  - Does not require complex throttled user/device processing since event ordering is not guaranteed for Amplitude
   - Supports both retryable and non-retryable error handling
 
 ### User Deletion
@@ -230,8 +230,13 @@ These event types update user profiles in Amplitude. While Amplitude doesn't exp
 
 Amplitude events include a timestamp field, which is populated with the event's timestamp. Amplitude processes events based on this timestamp, not the order in which they are received.
 
-> **Recommendation**: Maintain event ordering for all event types to ensure accurate user profiles and event sequencing.
-
+> **Note**: We have disabled event ordering for Amplitude by setting the guaranteeUserEventOrder flag to false on the server.
+>
+> When event ordering is enabled, the server attempts to preserve the order of events. In such cases, if a 429 (Too Many Requests) error occurs, the server throttles further events until all queued events (from the beginning) are successfully processed.
+>
+> Previously, a 429 at the userId/deviceId level caused throttling across the entire destination. To mitigate this, we temporarily updated the 429 response to a 500.
+>
+> However, since event ordering is now disabled, we can safely return 429 as is—it will no longer cause throttling for the entire destination.
 ### Data Replay Feasibility
 
 #### Missing Data Replay
@@ -345,7 +350,7 @@ Group properties are updated using the Group call, which sets the group type and
 
 ### What happens when I exceed rate limits?
 
-When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by implementing retry logic with exponential backoff. The response includes information about which users/devices are throttled.
+When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by throwing a ThrottledError, which triggers retry logic. Since Amplitude does not guarantee event ordering (`guaranteeUserEventOrder` is false), the destination uses simplified throttle handling without checking individual throttled users/devices or converting 429s to 500s.
 
 ### How does batching work in the Amplitude destination?
 

@@ -1,0 +1,8 @@
+{
+  "watch": ["src"],
+  "ext": "ts,js,json",
+  "ignore": ["src/**/*.test.ts", "src/**/*.test.js"],
+  "exec": "npm run build:clean && npm run start",
+  "delay": "1000",
+  "signal": "SIGTERM"
+}

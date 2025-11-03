@@ -151,7 +151,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status "400" due to "Request missing required field", (Aborted)',
+              'Request failed during amplitude response transformation: with status "400" due to "Request missing required field", (Aborted)',
             response: [
               {
                 error:
@@ -255,7 +255,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: "Too many requests for some devices and users" - due to Request Limit exceeded, (Throttled)',
+              'Request failed during amplitude response transformation: with status "429" due to "Too many requests for some devices and users", (Throttled)',
             response: [
               {
                 error:
@@ -599,7 +599,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
               },
             },
             message:
-              'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "Request missing required field" (Retryable)',
+              'Request failed for a batch of events during amplitude response transformation: with status "400" due to "Request missing required field" (Retryable)',
             response: [
               {
                 error: '"Request missing required field"',
@@ -752,7 +752,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
               },
             },
             message:
-              'Request Failed for a batch of events during amplitude response transformation: with status "400" due to "Request missing required field" (Retryable)',
+              'Request failed for a batch of events during amplitude response transformation: with status "400" due to "Request missing required field" (Retryable)',
             response: [
               {
                 error: '"Request missing required field"',
@@ -875,7 +875,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status \"500\" due to \"Internal server error\", (Retryable)',
+              'Request failed during amplitude response transformation: with status \"500\" due to \"Internal server error\", (Retryable)',
             response: [
               {
                 error: '{"code":500,"error":"Internal server error"}',
@@ -972,7 +972,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status "503" due to "Service temporarily unavailable", (Retryable)',
+              'Request failed during amplitude response transformation: with status "503" due to "Service temporarily unavailable", (Retryable)',
             response: [
               {
                 error: '{"code":503,"error":"Service temporarily unavailable"}',
@@ -1057,7 +1057,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: with status "400" due to "Missing group_value", (Aborted)',
+              'Request failed during amplitude response transformation: with status "400" due to "Missing group_value", (Aborted)',
             response: [
               {
                 error: '{"error":"Missing group_value"}',
@@ -1139,7 +1139,7 @@ const proxyV1TestData: ProxyV1TestData[] = [
         body: {
           output: {
             message:
-              'Request Failed during amplitude response transformation: "Rate limit exceeded" - due to Request Limit exceeded, (Throttled)',
+              'Request failed during amplitude response transformation: with status "429" due to "Rate limit exceeded", (Throttled)',
             response: [
               {
                 error:

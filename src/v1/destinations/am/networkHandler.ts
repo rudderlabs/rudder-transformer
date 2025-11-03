@@ -35,7 +35,7 @@ const responseHandler = (responseParams: {
   const message = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { status, response } = destinationResponse;
   const { error } = response;
-  const errorMessage = JSON.stringify(error) || 'unknown error';
+  const errorMessage = JSON.stringify(error) || '"unknown error"';
   if (isHttpStatusSuccess(status)) {
     const responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: 200,
@@ -52,7 +52,7 @@ const responseHandler = (responseParams: {
   }
   if (isHttpStatusRetryable(status)) {
     throw new RetryableError(
-      `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage}, (Retryable)`,
+      `Request failed during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage}, (Retryable)`,
       500,
       destinationResponse,
     );
@@ -62,7 +62,7 @@ const responseHandler = (responseParams: {
     // we can throw a ThrottledError in 429 cases.
     // as there guaranteeUserEventOrder is false for amplitude, 429 status code is not used by server.
     throw new ThrottledError(
-      `Request Failed during ${DESTINATION} response transformation: ${errorMessage} - due to Request Limit exceeded, (Throttled)`,
+      `Request failed during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage}, (Throttled)`,
       destinationResponse,
     );
   }
@@ -73,13 +73,13 @@ const responseHandler = (responseParams: {
   ) {
     return {
       status, // this status is not used by server, server uses the status of response
-      message: `Request Failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Retryable)`,
+      message: `Request failed for a batch of events during ${DESTINATION} response transformation: with status "${status}" due to ${errorMessage} (Retryable)`,
       destinationResponse,
       response: populateResponseWithDontBatch(rudderJobMetadata, errorMessage),
     };
   }
   throw new AbortedError(
-    `Request Failed during ${DESTINATION} response transformation: with status "${status}" due to ${
+    `Request failed during ${DESTINATION} response transformation: with status "${status}" due to ${
       errorMessage
     }, (Aborted)`,
     status,

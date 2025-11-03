@@ -1,5 +1,6 @@
 const { isDefinedAndNotNull, InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
+const crypto = require('crypto');
 
 const decideVersion = ({ Config }) => {
   const configVersion = Config.version;
@@ -155,6 +156,8 @@ const generateAndValidateTimestamp = (timestamp) => {
 
   return eventAt;
 };
+
+const hashSHA256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 module.exports = {
   batchEventChunks,
   populateRevenueField,
@@ -163,4 +166,5 @@ module.exports = {
   convertToUpperSnakeCase,
   decideVersion,
   generateAndValidateTimestamp,
+  hashSHA256,
 };

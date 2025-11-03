@@ -3,7 +3,6 @@ import {
   InstrumentationError,
   removeUndefinedAndNullValues,
 } from '@rudderstack/integrations-lib';
-import sha256 from 'sha256';
 import {
   RedditResponse,
   RedditRouterRequest,
@@ -20,6 +19,7 @@ import {
   convertToUpperSnakeCase,
   populateRevenueField,
   generateAndValidateTimestamp,
+  hashSHA256,
 } from './utils';
 
 const prepareUserObject = (
@@ -42,12 +42,12 @@ const prepareUserObject = (
     )?.device?.advertisingId?.trim();
   }
   if (userData && hashData) {
-    userData.email = userData?.email ? sha256(userData.email) : null;
-    userData.external_id = userData?.external_id ? sha256(userData.external_id) : null;
-    userData.ip_address = userData?.ip_address ? sha256(userData.ip_address) : null;
-    userData.phone_number = userData?.phone_number ? sha256(userData.phone_number) : null;
-    userData.idfa = userData?.idfa ? sha256(userData.idfa) : null;
-    userData.aaid = userData?.aaid ? sha256(userData.aaid) : null;
+    userData.email = userData?.email ? hashSHA256(userData.email) : null;
+    userData.external_id = userData?.external_id ? hashSHA256(userData.external_id) : null;
+    userData.ip_address = userData?.ip_address ? hashSHA256(userData.ip_address) : null;
+    userData.phone_number = userData?.phone_number ? hashSHA256(userData.phone_number) : null;
+    userData.idfa = userData?.idfa ? hashSHA256(userData.idfa) : null;
+    userData.aaid = userData?.aaid ? hashSHA256(userData.aaid) : null;
   }
 
   return removeUndefinedAndNullValues(userData) as RedditUserData;

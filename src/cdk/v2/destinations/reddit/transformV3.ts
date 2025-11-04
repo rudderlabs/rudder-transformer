@@ -67,11 +67,13 @@ const prepareEventType = (
   if (!event) {
     throw new InstrumentationError('Event name is required in the message');
   }
+  const normalizedEvent = event.toLowerCase();
   const eventsMap = getHashFromArrayWithDuplicate(eventsMapping);
-  const eventNames = new Set((eventsMap?.[event.toLowerCase()] as string[]) || []);
+  const eventNames = new Set((eventsMap?.[normalizedEvent] as string[]) || []);
+
   if (eventNames.size === 0) {
     for (const ecomEventMap of ecomEventMaps) {
-      if (ecomEventMap.src.includes(event)) {
+      if (ecomEventMap.src.includes(normalizedEvent)) {
         return { tracking_type: convertToUpperSnakeCase(ecomEventMap.dest) } as RedditEventType;
       }
     }

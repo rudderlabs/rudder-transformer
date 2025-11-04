@@ -4,5 +4,8 @@
   "ignore": ["src/**/*.test.ts", "src/**/*.test.js"],
   "exec": "npm run build:clean && npm run start",
   "delay": "1000",
-  "signal": "SIGTERM"
+  "signal": "SIGTERM",
+  "env": {
+    "CLUSTER_ENABLED": "false"
+  }
 }

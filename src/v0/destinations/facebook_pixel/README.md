@@ -7,6 +7,7 @@ Implementation in **Javascript**
 ### Required Settings
 
 - **Pixel ID**: Required for identifying your Facebook Pixel
+
   - Must be a valid Facebook Pixel ID
   - Used to construct the API endpoint for sending events
 
@@ -17,51 +18,65 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - **Advanced Mapping**: Enable to support Identify events
+
   - When enabled, allows processing of Identify events for user data collection
   - When disabled, Identify events will be rejected with a configuration error
 
 - **Standard Page Call**: Enable to send Page events as standard PageView events
+
   - When enabled, Page events are sent as Facebook's standard PageView event
   - When disabled, Page events are sent as custom events
 
 - **Value Field Identifier**: Specifies which property to use for the value field
+
   - Options: `properties.value` or `properties.price`
   - Default: `properties.price`
 
 - **Events to Events Mapping**: Map RudderStack event names to Facebook standard events
+
   - Allows mapping custom event names to Facebook's predefined standard events
   - Supports mapping to: ViewContent, Search, AddToCart, AddToWishlist, InitiateCheckout, AddPaymentInfo, Purchase, PageView, Lead, CompleteRegistration, Contact, CustomizeProduct, Donate, FindLocation, Schedule, StartTrial, SubmitApplication, Subscribe
 
 - **PII Properties Configuration**:
+
   - **Blacklist PII Properties**: Properties to exclude or hash before sending
   - **Whitelist PII Properties**: Properties to include even if they contain PII data
 
 - **Limited Data Usage**: Enable for California Consumer Privacy Act (CCPA) compliance
+
   - When enabled, includes data processing options in the payload
 
 - **Test Destination**: Enable for testing purposes
+
   - When enabled, events are sent to Facebook's test environment
   - Requires a test event code
 
 - **Remove External ID**: Remove external_id from the payload
+
   - When enabled, external_id is excluded from user data
 
 - **Event Filtering**: Filter events based on whitelist or blacklist
+
   - Options: disable, whitelistedEvents, blacklistedEvents
 
 - **Category to Content Mapping**: Map product categories to content types
+
   - Allows mapping product categories to Facebook content types for better event categorization
 
 - **Use Updated Mapping**: Enable updated field mapping configurations
+
   - When enabled, uses newer mapping configurations for better compatibility
 
 - **Legacy Conversion Pixel ID**: Legacy pixel ID for backward compatibility (web mode only)
+
   - Used for maintaining compatibility with older Facebook Pixel implementations
 
 - **Use Native SDK**: Enable native SDK usage (web mode only)
+
   - When enabled, uses Facebook's native SDK for web implementations
 
 - **Consent Management**: Configure consent management settings
+
   - Supports OneTrust and Ketch consent management platforms
   - Includes cookie categories and consent purposes configuration
 
@@ -88,6 +103,7 @@ Implementation in **Javascript**
 **No Specific Rate Limits**: According to Facebook's official documentation, there is no specific rate limit for the Conversions API.
 
 The Facebook Pixel destination uses the Facebook Conversions API endpoint:
+
 - **Endpoint**: `https://graph.facebook.com/v22.0/{PIXEL_ID}/events`
 - **Method**: POST
 - **Rate Limiting**: Conversions API calls are not calculated into the Graph API throttling
@@ -161,17 +177,20 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 ### Validations
 
 #### Required Fields
+
 - **Pixel ID**: Must be provided in destination configuration
 - **Access Token**: Required for cloud mode authentication
 - **Event Type**: Must be one of: identify, track, page, screen
 - **Event Name**: Required for track events and must be a string
 
 #### Event-Specific Validations
+
 - **Identify Events**: Require `advancedMapping` to be enabled in configuration
 - **Track Events**: Must have a valid event name property
 - **Standard Events**: Must have properties after excluding reserved fields
 
 #### Data Validations
+
 - **Event Duration**: Events must be within 7 days of occurrence or up to 1 minute in the future
 - **PII Data**: Automatically validated and hashed according to Facebook requirements
 - **User Data**: External ID is required and derived from userId, traits, or anonymousId
@@ -181,22 +200,26 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 ### Event Ordering
 
 #### Track, Page, Screen Events
+
 - **Required**: No strict ordering required for most track events
 - **Reasoning**: Facebook Pixel events are primarily used for conversion tracking and audience building. The timestamp is included with each event, allowing Facebook to process events in chronological order regardless of delivery order.
 - **Exception**: Events that update user attributes (when included with track events) may benefit from ordering to prevent older data from overwriting newer data.
 
 #### Identify Events
+
 - **Required**: Yes, ordering is recommended
 - **Reasoning**: Identify events update user profiles and attributes. Out-of-order delivery could result in older user data overwriting newer information, leading to incorrect user profiles.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes, for most event types
 - **Reasoning**: Since Facebook Pixel events include timestamps and don't require strict ordering (except for user attribute updates), missing historical data can generally be replayed safely.
 - **Limitation**: Events must be within 7 days of their occurrence due to Facebook's event duration validation.
 
 #### Already Delivered Data Replay
+
 - **Not Recommended**: Replaying already delivered data will create duplicate events
 - **Reasoning**: Facebook treats each event as unique based on the event data and timestamp. There is no built-in deduplication mechanism in Facebook Pixel API.
 - **Impact**: Duplicate events can skew conversion metrics, audience sizes, and campaign optimization.
@@ -209,6 +232,7 @@ The Facebook Pixel destination uses the Facebook Conversions API endpoint:
 #### Event Processing Flow
 
 1. **Single Event Processing**:
+
    ```
    Input: RudderStack event (Identify/Track/Page/Screen)
    Output: Single API call to /events endpoint

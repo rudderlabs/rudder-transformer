@@ -38,7 +38,7 @@ export const data = [
                       },
                       {
                         field: 'leadgen',
-                      }
+                      },
                     ],
                   },
                   {

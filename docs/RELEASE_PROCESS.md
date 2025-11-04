@@ -7,11 +7,15 @@ This document describes the automated release process for the rudder-transformer
 ## Automated Release Workflow
 
 ### Trigger
+
 The release process is automatically triggered when:
+
 - A pull request from a `release/v*` or `hotfix-release/v*` branch is merged into `main`
 
 ### Idempotent Design
+
 The workflow is designed to be **idempotent** and safe to re-run:
+
 - ✅ **Tag Creation**: Only creates tags if they don't already exist
 - ✅ **Release Creation**: Skips creation if release already exists
 - ✅ **Error Recovery**: Can be safely re-run after failures
@@ -31,25 +35,30 @@ The workflow is designed to be **idempotent** and safe to re-run:
 The release notes follow Angular conventional commit style with automatic categorization:
 
 ### Categories
+
 - 🚀 **Features** (`feat:` commits)
 - 🐛 **Bug Fixes** (`fix:` commits)
 - ⚠️ **Breaking Changes** (commits with `!:`)
 - 🔧 **Other Changes** (other commit types like `chore:`, `docs:`, etc.)
 
 ### Example Release Notes
+
 ```markdown
 # Release v1.101.0
 
 ## 🚀 Features
-* add new event mapping for tiktok (#4298)
-* update destination type with optional account types (#4291)
+
+- add new event mapping for tiktok (#4298)
+- update destination type with optional account types (#4291)
 
 ## 🐛 Bug Fixes
-* add uuid as fallback to missing anonymousId in webhook events (#4276)
+
+- add uuid as fallback to missing anonymousId in webhook events (#4276)
 
 ## 🔧 Other Changes
-* chore: pass copy of metadata to avoid actual metadata modifications (#4351)
-* chore: mp add content type header to all apis (#4344)
+
+- chore: pass copy of metadata to avoid actual metadata modifications (#4351)
+- chore: mp add content type header to all apis (#4344)
 
 **Full Changelog**: https://github.com/rudderlabs/rudder-transformer/compare/v1.100.0...v1.101.0
 ```
@@ -57,6 +66,7 @@ The release notes follow Angular conventional commit style with automatic catego
 ## Manual Release Creation
 
 ### Using the Modern Script
+
 ```bash
 # Navigate to the correct tag/commit
 git checkout v1.102.0
@@ -66,6 +76,7 @@ npm run release:github:modern
 ```
 
 ### Using GitHub CLI Directly
+
 ```bash
 # Create release with auto-generated notes
 gh release create v1.102.0 --title "v1.102.0" --generate-notes --latest
@@ -77,13 +88,16 @@ gh release create v1.102.0 --title "v1.102.0" --notes-file release-notes.md --la
 ## Scripts
 
 ### `scripts/create-github-release.js`
+
 Modern release creation script that:
+
 - Generates Angular conventional commit style release notes
 - Uses GitHub CLI for reliable release creation
 - Includes fallback mechanisms
 - Provides detailed logging and error handling
 
 ### NPM Scripts
+
 - `npm run release:github:modern` - **Recommended**: Uses the modern script
 - `npm run release:github` - **Deprecated**: Uses old conventional-github-releaser (broken)
 
@@ -92,11 +106,13 @@ Modern release creation script that:
 ### Common Issues
 
 1. **Release Creation Fails**
+
    - Check GitHub token permissions
    - Verify tag exists: `git tag -l | grep v1.102.0`
    - Check GitHub CLI authentication: `gh auth status`
 
 2. **Missing Release Notes**
+
    - Verify commits follow conventional commit format
    - Check git history between tags: `git log v1.101.0..v1.102.0 --oneline`
 
@@ -139,6 +155,7 @@ The project has migrated from the deprecated `conventional-github-releaser` pack
 ## Configuration
 
 The release process uses these environment variables:
+
 - `GITHUB_TOKEN` / `GH_TOKEN`: GitHub Personal Access Token
 - `HUSKY`: Set to `0` to disable git hooks during CI
 

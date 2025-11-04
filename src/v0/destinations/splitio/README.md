@@ -7,6 +7,7 @@ Implementation in **JavaScript**
 ### Required Settings
 
 - **API Key**: Required for authentication with Split.io Events API
+
   - Must be a valid SDK API key with events tracking permissions
   - Used for Bearer token authentication in API requests
 
@@ -45,16 +46,17 @@ Implementation in **JavaScript**
 
 The Split.io Events API does not enforce rate limits:
 
-| Endpoint | Event Types | Rate Limit | Description |
-|----------|-------------|------------|-------------|
-| `/api/events` | All supported event types | **No rate limit** | Used for sending individual events to Split.io |
-| `/api/events/bulk` | All supported event types | **No rate limit** | Used for sending bulk events to Split.io |
+| Endpoint           | Event Types               | Rate Limit        | Description                                    |
+| ------------------ | ------------------------- | ----------------- | ---------------------------------------------- |
+| `/api/events`      | All supported event types | **No rate limit** | Used for sending individual events to Split.io |
+| `/api/events/bulk` | All supported event types | **No rate limit** | Used for sending bulk events to Split.io       |
 
 According to Split.io's official documentation: "There is no rate limit on the events API. It can handle any volume of load of events."
 
 #### Payload Size Recommendations
 
 While there are no rate limits, Split.io recommends:
+
 - Keep individual payload sizes under **1 megabyte** for optimal performance
 - Use bulk events endpoint for high-volume event ingestion
 
@@ -107,6 +109,7 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 ### Event Ordering
 
 #### All Event Types
+
 - **Required**: No
 - **Reason**: Split.io Events API accepts events with timestamps and processes them based on the provided timestamp
 - **Implementation**: Events include timestamp field for proper chronological ordering in Split.io
@@ -114,11 +117,13 @@ Note that rate limiting applies to Split.io's Admin API (used for feature flag m
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes
 - **Reason**: Events can be replayed with historical timestamps as Split.io accepts timestamp field in event payload
 - **Implementation**: Split.io processes events based on the provided timestamp, allowing for historical data ingestion
 
 #### Already Delivered Data Replay
+
 - **Feasible**: Yes, but creates duplicates
 - **Behavior**: Split.io treats all events as unique and does not deduplicate based on event content or IDs
 - **Considerations**:
@@ -184,6 +189,7 @@ For detailed business logic and field mappings information, please refer to [doc
 ### Field Validations
 
 #### Event Type ID
+
 - **Format**: Must start with letter or number
 - **Length**: Maximum 63 characters (as per Split.io official documentation)
 - **Characters**: Letters, numbers, hyphens, underscores, periods only
@@ -191,16 +197,19 @@ For detailed business logic and field mappings information, please refer to [doc
 - **Implementation Note**: Current code allows up to 80 characters, creating a discrepancy with official Split.io requirements
 
 #### Traffic Type Name
+
 - **Source**: Can be provided in traits, context.traits, or properties
 - **Fallback**: Uses destination configuration `trafficType` if not provided
 - **Requirement**: Must match Traffic Types defined in Split.io instance
 
 #### Environment Name
+
 - **Source**: Uses destination configuration `environment` if provided
 - **Requirement**: Must match Environments defined in Split.io instance
 - **Optional**: Events can be sent without environment specification
 
 #### Value Field
+
 - **Sources**: Extracted from `properties.revenue`, `properties.value`, or `properties.total`
 - **Type**: Converted to float for metrics calculation
 - **Optional**: Can be null or 0 for count-based metrics
@@ -223,14 +232,17 @@ For detailed business logic and field mappings information, please refer to [doc
 ### Common Errors
 
 1. **Missing Event Type**
+
    - **Error**: `InstrumentationError: Event type is required`
    - **Solution**: Ensure all events include a valid `type` field
 
 2. **Invalid Event Type ID**
+
    - **Error**: `InstrumentationError: eventTypeId does not match with ideal format`
    - **Solution**: Verify event names match the required regex pattern
 
 3. **Unsupported Event Type**
+
    - **Error**: `InstrumentationError: Event type [type] is not supported`
    - **Solution**: Use only supported event types (identify, track, page, screen, group)
 
@@ -241,21 +253,25 @@ For detailed business logic and field mappings information, please refer to [doc
 ### API Errors
 
 1. **Authentication Errors**
+
    - **Status Code**: 401 Unauthorized
    - **Cause**: Invalid or missing API key
    - **Solution**: Verify API key is valid and has events tracking permissions
 
 2. **Invalid Payload**
+
    - **Status Code**: 400 Bad Request
    - **Cause**: Malformed JSON, missing required fields, or invalid field values
    - **Solution**: Verify event payload matches Split.io Events API schema
 
 3. **Payload Too Large**
+
    - **Status Code**: 413 Payload Too Large
    - **Cause**: Event payload exceeds 1MB recommended limit
    - **Solution**: Reduce payload size or split into multiple requests
 
 4. **Server Errors**
+
    - **Status Code**: 500 Internal Server Error
    - **Cause**: Split.io service issues
    - **Solution**: Retry with exponential backoff
@@ -270,22 +286,29 @@ For detailed business logic and field mappings information, please refer to [doc
 ## FAQ
 
 ### Q: Can I send events without a userId?
+
 **A**: No, Split.io requires a `key` field (mapped from userId) for all events to associate them with a user or entity.
 
 ### Q: How are nested properties handled?
+
 **A**: Nested properties are automatically flattened using dot notation. For example, `user.profile.name` becomes `"user.profile.name"` in the properties object.
 
 ### Q: What happens if I don't provide a traffic type?
+
 **A**: The destination will use the `trafficType` configured in the destination settings as a fallback.
 
 ### Q: Can I send historical events?
+
 **A**: Yes, you can include a `timestamp` field in your events to send historical data. Split.io will process events based on their timestamp.
 
 ### Q: Are there any limits on property names or values?
+
 **A**: Yes, Split.io enforces the following limits:
+
 - Maximum 300 properties per event type
 - Each property has a 256 character limit
 - Supported property types: strings, numbers, and booleans
 
 ### Q: How do I track revenue or conversion values?
+
 **A**: Include `revenue`, `value`, or `total` in your event properties. These will be mapped to Split.io's `value` field for metrics calculation.

@@ -237,21 +237,21 @@ Here's an example of network mocks from the Algolia integration:
 export const networkCallsData = [
   {
     httpReq: {
-      url: "https://insights.algolia.io/1/events",
+      url: 'https://insights.algolia.io/1/events',
       data: {
         events: [
           {
-            eventName: "product clicked",
-            eventType: "abc",
-            filters: ["field1:hello", "val1:val2"],
-            index: "products",
-            userToken: "testuserId1",
+            eventName: 'product clicked',
+            eventType: 'abc',
+            filters: ['field1:hello', 'val1:val2'],
+            index: 'products',
+            userToken: 'testuserId1',
           },
         ],
       },
       params: {},
-      headers: { "User-Agent": "RudderLabs" },
-      method: "POST",
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
     },
     httpRes: {
       data: {
@@ -369,44 +369,44 @@ Here's an example of a processor transformation test from the Algolia integratio
 // From /test/integrations/destinations/algolia/processor/data.ts
 export const data = [
   {
-    name: "algolia",
-    description: "Test track event with valid event type mapping",
-    feature: "processor",
-    module: "destination",
-    version: "v0",
+    name: 'algolia',
+    description: 'Test track event with valid event type mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
           {
             message: {
-              channel: "web",
-              type: "track",
-              event: "product clicked",
-              userId: "testuserId1",
+              channel: 'web',
+              type: 'track',
+              event: 'product clicked',
+              userId: 'testuserId1',
               properties: {
-                index: "products",
-                filters: ["field1:hello", "val1:val2"],
+                index: 'products',
+                filters: ['field1:hello', 'val1:val2'],
               },
             },
             destination: {
               Config: {
-                apiKey: "defaultApiKey",
-                applicationId: "O2YARRI15I",
+                apiKey: 'defaultApiKey',
+                applicationId: 'O2YARRI15I',
                 eventTypeSettings: [
                   {
-                    from: "product clicked",
-                    to: "cLick ",
+                    from: 'product clicked',
+                    to: 'cLick ',
                   },
                 ],
               },
             },
             metadata: {
-              destinationId: "destId",
-              workspaceId: "wspId",
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: "POST",
+        method: 'POST',
       },
     },
     output: {
@@ -419,26 +419,26 @@ export const data = [
                 JSON: {
                   events: [
                     {
-                      eventName: "product clicked",
-                      eventType: "click",
-                      filters: ["field1:hello", "val1:val2"],
-                      index: "products",
-                      userToken: "testuserId1",
+                      eventName: 'product clicked',
+                      eventType: 'click',
+                      filters: ['field1:hello', 'val1:val2'],
+                      index: 'products',
+                      userToken: 'testuserId1',
                     },
                   ],
                 },
               },
-              endpoint: "https://insights.algolia.io/1/events",
+              endpoint: 'https://insights.algolia.io/1/events',
               headers: {
-                "X-Algolia-API-Key": "defaultApiKey",
-                "X-Algolia-Application-Id": "O2YARRI15I",
+                'X-Algolia-API-Key': 'defaultApiKey',
+                'X-Algolia-Application-Id': 'O2YARRI15I',
               },
-              method: "POST",
+              method: 'POST',
             },
             statusCode: 200,
             metadata: {
-              destinationId: "destId",
-              workspaceId: "wspId",
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -463,47 +463,47 @@ Here's an example of a router transformation test from the Algolia integration:
 // From /test/integrations/destinations/algolia/router/data.ts
 export const data = [
   {
-    name: "algolia",
-    description: "Test router transformation for track event",
-    feature: "router",
-    module: "destination",
-    version: "v0",
+    name: 'algolia',
+    description: 'Test router transformation for track event',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: {
           input: [
             {
               message: {
-                channel: "web",
-                type: "track",
-                event: "product clicked",
-                userId: "testuserId1",
+                channel: 'web',
+                type: 'track',
+                event: 'product clicked',
+                userId: 'testuserId1',
                 properties: {
-                  index: "products",
-                  filters: ["field1:hello", "val1:val2"],
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
                 },
               },
               destination: {
                 Config: {
-                  apiKey: "defaultApiKey",
-                  applicationId: "O2YARRI15I",
+                  apiKey: 'defaultApiKey',
+                  applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
                     {
-                      from: "product clicked",
-                      to: "cLick ",
+                      from: 'product clicked',
+                      to: 'cLick ',
                     },
                   ],
                 },
               },
               metadata: {
-                destinationId: "destId",
-                workspaceId: "wspId",
+                destinationId: 'destId',
+                workspaceId: 'wspId',
               },
             },
           ],
-          destType: "algolia",
+          destType: 'algolia',
         },
-        method: "POST",
+        method: 'POST',
       },
     },
     output: {
@@ -517,25 +517,25 @@ export const data = [
                   JSON: {
                     events: [
                       {
-                        eventName: "product clicked",
-                        eventType: "click",
-                        filters: ["field1:hello", "val1:val2"],
-                        index: "products",
-                        userToken: "testuserId1",
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                        filters: ['field1:hello', 'val1:val2'],
+                        index: 'products',
+                        userToken: 'testuserId1',
                       },
                     ],
                   },
                 },
-                endpoint: "https://insights.algolia.io/1/events",
+                endpoint: 'https://insights.algolia.io/1/events',
                 headers: {
-                  "X-Algolia-API-Key": "defaultApiKey",
-                  "X-Algolia-Application-Id": "O2YARRI15I",
+                  'X-Algolia-API-Key': 'defaultApiKey',
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
                 },
-                method: "POST",
+                method: 'POST',
               },
               metadata: {
-                destinationId: "destId",
-                workspaceId: "wspId",
+                destinationId: 'destId',
+                workspaceId: 'wspId',
               },
               statusCode: 200,
             },
@@ -560,42 +560,42 @@ Although the Algolia integration doesn't have data delivery tests, here's an exa
 
 ```typescript
 // Example data delivery test for proxy v1
-import { generateProxyV1Payload, generateMetadata } from "../../../testUtils";
+import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 
 export const data = [
   {
-    id: "algolia_v1_scenario_1",
-    name: "algolia",
-    description: "Test data delivery with valid input",
-    feature: "dataDelivery",
-    module: "destination",
-    version: "v1",
+    id: 'algolia_v1_scenario_1',
+    name: 'algolia',
+    description: 'Test data delivery with valid input',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
     input: {
       request: {
         body: generateProxyV1Payload(
           {
             headers: {
-              "Content-Type": "application/json",
-              "X-Algolia-API-Key": "defaultApiKey",
-              "X-Algolia-Application-Id": "O2YARRI15I",
+              'Content-Type': 'application/json',
+              'X-Algolia-API-Key': 'defaultApiKey',
+              'X-Algolia-Application-Id': 'O2YARRI15I',
             },
             params: {},
             JSON: {
               events: [
                 {
-                  eventName: "product clicked",
-                  eventType: "click",
-                  filters: ["field1:hello", "val1:val2"],
-                  index: "products",
-                  userToken: "testuserId1",
+                  eventName: 'product clicked',
+                  eventType: 'click',
+                  filters: ['field1:hello', 'val1:val2'],
+                  index: 'products',
+                  userToken: 'testuserId1',
                 },
               ],
             },
-            endpoint: "https://insights.algolia.io/1/events",
+            endpoint: 'https://insights.algolia.io/1/events',
           },
-          [generateMetadata("destId", "wspId")]
+          [generateMetadata('destId', 'wspId')],
         ),
-        method: "POST",
+        method: 'POST',
       },
     },
     output: {
@@ -604,12 +604,12 @@ export const data = [
         body: {
           output: {
             status: 200,
-            message: "[ALGOLIA] Request Processed Successfully",
+            message: '[ALGOLIA] Request Processed Successfully',
             response: [
               {
                 statusCode: 200,
-                error: "success",
-                metadata: generateMetadata("destId", "wspId"),
+                error: 'success',
+                metadata: generateMetadata('destId', 'wspId'),
               },
             ],
           },
@@ -636,47 +636,47 @@ Here's an example of network mocks from the Algolia integration:
 export const networkCallsData = [
   {
     httpReq: {
-      url: "https://insights.algolia.io/1/events",
+      url: 'https://insights.algolia.io/1/events',
       data: {
         events: [
           {
-            eventName: "product clicked",
-            eventType: "click",
-            filters: ["field1:hello", "val1:val2"],
-            index: "products",
-            userToken: "testuserId1",
+            eventName: 'product clicked',
+            eventType: 'click',
+            filters: ['field1:hello', 'val1:val2'],
+            index: 'products',
+            userToken: 'testuserId1',
           },
         ],
       },
       params: {},
-      headers: { "User-Agent": "RudderLabs" },
-      method: "POST",
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
     },
     httpRes: {
       data: {
         status: 200,
-        message: "OK",
+        message: 'OK',
       },
       status: 200,
     },
   },
   {
     httpReq: {
-      url: "https://insights.algolia.io/1/events",
+      url: 'https://insights.algolia.io/1/events',
       data: {
         events: [
           {
-            eventName: "product clicked",
-            eventType: "abc", // Invalid event type
-            filters: ["field1:hello", "val1:val2"],
-            index: "products",
-            userToken: "testuserId1",
+            eventName: 'product clicked',
+            eventType: 'abc', // Invalid event type
+            filters: ['field1:hello', 'val1:val2'],
+            index: 'products',
+            userToken: 'testuserId1',
           },
         ],
       },
       params: {},
-      headers: { "User-Agent": "RudderLabs" },
-      method: "POST",
+      headers: { 'User-Agent': 'RudderLabs' },
+      method: 'POST',
     },
     httpRes: {
       data: {

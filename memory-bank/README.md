@@ -13,22 +13,26 @@ This directory contains structured information about the RudderStack Transformer
    - System dependencies
 
 1a. **Common Terminology** (`01a_common_terminology.md`)
-   - Definitions of key terms used in rudder-transformer
-   - Explanation of core concepts like batching, transform proxy, deliver
-   - Clarification of components like router, processor, multiplexing
-   - Description of transformation types and data flow components
+
+- Definitions of key terms used in rudder-transformer
+- Explanation of core concepts like batching, transform proxy, deliver
+- Clarification of components like router, processor, multiplexing
+- Description of transformation types and data flow components
 
 2. **Technical Stack** (`02_technical_stack.md`)
+
    - Languages, frameworks, libraries, and tools used in the project
    - Development environment setup
    - Third-party dependencies
 
 3. **System Architecture** (`03_system_architecture.md`)
+
    - Components and their relationships within the system
    - Data flow and scaling architecture
    - Integration with RudderStack ecosystem
 
 4. **System Dependencies** (`10_system_dependencies.md`)
+
    - Dependencies and interactions with other RudderStack components
    - API interactions between rudder-server, rudder-ingestion-svc, and rudder-transformer
    - Configuration dependencies with rudder-integrations-config
@@ -42,21 +46,25 @@ This directory contains structured information about the RudderStack Transformer
 ### Development Guidelines
 
 6. **Code Structure** (`07_code_structure.md`)
+
    - Directory layout, naming conventions, and modular organization
    - Code organization principles
    - Module dependencies
 
 7. **Best Practices and Guidelines** (`05_best_practices_and_guidelines.md`)
+
    - Coding standards, design patterns, and testing methodologies
    - Error handling and logging
    - Performance optimization
 
 8. **Preferences and Settings** (`04_preferences_and_settings.md`)
+
    - User preferences and system settings
    - Configuration options
    - Environment variables
 
 9. **Workflows and Processes** (`06_workflows_and_processes.md`)
+
    - Development workflow, deployment process, and maintenance procedures
    - Code review process
    - Release management
@@ -71,29 +79,34 @@ This directory contains structured information about the RudderStack Transformer
 ### Integration Development
 
 11. **Integration Development Guide** (`09_integration_development_guide.md`)
+
     - Step-by-step guide for developing source and destination integrations
     - Required components and minimum functions for integrations
     - Best practices and common pitfalls
 
 12. **Version Differences** (`16_version_differences.md`)
+
     - Explanation of v0, v1, and CDK v2 versions
     - Architectural differences between versions
     - Migration guidelines between versions
     - Advantages and disadvantages of each approach
 
 13. **Integration Analysis** (`12_integration_analysis.md`)
+
     - Analysis of v0, v1, and CDK v2 integration implementations
     - Identification of patterns, inconsistencies, and gaps
     - Rating of integrations based on complexity and code quality
     - Recommendations for improvement and documentation
 
 14. **API Endpoints Analysis** (`13_api_endpoints.md`)
+
     - Documentation of API endpoint patterns and versioning
     - Template for comprehensive API endpoint documentation
     - Automation suggestions for API version checking
     - Integration-specific API endpoint examples
 
 15. **Integration Nuances and Edge Cases** (`14_integration_nuances.md`)
+
     - Special handling requirements for different integrations
     - Common edge cases and their solutions
     - Performance considerations and optimization techniques
@@ -108,18 +121,21 @@ This directory contains structured information about the RudderStack Transformer
 ### Advanced Implementation
 
 17. **Proxy Implementation Guide** (`17_proxy_implementation_guide.md`)
+
     - Guide for implementing proxy functionality for destinations
     - Onboarding destinations to proxy v0 and proxy v1
     - Best practices and implementation patterns
     - Error handling and response processing
 
 18. **Component Testing Guide** (`18_component_testing_guide.md`)
+
     - Guide for writing component tests for rudder-transformer
     - Best practices for testing integrations
     - Test structure and organization
     - Mocking and test data management
 
 19. **Reorganization** (`19_reorganization.md`)
+
     - Memory bank reorganization approach
     - Improvements to address duplication
     - Enhanced cross-references
@@ -134,6 +150,7 @@ This directory contains structured information about the RudderStack Transformer
 ### Memory Bank Management
 
 22. **Review and Questions** (`review_and_questions.md`)
+
     - Review of memory bank structure and content
     - Identification of areas needing clarification
     - Questions for improving accuracy and completeness
@@ -168,8 +185,9 @@ It serves as a critical component in the RudderStack data pipeline, enabling dat
 ### For New Developers
 
 If you're new to the project, we recommend reading these documents in order:
+
 1. [Project Overview](01_project_overview.md)
-1a. [Common Terminology](01a_common_terminology.md)
+   1a. [Common Terminology](01a_common_terminology.md)
 2. [System Architecture](03_system_architecture.md)
 3. [Event Stream Pipeline](08_event_stream_pipeline.md)
 4. [Code Structure](07_code_structure.md)
@@ -178,6 +196,7 @@ If you're new to the project, we recommend reading these documents in order:
 ### For Integration Developers
 
 If you're working on integrations, focus on these documents:
+
 1. [Integration Development Guide](09_integration_development_guide.md)
 2. [Version Differences](16_version_differences.md)
 3. [API Endpoints Analysis](13_api_endpoints.md)
@@ -188,6 +207,7 @@ If you're working on integrations, focus on these documents:
 ### For DevOps Engineers
 
 If you're responsible for deployment and operations, these documents are most relevant:
+
 1. [System Dependencies](10_system_dependencies.md)
 2. [Git Workflow and CI/CD](11_git_workflow_cicd.md)
 3. [Preferences and Settings](04_preferences_and_settings.md)

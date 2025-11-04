@@ -134,4 +134,4 @@ jobs:
           aws-region: us-east-1
           k8s-cluster: dev-rudder
           k8s-namespace: retl-int,hostedmt-dev
-          deployment-name: rudderstack-transformer         
+          deployment-name: rudderstack-transformer

@@ -19,6 +19,7 @@
     "setup": "npm ci",
     "setup:swagger": "swagger-cli bundle swagger/api.yaml --outfile dist/swagger.json --type json",
     "format": "prettier --write .",
+    "format:ci": "prettier --check .",
     "lint:fix": "eslint . --fix",
     "lint:fix:json": "eslint --ext .json --fix .",
     "lint": "npm run format && npm run lint:fix",

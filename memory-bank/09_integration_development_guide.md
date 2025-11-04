@@ -75,13 +75,13 @@ Define constants specific to the destination:
 export const MAX_BATCH_SIZE = 100;
 
 // API version
-export const API_VERSION = "v1";
+export const API_VERSION = 'v1';
 
 // Endpoints that support bulk operations
-export const BULK_ENDPOINTS = ["events/track/bulk", "users/update/bulk"];
+export const BULK_ENDPOINTS = ['events/track/bulk', 'users/update/bulk'];
 
 // Response paths for error handling
-export const RESPONSE_ERROR_PATHS = ["error", "errors", "message"];
+export const RESPONSE_ERROR_PATHS = ['error', 'errors', 'message'];
 ```
 
 #### 2. Network Handler (networkHandler.ts)
@@ -89,8 +89,8 @@ export const RESPONSE_ERROR_PATHS = ["error", "errors", "message"];
 Implement the network handler to manage API requests and responses:
 
 ```typescript
-import { prepareProxyRequest, proxyRequest } from "../../../adapters/network";
-import { processAxiosResponse } from "../../../adapters/utils/networkUtils";
+import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
 
 function networkHandler() {
   this.prepareProxy = prepareProxyRequest;
@@ -161,7 +161,7 @@ export { BaseStrategy };
 **Track/Identify Strategy (strategies/track-identify.ts)**:
 
 ```typescript
-import { BaseStrategy } from "./base";
+import { BaseStrategy } from './base';
 
 class TrackIdentifyStrategy extends BaseStrategy {
   handleSuccess(responseParams) {
@@ -204,15 +204,15 @@ export function processEvent(event) {
 
   // Process based on event type
   switch (type) {
-    case "identify":
+    case 'identify':
       return processIdentify(message, destination);
-    case "track":
+    case 'track':
       return processTrack(message, destination);
-    case "page":
+    case 'page':
       return processPage(message, destination);
-    case "screen":
+    case 'screen':
       return processScreen(message, destination);
-    case "group":
+    case 'group':
       return processGroup(message, destination);
     default:
       throw new Error(`Message type ${type} not supported`);
@@ -278,8 +278,8 @@ src/sources/[source-name]/
 Define the main entry point for the source that exports the process function:
 
 ```typescript
-import { processEvent } from "./processor";
-import { validatePayload } from "./utils";
+import { processEvent } from './processor';
+import { validatePayload } from './utils';
 
 async function process(req) {
   const { body } = req;
@@ -301,7 +301,7 @@ export default { process };
 Implement the logic to transform source data to RudderStack format:
 
 ```typescript
-import { formatProperties, extractUserInfo } from "./utils";
+import { formatProperties, extractUserInfo } from './utils';
 
 export async function processEvent(payload) {
   // Extract user information
@@ -312,13 +312,13 @@ export async function processEvent(payload) {
 
   // Create RudderStack event
   const rudderEvent = {
-    type: "track",
+    type: 'track',
     event: payload.eventName,
     userId: userInfo.userId,
     anonymousId: userInfo.anonymousId,
     properties,
     context: {
-      source: "source-name",
+      source: 'source-name',
       // Additional context
     },
     timestamp: new Date().toISOString(),
@@ -353,12 +353,12 @@ export interface UserInfo {
 Implement helper functions for the source:
 
 ```typescript
-import { SourcePayload, UserInfo } from "./types";
+import { SourcePayload, UserInfo } from './types';
 
 export function validatePayload(payload: SourcePayload) {
   // Validate the incoming payload
   if (!payload.eventName) {
-    throw new Error("Event name is required");
+    throw new Error('Event name is required');
   }
   // Additional validation
 }
@@ -422,24 +422,24 @@ npm run test:ts -- unit --destination=<destination-name>
 Example of a destination component test:
 
 ```typescript
-describe("MyDestination", () => {
-  describe("processEvent", () => {
+describe('MyDestination', () => {
+  describe('processEvent', () => {
     const testCases = [
       {
-        name: "should transform track event correctly",
+        name: 'should transform track event correctly',
         input: {
           message: {
-            type: "track",
-            event: "Product Purchased",
-            userId: "user123",
+            type: 'track',
+            event: 'Product Purchased',
+            userId: 'user123',
             properties: {
               price: 100,
-              currency: "USD",
+              currency: 'USD',
             },
           },
           destination: {
             Config: {
-              apiKey: "test-api-key",
+              apiKey: 'test-api-key',
             },
           },
         },
@@ -450,7 +450,7 @@ describe("MyDestination", () => {
       // Additional test cases
     ];
 
-    test.each(testCases)("$name", ({ input, expected }) => {
+    test.each(testCases)('$name', ({ input, expected }) => {
       const output = processEvent(input);
       expect(output).toEqual(expected);
     });
@@ -469,28 +469,28 @@ describe("MyDestination", () => {
 Example of a source test:
 
 ```typescript
-describe("MySource", () => {
-  describe("process", () => {
+describe('MySource', () => {
+  describe('process', () => {
     const testCases = [
       {
-        name: "should process valid payload correctly",
+        name: 'should process valid payload correctly',
         input: {
           body: {
-            eventName: "purchase",
-            userId: "user123",
+            eventName: 'purchase',
+            userId: 'user123',
             data: {
-              item: "Product",
+              item: 'Product',
               price: 100,
             },
           },
         },
         expected: [
           {
-            type: "track",
-            event: "purchase",
-            userId: "user123",
+            type: 'track',
+            event: 'purchase',
+            userId: 'user123',
             properties: {
-              item: "Product",
+              item: 'Product',
               price: 100,
             },
             // Additional expected fields
@@ -500,8 +500,8 @@ describe("MySource", () => {
       // Additional test cases
     ];
 
-    test.each(testCases)("$name", async ({ input, expected }) => {
-      const sourceModule = require("../index");
+    test.each(testCases)('$name', async ({ input, expected }) => {
+      const sourceModule = require('../index');
       const output = await sourceModule.default.process(input);
       expect(output).toEqual(expected);
     });

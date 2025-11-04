@@ -3,6 +3,7 @@
 This document provides a comprehensive guide to querying different Rudderstack databases, including the tables, fields, and example queries for common use cases.
 
 ## Table of Contents
+
 1. [Database Overview](#database-overview)
 2. [Snowflake OLAP Database](#snowflake-olap-database)
 3. [PostgreSQL Reporting Database](#postgresql-reporting-database)
@@ -14,10 +15,10 @@ This document provides a comprehensive guide to querying different Rudderstack d
 
 Rudderstack maintains several databases for different purposes:
 
-| Database | Type | Purpose | Connection Details |
-|----------|------|---------|-------------------|
-| RUDDER_TEST_EVENTS | Snowflake | Configuration data, workspaces, organizations, plans | Account: vmskhef-ina31471, User: integration_accounts |
-| metricsdb | PostgreSQL | Error reporting, metrics, event tracking | Host: localhost, Port: 18432, User: rudder |
+| Database           | Type       | Purpose                                              | Connection Details                                    |
+| ------------------ | ---------- | ---------------------------------------------------- | ----------------------------------------------------- |
+| RUDDER_TEST_EVENTS | Snowflake  | Configuration data, workspaces, organizations, plans | Account: vmskhef-ina31471, User: integration_accounts |
+| metricsdb          | PostgreSQL | Error reporting, metrics, event tracking             | Host: localhost, Port: 18432, User: rudder            |
 
 ## Snowflake OLAP Database
 
@@ -35,65 +36,65 @@ export SNOWSQL_PWD='your_password_here'
 
 Contains information about customer workspaces.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key, workspace identifier |
-| NAME | VARCHAR | Workspace name |
-| ORGANIZATIONID | VARCHAR | Foreign key to organizations table |
-| STATUS | VARCHAR | Workspace status (ACTIVE, etc.) |
-| ENVIRONMENT | VARCHAR | Environment type (PRODUCTION, etc.) |
+| Column         | Type    | Description                         |
+| -------------- | ------- | ----------------------------------- |
+| ID             | VARCHAR | Primary key, workspace identifier   |
+| NAME           | VARCHAR | Workspace name                      |
+| ORGANIZATIONID | VARCHAR | Foreign key to organizations table  |
+| STATUS         | VARCHAR | Workspace status (ACTIVE, etc.)     |
+| ENVIRONMENT    | VARCHAR | Environment type (PRODUCTION, etc.) |
 
 #### ORGANIZATIONS
 
 Contains information about customer organizations.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key, organization identifier |
-| NAME | VARCHAR | Organization name |
+| Column   | Type    | Description                            |
+| -------- | ------- | -------------------------------------- |
+| ID       | VARCHAR | Primary key, organization identifier   |
+| NAME     | VARCHAR | Organization name                      |
 | SETTINGS | VARIANT | JSON object with organization settings |
 
 #### USER_ACCOUNTS
 
 Links organizations to plans.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key |
-| ORGID | VARCHAR | Foreign key to organizations table |
-| ORGNAME | VARCHAR | Organization name |
-| PLANID | VARCHAR | Foreign key to plans table |
-| BILLINGENABLED | BOOLEAN | Whether billing is enabled |
+| Column         | Type    | Description                        |
+| -------------- | ------- | ---------------------------------- |
+| ID             | VARCHAR | Primary key                        |
+| ORGID          | VARCHAR | Foreign key to organizations table |
+| ORGNAME        | VARCHAR | Organization name                  |
+| PLANID         | VARCHAR | Foreign key to plans table         |
+| BILLINGENABLED | BOOLEAN | Whether billing is enabled         |
 
 #### PLANS
 
 Contains information about subscription plans.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key, plan identifier |
-| NAME | VARCHAR | Plan name (e.g., "pro", "Growth") |
+| Column      | Type    | Description                              |
+| ----------- | ------- | ---------------------------------------- |
+| ID          | VARCHAR | Primary key, plan identifier             |
+| NAME        | VARCHAR | Plan name (e.g., "pro", "Growth")        |
 | DISPLAYNAME | VARCHAR | Display name (e.g., "Pro", "Enterprise") |
-| FEATURES | VARIANT | JSON object with plan features |
+| FEATURES    | VARIANT | JSON object with plan features           |
 
 #### DESTINATIONS
 
 Contains information about configured destinations.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key, destination identifier |
-| WORKSPACEID | VARCHAR | Foreign key to workspaces table |
+| Column                  | Type    | Description                                  |
+| ----------------------- | ------- | -------------------------------------------- |
+| ID                      | VARCHAR | Primary key, destination identifier          |
+| WORKSPACEID             | VARCHAR | Foreign key to workspaces table              |
 | DESTINATIONDEFINITIONID | VARCHAR | Foreign key to destination_definitions table |
 
 #### DESTINATION_DEFINITIONS
 
 Contains information about destination types.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| ID | VARCHAR | Primary key |
-| NAME | VARCHAR | Destination name (e.g., "MP" for Mixpanel) |
+| Column | Type    | Description                                |
+| ------ | ------- | ------------------------------------------ |
+| ID     | VARCHAR | Primary key                                |
+| NAME   | VARCHAR | Destination name (e.g., "MP" for Mixpanel) |
 
 ### Example Queries
 
@@ -190,18 +191,18 @@ PGPASSWORD=your_password_here psql -h localhost -p 18432 -U rudder -d metricsdb 
 
 Contains information about errors that occurred in the system.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| id | text | Primary key |
-| workspaceId | text | Workspace identifier |
-| reportedAt | bigint | Timestamp in milliseconds when error was reported |
-| count | bigint | Number of occurrences |
-| sourceId | text | Source identifier |
-| destinationId | text | Destination identifier |
-| destinationDefinitionName | text | Destination type (e.g., "MP" for Mixpanel) |
-| errorCode | text | Error code |
-| errorMessage | text | Error message |
-| timeStamp | timestamp | Timestamp when error was recorded |
+| Column                    | Type      | Description                                       |
+| ------------------------- | --------- | ------------------------------------------------- |
+| id                        | text      | Primary key                                       |
+| workspaceId               | text      | Workspace identifier                              |
+| reportedAt                | bigint    | Timestamp in milliseconds when error was reported |
+| count                     | bigint    | Number of occurrences                             |
+| sourceId                  | text      | Source identifier                                 |
+| destinationId             | text      | Destination identifier                            |
+| destinationDefinitionName | text      | Destination type (e.g., "MP" for Mixpanel)        |
+| errorCode                 | text      | Error code                                        |
+| errorMessage              | text      | Error message                                     |
+| timeStamp                 | timestamp | Timestamp when error was recorded                 |
 
 ### Example Queries
 
@@ -378,6 +379,7 @@ If queries are running slowly:
 If you're having trouble connecting:
 
 1. **PostgreSQL**:
+
    - Ensure SSL is enabled: `--set=sslmode=require`
    - Check port and credentials
    - Verify the server is running

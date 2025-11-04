@@ -59,9 +59,9 @@ The Network Handler Factory is a key component in the proxy architecture. It's r
 const getNetworkHandler = (type, version) => {
   let handlerVersion = version;
   let NetworkHandler = handlers[version][type] || handlers.generic;
-  if (version === "v1" && NetworkHandler === handlers.generic) {
+  if (version === 'v1' && NetworkHandler === handlers.generic) {
     NetworkHandler = handlers.v0[type] || handlers.generic;
-    handlerVersion = "v0";
+    handlerVersion = 'v0';
   }
   const networkHandler = new NetworkHandler();
   return { networkHandler, handlerVersion };
@@ -125,15 +125,15 @@ The error types are defined in `src/v0/util/tags.js`:
 
 ```javascript
 const ERROR_TYPES = {
-  INSTRUMENTATION: "instrumentation",
-  CONFIGURATION: "configuration",
-  THROTTLED: "throttled",
-  RETRYABLE: "retryable",
-  ABORTED: "aborted",
-  OAUTH_SECRET: "oAuthSecret",
-  UNSUPPORTED: "unsupported",
-  REDIS: "redis",
-  FILTERED: "filtered",
+  INSTRUMENTATION: 'instrumentation',
+  CONFIGURATION: 'configuration',
+  THROTTLED: 'throttled',
+  RETRYABLE: 'retryable',
+  ABORTED: 'aborted',
+  OAUTH_SECRET: 'oAuthSecret',
+  UNSUPPORTED: 'unsupported',
+  REDIS: 'redis',
+  FILTERED: 'filtered',
 };
 ```
 
@@ -151,8 +151,7 @@ The Network Adapter (`src/adapters/network.js`) provides common functions for ma
 // From src/adapters/network.js
 const proxyRequest = async (request, destType) => {
   const { metadata } = request;
-  const { endpoint, data, method, params, headers } =
-    prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
     data,
@@ -161,7 +160,7 @@ const proxyRequest = async (request, destType) => {
     method,
   };
   const response = await httpSend(requestOptions, {
-    feature: "proxy",
+    feature: 'proxy',
     destType,
     metadata,
   });
@@ -173,18 +172,11 @@ The `prepareProxyRequest` function extracts the necessary information from the r
 
 ```javascript
 const prepareProxyRequest = (request) => {
-  const {
-    body,
-    method,
-    params,
-    endpoint,
-    headers,
-    destinationConfig: config,
-  } = request;
+  const { body, method, params, endpoint, headers, destinationConfig: config } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   const data = extractPayloadForFormat(payload, payloadFormat);
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
-  headers["User-Agent"] = "RudderLabs";
+  headers['User-Agent'] = 'RudderLabs';
   return removeUndefinedValues({
     endpoint,
     data,
@@ -217,24 +209,21 @@ const processAxiosResponse = (clientResponse) => {
     if (response) {
       const { data, status, headers } = response;
       return {
-        response: data || "",
+        response: data || '',
         status: status || 500,
         ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
       };
     }
     // (edge case) response and code is not present
     return {
-      response: clientResponse?.response?.data || "",
-      status: getErrorStatusCode(
-        clientResponse,
-        HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
-      ),
+      response: clientResponse?.response?.data || '',
+      status: getErrorStatusCode(clientResponse, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
     };
   }
   // success(2xx) axios response
   const { data, status, headers } = clientResponse.response;
   return {
-    response: data || "",
+    response: data || '',
     status: status || 500,
     ...(isDefinedAndNotNullAndNotEmpty(headers) ? { headers } : {}),
   };
@@ -347,18 +336,15 @@ type DeliveryV0Response = {
 Create a new file at `src/v0/destinations/{destination}/networkHandler.js` with the following structure:
 
 ```javascript
-const { NetworkError } = require("@rudderstack/integrations-lib");
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  proxyRequest,
-  prepareProxyRequest,
-} = require("../../../adapters/network");
+const { NetworkError } = require('@rudderstack/integrations-lib');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
   processAxiosResponse,
-} = require("../../../adapters/utils/networkUtils");
-const { DESTINATION } = require("./config");
-const tags = require("../../util/tags");
+} = require('../../../adapters/utils/networkUtils');
+const { DESTINATION } = require('./config');
+const tags = require('../../util/tags');
 
 // Response handler function
 const responseHandler = (responseParams) => {
@@ -374,14 +360,14 @@ const responseHandler = (responseParams) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
 
   // Check for application-level errors
   if (
     !!response &&
-    response.message !== "success" &&
+    response.message !== 'success' &&
     response.errors &&
     response.errors.length > 0
   ) {
@@ -391,7 +377,7 @@ const responseHandler = (responseParams) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
 
@@ -427,7 +413,7 @@ if (!isHttpStatusSuccess(status)) {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    destinationResponse
+    destinationResponse,
   );
 }
 ```
@@ -443,9 +429,9 @@ if (status === 401 || status === 403) {
     `Authentication failed for ${DESTINATION}`,
     status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: "auth",
+      [tags.TAG_NAMES.ERROR_TYPE]: 'auth',
     },
-    destinationResponse
+    destinationResponse,
   );
 }
 ```
@@ -499,20 +485,19 @@ Before implementing proxy v1 for a destination, ensure you have:
 Create a new file at `src/v1/destinations/{destination}/networkHandler.js` or `.ts` with the following structure:
 
 ```typescript
-import { prepareProxyRequest, proxyRequest } from "../../../adapters/network";
-import { processAxiosResponse } from "../../../adapters/utils/networkUtils";
-import { TransformerProxyError } from "../../../v0/util/errorTypes";
-import { getDynamicErrorType } from "../../../adapters/utils/networkUtils";
-import { TAG_NAMES } from "../../../v0/util/tags";
-import { isHttpStatusSuccess } from "../../../v0/util";
+import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { TransformerProxyError } from '../../../v0/util/errorTypes';
+import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import { TAG_NAMES } from '../../../v0/util/tags';
+import { isHttpStatusSuccess } from '../../../v0/util';
 
 // Optional: Import any destination-specific constants or utilities
 // import { BULK_ENDPOINTS } from './config';
 
 // Response handler function
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata, destinationRequest } =
-    responseParams;
+  const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
   const { status, response } = destinationResponse;
   const responseWithIndividualEvents = [];
 
@@ -525,7 +510,7 @@ const responseHandler = (responseParams) => {
       responseWithIndividualEvents.push({
         statusCode: 200,
         metadata,
-        error: "success",
+        error: 'success',
       });
     });
 
@@ -539,7 +524,7 @@ const responseHandler = (responseParams) => {
 
   // Handle error responses
   // Example implementation for a simple case:
-  const errorMessage = response?.error?.message || "unknown error format";
+  const errorMessage = response?.error?.message || 'unknown error format';
 
   rudderJobMetadata.forEach((metadata) => {
     responseWithIndividualEvents.push({
@@ -556,8 +541,8 @@ const responseHandler = (responseParams) => {
       [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    "",
-    responseWithIndividualEvents
+    '',
+    responseWithIndividualEvents,
   );
 };
 
@@ -588,14 +573,14 @@ if (isHttpStatusSuccess(status)) {
   response.forEach((result, idx) => {
     const proxyOutput = {
       statusCode: 200,
-      error: "success",
+      error: 'success',
       metadata: rudderJobMetadata[idx],
     };
 
     // Check if this specific result has an error
-    if (result.error || result.status === "error") {
+    if (result.error || result.status === 'error') {
       proxyOutput.statusCode = 400; // or appropriate error code
-      proxyOutput.error = result.errorMessage || "Failed to process event";
+      proxyOutput.error = result.errorMessage || 'Failed to process event';
     }
 
     responseWithIndividualEvents.push(proxyOutput);
@@ -640,7 +625,7 @@ if (isHttpStatusSuccess(status)) {
       responseWithIndividualEvents.push({
         statusCode: 200,
         metadata,
-        error: "success",
+        error: 'success',
       });
     }
   });
@@ -660,10 +645,10 @@ For more complex destinations with different endpoints that require different ha
 
 ```typescript
 // In networkHandler.js
-import { BaseStrategy } from "./strategies/base";
-import { TrackStrategy } from "./strategies/track";
-import { IdentifyStrategy } from "./strategies/identify";
-import { GenericStrategy } from "./strategies/generic";
+import { BaseStrategy } from './strategies/base';
+import { TrackStrategy } from './strategies/track';
+import { IdentifyStrategy } from './strategies/identify';
+import { GenericStrategy } from './strategies/generic';
 
 const strategyRegistry = {
   [TrackStrategy.name]: new TrackStrategy(),
@@ -672,9 +657,9 @@ const strategyRegistry = {
 };
 
 const getResponseStrategy = (endpoint) => {
-  if (endpoint.includes("/track")) {
+  if (endpoint.includes('/track')) {
     return strategyRegistry[TrackStrategy.name];
-  } else if (endpoint.includes("/identify")) {
+  } else if (endpoint.includes('/identify')) {
     return strategyRegistry[IdentifyStrategy.name];
   }
   return strategyRegistry[GenericStrategy.name];
@@ -710,7 +695,7 @@ export { BaseStrategy };
 
 ```typescript
 // In strategies/track.ts
-import { BaseStrategy } from "./base";
+import { BaseStrategy } from './base';
 
 class TrackStrategy extends BaseStrategy {
   handleSuccess(responseParams) {
@@ -755,8 +740,8 @@ if (status === 401 || status === 403) {
       [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    "auth", // authErrorCategory
-    responseWithIndividualEvents
+    'auth', // authErrorCategory
+    responseWithIndividualEvents,
   );
 }
 ```
@@ -776,14 +761,14 @@ Example test structure:
 // In test/integrations/destinations/{destination}/dataDelivery/data.ts
 export const data: ProxyV1TestData[] = [
   {
-    id: "destination_v1_business_scenario_1",
+    id: 'destination_v1_business_scenario_1',
     name: destType,
-    description: "[Proxy v1 API] :: Test for a valid record request",
-    successCriteria: "Should return 200 with success response",
-    scenario: "Business",
-    feature: "dataDelivery",
-    module: "destination",
-    version: "v1",
+    description: '[Proxy v1 API] :: Test for a valid record request',
+    successCriteria: 'Should return 200 with success response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
     input: {
       request: {
         body: generateProxyV1Payload(
@@ -793,35 +778,35 @@ export const data: ProxyV1TestData[] = [
             JSON: {},
             JSON_ARRAY: {
               batch: JSON.stringify([
-                { id: "event1", properties: { test: "1" } },
-                { id: "event2", properties: { test: "2" } },
+                { id: 'event1', properties: { test: '1' } },
+                { id: 'event2', properties: { test: '2' } },
               ]),
             },
             endpoint: updateEndpoint,
           },
-          [generateMetadata(1), generateMetadata(2)]
+          [generateMetadata(1), generateMetadata(2)],
         ),
       },
       response: {
         status: 200,
         body: {
-          successful: [{ id: "event1" }, { id: "event2" }],
+          successful: [{ id: 'event1' }, { id: 'event2' }],
           failed: [],
         },
       },
     },
     output: {
       status: 200,
-      message: "[DESTINATION_NAME] Request Processed Successfully",
+      message: '[DESTINATION_NAME] Request Processed Successfully',
       response: [
         {
           statusCode: 200,
-          error: "success",
+          error: 'success',
           metadata: generateMetadata(1),
         },
         {
           statusCode: 200,
-          error: "success",
+          error: 'success',
           metadata: generateMetadata(2),
         },
       ],
@@ -892,7 +877,7 @@ rudderJobMetadata.forEach((metadata, idx) => {
     responseWithIndividualEvents.push({
       statusCode: 200, // or appropriate status code
       metadata,
-      error: "Event not found in response, assuming success",
+      error: 'Event not found in response, assuming success',
     });
   }
 });
@@ -907,11 +892,11 @@ rudderJobMetadata.forEach((metadata, idx) => {
 ```typescript
 // Example: Using different strategies for different endpoints
 const getResponseStrategy = (endpoint, response) => {
-  if (endpoint.includes("/track")) {
+  if (endpoint.includes('/track')) {
     return new TrackStrategy();
-  } else if (endpoint.includes("/identify")) {
+  } else if (endpoint.includes('/identify')) {
     return new IdentifyStrategy();
-  } else if (response.error && response.error.type === "validation") {
+  } else if (response.error && response.error.type === 'validation') {
     return new ValidationErrorStrategy();
   }
   return new GenericStrategy();
@@ -927,20 +912,19 @@ Migrating a destination from proxy v0 to proxy v1 involves creating a new networ
 Create a new file at `src/v1/destinations/{destination}/networkHandler.js` or `.ts` based on the existing v0 implementation:
 
 ```typescript
-import { prepareProxyRequest, proxyRequest } from "../../../adapters/network";
-import { processAxiosResponse } from "../../../adapters/utils/networkUtils";
-import { TransformerProxyError } from "../../../v0/util/errorTypes";
-import { getDynamicErrorType } from "../../../adapters/utils/networkUtils";
-import { TAG_NAMES } from "../../../v0/util/tags";
-import { isHttpStatusSuccess } from "../../../v0/util";
+import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { TransformerProxyError } from '../../../v0/util/errorTypes';
+import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import { TAG_NAMES } from '../../../v0/util/tags';
+import { isHttpStatusSuccess } from '../../../v0/util';
 
 // Import any destination-specific constants or utilities from the v0 implementation
-import { DESTINATION } from "../../v0/destinations/{destination}/config";
+import { DESTINATION } from '../../v0/destinations/{destination}/config';
 
 // Response handler function
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata, destinationRequest } =
-    responseParams;
+  const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
   const { status, response } = destinationResponse;
   const responseWithIndividualEvents = [];
 
@@ -953,7 +937,7 @@ const responseHandler = (responseParams) => {
       responseWithIndividualEvents.push({
         statusCode: 200,
         metadata,
-        error: "success",
+        error: 'success',
       });
     });
 
@@ -966,7 +950,7 @@ const responseHandler = (responseParams) => {
 
   // Handle error responses
   // Example implementation for a simple case:
-  const errorMessage = response?.error?.message || "unknown error format";
+  const errorMessage = response?.error?.message || 'unknown error format';
 
   rudderJobMetadata.forEach((metadata) => {
     responseWithIndividualEvents.push({
@@ -983,8 +967,8 @@ const responseHandler = (responseParams) => {
       [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    "",
-    responseWithIndividualEvents
+    '',
+    responseWithIndividualEvents,
   );
 };
 
@@ -1017,7 +1001,7 @@ throw new NetworkError(
   {
     [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
   },
-  destinationResponse
+  destinationResponse,
 );
 
 // v1 implementation
@@ -1028,8 +1012,8 @@ throw new TransformerProxyError(
     [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
   },
   destinationResponse,
-  "",
-  responseWithIndividualEvents
+  '',
+  responseWithIndividualEvents,
 );
 ```
 

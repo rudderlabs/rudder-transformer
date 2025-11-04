@@ -9,10 +9,12 @@ This document outlines the business logic and mappings used in the Campaign Mana
 ### Track Events → Conversion API
 
 **Primary Endpoints**:
+
 1. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
 2. `POST https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
 
-**Documentation**: 
+**Documentation**:
+
 - [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
 - [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
 - [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
@@ -56,6 +58,7 @@ API Delivery via Proxy
 **Implementation**: `processTrack()` function in `transform.js`
 
 **Required Fields**:
+
 ```javascript
 {
   type: 'track',
@@ -66,7 +69,7 @@ API Delivery via Proxy
     ordinal: string,                              // Required
     quantity: number,                             // Required
     profileId: string,                            // Optional (uses destination config if not provided)
-    
+
     // At least one user identifier required:
     gclid: string,                                // Google Click ID
     matchId: string,                              // Match ID
@@ -96,25 +99,25 @@ All unsupported message types will throw an error: `Message type {messageType} n
 
 Mapping configuration: `data/CampaignManagerTrackConfig.json`
 
-| Source Field | Destination Field | Type | Required | Notes |
-|-------------|------------------|------|----------|-------|
-| `properties.floodlightConfigurationId` | `floodlightConfigurationId` | string | ✅ Yes | Floodlight configuration ID |
-| `properties.ordinal` | `ordinal` | string | ✅ Yes | Unique ordinal for deduplication |
-| `timestamp` | `timestampMicros` | string | ✅ Yes | Converted to microseconds |
-| `properties.floodlightActivityId` | `floodlightActivityId` | string | ✅ Yes | Floodlight activity ID |
-| `properties.quantity` | `quantity` | number | ✅ Yes | Conversion quantity |
-| `properties.value` or `properties.total` or `properties.revenue` | `value` | number | ❌ No | Conversion value (to number) |
-| `properties.customVariables` | `customVariables` | array | ❌ No | Custom variables |
-| `properties.mobileDeviceId` | `mobileDeviceId` | string | ❌ No | Mobile device ID |
-| `properties.encryptedUserIdCandidates` | `encryptedUserIdCandidates` | array | ❌ No | Encrypted user ID candidates |
-| `properties.gclid` | `gclid` | string | ❌ No | Google Click ID |
-| `properties.matchId` | `matchId` | string | ❌ No | Match ID |
-| `properties.dclid` | `dclid` | string | ❌ No | DoubleClick Click ID |
-| `properties.impressionId` | `impressionId` | string | ❌ No | Impression ID |
-| `properties.limitAdTracking` | `limitAdTracking` | boolean | ❌ No | Limit ad tracking flag |
-| `properties.treatmentForUnderage` | `treatmentForUnderage` | boolean | ❌ No | GDPR underage treatment |
-| `properties.childDirectedTreatment` | `childDirectedTreatment` | boolean | ❌ No | COPPA child treatment |
-| `properties.nonPersonalizedAd` | `nonPersonalizedAd` | boolean | ❌ No | Non-personalized ad flag |
+| Source Field                                                     | Destination Field           | Type    | Required | Notes                            |
+| ---------------------------------------------------------------- | --------------------------- | ------- | -------- | -------------------------------- |
+| `properties.floodlightConfigurationId`                           | `floodlightConfigurationId` | string  | ✅ Yes   | Floodlight configuration ID      |
+| `properties.ordinal`                                             | `ordinal`                   | string  | ✅ Yes   | Unique ordinal for deduplication |
+| `timestamp`                                                      | `timestampMicros`           | string  | ✅ Yes   | Converted to microseconds        |
+| `properties.floodlightActivityId`                                | `floodlightActivityId`      | string  | ✅ Yes   | Floodlight activity ID           |
+| `properties.quantity`                                            | `quantity`                  | number  | ✅ Yes   | Conversion quantity              |
+| `properties.value` or `properties.total` or `properties.revenue` | `value`                     | number  | ❌ No    | Conversion value (to number)     |
+| `properties.customVariables`                                     | `customVariables`           | array   | ❌ No    | Custom variables                 |
+| `properties.mobileDeviceId`                                      | `mobileDeviceId`            | string  | ❌ No    | Mobile device ID                 |
+| `properties.encryptedUserIdCandidates`                           | `encryptedUserIdCandidates` | array   | ❌ No    | Encrypted user ID candidates     |
+| `properties.gclid`                                               | `gclid`                     | string  | ❌ No    | Google Click ID                  |
+| `properties.matchId`                                             | `matchId`                   | string  | ❌ No    | Match ID                         |
+| `properties.dclid`                                               | `dclid`                     | string  | ❌ No    | DoubleClick Click ID             |
+| `properties.impressionId`                                        | `impressionId`              | string  | ❌ No    | Impression ID                    |
+| `properties.limitAdTracking`                                     | `limitAdTracking`           | boolean | ❌ No    | Limit ad tracking flag           |
+| `properties.treatmentForUnderage`                                | `treatmentForUnderage`      | boolean | ❌ No    | GDPR underage treatment          |
+| `properties.childDirectedTreatment`                              | `childDirectedTreatment`    | boolean | ❌ No    | COPPA child treatment            |
+| `properties.nonPersonalizedAd`                                   | `nonPersonalizedAd`         | boolean | ❌ No    | Non-personalized ad flag         |
 
 ### Destination Config Defaults
 
@@ -170,17 +173,17 @@ Enhanced Conversions allow you to provide user identifiers (email, phone, addres
 
 Mapping configuration: `data/CampaignManagerEnhancedConversionConfig.json`
 
-| Source Field | Destination Field | Hashed | Required | Notes |
-|-------------|------------------|--------|----------|-------|
-| `traits.email` or `context.traits.email` | `hashedEmail` | ✅ Yes | ❌ No | SHA-256 hash of normalized email |
-| `traits.phone` or `context.traits.phone` | `hashedPhoneNumber` | ✅ Yes | ❌ No | SHA-256 hash of E.164 phone |
-| `traits.firstName` or `context.traits.firstName` | `addressInfo.hashedFirstName` | ✅ Yes | ❌ No | SHA-256 hash of first name |
-| `traits.lastName` or `context.traits.lastName` | `addressInfo.hashedLastName` | ✅ Yes | ❌ No | SHA-256 hash of last name |
-| `traits.street` or `context.traits.address.street` | `addressInfo.hashedStreetAddress` | ✅ Yes | ❌ No | SHA-256 hash of street |
-| `traits.city` or `context.traits.address.city` | `addressInfo.city` | ❌ No | ❌ No | Plain text city |
-| `traits.state` or `context.traits.address.state` | `addressInfo.state` | ❌ No | ❌ No | Plain text state |
-| `traits.country` or `context.traits.address.country` | `addressInfo.countryCode` | ❌ No | ❌ No | Plain text country code |
-| `traits.zip` or `context.traits.address.zip` | `addressInfo.postalCode` | ✅ Yes | ❌ No | SHA-256 hash of postal code |
+| Source Field                                         | Destination Field                 | Hashed | Required | Notes                            |
+| ---------------------------------------------------- | --------------------------------- | ------ | -------- | -------------------------------- |
+| `traits.email` or `context.traits.email`             | `hashedEmail`                     | ✅ Yes | ❌ No    | SHA-256 hash of normalized email |
+| `traits.phone` or `context.traits.phone`             | `hashedPhoneNumber`               | ✅ Yes | ❌ No    | SHA-256 hash of E.164 phone      |
+| `traits.firstName` or `context.traits.firstName`     | `addressInfo.hashedFirstName`     | ✅ Yes | ❌ No    | SHA-256 hash of first name       |
+| `traits.lastName` or `context.traits.lastName`       | `addressInfo.hashedLastName`      | ✅ Yes | ❌ No    | SHA-256 hash of last name        |
+| `traits.street` or `context.traits.address.street`   | `addressInfo.hashedStreetAddress` | ✅ Yes | ❌ No    | SHA-256 hash of street           |
+| `traits.city` or `context.traits.address.city`       | `addressInfo.city`                | ❌ No  | ❌ No    | Plain text city                  |
+| `traits.state` or `context.traits.address.state`     | `addressInfo.state`               | ❌ No  | ❌ No    | Plain text state                 |
+| `traits.country` or `context.traits.address.country` | `addressInfo.countryCode`         | ❌ No  | ❌ No    | Plain text country code          |
+| `traits.zip` or `context.traits.address.zip`         | `addressInfo.postalCode`          | ✅ Yes | ❌ No    | SHA-256 hash of postal code      |
 
 ### Normalization and Hashing Logic
 
@@ -190,18 +193,19 @@ Mapping configuration: `data/CampaignManagerEnhancedConversionConfig.json`
 const normalizeEmail = (email) => {
   const domains = ['@gmail.com', '@googlemail.com'];
   const matchingDomain = domains.find((domain) => email.endsWith(domain));
-  
+
   if (matchingDomain) {
     // Remove dots from local part for Gmail addresses
     const localPart = email.split('@')[0].replace(/\./g, '');
     return `${localPart}${matchingDomain}`;
   }
-  
+
   return email;
 };
 ```
 
 **Examples**:
+
 - `john.doe@gmail.com` → `johndoe@gmail.com`
 - `j.o.h.n@gmail.com` → `john@gmail.com`
 - `john.doe@example.com` → `john.doe@example.com` (unchanged)
@@ -219,6 +223,7 @@ const normalizePhone = (phone, countryCode) => {
 ```
 
 **Examples**:
+
 - `4155552671` with `US` → `+14155552671`
 - `9876543210` with `IN` → `+919876543210`
 - `123` with `US` → Error: Invalid phone number
@@ -230,6 +235,7 @@ const normalizedValue = value.trim().toLowerCase();
 ```
 
 **Examples**:
+
 - `  John  ` → `john`
 - `SMITH` → `smith`
 - `123 Main St` → `123 main st`
@@ -243,6 +249,7 @@ const hashedValue = sha256(normalizedValue);
 ```
 
 **Example**:
+
 - `john@gmail.com` → normalize → `john@gmail.com` → hash → `96a8f4d3e8c5b4f7...`
 
 ### Enhanced Conversion Processing Flow
@@ -254,9 +261,9 @@ if (
   message.properties.requestType === 'batchupdate'
 ) {
   const userIdentifiers = CommonUtils.toArray(
-    prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true)
+    prepareUserIdentifiers(message, destination.Config.isHashingRequired ?? true),
   );
-  
+
   if (userIdentifiers.length > 0) {
     requestJson.userIdentifiers = userIdentifiers;
   }
@@ -270,23 +277,23 @@ The `userIdentifiers` array can contain up to 3 objects:
 ```javascript
 [
   {
-    hashedEmail: "sha256_hash_of_normalized_email"
+    hashedEmail: 'sha256_hash_of_normalized_email',
   },
   {
-    hashedPhoneNumber: "sha256_hash_of_e164_phone"
+    hashedPhoneNumber: 'sha256_hash_of_e164_phone',
   },
   {
     addressInfo: {
-      hashedFirstName: "sha256_hash_of_firstname",
-      hashedLastName: "sha256_hash_of_lastname",
-      hashedStreetAddress: "sha256_hash_of_street",
-      city: "San Francisco",          // Plain text
-      state: "CA",                     // Plain text
-      countryCode: "US",               // Plain text
-      postalCode: "sha256_hash_of_zip"
-    }
-  }
-]
+      hashedFirstName: 'sha256_hash_of_firstname',
+      hashedLastName: 'sha256_hash_of_lastname',
+      hashedStreetAddress: 'sha256_hash_of_street',
+      city: 'San Francisco', // Plain text
+      state: 'CA', // Plain text
+      countryCode: 'US', // Plain text
+      postalCode: 'sha256_hash_of_zip',
+    },
+  },
+];
 ```
 
 **Note**: Each type of identifier is added as a separate object in the array. If email is present, one object with `hashedEmail`. If phone is present, one object with `hashedPhoneNumber`. If address info is present, one object with `addressInfo`.
@@ -305,7 +312,7 @@ Use encrypted user IDs when you need to send conversions for users whose IDs are
     // One of these:
     encryptedUserId: "encrypted_id_string",
     encryptedUserIdCandidates: ["encrypted_id_1", "encrypted_id_2"],
-    
+
     // All of these are required:
     encryptionEntityType: "DCM_ACCOUNT" | "DCM_ADVERTISER" | "DBM_PARTNER" | "DBM_ADVERTISER" | "ADWORDS_CUSTOMER" | "DFP_NETWORK_CODE",
     encryptionSource: "AD_SERVING" | "DATA_TRANSFER",
@@ -324,15 +331,15 @@ if (message.properties.encryptedUserId || message.properties.encryptedUserIdCand
   if (EncryptionEntityType.includes(message.properties.encryptionEntityType)) {
     encryptionInfo.encryptionEntityType = message.properties.encryptionEntityType;
   }
-  
+
   // Validate and set encryption source
   if (EncryptionSource.includes(message.properties.encryptionSource)) {
     encryptionInfo.encryptionSource = message.properties.encryptionSource;
   }
-  
+
   // Set encryption entity ID
   encryptionInfo.encryptionEntityId = message.properties.encryptionEntityId;
-  
+
   // Validate all required fields are present
   if (
     isDefinedAndNotNull(encryptionInfo.encryptionSource) &&
@@ -343,7 +350,7 @@ if (message.properties.encryptedUserId || message.properties.encryptedUserIdCand
   } else {
     throw new InstrumentationError(
       'If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for ' +
-      'properties.encryptionEntityType, properties.encryptionSource and properties.encryptionEntityId'
+        'properties.encryptionEntityType, properties.encryptionSource and properties.encryptionEntityId',
     );
   }
 }
@@ -380,7 +387,7 @@ Campaign Manager 360 requires timestamps in microseconds. The `convertToMicrosec
 ```javascript
 function convertToMicroseconds(input) {
   const timestamp = Date.parse(input);
-  
+
   if (!Number.isNaN(timestamp)) {
     // Valid date string
     if (input.includes('Z')) {
@@ -388,35 +395,35 @@ function convertToMicroseconds(input) {
       return timestamp * 1000;
     }
     // Other date strings
-    return timestamp.toString().length === 13 
-      ? timestamp * 1000      // milliseconds
-      : timestamp * 1000000;  // seconds
+    return timestamp.toString().length === 13
+      ? timestamp * 1000 // milliseconds
+      : timestamp * 1000000; // seconds
   }
-  
+
   if (/^\d+$/.test(input)) {
     // Numeric string
     if (input.length === 13) {
-      return parseInt(input, 10) * 1000;        // milliseconds
+      return parseInt(input, 10) * 1000; // milliseconds
     }
     if (input.length === 10) {
-      return parseInt(input, 10) * 1000000;     // seconds
+      return parseInt(input, 10) * 1000000; // seconds
     }
-    return parseInt(input, 10);                 // assume microseconds
+    return parseInt(input, 10); // assume microseconds
   }
-  
+
   return timestamp;
 }
 ```
 
 ### Examples
 
-| Input | Type | Output (microseconds) |
-|-------|------|----------------------|
-| `2021-01-04T08:25:04.780Z` | ISO 8601 with Z | `1609748704780000` |
-| `2022-11-17T00:22:02.903+05:30` | ISO 8601 with offset | `1668624722903000` |
-| `1697013935` | Unix seconds (10 digits) | `1697013935000000` |
-| `1697013935000` | Unix milliseconds (13 digits) | `1697013935000000` |
-| `1668624722903333` | Unix microseconds (16 digits) | `1668624722903333` |
+| Input                           | Type                          | Output (microseconds) |
+| ------------------------------- | ----------------------------- | --------------------- |
+| `2021-01-04T08:25:04.780Z`      | ISO 8601 with Z               | `1609748704780000`    |
+| `2022-11-17T00:22:02.903+05:30` | ISO 8601 with offset          | `1668624722903000`    |
+| `1697013935`                    | Unix seconds (10 digits)      | `1697013935000000`    |
+| `1697013935000`                 | Unix milliseconds (13 digits) | `1697013935000000`    |
+| `1668624722903333`              | Unix microseconds (16 digits) | `1668624722903333`    |
 
 ## Batching Logic
 
@@ -428,7 +435,7 @@ Campaign Manager 360 implements batching at the router level in `processRouterDe
 const processRouterDest = async (inputs, reqMetadata) => {
   const batchErrorRespList = [];
   const eventChunksArray = [];
-  
+
   // Process each event
   await Promise.all(
     inputs.map(async (event) => {
@@ -442,15 +449,15 @@ const processRouterDest = async (inputs, reqMetadata) => {
       } catch (error) {
         batchErrorRespList.push(handleRtTfSingleEventError(event, error, reqMetadata));
       }
-    })
+    }),
   );
-  
+
   // Batch successful events
   let batchResponseList = [];
   if (eventChunksArray.length > 0) {
     batchResponseList = batchEvents(eventChunksArray);
   }
-  
+
   return [...batchResponseList, ...batchErrorRespList];
 };
 ```
@@ -458,10 +465,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
 ### Batching Strategy
 
 1. **Group by Request Type**:
+
    ```javascript
    const groupedEventChunks = lodash.groupBy(
      eventChunksArray,
-     (event) => event.message.body.JSON.kind
+     (event) => event.message.body.JSON.kind,
    );
    // Results in:
    // {
@@ -471,10 +479,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
    ```
 
 2. **Chunk by Size**:
+
    ```javascript
    const eventChunks = lodash.chunk(
-     groupedEventChunks[eventKind], 
-     MAX_BATCH_CONVERSATIONS_SIZE  // 1000
+     groupedEventChunks[eventKind],
+     MAX_BATCH_CONVERSATIONS_SIZE, // 1000
    );
    ```
 
@@ -528,17 +537,17 @@ function validateRequest(message) {
   // 1. Properties must exist
   if (!message.properties) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message'
+      '[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message',
     );
   }
-  
+
   // 2. Request type must be valid
   if (
     message.properties.requestType !== 'batchinsert' &&
     message.properties.requestType !== 'batchupdate'
   ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.'
+      '[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.',
     );
   }
 }
@@ -549,17 +558,17 @@ function validateRequest(message) {
 ```javascript
 function postValidateRequest(response) {
   const conversion = response.body.JSON.conversions[0];
-  
+
   // 1. Encryption info validation
   if (
     (conversion.encryptedUserId || conversion.encryptedUserIdCandidates) &&
     !response.body.JSON.encryptionInfo
   ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId or encryptedUserIdCandidates is used.'
+      '[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId or encryptedUserIdCandidates is used.',
     );
   }
-  
+
   // 2. User identifier validation
   if (
     !conversion.gclid &&
@@ -571,7 +580,7 @@ function postValidateRequest(response) {
     !conversion.impressionId
   ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId, encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.'
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId, encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
     );
   }
 }
@@ -582,7 +591,7 @@ function postValidateRequest(response) {
 ```javascript
 if (!message.type) {
   throw new InstrumentationError(
-    '[CAMPAIGN MANAGER (DCM)]: Message Type missing. Aborting message.'
+    '[CAMPAIGN MANAGER (DCM)]: Message Type missing. Aborting message.',
   );
 }
 
@@ -601,7 +610,7 @@ The `networkHandler.js` implements custom error handling for Campaign Manager 36
 ```javascript
 function checkIfFailuresAreRetryable(response) {
   const { status } = response;
-  
+
   if (Array.isArray(status)) {
     for (const st of status) {
       for (const err of st.errors) {
@@ -616,8 +625,8 @@ function checkIfFailuresAreRetryable(response) {
       }
     }
   }
-  
-  return true;  // All other errors are retryable
+
+  return true; // All other errors are retryable
 }
 ```
 
@@ -627,7 +636,7 @@ function checkIfFailuresAreRetryable(response) {
 const responseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
   const { response, status } = destinationResponse;
-  
+
   if (isHttpStatusSuccess(status)) {
     // Check for partial failures
     if (response.hasFailures === true) {
@@ -635,24 +644,24 @@ const responseHandler = (responseParams) => {
         throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          destinationResponse
+          destinationResponse,
         );
       } else {
         throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          destinationResponse
+          destinationResponse,
         );
       }
     }
-    
+
     return {
       status,
       message: `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`,
       destinationResponse,
     };
   }
-  
+
   throw new NetworkError(
     `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
     500,
@@ -660,21 +669,21 @@ const responseHandler = (responseParams) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    getAuthErrCategoryFromStCode(status)
+    getAuthErrCategoryFromStCode(status),
   );
 };
 ```
 
 ### Error Categories
 
-| Error Type | Code | Retryable | Description |
-|-----------|------|-----------|-------------|
-| Permission Denied | `PERMISSION_DENIED` | ❌ No | Insufficient permissions |
-| Invalid Argument | `INVALID_ARGUMENT` | ❌ No | Invalid data format or values |
-| Not Found | `NOT_FOUND` | ❌ No | Resource not found (e.g., conversion doesn't exist for batchupdate) |
-| Other API Errors | Various | ✅ Yes | Temporary failures, rate limits, etc. |
-| HTTP 4xx | 400-499 | ❌ No | Client errors (except specific retryable cases) |
-| HTTP 5xx | 500-599 | ✅ Yes | Server errors |
+| Error Type        | Code                | Retryable | Description                                                         |
+| ----------------- | ------------------- | --------- | ------------------------------------------------------------------- |
+| Permission Denied | `PERMISSION_DENIED` | ❌ No     | Insufficient permissions                                            |
+| Invalid Argument  | `INVALID_ARGUMENT`  | ❌ No     | Invalid data format or values                                       |
+| Not Found         | `NOT_FOUND`         | ❌ No     | Resource not found (e.g., conversion doesn't exist for batchupdate) |
+| Other API Errors  | Various             | ✅ Yes    | Temporary failures, rate limits, etc.                               |
+| HTTP 4xx          | 400-499             | ❌ No     | Client errors (except specific retryable cases)                     |
+| HTTP 5xx          | 500-599             | ✅ Yes    | Server errors                                                       |
 
 ## Common Use Cases
 
@@ -683,6 +692,7 @@ const responseHandler = (responseParams) => {
 **Scenario**: Track new conversions with Google Click ID
 
 **Event Structure**:
+
 ```javascript
 {
   type: 'track',
@@ -701,18 +711,21 @@ const responseHandler = (responseParams) => {
 ```
 
 **Generated Conversion**:
+
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
-  "conversions": [{
-    "floodlightConfigurationId": "12345",
-    "floodlightActivityId": "67890",
-    "ordinal": "order_12345",
-    "timestampMicros": "1697279400000000",
-    "quantity": 1,
-    "value": 99.99,
-    "gclid": "Tester_GwAcC12345"
-  }]
+  "conversions": [
+    {
+      "floodlightConfigurationId": "12345",
+      "floodlightActivityId": "67890",
+      "ordinal": "order_12345",
+      "timestampMicros": "1697279400000000",
+      "quantity": 1,
+      "value": 99.99,
+      "gclid": "Tester_GwAcC12345"
+    }
+  ]
 }
 ```
 
@@ -721,6 +734,7 @@ const responseHandler = (responseParams) => {
 **Scenario**: Add user identifiers to existing conversion
 
 **Event Structure**:
+
 ```javascript
 {
   type: 'track',
@@ -748,35 +762,38 @@ const responseHandler = (responseParams) => {
 ```
 
 **Generated Conversion** (with hashing):
+
 ```json
 {
   "kind": "dfareporting#conversionsBatchUpdateRequest",
-  "conversions": [{
-    "floodlightConfigurationId": "12345",
-    "floodlightActivityId": "67890",
-    "ordinal": "order_12345",
-    "timestampMicros": "1697279400000000",
-    "quantity": 1,
-    "gclid": "Tester_GwAcC12345",
-    "userIdentifiers": [
-      {
-        "hashedEmail": "96a8f4d3e8c5b4f7..."  // SHA-256 of johndoe@gmail.com
-      },
-      {
-        "hashedPhoneNumber": "f3b2c5d8a1e4..."  // SHA-256 of +14155552671
-      },
-      {
-        "addressInfo": {
-          "hashedFirstName": "a1b2c3d4e5f6...",    // SHA-256 of john
-          "hashedLastName": "b2c3d4e5f6a1...",     // SHA-256 of doe
-          "city": "San Francisco",                  // Plain text
-          "state": "CA",                            // Plain text
-          "countryCode": "US",                      // Plain text
-          "postalCode": "c3d4e5f6a1b2..."         // SHA-256 of 94102
+  "conversions": [
+    {
+      "floodlightConfigurationId": "12345",
+      "floodlightActivityId": "67890",
+      "ordinal": "order_12345",
+      "timestampMicros": "1697279400000000",
+      "quantity": 1,
+      "gclid": "Tester_GwAcC12345",
+      "userIdentifiers": [
+        {
+          "hashedEmail": "96a8f4d3e8c5b4f7..." // SHA-256 of johndoe@gmail.com
+        },
+        {
+          "hashedPhoneNumber": "f3b2c5d8a1e4..." // SHA-256 of +14155552671
+        },
+        {
+          "addressInfo": {
+            "hashedFirstName": "a1b2c3d4e5f6...", // SHA-256 of john
+            "hashedLastName": "b2c3d4e5f6a1...", // SHA-256 of doe
+            "city": "San Francisco", // Plain text
+            "state": "CA", // Plain text
+            "countryCode": "US", // Plain text
+            "postalCode": "c3d4e5f6a1b2..." // SHA-256 of 94102
+          }
         }
-      }
-    ]
-  }]
+      ]
+    }
+  ]
 }
 ```
 
@@ -785,6 +802,7 @@ const responseHandler = (responseParams) => {
 **Scenario**: Track mobile app conversion with encrypted user ID
 
 **Event Structure**:
+
 ```javascript
 {
   type: 'track',
@@ -809,6 +827,7 @@ const responseHandler = (responseParams) => {
 ```
 
 **Generated Conversion**:
+
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
@@ -818,18 +837,20 @@ const responseHandler = (responseParams) => {
     "encryptionSource": "AD_SERVING",
     "encryptionEntityId": "789012"
   },
-  "conversions": [{
-    "floodlightConfigurationId": "12345",
-    "floodlightActivityId": "67890",
-    "ordinal": "transaction_abc123",
-    "timestampMicros": "1697279400000000",
-    "quantity": 1,
-    "value": 4.99,
-    "mobileDeviceId": "ABC123-456-DEF",
-    "encryptedUserId": "encrypted_user_id_string",
-    "limitAdTracking": true,
-    "nonPersonalizedAd": true
-  }]
+  "conversions": [
+    {
+      "floodlightConfigurationId": "12345",
+      "floodlightActivityId": "67890",
+      "ordinal": "transaction_abc123",
+      "timestampMicros": "1697279400000000",
+      "quantity": 1,
+      "value": 4.99,
+      "mobileDeviceId": "ABC123-456-DEF",
+      "encryptedUserId": "encrypted_user_id_string",
+      "limitAdTracking": true,
+      "nonPersonalizedAd": true
+    }
+  ]
 }
 ```
 
@@ -838,6 +859,7 @@ const responseHandler = (responseParams) => {
 **Scenario**: Track offline conversion with custom data
 
 **Event Structure**:
+
 ```javascript
 {
   type: 'track',
@@ -860,22 +882,29 @@ const responseHandler = (responseParams) => {
 ```
 
 **Generated Conversion**:
+
 ```json
 {
   "kind": "dfareporting#conversionsBatchInsertRequest",
-  "conversions": [{
-    "floodlightConfigurationId": "12345",
-    "floodlightActivityId": "67890",
-    "ordinal": "store_sale_xyz789",
-    "timestampMicros": "1697279400000000",
-    "quantity": 2,
-    "value": 149.98,
-    "matchId": "customer_loyalty_456",
-    "customVariables": [
-      { "kind": "dfareporting#customFloodlightVariable", "type": "U1", "value": "premium_member" },
-      { "kind": "dfareporting#customFloodlightVariable", "type": "U2", "value": "store_123" }
-    ]
-  }]
+  "conversions": [
+    {
+      "floodlightConfigurationId": "12345",
+      "floodlightActivityId": "67890",
+      "ordinal": "store_sale_xyz789",
+      "timestampMicros": "1697279400000000",
+      "quantity": 2,
+      "value": 149.98,
+      "matchId": "customer_loyalty_456",
+      "customVariables": [
+        {
+          "kind": "dfareporting#customFloodlightVariable",
+          "type": "U1",
+          "value": "premium_member"
+        },
+        { "kind": "dfareporting#customFloodlightVariable", "type": "U2", "value": "store_123" }
+      ]
+    }
+  ]
 }
 ```
 
@@ -893,4 +922,3 @@ The Campaign Manager 360 destination processes track events to send conversion d
 - **Validation**: Comprehensive pre and post-request validation
 - **Error Handling**: Smart retry logic based on error types
 - **Privacy Compliance**: Support for COPPA, GDPR, and ad tracking limitations
-

@@ -147,7 +147,11 @@ const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
       return [requestOptions];
   }
 };
-const commonHandler = async (axiosMethod, { statTags, method, ...args }, disableMetrics = false) => {
+const commonHandler = async (
+  axiosMethod,
+  { statTags, method, ...args },
+  disableMetrics = false,
+) => {
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
@@ -200,7 +204,11 @@ const httpSend = async (options, statTags = {}, disableMetrics = false) => {
  */
 const httpGET = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions }, disableMetrics);
+  return commonHandler(
+    axios.get,
+    { statTags, method: 'get', url, options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -213,7 +221,11 @@ const httpGET = async (url, options, statTags = {}, disableMetrics = false) => {
  */
 const httpDELETE = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions }, disableMetrics);
+  return commonHandler(
+    axios.delete,
+    { statTags, method: 'delete', url, options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -227,14 +239,18 @@ const httpDELETE = async (url, options, statTags = {}, disableMetrics = false) =
  */
 const httpPOST = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.post, {
-    statTags,
-    url,
-    method: 'post',
-    data,
-    options,
-    requestOptions,
-  }, disableMetrics);
+  return commonHandler(
+    axios.post,
+    {
+      statTags,
+      url,
+      method: 'post',
+      data,
+      options,
+      requestOptions,
+    },
+    disableMetrics,
+  );
 };
 
 /**
@@ -248,7 +264,11 @@ const httpPOST = async (url, data, options, statTags = {}, disableMetrics = fals
  */
 const httpPUT = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions }, disableMetrics);
+  return commonHandler(
+    axios.put,
+    { statTags, url, data, method: 'put', options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -262,14 +282,18 @@ const httpPUT = async (url, data, options, statTags = {}, disableMetrics = false
  */
 const httpPATCH = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.patch, {
-    statTags,
-    url,
-    method: 'patch',
-    data,
-    options,
-    requestOptions,
-  }, disableMetrics);
+  return commonHandler(
+    axios.patch,
+    {
+      statTags,
+      url,
+      method: 'patch',
+      data,
+      options,
+      requestOptions,
+    },
+    disableMetrics,
+  );
 };
 
 const getPayloadData = (body) => {
@@ -446,11 +470,15 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType,
-    metadata,
-  }, true);
+  const response = await httpSend(
+    requestOptions,
+    {
+      feature: 'proxy',
+      destType,
+      metadata,
+    },
+    true,
+  );
   return response;
 };
 

@@ -78,14 +78,14 @@ The v0 architecture is characterized by:
 Example v0 implementation:
 
 ```javascript
-const get = require("get-value");
-const set = require("set-value");
-const { ConfigurationError } = require("@rudderstack/integrations-lib");
+const get = require('get-value');
+const set = require('set-value');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   isDefinedAndNotNull,
-} = require("../../util");
+} = require('../../util');
 
 const processEvent = (event) => {
   const { message, destination } = event;
@@ -96,25 +96,25 @@ const processEvent = (event) => {
 
   // Validate configuration
   if (!apiKey) {
-    throw new ConfigurationError("API Key is required");
+    throw new ConfigurationError('API Key is required');
   }
 
   // Process based on event type
   switch (message.type) {
-    case "identify":
+    case 'identify':
       // Handle identify event
-      response.endpoint = "https://api.example.com/identify";
-      response.method = "POST";
+      response.endpoint = 'https://api.example.com/identify';
+      response.method = 'POST';
       response.body.JSON = {
         apiKey,
         userId: message.userId,
         traits: message.traits,
       };
       break;
-    case "track":
+    case 'track':
       // Handle track event
-      response.endpoint = "https://api.example.com/track";
-      response.method = "POST";
+      response.endpoint = 'https://api.example.com/track';
+      response.method = 'POST';
       response.body.JSON = {
         apiKey,
         userId: message.userId,
@@ -168,12 +168,12 @@ The v1 architecture is characterized by:
 Example v1 implementation:
 
 ```typescript
-import { prepareProxyRequest, proxyRequest } from "../../../adapters/network";
-import { processAxiosResponse } from "../../../adapters/utils/networkUtils";
-import { BaseStrategy } from "./strategies/base";
-import { TrackIdentifyStrategy } from "./strategies/track-identify";
-import { GenericStrategy } from "./strategies/generic";
-import { ProxyHandlerInput } from "./types";
+import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
+import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { BaseStrategy } from './strategies/base';
+import { TrackIdentifyStrategy } from './strategies/track-identify';
+import { GenericStrategy } from './strategies/generic';
+import { ProxyHandlerInput } from './types';
 
 // Strategy registry
 const strategyRegistry: { [key: string]: BaseStrategy } = {
@@ -183,7 +183,7 @@ const strategyRegistry: { [key: string]: BaseStrategy } = {
 
 // Get response strategy based on endpoint
 const getResponseStrategy = (endpoint: string): BaseStrategy => {
-  if (endpoint.includes("track") || endpoint.includes("identify")) {
+  if (endpoint.includes('track') || endpoint.includes('identify')) {
     return strategyRegistry[TrackIdentifyStrategy.name];
   }
   return strategyRegistry[GenericStrategy.name];
@@ -213,16 +213,16 @@ const processEvent = (event: any): any => {
 
   // Validate configuration
   if (!apiKey) {
-    throw new Error("API Key is required");
+    throw new Error('API Key is required');
   }
 
   // Process based on event type
   switch (message.type) {
-    case "identify":
+    case 'identify':
       // Handle identify event
       return {
-        endpoint: "https://api.example.com/identify",
-        method: "POST",
+        endpoint: 'https://api.example.com/identify',
+        method: 'POST',
         body: {
           JSON: {
             apiKey,
@@ -231,11 +231,11 @@ const processEvent = (event: any): any => {
           },
         },
       };
-    case "track":
+    case 'track':
       // Handle track event
       return {
-        endpoint: "https://api.example.com/track",
-        method: "POST",
+        endpoint: 'https://api.example.com/track',
+        method: 'POST',
         body: {
           JSON: {
             apiKey,
@@ -394,7 +394,7 @@ Example migration steps:
 
    ```typescript
    // strategies/track-identify.ts
-   import { BaseStrategy } from "./base";
+   import { BaseStrategy } from './base';
 
    export class TrackIdentifyStrategy extends BaseStrategy {
      handleSuccess(responseParams: any): void {
@@ -411,13 +411,10 @@ Example migration steps:
 
    ```typescript
    // networkHandler.ts
-   import {
-     prepareProxyRequest,
-     proxyRequest,
-   } from "../../../adapters/network";
-   import { processAxiosResponse } from "../../../adapters/utils/networkUtils";
-   import { TrackIdentifyStrategy } from "./strategies/track-identify";
-   import { GenericStrategy } from "./strategies/generic";
+   import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
+   import { processAxiosResponse } from '../../../adapters/utils/networkUtils';
+   import { TrackIdentifyStrategy } from './strategies/track-identify';
+   import { GenericStrategy } from './strategies/generic';
 
    const strategyRegistry = {
      [TrackIdentifyStrategy.name]: new TrackIdentifyStrategy(),
@@ -425,7 +422,7 @@ Example migration steps:
    };
 
    const getResponseStrategy = (endpoint: string) => {
-     if (endpoint.includes("track") || endpoint.includes("identify")) {
+     if (endpoint.includes('track') || endpoint.includes('identify')) {
        return strategyRegistry[TrackIdentifyStrategy.name];
      }
      return strategyRegistry[GenericStrategy.name];
@@ -824,7 +821,7 @@ function responseHandler(response) {
   if (isHttpStatusSuccess(status)) {
     return {
       status,
-      message: "Request processed successfully",
+      message: 'Request processed successfully',
       destinationResponse: response,
     };
   }
@@ -846,13 +843,12 @@ function responseHandler(responseParams) {
     response.forEach((event, idx) => {
       const proxyOutput = {
         statusCode: 200,
-        error: "success",
+        error: 'success',
         metadata: rudderJobMetadata[idx],
       };
 
       // Check for partial failures
-      const { isAbortable, errorMsg } =
-        checkIfEventIsAbortableAndExtractErrorMessage(event);
+      const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
       if (isAbortable) {
         proxyOutput.statusCode = 400;
         proxyOutput.error = errorMsg;
@@ -863,7 +859,7 @@ function responseHandler(responseParams) {
 
     return {
       status,
-      message: "Request processed successfully",
+      message: 'Request processed successfully',
       response: responseWithIndividualEvents,
     };
   }
@@ -874,8 +870,8 @@ function responseHandler(responseParams) {
     status,
     { errorType: getDynamicErrorType(status) },
     destinationResponse,
-    "",
-    responseWithIndividualEvents
+    '',
+    responseWithIndividualEvents,
   );
 }
 ```

@@ -28,37 +28,47 @@ rudder-transformer/
 ### Key Directories Explained
 
 #### `src/adapters/`
+
 Contains adapters for external services, including network handling for API requests.
 
 #### `src/cdk/`
+
 Component Development Kit provides a framework for building new integrations in a standardized way.
 
 #### `src/controllers/`
+
 API controllers that handle HTTP requests and coordinate the business logic.
 
 #### `src/routes/`
+
 Defines the API routes and connects them to the appropriate controllers.
 
 #### `src/services/`
+
 Contains the core business logic services that implement the transformation functionality.
 
 #### `src/sources/`
+
 Implementations for source integrations that import data from external systems.
 
 #### `src/v0/` and `src/v1/`
+
 Different versions of the transformation logic, with v1 being the current version.
 
 #### `src/warehouse/`
+
 Specialized transformations for data warehouse destinations.
 
 ## Naming Conventions
 
 ### Files and Directories
+
 - **File Names**: Use kebab-case for file names (e.g., `network-handler.ts`)
 - **Directory Names**: Use camelCase for directory names (e.g., `networkHandler`)
 - **Test Files**: Append `.test.ts` to test files (e.g., `utils.test.ts`)
 
 ### Code Elements
+
 - **Classes**: Use PascalCase for class names (e.g., `BaseStrategy`)
 - **Interfaces**: Use PascalCase for interface names, often prefixed with `I` (e.g., `IEventPayload`)
 - **Types**: Use PascalCase for type definitions (e.g., `EventType`)
@@ -66,6 +76,7 @@ Specialized transformations for data warehouse destinations.
 - **Constants**: Use UPPER_SNAKE_CASE for constants (e.g., `MAX_BATCH_SIZE`)
 
 ### Component Naming
+
 - **Controllers**: Suffix with `Controller` (e.g., `DestinationController`)
 - **Services**: Suffix with `Service` (e.g., `IntegrationService`)
 - **Middleware**: Suffix with `Middleware` (e.g., `AuthMiddleware`)
@@ -76,21 +87,25 @@ Specialized transformations for data warehouse destinations.
 The codebase is organized into modules based on functionality:
 
 ### Core Modules
+
 - **Controllers**: Handle HTTP requests and coordinate business logic
 - **Services**: Implement core business logic
 - **Routes**: Define API endpoints
 
 ### Integration Modules
+
 - **Sources**: Implement source integrations
 - **Destinations**: Implement destination integrations
 - **Warehouse**: Implement warehouse integrations
 
 ### Utility Modules
+
 - **Helpers**: Provide helper functions for specific domains
 - **Utils**: Provide general utility functions
 - **Constants**: Define constant values
 
 ### Infrastructure Modules
+
 - **Adapters**: Provide interfaces to external systems
 - **Middlewares**: Implement request processing middleware
 
@@ -115,6 +130,7 @@ destinations/
 ### Key Files in a Destination
 
 #### `config.ts`
+
 Contains configuration constants specific to the destination.
 
 ```typescript
@@ -124,6 +140,7 @@ export const BULK_ENDPOINTS = ['events/track/bulk', 'users/update/bulk'];
 ```
 
 #### `networkHandler.ts`
+
 Handles network requests to the destination API.
 
 ```typescript
@@ -136,6 +153,7 @@ function networkHandler() {
 ```
 
 #### `types.ts`
+
 Defines TypeScript interfaces and types for the destination.
 
 ```typescript
@@ -150,6 +168,7 @@ export type DestinationResponse = {
 ```
 
 #### Strategy Pattern
+
 Destinations often use the strategy pattern to handle different types of events:
 
 ```typescript
@@ -164,7 +183,7 @@ class TrackIdentifyStrategy extends BaseStrategy {
   handleSuccess(responseParams: any): void {
     // Implementation
   }
-  
+
   handleError(responseParams: any): void {
     // Implementation
   }

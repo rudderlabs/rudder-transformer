@@ -28,7 +28,8 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 1. Clone this repository
 2. Setup the repository with `npm run setup`
 3. Build the service with `npm run build:clean`
-4. Start the server with `npm start`
+4. Build isloated-vm with `npm run prepare`
+5. Start the server with `npm start`
 
 ## Transformer without User Functions
 

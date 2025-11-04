@@ -30,8 +30,8 @@ batch:
 source:
   id: 'source_id'
   config:
-    internalSecrets:
-      accessToken: 'access_token'
+  internalSecret:
+    pageAccessToken: 'page_access_token'
   workspaceId: 'workspace_id'
   sourceDefinition:
     name: FACEBOOK_LEAD_ADS_NATIVE

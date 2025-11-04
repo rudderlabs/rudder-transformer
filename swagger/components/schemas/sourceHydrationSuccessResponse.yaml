@@ -1,21 +1,20 @@
 title: Source Hydration Response
 type: object
 required:
-  - jobs
-  - source
+  - batch
 properties:
-  jobs:
+  batch:
     type: array
     items:
       type: object
       required:
-        - jobId
+        - id
         - event
         - statusCode
       properties:
-        jobId:
+        id:
           type: string
-          description: The id of the job in database
+          description: A unique identifier for the event in the batch
         event:
           $ref: './rudderMessage.yaml'
           description: The hydrated event object
@@ -24,30 +23,3 @@ properties:
             - 200
           type: number
           description: Normalised status code for the hydration operation (always 200 for success)
-  source:
-    type: object
-    description: The source object
-    required:
-      - id
-      - config
-      - workspaceId
-      - sourceDefinition
-    properties:
-      id:
-        type: string
-        description: The id of the source
-      config:
-        type: object
-        description: The source configuration object
-      workspaceId:
-        type: string
-        description: The workspace id associated with the hydration request
-      sourceDefinition:
-        type: object
-        description: The source definition object
-        required:
-          - name
-        properties:
-          name:
-            type: string
-            description: The name of the source definition

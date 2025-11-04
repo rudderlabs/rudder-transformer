@@ -31,20 +31,20 @@ paths:
               title: Source Hydration Request
               type: object
               required:
-                - jobs
+                - batch
                 - source
               properties:
-                jobs:
+                batch:
                   type: array
                   items:
                     type: object
                     required:
-                      - jobId
+                      - id
                       - event
                     properties:
-                      jobId:
+                      id:
                         type: string
-                        description: The id of the job in database
+                        description: A unique identifier for the event in the batch
                       event:
                         title: RudderMessage schema
                         type: object
@@ -124,8 +124,8 @@ paths:
               request:
                 summary: Source Hydration Request
                 value:
-                  jobs:
-                    - jobId: 'job_id_1'
+                  batch:
+                    - id: 'event_id_1'
                       event:
                         context:
                           traits:
@@ -139,7 +139,7 @@ paths:
                         sentAt: '1970-01-01T00:00:00.000Z'
                         integrations:
                           All: true
-                    - jobId: 'job_id_2'
+                    - id: 'event_id_2'
                       event:
                         context:
                           traits:
@@ -170,21 +170,20 @@ paths:
                 title: Source Hydration Response
                 type: object
                 required:
-                  - jobs
-                  - source
+                  - batch
                 properties:
-                  jobs:
+                  batch:
                     type: array
                     items:
                       type: object
                       required:
-                        - jobId
+                        - id
                         - event
                         - statusCode
                       properties:
-                        jobId:
+                        id:
                           type: string
-                          description: The id of the job in database
+                          description: A unique identifier for the event in the batch
                         event:
                           title: RudderMessage schema
                           type: object
@@ -238,39 +237,12 @@ paths:
                             - 200
                           type: number
                           description: Normalised status code for the hydration operation (always 200 for success)
-                  source:
-                    type: object
-                    description: The source object
-                    required:
-                      - id
-                      - config
-                      - workspaceId
-                      - sourceDefinition
-                    properties:
-                      id:
-                        type: string
-                        description: The id of the source
-                      config:
-                        type: object
-                        description: The source configuration object
-                      workspaceId:
-                        type: string
-                        description: The workspace id associated with the hydration request
-                      sourceDefinition:
-                        type: object
-                        description: The source definition object
-                        required:
-                          - name
-                        properties:
-                          name:
-                            type: string
-                            description: The name of the source definition
               examples:
                 success:
                   summary: Source Hydration Success
                   value:
-                    jobs:
-                      - jobId: 'job_id_1'
+                    batch:
+                      - id: 'event_id_1'
                         event:
                           context:
                             traits:
@@ -288,7 +260,7 @@ paths:
                           integrations:
                             All: true
                         statusCode: 200
-                      - jobId: 'job_id_2'
+                      - id: 'event_id_2'
                         event:
                           context:
                             traits:
@@ -306,18 +278,10 @@ paths:
                           integrations:
                             All: true
                         statusCode: 200
-                    source:
-                      id: 'source_id'
-                      config:
-                        internalSecrets:
-                          accessToken: 'access_token'
-                      workspaceId: 'workspace_id'
-                      sourceDefinition:
-                        name: FACEBOOK_LEAD_ADS_NATIVE
         default:
           description: |
             Failure (one or more events in the batch were not hydrated successfully).
-            The response will contain the jobs that were hydrated successfully and the jobs that were not hydrated successfully.
+            The response will contain the events that were hydrated successfully and the events that were not hydrated successfully.
             The first non-200 status code of the events hydration operation is returned as the status code of the response.
 
           content:
@@ -326,22 +290,21 @@ paths:
                 title: Source Hydration Response
                 type: object
                 required:
-                  - jobs
-                  - source
+                  - batch
                 properties:
-                  jobs:
+                  batch:
                     type: array
                     items:
                       type: object
                       required:
-                        - jobId
+                        - id
                         - event
                         - statusCode
                         - errorMessage
                       properties:
-                        jobId:
+                        id:
                           type: string
-                          description: The id of the job in database
+                          description: A unique identifier for the event in the batch
                         event:
                           title: RudderMessage schema
                           type: object
@@ -396,39 +359,12 @@ paths:
                         errorMessage:
                           type: string
                           description: Error message for the hydration operation
-                  source:
-                    type: object
-                    description: The source object
-                    required:
-                      - id
-                      - config
-                      - workspaceId
-                      - sourceDefinition
-                    properties:
-                      id:
-                        type: string
-                        description: The id of the source
-                      config:
-                        type: object
-                        description: The source configuration object
-                      workspaceId:
-                        type: string
-                        description: The workspace id associated with the hydration request
-                      sourceDefinition:
-                        type: object
-                        description: The source definition object
-                        required:
-                          - name
-                        properties:
-                          name:
-                            type: string
-                            description: The name of the source definition
               examples:
                 failure:
                   summary: Source Hydration Failure
                   value:
-                    jobs:
-                      - jobId: 'job_id_1'
+                    batch:
+                      - id: 'event_id_1'
                         event:
                           context:
                             traits:
@@ -444,7 +380,7 @@ paths:
                             All: true
                         statusCode: 429
                         errorMessage: 'Too many requests'
-                      - jobId: 'job_id_2'
+                      - id: 'event_id_2'
                         event:
                           context:
                             traits:
@@ -460,11 +396,3 @@ paths:
                             All: true
                         statusCode: 400
                         errorMessage: 'Page access token is invalid'
-                    source:
-                      id: 'source_id'
-                      config:
-                        internalSecrets:
-                          accessToken: 'access_token'
-                      workspaceId: 'workspace_id'
-                      sourceDefinition:
-                        name: FACEBOOK_LEAD_ADS_NATIVE

@@ -1,20 +1,20 @@
 title: Source Hydration Request
 type: object
 required:
-  - jobs
+  - batch
   - source
 properties:
-  jobs:
+  batch:
     type: array
     items:
       type: object
       required:
-        - jobId
+        - id
         - event
       properties:
-        jobId:
+        id:
           type: string
-          description: The id of the job in database
+          description: A unique identifier for the event in the batch
         event:
           $ref: './rudderMessage.yaml'
           description: The event object

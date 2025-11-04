@@ -1,5 +1,5 @@
-jobs:
-  - jobId: 'job_id_1'
+batch:
+  - id: 'event_id_1'
     event:
       context:
         traits:
@@ -15,7 +15,7 @@ jobs:
         All: true
     statusCode: 429
     errorMessage: 'Too many requests'
-  - jobId: 'job_id_2'
+  - id: 'event_id_2'
     event:
       context:
         traits:
@@ -31,11 +31,3 @@ jobs:
         All: true
     statusCode: 400
     errorMessage: 'Page access token is invalid'
-source:
-  id: 'source_id'
-  config:
-    internalSecrets:
-      accessToken: 'access_token'
-  workspaceId: 'workspace_id'
-  sourceDefinition:
-    name: FACEBOOK_LEAD_ADS_NATIVE

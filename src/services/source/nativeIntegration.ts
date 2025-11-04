@@ -14,6 +14,7 @@ import {
   SourceTransformationResponse,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   FixMe,
+  SourceHydrationResponse,
 } from '../../types';
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
@@ -80,5 +81,13 @@ export class NativeIntegrationSourceService implements SourceService {
       { sequentialProcessing: false }, // concurrent processing
     );
     return respList;
+  }
+
+  public async sourceHydrateRoutine(
+    input: Record<string, unknown>,
+    sourceType: string,
+  ): Promise<SourceHydrationResponse> {
+    const sourceHandler = FetchHandler.getSourceHydrateHandler(sourceType);
+    return sourceHandler.hydrate(input);
   }
 }

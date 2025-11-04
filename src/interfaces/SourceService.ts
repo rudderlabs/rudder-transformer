@@ -1,4 +1,9 @@
-import { MetaTransferObject, SourceInputV2, SourceTransformationResponse } from '../types/index';
+import {
+  MetaTransferObject,
+  SourceHydrationResponse,
+  SourceInputV2,
+  SourceTransformationResponse,
+} from '../types/index';
 
 export interface SourceService {
   getTags(): MetaTransferObject;
@@ -8,4 +13,9 @@ export interface SourceService {
     sourceType: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]>;
+
+  sourceHydrateRoutine(
+    input: Record<string, unknown>,
+    sourceType: string,
+  ): Promise<SourceHydrationResponse>;
 }

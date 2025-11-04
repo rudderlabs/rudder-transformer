@@ -49,3 +49,18 @@ export type SourceTransformationErrorResponse = {
 export type SourceTransformationResponse =
   | SourceTransformationSuccessResponse
   | SourceTransformationErrorResponse;
+
+export type SourceHydrationResponse = SourceHydrationSuccessResponse | SourceHydrationErrorResponse;
+
+type SourceHydrationSuccessResponse = {
+  jobs: SourceHydrationJob[];
+};
+
+type SourceHydrationErrorResponse = {
+  error: unknown;
+  statusCode: number;
+};
+
+export type SourceHydrationJob = Record<string, unknown> & {
+  statusCode: number;
+};

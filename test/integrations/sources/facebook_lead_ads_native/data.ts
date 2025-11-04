@@ -678,4 +678,111 @@ export const data = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    name: 'facebook_lead_ads_native',
+    description: 'Hydration - Multiple leads with successful API responses',
+    module: 'source',
+    version: 'v2',
+    input: {
+      pathSuffix: '/hydrate',
+      request: {
+        method: 'POST',
+        body: {
+          jobs: [
+            {
+              event: {
+                anonymousId: '1459076748710713',
+                context: {},
+              },
+            },
+            {
+              event: {
+                anonymousId: '1459076748710714',
+                context: {},
+              },
+            },
+            {
+              event: {
+                anonymousId: '1459076748710715',
+                context: {},
+              },
+            },
+          ],
+          source: {
+            config: {
+              internalSecret: {
+                pageAccessToken: 'test_access_token_123',
+              },
+            },
+          },
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          jobs: [
+            {
+              event: {
+                anonymousId: '1459076748710713',
+                context: {
+                  traits: {
+                    email: 'test@example.com',
+                    full_name: 'John Doe',
+                    phone_number: '+1234567890',
+                  },
+                },
+              },
+              statusCode: 200,
+            },
+            {
+              event: {
+                anonymousId: '1459076748710714',
+                context: {
+                  traits: {
+                    email: 'jane@example.com',
+                    company_name: 'Acme Corp',
+                  },
+                },
+              },
+              statusCode: 200,
+            },
+            {
+              event: {
+                anonymousId: '1459076748710715',
+                context: {
+                  traits: {
+                    email: 'bob@example.com',
+                  },
+                },
+              },
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: (mock) => {
+      // Mock successful Facebook API responses for lead data
+      mock.onGet('https://graph.facebook.com/v24.0/1459076748710714').reply(200, {
+        field_data: [
+          { name: 'email', values: ['jane@example.com'] },
+          { name: 'company_name', values: ['Acme Corp'] },
+        ],
+      });
+
+      mock.onGet('https://graph.facebook.com/v24.0/1459076748710715').reply(200, {
+        field_data: [{ name: 'email', values: ['bob@example.com'] }],
+      });
+
+      mock.onGet('https://graph.facebook.com/v24.0/1459076748710713').reply(200, {
+        field_data: [
+          { name: 'email', values: ['test@example.com'] },
+          { name: 'full_name', values: ['John Doe'] },
+          { name: 'phone_number', values: ['+1234567890'] },
+        ],
+      });
+    },
+  },
 ];

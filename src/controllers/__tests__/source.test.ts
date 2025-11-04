@@ -116,4 +116,125 @@ describe('Source controller tests', () => {
       expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('sourceHydrate', () => {
+    const sourceType = '__rudder_test__';
+    test('all jobs successful', async () => {
+      const requestBody = {};
+      const testOutput = {
+        jobs: [
+          { id: 'job1', statusCode: 200, data: { field: 'value1' } },
+          { id: 'job2', statusCode: 200, data: { field: 'value2' } },
+        ],
+      };
+
+      const mockSourceService = new NativeIntegrationSourceService();
+      mockSourceService.sourceHydrateRoutine = jest.fn().mockImplementation((input, source) => {
+        expect(input).toEqual(requestBody);
+        expect(source).toEqual(sourceType);
+        return testOutput;
+      });
+
+      const getNativeSourceServiceSpy = jest
+        .spyOn(ServiceSelector, 'getNativeSourceService')
+        .mockImplementation(() => {
+          return mockSourceService;
+        });
+
+      const response = await request(server)
+        .post(`/v2/sources/${sourceType}/hydrate`)
+        .set('Accept', 'application/json')
+        .send(requestBody);
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual({ jobs: testOutput.jobs });
+
+      expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+      expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+    });
+
+    test('one job failed', async () => {
+      const requestBody = {};
+      const testOutput = {
+        jobs: [
+          { id: 'job1', statusCode: 200, data: { field: 'value1' } },
+          { id: 'job2', statusCode: 400 },
+          { id: 'job3', statusCode: 200, data: { field: 'value3' } },
+        ],
+      };
+
+      const mockSourceService = new NativeIntegrationSourceService();
+      mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(testOutput);
+
+      const getNativeSourceServiceSpy = jest
+        .spyOn(ServiceSelector, 'getNativeSourceService')
+        .mockImplementation(() => {
+          return mockSourceService;
+        });
+
+      const response = await request(server)
+        .post(`/v2/sources/${sourceType}/hydrate`)
+        .set('Accept', 'application/json')
+        .send(requestBody);
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({ jobs: testOutput.jobs });
+
+      expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+      expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+    });
+
+    test('error response', async () => {
+      const requestBody = { formId: '123' };
+      const testOutput = {
+        error: 'Missing access token',
+        statusCode: 401,
+      };
+
+      const mockSourceService = new NativeIntegrationSourceService();
+      mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(testOutput);
+
+      const getNativeSourceServiceSpy = jest
+        .spyOn(ServiceSelector, 'getNativeSourceService')
+        .mockImplementation(() => {
+          return mockSourceService;
+        });
+
+      const response = await request(server)
+        .post(`/v2/sources/${sourceType}/hydrate`)
+        .set('Accept', 'application/json')
+        .send(requestBody);
+
+      expect(response.status).toEqual(401);
+      expect(response.body).toEqual({ error: testOutput.error });
+
+      expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+      expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+    });
+
+    test('exception thrown during hydration', async () => {
+      const requestBody = {};
+      const errorMessage = 'Unexpected error during hydration';
+
+      const mockSourceService = new NativeIntegrationSourceService();
+      mockSourceService.sourceHydrateRoutine = jest.fn().mockRejectedValue(new Error(errorMessage));
+
+      const getNativeSourceServiceSpy = jest
+        .spyOn(ServiceSelector, 'getNativeSourceService')
+        .mockImplementation(() => {
+          return mockSourceService;
+        });
+
+      const response = await request(server)
+        .post(`/v2/sources/${sourceType}/hydrate`)
+        .set('Accept', 'application/json')
+        .send(requestBody);
+
+      expect(response.status).toEqual(500);
+      expect(response.body).toEqual({ error: errorMessage });
+
+      expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+      expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+    });
+  });
 });

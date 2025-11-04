@@ -12,5 +12,13 @@ router.post(
   SourceController.sourceTransform,
 );
 
+router.post(
+  '/:version/sources/:source/hydrate',
+  RouteActivationMiddleware.isSourceRouteVersionActive,
+  RouteActivationMiddleware.isSourceRouteActive,
+  RouteActivationMiddleware.sourceFilter,
+  SourceController.sourceHydrate,
+);
+
 const sourceRoutes = router.routes();
 export default sourceRoutes;

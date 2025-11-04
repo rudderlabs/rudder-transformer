@@ -61,10 +61,9 @@ const responseBuilderForIdentityResolution = (message, apiKey) => {
 
   // Check if the payload has sufficient identity
   const hasSufficientIdentity =
-  (payload.clientUserId && payload.customIdentifiers) ||
-  (hasOtherIdentifiers && payload.clientUserId) ||
-  (hasOtherIdentifiers && payload.customIdentifiers);
-
+    (payload.clientUserId && payload.customIdentifiers) ||
+    (hasOtherIdentifiers && payload.clientUserId) ||
+    (hasOtherIdentifiers && payload.customIdentifiers);
 
   if (hasSufficientIdentity) {
     return responseBuilder(payload, apiKey, ENDPOINTS.IDENTITY_RESOLUTION);

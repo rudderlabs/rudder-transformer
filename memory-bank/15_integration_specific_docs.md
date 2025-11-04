@@ -6,7 +6,7 @@ This document provides a template for integration-specific documentation and inc
 
 The following template should be used for documenting individual integrations:
 
-```markdown
+````markdown
 # [Integration Name]
 
 ## Overview
@@ -75,20 +75,20 @@ Brief description of the integration, including its purpose and key features.
 
 ### Standard Fields
 
-| RudderStack Field | Integration Field | Notes |
-|-------------------|-------------------|-------|
-| `userId` | `[Field name]` | [Any special handling] |
-| `anonymousId` | `[Field name]` | [Any special handling] |
-| `event` | `[Field name]` | [Any special handling] |
-| `properties` | `[Field name]` | [Any special handling] |
-| `traits` | `[Field name]` | [Any special handling] |
+| RudderStack Field | Integration Field | Notes                  |
+| ----------------- | ----------------- | ---------------------- |
+| `userId`          | `[Field name]`    | [Any special handling] |
+| `anonymousId`     | `[Field name]`    | [Any special handling] |
+| `event`           | `[Field name]`    | [Any special handling] |
+| `properties`      | `[Field name]`    | [Any special handling] |
+| `traits`          | `[Field name]`    | [Any special handling] |
 
 ### Custom Fields
 
-| RudderStack Field | Integration Field | Notes |
-|-------------------|-------------------|-------|
-| `properties.[Field]` | `[Field name]` | [Any special handling] |
-| `context.[Field]` | `[Field name]` | [Any special handling] |
+| RudderStack Field    | Integration Field | Notes                  |
+| -------------------- | ----------------- | ---------------------- |
+| `properties.[Field]` | `[Field name]`    | [Any special handling] |
+| `context.[Field]`    | `[Field name]`    | [Any special handling] |
 
 ## Special Handling
 
@@ -133,6 +133,7 @@ Brief description of the integration, including its purpose and key features.
 ```typescript
 // Example code for basic usage
 ```
+````
 
 ### Advanced Usage
 
@@ -170,7 +171,8 @@ Brief description of the integration, including its purpose and key features.
 - **Official Documentation**: [Link]
 - **API Reference**: [Link]
 - **Support Channels**: [Links or contact information]
-```
+
+````
 
 ## Example Integration Documentation
 
@@ -334,7 +336,7 @@ const event = {
 };
 
 const amplitudeEvent = processEvent(event);
-```
+````
 
 ### Advanced Usage
 
@@ -346,15 +348,15 @@ const event = {
   traits: {
     $set: {
       name: 'John Doe',
-      email: 'john@example.com'
+      email: 'john@example.com',
     },
     $setOnce: {
-      first_seen: new Date().toISOString()
+      first_seen: new Date().toISOString(),
     },
     $add: {
-      login_count: 1
-    }
-  }
+      login_count: 1,
+    },
+  },
 };
 
 const amplitudeEvent = processEvent(event);
@@ -476,25 +478,25 @@ Facebook Pixel is a tracking code that helps advertisers track conversions from 
 
 ### Standard Fields
 
-| RudderStack Field | Facebook Field | Notes |
-|-------------------|----------------|-------|
-| `userId` | `user_data.external_id` | Used for advanced matching |
-| `anonymousId` | `user_data.client_user_agent` | Used if userId is not available |
-| `event` | `event_name` | Mapped to standard event if possible |
-| `properties` | `custom_data` | Event-specific properties |
-| `traits` | `user_data` | User-specific properties for advanced matching |
-| `timestamp` | `event_time` | Converted to seconds since epoch |
+| RudderStack Field | Facebook Field                | Notes                                          |
+| ----------------- | ----------------------------- | ---------------------------------------------- |
+| `userId`          | `user_data.external_id`       | Used for advanced matching                     |
+| `anonymousId`     | `user_data.client_user_agent` | Used if userId is not available                |
+| `event`           | `event_name`                  | Mapped to standard event if possible           |
+| `properties`      | `custom_data`                 | Event-specific properties                      |
+| `traits`          | `user_data`                   | User-specific properties for advanced matching |
+| `timestamp`       | `event_time`                  | Converted to seconds since epoch               |
 
 ### Custom Fields
 
-| RudderStack Field | Facebook Field | Notes |
-|-------------------|----------------|-------|
-| `properties.value` | `custom_data.value` | Monetary value of the event |
-| `properties.currency` | `custom_data.currency` | Currency code (ISO 4217) |
-| `properties.content_name` | `custom_data.content_name` | Name of the content |
-| `properties.content_ids` | `custom_data.content_ids` | Array of content IDs |
-| `traits.email` | `user_data.em` | Hashed email for advanced matching |
-| `traits.phone` | `user_data.ph` | Hashed phone for advanced matching |
+| RudderStack Field         | Facebook Field             | Notes                              |
+| ------------------------- | -------------------------- | ---------------------------------- |
+| `properties.value`        | `custom_data.value`        | Monetary value of the event        |
+| `properties.currency`     | `custom_data.currency`     | Currency code (ISO 4217)           |
+| `properties.content_name` | `custom_data.content_name` | Name of the content                |
+| `properties.content_ids`  | `custom_data.content_ids`  | Array of content IDs               |
+| `traits.email`            | `user_data.em`             | Hashed email for advanced matching |
+| `traits.phone`            | `user_data.ph`             | Hashed phone for advanced matching |
 
 ## Special Handling
 
@@ -552,8 +554,8 @@ const event = {
   properties: {
     product_id: 'prod123',
     value: 29.99,
-    currency: 'USD'
-  }
+    currency: 'USD',
+  },
 };
 
 const facebookEvent = processEvent(event);
@@ -575,9 +577,9 @@ const event = {
       city: 'San Francisco',
       state: 'CA',
       postalCode: '94103',
-      country: 'US'
-    }
-  }
+      country: 'US',
+    },
+  },
 };
 
 const facebookEvent = processEvent(event);
@@ -628,10 +630,10 @@ Implement a documentation generation system that extracts information from the c
 function generateIntegrationDocs(integrationName, version) {
   // Extract information from the codebase
   const integrationInfo = extractIntegrationInfo(integrationName, version);
-  
+
   // Generate documentation from the extracted information
   const documentation = generateDocumentation(integrationInfo);
-  
+
   // Save the documentation to a file
   saveDocumentation(integrationName, documentation);
 }
@@ -645,19 +647,19 @@ Implement tests to ensure that the documentation is accurate and up-to-date:
 function testDocumentation(integrationName) {
   // Load the documentation
   const documentation = loadDocumentation(integrationName);
-  
+
   // Extract information from the codebase
   const integrationInfo = extractIntegrationInfo(integrationName);
-  
+
   // Compare the documentation with the extracted information
   const differences = compareDocumentation(documentation, integrationInfo);
-  
+
   // Report any differences
   if (differences.length > 0) {
     console.error(`Documentation for ${integrationName} is out of date:`, differences);
     return false;
   }
-  
+
   return true;
 }
 ```
@@ -670,13 +672,13 @@ Implement versioning for integration documentation to track changes over time:
 function versionDocumentation(integrationName, version) {
   // Load the current documentation
   const currentDocumentation = loadDocumentation(integrationName);
-  
+
   // Save the current documentation as a versioned copy
   saveVersionedDocumentation(integrationName, version, currentDocumentation);
-  
+
   // Update the version information in the current documentation
   currentDocumentation.version = version;
-  
+
   // Save the updated documentation
   saveDocumentation(integrationName, currentDocumentation);
 }
@@ -687,11 +689,13 @@ function versionDocumentation(integrationName, version) {
 Implement a review process for integration documentation to ensure quality and accuracy:
 
 1. **Automated Checks**:
+
    - Check for missing required sections
    - Validate links and references
    - Check for outdated information
 
 2. **Manual Review**:
+
    - Review by integration developers
    - Review by technical writers
    - Review by product managers
@@ -707,10 +711,12 @@ Implement a review process for integration documentation to ensure quality and a
 Implement a publishing system for integration documentation:
 
 1. **Internal Documentation**:
+
    - Publish to internal knowledge base
    - Make available to internal teams
 
 2. **External Documentation**:
+
    - Publish to external documentation site
    - Make available to customers and partners
 

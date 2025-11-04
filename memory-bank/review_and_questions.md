@@ -32,20 +32,24 @@ The memory bank is currently organized into the following files:
 ### README.md
 
 **Observations**:
+
 - Provides a good overview of the memory bank structure
 - Includes a brief description of the RudderStack Transformer
 
 **Questions/Clarifications Needed**:
+
 1. Is the current version number of RudderStack Transformer mentioned in the README accurate?
 2. Are there any additional key features that should be highlighted?
 
 ### 01_project_overview.md
 
 **Observations**:
+
 - Covers name, description, objectives, scope, timeline, and team members
 - Includes information about system dependencies
 
 **Questions/Clarifications Needed**:
+
 1. Is the current version number (1.96.0) accurate?
 2. Are there any specific project milestones or roadmap items that should be included?
 3. Is the team structure description accurate? Are there any other teams that interact with the transformer?
@@ -54,10 +58,12 @@ The memory bank is currently organized into the following files:
 ### 02_technical_stack.md
 
 **Observations**:
+
 - Lists languages, frameworks, libraries, and tools used in the project
 - Provides categorization of libraries
 
 **Questions/Clarifications Needed**:
+
 1. Are there any major libraries or tools missing from the list?
 2. Is the statement about Go ("used only for internal testing purposes to expose test data to other services") accurate?
 3. Are there any deprecated technologies that should be noted?
@@ -66,11 +72,13 @@ The memory bank is currently organized into the following files:
 ### 03_system_architecture.md
 
 **Observations**:
+
 - Describes components and their relationships
 - Includes a mermaid diagram of the system architecture
 - Covers data flow and scaling architecture
 
 **Questions/Clarifications Needed**:
+
 1. Is the component diagram accurate and complete?
 2. Are there any missing components or relationships?
 3. Is the description of the data flow accurate?
@@ -79,10 +87,12 @@ The memory bank is currently organized into the following files:
 ### 04_preferences_and_settings.md
 
 **Observations**:
+
 - Covers user preferences for code style, commit format, and testing approach
 - Lists system settings and environment variables
 
 **Questions/Clarifications Needed**:
+
 1. Are the listed environment variables complete and accurate?
 2. Are there any additional configuration options that should be included?
 3. Are there any deprecated settings that should be noted?
@@ -91,10 +101,12 @@ The memory bank is currently organized into the following files:
 ### 05_best_practices_and_guidelines.md
 
 **Observations**:
+
 - Covers coding standards, design patterns, and testing methodologies
 - Includes code examples for design patterns and testing
 
 **Questions/Clarifications Needed**:
+
 1. Are there any additional best practices that should be included?
 2. Are the code examples up-to-date with current practices?
 3. Are there any specific performance optimization guidelines that should be added?
@@ -103,10 +115,12 @@ The memory bank is currently organized into the following files:
 ### 06_workflows_and_processes.md
 
 **Observations**:
+
 - Describes development workflow, commit message format, and deployment process
 - Includes information about CI/CD pipeline
 
 **Questions/Clarifications Needed**:
+
 1. Is the described branching strategy (modified GitFlow) accurate?
 2. Are there any additional steps in the PR process that should be noted?
 3. Is the deployment process description accurate and complete?
@@ -115,10 +129,12 @@ The memory bank is currently organized into the following files:
 ### 07_code_structure.md
 
 **Observations**:
+
 - Describes directory layout, naming conventions, and modular organization
 - Includes examples of destination integration structure
 
 **Questions/Clarifications Needed**:
+
 1. Is the directory layout description complete and accurate?
 2. Are there any important subdirectories or files that should be highlighted?
 3. Are the naming conventions described accurately?
@@ -127,11 +143,13 @@ The memory bank is currently organized into the following files:
 ### 08_event_stream_pipeline.md
 
 **Observations**:
+
 - Describes the Event Stream pipeline and its components
 - Covers integration modes (cloud mode and device mode)
 - Includes information about sources, transformer, and destinations
 
 **Questions/Clarifications Needed**:
+
 1. Is the description of cloud mode and device mode accurate?
 2. Are there any additional features of the Event Stream pipeline that should be included?
 3. Is the data flow diagram accurate?
@@ -140,10 +158,12 @@ The memory bank is currently organized into the following files:
 ### 09_integration_development_guide.md
 
 **Observations**:
+
 - Provides a guide for developing source and destination integrations
 - Includes code examples and best practices
 
 **Questions/Clarifications Needed**:
+
 1. Are the code examples up-to-date with current development practices?
 2. Are there any additional required components for integrations that should be included?
 3. Is the testing approach described accurately?
@@ -152,10 +172,12 @@ The memory bank is currently organized into the following files:
 ### 10_system_dependencies.md
 
 **Observations**:
+
 - Describes dependencies and interactions with other RudderStack components
 - Covers API interactions and configuration dependencies
 
 **Questions/Clarifications Needed**:
+
 1. Are all the direct dependencies on RudderStack libraries accurate?
 2. Are there any additional API interactions that should be included?
 3. Is the description of the configuration dependencies with rudder-integrations-config accurate?
@@ -164,10 +186,12 @@ The memory bank is currently organized into the following files:
 ### 11_git_workflow_cicd.md
 
 **Observations**:
+
 - Describes Git workflow, branching strategy, and CI/CD pipeline
 - Covers commit standards, PR process, and release process
 
 **Questions/Clarifications Needed**:
+
 1. Is the described branching strategy accurate and up-to-date?
 2. Are all the GitHub Actions workflows described accurately?
 3. Is the release process description complete?
@@ -184,6 +208,7 @@ The memory bank is currently organized into the following files:
 ## Next Steps
 
 After receiving answers to these questions, the memory bank will be updated to:
+
 1. Correct any inaccuracies
 2. Add missing information
 3. Reorganize content as needed

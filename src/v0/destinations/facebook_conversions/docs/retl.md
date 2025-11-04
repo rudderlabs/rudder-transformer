@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Not Supported**
 
 The Facebook Conversions API destination does not support RETL functionality. Evidence:
+
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -14,24 +15,30 @@ The Facebook Conversions API destination does not support RETL functionality. Ev
 Since RETL is not supported (no warehouse source type), the following analysis applies:
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Not applicable (no RETL support)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Not applicable as RETL is not supported.
 
 ## Technical Analysis
 
 ### Supported Message Types
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["page", "screen", "track"]
@@ -41,6 +48,7 @@ Not applicable as RETL is not supported.
 ### Implementation Details
 
 The destination uses a standard processor-based implementation:
+
 - Processes events individually
 - Does not support batch warehouse operations
 - Lacks RETL-specific event handling logic
@@ -60,6 +68,7 @@ Since RETL is not supported, consider these alternatives for sending warehouse d
 - **Use Case**: Initial data migration, historical data backfill
 
 **Implementation Steps**:
+
 1. Export data from warehouse in Facebook-compatible format
 2. Use Facebook's bulk import interface in Events Manager
 3. Map warehouse fields to Facebook event parameters
@@ -74,21 +83,21 @@ Since RETL is not supported, consider these alternatives for sending warehouse d
 const warehouseToFacebook = async (warehouseData) => {
   // 1. Extract data from warehouse
   const events = await extractFromWarehouse(warehouseData);
-  
+
   // 2. Transform to Facebook format
   const facebookEvents = events.map(transformToFacebookEvent);
-  
+
   // 3. Send via Conversions API
   await sendToFacebookAPI(facebookEvents);
 };
 ```
 
 **Components**:
+
 - **Data Extraction**: Query warehouse for event data
 - **Data Transformation**: Convert to Facebook Conversions API format
 - **Batch Processing**: Send events in batches to Facebook
 - **Error Handling**: Retry logic and failure management
-
 
 ### 3. Facebook S3 Data Import
 
@@ -105,14 +114,14 @@ const warehouseToFacebook = async (warehouseData) => {
 
 ```sql
 -- Example warehouse query for Facebook events
-SELECT 
+SELECT
   user_id as external_id,
   email,
   event_name,
   event_time,
   properties,
   custom_data
-FROM warehouse_events 
+FROM warehouse_events
 WHERE created_at >= CURRENT_DATE - INTERVAL '1 day'
   AND facebook_sent = false;
 ```
@@ -160,7 +169,7 @@ const mapEventData = (warehouseEvent) => ({
     value: warehouseEvent.revenue,
     currency: warehouseEvent.currency || 'USD',
     // ... other custom properties
-  }
+  },
 });
 ```
 
@@ -255,6 +264,7 @@ The Facebook Conversions API destination does not support RETL functionality. Th
 **Note**: For warehouse-based data activation, consider using Facebook's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
 
 ### Supported Source Types
+
 ```json
 "supportedSourceTypes": [
   "android", "ios", "web", "unity", "amp", "cloud",

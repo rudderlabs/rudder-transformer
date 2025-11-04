@@ -10,10 +10,12 @@
 ### Required Settings
 
 - **API Key**: Required for authentication with Customer.io Track API
+
   - Used for Basic Authentication along with Site ID
   - Must have appropriate permissions for the operations you want to perform
 
 - **Site ID**: Required identifier for your Customer.io workspace
+
   - Used as the username in Basic Authentication
   - Found in Customer.io Settings > API Credentials > Track API Keys
 
@@ -27,6 +29,7 @@
 ### Optional Settings
 
 - **Device Token Event Name**: Event name that triggers device token registration
+
   - When this event is fired, device tokens are sent to Customer.io immediately
   - Used for mobile push notification setup
   - Configuration key: `deviceTokenEventName`
@@ -69,15 +72,15 @@ Customer.io's Track API has a **global rate limit** that applies to all endpoint
 
 This destination uses the following Customer.io Track API endpoints:
 
-| Endpoint | Event Types | Batch Support | Description |
-|----------|-------------|---------------|-------------|
-| `/api/v1/customers/:id` | Identify | No | Identify/update user profiles |
-| `/api/v1/customers/:id/events` | Track, Page, Screen | No | Send events for identified users |
-| `/api/v1/events` | Track, Page, Screen (Anonymous) | No | Send anonymous events |
-| `/api/v1/merge_customers` | Alias | No | Merge user profiles |
-| `/api/v2/batch` | Group | Yes (1000 events, 500KB max) | Batch operations with objects |
-| `/api/v1/customers/:id/devices` | Device Registration | No | Device token management |
-| `/api/v1/customers/:id/devices/:device_id` | Device Deletion | No | Device token removal |
+| Endpoint                                   | Event Types                     | Batch Support                | Description                      |
+| ------------------------------------------ | ------------------------------- | ---------------------------- | -------------------------------- |
+| `/api/v1/customers/:id`                    | Identify                        | No                           | Identify/update user profiles    |
+| `/api/v1/customers/:id/events`             | Track, Page, Screen             | No                           | Send events for identified users |
+| `/api/v1/events`                           | Track, Page, Screen (Anonymous) | No                           | Send anonymous events            |
+| `/api/v1/merge_customers`                  | Alias                           | No                           | Merge user profiles              |
+| `/api/v2/batch`                            | Group                           | Yes (1000 events, 500KB max) | Batch operations with objects    |
+| `/api/v1/customers/:id/devices`            | Device Registration             | No                           | Device token management          |
+| `/api/v1/customers/:id/devices/:device_id` | Device Deletion                 | No                           | Device token removal             |
 
 #### Additional API Limits
 
@@ -262,34 +265,41 @@ For business logic and mappings information, please refer to [docs/businesslogic
 ### Event Validations
 
 #### Identify Events
+
 - **User Identifier**: Either `userId` or `email` must be present
 - **Traits**: All traits are validated and reserved traits are excluded from mapping
 - **Created At**: If present, must be a valid timestamp
 
 #### Track Events
+
 - **Event Name**: Must be a string, automatically trimmed of leading/trailing spaces
 - **User Identification**: For identified events, requires `userId` or `email`
 - **Anonymous Events**: Requires `anonymousId` when no user identifier is present
 
 #### Page Events
+
 - **Page Name**: Uses `name` or falls back to `properties.url`
 - **Event Type**: Automatically set to "page" for Customer.io compliance
 
 #### Screen Events
+
 - **Screen Name**: Uses `event` or `properties.name`
 - **Event Format**: Automatically formatted as "Viewed {screen_name} Screen"
 
 #### Group Events
+
 - **Object ID**: Required (`groupId`)
 - **Object Type ID**: Defaults to "1" if not provided
 - **Action**: Must be one of: identify, delete, add_relationships, delete_relationships
 
 #### Alias Events
+
 - **User ID**: Required (primary profile to keep)
 - **Previous ID**: Required (secondary profile to merge and delete)
 - **Identifier Format**: Automatically detects email vs ID format
 
 #### Device Events
+
 - **User Identifier**: Required (`userId` or `email`)
 - **Device Token**: Required (`context.device.token`)
 - **Platform**: Automatically detected from `context.device.type`
@@ -356,6 +366,7 @@ A: The main Customer.io destination does not support VDM v2 or record events. Ho
 
 **Q: Why are my events not appearing in Customer.io?**
 A: Check the following:
+
 - Verify API credentials (Site ID and API Key)
 - Ensure correct data center configuration (US vs EU)
 - Validate required fields for each event type

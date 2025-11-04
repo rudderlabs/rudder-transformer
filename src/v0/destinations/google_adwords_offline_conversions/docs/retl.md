@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Google Ads Offline Conversions destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - Supports data flow from warehouses/databases to Google Ads
@@ -12,20 +13,26 @@ The Google Ads Offline Conversions destination supports RETL functionality. Evid
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard Google Ads Offline Conversions configuration applies:
+
 - **Developer Token**: Google Ads API developer token
 - **Customer ID**: Google Ads customer account ID
 - **Conversion Action ID**: Specific conversion action identifier
@@ -43,6 +50,7 @@ Google Ads Offline Conversions supports RETL through warehouse sources with JSON
 - **Mapping**: JSON mapper transforms warehouse data to Google Ads conversion format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["track"]
@@ -87,11 +95,13 @@ The Google Ads Offline Conversions destination processes RETL events through the
 ## Rate Limits and Constraints
 
 ### Google Ads API Limits
+
 - **Offline Conversions API**: Standard Google Ads API rate limits apply
 - **Conversion Batch Size**: Up to 2000 conversions per request
 - **Daily Upload Limits**: Varies by account type and history
 
 ### RETL Processing Constraints
+
 - **Message Types**: Limited to track events only
 - **JSON Mapper Only**: No visual mapper or VDM v2 support
 - **Cloud Mode Only**: Device mode not supported for RETL
@@ -109,6 +119,7 @@ The Google Ads Offline Conversions destination supports RETL functionality throu
 - **API Integration**: Google Ads Offline Conversions API for conversion delivery
 
 **Limitations**:
+
 - No VDM v1 or VDM v2 support (JSON mapper only)
 - Limited to track events only
 - Requires valid conversion identifiers for successful uploads

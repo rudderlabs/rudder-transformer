@@ -105,7 +105,6 @@ jobs:
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
 
-
       - name: Extract branch name
         id: extract_branch_name
         run: |

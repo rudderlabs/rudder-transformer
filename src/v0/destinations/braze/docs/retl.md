@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Braze destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - `supportsVisualMapper: true` indicates VDM v1 support
@@ -14,20 +15,26 @@ The Braze destination supports RETL functionality. Evidence:
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support.
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard Braze configuration applies:
+
 - **App Identifier**: Braze app identifier
 - **REST API Key**: Braze REST API key
 - **Data Center**: Braze instance data center
@@ -46,6 +53,7 @@ Braze supports RETL through warehouse sources with both JSON mapper and VDM v1 f
 - **Mapping**: JSON mapper and VDM v1 transform warehouse data to Braze format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["group", "identify", "page", "screen", "track", "alias"]
@@ -59,6 +67,7 @@ The Braze destination implements special handling for events that come from RETL
 #### Key RETL-Specific Behaviors
 
 1. **User Attributes Handling**:
+
    - When an event is marked with `context.mappedToDestination = true`, the transformer passes user traits directly to Braze without applying the standard mapping logic
    - This allows RETL sources to provide pre-formatted attributes that match Braze's expected format
 
@@ -133,11 +142,13 @@ function getUserAttributesObject(message, mappingJson, destination) {
 ## Rate Limits and Constraints
 
 ### Braze API Limits
+
 - **REST API**: Standard Braze API rate limits apply
 - **Batch Size**: Varies by endpoint (e.g., 75 users per identify request)
 - **Request Rate**: Varies by plan and endpoint
 
 ### RETL Processing Constraints
+
 - **Message Types**: Supports all standard event types (group, identify, page, screen, track, alias)
 - **JSON Mapper and VDM v1**: Both supported for data transformation
 - **Cloud Mode Only**: Device mode not supported for RETL
@@ -156,11 +167,13 @@ The Braze destination supports RETL functionality through:
 - **Special RETL Logic**: `mappedToDestination` flag enables pre-formatted data handling
 
 **Key Features**:
+
 - Pre-formatted attribute handling for RETL events
 - External ID override for identify events
 - Bypass standard mapping logic when `mappedToDestination` is true
 - Support for both JSON mapper and VDM v1 transformations
 
 **Limitations**:
+
 - No VDM v2 support (no record message type)
 - Cloud mode only for RETL functionality

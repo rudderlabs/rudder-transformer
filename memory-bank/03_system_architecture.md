@@ -208,7 +208,7 @@ The system includes adaptation logic to handle cases where a v1 request is proce
 
 ```typescript
 // Adaption Logic for V0 to V1
-if (handlerVersion.toLowerCase() === "v0" && version.toLowerCase() === "v1") {
+if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
   const v0Response = responseProxy as DeliveryV0Response;
   const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
     (metadata) =>
@@ -216,7 +216,7 @@ if (handlerVersion.toLowerCase() === "v0" && version.toLowerCase() === "v1") {
         error: JSON.stringify(v0Response.destinationResponse?.response),
         statusCode: v0Response.status,
         metadata,
-      } as DeliveryJobState)
+      }) as DeliveryJobState,
   );
 
   responseProxy = {

@@ -1,7 +1,4 @@
-const {
-  processIdentifierEvent,
-  updateAnonymousIdToUserIdInRedis,
-} = require('./utils');
+const { processIdentifierEvent, updateAnonymousIdToUserIdInRedis } = require('./utils');
 const { RedisDB } = require('../../util/redis/redisConnector');
 const stats = require('../../util/stats');
 
@@ -9,8 +6,8 @@ const stats = require('../../util/stats');
 jest.mock('../../util/redis/redisConnector', () => ({
   RedisDB: {
     setVal: jest.fn().mockResolvedValue({ status: 'OK' }),
-    getVal: jest.fn().mockResolvedValue(null)
-  }
+    getVal: jest.fn().mockResolvedValue(null),
+  },
 }));
 
 jest.mock('../../util/stats', () => ({
@@ -32,7 +29,7 @@ describe('Shopify Utils Tests', () => {
         anonymousId: 'anon123',
         userId: 'user123',
         cartToken: 'cart123',
-        action: 'stitchCartTokenToAnonId'
+        action: 'stitchCartTokenToAnonId',
       };
 
       const result = await processIdentifierEvent(event);
@@ -41,12 +38,12 @@ describe('Shopify Utils Tests', () => {
           body: Buffer.from('OK').toString('base64'),
           contentType: 'text/plain',
         },
-        statusCode: 200
+        statusCode: 200,
       });
       expect(RedisDB.setVal).toHaveBeenCalledWith(
         'pixel:cart123',
         ['anonymousId', 'anon123'],
-        43200
+        43200,
       );
     });
 
@@ -55,7 +52,7 @@ describe('Shopify Utils Tests', () => {
         event: 'rudderIdentifier',
         anonymousId: 'anon123',
         userId: 'user123',
-        action: 'stitchUserIdToAnonId'
+        action: 'stitchUserIdToAnonId',
       };
 
       const result = await processIdentifierEvent(event);
@@ -64,13 +61,9 @@ describe('Shopify Utils Tests', () => {
           body: Buffer.from('OK').toString('base64'),
           contentType: 'text/plain',
         },
-        statusCode: 200
+        statusCode: 200,
       });
-      expect(RedisDB.setVal).toHaveBeenCalledWith(
-        'pixel:anon123',
-        ['userId', 'user123'],
-        86400
-      );
+      expect(RedisDB.setVal).toHaveBeenCalledWith('pixel:anon123', ['userId', 'user123'], 86400);
     });
   });
 
@@ -80,21 +73,17 @@ describe('Shopify Utils Tests', () => {
       const userId = 'user123';
 
       await updateAnonymousIdToUserIdInRedis(anonymousId, userId);
-      expect(RedisDB.setVal).toHaveBeenCalledWith(
-        'pixel:anon123',
-        ['userId', 'user123'],
-        86400
-      );
+      expect(RedisDB.setVal).toHaveBeenCalledWith('pixel:anon123', ['userId', 'user123'], 86400);
       expect(stats.increment).toHaveBeenCalledWith('shopify_pixel_userid_mapping', {
         action: 'stitchUserIdToAnonId',
-        operation: 'set'
+        operation: 'set',
       });
     });
 
     it('should handle missing parameters', async () => {
       await updateAnonymousIdToUserIdInRedis(null, 'user123');
       expect(RedisDB.setVal).not.toHaveBeenCalled();
-      
+
       await updateAnonymousIdToUserIdInRedis('anon123', null);
       expect(RedisDB.setVal).not.toHaveBeenCalled();
     });

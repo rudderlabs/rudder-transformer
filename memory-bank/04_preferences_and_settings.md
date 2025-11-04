@@ -3,6 +3,7 @@
 ## User Preferences
 
 ### Code Style
+
 - **Formatting**: Prettier configured with consistent rules
 - **Linting**: ESLint with Airbnb style guide
 - **TypeScript**: Strict type checking enabled
@@ -12,6 +13,7 @@
 - **Semicolons**: Required
 
 ### Commit Format
+
 - **Style**: Conventional commits format
 - **Scope**: Optional scope in parentheses
 - **Body**: Required for non-trivial changes
@@ -21,6 +23,7 @@
 - **JIRA References**: Optional
 
 ### Testing Approach
+
 - **Framework**: Jest
 - **Style**: Table-driven tests preferred
 - **Coverage**: High coverage expected for new code
@@ -30,6 +33,7 @@
 ## System Settings
 
 ### Server Configuration
+
 - **PORT**: 9090 (Default API port)
 - **METRICS_PORT**: 9091 (Default metrics port)
 - **CLUSTER_ENABLED**: true/false (Enable/disable clustering)
@@ -38,17 +42,20 @@
 - **NODE_OPTIONS**: --no-node-snapshot (Node.js runtime options)
 
 ### Performance Settings
+
 - **BODY_PARSER_LIMIT**: 200mb (Maximum request body size)
 - **MAX_WAIT_SECONDS**: 30000 (Graceful shutdown timeout)
 - **FORCE_EXIT**: true (Force exit after graceful shutdown)
 
 ### Redis Configuration
+
 - **REDIS_HOST**: Redis server hostname
 - **REDIS_PORT**: Redis server port
 - **REDIS_PASSWORD**: Redis authentication password
 - **REDIS_DB**: Redis database number
 
 ### Monitoring Configuration
+
 - **BUGSNAG_API_KEY**: API key for error reporting
 - **PYROSCOPE_SERVER_ADDRESS**: Pyroscope server address
 - **PYROSCOPE_APPLICATION_NAME**: Application name in Pyroscope

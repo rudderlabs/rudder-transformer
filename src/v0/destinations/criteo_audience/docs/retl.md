@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Criteo Audience destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - `supportsVisualMapper: true` indicates VDM v1 support
 - `disableJsonMapper: true` (JSON mapper disabled, only VDM supported)
@@ -13,20 +14,26 @@ The Criteo Audience destination supports RETL functionality. Evidence:
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Not supported (`disableJsonMapper: true`)
 - **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support.
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard Criteo Audience configuration applies:
+
 - **Client ID**: Criteo API client ID
 - **Client Secret**: Criteo API client secret
 - **Audience ID**: Target audience segment ID
@@ -45,6 +52,7 @@ Criteo Audience supports RETL through warehouse sources with VDM v1 functionalit
 - **Mapping**: VDM v1 transforms warehouse data to Criteo audience format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["audiencelist"]
@@ -229,18 +237,21 @@ Where `[op]` can be either `add` or `remove` to specify the operation type.
 ## Rate Limits and Constraints
 
 ### Criteo API Limits
+
 - **Batch Size**: Maximum 50,000 identifiers per batch
 - **Rate Limiting**: Automatic handling with exponential backoff
 - **Request Throttling**: Based on response headers
 - **Retry Strategy**: Maximum 3 retries with exponential backoff
 
 ### RETL Processing Constraints
+
 - **Message Types**: Limited to audiencelist events only
 - **VDM v1 Only**: JSON mapper disabled (`disableJsonMapper: true`)
 - **Cloud Mode Only**: Device mode not supported for RETL
 - **Identifier Types**: Supports email, maid, gum, identityLink
 
 ### Batch Processing
+
 - **Automatic Chunking**: Large datasets split into 50,000 identifier batches
 - **Parallel Processing**: Multiple chunks processed concurrently
 - **Operation Separation**: Add and remove operations processed separately
@@ -258,6 +269,7 @@ The Criteo Audience destination supports RETL functionality through:
 - **Batch Processing**: Automatic chunking up to 50,000 identifiers per batch
 
 **Key Features**:
+
 - Audience segment management with add/remove operations
 - Support for multiple identifier types (email, maid, gum, identityLink)
 - Automatic batch processing for large datasets
@@ -265,6 +277,7 @@ The Criteo Audience destination supports RETL functionality through:
 - Rate limit management with exponential backoff
 
 **Limitations**:
+
 - VDM v1 only (no JSON mapper or VDM v2)
 - Limited to audiencelist events for audience management
 - Requires proper audience configuration and identifier types

@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Campaign Manager 360 destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` in `db-config.json`
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - Supports data flow from warehouses/databases to Campaign Manager 360
@@ -25,6 +26,7 @@ The Campaign Manager 360 destination supports RETL functionality. Evidence:
 ### Does it have vdm v2 support?
 
 **No** - Missing both requirements:
+
 - `supportedMessageTypes > record` not present in `db-config.json`
 - No record event type handling in transformer code
 
@@ -33,12 +35,14 @@ The Campaign Manager 360 destination supports RETL functionality. Evidence:
 Standard Campaign Manager 360 configuration applies for RETL:
 
 **Required Settings**:
-- **OAuth 2.0 Authentication**: 
+
+- **OAuth 2.0 Authentication**:
   - Must be configured with Campaign Manager role
   - Requires appropriate scopes (ddmconversions, dfareporting, dfatrafficking)
 - **Profile ID**: Campaign Manager profile ID for API requests
 
 **Optional Settings**:
+
 - **Limit Ad Tracking**: Default false
 - **Child Directed Treatment**: Default false
 - **Non Personalized Ad**: Default false
@@ -76,12 +80,12 @@ Campaign Manager 360 supports RETL through warehouse sources with JSON mapper fu
 {
   "supportedSourceTypes": [
     "android",
-    "ios", 
+    "ios",
     "web",
     "unity",
     "amp",
     "cloud",
-    "warehouse",    // ← RETL support
+    "warehouse", // ← RETL support
     "reactnative",
     "flutter",
     "cordova",
@@ -110,67 +114,67 @@ For RETL to work effectively, warehouse tables should include the following colu
 
 #### Required Columns
 
-| Warehouse Column | Event Property | Description |
-|-----------------|----------------|-------------|
-| `floodlight_configuration_id` | `properties.floodlightConfigurationId` | Floodlight configuration ID |
-| `floodlight_activity_id` | `properties.floodlightActivityId` | Floodlight activity ID |
-| `ordinal` | `properties.ordinal` | Unique ordinal for deduplication |
-| `timestamp` | `timestamp` | Conversion timestamp (converted to microseconds) |
-| `quantity` | `properties.quantity` | Conversion quantity |
-| `request_type` | `properties.requestType` | Either `batchinsert` or `batchupdate` |
-| `profile_id` | `properties.profileId` (optional) | Override destination config profile ID |
+| Warehouse Column              | Event Property                         | Description                                      |
+| ----------------------------- | -------------------------------------- | ------------------------------------------------ |
+| `floodlight_configuration_id` | `properties.floodlightConfigurationId` | Floodlight configuration ID                      |
+| `floodlight_activity_id`      | `properties.floodlightActivityId`      | Floodlight activity ID                           |
+| `ordinal`                     | `properties.ordinal`                   | Unique ordinal for deduplication                 |
+| `timestamp`                   | `timestamp`                            | Conversion timestamp (converted to microseconds) |
+| `quantity`                    | `properties.quantity`                  | Conversion quantity                              |
+| `request_type`                | `properties.requestType`               | Either `batchinsert` or `batchupdate`            |
+| `profile_id`                  | `properties.profileId` (optional)      | Override destination config profile ID           |
 
 #### User Identifier Columns (At least one required)
 
-| Warehouse Column | Event Property | Description |
-|-----------------|----------------|-------------|
-| `gclid` | `properties.gclid` | Google Click ID |
-| `match_id` | `properties.matchId` | Match ID |
-| `dclid` | `properties.dclid` | DoubleClick Click ID |
-| `mobile_device_id` | `properties.mobileDeviceId` | Mobile device ID |
-| `impression_id` | `properties.impressionId` | Impression ID |
-| `encrypted_user_id` | `properties.encryptedUserId` | Encrypted user ID |
+| Warehouse Column               | Event Property                         | Description                           |
+| ------------------------------ | -------------------------------------- | ------------------------------------- |
+| `gclid`                        | `properties.gclid`                     | Google Click ID                       |
+| `match_id`                     | `properties.matchId`                   | Match ID                              |
+| `dclid`                        | `properties.dclid`                     | DoubleClick Click ID                  |
+| `mobile_device_id`             | `properties.mobileDeviceId`            | Mobile device ID                      |
+| `impression_id`                | `properties.impressionId`              | Impression ID                         |
+| `encrypted_user_id`            | `properties.encryptedUserId`           | Encrypted user ID                     |
 | `encrypted_user_id_candidates` | `properties.encryptedUserIdCandidates` | Array of encrypted user ID candidates |
 
 #### Optional Columns
 
-| Warehouse Column | Event Property | Description |
-|-----------------|----------------|-------------|
-| `value` | `properties.value` | Conversion value |
-| `revenue` | `properties.revenue` | Alternative to value |
-| `total` | `properties.total` | Alternative to value |
-| `custom_variables` | `properties.customVariables` | Custom variables array |
-| `limit_ad_tracking` | `properties.limitAdTracking` | Override destination setting |
+| Warehouse Column           | Event Property                      | Description                  |
+| -------------------------- | ----------------------------------- | ---------------------------- |
+| `value`                    | `properties.value`                  | Conversion value             |
+| `revenue`                  | `properties.revenue`                | Alternative to value         |
+| `total`                    | `properties.total`                  | Alternative to value         |
+| `custom_variables`         | `properties.customVariables`        | Custom variables array       |
+| `limit_ad_tracking`        | `properties.limitAdTracking`        | Override destination setting |
 | `child_directed_treatment` | `properties.childDirectedTreatment` | Override destination setting |
-| `non_personalized_ad` | `properties.nonPersonalizedAd` | Override destination setting |
-| `treatment_for_underage` | `properties.treatmentForUnderage` | Override destination setting |
+| `non_personalized_ad`      | `properties.nonPersonalizedAd`      | Override destination setting |
+| `treatment_for_underage`   | `properties.treatmentForUnderage`   | Override destination setting |
 
 #### Enhanced Conversion Columns (When enabled)
 
-| Warehouse Column | Event Property | Description |
-|-----------------|----------------|-------------|
-| `email` | `traits.email` or `context.traits.email` | User email (will be hashed) |
-| `phone` | `traits.phone` or `context.traits.phone` | User phone (will be hashed) |
-| `first_name` | `traits.firstName` or `context.traits.firstName` | First name (will be hashed) |
-| `last_name` | `traits.lastName` or `context.traits.lastName` | Last name (will be hashed) |
-| `street` | `traits.street` or `context.traits.address.street` | Street address (will be hashed) |
-| `city` | `traits.city` or `context.traits.address.city` | City (plain text) |
-| `state` | `traits.state` or `context.traits.address.state` | State (plain text) |
-| `country` | `traits.country` or `context.traits.address.country` | Country code (plain text) |
-| `zip` | `traits.zip` or `context.traits.address.zip` | Postal code (will be hashed) |
+| Warehouse Column | Event Property                                       | Description                     |
+| ---------------- | ---------------------------------------------------- | ------------------------------- |
+| `email`          | `traits.email` or `context.traits.email`             | User email (will be hashed)     |
+| `phone`          | `traits.phone` or `context.traits.phone`             | User phone (will be hashed)     |
+| `first_name`     | `traits.firstName` or `context.traits.firstName`     | First name (will be hashed)     |
+| `last_name`      | `traits.lastName` or `context.traits.lastName`       | Last name (will be hashed)      |
+| `street`         | `traits.street` or `context.traits.address.street`   | Street address (will be hashed) |
+| `city`           | `traits.city` or `context.traits.address.city`       | City (plain text)               |
+| `state`          | `traits.state` or `context.traits.address.state`     | State (plain text)              |
+| `country`        | `traits.country` or `context.traits.address.country` | Country code (plain text)       |
+| `zip`            | `traits.zip` or `context.traits.address.zip`         | Postal code (will be hashed)    |
 
 #### Encryption Info Columns (If using encrypted user IDs)
 
-| Warehouse Column | Event Property | Description |
-|-----------------|----------------|-------------|
+| Warehouse Column         | Event Property                    | Description                                            |
+| ------------------------ | --------------------------------- | ------------------------------------------------------ |
 | `encryption_entity_type` | `properties.encryptionEntityType` | One of: DCM_ACCOUNT, DCM_ADVERTISER, DBM_PARTNER, etc. |
-| `encryption_source` | `properties.encryptionSource` | One of: AD_SERVING, DATA_TRANSFER |
-| `encryption_entity_id` | `properties.encryptionEntityId` | Encryption entity ID |
+| `encryption_source`      | `properties.encryptionSource`     | One of: AD_SERVING, DATA_TRANSFER                      |
+| `encryption_entity_id`   | `properties.encryptionEntityId`   | Encryption entity ID                                   |
 
 ### Example Warehouse Query for RETL
 
 ```sql
-SELECT 
+SELECT
   -- Required fields
   floodlight_configuration_id,
   floodlight_activity_id,
@@ -178,13 +182,13 @@ SELECT
   conversion_timestamp as timestamp,
   quantity,
   'batchinsert' as request_type,
-  
+
   -- User identifier (at least one)
   gclid,
-  
+
   -- Optional fields
   revenue as value,
-  
+
   -- Enhanced conversion fields (if enabled)
   email,
   phone,
@@ -194,11 +198,11 @@ SELECT
   state,
   country,
   postal_code as zip,
-  
+
   -- Tracking fields
   user_id,
   anonymous_id
-  
+
 FROM conversions_warehouse_table
 WHERE conversion_date >= CURRENT_DATE - INTERVAL '7 days'
   AND gclid IS NOT NULL
@@ -252,7 +256,7 @@ For `batchupdate` requests with `enableEnhancedConversions: true`:
   userIdentifiers: [
     { hashedEmail: sha256(normalizeEmail(traits.email)) },
     { hashedPhoneNumber: sha256(normalizePhone(traits.phone, countryCode)) },
-    { 
+    {
       addressInfo: {
         hashedFirstName: sha256(traits.firstName.toLowerCase().trim()),
         hashedLastName: sha256(traits.lastName.toLowerCase().trim()),
@@ -260,10 +264,10 @@ For `batchupdate` requests with `enableEnhancedConversions: true`:
         city: traits.city,
         state: traits.state,
         countryCode: traits.country,
-        postalCode: sha256(traits.zip)
-      }
-    }
-  ]
+        postalCode: sha256(traits.zip),
+      },
+    },
+  ];
 }
 ```
 
@@ -293,6 +297,7 @@ Content-Type: application/json
 ### Campaign Manager 360 API Limits
 
 **Default Quota Limits** (from [Campaign Manager 360 API Quotas](https://developers.google.com/doubleclick-advertisers/quotas)):
+
 - **Queries Per Day**: 50,000 requests per project per day (can be increased)
 - **Queries Per Second**: 1 QPS per project (default)
   - In Google API Console: "Queries per minute per user" = 60 (default)
@@ -300,7 +305,9 @@ Content-Type: application/json
 - **Daily Quota Refresh**: Midnight PST
 
 **Endpoints Used**:
+
 1. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
 
@@ -323,8 +330,9 @@ Content-Type: application/json
 **Scenario**: Upload historical conversions from data warehouse to Campaign Manager 360
 
 **Warehouse Query**:
+
 ```sql
-SELECT 
+SELECT
   floodlight_configuration_id,
   floodlight_activity_id,
   conversion_ordinal as ordinal,
@@ -339,6 +347,7 @@ WHERE conversion_date BETWEEN '2024-01-01' AND '2024-12-31'
 ```
 
 **Considerations**:
+
 - Use `batchinsert` request type
 - Ensure `ordinal` values are unique per conversion
 - Maintain chronological order for accurate reporting
@@ -349,8 +358,9 @@ WHERE conversion_date BETWEEN '2024-01-01' AND '2024-12-31'
 **Scenario**: Add user identifiers to existing conversions for better matching
 
 **Warehouse Query**:
+
 ```sql
-SELECT 
+SELECT
   c.floodlight_configuration_id,
   c.floodlight_activity_id,
   c.ordinal,
@@ -358,7 +368,7 @@ SELECT
   c.quantity,
   c.gclid,
   'batchupdate' as request_type,
-  
+
   -- Enhanced conversion data
   u.email,
   u.phone,
@@ -367,7 +377,7 @@ SELECT
   u.city,
   u.state,
   u.country
-  
+
 FROM conversions c
 JOIN users u ON c.user_id = u.id
 WHERE c.conversion_date >= CURRENT_DATE - INTERVAL '30 days'
@@ -375,11 +385,13 @@ WHERE c.conversion_date >= CURRENT_DATE - INTERVAL '30 days'
 ```
 
 **Configuration**:
+
 - Set `enableEnhancedConversions: true`
 - Set `isHashingRequired: true` (RudderStack will hash PII)
 - Use `batchupdate` request type
 
 **Considerations**:
+
 - Only works with `batchupdate`
 - Conversions must already exist in Campaign Manager 360
 - User identifiers will be hashed automatically
@@ -390,8 +402,9 @@ WHERE c.conversion_date >= CURRENT_DATE - INTERVAL '30 days'
 **Scenario**: Send offline conversion data (e.g., in-store purchases) to Campaign Manager 360
 
 **Warehouse Query**:
+
 ```sql
-SELECT 
+SELECT
   '12345' as floodlight_configuration_id,
   '67890' as floodlight_activity_id,
   CONCAT(order_id, '_', transaction_timestamp) as ordinal,
@@ -406,6 +419,7 @@ WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
 ```
 
 **Considerations**:
+
 - Use `matchId` if gclid not available
 - Ensure ordinal is unique for each conversion
 - Include conversion value for ROI tracking
@@ -417,12 +431,13 @@ WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
 **Cause**: Track event doesn't have properties object
 
 **Solution**: Ensure warehouse mapping includes properties fields:
+
 ```json
 {
   "type": "track",
   "properties": {
     "floodlightConfigurationId": "...",
-    "requestType": "batchinsert",
+    "requestType": "batchinsert"
     // ... other properties
   }
 }
@@ -433,6 +448,7 @@ WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
 **Cause**: No user identifier provided
 
 **Solution**: Ensure at least one user identifier column is mapped:
+
 - `gclid`
 - `matchId`
 - `dclid`
@@ -445,6 +461,7 @@ WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
 **Cause**: Using encrypted user IDs without providing encryption info
 
 **Solution**: Provide all three encryption fields:
+
 ```json
 {
   "properties": {
@@ -461,6 +478,7 @@ WHERE sale_date = CURRENT_DATE - INTERVAL '1 day'
 **Cause**: Multiple possible causes
 
 **Solution Checklist**:
+
 1. ✅ `enableEnhancedConversions: true` in destination config
 2. ✅ `requestType: 'batchupdate'` in event
 3. ✅ User identifier fields (email, phone, etc.) present in traits
@@ -480,6 +498,7 @@ The Campaign Manager 360 destination supports RETL functionality with the follow
 - **Enhanced Conversions**: ✅ Supported for batchupdate requests
 
 **Key Features**:
+
 - Historical conversion uploads via `batchinsert`
 - Enhanced conversion enrichment via `batchupdate`
 - Automatic PII hashing for user identifiers
@@ -487,8 +506,8 @@ The Campaign Manager 360 destination supports RETL functionality with the follow
 - Encrypted user ID support
 
 **Limitations**:
+
 - Only track events supported (no identify, page, etc.)
 - No VDM v1 or v2 support
 - No special `mappedToDestination` handling
 - Enhanced conversions only work with `batchupdate`
-

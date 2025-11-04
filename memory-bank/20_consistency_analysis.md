@@ -24,6 +24,7 @@ The memory bank contains files with different header level conventions:
 - Some files use # for the title, ## for major sections, ### for sections, and #### for subsections
 
 **Recommendation**: Adopt a consistent header level convention:
+
 - # for the title
 - ## for major sections
 - ### for subsections
@@ -44,7 +45,7 @@ The memory bank contains files with different code block conventions:
 The memory bank contains files with different list style conventions:
 
 - Some files use - for unordered lists
-- Some files use * for unordered lists
+- Some files use \* for unordered lists
 - Some files use 1. for ordered lists
 - Some files use 1) for ordered lists
 
@@ -120,14 +121,14 @@ All code blocks now specify the language for syntax highlighting:
 ```javascript
 // JavaScript code example
 function example() {
-  return "This is a JavaScript example";
+  return 'This is a JavaScript example';
 }
 ```
 
 ```typescript
 // TypeScript code example
 function example(): string {
-  return "This is a TypeScript example";
+  return 'This is a TypeScript example';
 }
 ```
 
@@ -136,11 +137,13 @@ function example(): string {
 All lists now follow a consistent style:
 
 Unordered lists:
+
 - Item 1
 - Item 2
 - Item 3
 
 Ordered lists:
+
 1. First item
 2. Second item
 3. Third item
@@ -174,7 +177,7 @@ All examples now follow a consistent approach:
 All formatting now follows a consistent convention:
 
 - **Bold** is used for emphasis
-- *Italics* is used for terms being defined or for titles of works
+- _Italics_ is used for terms being defined or for titles of works
 - `Code` is used for code snippets, file names, and technical terms
 
 ## Conclusion

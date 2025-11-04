@@ -12,7 +12,7 @@ Many integrations require special handling for different data types:
 
 ```typescript
 // Example: Limiting string length for a property
-if (typeof property === "string" && property.length > MAX_STRING_LENGTH) {
+if (typeof property === 'string' && property.length > MAX_STRING_LENGTH) {
   property = property.substring(0, MAX_STRING_LENGTH);
 }
 ```
@@ -28,11 +28,11 @@ if (typeof property === "string" && property.length > MAX_STRING_LENGTH) {
 ```typescript
 // Example: Checking nested object depth
 function checkNestedDepth(obj, maxDepth = 2) {
-  if (typeof obj !== "object" || obj === null) return 0;
+  if (typeof obj !== 'object' || obj === null) return 0;
 
   let maxNestedDepth = 0;
   Object.values(obj).forEach((value) => {
-    if (typeof value === "object" && value !== null) {
+    if (typeof value === 'object' && value !== null) {
       const nestedDepth = checkNestedDepth(value, maxDepth) + 1;
       maxNestedDepth = Math.max(maxNestedDepth, nestedDepth);
     }
@@ -94,7 +94,7 @@ async function sendWithRetry(payload, maxRetries = 3) {
     }
   }
 
-  throw new Error("Max retries exceeded");
+  throw new Error('Max retries exceeded');
 }
 ```
 
@@ -116,10 +116,7 @@ function optimizeBatchSize(events, maxBatchSize, maxPayloadSize) {
   events.forEach((event) => {
     const eventSize = JSON.stringify(event).length;
 
-    if (
-      currentBatch.length >= maxBatchSize ||
-      currentSize + eventSize > maxPayloadSize
-    ) {
+    if (currentBatch.length >= maxBatchSize || currentSize + eventSize > maxPayloadSize) {
       batches.push(currentBatch);
       currentBatch = [event];
       currentSize = eventSize;
@@ -151,7 +148,7 @@ Different integrations require different authentication methods:
 
 ```typescript
 // Example: API key in header
-headers["X-API-Key"] = CONFIG.apiKey;
+headers['X-API-Key'] = CONFIG.apiKey;
 
 // Example: API key in query parameter
 endpoint = `${baseUrl}/track?api_key=${CONFIG.apiKey}`;
@@ -170,17 +167,17 @@ payload.api_key = CONFIG.apiKey;
 
 ```typescript
 // Example: OAuth token in header
-headers["Authorization"] = `Bearer ${CONFIG.accessToken}`;
+headers['Authorization'] = `Bearer ${CONFIG.accessToken}`;
 
 // Example: Refreshing OAuth token
 async function refreshToken() {
   const response = await fetch(tokenUrl, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify({
       client_id: CONFIG.clientId,
       client_secret: CONFIG.clientSecret,
       refresh_token: CONFIG.refreshToken,
-      grant_type: "refresh_token",
+      grant_type: 'refresh_token',
     }),
   });
 
@@ -199,14 +196,12 @@ async function refreshToken() {
 
 ```typescript
 // Example: Custom authentication header
-headers["X-Custom-Auth"] = generateAuthHeader(CONFIG.apiKey, CONFIG.apiSecret);
+headers['X-Custom-Auth'] = generateAuthHeader(CONFIG.apiKey, CONFIG.apiSecret);
 
 // Example: Generating a custom auth header
 function generateAuthHeader(apiKey, apiSecret) {
   const timestamp = Math.floor(Date.now() / 1000);
-  const signature = createHmac("sha256", apiSecret)
-    .update(`${apiKey}${timestamp}`)
-    .digest("hex");
+  const signature = createHmac('sha256', apiSecret).update(`${apiKey}${timestamp}`).digest('hex');
 
   return `${apiKey}:${timestamp}:${signature}`;
 }
@@ -238,11 +233,11 @@ function validateMixpanelProperties(properties) {
     const validKey = key.substring(0, 255);
 
     // Handle different value types
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       validatedProperties[validKey] = value.substring(0, 255);
     } else if (Array.isArray(value)) {
       validatedProperties[validKey] = value.slice(0, 255);
-    } else if (typeof value === "object" && value !== null) {
+    } else if (typeof value === 'object' && value !== null) {
       // Check nesting depth
       if (checkNestedDepth(value) <= 2) {
         // Max depth of 3 including this level
@@ -274,11 +269,11 @@ Mixpanel has special handling for certain events:
 
 ```typescript
 // Example: Special handling for $set event
-if (event.event === "$set") {
+if (event.event === '$set') {
   payload.update_operations = {
     $set: event.properties,
   };
-} else if (event.event === "$set_once") {
+} else if (event.event === '$set_once') {
   payload.update_operations = {
     $set_once: event.properties,
   };
@@ -333,13 +328,11 @@ function processRevenueEvent(event) {
     price: event.properties.price,
     quantity: event.properties.quantity || 1,
     revenueType: event.properties.revenueType,
-    revenue:
-      event.properties.revenue ||
-      event.properties.price * (event.properties.quantity || 1),
+    revenue: event.properties.revenue || event.properties.price * (event.properties.quantity || 1),
   };
 
   return {
-    event_type: "revenue_amount",
+    event_type: 'revenue_amount',
     user_id: event.userId,
     device_id: event.anonymousId,
     event_properties: event.properties,
@@ -361,11 +354,11 @@ function processCustomDimensionsAndMetrics(properties) {
   const customMetrics = {};
 
   Object.entries(properties).forEach(([key, value]) => {
-    if (key.startsWith("dimension") && /^dimension\d+$/.test(key)) {
-      const dimensionIndex = key.replace("dimension", "");
+    if (key.startsWith('dimension') && /^dimension\d+$/.test(key)) {
+      const dimensionIndex = key.replace('dimension', '');
       customDimensions[`cd${dimensionIndex}`] = String(value).substring(0, 150);
-    } else if (key.startsWith("metric") && /^metric\d+$/.test(key)) {
-      const metricIndex = key.replace("metric", "");
+    } else if (key.startsWith('metric') && /^metric\d+$/.test(key)) {
+      const metricIndex = key.replace('metric', '');
       customMetrics[`cm${metricIndex}`] = Number(value);
     }
   });
@@ -391,30 +384,30 @@ Google Analytics supports different hit types:
 // Example: Hit type handling
 function processHitType(event) {
   switch (event.type) {
-    case "page":
+    case 'page':
       return {
-        t: "pageview",
+        t: 'pageview',
         dp: event.properties.path,
         dt: event.properties.title,
       };
-    case "track":
+    case 'track':
       return {
-        t: "event",
-        ec: event.properties.category || "All",
+        t: 'event',
+        ec: event.properties.category || 'All',
         ea: event.event,
         el: event.properties.label,
         ev: event.properties.value,
       };
-    case "screen":
+    case 'screen':
       return {
-        t: "screenview",
+        t: 'screenview',
         cd: event.properties.name,
       };
     // Handle other hit types
     default:
       return {
-        t: "event",
-        ec: "All",
+        t: 'event',
+        ec: 'All',
         ea: event.event,
       };
   }
@@ -442,36 +435,36 @@ Facebook Pixel has a set of standard events:
 // Example: Standard event handling
 function processStandardEvent(event) {
   const standardEvents = [
-    "PageView",
-    "ViewContent",
-    "Search",
-    "AddToCart",
-    "AddToWishlist",
-    "InitiateCheckout",
-    "AddPaymentInfo",
-    "Purchase",
-    "Lead",
-    "CompleteRegistration",
+    'PageView',
+    'ViewContent',
+    'Search',
+    'AddToCart',
+    'AddToWishlist',
+    'InitiateCheckout',
+    'AddPaymentInfo',
+    'Purchase',
+    'Lead',
+    'CompleteRegistration',
   ];
 
   let eventName = event.event;
 
   // Convert to [standard event format](https://www.rudderstack.com/docs/event-spec/standard-events/) if possible
-  if (eventName === "Product Added") {
-    eventName = "AddToCart";
-  } else if (eventName === "Product Added to Wishlist") {
-    eventName = "AddToWishlist";
-  } else if (eventName === "Checkout Started") {
-    eventName = "InitiateCheckout";
-  } else if (eventName === "Order Completed") {
-    eventName = "Purchase";
+  if (eventName === 'Product Added') {
+    eventName = 'AddToCart';
+  } else if (eventName === 'Product Added to Wishlist') {
+    eventName = 'AddToWishlist';
+  } else if (eventName === 'Checkout Started') {
+    eventName = 'InitiateCheckout';
+  } else if (eventName === 'Order Completed') {
+    eventName = 'Purchase';
   }
 
   // Use standard event if available, otherwise use custom event
   if (standardEvents.includes(eventName)) {
     return { eventName };
   } else {
-    return { eventName: "CustomEvent", customEventName: event.event };
+    return { eventName: 'CustomEvent', customEventName: event.event };
   }
 }
 ```
@@ -506,7 +499,7 @@ function processCustomData(properties) {
 
   // Additional custom parameters
   Object.entries(properties).forEach(([key, value]) => {
-    if (!["value", "currency", "content_name", "content_ids"].includes(key)) {
+    if (!['value', 'currency', 'content_name', 'content_ids'].includes(key)) {
       customData[key] = value;
     }
   });
@@ -530,7 +523,7 @@ function minifyPayload(payload) {
   // Remove empty objects and arrays
   function removeEmpty(obj) {
     Object.entries(obj).forEach(([key, value]) => {
-      if (value && typeof value === "object") {
+      if (value && typeof value === 'object') {
         removeEmpty(value);
         if (Object.keys(value).length === 0) {
           delete obj[key];
@@ -592,14 +585,11 @@ function optimizeBatchSize(events, maxBatchSize) {
   });
 
   // Calculate optimal batch size based on complexity
-  const totalComplexity = eventComplexity.reduce(
-    (sum, complexity) => sum + complexity,
-    0
-  );
+  const totalComplexity = eventComplexity.reduce((sum, complexity) => sum + complexity, 0);
   const averageComplexity = totalComplexity / events.length;
   const optimalBatchSize = Math.min(
     maxBatchSize,
-    Math.max(1, Math.floor(10000 / averageComplexity))
+    Math.max(1, Math.floor(10000 / averageComplexity)),
   );
 
   // Create batches
@@ -625,9 +615,7 @@ async function processBatchesInParallel(batches, processFn, maxConcurrent = 5) {
   const results = [];
 
   for (let i = 0; i < batches.length; i += maxConcurrent) {
-    const batchPromises = batches
-      .slice(i, i + maxConcurrent)
-      .map((batch) => processFn(batch));
+    const batchPromises = batches.slice(i, i + maxConcurrent).map((batch) => processFn(batch));
 
     const batchResults = await Promise.all(batchPromises);
     results.push(...batchResults);
@@ -827,12 +815,11 @@ Many destinations implement custom logic to detect and handle partial failures:
 response.forEach((event, idx) => {
   const proxyOutput = {
     statusCode: 200,
-    error: "success",
+    error: 'success',
     metadata: rudderJobMetadata[idx],
   };
   // Update status of partial event if abortable
-  const { isAbortable, errorMsg } =
-    checkIfEventIsAbortableAndExtractErrorMessage(event);
+  const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
   if (isAbortable) {
     proxyOutput.error = errorMsg;
     proxyOutput.statusCode = 400;
@@ -850,7 +837,7 @@ Many implementations use a strategy pattern to handle different types of respons
 ```typescript
 // Example: Strategy pattern for response handling
 const getResponseStrategy = (endpoint: string): BaseStrategy => {
-  if (endpoint.includes("track") || endpoint.includes("identify")) {
+  if (endpoint.includes('track') || endpoint.includes('identify')) {
     return strategyRegistry[TrackIdentifyStrategy.name];
   }
   return strategyRegistry[GenericStrategy.name];
@@ -871,8 +858,8 @@ Custom logic to extract error messages from destination-specific response format
 // Example: Extracting error messages
 function checkIfEventIsAbortableAndExtractErrorMessage(event) {
   // Check for specific error conditions in the response
-  const isAbortable = event.status === "error" || event.code === "invalid_data";
-  const errorMsg = event.message || "Unknown error";
+  const isAbortable = event.status === 'error' || event.code === 'invalid_data';
+  const errorMsg = event.message || 'Unknown error';
 
   return { isAbortable, errorMsg };
 }

@@ -109,7 +109,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-ingestion-svc
-          
+
           # Create a pull request
           gh pr create \
             --title "chore: update transformer-go to latest version" \

@@ -50,7 +50,7 @@ const customTransformationMocks = {
 // Inject custom mocks
 const testEnv = new TestEnvironment({
   transformationMocks: customTransformationMocks,
-  libraryMocks,  // Use default libraries
+  libraryMocks, // Use default libraries
   // rudderLibraryMocks and externalApiMocks will use defaults
 });
 
@@ -95,7 +95,7 @@ Edit `transformation-mocks.ts`:
 ```typescript
 export const transformationMocks: Record<string, any> = {
   // ... existing mocks ...
-  
+
   'new-transform': {
     versionId: 'new-transform',
     code: `/* your code here */`,
@@ -115,7 +115,7 @@ Edit `library-mocks.ts`:
 ```typescript
 export const libraryMocks: Record<string, any> = {
   // ... existing mocks ...
-  
+
   'new-lib-v1': {
     versionId: 'new-lib-v1',
     code: `/* library code here */`,
@@ -131,18 +131,26 @@ The mock servers (`MockConfigBackend` and `MockExternalApiServer`) accept mock d
 
 ```typescript
 const configBackend = new MockConfigBackend({
-  transformationMocks: { /* your mocks */ },
-  libraryMocks: { /* your mocks */ },
-  rudderLibraryMocks: { /* your mocks */ },
+  transformationMocks: {
+    /* your mocks */
+  },
+  libraryMocks: {
+    /* your mocks */
+  },
+  rudderLibraryMocks: {
+    /* your mocks */
+  },
 });
 
 const externalApiServer = new MockExternalApiServer({
-  externalApiMocks: { /* your mocks */ },
+  externalApiMocks: {
+    /* your mocks */
+  },
 });
 ```
 
 This enables:
+
 - **Test Isolation** - Each test suite can have its own mock data
 - **Parallel Testing** - Multiple test environments with different data
 - **Flexible Testing** - Mix and match mocks as needed
-

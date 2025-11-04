@@ -9,18 +9,22 @@ Based on the analysis of the integration code, several patterns emerge in how AP
 ### Common API Endpoint Patterns
 
 1. **Base URL + Path Pattern**
+
    - Most integrations define a base URL and append specific paths for different operations
    - Example: `const baseUrl = "https://api.example.com"; const endpoint = `${baseUrl}/v1/track`;`
 
 2. **Environment-based URLs**
+
    - Some integrations use different base URLs for different environments (production, staging, etc.)
    - Example: `const baseUrl = CONFIG.useProductionEndpoint ? "https://api.example.com" : "https://api-staging.example.com";`
 
 3. **Version-specific Endpoints**
+
    - Many integrations include API version in the URL path
    - Example: `https://api.example.com/v1/track`, `https://api.example.com/v2/track`
 
 4. **Regional Endpoints**
+
    - Some integrations use region-specific endpoints based on configuration
    - Example: `const region = CONFIG.region || "us"; const baseUrl = `https://${region}-api.example.com`;`
 
@@ -33,16 +37,19 @@ Based on the analysis of the integration code, several patterns emerge in how AP
 API endpoints are defined in various locations across the codebase:
 
 1. **v0 Destinations**
+
    - Typically defined directly in the transformation code
    - Often hardcoded or constructed from configuration values
    - Example: `const endpoint = "https://api.example.com/v1/track";`
 
 2. **v1 Destinations**
+
    - Often defined in a separate configuration file
    - More structured approach with constants
    - Example: `export const API_ENDPOINTS = { TRACK: "/v1/track", IDENTIFY: "/v1/identify" };`
 
 3. **CDK v2 Destinations**
+
    - Defined in YAML workflow files
    - More declarative approach
    - Example: `endpoint: "https://api.example.com/v1/track"`
@@ -56,15 +63,18 @@ API endpoints are defined in various locations across the codebase:
 API versioning is handled in several ways across integrations:
 
 1. **URL Path Versioning**
+
    - Most common approach
    - Version included in the URL path
    - Example: `https://api.example.com/v1/track`
 
 2. **Header-based Versioning**
+
    - Some integrations use headers to specify API version
    - Example: `headers: { "X-API-Version": "v2" }`
 
 3. **Query Parameter Versioning**
+
    - Less common approach
    - Version included as a query parameter
    - Example: `https://api.example.com/track?version=v1`
@@ -78,14 +88,17 @@ API versioning is handled in several ways across integrations:
 Identifying deprecated endpoints requires a comprehensive analysis of each integration's documentation and API version history. However, some patterns that might indicate deprecated endpoints include:
 
 1. **Multiple Version Definitions**
+
    - Code that includes multiple version paths with conditionals
    - Example: `const endpoint = useNewApi ? "/v2/track" : "/v1/track";`
 
 2. **Commented Code**
+
    - Commented-out endpoint definitions might indicate previous versions
    - Example: `// const endpoint = "https://api-old.example.com/track"; const endpoint = "https://api.example.com/v2/track";`
 
 3. **Version Numbers**
+
    - Endpoints with older version numbers might be deprecated
    - Example: `https://api.example.com/v1/track` might be deprecated if `https://api.example.com/v2/track` exists
 
@@ -100,18 +113,22 @@ For each integration, the following information should be documented for each AP
 ### Endpoint Information
 
 1. **Base URL**
+
    - The base URL for the API
    - Example: `https://api.example.com`
 
 2. **Path**
+
    - The path for the specific operation
    - Example: `/v1/track`
 
 3. **Method**
+
    - The HTTP method used (GET, POST, PUT, DELETE)
    - Example: `POST`
 
 4. **Version**
+
    - The API version used
    - Example: `v1`
 
@@ -122,10 +139,12 @@ For each integration, the following information should be documented for each AP
 ### Authentication
 
 1. **Authentication Method**
+
    - The method used for authentication
    - Example: `API Key`, `OAuth 2.0`, `Basic Auth`
 
 2. **Authentication Location**
+
    - Where the authentication credentials are included
    - Example: `Header`, `Query Parameter`, `Request Body`
 
@@ -136,14 +155,17 @@ For each integration, the following information should be documented for each AP
 ### Request Format
 
 1. **Content Type**
+
    - The content type of the request
    - Example: `application/json`, `application/x-www-form-urlencoded`
 
 2. **Required Parameters**
+
    - Parameters that must be included in the request
    - Example: `event_name`, `user_id`, `properties`
 
 3. **Optional Parameters**
+
    - Parameters that can be included in the request
    - Example: `timestamp`, `context`, `integrations`
 
@@ -154,10 +176,12 @@ For each integration, the following information should be documented for each AP
 ### Response Format
 
 1. **Success Response**
+
    - The format of a successful response
    - Example: `{ "success": true, "message": "Event received" }`
 
 2. **Error Response**
+
    - The format of an error response
    - Example: `{ "success": false, "error": "Invalid API key" }`
 
@@ -168,10 +192,12 @@ For each integration, the following information should be documented for each AP
 ### Rate Limiting
 
 1. **Rate Limit**
+
    - The rate limit for the endpoint
    - Example: `100 requests per minute`
 
 2. **Rate Limit Headers**
+
    - Headers that provide rate limit information
    - Example: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`
 
@@ -201,12 +227,12 @@ interface ApiEndpoint {
 
 const apiEndpointRegistry: ApiEndpoint[] = [
   {
-    integration: "amplitude",
-    baseUrl: "https://api.amplitude.com",
-    path: "/v1/track",
-    method: "POST",
-    version: "v1",
-    deprecated: false
+    integration: 'amplitude',
+    baseUrl: 'https://api.amplitude.com',
+    path: '/v1/track',
+    method: 'POST',
+    version: 'v1',
+    deprecated: false,
   },
   // Additional endpoints...
 ];
@@ -271,13 +297,13 @@ Here are examples of API endpoints used in some common integrations:
 
 ```typescript
 // Base URL
-const BASE_URL = "https://api.amplitude.com";
+const BASE_URL = 'https://api.amplitude.com';
 
 // Endpoints
 const ENDPOINTS = {
-  TRACK: "/2/httpapi", // For track events
-  IDENTIFY: "/2/httpapi", // For identify events
-  BATCH: "/batch" // For batch events
+  TRACK: '/2/httpapi', // For track events
+  IDENTIFY: '/2/httpapi', // For identify events
+  BATCH: '/batch', // For batch events
 };
 
 // Authentication
@@ -291,12 +317,12 @@ const ENDPOINTS = {
 
 ```typescript
 // Base URL
-const BASE_URL = "https://www.google-analytics.com";
+const BASE_URL = 'https://www.google-analytics.com';
 
 // Endpoints
 const ENDPOINTS = {
-  COLLECT: "/collect", // For individual events
-  BATCH: "/batch" // For batch events
+  COLLECT: '/collect', // For individual events
+  BATCH: '/batch', // For batch events
 };
 
 // Authentication
@@ -310,11 +336,11 @@ const ENDPOINTS = {
 
 ```typescript
 // Base URL
-const BASE_URL = "https://graph.facebook.com";
+const BASE_URL = 'https://graph.facebook.com';
 
 // Endpoints
 const ENDPOINTS = {
-  EVENTS: "/v13.0/events" // For tracking events
+  EVENTS: '/v13.0/events', // For tracking events
 };
 
 // Authentication
@@ -327,23 +353,28 @@ const ENDPOINTS = {
 ## Recommendations for API Endpoint Management
 
 1. **Centralized Registry**
+
    - Create a centralized registry of all API endpoints
    - Include version information, deprecation status, and alternatives
 
 2. **Automated Scanning**
+
    - Implement automated scanning of the codebase for API endpoint usage
    - Compare against the registry to identify unregistered or deprecated endpoints
 
 3. **Version Monitoring**
+
    - Monitor API versions used in integrations
    - Alert when deprecated versions are used
    - Suggest alternative versions
 
 4. **Documentation Generation**
+
    - Generate API endpoint documentation automatically from the registry
    - Include version information, deprecation status, and alternatives
 
 5. **Integration Testing**
+
    - Implement integration tests for API endpoints
    - Test with different API versions
    - Test error handling and rate limiting

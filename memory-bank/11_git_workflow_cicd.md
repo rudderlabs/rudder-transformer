@@ -18,12 +18,14 @@ The repository follows a modified GitFlow branching strategy:
 ### Workflow Process
 
 1. **Feature Development**:
+
    - Create a feature branch from `develop`: `feature/description` or `fix/description`
    - Implement changes and commit with conventional commit messages
    - Create a pull request to merge back into `develop`
    - After review and approval, merge into `develop`
 
 2. **Release Process**:
+
    - Create a release branch from `develop`: `release/vX.Y.Z`
    - Perform final testing and fixes on the release branch
    - Create a pull request to merge into `main`
@@ -71,6 +73,7 @@ The repository uses the Conventional Commits format for commit messages:
 ### Commit Validation
 
 Commits are validated using:
+
 - **Husky**: Git hooks for pre-commit and commit-msg validation
 - **Commitlint**: Ensures commit messages follow the conventional format
 - **GitHub Actions**: Additional validation on push
@@ -91,6 +94,7 @@ Commits are validated using:
 ### PR Checklist
 
 Developers must ensure:
+
 - Code follows project style guidelines
 - No breaking changes are introduced
 - All related documentation is updated
@@ -118,15 +122,18 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
 #### Verification Workflows
 
 1. **Verify** (`verify.yml`):
+
    - Runs on pull requests
    - Checks for formatting and linting errors
    - Ensures code follows style guidelines
 
 2. **Commitlint** (`commitlint.yml`):
+
    - Runs on push
    - Validates commit messages follow conventional format
 
 3. **Check PR Title** (`check-pr-title.yml`):
+
    - Runs on pull request creation and updates
    - Ensures PR titles follow conventional commit format
 
@@ -138,12 +145,14 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
 #### Build and Release Workflows
 
 1. **Build Docker Image** (`build-push-docker-image.yml`):
+
    - Builds Docker images for both ARM64 and AMD64 architectures
    - Runs tests inside the Docker container
    - Pushes images to DockerHub
    - Creates multi-architecture manifests
 
 2. **Draft New Release** (`draft-new-release.yml`):
+
    - Triggered manually by release stakeholders
    - Calculates the next version based on conventional commits
    - Creates a release branch
@@ -151,6 +160,7 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
    - Creates a pull request to merge into main
 
 3. **Publish New Release** (`publish-new-release.yml`):
+
    - Creates GitHub releases
    - Publishes release notes
 
@@ -163,21 +173,25 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
 ### CI/CD Process Flow
 
 1. **Development**:
+
    - Developer creates a feature branch and implements changes
    - Pre-commit hooks run tests and linting locally
    - Developer creates a pull request
 
 2. **Continuous Integration**:
+
    - GitHub Actions run verification workflows
    - Code is checked for style, formatting, and commit message format
    - Tests are run to ensure functionality
 
 3. **Review and Approval**:
+
    - Code is reviewed by team members
    - Automated checks must pass
    - PR is approved and merged to develop
 
 4. **Release Preparation**:
+
    - Release branch is created
    - Version is bumped and changelog updated
    - PR is created to merge into main
@@ -193,6 +207,7 @@ The repository uses GitHub Actions for CI/CD with the following key workflows:
 The repository uses Husky for Git hooks:
 
 1. **Pre-commit Hook**:
+
    - Runs tests: `npm run test:ts:silent && npm run test:js:silent`
    - Runs linting on staged files: `npx lint-staged`
 
@@ -215,19 +230,23 @@ The repository uses Semantic Versioning (SemVer) with automated version calculat
 ## Release Process
 
 1. **Initiate Release**:
+
    - A release stakeholder triggers the draft-new-release workflow
    - The workflow calculates the next version based on commits
 
 2. **Prepare Release**:
+
    - A release branch is created
    - Version is bumped and changelog updated
    - PR is created to merge into main
 
 3. **Review and Approve**:
+
    - The release PR is reviewed and approved
    - Tests and checks must pass
 
 4. **Publish Release**:
+
    - The release is merged into main
    - GitHub release is created with release notes
    - Docker images are built and published
@@ -239,17 +258,21 @@ The repository uses Semantic Versioning (SemVer) with automated version calculat
 ## Hotfix Process
 
 1. **Identify Issue**:
+
    - A critical issue is identified in production
 
 2. **Create Hotfix**:
+
    - A hotfix branch is created from main
    - The fix is implemented and tested
 
 3. **Review and Approve**:
+
    - The hotfix PR is reviewed and approved
    - Tests and checks must pass
 
 4. **Publish Hotfix**:
+
    - The hotfix is merged into main
    - Version is bumped (PATCH)
    - GitHub release is created

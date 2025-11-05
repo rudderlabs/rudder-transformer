@@ -77,7 +77,7 @@ steps:
         "app_info": $.outputs.apiVersion === {{$.API_VERSION.v5}} ? {
           "app_name": .properties.appName ?? .context.app.name,
           "app_version": .properties.appVersion ?? .context.app.version,
-          "app_id": .properties.app_id,
+          "app_id": ^.destination.Config.appId,
           "app_package_name": .properties.app_package_name,
           "app_store": .properties.app_store,
           "window_width": .context.screen.width,

@@ -2882,6 +2882,7 @@ export const data = [
                     app_package_name: 'com.example.app',
                     app_store: 'Google Play',
                     app_version: '2.22.3',
+                    app_id: '429047995',
                     install_time: 1762326098,
                     user_agent: 'chrome',
                     window_height: 76578,
@@ -3068,6 +3069,9 @@ export const data = [
                   event_time: 1597383030,
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                   app_id: '429047995',
+                  app_info: {
+                    app_id: '429047995',
+                  },
                   user_data: {
                     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],
                     ph: ['d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b'],
@@ -3253,6 +3257,7 @@ export const data = [
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                   app_id: '429047995',
                   app_info: {
+                    app_id: '429047995',
                     user_agent: 'chrome',
                   },
                   user_data: {
@@ -3604,6 +3609,7 @@ export const data = [
                   app_id: '429047995',
                   app_info: {
                     user_agent: 'chrome',
+                    app_id: '429047995',
                   },
                   user_data: {
                     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],

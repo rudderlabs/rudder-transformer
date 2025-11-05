@@ -2858,6 +2858,7 @@ export const data = [
                   app_id: '429047995',
                   app_info: {
                     user_agent: 'chrome',
+                    app_id: '429047995',
                   },
                   user_data: {
                     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],
@@ -3044,6 +3045,7 @@ export const data = [
                   app_id: '429047995',
                   app_info: {
                     user_agent: 'chrome',
+                    app_id: '429047995',
                   },
                   user_data: {
                     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],
@@ -3233,6 +3235,7 @@ export const data = [
                   app_id: '429047995',
                   app_info: {
                     user_agent: 'chrome',
+                    app_id: '429047995',
                   },
                   user_data: {
                     em: [
@@ -3596,6 +3599,7 @@ export const data = [
                   app_id: '429047995',
                   app_info: {
                     user_agent: 'chrome',
+                    app_id: '429047995',
                   },
                   user_data: {
                     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],

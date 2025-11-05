@@ -73,9 +73,21 @@ steps:
         "advertiser_id": ^.destination.Config.advertiserId,
         "partner_name": .properties.partnerName ? $.convertToString(.properties.partnerName) : undefined,
         "device_carrier": .properties.partnerName ? $.convertToString(.context.network.carrier) : undefined,
-        "wifi": .context.network.wifi ? Boolean(.context.network.wifi) : undefined
+        "wifi": .context.network.wifi ? Boolean(.context.network.wifi) : undefined,
+        "app_info": $.outputs.apiVersion === {{$.API_VERSION.v5}} ? {
+          "app_name": .properties.appName ?? .context.app.name,
+          "app_version": .properties.appVersion ?? .context.app.version,
+          "app_id": .properties.app_id ?? .context.app_id,
+          "app_package_name": .properties.app_package_name ?? .context.app_package_name,
+          "app_store": .properties.app_store ?? .context.app_store,
+          "window_width": .context.screen.width,
+          "window_height": .context.screen.height,
+          "install_time": .properties.install_time ?? .context.install_time,
+          "user_agent": .context.userAgent
+        } : undefined
       });
       $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
+      Object.keys($.removeUndefinedValues(commonFields.app_info) ?? []).length <= 0 ? commonFields = commonFields{~["app_info"]}
       $.removeUndefinedValues(commonFields)
 
   - name: validateCommonFields

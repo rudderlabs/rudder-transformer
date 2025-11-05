@@ -1,6 +1,7 @@
 import {
   getHashFromArrayWithDuplicate,
   InstrumentationError,
+  PlatformError,
   removeUndefinedAndNullValues,
 } from '@rudderstack/integrations-lib';
 import {
@@ -208,16 +209,30 @@ export const process = (event: RedditRouterRequest): RedditResponse[] => {
     throw new InstrumentationError('Message type is required');
   }
 
+  if (!destination?.Config?.accountId) {
+    throw new InstrumentationError('Account ID is required in destination config');
+  }
+
+  if (!metadata?.secret?.accessToken) {
+    throw new PlatformError('Secret or accessToken is not present in the metadata');
+  }
+
   if (message.type === 'track') {
     const finalPayload = processTrackEvent(event);
     const finalResponse: RedditResponse[] = [];
     finalPayload.forEach((payload) => {
-      const response = defaultRequestConfig() as unknown as RedditResponse;
-      response.body.JSON = payload as RedditConversionEventsPayload;
-      response.endpoint = `${V3_ENDPOINT}${destination.Config.accountId}/conversion_events`;
-      response.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${metadata.secret.accessToken}`,
+      const defaultConfig = defaultRequestConfig();
+      const response: RedditResponse = {
+        ...defaultConfig,
+        body: {
+          ...defaultConfig.body,
+          JSON: payload,
+        },
+        endpoint: `${V3_ENDPOINT}${destination.Config.accountId}/conversion_events`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${metadata.secret.accessToken}`,
+        },
       };
       finalResponse.push(response);
     });

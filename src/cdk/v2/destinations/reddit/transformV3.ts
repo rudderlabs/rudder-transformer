@@ -199,7 +199,7 @@ const processTrackEvent = (event: RedditRouterRequest): RedditConversionEventsPa
       finalPayload.push({ data: { events: [payload] } });
     }
   }
-  return finalPayload;
+  return removeUndefinedAndNullValues(finalPayload) as RedditConversionEventsPayload[];
 };
 
 export const process = (event: RedditRouterRequest): RedditResponse[] => {

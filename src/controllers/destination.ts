@@ -15,7 +15,6 @@ import { getIntegrationVersion } from '../util/utils';
 import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
-import logger from '../logger';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {

@@ -16,7 +16,6 @@ import {
 } from '../types';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
-import logger from '../logger';
 
 const NON_DETERMINABLE = 'Non-determinable';
 

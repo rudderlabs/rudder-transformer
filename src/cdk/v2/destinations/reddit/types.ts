@@ -138,3 +138,17 @@ export type RedditConversionEventsPayload = z.infer<typeof RedditConversionEvent
 export type RedditUserData = z.infer<typeof RedditUserDataSchema>;
 export type RedditConversionEvent = z.infer<typeof RedditConversionEventSchema>;
 export type RedditResponse = z.infer<typeof RedditResponseSchema>;
+
+// Interfaces for RudderMessage properties structure
+export interface ProductProperties {
+  product_id?: string;
+  name?: string;
+  category?: string;
+}
+
+export interface EventProperties {
+  products?: ProductProperties[];
+  product_id?: string;
+  name?: string;
+  category?: string;
+}

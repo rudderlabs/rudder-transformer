@@ -10,6 +10,8 @@ import {
   RedditEventType,
   RedditEventMetadata,
   RedditUserData,
+  RedditProductType,
+  EventProperties,
 } from './types';
 import userDataMapping from './data/userDataMapping.json';
 import { constructPayload, defaultRequestConfig, isAppleFamily } from '../../../../v0/util';
@@ -92,18 +94,17 @@ const prepareEventType = (
 
 const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventMetadata => {
   const { properties } = message;
-  if ((properties as { products: any[] })?.products?.length > 0) {
-    let itemCount = 0;
-    const products = (properties as { products: any[] })?.products.map((product) => {
-      itemCount += 1;
-      return {
-        id: product.product_id,
-        name: product.name,
-        category: product.category,
-      };
-    });
+  const eventProperties = properties as EventProperties | undefined;
+
+  if (eventProperties?.products && eventProperties.products.length > 0) {
+    const products: RedditProductType[] = eventProperties.products.map((product) => ({
+      id: product.product_id,
+      name: product.name,
+      category: product.category,
+    }));
+
     return {
-      item_count: itemCount,
+      item_count: products.length,
       products,
     };
   }
@@ -112,9 +113,9 @@ const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventM
     item_count: 1,
     products: [
       {
-        id: (properties as { product_id: string })?.product_id,
-        name: (properties as { name: string })?.name,
-        category: (properties as { category: string })?.category,
+        id: eventProperties?.product_id,
+        name: eventProperties?.name,
+        category: eventProperties?.category,
       },
     ],
   };

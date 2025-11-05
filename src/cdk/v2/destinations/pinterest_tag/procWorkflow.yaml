@@ -77,12 +77,12 @@ steps:
         "app_info": $.outputs.apiVersion === {{$.API_VERSION.v5}} ? {
           "app_name": .properties.appName ?? .context.app.name,
           "app_version": .properties.appVersion ?? .context.app.version,
-          "app_id": .properties.app_id ?? .context.app_id,
-          "app_package_name": .properties.app_package_name ?? .context.app_package_name,
-          "app_store": .properties.app_store ?? .context.app_store,
+          "app_id": .properties.app_id,
+          "app_package_name": .properties.app_package_name,
+          "app_store": .properties.app_store,
           "window_width": .context.screen.width,
           "window_height": .context.screen.height,
-          "install_time": .properties.install_time ?? .context.install_time,
+          "install_time": .properties.install_time,
           "user_agent": .context.userAgent
         } : undefined
       });

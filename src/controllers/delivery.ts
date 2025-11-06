@@ -16,13 +16,11 @@ import {
 } from '../types';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
-import logger from '../logger';
 
 const NON_DETERMINABLE = 'Non-determinable';
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer for delivery::', ctx.request.body);
     let deliveryResponse: DeliveryV0Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyV0Request;
@@ -52,12 +50,10 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    logger.debug('Native(Delivery):: Response from transformer after delivery::', ctx.body);
     return ctx;
   }
 
   public static async deliverToDestinationV1(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer for delivery::', ctx.request.body);
     let deliveryResponse: DeliveryV1Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyV1Request;
@@ -91,12 +87,10 @@ export class DeliveryController {
       ControllerUtility.deliveryPostProcess(ctx);
     }
 
-    logger.debug('Native(Delivery):: Response from transformer::', ctx.body);
     return ctx;
   }
 
   public static async testDestinationDelivery(ctx: Context) {
-    logger.debug('Native(Delivery-Test):: Request to transformer::', ctx.request.body);
     const { destination }: { destination: string } = ctx.params;
     const { version }: { version: string } = ctx.params;
     const {
@@ -114,7 +108,6 @@ export class DeliveryController {
     );
     ctx.body = { output: response };
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Delivery-Test):: Response from transformer after delivery::', ctx.body);
     return ctx;
   }
 }

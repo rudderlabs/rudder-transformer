@@ -21,25 +21,26 @@ User data is mapped from RudderStack events to Reddit's user data structure. The
 
 #### Standard User Fields
 
-| RudderStack Source Field | Reddit Destination Field | Required | Data Type | Hashing Applied | Notes |
-|-------------------------|--------------------------|----------|-----------|-----------------|-------|
-| `context.traits.email`, `traits.email` | `email` | No | string | Yes (if hashData=true) | Normalized and SHA-256 hashed |
-| `userId` | `external_id` | No | string | Yes (if hashData=true) | User's unique identifier |
-| `context.ip`, `request_ip` | `ip_address` | No | string | Yes (if hashData=true) | User's IP address, trimmed |
-| `context.traits.phone`, `traits.phone` | `phone_number` | No | string | Yes (if hashData=true) | User's phone number |
-| `context.userAgent` | `user_agent` | No | string | No | Browser user agent string |
-| `properties.uuid` | `uuid` | No | string | No | Reddit UUID if available |
+| RudderStack Source Field               | Reddit Destination Field | Required | Data Type | Hashing Applied        | Notes                         |
+| -------------------------------------- | ------------------------ | -------- | --------- | ---------------------- | ----------------------------- |
+| `context.traits.email`, `traits.email` | `email`                  | No       | string    | Yes (if hashData=true) | Normalized and SHA-256 hashed |
+| `userId`                               | `external_id`            | No       | string    | Yes (if hashData=true) | User's unique identifier      |
+| `context.ip`, `request_ip`             | `ip_address`             | No       | string    | Yes (if hashData=true) | User's IP address, trimmed    |
+| `context.traits.phone`, `traits.phone` | `phone_number`           | No       | string    | Yes (if hashData=true) | User's phone number           |
+| `context.userAgent`                    | `user_agent`             | No       | string    | No                     | Browser user agent string     |
+| `properties.uuid`                      | `uuid`                   | No       | string    | No                     | Reddit UUID if available      |
 
 **Source:** `data/userDataMapping.json`
 
 #### Device Identifiers
 
-| RudderStack Source Field | Reddit Destination Field | Required | Condition | Hashing Applied |
-|-------------------------|--------------------------|----------|-----------|-----------------|
-| `context.device.advertisingId` | `idfa` | No | OS is iOS/macOS | Yes (if hashData=true) |
-| `context.device.advertisingId` | `aaid` | No | OS is Android | Yes (if hashData=true) |
+| RudderStack Source Field       | Reddit Destination Field | Required | Condition       | Hashing Applied        |
+| ------------------------------ | ------------------------ | -------- | --------------- | ---------------------- |
+| `context.device.advertisingId` | `idfa`                   | No       | OS is iOS/macOS | Yes (if hashData=true) |
+| `context.device.advertisingId` | `aaid`                   | No       | OS is Android   | Yes (if hashData=true) |
 
 **Logic:**
+
 ```javascript
 // V3 Implementation (transformV3.ts lines 34-43)
 const os = message.context?.os?.name?.toLowerCase();
@@ -53,18 +54,18 @@ if (os === 'android') {
 
 #### Data Processing Options
 
-| RudderStack Source Field | Reddit Destination Field | Required | Data Type | Notes |
-|-------------------------|--------------------------|----------|-----------|-------|
-| `context.traits.country`, `traits.country` | `data_processing_options.country` | No | string | Country code for data processing |
-| `context.traits.region`, `traits.region` | `data_processing_options.region` | No | string | Region code for data processing |
-| `properties.modes` | `data_processing_options.modes` | No | array | Limited Data Use modes |
+| RudderStack Source Field                   | Reddit Destination Field          | Required | Data Type | Notes                            |
+| ------------------------------------------ | --------------------------------- | -------- | --------- | -------------------------------- |
+| `context.traits.country`, `traits.country` | `data_processing_options.country` | No       | string    | Country code for data processing |
+| `context.traits.region`, `traits.region`   | `data_processing_options.region`  | No       | string    | Region code for data processing  |
+| `properties.modes`                         | `data_processing_options.modes`   | No       | array     | Limited Data Use modes           |
 
 #### Screen Dimensions
 
-| RudderStack Source Field | Reddit Destination Field | Required | Data Type |
-|-------------------------|--------------------------|----------|-----------|
-| `context.screen.width` | `screen_dimensions.width` | No | number |
-| `context.screen.height` | `screen_dimensions.height` | No | number |
+| RudderStack Source Field | Reddit Destination Field   | Required | Data Type |
+| ------------------------ | -------------------------- | -------- | --------- |
+| `context.screen.width`   | `screen_dimensions.width`  | No       | number    |
+| `context.screen.height`  | `screen_dimensions.height` | No       | number    |
 
 ### Event Type Mapping
 
@@ -79,12 +80,12 @@ Event names are mapped from RudderStack to Reddit's standard conversion event ty
 #### Built-in E-commerce Mappings
 
 | RudderStack Event Name (case-insensitive) | Reddit Event Type (v2) | Reddit Event Type (v3) |
-|-------------------------------------------|------------------------|------------------------|
-| "product viewed", "product list viewed" | ViewContent | VIEW_CONTENT |
-| "product added" | AddToCart | ADD_TO_CART |
-| "product added to wishlist" | AddToWishlist | ADD_TO_WISHLIST |
-| "order completed" | Purchase | PURCHASE |
-| "products searched" | Search | SEARCH |
+| ----------------------------------------- | ---------------------- | ---------------------- |
+| "product viewed", "product list viewed"   | ViewContent            | VIEW_CONTENT           |
+| "product added"                           | AddToCart              | ADD_TO_CART            |
+| "product added to wishlist"               | AddToWishlist          | ADD_TO_WISHLIST        |
+| "order completed"                         | Purchase               | PURCHASE               |
+| "products searched"                       | Search                 | SEARCH                 |
 
 **Source:** `config.js` (lines 5-26)
 
@@ -112,19 +113,20 @@ Event names are mapped from RudderStack to Reddit's standard conversion event ty
 
 #### Supported Reddit Event Types
 
-| Event Type (v2) | Event Type (v3) | Description |
-|----------------|-----------------|-------------|
-| PageVisit | PAGE_VISIT | User visited a page |
-| ViewContent | VIEW_CONTENT | User viewed content/product |
-| Search | SEARCH | User performed a search |
-| AddToCart | ADD_TO_CART | User added item to cart |
-| AddToWishlist | ADD_TO_WISHLIST | User added item to wishlist |
-| Lead | LEAD | User became a lead |
-| Purchase | PURCHASE | User completed purchase |
-| SignUp | SIGN_UP | User signed up/registered |
-| Custom | CUSTOM | Custom event type |
+| Event Type (v2) | Event Type (v3) | Description                 |
+| --------------- | --------------- | --------------------------- |
+| PageVisit       | PAGE_VISIT      | User visited a page         |
+| ViewContent     | VIEW_CONTENT    | User viewed content/product |
+| Search          | SEARCH          | User performed a search     |
+| AddToCart       | ADD_TO_CART     | User added item to cart     |
+| AddToWishlist   | ADD_TO_WISHLIST | User added item to wishlist |
+| Lead            | LEAD            | User became a lead          |
+| Purchase        | PURCHASE        | User completed purchase     |
+| SignUp          | SIGN_UP         | User signed up/registered   |
+| Custom          | CUSTOM          | Custom event type           |
 
 **Source:**
+
 - V2: `procWorkflow.yaml` (lines 51-57)
 - V3: `types.ts` (lines 76-93)
 - Conversion: `utils.js` `convertToUpperSnakeCase()` (lines 117-129)
@@ -135,35 +137,35 @@ Event metadata varies based on event type and includes revenue, product informat
 
 #### Common Metadata Fields
 
-| RudderStack Source Field | Reddit Destination Field | Required | Data Type | Notes |
-|-------------------------|--------------------------|----------|-----------|-------|
-| `properties.conversionId`, `messageId` (fallback) | `conversion_id` | No | string | Unique conversion identifier |
-| `timestamp`, `originalTimestamp` | `event_at` | Yes | timestamp (ms) | Event occurrence time |
-| `properties.clickId` | `click_id` | No | string | Reddit click identifier for attribution |
+| RudderStack Source Field                          | Reddit Destination Field | Required | Data Type      | Notes                                   |
+| ------------------------------------------------- | ------------------------ | -------- | -------------- | --------------------------------------- |
+| `properties.conversionId`, `messageId` (fallback) | `conversion_id`          | No       | string         | Unique conversion identifier            |
+| `timestamp`, `originalTimestamp`                  | `event_at`               | Yes      | timestamp (ms) | Event occurrence time                   |
+| `properties.clickId`                              | `click_id`               | No       | string         | Reddit click identifier for attribution |
 
 #### Revenue Metadata (Purchase, AddToCart, ViewContent)
 
-| RudderStack Source Field | Reddit Destination Field | Required | Event Types | Calculation |
-|-------------------------|--------------------------|----------|-------------|-------------|
-| `properties.currency` | `currency` | No | Purchase, AddToCart, ViewContent | Currency code (e.g., USD) |
-| `properties.itemCount` | `item_count` | No | Purchase, AddToCart, ViewContent | Number of items |
-| Calculated from revenue/price | `value` | No | Purchase, AddToCart, ViewContent | Value in cents |
+| RudderStack Source Field      | Reddit Destination Field | Required | Event Types                      | Calculation               |
+| ----------------------------- | ------------------------ | -------- | -------------------------------- | ------------------------- |
+| `properties.currency`         | `currency`               | No       | Purchase, AddToCart, ViewContent | Currency code (e.g., USD) |
+| `properties.itemCount`        | `item_count`             | No       | Purchase, AddToCart, ViewContent | Number of items           |
+| Calculated from revenue/price | `value`                  | No       | Purchase, AddToCart, ViewContent | Value in cents            |
 
 **Revenue Calculation Logic:**
 
 ```javascript
 // Purchase events (utils.js lines 64-70)
 // Uses properties.revenue
-revenueInCents = Math.round(Number(properties.revenue) * 100)
+revenueInCents = Math.round(Number(properties.revenue) * 100);
 
 // AddToCart events (utils.js lines 73-76)
 // Uses properties.price * properties.quantity
-revenueInCents = Math.round(Number(properties.price) * Number(properties.quantity || 1) * 100)
+revenueInCents = Math.round(Number(properties.price) * Number(properties.quantity || 1) * 100);
 
 // ViewContent and other events (utils.js lines 79-82)
 // Calculates from products array or single product
-revenue = calculateDefaultRevenue(properties)
-revenueInCents = revenue ? revenue * 100 : null
+revenue = calculateDefaultRevenue(properties);
+revenueInCents = revenue ? revenue * 100 : null;
 
 // calculateDefaultRevenue logic:
 // - For products array: sum(product.price * product.quantity)
@@ -178,38 +180,41 @@ revenueInCents = revenue ? revenue * 100 : null
 **Single Product:**
 
 | RudderStack Source Field | Reddit Destination Field | Required | Data Type |
-|-------------------------|--------------------------|----------|-----------|
-| `properties.product_id` | `products[0].id` | No | string |
-| `properties.name` | `products[0].name` | No | string |
-| `properties.category` | `products[0].category` | No | string |
+| ------------------------ | ------------------------ | -------- | --------- |
+| `properties.product_id`  | `products[0].id`         | No       | string    |
+| `properties.name`        | `products[0].name`       | No       | string    |
+| `properties.category`    | `products[0].category`   | No       | string    |
 
 **Multiple Products (from products array):**
 
-| RudderStack Source Field | Reddit Destination Field | Required | Data Type | Notes |
-|-------------------------|--------------------------|----------|-----------|-------|
-| `properties.products[].product_id` | `products[].id` | No | string | Product identifier |
-| `properties.products[].name` | `products[].name` | No | string | Product name |
-| `properties.products[].category` | `products[].category` | No | string | Product category |
-| Sum of products[].quantity | `item_count` | No | number | Total item count |
+| RudderStack Source Field           | Reddit Destination Field | Required | Data Type | Notes              |
+| ---------------------------------- | ------------------------ | -------- | --------- | ------------------ |
+| `properties.products[].product_id` | `products[].id`          | No       | string    | Product identifier |
+| `properties.products[].name`       | `products[].name`        | No       | string    | Product name       |
+| `properties.products[].category`   | `products[].category`    | No       | string    | Product category   |
+| Sum of products[].quantity         | `item_count`             | No       | number    | Total item count   |
 
 **Logic:**
+
 ```javascript
 // V3 Implementation (transformV3.ts lines 91-119)
 if (properties.products && properties.products.length > 0) {
   itemCount = products.length; // Count of products, not quantities
-  products = properties.products.map(product => ({
+  products = properties.products.map((product) => ({
     id: product.product_id,
     name: product.name,
-    category: product.category
+    category: product.category,
   }));
 } else {
   // Single product
   itemCount = 1;
-  products = [{
-    id: properties.product_id,
-    name: properties.name,
-    category: properties.category
-  }];
+  products = [
+    {
+      id: properties.product_id,
+      name: properties.name,
+      category: properties.category,
+    },
+  ];
 }
 ```
 
@@ -219,25 +224,25 @@ Not all metadata fields are supported for all event types. Unsupported fields ar
 
 **Item Count Support:**
 
-| Event Type | item_count Supported |
-|-----------|---------------------|
-| Purchase | ✅ Yes |
-| AddToCart | ✅ Yes |
-| AddToWishlist | ✅ Yes |
-| Custom | ✅ Yes |
-| All Others | ❌ No |
+| Event Type    | item_count Supported |
+| ------------- | -------------------- |
+| Purchase      | ✅ Yes               |
+| AddToCart     | ✅ Yes               |
+| AddToWishlist | ✅ Yes               |
+| Custom        | ✅ Yes               |
+| All Others    | ❌ No                |
 
 **Value & Currency Support:**
 
-| Event Type | value, currency Supported |
-|-----------|---------------------------|
-| Purchase | ✅ Yes |
-| AddToCart | ✅ Yes |
-| AddToWishlist | ✅ Yes |
-| Lead | ✅ Yes |
-| SignUp | ✅ Yes |
-| Custom | ✅ Yes |
-| All Others | ❌ No |
+| Event Type    | value, currency Supported |
+| ------------- | ------------------------- |
+| Purchase      | ✅ Yes                    |
+| AddToCart     | ✅ Yes                    |
+| AddToWishlist | ✅ Yes                    |
+| Lead          | ✅ Yes                    |
+| SignUp        | ✅ Yes                    |
+| Custom        | ✅ Yes                    |
+| All Others    | ❌ No                     |
 
 **Source:** `utils.js` `removeUnsupportedFields()` (lines 93-115)
 
@@ -245,10 +250,10 @@ Not all metadata fields are supported for all event types. Unsupported fields ar
 
 ### V3-Specific Fields
 
-| Field | Value | Required | Description |
-|-------|-------|----------|-------------|
-| `action_source` | "WEBSITE" | Yes | Source of the conversion action |
-| `test_id` | `properties.test_id` | No | Test mode identifier (prevents batching) |
+| Field           | Value                | Required | Description                              |
+| --------------- | -------------------- | -------- | ---------------------------------------- |
+| `action_source` | "WEBSITE"            | Yes      | Source of the conversion action          |
+| `test_id`       | `properties.test_id` | No       | Test mode identifier (prevents batching) |
 
 **Source:** `transformV3.ts` (lines 163-164, 176)
 
@@ -318,6 +323,7 @@ const decideVersion = ({ Config }) => {
 ```
 
 **Flow in rtWorkflow.yaml:**
+
 ```yaml
 - name: decideVersion
   template: |
@@ -514,6 +520,7 @@ Track events are the only supported event type. Processing varies by API version
 #### V2-Specific Processing
 
 **Payload Structure:**
+
 ```json
 {
   "events": [
@@ -537,6 +544,7 @@ Track events are the only supported event type. Processing varies by API version
 #### V3-Specific Processing
 
 **Payload Structure:**
+
 ```json
 {
   "data": {
@@ -560,6 +568,7 @@ Track events are the only supported event type. Processing varies by API version
 **Endpoint:** `https://ads-api.reddit.com/api/v3/pixels/{accountId}/conversion_events`
 
 **Key Differences:**
+
 1. Payload wrapped in `data` object
 2. `action_source` field is required (always "WEBSITE")
 3. Event type is `type` instead of `event_type`
@@ -580,7 +589,7 @@ const processTrackEvent = (event) => {
   // ... setup
   const type = prepareEventType(message, eventsMapping);
   const finalPayload = [];
-  
+
   if (Array.isArray(type)) {
     // Multiple event types - multiplex
     for (const t of type) {
@@ -588,7 +597,7 @@ const processTrackEvent = (event) => {
       const payload = {
         // ... construct payload with specific type
         type: t,
-        metadata
+        metadata,
       };
       finalPayload.push({ data: { events: [payload] } });
     }
@@ -598,11 +607,11 @@ const processTrackEvent = (event) => {
     const payload = {
       // ... construct payload
       type,
-      metadata
+      metadata,
     };
     finalPayload.push({ data: { events: [payload] } });
   }
-  
+
   return finalPayload;
 };
 ```
@@ -615,51 +624,55 @@ const processTrackEvent = (event) => {
 
 #### Required Field Validations
 
-| Field | Validation Rule | Error Message | Error Type |
-|-------|----------------|---------------|------------|
-| `destination.Config.accountId` | Must be present and non-empty | "Account is not present. Aborting message." | InstrumentationError |
-| `message.type` | Must be present | "message Type is not present. Aborting message." (v2)<br>"Message type is required" (v3) | InstrumentationError |
-| `message.type` | Must equal "track" (case-insensitive) | "Event type {type} is not supported. Aborting message." (v2)<br>"Message type {type} is not supported" (v3) | InstrumentationError |
-| `message.event` | Must be present (v3) | "Event name is required in the message" | InstrumentationError |
-| `timestamp` or `originalTimestamp` | Must be present | "Timestamp is not present. Aborting message." (v2)<br>"Required field 'timestamp' or 'originalTimestamp' is missing from the message." (v3) | InstrumentationError |
-| `metadata.secret.accessToken` | Must be present | "Secret or accessToken is not present in the metadata" | OAuthSecretError |
+| Field                              | Validation Rule                       | Error Message                                                                                                                               | Error Type           |
+| ---------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `destination.Config.accountId`     | Must be present and non-empty         | "Account is not present. Aborting message."                                                                                                 | InstrumentationError |
+| `message.type`                     | Must be present                       | "message Type is not present. Aborting message." (v2)<br>"Message type is required" (v3)                                                    | InstrumentationError |
+| `message.type`                     | Must equal "track" (case-insensitive) | "Event type {type} is not supported. Aborting message." (v2)<br>"Message type {type} is not supported" (v3)                                 | InstrumentationError |
+| `message.event`                    | Must be present (v3)                  | "Event name is required in the message"                                                                                                     | InstrumentationError |
+| `timestamp` or `originalTimestamp` | Must be present                       | "Timestamp is not present. Aborting message." (v2)<br>"Required field 'timestamp' or 'originalTimestamp' is missing from the message." (v3) | InstrumentationError |
+| `metadata.secret.accessToken`      | Must be present                       | "Secret or accessToken is not present in the metadata"                                                                                      | OAuthSecretError     |
 
 **Sources:**
+
 - V2: `procWorkflow.yaml` (lines 18-29, 129)
 - V3: `transformV3.ts` (lines 204-207, 68), `procWorkflow.yaml` (line 129)
 
 #### Timestamp Validations (V3 Only)
 
-| Validation | Rule | Error Message | Error Type |
-|------------|------|---------------|------------|
-| Format | Must be parseable as Date | "Invalid timestamp format." | InstrumentationError |
-| Age - Past | Must be less than 168 hours (7 days) old | "event_at timestamp must be less than 168 hours (7 days) old." | InstrumentationError |
+| Validation   | Rule                                          | Error Message                                                       | Error Type           |
+| ------------ | --------------------------------------------- | ------------------------------------------------------------------- | -------------------- |
+| Format       | Must be parseable as Date                     | "Invalid timestamp format."                                         | InstrumentationError |
+| Age - Past   | Must be less than 168 hours (7 days) old      | "event_at timestamp must be less than 168 hours (7 days) old."      | InstrumentationError |
 | Age - Future | Must not be more than 5 minutes in the future | "event_at timestamp must not be more than 5 minutes in the future." | InstrumentationError |
 
 **Implementation:**
+
 ```javascript
 // utils.js (lines 131-157)
 const generateAndValidateTimestamp = (timestamp) => {
   if (!timestamp) {
     throw new InstrumentationError('Required field "timestamp" or "originalTimestamp" is missing');
   }
-  
+
   const eventAt = new Date(timestamp).getTime();
   if (Number.isNaN(eventAt)) {
     throw new InstrumentationError('Invalid timestamp format.');
   }
-  
+
   const now = Date.now();
   const maxPastMs = 168 * 60 * 60 * 1000; // 7 days
   const maxFutureMs = 5 * 60 * 1000; // 5 minutes
-  
+
   if (now - eventAt > maxPastMs) {
     throw new InstrumentationError('event_at timestamp must be less than 168 hours (7 days) old.');
   }
   if (eventAt - now > maxFutureMs) {
-    throw new InstrumentationError('event_at timestamp must not be more than 5 minutes in the future.');
+    throw new InstrumentationError(
+      'event_at timestamp must not be more than 5 minutes in the future.',
+    );
   }
-  
+
   return eventAt;
 };
 ```
@@ -674,38 +687,41 @@ Revenue values are validated and calculated with safety checks:
 // utils.js (lines 61-91)
 const populateRevenueField = (eventType, properties) => {
   let revenueInCents;
-  
+
   switch (eventType) {
     case 'Purchase':
       // Must be a valid number
-      revenueInCents = properties.revenue && !Number.isNaN(properties.revenue)
-        ? Math.round(Number(properties.revenue) * 100)
-        : null;
+      revenueInCents =
+        properties.revenue && !Number.isNaN(properties.revenue)
+          ? Math.round(Number(properties.revenue) * 100)
+          : null;
       break;
-      
+
     case 'AddToCart':
       // Must have valid price
-      revenueInCents = properties.price && !Number.isNaN(properties.price)
-        ? Math.round(Number(properties.price) * Number(properties.quantity || 1) * 100)
-        : null;
+      revenueInCents =
+        properties.price && !Number.isNaN(properties.price)
+          ? Math.round(Number(properties.price) * Number(properties.quantity || 1) * 100)
+          : null;
       break;
-      
+
     default:
       // Calculate from products or single product
       const revenue = calculateDefaultRevenue(properties);
       revenueInCents = revenue ? revenue * 100 : null;
   }
-  
+
   // Safety check for NaN
   if (lodash.isNaN(revenueInCents)) {
     return null;
   }
-  
+
   return revenueInCents;
 };
 ```
 
 **Validation Rules:**
+
 - Returns `null` if price/revenue is undefined or NaN
 - Safely converts string numbers to Number type
 - Returns `null` if final calculation results in NaN
@@ -730,6 +746,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 **Scenario:** Track completed purchases with product details and revenue.
 
 **Input Event:**
+
 ```json
 {
   "type": "track",
@@ -767,6 +784,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 ```
 
 **Processing:**
+
 1. Event mapped to "Purchase" (built-in mapping)
 2. User data extracted: email (hashed), external_id (hashed), ip_address (hashed)
 3. Revenue: $159.99 → 15999 cents
@@ -774,6 +792,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 5. Conversion ID: "order_98765"
 
 **Output (V3):**
+
 ```json
 {
   "data": {
@@ -783,9 +802,9 @@ metadata = removeUndefinedAndNullValues(metadata);
         "action_source": "WEBSITE",
         "click_id": null,
         "user": {
-          "email": "a64f1...",  // SHA-256 hash
-          "external_id": "3d8b...",  // SHA-256 hash
-          "ip_address": "8cf4..."  // SHA-256 hash
+          "email": "a64f1...", // SHA-256 hash
+          "external_id": "3d8b...", // SHA-256 hash
+          "ip_address": "8cf4..." // SHA-256 hash
         },
         "type": {
           "tracking_type": "PURCHASE"
@@ -819,6 +838,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 **Scenario:** Track user registration as both SignUp and Lead for different campaign goals.
 
 **Configuration:**
+
 ```json
 {
   "eventsMapping": [
@@ -829,6 +849,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 ```
 
 **Input Event:**
+
 ```json
 {
   "type": "track",
@@ -848,11 +869,13 @@ metadata = removeUndefinedAndNullValues(metadata);
 ```
 
 **Processing:**
+
 1. Event mapped to TWO types: SignUp and Lead
 2. TWO separate conversion events generated
 3. Each has identical user data but different event type
 
 **Output (V3):** Two separate responses
+
 ```json
 // Response 1
 {
@@ -906,6 +929,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 **Scenario:** Track add-to-cart action from a mobile app with device advertising ID.
 
 **Input Event:**
+
 ```json
 {
   "type": "track",
@@ -934,12 +958,14 @@ metadata = removeUndefinedAndNullValues(metadata);
 ```
 
 **Processing:**
+
 1. Event mapped to "AddToCart" (built-in mapping)
 2. OS detected as iOS → extract IDFA
-3. Revenue: $24.99 * 2 = $49.98 → 4998 cents
+3. Revenue: $24.99 \* 2 = $49.98 → 4998 cents
 4. IDFA hashed (if hashData=true)
 
 **Output (V3):**
+
 ```json
 {
   "data": {
@@ -950,7 +976,7 @@ metadata = removeUndefinedAndNullValues(metadata);
         "user": {
           "email": "hashed...",
           "external_id": "hashed...",
-          "idfa": "hashed_00000000..."  // Hashed IDFA
+          "idfa": "hashed_00000000..." // Hashed IDFA
         },
         "type": {
           "tracking_type": "ADD_TO_CART"
@@ -979,6 +1005,7 @@ metadata = removeUndefinedAndNullValues(metadata);
 **Scenario:** Test conversion tracking without affecting production data.
 
 **Input Event:**
+
 ```json
 {
   "type": "track",
@@ -994,15 +1021,17 @@ metadata = removeUndefinedAndNullValues(metadata);
 ```
 
 **Processing:**
+
 1. `test_id` detected → event will NOT be batched with production events
 2. Separate request sent for test event
 3. Reddit processes as test conversion
 
 **Batching Behavior:**
+
 ```yaml
 # rtWorkflow.yaml (line 67)
 const nonBatchableEvents = $.outputs.successfulEvents{
-  .metadata.dontBatch || .message.[0].body.JSON.data.test_id
+.metadata.dontBatch || .message.[0].body.JSON.data.test_id
 }[]
 ```
 
@@ -1011,6 +1040,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Scenario:** Track a custom business event not covered by standard e-commerce events.
 
 **Input Event:**
+
 ```json
 {
   "type": "track",
@@ -1026,10 +1056,12 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 ```
 
 **Processing:**
+
 1. No mapping found → sent as CUSTOM event
 2. Original event name preserved in `custom_event_name`
 
 **Output (V3):**
+
 ```json
 {
   "data": {
@@ -1062,6 +1094,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Validation:** `procWorkflow.yaml` (line 129)
 
 **Error:**
+
 ```json
 {
   "statusCode": 400,
@@ -1083,13 +1116,15 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Validation:** `utils.js` (lines 147-149)
 
 **Example:**
+
 ```json
 {
-  "timestamp": "2025-01-01T00:00:00Z"  // 21 days ago
+  "timestamp": "2025-01-01T00:00:00Z" // 21 days ago
 }
 ```
 
 **Error:**
+
 ```json
 {
   "statusCode": 400,
@@ -1111,6 +1146,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Validation:** V2: `procWorkflow.yaml` (line 23), V3: `transformV3.ts` (line 208)
 
 **Example:**
+
 ```json
 {
   "type": "identify",
@@ -1119,6 +1155,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 ```
 
 **Error:**
+
 ```json
 {
   "statusCode": 400,
@@ -1140,6 +1177,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Validation:** `procWorkflow.yaml` (line 21)
 
 **Error:**
+
 ```json
 {
   "statusCode": 400,
@@ -1161,13 +1199,15 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Validation:** `utils.js` (lines 150-153)
 
 **Example:**
+
 ```json
 {
-  "timestamp": "2025-01-22T23:00:00Z"  // 10 minutes in future
+  "timestamp": "2025-01-22T23:00:00Z" // 10 minutes in future
 }
 ```
 
 **Error:**
+
 ```json
 {
   "statusCode": 400,
@@ -1187,6 +1227,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **Scenario:** Batch of 10 events, 3 fail due to invalid data
 
 **Response from Reddit API:**
+
 ```json
 {
   "status": 400,
@@ -1212,6 +1253,7 @@ const nonBatchableEvents = $.outputs.successfulEvents{
 **networkHandler Processing:**
 
 If the batch has multiple events (`rudderJobMetadata.length > 1`):
+
 1. Batch is marked for individual retry with `dontBatch` flag
 2. Each event in the batch gets individual error response
 3. Events are retried individually (not batched)
@@ -1219,6 +1261,7 @@ If the batch has multiple events (`rudderJobMetadata.length > 1`):
 **Source:** `src/v1/destinations/reddit/networkHandler.js` (lines 50-62)
 
 **Individual Retry Responses:**
+
 ```json
 [
   {
@@ -1230,7 +1273,7 @@ If the batch has multiple events (`rudderJobMetadata.length > 1`):
     "statusCode": 500,
     "metadata": { "jobId": 2, "dontBatch": true },
     "error": "{\"invalid_events\": [...]}"
-  },
+  }
   // ... for all 10 events
 ]
 ```
@@ -1247,4 +1290,3 @@ If the batch has multiple events (`rudderJobMetadata.length > 1`):
 
 **Last Updated:** 2025-01-22
 **Maintainer:** RudderStack Integration Team
-

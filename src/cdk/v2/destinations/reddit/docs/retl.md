@@ -20,6 +20,7 @@ This document provides detailed information about Reverse ETL (RETL) support for
 **RETL Support:** ✅ **Supported**
 
 **Verification:**
+
 - `db-config.json > config.supportedSourceTypes` includes `"warehouse"` (line 18)
 - The destination is configured to accept events from warehouse sources
 
@@ -61,13 +62,13 @@ The Reddit destination supports the following RETL types:
 
 When setting up RETL for Reddit, the following configuration is required:
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `accountId` | string | Yes | Reddit Ads Pixel ID |
-| `version` | string | Yes | API version (`v2` or `v3`). Default: `v2` |
-| `hashData` | boolean | No | Enable automatic PII hashing. Default: `true` |
-| `rudderAccountId` | string | Yes | RudderStack account ID |
-| `eventsMapping` | array | No | Custom event mappings |
+| Field             | Type    | Required | Description                                   |
+| ----------------- | ------- | -------- | --------------------------------------------- |
+| `accountId`       | string  | Yes      | Reddit Ads Pixel ID                           |
+| `version`         | string  | Yes      | API version (`v2` or `v3`). Default: `v2`     |
+| `hashData`        | boolean | No       | Enable automatic PII hashing. Default: `true` |
+| `rudderAccountId` | string  | Yes      | RudderStack account ID                        |
+| `eventsMapping`   | array   | No       | Custom event mappings                         |
 
 ### Connection Mode
 
@@ -146,6 +147,7 @@ When setting up RETL for Reddit, the following configuration is required:
 The Reddit destination **only supports track events** from warehouse sources. The RETL pipeline should be configured to generate track events with appropriate event names.
 
 **Message Type Support:**
+
 - ✅ **Track:** Supported for conversion event tracking
 - ❌ **Record:** Not supported (no VDM V2 support)
 - ❌ **Identify:** Not supported
@@ -180,16 +182,16 @@ WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '7 days'
 
 The following user data fields are supported from warehouse sources:
 
-| Warehouse Field | RudderStack Field | Reddit Field | Required | Hashed (if hashData=true) |
-|----------------|-------------------|--------------|----------|---------------------------|
-| `user_id` | `userId` | `external_id` | No | Yes |
-| `email` | `context.traits.email` or `traits.email` | `email` | No | Yes |
-| `phone` | `context.traits.phone` or `traits.phone` | `phone_number` | No | Yes |
-| `ip_address` | `context.ip` or `request_ip` | `ip_address` | No | Yes |
-| `user_agent` | `context.userAgent` | `user_agent` | No | No |
-| `idfa` | `context.device.advertisingId` (iOS) | `idfa` | No | Yes |
-| `aaid` | `context.device.advertisingId` (Android) | `aaid` | No | Yes |
-| `uuid` | `properties.uuid` | `uuid` | No | No |
+| Warehouse Field | RudderStack Field                        | Reddit Field   | Required | Hashed (if hashData=true) |
+| --------------- | ---------------------------------------- | -------------- | -------- | ------------------------- |
+| `user_id`       | `userId`                                 | `external_id`  | No       | Yes                       |
+| `email`         | `context.traits.email` or `traits.email` | `email`        | No       | Yes                       |
+| `phone`         | `context.traits.phone` or `traits.phone` | `phone_number` | No       | Yes                       |
+| `ip_address`    | `context.ip` or `request_ip`             | `ip_address`   | No       | Yes                       |
+| `user_agent`    | `context.userAgent`                      | `user_agent`   | No       | No                        |
+| `idfa`          | `context.device.advertisingId` (iOS)     | `idfa`         | No       | Yes                       |
+| `aaid`          | `context.device.advertisingId` (Android) | `aaid`         | No       | Yes                       |
+| `uuid`          | `properties.uuid`                        | `uuid`         | No       | No                        |
 
 **Mapping Source:** `data/userDataMapping.json`
 
@@ -197,20 +199,20 @@ The following user data fields are supported from warehouse sources:
 
 The following event property fields should be included in your warehouse query:
 
-| Warehouse Field | RudderStack Field | Description | Event Types |
-|----------------|-------------------|-------------|-------------|
-| `event_name` | `event` | Name of the conversion event | All |
-| `event_timestamp` | `timestamp` or `originalTimestamp` | Event timestamp (within 7 days) | All |
-| `conversion_id` | `properties.conversionId` | Unique conversion identifier | All |
-| `revenue` | `properties.revenue` | Revenue amount (in dollars) | Purchase |
-| `price` | `properties.price` | Price per unit | AddToCart, ViewContent |
-| `quantity` | `properties.quantity` | Quantity of items | AddToCart, ViewContent, Purchase |
-| `currency` | `properties.currency` | Currency code (e.g., USD) | Purchase, AddToCart, ViewContent |
-| `product_id` | `properties.product_id` | Product identifier | ViewContent, AddToCart |
-| `product_name` | `properties.name` | Product name | ViewContent, AddToCart |
-| `product_category` | `properties.category` | Product category | ViewContent, AddToCart |
-| `click_id` | `properties.clickId` | Reddit click identifier | All |
-| `test_id` | `properties.test_id` | Test mode identifier (v3 only) | All (v3) |
+| Warehouse Field    | RudderStack Field                  | Description                     | Event Types                      |
+| ------------------ | ---------------------------------- | ------------------------------- | -------------------------------- |
+| `event_name`       | `event`                            | Name of the conversion event    | All                              |
+| `event_timestamp`  | `timestamp` or `originalTimestamp` | Event timestamp (within 7 days) | All                              |
+| `conversion_id`    | `properties.conversionId`          | Unique conversion identifier    | All                              |
+| `revenue`          | `properties.revenue`               | Revenue amount (in dollars)     | Purchase                         |
+| `price`            | `properties.price`                 | Price per unit                  | AddToCart, ViewContent           |
+| `quantity`         | `properties.quantity`              | Quantity of items               | AddToCart, ViewContent, Purchase |
+| `currency`         | `properties.currency`              | Currency code (e.g., USD)       | Purchase, AddToCart, ViewContent |
+| `product_id`       | `properties.product_id`            | Product identifier              | ViewContent, AddToCart           |
+| `product_name`     | `properties.name`                  | Product name                    | ViewContent, AddToCart           |
+| `product_category` | `properties.category`              | Product category                | ViewContent, AddToCart           |
+| `click_id`         | `properties.clickId`               | Reddit click identifier         | All                              |
+| `test_id`          | `properties.test_id`               | Test mode identifier (v3 only)  | All (v3)                         |
 
 ### Products Array Support
 
@@ -273,6 +275,7 @@ WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '7 days'
 ```
 
 **Strategy 2 - Use Built-in Mappings:** Use RudderStack's standard e-commerce event names to leverage automatic mapping:
+
 - "Order Completed" → Purchase
 - "Product Added" → AddToCart
 - "Product Viewed" → ViewContent
@@ -316,6 +319,7 @@ ORDER BY event_timestamp ASC
 ### 7. API Version Selection
 
 **For New Implementations:** Use `v3` API version
+
 - Better error handling
 - Test mode support via `test_id`
 - More structured payload format
@@ -377,6 +381,7 @@ ORDER BY event_timestamp ASC
 **Symptom:** Events fail with "event_at timestamp must be less than 168 hours (7 days) old"
 
 **Solution:** Adjust your warehouse query to filter for recent events only:
+
 ```sql
 WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '6 days'
 ```
@@ -386,6 +391,7 @@ WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '6 days'
 **Symptom:** Events fail with "Account is not present" or "Timestamp is not present"
 
 **Solution:** Ensure your warehouse query includes all required fields and your RETL field mapping is correct:
+
 - Event name → `event`
 - Event timestamp → `timestamp` or `originalTimestamp`
 - Destination accountId is configured
@@ -400,7 +406,8 @@ WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '6 days'
 
 **Symptom:** Reddit reports low match rates
 
-**Solution:** 
+**Solution:**
+
 - Verify `hashData: true` is set in destination configuration
 - Ensure PII data in warehouse is in correct format (lowercase, trimmed)
 - For emails: Remove dots from Gmail addresses before hashing
@@ -409,7 +416,8 @@ WHERE event_timestamp > CURRENT_TIMESTAMP - INTERVAL '6 days'
 
 **Symptom:** Too many individual requests to Reddit API
 
-**Solution:** 
+**Solution:**
+
 - Ensure RETL sync is configured to send multiple events per run
 - Check that events don't have `dontBatch` metadata
 - Verify events don't have `test_id` property (which prevents batching in v3)
@@ -495,4 +503,3 @@ LIMIT 10000
 
 **Last Updated:** 2025-01-22
 **Maintainer:** RudderStack Integration Team
-

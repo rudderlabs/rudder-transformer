@@ -19,13 +19,13 @@ This document provides comprehensive documentation for the Reddit destination in
 
 The following destination configurations are supported and accessible via `destination.Config`:
 
-| Configuration Key | Type | Required | Description | Source |
-|------------------|------|----------|-------------|--------|
-| `accountId` | string | Yes | Reddit Ads Pixel ID associated with the conversion events | `schema.json` |
-| `version` | string | Yes | API version to use (`v2` or `v3`). Default: `v2` | `schema.json` |
-| `eventsMapping` | array | No | Array of event mappings to map RudderStack events to Reddit event types | `schema.json` |
-| `hashData` | boolean | No | Flag to enable/disable automatic hashing of PII data (email, userId, IP, advertiserId). Default: `true` | `schema.json` |
-| `rudderAccountId` | string | Yes | RudderStack account identifier for event delivery | `schema.json` |
+| Configuration Key | Type    | Required | Description                                                                                             | Source        |
+| ----------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------- | ------------- |
+| `accountId`       | string  | Yes      | Reddit Ads Pixel ID associated with the conversion events                                               | `schema.json` |
+| `version`         | string  | Yes      | API version to use (`v2` or `v3`). Default: `v2`                                                        | `schema.json` |
+| `eventsMapping`   | array   | No       | Array of event mappings to map RudderStack events to Reddit event types                                 | `schema.json` |
+| `hashData`        | boolean | No       | Flag to enable/disable automatic hashing of PII data (email, userId, IP, advertiserId). Default: `true` | `schema.json` |
+| `rudderAccountId` | string  | Yes      | RudderStack account identifier for event delivery                                                       | `schema.json` |
 
 **Note:** The `eventsMapping` configuration allows mapping custom event names to standard Reddit event types: `ViewContent`, `Search`, `AddToCart`, `AddToWishlist`, `Purchase`, `SignUp`, `Lead`, `PageVisit`.
 
@@ -41,14 +41,14 @@ The following destination configurations are supported and accessible via `desti
 
 ### Supported Message Types
 
-| Message Type | Supported | Description |
-|--------------|-----------|-------------|
-| Track | ✅ Yes | Sends conversion events to Reddit Ads |
-| Identify | ❌ No | Not supported |
-| Page | ❌ No | Not supported |
-| Screen | ❌ No | Not supported |
-| Group | ❌ No | Not supported |
-| Alias | ❌ No | Not supported |
+| Message Type | Supported | Description                           |
+| ------------ | --------- | ------------------------------------- |
+| Track        | ✅ Yes    | Sends conversion events to Reddit Ads |
+| Identify     | ❌ No     | Not supported                         |
+| Page         | ❌ No     | Not supported                         |
+| Screen       | ❌ No     | Not supported                         |
+| Group        | ❌ No     | Not supported                         |
+| Alias        | ❌ No     | Not supported                         |
 
 **Source:** `db-config.json > supportedMessageTypes > cloud: ["track"]`
 
@@ -67,6 +67,7 @@ The following destination configurations are supported and accessible via `desti
   - V2 and V3 events are batched separately with version-specific payload structures
 
 **Code Reference:**
+
 ```yaml
 # rtWorkflow.yaml (lines 64-92)
 batchSuccessfulEvents:
@@ -135,13 +136,13 @@ The Reddit destination **does not** make any intermediate API calls. All convers
   3. Custom events (when no mapping found)
 - **Built-in E-commerce Mappings:**
 
-| RudderStack Event | Reddit Event Type |
-|-------------------|-------------------|
-| product viewed, product list viewed | ViewContent |
-| product added | AddToCart |
-| product added to wishlist | AddToWishlist |
-| order completed | Purchase |
-| products searched | Search |
+| RudderStack Event                   | Reddit Event Type |
+| ----------------------------------- | ----------------- |
+| product viewed, product list viewed | ViewContent       |
+| product added                       | AddToCart         |
+| product added to wishlist           | AddToWishlist     |
+| order completed                     | Purchase          |
+| products searched                   | Search            |
 
 **Source:** `config.js` (lines 5-26)
 
@@ -171,32 +172,33 @@ The following validations are enforced on incoming events:
 
 #### Required Fields (All Events)
 
-| Field | Validation | Error Message |
-|-------|-----------|---------------|
-| `destination.Config.accountId` | Must be present | "Account is not present. Aborting message." |
-| `message.type` | Must be present | "message Type is not present. Aborting message." |
-| `message.type` | Must equal 'track' (case-insensitive) | "Event type {type} is not supported. Aborting message." |
-| `message.event` | Must be present | "Event is not present. Aborting message." |
-| `timestamp` or `originalTimestamp` | Must be present | "Timestamp is not present. Aborting message." (v2)<br>"Required field 'timestamp' or 'originalTimestamp' is missing from the message." (v3) |
+| Field                              | Validation                            | Error Message                                                                                                                               |
+| ---------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `destination.Config.accountId`     | Must be present                       | "Account is not present. Aborting message."                                                                                                 |
+| `message.type`                     | Must be present                       | "message Type is not present. Aborting message."                                                                                            |
+| `message.type`                     | Must equal 'track' (case-insensitive) | "Event type {type} is not supported. Aborting message."                                                                                     |
+| `message.event`                    | Must be present                       | "Event is not present. Aborting message."                                                                                                   |
+| `timestamp` or `originalTimestamp` | Must be present                       | "Timestamp is not present. Aborting message." (v2)<br>"Required field 'timestamp' or 'originalTimestamp' is missing from the message." (v3) |
 
 **Source:**
+
 - V2: `procWorkflow.yaml` (lines 18-25)
 - V3: `transformV3.ts` (lines 204-224)
 
 #### Timestamp Validations (V3)
 
-| Validation | Constraint | Error Message |
-|------------|-----------|---------------|
-| Format | Must be valid date format | "Invalid timestamp format." |
-| Age | Must be less than 168 hours (7 days) old | "event_at timestamp must be less than 168 hours (7 days) old." |
-| Future | Must not be more than 5 minutes in the future | "event_at timestamp must not be more than 5 minutes in the future." |
+| Validation | Constraint                                    | Error Message                                                       |
+| ---------- | --------------------------------------------- | ------------------------------------------------------------------- |
+| Format     | Must be valid date format                     | "Invalid timestamp format."                                         |
+| Age        | Must be less than 168 hours (7 days) old      | "event_at timestamp must be less than 168 hours (7 days) old."      |
+| Future     | Must not be more than 5 minutes in the future | "event_at timestamp must not be more than 5 minutes in the future." |
 
 **Source:** `utils.js` `generateAndValidateTimestamp()` function (lines 131-157)
 
 #### OAuth Token Validation
 
-| Field | Validation | Error Message |
-|-------|-----------|---------------|
+| Field                         | Validation      | Error Message                                          |
+| ----------------------------- | --------------- | ------------------------------------------------------ |
 | `metadata.secret.accessToken` | Must be present | "Secret or accessToken is not present in the metadata" |
 
 **Source:** `procWorkflow.yaml` (line 129)
@@ -206,11 +208,13 @@ The following validations are enforced on incoming events:
 Reddit Ads Conversion API (CAPI) has the following rate limits:
 
 **Rate Limit Specifications:**
+
 - **Request Rate:** Maximum of **5,000 requests per minute** per pixel
 - **Event Rate:** Maximum of **250,000 events per minute** per pixel
 - **Batch Size:** Up to **1,000 events per request** (as implemented in this integration)
 
 **Best Practices:**
+
 - **Batch Events:** Always batch events to stay within rate limits. This integration automatically batches up to 1000 events per request
 - **Exponential Backoff:** Implement exponential backoff retry logic for 429 (Too Many Requests) responses
 - **Event Distribution:** Distribute events evenly over time rather than sending bursts to avoid hitting rate limits
@@ -219,6 +223,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Current Implementation:** The networkHandler includes retry logic for 401 (Unauthorized) errors with token refresh. For production use, consider adding specific 429 handling with exponential backoff.
 
 **References:**
+
 - Reddit Ads API Best Practices: https://ads-api.reddit.com/docs/v3/capi-best-practices
 - Reddit Ads API Documentation: https://ads-api.reddit.com/docs/v3/, https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
 
@@ -229,6 +234,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Track Events:** Event ordering is **recommended but not strictly required** for Reddit conversion events.
 
 **Reasoning:**
+
 - **Timestamp-based Processing:** Reddit's Conversion Events API accepts events with `event_at` timestamp field, allowing Reddit to process events in chronological order regardless of delivery order
 - **7-Day Window:** Events must have timestamps within the last 7 days, indicating that Reddit can handle out-of-order events within this window
 - **No Profile Updates:** Unlike destinations that update user profiles (Identify calls), track events in Reddit are conversion tracking events that are logged with timestamps
@@ -237,6 +243,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Recommendation:** While not strictly required, maintaining event order is a best practice to ensure accurate reporting and attribution in Reddit Ads.
 
 **Source:**
+
 - Timestamp validation: `utils.js` (lines 131-157)
 - Reddit Ads API documentation supports timestamp-based event processing
 
@@ -247,6 +254,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Feasibility:** ✅ **Yes, feasible with constraints**
 
 **Conditions:**
+
 - Events must have timestamps within the last **7 days** (168 hours)
 - Events older than 7 days will be rejected by Reddit's API
 - Replayed events will be processed based on their `timestamp`/`originalTimestamp` values
@@ -260,6 +268,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Feasibility:** ❌ **No, not feasible**
 
 **Reasoning:**
+
 - Reddit's Conversion Events API does not use a unique event ID for deduplication
 - The `conversion_id` field (populated from `properties.conversionId` or `messageId`) is used for tracking but not for deduplication
 - Replaying already delivered events will result in duplicate conversion events in Reddit Ads
@@ -268,6 +277,7 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 **Recommendation:** Avoid replaying events that have already been successfully delivered to prevent duplicate conversion tracking.
 
 **Source:**
+
 - Event payload construction: `transformV3.ts` (line 124)
 - Reddit Ads API behavior (no deduplication mechanism documented)
 
@@ -275,9 +285,9 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 
 #### Batch Sizes
 
-| Configuration | Value | Source |
-|---------------|-------|--------|
-| Maximum Batch Size | 1000 events | `config.js` (line 3) |
+| Configuration          | Value             | Source                                         |
+| ---------------------- | ----------------- | ---------------------------------------------- |
+| Maximum Batch Size     | 1000 events       | `config.js` (line 3)                           |
 | Recommended Batch Size | Up to 1000 events | Implementation follows Reddit's batch endpoint |
 
 **Implementation:** The router workflow chunks events into batches of up to 1000 events before sending to Reddit's API.
@@ -288,13 +298,14 @@ Reddit Ads Conversion API (CAPI) has the following rate limits:
 
 Reddit Ads Conversion API enforces the following rate limits per pixel:
 
-| Limit Type | Value | Description |
-|------------|-------|-------------|
-| **Request Rate** | 5,000 requests/minute | Maximum API requests per minute per pixel |
-| **Event Rate** | 250,000 events/minute | Maximum conversion events per minute per pixel |
-| **Batch Size** | 1,000 events/request | Maximum events per single API request |
+| Limit Type       | Value                 | Description                                    |
+| ---------------- | --------------------- | ---------------------------------------------- |
+| **Request Rate** | 5,000 requests/minute | Maximum API requests per minute per pixel      |
+| **Event Rate**   | 250,000 events/minute | Maximum conversion events per minute per pixel |
+| **Batch Size**   | 1,000 events/request  | Maximum events per single API request          |
 
 **Rate Limit Strategy:**
+
 - **Batching:** This integration batches up to 1000 events per request to maximize throughput and stay within limits
 - **Calculation Example:** With 1000 events per request, you can send up to 5M events per minute (5,000 requests × 1,000 events)
 - **OAuth Authentication:** Required for all requests; provides consistent rate limits as documented above
@@ -304,6 +315,7 @@ Reddit Ads Conversion API enforces the following rate limits per pixel:
 **Endpoints Used:**
 
 1. **V2 Endpoint:** `https://ads-api.reddit.com/api/v2.0/conversions/events/{accountId}`
+
    - Method: POST
    - Batch Support: Yes (up to 1000 events)
    - Rate Limits: Same as above
@@ -314,6 +326,7 @@ Reddit Ads Conversion API enforces the following rate limits per pixel:
    - Rate Limits: Same as above
 
 **References:**
+
 - Reddit Ads API Rate Limits: https://ads-api.reddit.com/docs/v3/capi-best-practices
 - Reddit Ads API v3 Documentation: https://ads-api.reddit.com/docs/v3/, https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
 
@@ -328,11 +341,13 @@ Reddit Ads Conversion API enforces the following rate limits per pixel:
 #### When Multiplexing Occurs
 
 Multiplexing happens when:
+
 1. A RudderStack event name is mapped to multiple Reddit event types in the `eventsMapping` configuration
 2. Each mapped event type generates a separate Reddit conversion event
 3. All generated events share the same user data, timestamp, and properties but differ in event type
 
 **Example:**
+
 ```javascript
 // Configuration
 eventsMapping: [
@@ -355,11 +370,13 @@ eventsMapping: [
 ```
 
 **Code Reference:**
+
 - V3 Implementation: `transformV3.ts` (lines 154-199)
   - Lines 165-181: Loop through event types array and generate multiple payloads
   - Line 209: Multiple responses returned for a single input event
 
 **Use Cases:**
+
 1. **Multi-Goal Tracking:** Track the same user action across different conversion goals
 2. **Attribution:** Count a single action towards multiple campaign objectives
 3. **Funnel Analysis:** Track a user action at different funnel stages simultaneously
@@ -373,6 +390,7 @@ eventsMapping: [
 **Configuration:** `db-config.json > config.transformAtV1 == "router"`
 
 **Implications:**
+
 - Events are processed in batch mode at the router transformation stage
 - Transformation happens at the `/v1/batch` endpoint
 - Batching and event grouping logic is applied in the router workflow
@@ -382,12 +400,14 @@ eventsMapping: [
 ### Current Version in Use
 
 **API Versions Supported:**
+
 - **v2 (Legacy):** `https://ads-api.reddit.com/api/v2.0/conversions/events/`
 - **v3 (Current):** `https://ads-api.reddit.com/api/v3/pixels/`
 
 **Default Version:** v2 (for backward compatibility)
 
 **Source:**
+
 - Endpoint configuration: `config.js` (lines 1-2)
 - Version schema: `schema.json` (lines 10-14)
 - UI configuration: `ui-config.json` shows v2 labeled as "API v2 (Deprecated)"
@@ -395,17 +415,20 @@ eventsMapping: [
 ### Version Deprecation Status
 
 **Current Status:**
+
 - **v2:** Deprecated - Reddit has not sunset the v2 Conversion Events API
 - **v3:** Current and recommended version for all integrations
 - **Migration Required:** All v2 implementations should migrate to v3
 
 **Deprecation Timeline:**
+
 - Reddit officially deprecated the v2 Conversion Events API
 - v3 is the current production API with improved features and stability
 - New integrations must use v3
 - Existing v2 integrations should migrate to v3 as soon as possible
 
 **Migration Benefits:**
+
 - Improved payload structure with better error handling
 - Test mode support via `test_id` field
 - Enhanced event tracking with `action_source` field
@@ -414,21 +437,23 @@ eventsMapping: [
 **Recommendation:** Use v3 for all Reddit destination setups. Migrate existing v2 integrations to v3 immediately.
 
 **Sources:**
+
 - `ui-config.json` (lines 29-32) - v2 labeled as "API v2 (Deprecated)"
 - Reddit Ads API Migration Guide: https://ads-api.reddit.com/docs/v3/capi-migration
 
 ### Version Differences
 
-| Feature | v2 | v3 |
-|---------|----|----|
-| **Endpoint** | `/api/v2.0/conversions/events/{accountId}` | `/api/v3/pixels/{accountId}/conversion_events` |
-| **Payload Structure** | `{ events: [...] }` | `{ data: { events: [...] } }` |
-| **Event Type Format** | PascalCase (e.g., `Purchase`, `AddToCart`) | UPPER_SNAKE_CASE (e.g., `PURCHASE`, `ADD_TO_CART`) |
-| **Event Type Field** | `event_type: { tracking_type: "Purchase" }` | `type: { tracking_type: "PURCHASE" }` |
-| **Action Source** | Not present | Required: `action_source: "WEBSITE"` |
-| **Test Mode** | Not supported | Supported via `test_id` field in payload |
+| Feature               | v2                                          | v3                                                 |
+| --------------------- | ------------------------------------------- | -------------------------------------------------- |
+| **Endpoint**          | `/api/v2.0/conversions/events/{accountId}`  | `/api/v3/pixels/{accountId}/conversion_events`     |
+| **Payload Structure** | `{ events: [...] }`                         | `{ data: { events: [...] } }`                      |
+| **Event Type Format** | PascalCase (e.g., `Purchase`, `AddToCart`)  | UPPER_SNAKE_CASE (e.g., `PURCHASE`, `ADD_TO_CART`) |
+| **Event Type Field**  | `event_type: { tracking_type: "Purchase" }` | `type: { tracking_type: "PURCHASE" }`              |
+| **Action Source**     | Not present                                 | Required: `action_source: "WEBSITE"`               |
+| **Test Mode**         | Not supported                               | Supported via `test_id` field in payload           |
 
 **Code References:**
+
 - Version decision: `utils.js` `decideVersion()` (lines 4-11)
 - V2 transformation: `procWorkflow.yaml`
 - V3 transformation: `transformV3.ts`
@@ -447,10 +472,12 @@ Reddit has published a comprehensive migration guide for transitioning from v2 t
 #### Payload Structure Changes
 
 2. **Payload Wrapper:**
+
    - **v2:** `{ events: [...] }`
    - **v3:** `{ data: { events: [...] } }` (events wrapped in `data` object)
 
 3. **Event Type Field Name:**
+
    - **v2:** `event_type: { tracking_type: "..." }`
    - **v3:** `type: { tracking_type: "..." }`
 
@@ -467,6 +494,7 @@ Reddit has published a comprehensive migration guide for transitioning from v2 t
 #### New Features in v3
 
 6. **Test Mode Support:**
+
    - v3 introduces `test_id` field for testing conversions without affecting production data
    - Events with `test_id` are processed separately and not batched with production events
 
@@ -476,11 +504,13 @@ Reddit has published a comprehensive migration guide for transitioning from v2 t
 #### Migration Path
 
 **For RudderStack Users:** The integration handles all version differences automatically:
+
 - Simply update `destination.Config.version` from `"v2"` to `"v3"` in your configuration
 - No code changes needed - the integration handles all payload transformations
 - Both versions are supported for smooth migration
 
 **References:**
+
 - Reddit Ads API v2 to v3 Migration Guide: https://ads-api.reddit.com/docs/v3/capi-migration
 - Reddit Ads API v3 Documentation: https://ads-api.reddit.com/docs/v3/
 
@@ -491,6 +521,7 @@ Reddit has published a comprehensive migration guide for transitioning from v2 t
 For detailed information on RETL functionality, see [docs/retl.md](docs/retl.md).
 
 **Quick Summary:**
+
 - RETL is supported via warehouse source type
 - Supports event stream data forwarding from warehouses
 - Configuration: Same as cloud mode (accountId, eventsMapping, hashData, version)
@@ -502,6 +533,7 @@ For detailed information on RETL functionality, see [docs/retl.md](docs/retl.md)
 For detailed information on business logic, event mappings, and data flow, see [docs/businesslogic.md](docs/businesslogic.md).
 
 **Quick Summary:**
+
 - Track events are mapped to Reddit conversion events
 - User data is extracted, optionally hashed, and sent as part of conversion payload
 - Event metadata (revenue, products, etc.) is mapped based on event type
@@ -534,6 +566,7 @@ With proxy delivery enabled, the integration supports partial batch failure hand
 Yes, in v3 you can include a `test_id` property in your event. Events with `test_id` will be processed separately and not batched with production events.
 
 **Example:**
+
 ```json
 {
   "event": "Order Completed",
@@ -560,7 +593,7 @@ Events must have timestamps within the last 7 days (168 hours). Older events wil
 
 - **Purchase events:** Uses `properties.revenue` multiplied by 100 (converted to cents)
 - **AddToCart events:** Uses `properties.price * properties.quantity` multiplied by 100
-- **Other events:** Calculates based on product array or single product price * quantity
+- **Other events:** Calculates based on product array or single product price \* quantity
 
 **Source:** `utils.js` `populateRevenueField()` (lines 61-91)
 
@@ -577,6 +610,7 @@ Events must have timestamps within the last 7 days (168 hours). Older events wil
 ## Support
 
 For issues or questions regarding this integration:
+
 1. Check the FAQ section above
 2. Review the business logic documentation: [docs/businesslogic.md](docs/businesslogic.md)
 3. Refer to Reddit's official API documentation
@@ -586,4 +620,3 @@ For issues or questions regarding this integration:
 
 **Last Updated:** 2025-01-22
 **Maintainer:** RudderStack Integration Team
-

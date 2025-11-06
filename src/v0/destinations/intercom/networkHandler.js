@@ -47,14 +47,18 @@ const intercomProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    destType: 'intercom',
-    feature: 'proxy',
-    endpointPath: '/proxy',
-    requestMethod: 'POST',
-    module: 'router',
-    metadata,
-  });
+  const response = await httpSend(
+    requestOptions,
+    {
+      destType: 'intercom',
+      feature: 'proxy',
+      endpointPath: '/proxy',
+      requestMethod: 'POST',
+      module: 'router',
+      metadata,
+    },
+    true,
+  );
   return response;
 };
 

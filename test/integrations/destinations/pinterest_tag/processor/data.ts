@@ -86,7 +86,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 tagId: '123456789',
                 advertiserId: '429047995',
@@ -269,7 +269,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -422,7 +422,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -696,7 +696,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -818,7 +818,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -990,7 +990,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1111,7 +1111,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1233,7 +1233,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1355,7 +1355,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1492,7 +1492,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1606,7 +1606,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1720,7 +1720,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1835,7 +1835,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -1951,7 +1951,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2067,7 +2067,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2234,7 +2234,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2358,7 +2358,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2506,7 +2506,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2649,7 +2649,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2806,7 +2806,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -2988,7 +2988,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3173,7 +3173,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3339,7 +3339,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3428,7 +3428,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3530,7 +3530,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3657,7 +3657,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3783,7 +3783,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 sendAsTestEvent: false,
                 tagId: '123456789',
@@ -3917,7 +3917,7 @@ export const data = [
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'PINTEREST_TAG',
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               Config: {
                 tagId: '123456789',
                 advertiserId: '429047995',

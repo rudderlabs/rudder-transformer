@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Salesforce Marketing Cloud destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - `supportsVisualMapper: true` indicates VDM v1 support
@@ -14,20 +15,26 @@ The Salesforce Marketing Cloud destination supports RETL functionality. Evidence
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support.
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard SFMC configuration applies:
+
 - **Client ID**: Your SFMC API client ID
 - **Client Secret**: Your SFMC API client secret
 - **Subdomain**: Your SFMC instance subdomain
@@ -46,6 +53,7 @@ SFMC supports RETL through warehouse sources with both JSON mapper and VDM v1 fu
 - **Mapping**: JSON mapper and VDM v1 transform warehouse data to SFMC format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["identify", "track"]
@@ -133,11 +141,13 @@ PUT https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{exter
 ## Rate Limits and Constraints
 
 ### SFMC API Limits
+
 - **Data Extensions API**: Standard SFMC API rate limits apply
 - **Authentication**: OAuth 2.0 token-based authentication
 - **Request Size**: Standard SFMC API request size limits
 
 ### RETL Processing Constraints
+
 - **Object Types**: Limited to Data Extension objects only
 - **Message Types**: Identify and track events only
 - **External ID Required**: Must include valid SFMC external ID structure
@@ -162,6 +172,7 @@ For RETL to work with SFMC, the message must include an external ID in the follo
 ```
 
 Where:
+
 - `type`: Must start with "SFMC-" followed by the object type (currently only "data extension" is supported)
 - `id`: The value of the identifier field in the Data Extension
 - `identifierType`: The name of the identifier field in the Data Extension
@@ -179,6 +190,7 @@ The Salesforce Marketing Cloud destination supports RETL functionality through:
 - **Object Types**: Data Extension objects only
 
 **Limitations**:
+
 - Limited to Data Extension objects only
 - No VDM v2 support (no record message type)
 - Requires proper external ID structure for RETL routing

@@ -128,11 +128,15 @@ const pardotProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType: 'pardot',
-    metadata,
-  });
+  const response = await httpSend(
+    requestOptions,
+    {
+      feature: 'proxy',
+      destType: 'pardot',
+      metadata,
+    },
+    true,
+  );
   return response;
 };
 

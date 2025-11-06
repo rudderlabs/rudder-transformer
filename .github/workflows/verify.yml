@@ -17,14 +17,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
 
       - name: Setup Node
-        uses: actions/setup-node@v5.0.0
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
           node-version-file: .nvmrc
           cache: 'npm'
@@ -32,31 +37,13 @@ jobs:
       - name: Install Dependencies
         run: npm ci && npm run prepare
 
+      - name: Run format check
+        run: npm run format:ci
+
       - id: files
-        uses: Ana06/get-changed-files@v1.2
+        uses: Ana06/get-changed-files@a2f6df8c195e713211f9f6258baafc445149355b # v1.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Filter JS/TS Files
-        run: |
-          changed_files=$(echo "${{ steps.files.outputs.added_modified }}" | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx)$' || true)
-          if [ -z "$changed_files" ]; then
-            echo "No JS/TS files to format or lint."
-            exit 0
-          fi
-
-      - name: Run format Checks
-        run: |
-          if [ -s changed_files.txt ]; then
-              npx prettier --write $(cat changed_files.txt)
-          fi
-
-      - run: git diff --exit-code
-
-      - name: Formatting Error message
-        if: ${{ failure() }}
-        run: |
-          echo 'prettier formatting failure. Ensure you run `npm run format` and commit the files.'
 
       - name: Run eslint Checks
         run: |

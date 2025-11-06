@@ -41,14 +41,18 @@ const scAudienceProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType: 'snapchat_custom_audience',
-    endpointPath: '/segments/segmentId/users',
-    requestMethod: requestOptions?.method,
-    module: 'dataDelivery',
-    metadata,
-  });
+  const response = await httpSend(
+    requestOptions,
+    {
+      feature: 'proxy',
+      destType: 'snapchat_custom_audience',
+      endpointPath: '/segments/segmentId/users',
+      requestMethod: requestOptions?.method,
+      module: 'dataDelivery',
+      metadata,
+    },
+    true,
+  );
   return response;
 };
 

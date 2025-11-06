@@ -6,7 +6,12 @@ const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const { PlatformError } = require('@rudderstack/integrations-lib');
-const { removeUndefinedValues, isDefinedAndNotNullAndNotEmpty } = require('../v0/util');
+const stats = require('../util/stats');
+const {
+  removeUndefinedValues,
+  getErrorStatusCode,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../v0/util');
 const logger = require('../logger');
 const { processAxiosResponse } = require('./utils/networkUtils');
 // Only for tests
@@ -43,6 +48,56 @@ const networkClientConfigs = {
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
   httpsAgent: new https.Agent({ keepAlive: true }),
+};
+
+const fireOutgoingReqStats = ({
+  destType,
+  feature,
+  endpointPath,
+  requestMethod,
+  module,
+  metadata = {},
+  startTime,
+  statusCode,
+  clientResponse,
+}) => {
+  const logMetaInfo = logger.getLogMetadata(metadata);
+  stats.timing('outgoing_request_latency', startTime, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    requestMethod,
+    module,
+  });
+  stats.counter('outgoing_request_count', 1, {
+    ...logMetaInfo,
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
+    requestMethod,
+    module,
+  });
+};
+
+const fireHTTPStats = (clientResponse, startTime, statTags = {}) => {
+  const statusCode = clientResponse.success
+    ? clientResponse.response?.status
+    : getErrorStatusCode(clientResponse.response);
+
+  fireOutgoingReqStats({
+    destType: statTags.destType || '',
+    feature: statTags.feature || '',
+    endpointPath: statTags.endpointPath || '',
+    requestMethod: statTags.requestMethod || '',
+    module: statTags.module || '',
+    metadata: statTags.metadata,
+    statusCode,
+    startTime,
+    clientResponse,
+  });
 };
 
 const enhanceRequestOptions = (options) => {
@@ -92,7 +147,11 @@ const getHttpMethodArgs = (method, { url, data, requestOptions }) => {
       return [requestOptions];
   }
 };
-const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
+const commonHandler = async (
+  axiosMethod,
+  { statTags, method, ...args },
+  disableMetrics = false,
+) => {
   let clientResponse;
   const { url, data, options, requestOptions } = args;
   const commonMsg = `[${statTags?.destType?.toUpperCase?.() || ''}] ${statTags?.endpointPath || ''}`;
@@ -105,6 +164,7 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
       method,
     },
   });
+  const startTime = new Date();
   try {
     const response = await axiosMethod(...getHttpMethodArgs(method, args));
     clientResponse = { success: true, response };
@@ -115,6 +175,9 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
       metadata: statTags?.metadata,
       responseDetails: getResponseDetails(clientResponse),
     });
+    if (!disableMetrics) {
+      fireHTTPStats(clientResponse, startTime, statTags);
+    }
   }
 
   setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
@@ -126,9 +189,9 @@ const commonHandler = async (axiosMethod, { statTags, method, ...args }) => {
  * @param {*} options
  * @returns
  */
-const httpSend = async (options, statTags = {}) => {
+const httpSend = async (options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios, { statTags, options, requestOptions });
+  return commonHandler(axios, { statTags, options, requestOptions }, disableMetrics);
 };
 
 /**
@@ -139,9 +202,13 @@ const httpSend = async (options, statTags = {}) => {
  *
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpGET = async (url, options, statTags = {}) => {
+const httpGET = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.get, { statTags, method: 'get', url, options, requestOptions });
+  return commonHandler(
+    axios.get,
+    { statTags, method: 'get', url, options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -152,9 +219,13 @@ const httpGET = async (url, options, statTags = {}) => {
  *
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpDELETE = async (url, options, statTags = {}) => {
+const httpDELETE = async (url, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.delete, { statTags, method: 'delete', url, options, requestOptions });
+  return commonHandler(
+    axios.delete,
+    { statTags, method: 'delete', url, options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -166,16 +237,20 @@ const httpDELETE = async (url, options, statTags = {}) => {
  *
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPOST = async (url, data, options, statTags = {}) => {
+const httpPOST = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.post, {
-    statTags,
-    url,
-    method: 'post',
-    data,
-    options,
-    requestOptions,
-  });
+  return commonHandler(
+    axios.post,
+    {
+      statTags,
+      url,
+      method: 'post',
+      data,
+      options,
+      requestOptions,
+    },
+    disableMetrics,
+  );
 };
 
 /**
@@ -187,9 +262,13 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  *
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPUT = async (url, data, options, statTags = {}) => {
+const httpPUT = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.put, { statTags, url, data, method: 'put', options, requestOptions });
+  return commonHandler(
+    axios.put,
+    { statTags, url, data, method: 'put', options, requestOptions },
+    disableMetrics,
+  );
 };
 
 /**
@@ -201,16 +280,20 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  *
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPATCH = async (url, data, options, statTags = {}) => {
+const httpPATCH = async (url, data, options, statTags = {}, disableMetrics = false) => {
   const requestOptions = enhanceRequestOptions(options);
-  return commonHandler(axios.patch, {
-    statTags,
-    url,
-    method: 'patch',
-    data,
-    options,
-    requestOptions,
-  });
+  return commonHandler(
+    axios.patch,
+    {
+      statTags,
+      url,
+      method: 'patch',
+      data,
+      options,
+      requestOptions,
+    },
+    disableMetrics,
+  );
 };
 
 const getPayloadData = (body) => {
@@ -387,11 +470,15 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType,
-    metadata,
-  });
+  const response = await httpSend(
+    requestOptions,
+    {
+      feature: 'proxy',
+      destType,
+      metadata,
+    },
+    true,
+  );
   return response;
 };
 
@@ -408,5 +495,6 @@ module.exports = {
   getFormData,
   handleHttpRequest,
   enhanceRequestOptions,
+  fireHTTPStats,
   getZippedPayload,
 };

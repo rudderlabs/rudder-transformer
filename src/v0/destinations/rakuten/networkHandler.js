@@ -19,14 +19,18 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType,
-    metadata,
-    endpointPath: '/ep',
-    requestMethod: 'GET',
-    module: 'dataDelivery',
-  });
+  const response = await httpSend(
+    requestOptions,
+    {
+      feature: 'proxy',
+      destType,
+      metadata,
+      endpointPath: '/ep',
+      requestMethod: 'GET',
+      module: 'dataDelivery',
+    },
+    true,
+  );
   return response;
 };
 const extractContent = (xmlPayload, tagName) => {

@@ -93,7 +93,7 @@ const processEvent = (event: VWORouterRequest) => {
     'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
-  response.userId = message.anonymousId;
+  response.userId = userId;
 
   return response;
 };

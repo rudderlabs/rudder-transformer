@@ -51,10 +51,10 @@ if (process.env.PYROSCOPE_SERVER_ADDRESS) {
       namespace: process.env.NAMESPACE || '',
       instance: process.env.INSTANCE_ID || '',
       cluster: process.env.PYROSCOPE_CLUSTER_NAME || '',
-    }
+    },
   });
   pyroscopeStart();
-  pyroscopeInitialised = true
+  pyroscopeInitialised = true;
 } else {
   logger.info('Pyroscope disabled (PYROSCOPE_SERVER_ADDRESS not set)');
 }

@@ -21,7 +21,7 @@ Airship destination **does not support RETL (Real-time Extract, Transform, Load)
 Airship destination does not implement any RETL-specific logic:
 
 - No handling for `mappedToDestination === true` conditions
-- No processing of `record` event types  
+- No processing of `record` event types
 - No warehouse-to-destination data flows
 
 ## Supported Data Flow
@@ -29,10 +29,11 @@ Airship destination does not implement any RETL-specific logic:
 Airship destination only supports **Event Stream** functionality:
 
 ### Event Stream Flow
+
 - **Supported Event Types**: Identify, Track, Group
 - **Processing**: Real-time event processing from RudderStack sources
 - **API Integration**: Direct API calls to Airship endpoints
-- **Use Cases**: 
+- **Use Cases**:
   - Real-time user profile updates
   - Live event tracking
   - Immediate tag and attribute management
@@ -42,16 +43,19 @@ Airship destination only supports **Event Stream** functionality:
 For customers who need to send warehouse data to Airship, consider these alternatives:
 
 ### 1. **Airship's Native Import Tools**
+
 - **Bulk Import API**: For large datasets from data warehouses
 - **CSV Upload**: Manual or automated CSV file uploads
 - **S3 Integration**: Direct integration with S3 for bulk data imports
 
 ### 2. **RudderStack Event Stream**
+
 - Use RudderStack's warehouse sources to stream data as events
 - Transform warehouse data into Identify, Track, and Group events
 - Leverage the existing event stream integration
 
 ### 3. **Custom ETL Pipeline**
+
 - Build custom ETL processes to extract data from warehouses
 - Transform data into RudderStack event format
 - Send through RudderStack's event stream APIs

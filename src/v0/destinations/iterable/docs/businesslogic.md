@@ -9,15 +9,18 @@ This document details the business logic, event mappings, and transformation pro
 ### Identify Events
 
 #### Purpose
+
 Create or update user profiles in Iterable with user attributes and traits.
 
 #### Mapping Configuration
+
 - **Config File**: `IterableIdentifyConfig.json`
 - **Endpoint**: `/api/users/update` (individual) or `/api/users/bulkUpdate` (batch)
 
 #### Field Mappings (IterableIdentifyConfig.json)
 
 - **User Identification** (Priority Order):
+
   - `userId` → `userId`
   - `traits.userId` → `userId`
   - `traits.id` → `userId`
@@ -26,6 +29,7 @@ Create or update user profiles in Iterable with user attributes and traits.
   - `anonymousId` → `userId` (fallback)
 
 - **Email Address**:
+
   - `traits.email` → `email`
   - `context.traits.email` → `email`
 
@@ -34,11 +38,13 @@ Create or update user profiles in Iterable with user attributes and traits.
   - `context.traits.*` → `dataFields.*` (context traits merged)
 
 #### Validation Requirements
+
 - **Mandatory Fields**: Either `email` or `userId` must be present
 - **Field Types**: All data fields are validated and type-converted appropriately
 - **Nested Objects**: Merged when `mergeNestedObjects: true` (default)
 
 #### Special Handling
+
 - **Device/Browser Tokens**: Triggers additional registration calls when present
 - **External IDs**: Processed for RETL catalog operations
 - **Timestamp Handling**: `originalTimestamp` converted to Unix timestamp
@@ -46,12 +52,15 @@ Create or update user profiles in Iterable with user attributes and traits.
 ### Track Events
 
 #### Purpose
+
 Track user events and behaviors in Iterable for campaign triggering and analytics.
 
 #### Event Category Mapping
+
 The destination automatically categorizes track events based on event names:
 
 1. **E-commerce Events**:
+
    - `Order Completed` → Commerce Purchase (`/api/commerce/trackPurchase`)
    - `Product Added` → Cart Update (`/api/commerce/updateCart`)
    - `Product Removed` → Cart Update (`/api/commerce/updateCart`)
@@ -62,10 +71,12 @@ The destination automatically categorizes track events based on event names:
 #### Field Mappings
 
 ##### Standard Track Events (IterableTrackConfig.json)
+
 - **Config File**: `IterableTrackConfig.json`
 - **Endpoint**: `/api/events/track` or `/api/events/trackBulk`
 
 **Core Fields**:
+
 - `event` → `eventName`
 - `properties.event_id` → `id` (converted to string)
 - `properties.*` → `dataFields.*`
@@ -74,6 +85,7 @@ The destination automatically categorizes track events based on event names:
 - `properties.templateId` → `templateId`
 
 **User Identification** (Priority Order):
+
 - `userId` → `userId`
 - `traits.userId` → `userId`
 - `traits.id` → `userId`
@@ -82,14 +94,17 @@ The destination automatically categorizes track events based on event names:
 - `anonymousId` → `userId` (fallback)
 
 **Email Address**:
+
 - `properties.email` → `email`
 - `context.traits.email` → `email`
 
 ##### Purchase Events (IterableTrackPurchaseConfig.json)
+
 - **Config File**: `IterableTrackPurchaseConfig.json`
 - **Endpoint**: `/api/commerce/trackPurchase`
 
 **Core Fields**:
+
 - `properties.*` → `dataFields.*` (all properties)
 - `properties.order_id` → `id` (converted to string, priority 1)
 - `properties.orderId` → `id` (converted to string, priority 2)
@@ -100,9 +115,11 @@ The destination automatically categorizes track events based on event names:
 - `properties.total` → `total` (required field)
 
 **Additional Processing**:
+
 - `properties.products` → `items[]` (processed separately via utility functions)
 
 **Product Item Mapping**:
+
 - `product_id` → `id`
 - `sku` → `sku`
 - `name` → `name`
@@ -111,14 +128,17 @@ The destination automatically categorizes track events based on event names:
 - `category` → `categories[]` (split by comma)
 
 ##### Cart Update Events
+
 - **Config File**: `IterableProductConfig.json`
 - **Endpoint**: `/api/commerce/updateCart`
 
 **Cart Fields**:
+
 - `properties.products` → `items[]`
 - User identification fields (userId/email)
 
 #### Validation Requirements
+
 - **Mandatory Fields**: Either `email` or `userId` must be present
 - **Event Name**: Required for all track events
 - **Product Arrays**: Validated for e-commerce events
@@ -127,19 +147,23 @@ The destination automatically categorizes track events based on event names:
 ### Page Events
 
 #### Purpose
+
 Track page views for web analytics and user journey mapping.
 
 #### Mapping Configuration
+
 - **Config File**: `IterablePageConfig.json`
 - **Endpoint**: `/api/events/track` or `/api/events/trackBulk`
 
 #### Field Mappings
+
 - `name` → `eventName` (page name)
 - `properties.url` → `dataFields.url`
 - `properties.title` → `dataFields.title`
 - `properties.*` → `dataFields.*` (all page properties)
 
 #### Special Handling
+
 - **Event Name Generation**: Uses page name or defaults to "Page View"
 - **URL Tracking**: Automatically captures page URL and title
 - **Category Mapping**: Page events are treated as standard track events
@@ -147,35 +171,43 @@ Track page views for web analytics and user journey mapping.
 ### Screen Events
 
 #### Purpose
+
 Track screen views for mobile applications.
 
 #### Mapping Configuration
+
 - **Config File**: `IterablePageConfig.json` (shared with page events)
 - **Endpoint**: `/api/events/track` or `/api/events/trackBulk`
 
 #### Field Mappings
+
 - `name` → `eventName` (screen name)
 - `properties.*` → `dataFields.*` (all screen properties)
 
 #### Special Handling
+
 - **Event Name Generation**: Uses screen name or defaults to "Screen View"
 - **Mobile Context**: Captures mobile-specific context information
 
 ### Alias Events
 
 #### Purpose
+
 Update user email addresses while maintaining user identity.
 
 #### Mapping Configuration
+
 - **Config File**: `IterableAliasConfig.json`
 - **Endpoint**: `/api/users/updateEmail`
 
 #### Field Mappings
+
 - `userId` → `currentUserId`
 - `traits.email` → `currentEmail` (current email)
 - `previousId` → `newEmail` (new email address)
 
 #### Validation Requirements
+
 - **Current Email**: Must be provided
 - **New Email**: Must be valid email format
 - **User ID**: Required for email update operations
@@ -183,27 +215,35 @@ Update user email addresses while maintaining user identity.
 ## Catalog Events (RETL)
 
 ### Purpose
+
 Manage catalog items for product recommendations and content personalization.
 
 ### Mapping Configuration
+
 - **Config File**: `IterableCatalogConfig.json`
 - **Endpoint**: `/api/catalogs/{objectType}/items`
 
 ### Field Mappings (IterableCatalogConfig.json)
+
 - `traits.*` → `update.*` (all catalog item properties)
 
 ### External ID Handling
+
 Catalog operations require external ID information to determine:
+
 - **Object Type**: The type of catalog (e.g., "products", "content")
 - **Item Identifier**: The unique identifier for the catalog item
 
 ### Endpoint Construction
+
 The catalog endpoint is dynamically constructed based on external ID:
+
 ```
 /api/catalogs/{externalId.objectType}/items
 ```
 
 ### Validation Requirements
+
 - **External ID**: Must contain valid object type and identifier
 - **Update Data**: Catalog item properties must be provided in traits
 
@@ -212,15 +252,18 @@ The catalog endpoint is dynamically constructed based on external ID:
 ### Device Token Registration
 
 #### Purpose
+
 Register mobile device tokens for push notifications.
 
 #### Mapping Configuration
+
 - **Config File**: `IterableRegisterDeviceTokenConfig.json`
 - **Endpoint**: `/api/users/registerDeviceToken`
 
 #### Field Mappings (IterableRegisterDeviceTokenConfig.json)
 
 **User Identification** (Priority Order):
+
 - `userId` → `userId`
 - `traits.userId` → `userId`
 - `traits.id` → `userId`
@@ -229,28 +272,34 @@ Register mobile device tokens for push notifications.
 - `anonymousId` → `userId` (fallback)
 
 **Email Address**:
+
 - `traits.email` → `email`
 - `context.traits.email` → `email`
 
 **Device Information** (processed via utility functions):
+
 - `context.device.token` → `device.token`
 - `context.device.type` → `device.platform`
 - `context.device.id` → `device.deviceId`
 
 #### Platform Mapping
+
 - iOS devices: `platform: "APNS"`
 - Android devices: `platform: "GCM"` or `platform: "FCM"`
 
 ### Browser Token Registration
 
 #### Purpose
+
 Register web browser tokens for web push notifications.
 
 #### Mapping Configuration
+
 - **Config File**: `IterableRegisterBrowserTokenConfig.json`
 - **Endpoint**: `/api/users/registerBrowserToken`
 
 #### Field Mappings
+
 - **Browser Information**:
   - `context.device.token` → `browserToken`
   - User identification fields (userId/email)
@@ -298,6 +347,7 @@ Events are grouped for batching based on:
 The destination provides sophisticated error handling for bulk operations:
 
 #### Error Detection Paths
+
 - **Invalid Emails**: `invalidEmails`, `failedUpdates.invalidEmails`
 - **Invalid User IDs**: `invalidUserIds`, `failedUpdates.invalidUserIds`
 - **Not Found Emails**: `failedUpdates.notFoundEmails`
@@ -311,7 +361,9 @@ The destination provides sophisticated error handling for bulk operations:
 - **Disallowed Event Names**: `disallowedEventNames`
 
 #### Error Message Generation
+
 The destination automatically generates detailed error messages for failed events:
+
 - Identifies specific failure reasons (invalid email, user not found, etc.)
 - Maps failures to individual events within bulk operations
 - Provides actionable error information for debugging
@@ -329,6 +381,7 @@ The destination automatically generates detailed error messages for failed event
 ### User Identification Priority
 
 1. **Prefer User ID**: When `preferUserId: true` (default)
+
    - Use `userId` if available
    - Fall back to `email` if userId not present
    - Use `anonymousId` as last resort
@@ -354,21 +407,25 @@ The destination automatically generates detailed error messages for failed event
 ## Use Cases and Applications
 
 ### Marketing Automation
+
 - **User Segmentation**: Use identify events to build user segments
 - **Event Triggering**: Use track events to trigger automated campaigns
 - **Behavioral Tracking**: Track user interactions for personalization
 
 ### E-commerce Integration
+
 - **Purchase Tracking**: Monitor completed orders and revenue
 - **Cart Abandonment**: Track cart updates for abandonment campaigns
 - **Product Recommendations**: Use product interaction data for recommendations
 
 ### User Journey Mapping
+
 - **Page/Screen Tracking**: Map user navigation patterns
 - **Event Sequences**: Track user behavior sequences
 - **Conversion Funnels**: Analyze conversion paths and drop-off points
 
 ### Push Notifications
+
 - **Device Registration**: Register mobile devices for push notifications
 - **Web Push**: Register browsers for web push notifications
 - **Targeted Messaging**: Use user data for targeted push campaigns
@@ -413,21 +470,25 @@ The destination uses intelligent event name matching:
 ### Configuration Preferences
 
 #### User ID vs Email Preference
+
 - **preferUserId: true** (default): Prioritizes userId over email for identification
 - **preferUserId: false**: Prioritizes email over userId for identification
 
 #### Nested Object Handling
+
 - **mergeNestedObjects: true** (default): Merges nested objects in user attributes
 - **mergeNestedObjects: false**: Keeps nested objects as separate fields
 
 ### RETL Integration
 
 #### External ID Processing
+
 - **Object Type Extraction**: Automatically extracts object type from external IDs
 - **Catalog Endpoint Construction**: Builds dynamic catalog endpoints
 - **Mapped to Destination**: Processes events with `mappedToDestination: true` flag
 
 #### Catalog Item Management
+
 - **Batch Processing**: Supports up to 1000 catalog items per request
 - **Dynamic Endpoints**: Constructs endpoints based on catalog object type
 - **Update Operations**: Handles catalog item creation and updates
@@ -435,22 +496,26 @@ The destination uses intelligent event name matching:
 ### Device and Platform Detection
 
 #### Mobile Platform Mapping
+
 - **iOS Detection**: Maps iOS devices to APNS platform
 - **Android Detection**: Maps Android devices to GCM/FCM platform
 - **Token Validation**: Validates device tokens before registration
 
 #### Browser Token Handling
+
 - **Web Push Support**: Handles browser-specific push token registration
 - **Cross-Platform**: Supports multiple browser types and platforms
 
 ### Error Recovery and Resilience
 
 #### Partial Failure Handling
+
 - **Individual Event Tracking**: Tracks success/failure for each event in bulk operations
 - **Graceful Degradation**: Continues processing successful events when some fail
 - **Detailed Error Reporting**: Provides specific error information for failed events
 
 #### Retry Logic
+
 - **Network Errors**: Handles temporary network failures
 - **Rate Limiting**: Respects API rate limits and retry after headers
 - **Authentication**: Handles token refresh and re-authentication scenarios

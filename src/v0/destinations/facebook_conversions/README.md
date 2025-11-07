@@ -7,6 +7,7 @@ Implementation in **JavaScript**
 ### Required Settings
 
 - **Dataset ID**: The unique identifier for your Facebook dataset
+
   - Format: Numeric string (e.g., `1234567898765`)
   - Obtained from the Facebook Dataset creation page in Events Manager
   - Used to construct the API endpoint for sending events
@@ -20,19 +21,23 @@ Implementation in **JavaScript**
 ### Optional Settings
 
 - **Action Source**: Specifies where the conversion event occurred
+
   - Available values: `email`, `website`, `app`, `phone_call`, `chat`, `physical_store`, `system_generated`, `other`
   - Default: Determined automatically based on event context
   - Used for attribution and optimization
 
 - **Limited Data Usage**: Enable for California Consumer Privacy Act (CCPA) compliance
+
   - When enabled, adds data processing options to requests
   - Helps comply with privacy regulations
 
 - **Remove External ID**: Option to exclude external_id from user data
+
   - When enabled, removes external_id from the payload
   - Useful for privacy compliance scenarios
 
 - **Test Destination**: Enable test mode for debugging
+
   - When enabled, events are sent to Facebook's test environment
   - Requires a test event code for validation
 
@@ -43,6 +48,7 @@ Implementation in **JavaScript**
 ### PII Data Handling
 
 - **Blacklist PII Properties**: Properties to exclude or hash
+
   - Configure which PII fields should be removed or hashed
   - Supports custom hashing options
 
@@ -53,6 +59,7 @@ Implementation in **JavaScript**
 ### Event Mapping
 
 - **Events to Events**: Custom event name mapping
+
   - Map RudderStack event names to Facebook standard events
   - Supports dynamic configuration via UI
   - Example: Map "Product Searched" to "Search"
@@ -65,6 +72,7 @@ Implementation in **JavaScript**
 ### Event Filtering
 
 - **Event Filtering Option**: Control which events are sent
+
   - **Disabled**: Send all events (default)
   - **Allowlist**: Only send specified events
   - **Denylist**: Send all events except specified ones
@@ -75,12 +83,14 @@ Implementation in **JavaScript**
 ### Consent Management
 
 - **Consent Management Providers**: Support for multiple consent management platforms
+
   - **OneTrust**: Integration with OneTrust consent platform
   - **Ketch**: Integration with Ketch consent platform
   - **iubenda**: Integration with iubenda consent platform
   - **Custom**: Custom consent management implementation
 
 - **Resolution Strategy**: Logic for handling multiple consent requirements
+
   - **AND**: All specified consents must be granted
   - **OR**: Any of the specified consents must be granted
 
@@ -106,28 +116,29 @@ Implementation in **JavaScript**
 
 ### API Endpoints
 
-| Endpoint | Event Types | Description |
-|----------|-------------|-------------|
+| Endpoint                     | Event Types         | Description                                    |
+| ---------------------------- | ------------------- | ---------------------------------------------- |
 | `/v22.0/{dataset_id}/events` | Track, Page, Screen | Primary endpoint for sending conversion events |
 
 ### Standard Event Mapping
 
 The destination automatically maps RudderStack e-commerce events to Facebook standard events:
 
-| RudderStack Event | Facebook Event | Description |
-|-------------------|----------------|-------------|
-| `Product List Viewed` | `ViewContent` | User viewed a product catalog or list |
-| `Product Viewed` | `ViewContent` | User viewed a specific product |
-| `Product Added` | `AddToCart` | User added product to cart |
-| `Order Completed` | `Purchase` | User completed a purchase |
-| `Products Searched` | `Search` | User searched for products |
-| `Checkout Started` | `InitiateCheckout` | User started checkout process |
-| `Payment Info Entered` | `AddPaymentInfo` | User entered payment information |
-| `Product Added to Wishlist` | `AddToWishlist` | User added product to wishlist |
+| RudderStack Event           | Facebook Event     | Description                           |
+| --------------------------- | ------------------ | ------------------------------------- |
+| `Product List Viewed`       | `ViewContent`      | User viewed a product catalog or list |
+| `Product Viewed`            | `ViewContent`      | User viewed a specific product        |
+| `Product Added`             | `AddToCart`        | User added product to cart            |
+| `Order Completed`           | `Purchase`         | User completed a purchase             |
+| `Products Searched`         | `Search`           | User searched for products            |
+| `Checkout Started`          | `InitiateCheckout` | User started checkout process         |
+| `Payment Info Entered`      | `AddPaymentInfo`   | User entered payment information      |
+| `Product Added to Wishlist` | `AddToWishlist`    | User added product to wishlist        |
 
 ### Additional Standard Events
 
 The following Facebook standard events are also supported:
+
 - `Lead`
 - `CompleteRegistration`
 - `Contact`
@@ -143,23 +154,23 @@ The following Facebook standard events are also supported:
 
 The destination maps RudderStack user properties to Facebook user data fields:
 
-| RudderStack Field | Facebook Field | Hashed | Description |
-|-------------------|----------------|---------|-------------|
-| `userId` | `external_id` | Yes | Primary user identifier |
-| `traits.email` | `em` | Yes | Email address |
-| `traits.phone` | `ph` | Yes | Phone number |
-| `traits.firstName` | `fn` | Yes | First name |
-| `traits.lastName` | `ln` | Yes | Last name |
-| `traits.gender` | `ge` | No | Gender (m/f) |
-| `traits.birthday` | `db` | Yes | Date of birth |
-| `traits.address.city` | `ct` | Yes | City |
-| `traits.address.state` | `st` | Yes | State |
-| `traits.address.zip` | `zp` | Yes | ZIP/Postal code |
-| `traits.address.country` | `country` | Yes | Country |
-| `context.ip` | `client_ip_address` | No | IP address |
-| `context.userAgent` | `client_user_agent` | No | User agent |
-| `context.fbc` | `fbc` | No | Facebook click ID |
-| `context.fbp` | `fbp` | No | Facebook browser ID |
+| RudderStack Field        | Facebook Field      | Hashed | Description             |
+| ------------------------ | ------------------- | ------ | ----------------------- |
+| `userId`                 | `external_id`       | Yes    | Primary user identifier |
+| `traits.email`           | `em`                | Yes    | Email address           |
+| `traits.phone`           | `ph`                | Yes    | Phone number            |
+| `traits.firstName`       | `fn`                | Yes    | First name              |
+| `traits.lastName`        | `ln`                | Yes    | Last name               |
+| `traits.gender`          | `ge`                | No     | Gender (m/f)            |
+| `traits.birthday`        | `db`                | Yes    | Date of birth           |
+| `traits.address.city`    | `ct`                | Yes    | City                    |
+| `traits.address.state`   | `st`                | Yes    | State                   |
+| `traits.address.zip`     | `zp`                | Yes    | ZIP/Postal code         |
+| `traits.address.country` | `country`           | Yes    | Country                 |
+| `context.ip`             | `client_ip_address` | No     | IP address              |
+| `context.userAgent`      | `client_user_agent` | No     | User agent              |
+| `context.fbc`            | `fbc`               | No     | Facebook click ID       |
+| `context.fbp`            | `fbp`               | No     | Facebook browser ID     |
 
 ## Additional Functionalities
 
@@ -179,6 +190,7 @@ When `limitedDataUsage` is enabled, the destination automatically includes data 
 ### App Data Support
 
 For mobile app events (when `action_source` is `app`), the destination includes additional app-specific data:
+
 - App version
 - Device information
 - SDK version
@@ -302,16 +314,19 @@ This destination does not support RETL (Real-time Extract, Transform, Load) func
 **Current Status**: The implementation uses Facebook Graph API v22.0, but v23.0 is now available (released May 29, 2025).
 
 **Impact**:
+
 - Missing latest features and improvements
 - Potential future compatibility issues
 - Not using the most current API capabilities
 
 **Recommendation**: Update the implementation to use v23.0 for:
+
 - Latest privacy and compliance features
 - Enhanced performance optimizations
 - Long-term API support
 
 **Files to Update**:
+
 - `src/v0/destinations/facebook_conversions/config.js` - Update ENDPOINT URL
 - Test files and documentation references
 
@@ -320,18 +335,22 @@ This destination does not support RETL (Real-time Extract, Transform, Load) func
 ### Common Issues
 
 1. **Authentication Errors**
+
    - **Cause**: Invalid or expired access token
    - **Solution**: Regenerate access token with proper permissions
 
 2. **Dataset ID Errors**
+
    - **Cause**: Incorrect or missing dataset ID
    - **Solution**: Verify dataset ID from Facebook Events Manager
 
 3. **Event Validation Errors**
+
    - **Cause**: Missing required fields or invalid data format
    - **Solution**: Ensure proper event structure and required user identifiers
 
 4. **Rate Limiting**
+
    - **Cause**: Exceeding Facebook's API limits
    - **Solution**: Implement exponential backoff and reduce request frequency
 

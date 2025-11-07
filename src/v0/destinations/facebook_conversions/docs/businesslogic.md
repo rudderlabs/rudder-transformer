@@ -29,6 +29,7 @@ switch (messageType) {
 Track events are mapped to specific categories based on event names:
 
 #### Standard E-commerce Events
+
 - `product list viewed` → `PRODUCT_LIST_VIEWED` → Facebook `ViewContent`
 - `product viewed` → `PRODUCT_VIEWED` → Facebook `ViewContent`
 - `product added` → `PRODUCT_ADDED` → Facebook `AddToCart`
@@ -39,9 +40,11 @@ Track events are mapped to specific categories based on event names:
 - `product added to wishlist` → `PRODUCT_ADDED_TO_WISHLIST` → Facebook `AddToWishlist`
 
 #### Other Standard Events
+
 Events like `Lead`, `CompleteRegistration`, `Contact`, etc., are mapped to `OTHER_STANDARD` category.
 
 #### Custom Events
+
 Events not matching standard patterns are treated as custom events using `SIMPLE_TRACK` category.
 
 ## Data Transformation Logic
@@ -49,6 +52,7 @@ Events not matching standard patterns are treated as custom events using `SIMPLE
 ### User Data Processing
 
 #### 1. User Data Extraction
+
 ```javascript
 const userData = fetchUserData(
   message,
@@ -59,18 +63,21 @@ const userData = fetchUserData(
 ```
 
 #### 2. PII Data Handling
+
 - **Hashing**: Most PII fields are automatically hashed using SHA-256
 - **Normalization**: Email addresses are trimmed and lowercased before hashing
 - **Name Splitting**: Full names are split into first and last names
 - **External ID Removal**: Can be configured to remove external_id for privacy
 
 #### 3. Facebook-specific Parameters
+
 - **FBC Parameter**: Facebook click ID deduced from URL parameters or context
 - **FBP Parameter**: Facebook browser ID from context or properties
 
 ### Custom Data Processing
 
 #### 1. Property Extraction
+
 ```javascript
 customData = extractCustomFields(
   message,
@@ -81,12 +88,15 @@ customData = extractCustomFields(
 ```
 
 #### 2. Default Exclusions
+
 The following properties are excluded from custom data:
+
 - `opt_out`
 - `event_id`
 - `action_source`
 
 #### 3. PII Transformation
+
 ```javascript
 customData = transformedPayloadData(
   message,
@@ -98,15 +108,18 @@ customData = transformedPayloadData(
 ```
 
 #### 4. Category-specific Processing
+
 Different event categories have specific custom data processing:
 
 **E-commerce Events**:
+
 - Product arrays are processed to extract `content_ids` and `contents`
 - Content type and category are determined
 - Number of items is calculated
 - Currency and value are standardized
 
 **Search Events**:
+
 - Search query is included in custom data
 - Content type validation is performed
 
@@ -147,6 +160,7 @@ eventTypeCustomData = {
 ### Products Searched
 
 Special validation is performed for search events:
+
 ```javascript
 validateProductSearchedData(eventTypeCustomData);
 ```
@@ -156,7 +170,7 @@ validateProductSearchedData(eventTypeCustomData);
 The `action_source` is determined using the following logic:
 
 1. **Explicit Configuration**: Use configured action source if provided
-2. **Context-based Detection**: 
+2. **Context-based Detection**:
    - `app` for mobile app contexts
    - `website` for web contexts
 3. **Default Fallback**: `website` if no context is available
@@ -164,7 +178,7 @@ The `action_source` is determined using the following logic:
 ```javascript
 const getActionSource = (commonData, actionSource) => {
   if (actionSource) return actionSource;
-  
+
   // Auto-detection logic based on context
   if (isAppContext(commonData)) return 'app';
   return 'website';
@@ -184,6 +198,7 @@ const appData = constructPayload(
 ```
 
 App data includes:
+
 - Extended device information (`extinfo`)
 - App version
 - SDK version
@@ -240,6 +255,7 @@ This validation ensures events are within Facebook's acceptable time window.
 ### User Data Validation
 
 At least one user identifier must be present:
+
 - `external_id` (from userId or anonymousId)
 - `em` (email)
 - `ph` (phone)
@@ -248,16 +264,19 @@ At least one user identifier must be present:
 ## Error Handling
 
 ### Configuration Errors
+
 - Missing dataset ID or access token
 - Invalid action source values
 - Malformed event mapping configuration
 
 ### Data Validation Errors
+
 - Missing required fields
 - Invalid event duration
 - Invalid device type for app events
 
 ### Network Errors
+
 - API rate limiting
 - Authentication failures
 - Malformed requests
@@ -267,7 +286,7 @@ At least one user identifier must be present:
 ### Content Type Determination
 
 ```javascript
-const contentType = 
+const contentType =
   message.properties?.content_type ||
   getContentType(
     message,
@@ -304,6 +323,7 @@ return formingFinalResponse(
 ```
 
 The final response includes:
+
 - **User Data**: Hashed PII and identifiers
 - **Common Data**: Event metadata and action source
 - **Custom Data**: Event-specific properties
@@ -313,24 +333,28 @@ The final response includes:
 ## Use Cases
 
 ### E-commerce Tracking
+
 - Product catalog browsing
 - Shopping cart interactions
 - Purchase completion
 - Wishlist management
 
 ### Lead Generation
+
 - Form submissions
 - Newsletter signups
 - Contact requests
 - Trial registrations
 
 ### Content Engagement
+
 - Page views
 - Content interactions
 - Search activities
 - Custom events
 
 ### Mobile App Analytics
+
 - Screen views
 - In-app purchases
 - App-specific events

@@ -166,10 +166,16 @@ export const data: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.example.com',
-              headers: { /* headers */ },
-              params: { /* params */ },
+              headers: {
+                /* headers */
+              },
+              params: {
+                /* params */
+              },
               body: {
-                JSON: { /* JSON body */ },
+                JSON: {
+                  /* JSON body */
+                },
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {},
@@ -177,7 +183,9 @@ export const data: ProcessorTestData[] = [
               files: {},
               userId: 'user123',
             },
-            metadata: { /* Metadata */ },
+            metadata: {
+              /* Metadata */
+            },
             statusCode: 200,
           },
         ],
@@ -199,6 +207,7 @@ When using `ProcessorTestData` and `RouterTestData` types, be aware that there's
 - This can cause TypeScript errors when using the specific types.
 
 To avoid these errors, you can:
+
 1. Use the generic `TestCaseData` type instead of the specific types
 2. Remove the `statusCode` property from the `batchedRequest` objects
 3. Cast the objects to `any` or use type assertions
@@ -255,10 +264,16 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api.example.com',
-                  headers: { /* headers */ },
-                  params: { /* params */ },
+                  headers: {
+                    /* headers */
+                  },
+                  params: {
+                    /* params */
+                  },
                   body: {
-                    JSON: { /* JSON body */ },
+                    JSON: {
+                      /* JSON body */
+                    },
                     XML: {},
                     JSON_ARRAY: {},
                     FORM: {},
@@ -340,9 +355,15 @@ const output = transformResultBuilder({
   type: 'REST',
   method: 'POST',
   endpoint: 'https://api.example.com',
-  headers: { /* headers */ },
-  params: { /* params */ },
-  JSON: { /* JSON body */ },
+  headers: {
+    /* headers */
+  },
+  params: {
+    /* params */
+  },
+  JSON: {
+    /* JSON body */
+  },
   userId: 'user123',
 });
 ```
@@ -356,18 +377,26 @@ import {
   generateTrackPayload,
   generateIndentifyPayload,
   generatePageOrScreenPayload,
-  generateGroupPayload
+  generateGroupPayload,
 } from '../../../testUtils';
 
 const trackMessage = generateTrackPayload({
   event: 'event_name',
-  properties: { /* properties */ },
-  context: { /* context */ },
+  properties: {
+    /* properties */
+  },
+  context: {
+    /* context */
+  },
 });
 
 const identifyMessage = generateIndentifyPayload({
-  traits: { /* traits */ },
-  context: { /* context */ },
+  traits: {
+    /* traits */
+  },
+  context: {
+    /* context */
+  },
 });
 ```
 

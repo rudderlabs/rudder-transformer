@@ -15,6 +15,7 @@ Amplitude is a product analytics platform that helps companies understand user b
 ### Required Settings
 
 - **API Key**: Required for authentication with Amplitude API
+
   - Must be provided to send events to Amplitude
   - Can be found in your Amplitude project settings under the General tab
 
@@ -25,23 +26,28 @@ Amplitude is a product analytics platform that helps companies understand user b
 ### Optional Settings
 
 - **Secret Key**: Required for user deletion functionality
+
   - Can be found in your Amplitude project settings under the General tab
   - Used for authentication when sending user deletion requests
   - Required for compliance with privacy regulations (GDPR, CCPA)
 
 - **Group Type Trait**: Specifies the trait to use as the group type
+
   - Used for group analytics in Amplitude
 
 - **Group Value Trait**: Specifies the trait to use as the group value
+
   - Used for group analytics in Amplitude
 
 - **User Property Operations**: Configure special operations for user properties
+
   - **Traits to Increment**: Properties that should be incremented rather than set
   - **Traits to Set Once**: Properties that should only be set if they don't exist
   - **Traits to Append**: Properties where values should be appended to arrays
   - **Traits to Prepend**: Properties where values should be prepended to arrays
 
 - **Page/Screen Tracking Options**:
+
   - **Track All Pages**: Send all page views to Amplitude
   - **Track Categorized Pages**: Send page views with categories to Amplitude
   - **Track Named Pages**: Send page views with names to Amplitude
@@ -49,19 +55,23 @@ Amplitude is a product analytics platform that helps companies understand user b
   - **Custom Screen Event Name**: Define a custom event name for screen events
 
 - **E-commerce Options**:
+
   - **Track Products Once**: Send each product in an order as a single event
   - **Track Revenue Per Product**: Track revenue for each product separately
 
 - **Device ID Options**:
+
   - **Prefer Anonymous ID for Device ID**: Use anonymousId as the device_id
   - **Use Advertising ID for Device ID**: Use advertising ID as the device_id (Android)
   - **Use IDFA as Device ID**: Use IDFA as the device_id (iOS)
 
 - **Event Filtering**:
+
   - **Blacklisted Events**: Events that should not be sent to Amplitude
   - **Whitelisted Events**: Only these events will be sent to Amplitude
 
 - **Enhanced User Operations**: Enable advanced user property operations
+
   - Supports operations like $set, $setOnce, $add, $append, $prepend, $unset
 
 - **Map Device Brand**: Include device brand information in events
@@ -81,6 +91,7 @@ Amplitude is a product analytics platform that helps companies understand user b
 - **Alias**: Yes - Maps to Amplitude's user mapping functionality
 
 #### Message Type and Connection Modes from `db-config.json`
+
 ```json
   "supportedMessageTypes": {
       "cloud": ["alias", "group", "identify", "page", "screen", "track"],
@@ -111,13 +122,12 @@ Amplitude is a product analytics platform that helps companies understand user b
 
 Amplitude enforces rate limits to ensure system stability:
 
-| Endpoint | Rate Limit | Payload & Batch Size Limits | Description |
-|----------|------------|--------------|-------------|
-| `/2/httpapi` | 30 events/second per user/device | 1 MB per request | Main event tracking endpoint |
-| `/batch` | 1000 events/second per user/device && 500,000 events per day | 20 MB per request, 2000 events per batch | Batch event upload endpoint |
-| `/api/2/deletions/users` | 1 request/second | 100 users per batch, 8 parallel requests per project | User deletion endpoint |
-| `/groupidentify` | No official documentation found | 1 MB per request & group identifies per request is 1024 & group properties per request is 1024 | Group identify endpoint |
-
+| Endpoint                 | Rate Limit                                                   | Payload & Batch Size Limits                                                                    | Description                  |
+| ------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------- |
+| `/2/httpapi`             | 30 events/second per user/device                             | 1 MB per request                                                                               | Main event tracking endpoint |
+| `/batch`                 | 1000 events/second per user/device && 500,000 events per day | 20 MB per request, 2000 events per batch                                                       | Batch event upload endpoint  |
+| `/api/2/deletions/users` | 1 request/second                                             | 100 users per batch, 8 parallel requests per project                                           | User deletion endpoint       |
+| `/groupidentify`         | No official documentation found                              | 1 MB per request & group identifies per request is 1024 & group properties per request is 1024 | Group identify endpoint      |
 
 ### Batching Support
 
@@ -136,12 +146,12 @@ The Amplitude destination does not make any intermediate API calls. All events a
 
 ### Proxy Delivery
 
-- **Supported**: No - *This is not yet enabled & still in testing phase*
+- **Supported**: No - _This is not yet enabled & still in testing phase_
 - **Source Code Path**: `src/v0/destinations/am/networkHandler.js`
 - **Implementation**: Custom network handler with error handling and retry logic
 - **Features**:
-  - Handles rate limiting (429 errors) with appropriate retry logic
-  - Processes throttled users and devices
+  - Handles rate limiting (429 errors) by throwing ThrottledError
+  - Does not require complex throttled user/device processing since event ordering is not guaranteed for Amplitude
   - Supports both retryable and non-retryable error handling
 
 ### User Deletion
@@ -230,13 +240,20 @@ These event types update user profiles in Amplitude. While Amplitude doesn't exp
 
 Amplitude events include a timestamp field, which is populated with the event's timestamp. Amplitude processes events based on this timestamp, not the order in which they are received.
 
-> **Recommendation**: Maintain event ordering for all event types to ensure accurate user profiles and event sequencing.
+> **Note**: We have disabled event ordering for Amplitude by setting the guaranteeUserEventOrder flag to false on the server.
+>
+> When event ordering is enabled, the server attempts to preserve the order of events. In such cases, if a 429 (Too Many Requests) error occurs, the server throttles further events until all queued events (from the beginning) are successfully processed.
+>
+> Previously, a 429 at the userId/deviceId level caused throttling across the entire destination. To mitigate this, we temporarily updated the 429 response to a 500.
+>
+> However, since event ordering is now disabled, we can safely return 429 as is—it will no longer cause throttling for the entire destination.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
 
 - **Identify Events**:
+
   - **Feasible with Caution**: Replaying missing identify events is feasible but could overwrite newer user attributes with older ones if not handled carefully.
 
 - **Track/Page/Screen Events**:
@@ -254,6 +271,7 @@ Amplitude events include a timestamp field, which is populated with the event's 
 ### Multiplexing
 
 - **Track Events with Revenue and Products**:
+
   - **Multiplexing**: YES (when trackProductsOnce is enabled)
   - **Conditions**: When `trackProductsOnce` is enabled and the event contains a products array
   - **Behavior**:
@@ -263,6 +281,7 @@ Amplitude events include a timestamp field, which is populated with the event's 
   - **Example**: An "Order Completed" event with 3 products generates 4 total events (1 original + 3 product events)
 
 - **Group Events with Group Identify**:
+
   - **Multiplexing**: YES
   - **Behavior**:
     - First API Call: `/2/httpapi` - To update user properties with group information
@@ -283,18 +302,22 @@ Amplitude HTTP API v2 is used for event tracking.
 ### API Endpoints
 
 - **Event Tracking**:
+
   - US: `https://api2.amplitude.com/2/httpapi`
   - EU: `https://api.eu.amplitude.com/2/httpapi`
 
 - **Batch Event Upload**:
+
   - US: `https://api2.amplitude.com/batch`
   - EU: `https://api.eu.amplitude.com/batch`
 
 - **User Deletion**:
+
   - US: `https://amplitude.com/api/2/deletions/users`
   - EU: `https://analytics.eu.amplitude.com/api/2/deletions/users`
 
 - **Group Identify**:
+
   - US: `https://api2.amplitude.com/groupidentify`
   - EU: `https://api.eu.amplitude.com/groupidentify`
 
@@ -345,7 +368,7 @@ Group properties are updated using the Group call, which sets the group type and
 
 ### What happens when I exceed rate limits?
 
-When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by implementing retry logic with exponential backoff. The response includes information about which users/devices are throttled.
+When you exceed Amplitude's rate limits (30 events/second per user/device), you'll receive a 429 error response. The RudderStack destination handles this by throwing a ThrottledError, which triggers retry logic. Since Amplitude does not guarantee event ordering (`guaranteeUserEventOrder` is false), the destination uses simplified throttle handling without checking individual throttled users/devices or converting 429s to 500s.
 
 ### How does batching work in the Amplitude destination?
 

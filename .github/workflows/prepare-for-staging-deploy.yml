@@ -34,7 +34,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 1
 
@@ -98,7 +98,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 1
 
@@ -138,6 +138,12 @@ jobs:
             yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             git add base.yaml
+
+            # Check if there are actual changes to commit
+            if git diff --cached --exit-code > /dev/null; then
+              echo "No changes detected in staging environment. Version $TAG_NAME is already deployed. Skipping commit."
+              exit 0
+            fi
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME

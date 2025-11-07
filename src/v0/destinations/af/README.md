@@ -7,16 +7,20 @@ Implementation in **Javascript**
 ### Required Settings
 
 - **Authorization Type**: Choose between v1 (Dev Key) or v2 (Server-to-Server Key) authentication
+
   - **v1**: Uses AppsFlyer Dev Key for authentication
   - **v2**: Uses AppsFlyer Server-to-Server API Key for authentication (recommended for server-side integrations)
 
 - **AppsFlyer Dev Key** (Required for v1 authorization): Your AppsFlyer application's dev key
+
   - Used for authentication with AppsFlyer's v1 API
 
 - **AppsFlyer Server-to-Server API Key** (Required for v2 authorization): Your AppsFlyer S2S API key
+
   - Used for authentication with AppsFlyer's v3 API (recommended)
 
 - **Android App ID**: Required if sending events from Android devices
+
   - Format: Package name (e.g., `com.mypackage.example`)
   - Required when `context.os.name` is set to "android"
   - Included in destination configuration for all connection modes
@@ -29,10 +33,12 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - **Use Rich Event Name**: Enable to create descriptive event names for Page and Screen events
+
   - When enabled: `Viewed [Page/Screen Name] Page/Screen`
   - When disabled: Uses generic "page" or "screen" event names
 
 - **Add Properties at Root**: Enable to add all event properties at the root level of the payload
+
   - When disabled: Properties are nested under a "properties" object
 
 - **AF Currency at Root**: Enable to add currency field at the root level of the payload
@@ -42,6 +48,7 @@ Implementation in **Javascript**
 - **Sharing Filter**: Optional parameter for data sharing control
 
 - **Event Filtering**: Configure event filtering options
+
   - **Disable**: No event filtering
   - **Whitelist Events**: Only send specified events
   - **Blacklist Events**: Send all events except specified ones
@@ -57,11 +64,13 @@ Implementation in **Javascript**
 ### Supported Message Types
 
 #### Cloud Mode
+
 - Track
 - Page
 - Screen
 
 #### Device Mode
+
 - Track
 - Screen
 - Identify
@@ -81,16 +90,18 @@ Implementation in **Javascript**
 
 The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 
-| API Version | Endpoint | Rate Limit | Payload Limit | Description |
-|-------------|----------|------------|---------------|-------------|
-| v2 (Legacy) | `https://api2.appsflyer.com/inappevent/{app_id}` | Not specified | Up to 1KB JSON payload | Legacy endpoint using Dev Key authentication |
+| API Version  | Endpoint                                         | Rate Limit    | Payload Limit          | Description                                   |
+| ------------ | ------------------------------------------------ | ------------- | ---------------------- | --------------------------------------------- |
+| v2 (Legacy)  | `https://api2.appsflyer.com/inappevent/{app_id}` | Not specified | Up to 1KB JSON payload | Legacy endpoint using Dev Key authentication  |
 | v3 (Current) | `https://api3.appsflyer.com/inappevent/{app_id}` | Not specified | Up to 1KB JSON payload | Current endpoint using S2S Key authentication |
 
 **General Rate Limits:**
+
 - **OneLink API**: 500 requests per second (30,000 per minute)
 - **OpenDSR API**: 350 requests per minute (for user deletion)
 
 **Important Notes:**
+
 - JSON payload size is limited to 1KB per event
 - AppsFlyer supports gradual scaling for high-volume implementations
 - Recommended to start with 10K TPS and scale gradually with 1-minute intervals
@@ -128,8 +139,9 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 #### Event Mapping and Configuration
 
 - **Predefined Event Mappings**: Special handling for e-commerce events
+
   - `Order Completed` → Purchase configuration
-  - `Product Added to Wishlist` → Cart/Wishlist configuration  
+  - `Product Added to Wishlist` → Cart/Wishlist configuration
   - `Wishlist Product Added to Cart` → Cart/Wishlist configuration
   - `Checkout Started` → Cart/Wishlist configuration
   - `Product Removed` → Default configuration
@@ -159,6 +171,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 ### Event Ordering
 
 #### Track, Page, Screen Events
+
 **Event ordering is NOT strictly required** for AppsFlyer events. Here's why:
 
 - **Timestamp-based Processing**: AppsFlyer processes events based on the `eventTime` parameter sent in the payload
@@ -166,6 +179,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 - **Flexible Event Processing**: Events arriving out of order can still be processed correctly if they include proper timestamps
 
 **Timestamping Logic:**
+
 - Events with valid `eventTime` are stamped with that value (if arriving before 02:00 UTC the next day)
 - Events arriving after 02:00 UTC are stamped with arrival time
 - Events with future `eventTime` values are handled based on calendar day logic
@@ -175,6 +189,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes, with considerations
 - **Reason**: Since event ordering is not strictly required, missing historical data can be replayed
 - **Important Notes**:
@@ -183,6 +198,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
   - AppsFlyer ID must correspond to actual app installs
 
 #### Already Delivered Data Replay
+
 - **Not Recommended**: AppsFlyer treats each event as unique
 - **Risk of Duplicates**: Replaying already delivered events will create duplicate events in AppsFlyer
 - **Impact**:
@@ -200,15 +216,18 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 #### Multiplexing Scenarios
 
 1. **Track Events**:
+
    - **Multiplexing**: NO
    - Single API call to AppsFlyer Server-to-Server Events API
    - All event data (properties, revenue, etc.) sent in one request
 
 2. **Page Events**:
+
    - **Multiplexing**: NO
    - Single API call with page-specific event name and properties
 
 3. **Screen Events**:
+
    - **Multiplexing**: NO
    - Single API call with screen-specific event name and properties
 
@@ -224,6 +243,7 @@ The AppsFlyer Server-to-Server Events API enforces the following rate limits:
 AppsFlyer maintains two API endpoints for Server-to-Server events:
 
 - **API v2 (Legacy)**: `https://api2.appsflyer.com/inappevent/{app_id}`
+
   - Uses Dev Key authentication
   - Still supported but legacy
 
@@ -235,6 +255,7 @@ AppsFlyer maintains two API endpoints for Server-to-Server events:
 ### Version Selection
 
 The destination automatically selects the appropriate API version based on configuration:
+
 - **v1 Authorization** → Uses API v2 endpoint with Dev Key
 - **v2 Authorization** → Uses API v3 endpoint with S2S Key
 

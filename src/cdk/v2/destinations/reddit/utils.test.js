@@ -6,6 +6,7 @@ const {
   removeUnsupportedFields,
   convertToUpperSnakeCase,
   generateAndValidateTimestamp,
+  prepareBatches,
 } = require('./utils');
 
 describe('calculateDefaultRevenue', () => {
@@ -739,5 +740,277 @@ describe('generateAndValidateTimestamp', () => {
 
     expect(typeof result).toBe('number');
     expect(result).toBe(dateObj.getTime());
+  });
+});
+
+describe('prepareBatches', () => {
+  // Helper function to create a mock event
+  const createMockEvent = (options = {}) => {
+    const { dontBatch = false, testId = undefined, jobId = 1, version = 'v3' } = options;
+    return {
+      destination: {
+        Config: { version },
+      },
+      message: [
+        {
+          body: {
+            JSON: {
+              data: {
+                events: [{ event_type: 'PURCHASE', event_at: 123456 }],
+                ...(testId && { test_id: testId }),
+              },
+            },
+          },
+        },
+      ],
+      metadata: {
+        jobId,
+        ...(dontBatch && { dontBatch: true }),
+      },
+    };
+  };
+
+  // Returns empty array for empty input
+  it('should return empty array for empty input', () => {
+    const successfulEvents = [];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toEqual([]);
+  });
+
+  // Batches all batchable events correctly
+  it('should batch all batchable events correctly', () => {
+    const successfulEvents = [
+      createMockEvent({ jobId: 1 }),
+      createMockEvent({ jobId: 2 }),
+      createMockEvent({ jobId: 3 }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(3);
+    expect(result[0].metadata[0].jobId).toBe(1);
+    expect(result[0].metadata[1].jobId).toBe(2);
+    expect(result[0].metadata[2].jobId).toBe(3);
+  });
+
+  // Separates non-batchable events with dontBatch flag into individual batches
+  it('should separate non-batchable events with dontBatch flag into individual batches', () => {
+    const successfulEvents = [
+      createMockEvent({ jobId: 1, dontBatch: true }),
+      createMockEvent({ jobId: 2, dontBatch: true }),
+      createMockEvent({ jobId: 3, dontBatch: true }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(3);
+    expect(result[0].metadata).toHaveLength(1);
+    expect(result[0].metadata[0].jobId).toBe(1);
+    expect(result[1].metadata).toHaveLength(1);
+    expect(result[1].metadata[0].jobId).toBe(2);
+    expect(result[2].metadata).toHaveLength(1);
+    expect(result[2].metadata[0].jobId).toBe(3);
+  });
+
+  // Separates non-batchable events with test_id into individual batches
+  it('should separate non-batchable events with test_id into individual batches', () => {
+    const successfulEvents = [
+      createMockEvent({ jobId: 1, testId: 'test-123' }),
+      createMockEvent({ jobId: 2, testId: 'test-456' }),
+      createMockEvent({ jobId: 3, testId: 'test-789' }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(3);
+    expect(result[0].metadata).toHaveLength(1);
+    expect(result[0].metadata[0].jobId).toBe(1);
+    expect(result[1].metadata).toHaveLength(1);
+    expect(result[1].metadata[0].jobId).toBe(2);
+    expect(result[2].metadata).toHaveLength(1);
+    expect(result[2].metadata[0].jobId).toBe(3);
+  });
+
+  // Handles mixed batchable and non-batchable events correctly
+  it('should handle mixed batchable and non-batchable events correctly', () => {
+    const successfulEvents = [
+      createMockEvent({ jobId: 1 }),
+      createMockEvent({ jobId: 2, dontBatch: true }),
+      createMockEvent({ jobId: 3 }),
+      createMockEvent({ jobId: 4, testId: 'test-123' }),
+      createMockEvent({ jobId: 5 }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    // Should have 3 batches: 1 for batchable events (jobIds 1, 3, 5), 2 for non-batchable (jobIds 2, 4)
+    expect(result).toHaveLength(3);
+    // First batch should contain batchable events
+    const batchableBatch = result.find((batch) => batch.metadata.length > 1);
+    expect(batchableBatch).toBeDefined();
+    expect(batchableBatch.metadata).toHaveLength(3);
+    expect(batchableBatch.metadata.map((m) => m.jobId).sort()).toEqual([1, 3, 5]);
+    // Non-batchable events should be in separate batches
+    const nonBatchableBatches = result.filter((batch) => batch.metadata.length === 1);
+    expect(nonBatchableBatches).toHaveLength(2);
+    expect(nonBatchableBatches.map((b) => b.metadata[0].jobId).sort()).toEqual([2, 4]);
+  });
+
+  // Chunks batchable events exceeding maxBatchSize correctly
+  it('should chunk batchable events exceeding maxBatchSize correctly', () => {
+    // Create 1500 batchable events (exceeding maxBatchSize of 1000)
+    const successfulEvents = Array.from({ length: 1500 }, (_, i) =>
+      createMockEvent({ jobId: i + 1 }),
+    );
+
+    const result = prepareBatches(successfulEvents);
+
+    // Should create 2 batches: one with 1000 events, one with 500 events
+    expect(result).toHaveLength(2);
+    expect(result[0].metadata).toHaveLength(1000);
+    expect(result[1].metadata).toHaveLength(500);
+    expect(result[0].metadata[0].jobId).toBe(1);
+    expect(result[1].metadata[0].jobId).toBe(1001);
+  });
+
+  // Handles events with both dontBatch and test_id correctly (should be non-batchable)
+  it('should handle events with both dontBatch and test_id correctly', () => {
+    const successfulEvents = [
+      createMockEvent({ jobId: 1, dontBatch: true, testId: 'test-123' }),
+      createMockEvent({ jobId: 2 }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(2);
+    expect(result[0].metadata).toHaveLength(1);
+    expect(result[0].metadata[0].jobId).toBe(1);
+    expect(result[1].metadata).toHaveLength(1);
+    expect(result[1].metadata[0].jobId).toBe(2);
+  });
+
+  // Handles single batchable event correctly
+  it('should handle single batchable event correctly', () => {
+    const successfulEvents = [createMockEvent({ jobId: 1 })];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(1);
+    expect(result[0].metadata[0].jobId).toBe(1);
+  });
+
+  // Handles single non-batchable event correctly
+  it('should handle single non-batchable event correctly', () => {
+    const successfulEvents = [createMockEvent({ jobId: 1, dontBatch: true })];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(1);
+    expect(result[0].metadata[0].jobId).toBe(1);
+  });
+
+  // Handles events with v2 version correctly
+  it('should handle events with v2 version correctly', () => {
+    const successfulEvents = [
+      {
+        destination: {
+          Config: { version: 'v2' },
+        },
+        message: [
+          {
+            body: {
+              JSON: {
+                events: [{ event_type: 'Purchase', event_at: 123456 }],
+              },
+            },
+          },
+        ],
+        metadata: { jobId: 1 },
+      },
+      {
+        destination: {
+          Config: { version: 'v2' },
+        },
+        message: [
+          {
+            body: {
+              JSON: {
+                events: [{ event_type: 'AddToCart', event_at: 123457 }],
+              },
+            },
+          },
+        ],
+        metadata: { jobId: 2 },
+      },
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(2);
+    expect(result[0].message.body.JSON.events).toHaveLength(2);
+  });
+
+  // Handles events with missing metadata correctly
+  it('should handle events with missing metadata correctly', () => {
+    const successfulEvents = [
+      {
+        destination: {
+          Config: { version: 'v3' },
+        },
+        message: [
+          {
+            body: {
+              JSON: {
+                data: {
+                  events: [{ event_type: 'PURCHASE', event_at: 123456 }],
+                },
+              },
+            },
+          },
+        ],
+        metadata: undefined,
+      },
+      createMockEvent({ jobId: 2 }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(2);
+  });
+
+  // Handles events with missing test_id in body correctly
+  it('should handle events with missing test_id in body correctly', () => {
+    const successfulEvents = [
+      {
+        destination: {
+          Config: { version: 'v3' },
+        },
+        message: [
+          {
+            body: {
+              JSON: {
+                data: {
+                  events: [{ event_type: 'PURCHASE', event_at: 123456 }],
+                },
+              },
+            },
+          },
+        ],
+        metadata: { jobId: 1 },
+      },
+      createMockEvent({ jobId: 2 }),
+    ];
+
+    const result = prepareBatches(successfulEvents);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].metadata).toHaveLength(2);
   });
 });

@@ -64,11 +64,7 @@ steps:
     description: Batches the successfulEvents based on the dontBatch in metadata and test_id in message body. If test_id is present in any of the transformed events, it is not batched.
     condition: $.outputs.successfulEvents.length
     template: |
-      const nonBatchableEvents =  $.outputs.successfulEvents{.metadata.dontBatch || .message.[0].body.JSON.data.test_id}[];
-      const batchableEvents = $.outputs.successfulEvents{!.metadata.dontBatch && !.message.[0].body.JSON.data.test_id}[];
-      const nonBatchableEventsChunks = $.chunk(nonBatchableEvents, 1);
-      const batchableEventsChunks = $.chunk(batchableEvents, $.maxBatchSize);
-      let batches = [...$.batchEventChunks(nonBatchableEventsChunks), ...$.batchEventChunks(batchableEventsChunks)];
+      const batches = $.prepareBatches($.outputs.successfulEvents);
       batches@batch.({
         "batchedRequest": {
           "body": {

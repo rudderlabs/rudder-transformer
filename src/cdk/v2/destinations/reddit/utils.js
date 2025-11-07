@@ -1,6 +1,11 @@
-const { isDefinedAndNotNull, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  isDefinedAndNotNull,
+  InstrumentationError,
+  PlatformError,
+} = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const crypto = require('crypto');
+const { maxBatchSize } = require('./config');
 
 const decideVersion = ({ Config }) => {
   const configVersion = Config.version;
@@ -157,6 +162,32 @@ const generateAndValidateTimestamp = (timestamp) => {
   return eventAt;
 };
 
+const prepareBatches = (successfulEvents) => {
+  const batches = [];
+  // filter out events that are marked as dontBatch or have a test_id
+  const nonBatchableEvents = successfulEvents.filter(
+    (event) => event.metadata?.dontBatch || event.message[0].body.JSON?.data?.test_id,
+  );
+  // filter out events that are not marked as dontBatch and do not have a test_id
+  const batchableEvents = successfulEvents.filter(
+    (event) => !event.metadata?.dontBatch && !event.message[0].body.JSON?.data?.test_id,
+  );
+  const nonBatchableEventsChunks = lodash.chunk(nonBatchableEvents, 1);
+  const batchableEventsChunks = lodash.chunk(batchableEvents, maxBatchSize);
+  // Check if the combined length of nonBatchableEvents and batchableEvents matches successfulEvents
+  if (nonBatchableEvents.length + batchableEvents.length !== successfulEvents.length) {
+    throw new PlatformError(
+      'The sum of non-batchable and batchable events does not match the total number of successful events.',
+      500,
+    );
+  }
+  batches.push(
+    ...batchEventChunks(nonBatchableEventsChunks),
+    ...batchEventChunks(batchableEventsChunks),
+  );
+  return batches;
+};
+
 const hashSHA256 = (value) => crypto.createHash('sha256').update(value).digest('hex');
 module.exports = {
   batchEventChunks,
@@ -167,4 +198,5 @@ module.exports = {
   decideVersion,
   generateAndValidateTimestamp,
   hashSHA256,
+  prepareBatches,
 };

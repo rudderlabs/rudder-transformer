@@ -709,10 +709,8 @@ export const data = [
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_access_token_123',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_access_token_123',
             },
           },
         },

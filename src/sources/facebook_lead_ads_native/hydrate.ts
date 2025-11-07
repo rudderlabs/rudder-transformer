@@ -25,13 +25,9 @@ const RequestBodySchema = z
     ),
     source: z
       .object({
-        config: z
+        internalSecret: z
           .object({
-            internalSecret: z
-              .object({
-                pageAccessToken: z.string().min(1, 'Page access token is required'),
-              })
-              .passthrough(),
+            pageAccessToken: z.string().min(1, 'Page access token is required'),
           })
           .passthrough(),
       })
@@ -106,7 +102,7 @@ export async function hydrate(input: unknown): Promise<SourceHydrationResponse> 
   }
 
   const { jobs, source } = validationResult.data;
-  const accessToken = source.config.internalSecret.pageAccessToken;
+  const accessToken = source.internalSecret.pageAccessToken;
 
   // Fetch all leads in parallel and map results back to jobs
   const results = await Promise.all(

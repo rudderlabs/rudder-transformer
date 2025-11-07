@@ -36,10 +36,8 @@ describe('Facebook Lead Ads Hydration', () => {
       },
     })),
     source: {
-      config: {
-        internalSecret: {
-          pageAccessToken: accessToken,
-        },
+      internalSecret: {
+        pageAccessToken: accessToken,
       },
     },
   });
@@ -163,10 +161,8 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -200,10 +196,8 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -233,10 +227,8 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -284,10 +276,8 @@ describe('Facebook Lead Ads Hydration', () => {
       const input = {
         jobs: [],
         source: {
-          config: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
+          internalSecret: {
+            pageAccessToken: 'test_token',
           },
         },
       };
@@ -406,10 +396,8 @@ describe('Facebook Lead Ads Hydration', () => {
         input: {
           jobs: 'not-an-array' as unknown,
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -419,10 +407,8 @@ describe('Facebook Lead Ads Hydration', () => {
         name: 'should return 400 when jobs is missing',
         input: {
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -439,10 +425,8 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: '',
-              },
+            internalSecret: {
+              pageAccessToken: '',
             },
           },
         },
@@ -458,9 +442,7 @@ describe('Facebook Lead Ads Hydration', () => {
               },
             },
           ],
-          source: {
-            config: {},
-          },
+          source: {},
         },
         expectedErrorPattern: 'internalSecret',
       },
@@ -469,10 +451,8 @@ describe('Facebook Lead Ads Hydration', () => {
         input: {
           jobs: [{}],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },
@@ -487,10 +467,8 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           ],
           source: {
-            config: {
-              internalSecret: {
-                pageAccessToken: 'test_token',
-              },
+            internalSecret: {
+              pageAccessToken: 'test_token',
             },
           },
         },

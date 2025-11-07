@@ -12,9 +12,10 @@ import {
 } from './middleware';
 import { addSwaggerRoutes, applicationRoutes } from './routes';
 import { metricsRouter } from './routes/metricsRouter';
-import * as cluster from './util/cluster';
+import * as clusterUtil from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
+import cluster from 'cluster';
 
 // eslint-disable-next-line import/first
 import logger from './logger';
@@ -27,7 +28,10 @@ const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 let pyroscopeInitialised = false;
 
-if (process.env.PYROSCOPE_SERVER_ADDRESS) {
+const enablePyroscope =
+  Boolean(process.env.PYROSCOPE_SERVER_ADDRESS) && (!clusterEnabled || !cluster.isPrimary);
+
+if (enablePyroscope) {
   pyroscopeInit({
     appName: process.env.PYROSCOPE_APPLICATION_NAME || 'rudder-transformer',
     serverAddress: process.env.PYROSCOPE_SERVER_ADDRESS,
@@ -109,7 +113,7 @@ function finalFunction() {
 }
 
 if (clusterEnabled) {
-  cluster.start(port, app, metricsApp);
+  clusterUtil.start(port, app, metricsApp);
 } else {
   // HTTP server for exposing metrics
   if (process.env.STATS_CLIENT === 'prometheus') {

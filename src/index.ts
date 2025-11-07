@@ -5,6 +5,7 @@ import bodyParser from 'koa-bodyparser';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { init as pyroscopeInit, start as pyroscopeStart } from '@pyroscope/nodejs';
+import cluster from 'cluster';
 import {
   addRequestSizeMiddleware,
   addStatMiddleware,
@@ -15,7 +16,6 @@ import { metricsRouter } from './routes/metricsRouter';
 import * as clusterUtil from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
-import cluster from 'cluster';
 
 // eslint-disable-next-line import/first
 import logger from './logger';

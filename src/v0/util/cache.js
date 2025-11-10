@@ -85,7 +85,10 @@ class Cache {
    * cache.set('myKey', { data: 'value' }, 60);
    */
   set(key, value, ttl) {
-    return this.cache.set(key, value, ttl);
+    if (ttl !== undefined) {
+      return this.cache.set(key, value, ttl);
+    }
+    return this.cache.set(key, value);
   }
 
   /**

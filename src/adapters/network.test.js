@@ -2,6 +2,46 @@ const mockLoggerInstance = {
   info: jest.fn(),
   error: jest.fn(),
 };
+
+// Mock the axios module FIRST - before any other imports that might use it
+jest.mock('axios', () => {
+  const mockAxios = jest.fn(); // Mock the default axios function
+  mockAxios.get = jest.fn(); // Mock axios.get
+  mockAxios.post = jest.fn(); // Mock axios.post
+  mockAxios.put = jest.fn(); // Mock axios.put
+  mockAxios.patch = jest.fn(); // Mock axios.patch
+  mockAxios.delete = jest.fn(); // Mock axios.delete
+
+  // Mock the axios.create method if needed
+  mockAxios.create = jest.fn(() => mockAxios);
+
+  // Add defaults property to avoid axios-mock-adapter errors
+  mockAxios.defaults = {
+    adapter: undefined,
+  };
+
+  return mockAxios; // Return the mocked axios
+});
+
+jest.mock('../util/stats', () => ({
+  timing: jest.fn(),
+  timingSummary: jest.fn(),
+  increment: jest.fn(),
+  counter: jest.fn(),
+  gauge: jest.fn(),
+  histogram: jest.fn(),
+}));
+
+jest.mock('@rudderstack/integrations-lib', () => {
+  return {
+    ...jest.requireActual('@rudderstack/integrations-lib'),
+    structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
+  };
+});
+
+const axios = require('axios');
+const stats = require('../util/stats');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const {
   getFormData,
   httpPOST,
@@ -18,41 +58,6 @@ const {
   getZippedPayload,
 } = require('./network');
 const { getFuncTestData } = require('../../test/testHelper');
-jest.mock('../util/stats', () => ({
-  timing: jest.fn(),
-  timingSummary: jest.fn(),
-  increment: jest.fn(),
-  counter: jest.fn(),
-  gauge: jest.fn(),
-  histogram: jest.fn(),
-}));
-const stats = require('../util/stats');
-
-jest.mock('@rudderstack/integrations-lib', () => {
-  return {
-    ...jest.requireActual('@rudderstack/integrations-lib'),
-    structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
-  };
-});
-
-const { PlatformError } = require('@rudderstack/integrations-lib');
-
-// Mock the axios module
-jest.mock('axios', () => {
-  const mockAxios = jest.fn(); // Mock the default axios function
-  mockAxios.get = jest.fn(); // Mock axios.get
-  mockAxios.post = jest.fn(); // Mock axios.post
-  mockAxios.put = jest.fn(); // Mock axios.put
-  mockAxios.patch = jest.fn(); // Mock axios.patch
-  mockAxios.delete = jest.fn(); // Mock axios.delete
-
-  // Mock the axios.create method if needed
-  mockAxios.create = jest.fn(() => mockAxios);
-
-  return mockAxios; // Return the mocked axios
-});
-
-const axios = require('axios');
 
 jest.mock('../util/logger', () => ({
   ...jest.requireActual('../util/logger'),

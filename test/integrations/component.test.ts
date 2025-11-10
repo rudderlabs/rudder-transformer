@@ -26,7 +26,7 @@ import { assertRouterOutput, responses } from '../testHelper';
 import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
-import { configureBatchProcessingDefaults, axiosFromLib } from '@rudderstack/integrations-lib';
+import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -222,11 +222,6 @@ const sourceTestHandler = async (tcData) => {
 
 const mockAdapter = new MockAxiosAdapter(axios as any, { onNoMatch: 'throwException' });
 registerAxiosMocks(mockAdapter, getTestMockData(opts.destination || opts.source));
-
-const mockAxiosLibAdapter = new MockAxiosAdapter(axiosFromLib as any, {
-  onNoMatch: 'throwException',
-});
-registerAxiosMocks(mockAxiosLibAdapter, getTestMockData(opts.destination || opts.source));
 
 describe('Component Test Suite', () => {
   if (allTestDataFilePaths.length === 0) {

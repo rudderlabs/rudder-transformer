@@ -116,13 +116,8 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
   // assign resolved agent to fetch
-  const agent = httpAgentWithDnsLookup(schemeName, transformationTags);
-  fetchOptions.agent = agent;
-  try {
-    return await fetch(fetchURL, fetchOptions);
-  } finally {
-    agent.destroy();
-  }
+  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
+  return await fetch(fetchURL, fetchOptions);
 };
 
 class RespStatusError extends Error {

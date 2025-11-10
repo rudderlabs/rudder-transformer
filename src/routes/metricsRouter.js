@@ -4,7 +4,6 @@ const stats = require('../util/stats');
 
 const metricsRouter = new KoaRouter();
 
-
 metricsRouter.get('/metrics', async (ctx) => {
   try {
     await stats.metricsController(ctx);

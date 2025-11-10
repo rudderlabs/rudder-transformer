@@ -223,7 +223,9 @@ const sourceTestHandler = async (tcData) => {
 const mockAdapter = new MockAxiosAdapter(axios as any, { onNoMatch: 'throwException' });
 registerAxiosMocks(mockAdapter, getTestMockData(opts.destination || opts.source));
 
-const mockAxiosLibAdapter = new MockAxiosAdapter(axiosFromLib as any, { onNoMatch: 'throwException' });
+const mockAxiosLibAdapter = new MockAxiosAdapter(axiosFromLib as any, {
+  onNoMatch: 'throwException',
+});
 registerAxiosMocks(mockAxiosLibAdapter, getTestMockData(opts.destination || opts.source));
 
 describe('Component Test Suite', () => {

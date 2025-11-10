@@ -85,16 +85,19 @@ const getConversionActionId = async ({ params, googleAds }) => {
  */
 const gaecProxyRequest = async (request) => {
   const { body, params } = request;
-  const googleAds = new GoogleAdsSDK.GoogleAds({
-    accessToken: params.accessToken,
-    customerId: params.customerId,
-    loginCustomerId: params.subAccount ? params.loginCustomerId : '',
-    developerToken: getDeveloperToken(),
-  }, {
-    httpClient: {
-      statsClient
+  const googleAds = new GoogleAdsSDK.GoogleAds(
+    {
+      accessToken: params.accessToken,
+      customerId: params.customerId,
+      loginCustomerId: params.subAccount ? params.loginCustomerId : '',
+      developerToken: getDeveloperToken(),
     },
-  });
+    {
+      httpClient: {
+        statsClient: statsClient || undefined,
+      },
+    },
+  );
   const conversionActionId = await getConversionActionId({
     params,
     googleAds,

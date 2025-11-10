@@ -2,7 +2,6 @@ const prometheus = require('./prometheus');
 
 let statsClient;
 function init() {
-
   statsClient = new prometheus.Prometheus();
 }
 

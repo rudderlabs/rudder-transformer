@@ -41,6 +41,7 @@ import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib'
 const command = new Command();
 command
   .allowUnknownOption()
+  .allowExcessArguments()
   .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
   .option('-i, --index <number>', 'Enter Test index', parseInt)

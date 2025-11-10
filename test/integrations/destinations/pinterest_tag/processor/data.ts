@@ -1692,7 +1692,7 @@ export const data = [
               type: 'page',
               name: 'ApplicationLoaded',
               category: 'test category',
-              channel: 'web',
+              channel: 'app_ios',
               sentAt: '2020-08-14T05:30:30.118Z',
               context: {
                 source: 'test',
@@ -1736,7 +1736,10 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              workspaceId: 'test-workspace-id',
+            },
           },
         ],
         method: 'POST',
@@ -1748,7 +1751,10 @@ export const data = [
         status: 200,
         body: [
           {
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: {
+              destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              workspaceId: 'test-workspace-id',
+            },
             output: {
               version: '1',
               type: 'REST',
@@ -1761,7 +1767,7 @@ export const data = [
                   event_time: 1597383030,
                   opt_out: false,
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
-                  action_source: 'web',
+                  action_source: 'app_ios',
                   event_name: 'view_category',
                   app_id: '429047995',
                   advertiser_id: '123456',
@@ -2757,7 +2763,7 @@ export const data = [
                   firstName: 'Test',
                   address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
                 },
-                device: { advertisingId: 'abc123' },
+                device: { advertisingId: 'abc123', adTrackingEnabled: true },
                 library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
               },
               messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
@@ -2851,6 +2857,8 @@ export const data = [
               body: {
                 JSON: {
                   action_source: 'web',
+                  advertiser_tracking_enabled: true,
+                  opt_out: false,
                   event_name: 'watch_video',
                   event_time: 1597383030,
                   event_id: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',

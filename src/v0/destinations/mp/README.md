@@ -7,6 +7,7 @@ Implementation in **Javascript** (v0, v1 -> for network proxy)
 ### Required Settings
 
 - **Token**: Required for authentication with Mixpanel API
+
   - Used for tracking events and updating user profiles
   - Must be provided for all API calls
 
@@ -68,16 +69,17 @@ Implementation in **Javascript** (v0, v1 -> for network proxy)
 
 ### Event Type to Endpoint Mapping
 
-| Event Type | Endpoints Used | Lowest Rate Limit | Limiting Endpoint |
-|------------|----------------|-------------------|-------------------|
-| **Identify** | `/engage` | No explicit rate limit specified | `/engage` |
-| **Track** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
-| **Page** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
-| **Screen** | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
-| **Group** | `/import` (or `/track`) + `/groups` | No explicit rate limit specified | `/groups` |
-| **Alias (Original ID Merge)** | `/import` with `$merge` event | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` |
+| Event Type                    | Endpoints Used                                    | Lowest Rate Limit                              | Limiting Endpoint     |
+| ----------------------------- | ------------------------------------------------- | ---------------------------------------------- | --------------------- |
+| **Identify**                  | `/engage`                                         | No explicit rate limit specified               | `/engage`             |
+| **Track**                     | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Page**                      | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Screen**                    | `/import` (server-side) or `/track` (client-side) | 2GB uncompressed JSON/minute (~30k events/sec) | `/import` or `/track` |
+| **Group**                     | `/import` (or `/track`) + `/groups`               | No explicit rate limit specified               | `/groups`             |
+| **Alias (Original ID Merge)** | `/import` with `$merge` event                     | 2GB uncompressed JSON/minute (~30k events/sec) | `/import`             |
 
 **Notes:**
+
 - Track, Page, and Screen events may also trigger additional `/engage` calls when People properties are enabled
 - Group events generate both a tracking event and a group profile update
 - Identify events with Original ID Merge may generate additional `/import` calls for identity merging
@@ -103,12 +105,12 @@ Implementation in **Javascript** (v0, v1 -> for network proxy)
 
 Mixpanel enforces the following limits on their API endpoints:
 
-| Endpoint | Rate Limit | Batch Size Limit | Payload Size Limit | Event Size Limit | Description |
-|----------|------------|------------------|-------------------|------------------|-------------|
-| `/import` | 2GB uncompressed JSON/minute (~30k events/sec) | 2000 events per batch | 10MB uncompressed per request | 1MB per event | Server-side event tracking with historical data support |
-| `/track` | 2GB uncompressed JSON/minute (~30k events/sec) | 2000 events per batch | Same as `/import` | 1MB per event | Client-side event tracking (last 5 days only) |
-| `/engage` | Not explicitly specified | 2000 profiles per batch | 1MB per profile update | 1MB per profile | User profile updates |
-| `/groups` | Not explicitly specified | 2000 groups per batch | 1MB per group update | 1MB per group | Group profile updates |
+| Endpoint  | Rate Limit                                     | Batch Size Limit        | Payload Size Limit            | Event Size Limit | Description                                             |
+| --------- | ---------------------------------------------- | ----------------------- | ----------------------------- | ---------------- | ------------------------------------------------------- |
+| `/import` | 2GB uncompressed JSON/minute (~30k events/sec) | 2000 events per batch   | 10MB uncompressed per request | 1MB per event    | Server-side event tracking with historical data support |
+| `/track`  | 2GB uncompressed JSON/minute (~30k events/sec) | 2000 events per batch   | Same as `/import`             | 1MB per event    | Client-side event tracking (last 5 days only)           |
+| `/engage` | Not explicitly specified                       | 2000 profiles per batch | 1MB per profile update        | 1MB per profile  | User profile updates                                    |
+| `/groups` | Not explicitly specified                       | 2000 groups per batch   | 1MB per group update          | 1MB per group    | Group profile updates                                   |
 
 ### Mixpanel API Validation Rules ( Based on public docs )
 
@@ -124,13 +126,13 @@ Mixpanel enforces the following limits on their API endpoints:
 
 RudderStack implements additional batching and validation limits for optimal performance:
 
-| Operation | RudderStack Batch Limit | Mixpanel API Limit | Purpose |
-|-----------|------------------------|-------------------|---------|
-| **Import Events** | 2000 events per batch | 2000 events per batch | Matches Mixpanel limit for optimal throughput |
-| **Engage Profiles** | 2000 profiles per batch | 2000 profiles per batch | Matches Mixpanel limit for user profile updates |
-| **Groups Profiles** | 200 groups per batch | 2000 groups per batch | Conservative limit for group operations |
-| **User Deletion (Profile)** | 1000 users per batch | Not specified | Conservative batching for deletion operations |
-| **User Deletion (GDPR)** | 1999 users per batch | Not specified | Near-maximum batching for GDPR compliance |
+| Operation                   | RudderStack Batch Limit | Mixpanel API Limit      | Purpose                                         |
+| --------------------------- | ----------------------- | ----------------------- | ----------------------------------------------- |
+| **Import Events**           | 2000 events per batch   | 2000 events per batch   | Matches Mixpanel limit for optimal throughput   |
+| **Engage Profiles**         | 2000 profiles per batch | 2000 profiles per batch | Matches Mixpanel limit for user profile updates |
+| **Groups Profiles**         | 200 groups per batch    | 2000 groups per batch   | Conservative limit for group operations         |
+| **User Deletion (Profile)** | 1000 users per batch    | Not specified           | Conservative batching for deletion operations   |
+| **User Deletion (GDPR)**    | 1999 users per batch    | Not specified           | Near-maximum batching for GDPR compliance       |
 
 ### RudderStack Validation Enforcement
 
@@ -159,6 +161,7 @@ const MAX_PAYLOAD_SIZE_BYTES = 1024 * 1024; // 1MB
 ### Intermediate Calls
 
 #### Identity Merge Flow
+
 - **Supported**: Yes
 - **Use Case**: Identity resolution through the Mixpanel Merge API
 - **Endpoint**: `/import` with `$merge` event
@@ -209,23 +212,27 @@ if (
 The Mixpanel destination enforces several validation rules to ensure data quality and API compliance:
 
 #### Property Limits
+
 - **Maximum Property Keys**: 255 property keys per event
 - **Maximum Array Elements**: 255 elements in arrays
 - **Maximum Payload Size**: 1MB per request
 - **Geo Source Validation**: `$geo_source` must be either `null` or `'reverse_geocoding'`
 
 #### Required Fields
+
 - **Token**: Required for all API calls
 - **Distinct ID**: Either `userId` or `anonymousId` must be present
 - **Event Name**: Required for track events
 - **GDPR API Token**: Required when using GDPR deletion tasks
 
 #### Event Type Restrictions
+
 - **Alias Events**: Not supported when using Simplified ID Merge
 - **Group Events**: Require Group Key Settings to be configured
 - **Revenue Events**: Must include valid revenue value in properties
 
 #### Identity Merge Validation
+
 - **Original ID Merge**: Requires both `userId` and `anonymousId` for merge operations
 - **Simplified ID Merge**: Automatically handles identity resolution without explicit merge events
 
@@ -275,9 +282,11 @@ The Mixpanel destination enforces several validation rules to ensure data qualit
 ### Event Ordering
 
 #### Identify, Alias
+
 These event types require strict event ordering as they are used for identity resolution. Out-of-order events could lead to incorrect user profiles.
 
 #### Track, Page, Screen
+
 Mixpanel events include a timestamp, which allows for proper ordering of events regardless of when they are received. However, if events update user profiles, ordering becomes important to avoid overwriting newer attributes with older ones.
 
 ### Data Replay Feasibility
@@ -327,11 +336,13 @@ if (mappedProperties.$insert_id) {
 #### Multiplexing Scenarios
 
 1. **Identify Events with Identity Merge**:
+
    - **Multiplexing**: YES
    - First API Call: `/import` with `$merge` event - To merge anonymous and identified users
    - Second API Call: `/engage` - To update user profile attributes
 
 2. **Track Events with People Updates**:
+
    - **Multiplexing**: YES
    - First API Call: `/track` or `/import` - To send the event
    - Second API Call: `/engage` - To update user profile attributes (when People is enabled)

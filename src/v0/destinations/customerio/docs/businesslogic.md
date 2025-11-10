@@ -14,7 +14,7 @@ This document details the business logic, field mappings, and event processing f
 
 **Business Logic**:
 
-````javascript
+```javascript
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
@@ -22,12 +22,14 @@ const identifyResponseBuilder = (userId, message) => {
   if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
-````
+```
 
 **Required Fields**:
+
 - `userId` OR `email` (at least one must be present)
 
 **Field Mappings**:
+
 - **User Identifier**: `userId` or `email` → Customer.io user ID
 - **Traits**: All traits except reserved ones → Customer.io user attributes
 - **Created At**: `traits.createdAt` → `created_at` (Unix timestamp)
@@ -35,6 +37,7 @@ const identifyResponseBuilder = (userId, message) => {
 - **Historical Timestamp**: `historicalTimestamp` → `_timestamp` (Unix timestamp)
 
 **Validation Rules**:
+
 - User ID or email is mandatory
 - Reserved traits (`createdAt`, `userId`, `anonymousId`) are excluded from attribute mapping
 - Dot notation in trait keys is escaped for proper handling
@@ -43,19 +46,20 @@ const identifyResponseBuilder = (userId, message) => {
 
 **Purpose**: Send custom events for identified or anonymous users
 
-**Endpoints**: 
+**Endpoints**:
+
 - Identified: `POST /api/v1/customers/:id/events`
 - Anonymous: `POST /api/v1/events`
 
 **Business Logic**:
 
-````javascript
+```javascript
 const defaultResponseBuilder = (message, evName, userId, evType, destination, messageType) => {
   const rawPayload = {};
   let endpoint;
   let trimmedEvName;
   const id = encodePathParameter(userId) || getFieldValueFromMessage(message, 'email');
-  
+
   if (id) {
     endpoint = USER_EVENT_ENDPOINT.replace(':id', id);
   } else {
@@ -67,20 +71,23 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
     rawPayload.anonymous_id = message.anonymousId;
   }
-````
+```
 
 **Required Fields**:
+
 - **Identified Events**: `userId` or `email`
 - **Anonymous Events**: `anonymousId`
 - **Event Name**: Must be a string, validated and trimmed
 
 **Field Mappings**:
+
 - **Event Name**: `event` → `name`
 - **Event Type**: Always set to `"event"`
 - **Properties**: `properties` → `data`
 - **Historical Timestamp**: `historicalTimestamp` → `timestamp` (Unix timestamp)
 
 **Validation Rules**:
+
 - Event name must be a string
 - Anonymous event names are truncated to 100 bytes
 - Anonymous events require `anonymousId`
@@ -94,14 +101,15 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
 
 **Business Logic**:
 
-````javascript
+```javascript
 case EventType.PAGE:
   evType = 'page'; // customerio mandates sending 'page' for pageview events
   evName = message.name || message.properties?.url;
   break;
-````
+```
 
 **Field Mappings**:
+
 - **Event Type**: Set to `"page"`
 - **Event Name**: `name` or `properties.url`
 - **Properties**: `properties` → `data`
@@ -112,19 +120,21 @@ case EventType.PAGE:
 
 **Business Logic**:
 
-````javascript
+```javascript
 case EventType.SCREEN:
   evType = 'event';
   evName = `Viewed ${message.event || message.properties?.name} Screen`;
   break;
-````
+```
 
 **Field Mappings**:
+
 - **Event Type**: Set to `"event"`
 - **Event Name**: `"Viewed {screen_name} Screen"` format
 - **Screen Name**: `event` or `properties.name`
 
 **Special Handling**:
+
 - For anonymous users, screen event names are truncated to 86 bytes (100 - length of "Viewed " and " Screen")
 
 ### Group Events
@@ -135,7 +145,7 @@ case EventType.SCREEN:
 
 **Business Logic**:
 
-````javascript
+```javascript
 const groupResponseBuilder = (message) => {
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name]);
   const rawPayload = {
@@ -144,15 +154,16 @@ const groupResponseBuilder = (message) => {
       object_type_id: payload.object_type_id,
     },
     type: 'object',
-    action: payload.action && OBJECT_ACTIONS.includes(payload.action) 
-      ? payload.action 
+    action: payload.action && OBJECT_ACTIONS.includes(payload.action)
+      ? payload.action
       : DEFAULT_OBJECT_ACTION,
     attributes: payload.attributes || {},
     cio_relationships: [],
   };
-````
+```
 
 **Field Mappings** (from `customerIoGroup.json`):
+
 - **Object ID**: `groupId` → `object_id` (required)
 - **Object Type ID**: `traits.objectTypeId` → `object_type_id` (default: "1")
 - **User ID**: `userIdOnly` → `userId`
@@ -161,12 +172,14 @@ const groupResponseBuilder = (message) => {
 - **Attributes**: `traits` (excluding action) → `attributes`
 
 **Supported Actions**:
+
 - `identify` (default)
 - `delete`
 - `add_relationships`
 - `delete_relationships`
 
 **Validation Rules**:
+
 - `object_id` is required
 - Action must be from supported actions list
 - User relationships are established via email or ID
@@ -179,7 +192,7 @@ const groupResponseBuilder = (message) => {
 
 **Business Logic**:
 
-````javascript
+```javascript
 const aliasResponseBuilder = (message, userId) => {
   if (!userId || !message.previousId) {
     throw new InstrumentationError('Both userId and previousId are mandatory for merge operation');
@@ -194,17 +207,20 @@ const aliasResponseBuilder = (message, userId) => {
       [prevCioProperty]: message.previousId,
     },
   };
-````
+```
 
 **Required Fields**:
+
 - `userId` (primary profile to keep)
 - `previousId` (secondary profile to merge and delete)
 
 **Field Mappings**:
+
 - **Primary**: `userId` → `primary.id` or `primary.email`
 - **Secondary**: `previousId` → `secondary.id` or `secondary.email`
 
 **Validation Rules**:
+
 - Both `userId` and `previousId` are mandatory
 - Automatically detects if identifier is email or ID format
 - Secondary profile is deleted after merge
@@ -218,6 +234,7 @@ const aliasResponseBuilder = (message, userId) => {
 **Endpoint**: `PUT /api/v1/customers/:id/devices`
 
 **Trigger Events**:
+
 - "Application Installed"
 - "Application Opened"
 - "Application Uninstalled"
@@ -225,7 +242,7 @@ const aliasResponseBuilder = (message, userId) => {
 
 **Business Logic**:
 
-````javascript
+```javascript
 const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
 if (isDeviceRelatedEvent && id && token) {
   const timestamp = message.timestamp || message.originalTimestamp;
@@ -240,19 +257,22 @@ if (isDeviceRelatedEvent && id && token) {
   }
   set(rawPayload, 'device', devProps);
 }
-````
+```
 
 **Required Fields**:
+
 - User ID or email
 - Device token (`context.device.token`)
 
 **Field Mappings**:
+
 - **Device ID**: `context.device.token` → `device.id`
 - **Last Used**: `timestamp` or `originalTimestamp` → `device.last_used` (Unix timestamp)
 - **Platform**: `context.device.type` → `device.platform` (iOS/Android)
 - **Properties**: All `properties` → device attributes
 
 **Platform Detection**:
+
 - Apple family devices → "ios"
 - Other devices → lowercase device type
 
@@ -265,6 +285,7 @@ if (isDeviceRelatedEvent && id && token) {
 **Trigger Event**: "Application Uninstalled"
 
 **Required Fields**:
+
 - User ID or email
 - Device token
 
@@ -272,14 +293,15 @@ if (isDeviceRelatedEvent && id && token) {
 
 **Business Logic**:
 
-````javascript
+```javascript
 // replace default domain with EU data center domain for EU based account
 if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU) {
   response.endpoint = response.endpoint.replace('track.customer.io', 'track-eu.customer.io');
 }
-````
+```
 
 **Endpoint Transformation**:
+
 - **US**: `track.customer.io` (default)
 - **EU**: `track-eu.customer.io`
 
@@ -289,7 +311,7 @@ if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU)
 
 **Business Logic**:
 
-````javascript
+```javascript
 const getEventChunks = (groupEvents) => {
   const eventChunks = [];
   let batchedData = [];
@@ -308,9 +330,10 @@ const getEventChunks = (groupEvents) => {
     metadata.push(events.metadata);
     batchedData.push(events.message.body.JSON);
   });
-````
+```
 
 **Batching Rules**:
+
 - **Maximum Events**: 1000 events per batch
 - **Maximum Size**: 500KB per batch
 - **Event Size**: 32KB maximum per individual event
@@ -319,7 +342,7 @@ const getEventChunks = (groupEvents) => {
 
 ### Configuration Validation
 
-````javascript
+```javascript
 const validateConfigFields = (destination) => {
   const { Config } = destination;
   configFieldsToCheck.forEach((configProperty) => {
@@ -328,20 +351,23 @@ const validateConfigFields = (destination) => {
     }
   });
 };
-````
+```
 
 **Required Configuration**:
+
 - `siteID`
 - `apiKey`
 
 ### Event Validation
 
 **Event Name Validation**:
+
 - Must be a string for Track events
 - Automatically trimmed of leading/trailing spaces
 - Truncated for anonymous events (100 bytes limit)
 
 **User Identification**:
+
 - Identify events require userId or email
 - Anonymous events require anonymousId
 - Alias events require both userId and previousId
@@ -351,11 +377,13 @@ const validateConfigFields = (destination) => {
 ### Common Error Scenarios
 
 1. **Missing Required Fields**:
+
    - `InstrumentationError` for missing userId/email in Identify
    - `InstrumentationError` for missing anonymousId in anonymous events
    - `InstrumentationError` for missing userId/previousId in Alias
 
 2. **Configuration Errors**:
+
    - `ConfigurationError` for missing API credentials
 
 3. **Data Type Errors**:
@@ -363,12 +391,12 @@ const validateConfigFields = (destination) => {
 
 ### Path Parameter Safety
 
-````javascript
+```javascript
 const encodePathParameter = (param) => {
   if (typeof param !== 'string') return param;
   return param.includes('/') ? encodeURIComponent(param) : param;
 };
-````
+```
 
 **URL Encoding**: User IDs containing forward slashes are automatically URL encoded to prevent API endpoint path issues.
 

@@ -8,7 +8,6 @@ import logger from '../logger';
 
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {
-    logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');

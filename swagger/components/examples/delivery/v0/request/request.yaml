@@ -2,17 +2,17 @@ value:
   version: v1
   type: REST
   method: POST
-  endpoint: "https://demoapp-api.bloomreach.com/data/v2/projects/{project}/catalogs/{catalog}/items/partial-update"
-  userId: ""
+  endpoint: 'https://demoapp-api.bloomreach.com/data/v2/projects/{project}/catalogs/{catalog}/items/partial-update'
+  userId: ''
   headers:
-    Authorization: "Basic token"
+    Authorization: 'Basic token'
   params: {}
   body:
     JSON: {}
     JSON_ARRAY:
       batch:
-        - item_id: "222"
-          properties: { }
+        - item_id: '222'
+          properties: {}
     XML: {}
     FORM: {}
   files: {}

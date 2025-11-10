@@ -28,16 +28,21 @@
               value:
                 - request:
                     body: '{"key": "value", "nested": {"data": "example"}}'
-                    url: "https://rudderstack.webhook.endpoint/v1/webhook?paramkey=paramvalue"
-                    method: "POST"
-                    query_parameters: {paramKey: ["paramValue"]}
-                    headers: {headerKey: ["headerValue"]}
+                    url: 'https://rudderstack.webhook.endpoint/v1/webhook?paramkey=paramvalue'
+                    method: 'POST'
+                    query_parameters: { paramKey: ['paramValue'] }
+                    headers: { headerKey: ['headerValue'] }
                   source: {}
             v1Spec:
               summary: V1 Spec Request Structure Example
               value:
                 - request:
-                    event: {"key": "value", "nested": {"data": "example"}, query_parameters: {paramKey: "paramValue"}}
+                    event:
+                      {
+                        'key': 'value',
+                        'nested': { 'data': 'example' },
+                        query_parameters: { paramKey: 'paramValue' },
+                      }
                   source: {}
     responses:
       200:

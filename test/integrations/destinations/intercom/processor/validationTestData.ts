@@ -186,7 +186,7 @@ export const validationTestData: ProcessorTestData[] = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ...v2Destination,
               Config: { ...v2Destination.Config, apiKey: null },
             },
@@ -333,7 +333,7 @@ export const validationTestData: ProcessorTestData[] = [
         body: [
           {
             destination: {
-                hasDynamicConfig: false,
+              hasDynamicConfig: false,
               ...v2Destination,
               Config: { ...v2Destination.Config, apiKey: secret2 },
             },

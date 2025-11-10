@@ -9,6 +9,7 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 ### Track Events
 
 **Flow Logic:**
+
 1. **Event Name Validation**: Validates and sanitizes the event name
 2. **Reserved Event Check**: Ensures the event name is not in GA4's reserved list
 3. **Event Mapping**: Maps RudderStack track events to GA4 events based on predefined configurations
@@ -17,6 +18,7 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 6. **Items Array**: Handles e-commerce product data when applicable
 
 **Supported E-commerce Events:**
+
 - `Product Clicked` → `select_item`
 - `Product Viewed` → `view_item`
 - `Product Added` → `add_to_cart`
@@ -34,6 +36,7 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 - `Promotion Clicked` → `select_promotion`
 
 **Custom Events:**
+
 - Events not matching predefined mappings are sent as custom events
 - Event names are sanitized (trimmed, spaces replaced with underscores)
 - Custom parameters are extracted from event properties
@@ -41,12 +44,14 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 ### Page Events
 
 **Flow Logic:**
+
 1. **Hybrid Mode Check**: Verifies if hybrid mode is enabled
 2. **Event Conversion**: Converts page events to GA4 `page_view` events
 3. **Parameter Mapping**: Maps page properties to GA4 page parameters
 4. **URL Handling**: Processes page URL, title, and referrer information
 
 **Mappings:**
+
 - `properties.url` → `page_location`
 - `properties.title` → `page_title`
 - `properties.referrer` → `page_referrer`
@@ -56,11 +61,13 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 ### Group Events
 
 **Flow Logic:**
+
 1. **Event Conversion**: Converts group events to GA4 `join_group` events
 2. **Group ID Mapping**: Maps groupId to GA4 group_id parameter
 3. **Group Properties**: Handles additional group-related properties
 
 **Mappings:**
+
 - `groupId` → `group_id`
 - Group traits and properties → Custom parameters
 
@@ -69,41 +76,48 @@ The GA4 destination transforms RudderStack events into Google Analytics 4 Measur
 ### Common Payload Mappings
 
 **User Identification:**
+
 ```javascript
 // For gtag client type
 client_id: ga4ClientId || anonymousId || rudderId
 
-// For firebase client type  
+// For firebase client type
 app_instance_id: ga4AppInstanceId (from externalId)
 ```
 
 **Timestamp Handling:**
+
 ```javascript
 timestamp_micros: timestamp (converted to microseconds)
 ```
 
 **User ID:**
+
 ```javascript
 user_id: userId (if present)
 ```
 
 **Non-Personalized Ads:**
+
 ```javascript
-non_personalized_ads: !context.device.adTrackingEnabled
+non_personalized_ads: !context.device.adTrackingEnabled;
 ```
 
 ### User Properties Mapping
 
 **Source Fields:**
+
 - `context.traits.*`
 - `properties.user_properties.*`
 
 **Exclusions:**
+
 - PII properties (configurable via `piiPropertiesToIgnore`)
 - GA4 reserved user property names
 - Properties starting with `_`, `firebase_`, `ga_`, `google_`
 
 **Processing:**
+
 1. Extract custom fields from source locations
 2. Apply PII filtering
 3. Remove reserved property names
@@ -112,17 +126,20 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Event Parameters Mapping
 
 **Common Parameters:**
+
 - `engagement_time_msec`: For user engagement tracking
 - `session_id`: Session identifier (hybrid mode)
 - `session_number`: Session number (if available)
 
 **E-commerce Parameters:**
+
 - `currency`: Transaction currency
 - `value`: Transaction value
 - `transaction_id`: Order/transaction identifier
 - `items[]`: Array of product items
 
 **Custom Parameters:**
+
 - Extracted from `properties.*` (excluding reserved names)
 - Filtered to remove GA4 reserved parameter names
 - Limited to GA4 parameter constraints (40 char names, 100 char values)
@@ -132,6 +149,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Event Name Validation
 
 **Requirements:**
+
 - Must be a string
 - Cannot be empty
 - Maximum 40 characters
@@ -140,6 +158,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 - Cannot be a reserved GA4 event name
 
 **Reserved Event Names (Complete List):**
+
 - `ad_activeview`
 - `ad_click`
 - `ad_exposure`
@@ -164,6 +183,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 - `user_engagement`
 
 **Reserved Custom Event Names (Web):**
+
 - Events starting with `_` (underscore)
 - Events starting with `firebase_`
 - Events starting with `ga_`
@@ -173,12 +193,14 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Parameter Validation
 
 **Parameter Names:**
+
 - Maximum 40 characters
 - Must start with a letter
 - Alphanumeric characters and underscores only
 - Cannot start with `_`, `firebase_`, `ga_`, `google_`, `gtag.`
 
 **Parameter Values:**
+
 - Maximum 100 characters (Standard GA4)
 - Maximum 500 characters (GA4 360)
 - Special exceptions:
@@ -189,6 +211,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### User Properties Validation
 
 **Property Names:**
+
 - Maximum 24 characters
 - Must start with a letter
 - Can contain only alphanumeric characters and underscores
@@ -196,6 +219,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 - Cannot be reserved user property names
 
 **Reserved User Property Names:**
+
 - `first_open_time`
 - `first_visit_time`
 - `last_deep_link_referrer`
@@ -203,10 +227,12 @@ non_personalized_ads: !context.device.adTrackingEnabled
 - `first_open_after_install`
 
 **Property Values:**
+
 - Maximum 36 characters
 - UTF-8 encoded strings
 
 **Special Parameter Value Limits:**
+
 - `page_title`: Maximum 300 characters
 - `page_referrer`: Maximum 420 characters
 - `page_location`: Maximum 1,000 characters
@@ -214,6 +240,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Request Validation
 
 **Payload Limits:**
+
 - Maximum 25 events per request
 - Maximum 25 parameters per event
 - Maximum 25 user properties per request
@@ -225,11 +252,13 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Client Type Handling
 
 **gtag Client Type:**
+
 - Requires `measurementId` (G-XXXXXXXXXX format)
 - Uses `client_id` for user identification
 - Supports web-based tracking
 
 **firebase Client Type:**
+
 - Requires `firebaseAppId`
 - Uses `app_instance_id` for user identification
 - Supports mobile app tracking
@@ -237,6 +266,7 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Debug Mode
 
 **When Enabled:**
+
 - Events sent to debug validation endpoint
 - Validation responses processed for error reporting
 - Helps identify payload issues during development
@@ -244,14 +274,17 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Event Filtering
 
 **Whitelist Mode:**
+
 - Only events in `whitelistedEvents` are processed
 - All other events are dropped
 
 **Blacklist Mode:**
+
 - Events in `blacklistedEvents` are dropped
 - All other events are processed
 
 **Disable Mode:**
+
 - All events are processed (default behavior)
 
 ## Use Cases
@@ -259,16 +292,19 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### E-commerce Tracking
 
 **Product Catalog Events:**
+
 - Track product views, clicks, and list views
 - Support for product categories and brands
 - Custom product attributes via item-scoped parameters
 
 **Shopping Cart Events:**
+
 - Add/remove products from cart
 - Cart abandonment tracking
 - Checkout process monitoring
 
 **Purchase Events:**
+
 - Order completion tracking
 - Revenue and transaction data
 - Refund processing
@@ -276,11 +312,13 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Content Engagement
 
 **Page Tracking:**
+
 - Page views and navigation
 - Content engagement metrics
 - Site search tracking
 
 **Custom Events:**
+
 - User interactions (clicks, downloads, etc.)
 - Feature usage tracking
 - Goal completions
@@ -288,11 +326,13 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### User Journey Analysis
 
 **Session Tracking:**
+
 - Session start and engagement
 - User identification across sessions
 - Cross-device tracking (with User-ID)
 
 **Conversion Tracking:**
+
 - Goal completions
 - Funnel analysis
 - Attribution modeling
@@ -302,11 +342,13 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Validation Errors
 
 **Event Name Errors:**
+
 - Reserved event names → InstrumentationError
 - Invalid event name format → InstrumentationError
 - Missing event name → InstrumentationError
 
 **Configuration Errors:**
+
 - Missing required configuration → ConfigurationError
 - Invalid client type → ConfigurationError
 - Missing client ID/app instance ID → ConfigurationError
@@ -314,11 +356,13 @@ non_personalized_ads: !context.device.adTrackingEnabled
 ### Data Processing
 
 **Invalid Parameters:**
+
 - Parameters exceeding length limits are truncated or removed
 - Reserved parameter names are filtered out
 - Invalid parameter formats are sanitized
 
 **Payload Size:**
+
 - Large payloads are processed but may be rejected by GA4
 - No automatic splitting of oversized requests
 - Relies on GA4 API limits for enforcement

@@ -78,7 +78,7 @@ const staticLookup =
 
 const httpAgentWithDnsLookup = (scheme, transformationTags) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
+  return new httpModule.Agent({ lookup: staticLookup(transformationTags), keepAlive: false });
 };
 
 const blockLocalhostRequests = (url) => {
@@ -116,8 +116,13 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
   // assign resolved agent to fetch
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
-  return await fetch(fetchURL, fetchOptions);
+  const agent = httpAgentWithDnsLookup(schemeName, transformationTags);
+  fetchOptions.agent = agent;
+  try {
+    return await fetch(fetchURL, fetchOptions);
+  } finally {
+    agent.destroy();
+  }
 };
 
 class RespStatusError extends Error {

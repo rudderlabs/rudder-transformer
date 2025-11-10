@@ -63,14 +63,14 @@ describe('stats', () => {
     it('should handle when statsClient methods are not called if client is null', () => {
       // Save original statsClient
       const originalStatsClient = stats.statsClient;
-      
+
       // Temporarily set to null
       stats.statsClient = null;
 
       expect(() => {
         stats.timing('test', Date.now());
       }).not.toThrow();
-      
+
       // Restore
       stats.statsClient = originalStatsClient;
     });
@@ -104,7 +104,7 @@ describe('stats', () => {
       expect(() => {
         stats.timingSummary('test', Date.now());
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -148,7 +148,7 @@ describe('stats', () => {
       expect(() => {
         stats.summary('test', 100);
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -179,7 +179,7 @@ describe('stats', () => {
       expect(() => {
         stats.increment('test');
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -223,7 +223,7 @@ describe('stats', () => {
       expect(() => {
         stats.counter('test', 5);
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -267,7 +267,7 @@ describe('stats', () => {
       expect(() => {
         stats.gauge('test', 100);
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -311,7 +311,7 @@ describe('stats', () => {
       expect(() => {
         stats.histogram('test', 100);
       }).not.toThrow();
-      
+
       stats.statsClient = originalStatsClient;
     });
   });
@@ -376,7 +376,7 @@ describe('stats', () => {
       stats.statsClient = null;
 
       await expect(stats.shutdownMetricsClient()).resolves.toBeUndefined();
-      
+
       stats.statsClient = originalStatsClient;
     });
 
@@ -480,4 +480,3 @@ describe('stats', () => {
     });
   });
 });
-

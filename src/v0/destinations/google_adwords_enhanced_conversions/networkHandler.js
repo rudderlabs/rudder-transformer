@@ -21,6 +21,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
 const { statsClient } = require('../../../util/stats');
+const logger = require('../../../logger');
 
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
@@ -95,6 +96,7 @@ const gaecProxyRequest = async (request) => {
     {
       httpClient: {
         statsClient: statsClient || undefined,
+        logger,
       },
     },
   );

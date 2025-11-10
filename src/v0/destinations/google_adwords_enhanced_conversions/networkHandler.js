@@ -20,6 +20,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
+const { statsClient } = require('../../../util/stats');
 
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
@@ -89,6 +90,10 @@ const gaecProxyRequest = async (request) => {
     customerId: params.customerId,
     loginCustomerId: params.subAccount ? params.loginCustomerId : '',
     developerToken: getDeveloperToken(),
+  }, {
+    httpClient: {
+      statsClient
+    },
   });
   const conversionActionId = await getConversionActionId({
     params,

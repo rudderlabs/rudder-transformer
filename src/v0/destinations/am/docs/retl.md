@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Not Supported**
 
 The Amplitude destination does not support RETL functionality. Evidence:
+
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -14,19 +15,24 @@ The Amplitude destination does not support RETL functionality. Evidence:
 Since RETL is not supported (no warehouse source type), the following analysis applies:
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Not applicable (no RETL support)
 - **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`) - but only for event stream
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support for event stream functionality.
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Not applicable as RETL is not supported.
 
 ## Alternative Approaches for Warehouse Data
@@ -52,6 +58,7 @@ Use RudderStack's warehouse sources to send standard events:
 ### 2. VDM v1 (Visual Data Mapper)
 
 Since Amplitude supports VDM v1 (`supportsVisualMapper: true`), you can:
+
 - Use the visual mapper interface for data transformation
 - Map warehouse data fields to Amplitude properties
 - Configure user property operations ($set, $setOnce, etc.)
@@ -59,10 +66,10 @@ Since Amplitude supports VDM v1 (`supportsVisualMapper: true`), you can:
 ### 3. Batch Processing
 
 Implement batch processing of warehouse data to generate standard events:
+
 - Transform warehouse records into identify/track events
 - Send through standard event stream processing
 - Leverage Amplitude's batching capabilities (up to 1000 events per batch)
-
 
 ## Technical Limitations
 

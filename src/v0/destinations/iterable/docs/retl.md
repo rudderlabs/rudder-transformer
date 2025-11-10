@@ -5,6 +5,7 @@
 **RETL (Real-time Extract, Transform, Load) Support**: **Partially Supported**
 
 The Iterable destination supports RETL functionality through catalog management capabilities, but does not support warehouse sources directly. Evidence:
+
 - `supportedSourceTypes` does not include `warehouse`
 - `supportsVisualMapper: true` in `db-config.json` indicates VDM v1 support
 - Transformer code handles `mappedToDestination` flag for catalog operations
@@ -13,20 +14,26 @@ The Iterable destination supports RETL functionality through catalog management 
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
 - **VDM V2**: Not supported
 
 ### Does it have vdm support?
+
 **Yes** - `supportsVisualMapper: true` is present in `db-config.json`, confirming VDM V1 support.
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - No record event type handling in transformer code
 
 ### Connection config
+
 Standard Iterable configuration applies:
+
 - **API Key**: Same API key used for event stream functionality
 - **Data Center**: Must match the data center configuration (USDC/EUDC)
 
@@ -58,6 +65,7 @@ When `mappedToDestination` is true and the object type is not 'users', the desti
 The destination includes comprehensive catalog management functionality for RETL operations:
 
 #### Catalog Endpoint Construction
+
 - **Endpoint Pattern**: `/api/catalogs/{objectType}/items`
 - **Method**: POST
 - **Purpose**: Managing catalog items for product/content synchronization
@@ -72,6 +80,7 @@ const getCatalogEndpoint = (category, message) => {
 ```
 
 #### Catalog Payload Construction
+
 ```javascript
 // From constructPayloadItem in transform.js
 case 'catalogs':
@@ -86,7 +95,9 @@ case 'catalogs':
 ### RETL Event Processing
 
 #### Event Detection and Routing
+
 Events are identified as catalog operations when:
+
 - The `mappedToDestination` flag is set to `true`
 - The event contains external ID information with object type
 - The object type is not 'users' (user events go to standard identify endpoint)
@@ -102,6 +113,7 @@ if (
 ```
 
 #### External ID Structure for Catalog Events
+
 ```javascript
 context: {
   mappedToDestination: true,
@@ -116,6 +128,7 @@ context: {
 ```
 
 #### User Events vs Catalog Events
+
 - **User Events**: `objectType: 'users'` → routed to standard identify endpoint
 - **Catalog Events**: Any other `objectType` → routed to catalog endpoints
 
@@ -136,6 +149,7 @@ The RETL data flow follows this pattern:
 ### Batch Processing Implementation
 
 #### Catalog Event Batching
+
 ```javascript
 // From batchCatalogEvents in util.js
 const batchCatalogEvents = (catalogEvents) => {
@@ -151,6 +165,7 @@ const batchCatalogEvents = (catalogEvents) => {
 ```
 
 #### Batch Processing Logic
+
 ```javascript
 // From processCatalogBatch in util.js
 const processCatalogBatch = (chunk) => {
@@ -174,12 +189,14 @@ The destination supports the following RETL operations:
 ## Rate Limits and Constraints
 
 ### API Limits
+
 - **Catalog Endpoint**: 5 requests/second per API key
 - **Batch Size**: 1000 items per request (based on `CATALOG_MAX_ITEMS_PER_REQUEST`)
 - **Request Size**: 4MB maximum request size
 - **Bulk Update Endpoint**: `/api/catalogs/{catalogName}/items` (POST)
 
 ### Processing Constraints
+
 - **Object Type Requirement**: External ID must include object type for catalog operations
 - **Identifier Validation**: Valid catalogId required for catalog item operations
 - **User vs Catalog Routing**: Object type 'users' routes to identify, others to catalog endpoints
@@ -187,10 +204,12 @@ The destination supports the following RETL operations:
 ## Configuration Requirements
 
 ### Standard Configuration
+
 - **API Key**: Same API key used for event stream functionality
 - **Data Center**: Must match the data center configuration (USDC/EUDC)
 
 ### RETL Event Structure
+
 ```javascript
 {
   "type": "identify", // or other event types
@@ -221,6 +240,7 @@ The Iterable destination supports RETL functionality through:
 - **External ID Processing**: Proper handling of RETL external ID structure
 
 **Limitations**:
+
 - No VDM v2 support (no record message type)
 - No warehouse source type support (catalog operations only through VDM v1)
 - Requires proper external ID structure with object type for catalog routing

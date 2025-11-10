@@ -7,11 +7,12 @@ Implementation in **Javascript**
 ### Required Settings
 
 - **Profile ID**: User profile ID associated with Campaign Manager 360 account
+
   - Required for constructing API endpoints
   - Can be overridden per event via `properties.profileId`
   - Used in endpoint: `https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/{profileId}/conversions/{requestType}`
 
-- **OAuth 2.0 Authentication**: 
+- **OAuth 2.0 Authentication**:
   - Authentication type: OAuth 2.0
   - Provider: Google
   - Role: `campaign_manager`
@@ -26,24 +27,29 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - **Limit Ad Tracking**: (Boolean, default: false)
+
   - When set to true, conversions will be used for reporting but not targeting
   - This prevents remarketing
   - Can be overridden per event via `properties.limitAdTracking`
 
 - **Child Directed Treatment**: (Boolean, default: false)
+
   - Indicates if the request may come from a user under the age of 13 (COPPA compliance)
   - Cannot be updated in `batchupdate` requests
   - Can be overridden per event via `properties.childDirectedTreatment`
 
 - **Non Personalized Ad**: (Boolean, default: false)
+
   - Indicates whether the conversion was for a non-personalized ad
   - Can be overridden per event via `properties.nonPersonalizedAd`
 
 - **Treatment for Underage**: (Boolean, default: false)
+
   - Indicates if the request may come from a user under the age of 16 (GDPR compliance)
   - Can be overridden per event via `properties.treatmentForUnderage`
 
 - **Enable Enhanced Conversions**: (Boolean, default: false)
+
   - When enabled, allows sending user identifiers (email, phone, address) for better conversion matching
   - Only works with `batchupdate` request type
   - Requires user identifiers in the event
@@ -56,15 +62,18 @@ Implementation in **Javascript**
 ## Integration Functionalities
 
 ### Implementation Type
+
 - **Type**: Javascript (not CDK v2)
 - **Location**: `src/v0/destinations/campaign_manager/`
 
 ### Processor vs Router Destination
+
 - **Type**: Router destination
 - **Config**: `transformAtV1 = "router"` in `db-config.json`
 - **Batching**: Implemented at router level in `processRouterDest` function
 
 ### Supported Message Types
+
 - **Track**: ✅ Supported
   - Used for sending conversion events to Campaign Manager 360
 - **Identify**: ❌ Not supported
@@ -74,23 +83,27 @@ Implementation in **Javascript**
 - **Alias**: ❌ Not supported
 
 ### Batching Support
+
 - **Supported**: Yes
 - **Message Types**: Track events only
-- **Batch Limits**: 
+- **Batch Limits**:
   - Maximum conversions per batch: **1000** (`MAX_BATCH_CONVERSATIONS_SIZE`)
   - Batching logic groups events by request type (`batchinsert` vs `batchupdate`)
   - Implementation: `batchEvents()` and `generateBatch()` functions in `transform.js`
 
 ### Proxy Delivery Support
+
 - **Supported**: Yes
 - **Implementation**: `src/v1/destinations/campaign_manager/networkHandler.js`
 - **Partial Batching Response Handling**: It supports partial handling. If a batch of events failed it return the status as per the failed events. There is not any dontBatch directive as the destination response contains per event status.
 
 ### User Deletion Support
+
 - **Supported**: No
 - **File**: `deleteUsers.js` does not exist in the destination folder
 
 ### OAuth Support
+
 - **Supported**: Yes
 - **Config**: `config.auth.type = "OAuth"` in `db-config.json`
 - **Provider**: Google
@@ -100,6 +113,7 @@ Implementation in **Javascript**
 ### Additional Functionalities
 
 #### 1. Enhanced Conversions
+
 - **Purpose**: Improve conversion accuracy by providing user identifiers
 - **Supported Identifiers**:
   - Email (hashed)
@@ -119,6 +133,7 @@ Implementation in **Javascript**
 - **Configuration Mapping**: `data/CampaignManagerEnhancedConversionConfig.json`
 
 #### 2. Request Type Support
+
 - **batchinsert**: For inserting new conversions
 - **batchupdate**: For updating existing conversions
   - Supports enhanced conversions with user identifiers
@@ -126,6 +141,7 @@ Implementation in **Javascript**
 - **Required Field**: `properties.requestType` must be either `batchinsert` or `batchupdate`
 
 #### 3. Encryption Support
+
 - **Purpose**: For encrypted user IDs
 - **Fields**:
   - `encryptedUserId`: Single encrypted user ID
@@ -139,11 +155,13 @@ Implementation in **Javascript**
 ### Validations
 
 #### Pre-request Validations
+
 1. **Message Type**: Must be `track`
 2. **Properties**: `message.properties` must be present
 3. **Request Type**: `properties.requestType` must be `batchinsert` or `batchupdate`
 
 #### Post-request Validations
+
 1. **Encryption Info**: If `encryptedUserId` or `encryptedUserIdCandidates` is used, `encryptionInfo` must be present with all required fields
 2. **User Identifier**: At least one of the following must be present:
    - `gclid` (Google Click ID)
@@ -155,6 +173,7 @@ Implementation in **Javascript**
    - `impressionId`
 
 #### Required Fields (from Track Config)
+
 - `floodlightConfigurationId` ✅ Required
 - `ordinal` ✅ Required
 - `timestampMicros` ✅ Required (converted from `timestamp`)
@@ -162,6 +181,7 @@ Implementation in **Javascript**
 - `quantity` ✅ Required
 
 #### Optional Fields
+
 - `customVariables`
 - `mobileDeviceId`
 - `value` (mapped from `properties.value`, `properties.total`, or `properties.revenue`)
@@ -178,11 +198,13 @@ Implementation in **Javascript**
 ### Rate Limits
 
 **Quick Summary**:
+
 - **Batch Size**: Maximum 1000 conversions per request ([reference](https://developers.google.com/doubleclick-advertisers/guides/conversions_faq))
 - **Daily Quota**: 50,000 requests per day (can be increased)
 - **Rate Limit**: 1 QPS (queries per second) default, up to 10 QPS maximum
 
 **Endpoints**:
+
 - `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
 - `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchupdate`
 
@@ -194,17 +216,20 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 
 **Yes, event ordering is required** for Campaign Manager 360 conversions for the following reasons:
 
-1. **Conversion Updates**: 
+1. **Conversion Updates**:
+
    - The `batchupdate` request type updates existing conversions
    - If events are processed out of order, you might update a conversion with stale data, overwriting newer information
    - This is especially critical when using enhanced conversions, as user identifiers might be updated over time
 
 2. **Timestamp-based Processing**:
+
    - All conversions include a `timestampMicros` field that represents when the conversion occurred
    - Campaign Manager 360 uses this timestamp for attribution and reporting
    - Out-of-order events could lead to incorrect attribution windows and reporting discrepancies
 
 3. **Conversion Counting**:
+
    - The `ordinal` field is used to deduplicate conversions
    - Processing events out of order might affect how conversions are counted and deduplicated
 
@@ -221,6 +246,7 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 **Feasibility**: **Possible with considerations**
 
 1. **Historical Data Replay**:
+
    - ✅ Campaign Manager 360 accepts conversions with past timestamps via `timestampMicros`
    - ✅ Can replay missing data by sending `batchinsert` requests with historical timestamps
    - ⚠️ **Consideration**: Check Campaign Manager 360's attribution window limits
@@ -228,6 +254,7 @@ For detailed rate limits, error handling, and requesting additional quota, see [
    - ⚠️ **Consideration**: Ensure `ordinal` values are correct to avoid duplicate counting
 
 2. **Replay Constraints**:
+
    - Must provide all required fields: `floodlightConfigurationId`, `floodlightActivityId`, `ordinal`, `timestampMicros`, `quantity`
    - Must provide at least one user identifier (gclid, matchId, mobileDeviceId, etc.)
    - Event ordering should be maintained during replay
@@ -243,11 +270,13 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 **Feasibility**: **Yes, using batchupdate**
 
 1. **Update Existing Conversions**:
+
    - ✅ Use `batchupdate` request type to update already-delivered conversions
    - ✅ Can add enhanced conversion data to existing conversions
    - ✅ Conversions are identified by their unique combination of: `floodlightActivityId`, `ordinal`, and user identifier
 
 2. **Replay/Update Scenarios**:
+
    - Adding enhanced conversion data (user identifiers) to existing conversions
    - Correcting conversion values
    - Updating custom variables
@@ -255,7 +284,8 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 
 3. **Deduplication**:
 
-    In Campaign Manager 360, duplicates are controlled by the ordinal on a conversion. If multiple conversions share the same Floodlight activity, Floodlight configuration, user identifier (e.g., encryptedUserId/gclid/dclid/matchId/mobileDeviceId), and timestamp, then:
+   In Campaign Manager 360, duplicates are controlled by the ordinal on a conversion. If multiple conversions share the same Floodlight activity, Floodlight configuration, user identifier (e.g., encryptedUserId/gclid/dclid/matchId/mobileDeviceId), and timestamp, then:
+
    - Same ordinal: CM360 deduplicates and only one conversion is kept.
    - Different ordinals: CM360 treats them as distinct, and all are kept. ​
    - Campaign Manager 360 uses `ordinal` for deduplication
@@ -266,9 +296,10 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 #### Batch Sizes
 
 **Implemented Batch Limits**:
+
 - **Maximum conversions per batch**: 1000 conversions
 - **Constant**: `MAX_BATCH_CONVERSATIONS_SIZE = 1000`
-- **Batching Strategy**: 
+- **Batching Strategy**:
   - Events are grouped by request type (`batchinsert` vs `batchupdate`)
   - Each group is then chunked into batches of 1000 conversions
   - Separate API calls for each batch
@@ -276,6 +307,7 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 #### API Rate Limits
 
 **Default Quota Limits** (from [Campaign Manager 360 API Quotas](https://developers.google.com/doubleclick-advertisers/quotas)):
+
 - **Queries Per Day**: 50,000 requests per project per day (can be increased)
 - **Queries Per Second**: 1 QPS per project (default)
   - In Google API Console: "Queries per minute per user" = 60 (default)
@@ -283,7 +315,9 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 - **Daily Quota Refresh**: Midnight PST
 
 **Endpoints Used**:
+
 1. `POST /dfareporting/v4/userprofiles/{profileId}/conversions/batchinsert`
+
    - Batch size: Up to 1000 conversions
    - Rate limit: Subject to the quota limits above (50,000 requests/day, 1 QPS default)
 
@@ -293,12 +327,14 @@ For detailed rate limits, error handling, and requesting additional quota, see [
    - Additional constraint: Can only update existing conversions
 
 **Requesting Additional Quota**:
+
 - If you encounter `dailyLimitExceeded` error, you can request additional quota
 - Navigate to Campaign Manager 360 API in Google API Console
 - Review usage statistics and apply for higher quota if usage is legitimate
 - Reference: [Requesting Additional Quota](https://developers.google.com/doubleclick-advertisers/quotas#additional_quota)
 
 **Error Handling**:
+
 - Retryable errors: All errors except `PERMISSION_DENIED`, `INVALID_ARGUMENT`, `NOT_FOUND`
 - Non-retryable errors: `PERMISSION_DENIED`, `INVALID_ARGUMENT`, `NOT_FOUND`
 - Implementation: `checkIfFailuresAreRetryable()` in `networkHandler.js`
@@ -310,6 +346,7 @@ For detailed rate limits, error handling, and requesting additional quota, see [
 Campaign Manager 360 destination does not multiplex events. Each incoming track event results in a single conversion entry in the final batch payload.
 
 **Flow**:
+
 1. Input: 1 Track event
 2. Processing: Validates and transforms event
 3. Output: 1 Conversion object in the batch
@@ -323,6 +360,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 **API Version**: `v4` (Campaign Manager 360 API, formerly DCM/DFA Reporting API)
 
 **Evidence**:
+
 - Base URL: `https://dfareporting.googleapis.com/dfareporting/v4/userprofiles`
 - API endpoints use `/dfareporting/v4/` path
 - Implementation uses v4-specific payload structures
@@ -330,6 +368,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 ### Version Deprecation
 
 **API v4 Deprecation Timeline**:
+
 - **Deprecation Date**: September 2, 2025
 - **Sunset Date**: February 26, 2026
 - Google typically provides 6+ months between deprecation and sunset for migration
@@ -340,6 +379,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 **Yes** - Campaign Manager 360 API v5 is available
 
 **Migration Considerations**:
+
 - Review the v5 API documentation for breaking changes
 - Test conversions API endpoints in v5 before migration
 - Plan migration timeline to complete before February 26, 2026
@@ -350,6 +390,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 ### Campaign Manager 360 API Documentation
 
 **Current Version Documentation**:
+
 - [Campaign Manager 360 API Overview](https://developers.google.com/doubleclick-advertisers/)
 - [Conversions API](https://developers.google.com/doubleclick-advertisers/guides/conversions_overview)
 - [Enhanced Conversions](https://developers.google.com/doubleclick-advertisers/guides/conversions_ec)
@@ -357,6 +398,7 @@ Campaign Manager 360 destination does not multiplex events. Each incoming track 
 - [API Quotas](https://developers.google.com/doubleclick-advertisers/quotas)
 
 **API Reference**:
+
 - [Conversions: batchinsert](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchinsert)
 - [Conversions: batchupdate](https://developers.google.com/doubleclick-advertisers/rest/v4/conversions/batchupdate)
 
@@ -375,6 +417,7 @@ For detailed business logic, field mappings, and event processing flow, please r
 If you have encrypted user IDs, set **Hash User Identifiers** to `false` in the destination configuration. This prevents RudderStack from hashing already-encrypted data.
 
 Additionally, you must provide the encryption information:
+
 - `encryptionEntityType`: The type of entity (e.g., `DCM_ACCOUNT`, `DCM_ADVERTISER`)
 - `encryptionSource`: The source of encryption (e.g., `AD_SERVING`, `DATA_TRANSFER`)
 - `encryptionEntityId`: The ID of the encryption entity
@@ -390,6 +433,7 @@ Additionally, you must provide the encryption information:
 ### 3. When should I use enhanced conversions?
 
 Use enhanced conversions when:
+
 - You want to improve conversion matching accuracy by providing user identifiers (email, phone, address)
 - You're using `batchupdate` request type (required)
 - You have first-party user data (email, phone, name, address)
@@ -400,12 +444,14 @@ Enable **Enhanced Conversions** in the destination configuration and provide use
 ### 4. How does deduplication work with ordinal values?
 
 Campaign Manager 360 uses the `ordinal` field for deduplication. If multiple conversions share:
+
 - Same Floodlight activity ID
 - Same Floodlight configuration ID
 - Same user identifier (gclid, matchId, etc.)
 - Same timestamp
 
 Then:
+
 - **Same ordinal**: CM360 deduplicates and only one conversion is kept
 - **Different ordinals**: CM360 treats them as distinct conversions, and all are kept
 
@@ -414,6 +460,7 @@ Then:
 ### 5. Can I send conversions for users without a gclid?
 
 Yes! Campaign Manager 360 supports multiple user identifiers. At least one of the following must be provided:
+
 - `gclid` (Google Click ID)
 - `matchId` (Match ID)
 - `dclid` (DoubleClick Click ID)
@@ -427,16 +474,17 @@ Yes! Campaign Manager 360 supports multiple user identifiers. At least one of th
 When a `batchupdate` request is made for a non-existent conversion:
 
 1. **Response Structure**: The API response contains:
+
    - `hasFailures`: Boolean flag set to `true` if any conversions in the batch failed
    - `status[]`: Array with one `ConversionStatus` element per conversion (in the same order as the input)
 
 2. **Error Code**: For a non-existent conversion, the status will indicate error code `NOT_FOUND`
 
 3. **Retry Behavior**: According to Google's Enhanced Conversions documentation:
+
    - `NOT_FOUND` failures can and should be retried for up to 6 hours
    - This accounts for potential delays in conversion indexing/processing in Campaign Manager 360
 
 4. **Implementation**: RudderStack's error handler treats `NOT_FOUND` as a non-retryable error for immediate failures, but the conversion might succeed if retried later (within the 6-hour window)
 
 **Recommendation**: Ensure conversions exist in Campaign Manager 360 before attempting to update them with enhanced conversion data.
-

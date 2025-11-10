@@ -2,10 +2,10 @@
 
 /**
  * Modern GitHub Release Creator
- * 
+ *
  * This script creates GitHub releases using the GitHub CLI as a more reliable
  * alternative to the outdated conventional-github-releaser package.
- * 
+ *
  * Features:
  * - Uses GitHub CLI for reliable release creation
  * - Generates release notes from conventional commits
@@ -24,7 +24,7 @@ const CONFIG = {
   preset: 'angular',
   generateNotes: true,
   latest: true,
-  debug: process.env.DEBUG === 'true' || process.env.DEBUG === 'conventional-github-releaser'
+  debug: process.env.DEBUG === 'true' || process.env.DEBUG === 'conventional-github-releaser',
 };
 
 // Repository URL configuration
@@ -43,22 +43,20 @@ function execCommand(command, options = {}) {
     if (CONFIG.debug) {
       log(`Executing: ${command}`, 'info');
     }
-    const result = execSync(command, { 
-      encoding: 'utf8', 
+    const result = execSync(command, {
+      encoding: 'utf8',
       stdio: CONFIG.debug ? 'inherit' : 'pipe',
-      ...options 
+      ...options,
     });
     return { success: true, output: result };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error.message, 
-      output: error.stdout || error.stderr || '' 
+    return {
+      success: false,
+      error: error.message,
+      output: error.stdout || error.stderr || '',
     };
   }
 }
-
-
 
 function getPreviousTag(currentTag) {
   // Get all tags sorted by version
@@ -68,7 +66,10 @@ function getPreviousTag(currentTag) {
     return 'v0.0.0';
   }
 
-  const tags = result.output.trim().split('\n').filter(tag => tag.trim());
+  const tags = result.output
+    .trim()
+    .split('\n')
+    .filter((tag) => tag.trim());
   const currentIndex = tags.indexOf(currentTag);
 
   if (currentIndex === -1 || currentIndex === tags.length - 1) {
@@ -106,7 +107,10 @@ function generateConventionalReleaseNotes(version) {
     return null;
   }
 
-  const commits = result.output.trim().split('\n').filter(line => line.trim());
+  const commits = result.output
+    .trim()
+    .split('\n')
+    .filter((line) => line.trim());
 
   // Parse commits according to Angular convention
   const features = [];
@@ -114,7 +118,7 @@ function generateConventionalReleaseNotes(version) {
   const breaking = [];
   const other = [];
 
-  commits.forEach(commit => {
+  commits.forEach((commit) => {
     const match = commit.match(/^(?<type>\w+)(?<scope>\(.+\))?\!?:\s*(?<description>.+)$/);
     if (match) {
       const { type, scope, description } = match.groups;
@@ -175,25 +179,38 @@ function createReleaseWithGitHubCLI(version) {
       tempFile = path.join(tempDir, `${version}-${crypto.randomBytes(4).toString('hex')}.md`);
       fs.writeFileSync(tempFile, releaseNotes);
       command = [
-        'gh', 'release', 'create', `v${version}`,
-        '--title', `v${version}`,
-        '--notes-file', tempFile
+        'gh',
+        'release',
+        'create',
+        `v${version}`,
+        '--title',
+        `v${version}`,
+        '--notes-file',
+        tempFile,
       ];
     } catch (error) {
       log(`Failed to write release notes file: ${error.message}`, 'error');
       // Fallback to generate-notes
       command = [
-        'gh', 'release', 'create', `v${version}`,
-        '--title', `v${version}`,
-        '--generate-notes'
+        'gh',
+        'release',
+        'create',
+        `v${version}`,
+        '--title',
+        `v${version}`,
+        '--generate-notes',
       ];
     }
   } else {
     // Fallback to GitHub's auto-generated notes
     command = [
-      'gh', 'release', 'create', `v${version}`,
-      '--title', `v${version}`,
-      '--generate-notes'
+      'gh',
+      'release',
+      'create',
+      `v${version}`,
+      '--title',
+      `v${version}`,
+      '--generate-notes',
     ];
   }
 
@@ -228,10 +245,11 @@ function createReleaseWithGitHubCLI(version) {
 
 function createReleaseWithConventionalReleaser(version) {
   log(`Creating release v${version} using conventional-github-releaser...`);
-  
-  const command = 'DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js';
+
+  const command =
+    'DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js';
   const result = execCommand(command);
-  
+
   if (result.success) {
     log(`Release v${version} created successfully with conventional-github-releaser`);
     return true;
@@ -246,11 +264,11 @@ function createReleaseWithConventionalReleaser(version) {
 
 function main() {
   log('Starting GitHub release creation process...');
-  
+
   // Get version from package.json
   const version = getVersion();
   log(`Target version: ${version}`);
-  
+
   // Check if tag exists
   const tagResult = execCommand(`git rev-parse --verify v${version}`);
   if (!tagResult.success) {
@@ -263,25 +281,27 @@ function main() {
   const releaseCheckResult = execCommand(`gh release view v${version}`);
   if (releaseCheckResult.success) {
     log(`✅ Release v${version} already exists. Skipping creation.`, 'warn');
-    log(`🔗 Existing release: https://github.com/rudderlabs/rudder-transformer/releases/tag/v${version}`);
+    log(
+      `🔗 Existing release: https://github.com/rudderlabs/rudder-transformer/releases/tag/v${version}`,
+    );
     process.exit(0);
   } else {
     log(`Release v${version} does not exist. Proceeding with creation...`);
   }
-  
+
   // Try GitHub CLI first (modern approach)
   if (createReleaseWithGitHubCLI(version)) {
     log('🎉 Release created successfully!');
     process.exit(0);
   }
-  
+
   // Fallback to conventional-github-releaser
   log('Falling back to conventional-github-releaser...');
   if (createReleaseWithConventionalReleaser(version)) {
     log('🎉 Release created successfully with fallback method!');
     process.exit(0);
   }
-  
+
   // Both methods failed
   log('❌ All release creation methods failed', 'error');
   process.exit(1);
@@ -297,5 +317,5 @@ module.exports = {
   createReleaseWithConventionalReleaser,
   generateConventionalReleaseNotes,
   getPreviousTag,
-  getVersion
+  getVersion,
 };

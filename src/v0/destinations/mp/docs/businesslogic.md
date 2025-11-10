@@ -13,7 +13,9 @@ This document outlines the business logic and mappings used in the Mixpanel dest
 **Documentation**: [Mixpanel Engage API](https://developer.mixpanel.com/reference/profile-set)
 
 **Request Flow**:
+
 1. If identity resolution conditions are met (both userId and anonymousId present and Original ID Merge enabled):
+
    ```javascript
    if (
      destination.Config?.identityMergeApi !== 'simplified' &&
@@ -33,16 +35,19 @@ This document outlines the business logic and mappings used in the Mixpanel dest
      returnValue.push(identifyTrackResponse);
    }
    ```
+
    - First, a `$merge` event is sent to `/import` to merge the anonymous user with the identified user
    - Then, the user attributes are sent to `/engage`
 
 2. If only `userId` is present:
+
    - User attributes are sent directly to `/engage` with `$distinct_id` set to userId
 
 3. If only `anonymousId` is present:
    - User attributes are sent to `/engage` with `$distinct_id` set to anonymousId
 
 **Transformations**:
+
 1. User traits are mapped to Mixpanel user attributes
 2. The userId or anonymousId is mapped to Mixpanel's `$distinct_id`
 3. If using Simplified ID Merge, special properties are set:
@@ -61,11 +66,13 @@ This document outlines the business logic and mappings used in the Mixpanel dest
 **Documentation**: [Mixpanel Track API](https://developer.mixpanel.com/reference/track-event) or [Mixpanel Import API](https://developer.mixpanel.com/reference/import-events)
 
 **Request Flow**:
+
 1. Event data is formatted according to Mixpanel's requirements
 2. The event is sent to `/track` (client-side) or `/import` (server-side)
 3. If People is enabled, user attributes may also be sent to `/engage`
 
 **Transformations**:
+
 1. Event name is preserved as the Mixpanel event name
 2. Event properties are included as Mixpanel event properties
 3. User traits may be included in the event properties based on configuration
@@ -98,10 +105,12 @@ if (message.channel === 'web' && message.context?.userAgent) {
 **Documentation**: [Mixpanel Track API](https://developer.mixpanel.com/reference/track-event) or [Mixpanel Import API](https://developer.mixpanel.com/reference/import-events)
 
 **Request Flow**:
+
 1. Page/Screen events are converted to custom events
 2. The formatted event is sent to `/track` or `/import`
 
 **Transformations**:
+
 - Page events: Converted to "Loaded a Page" or a custom name based on configuration
 - Screen events: Converted to "Loaded a Screen" or a custom name based on configuration
 
@@ -124,10 +133,12 @@ if (type === 'page') {
 **Documentation**: [Mixpanel Groups API](https://developer.mixpanel.com/reference/group-set-property)
 
 **Request Flow**:
+
 1. Group information is formatted according to Mixpanel's requirements
 2. The group data is sent to `/groups`
 
 **Transformations**:
+
 1. Group traits are mapped to Mixpanel group properties
 2. The groupId is set as the group identifier
 
@@ -137,10 +148,12 @@ if (type === 'page') {
 **Documentation**: [Mixpanel Identity Merge API](https://developer.mixpanel.com/reference/identity-merge)
 
 **Request Flow**:
+
 1. The alias event is transformed into a merge request
 2. The request is sent to `/import` with a `$merge` event
 
 **Payload Structure**:
+
 ```json
 {
   "event": "$merge",
@@ -160,6 +173,7 @@ if (type === 'page') {
 Mixpanel offers two identity resolution systems:
 
 1. **Original ID Merge**:
+
    - Uses the `$merge` event to combine user profiles
    - Requires both userId and anonymousId
    - Implemented via the `/import` endpoint
@@ -174,12 +188,14 @@ Mixpanel offers two identity resolution systems:
 ### User Deletion
 
 **Endpoints**:
+
 - `/engage` with `$delete` operation
 - GDPR API for deletion tasks
 
 When a user deletion request is received:
 
 1. The request is processed through one of two methods:
+
    - Profile deletion via Engage API
    - GDPR deletion task creation
 
@@ -188,6 +204,7 @@ When a user deletion request is received:
 3. Each batch is sent to the appropriate endpoint
 
 **Example Payload for Profile Deletion**:
+
 ```json
 {
   "$token": "your_token",
@@ -200,6 +217,7 @@ When a user deletion request is received:
 ### Property Validation
 
 Mixpanel imposes limits on properties:
+
 - Maximum of 255 property keys per event
 - Maximum of 255 elements in arrays
 - Maximum payload size of 1MB
@@ -221,6 +239,7 @@ The Mixpanel destination can generate multiple API calls from a single input eve
 ### Multiplexing Scenarios
 
 1. **Identify Events with Identity Merge**:
+
    - Input: Identify event with both userId and anonymousId
    - Output:
      - API Call 1: POST `/import` with `$merge` event
@@ -228,6 +247,7 @@ The Mixpanel destination can generate multiple API calls from a single input eve
    - Multiplexing: YES
 
 2. **Track Events with People Updates**:
+
    - Input: Track event with People enabled
    - Output:
      - API Call 1: POST `/track` or `/import` with event data

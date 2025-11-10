@@ -12,7 +12,9 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 
 **Request Flow**:
+
 1. If identity resolution conditions are met:
+
    ```javascript
    const integrationsObj = getIntegrationsObj(message, 'BRAZE');
    const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
@@ -22,8 +24,10 @@ This document outlines the business logic and mappings used in the Braze destina
      // Make identify call
    }
    ```
+
    - First, an intermediate call is made to `/users/identify` to merge the anonymous user with the identified user
    - Then, the user attributes are sent to `/users/track`
+
 2. If only `userId` or `brazeExternalId` is present (without `anonymousId` or custom alias):
    - User attributes are sent directly to `/users/track` with `external_id` set
 3. If only `anonymousId` is present (without `userId` or `brazeExternalId`):
@@ -46,6 +50,7 @@ This document outlines the business logic and mappings used in the Braze destina
    ```
 
 **Transformations**:
+
 1. User traits are mapped to Braze user attributes
 2. If an anonymousId is present, it's set as a user alias with the label "rudder_id"
 3. The userId is mapped to Braze's external_id
@@ -57,12 +62,14 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 
 **Request Flow**:
+
 1. For regular track events:
    - Event data is sent to `/users/track` with the event in the `events` array
 2. For "Order Completed" events:
    - Purchase data is extracted and sent to `/users/track` with the purchases in the `purchases` array
 
 **Transformations**:
+
 1. Event name is preserved as the Braze event name
 2. Event properties are included as Braze event properties
 3. Reserved properties are handled according to Braze specifications
@@ -74,10 +81,12 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 
 **Request Flow**:
+
 1. Page/Screen events are converted to custom events
 2. The formatted event is sent to `/users/track` with the event in the `events` array
 
 **Transformations**:
+
 - Page events: Converted to "Viewed {category} {name} Page"
 - Screen events: Converted to "Viewed {name} Screen"
 
@@ -90,6 +99,7 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze Subscription Group API](https://www.braze.com/docs/api/endpoints/subscription_groups/post_update_user_subscription_group_status/)
 
 **Request Flow**:
+
 1. Group information is added as a user attribute with the format `ab_rudder_group_{groupId}: true`
 2. This attribute is sent to `/users/track`
 3. If subscription groups are enabled and email/phone is present:
@@ -101,10 +111,12 @@ This document outlines the business logic and mappings used in the Braze destina
 **Documentation**: [Braze Users Merge API](https://www.braze.com/docs/api/endpoints/user_data/post_users_merge/)
 
 **Request Flow**:
+
 1. The alias event is transformed into a merge request
 2. The request is sent to `/users/merge` to merge the previousId user into the userId user
 
 **Payload Structure**:
+
 ```json
 {
   "merge_updates": [
@@ -136,6 +148,7 @@ Purchase events (Track events with name "Order Completed") receive special handl
 5. The purchases are sent to `/users/track` in the `purchases` array
 
 **Example Payload**:
+
 ```json
 {
   "purchases": [
@@ -150,7 +163,7 @@ Purchase events (Track events with name "Order Completed") receive special handl
   ],
   "attributes": [
     {
-      "external_id": "user123",
+      "external_id": "user123"
       // Any user attributes from the event
     }
   ],
@@ -171,6 +184,7 @@ When a user deletion request is received:
 4. The API key used must have the `users.delete` permission
 
 **Example Payload**:
+
 ```json
 {
   "external_ids": ["user123", "user456", "user789"]
@@ -180,10 +194,12 @@ When a user deletion request is received:
 ### Deduplication Logic
 
 **Endpoints Used**:
+
 - `/users/export/ids` - To fetch current user profiles
 - `/users/track` - To send deduplicated attributes
 
 **Documentation**:
+
 - [Braze User Export API](https://www.braze.com/docs/api/endpoints/export/user_data/post_users_identifier/)
 - [Braze User Track API](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/)
 
@@ -196,6 +212,7 @@ When deduplication is enabled:
 5. Only changed attributes are sent to `/users/track`
 
 **Request Flow**:
+
 1. Fetch current user profiles: `POST /users/export/ids`
 2. Compare incoming attributes with stored attributes
 3. Send only changed attributes: `POST /users/track`
@@ -226,7 +243,6 @@ Certain properties are reserved by Braze and handled specially:
 - **Purchase standard properties**: These properties have special handling in purchase events
   - product_id, sku, price, quantity, currency
 
-
 ## Multiplexing
 
 The Braze destination can generate multiple API calls from a single input event in specific scenarios. This section clarifies which scenarios are considered true multiplexing versus those that use intermediary calls.
@@ -234,9 +250,10 @@ The Braze destination can generate multiple API calls from a single input event 
 ### Multiplexing Scenarios
 
 1. **Identify Events with Identity Resolution Conditions**:
-   
+
    Input: Identify event meeting specific conditions
    Conditions:
+
    ```javascript
    const integrationsObj = getIntegrationsObj(message, 'BRAZE');
    const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
@@ -246,14 +263,17 @@ The Braze destination can generate multiple API calls from a single input event 
      // Make identify call
    }
    ```
+
    Output:
+
    - API Call 1: POST /users/identify (merge anonymous and identified users)
    - API Call 2: POST /users/track (send user attributes)
-   Multiplexing: NO (first call is intermediary)
-   
+     Multiplexing: NO (first call is intermediary)
+
    **Note**: This is not considered true multiplexing as the first call is an intermediary step for identity resolution before the main data delivery. The identify call is only made when either `anonymousId` or a custom alias is present AND either `userId` or `brazeExternalId` is present.
 
 2. **Group Events with Subscription Groups Enabled**:
+
    ```
    Input: Group event with subscription group data
    Output:
@@ -261,9 +281,11 @@ The Braze destination can generate multiple API calls from a single input event 
    - API Call 2: POST /v2/subscription/status/set (update subscription status)
    Multiplexing: YES
    ```
+
    **Note**: This is true multiplexing as both calls deliver different aspects of the same event to Braze.
 
 3. **Events with Deduplication Enabled**:
+
    ```
    Input: Any event with deduplication enabled
    Output:
@@ -271,9 +293,11 @@ The Braze destination can generate multiple API calls from a single input event 
    - API Call 2: POST /users/track (send deduplicated attributes)
    Multiplexing: NO (first call is intermediary)
    ```
+
    **Note**: This is not considered true multiplexing as the first call is only to fetch data for deduplication before the main data delivery.
 
 4. **Track Events with Both User Attributes and Event Data**:
+
    ```
    Input: Track event with user attributes
    Output: Single API call to /users/track with multiple data types:
@@ -283,6 +307,7 @@ The Braze destination can generate multiple API calls from a single input event 
    }
    Multiplexing: NO (single API call)
    ```
+
    **Note**: This is not multiplexing as it's a single API call, even though it updates multiple aspects of the user profile.
 
 5. **Purchase Events (Order Completed)**:

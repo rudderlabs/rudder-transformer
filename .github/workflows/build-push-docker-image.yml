@@ -175,7 +175,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        uses: rudderlabs/build-scan-push-action@56e67ba9f8573e1d05d164612b4530c8e4a1ad01 # v2.0.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -244,7 +244,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        uses: rudderlabs/build-scan-push-action@56e67ba9f8573e1d05d164612b4530c8e4a1ad01 # v2.0.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .

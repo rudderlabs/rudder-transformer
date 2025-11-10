@@ -35,9 +35,12 @@ on:
     secrets:
       DOCKERHUB_TOKEN:
         required: true
+      AWS_SIGNER_PUBLIC_KEY:
+        required: true
+      AWS_SIGNER_PROFILE_ARN:
+        required: true
 
 permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
   contents: read # This is required for actions/checkout
 
 env:
@@ -183,6 +186,8 @@ jobs:
           target: ${{ inputs.push_target }}
           push: true
           tags: ${{ inputs.push_tags }}-arm64
+          aws-signer-public-key: ${{ secrets.AWS_SIGNER_PUBLIC_KEY }}
+          aws-signer-profile-arn: ${{ secrets.AWS_SIGNER_PROFILE_ARN }}
           platforms: |
             linux/arm64
           build-args: |
@@ -252,6 +257,8 @@ jobs:
           target: ${{ inputs.push_target }}
           push: true
           tags: ${{ inputs.push_tags }}-amd64
+          aws-signer-public-key: ${{ secrets.AWS_SIGNER_PUBLIC_KEY }}
+          aws-signer-profile-arn: ${{ secrets.AWS_SIGNER_PROFILE_ARN }}
           platforms: |
             linux/amd64
           build-args: |

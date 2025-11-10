@@ -147,7 +147,7 @@ const gaecResponseHandler = (responseParams) => {
   );
 };
 
-// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.proxy = gaecProxyRequest;

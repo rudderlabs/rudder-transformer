@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
@@ -161,7 +160,7 @@ const responseBuilderSimple = async (message, category, destination, metadata) =
   else {
     targetUrl = `${BASE_ENDPOINT}/v1/tracking/identityEvent`;
     let eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    // eslint-disable-next-line default-case
+
     switch (message.type.toLowerCase()) {
       case EventType.PAGE:
         if (destination.Config.genericPage) {

@@ -184,7 +184,7 @@ const normalizeProductArray = (products) => {
   if (isDefinedAndNotNull(products)) {
     const productArray = CommonUtils.toArray(products);
     const mappedProductArray = productArray.map(
-      ({ product_id, sku, id, query, order_id, total, ...rest }) => ({
+      ({ product_id, sku, id, _query, _order_id, _total, ...rest }) => ({
         id: product_id || sku || id,
         ...rest,
       }),

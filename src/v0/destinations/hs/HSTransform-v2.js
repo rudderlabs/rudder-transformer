@@ -232,7 +232,7 @@ const processTrack = async ({ message, destination }) => {
   // choosing API Type
   if (Config.authorizationType === 'newPrivateAppApi') {
     // remove hubId
-    // eslint-disable-next-line no-underscore-dangle
+
     response.headers = {
       ...response.headers,
       Authorization: `Bearer ${Config.accessToken}`,

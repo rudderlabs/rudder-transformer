@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 

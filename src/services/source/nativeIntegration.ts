@@ -39,7 +39,7 @@ export class NativeIntegrationSourceService implements SourceService {
   public async sourceTransformRoutine(
     sourceEvents: NonNullable<SourceInputV2>[],
     sourceType: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     if (!Array.isArray(sourceEvents)) {

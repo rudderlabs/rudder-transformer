@@ -1,5 +1,5 @@
-/* eslint-disable one-var, @typescript-eslint/naming-convention */
-/* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
+
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {

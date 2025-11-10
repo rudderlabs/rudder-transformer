@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const {
   InstrumentationError,

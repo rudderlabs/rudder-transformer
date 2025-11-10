@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { cloneDeep } = require('lodash');
@@ -92,7 +90,6 @@ const removeReservedParameterPrefixNames = (parameter) => {
 
     // reject if found
     if (valFound) {
-      // eslint-disable-next-line no-param-reassign
       delete parameter[key];
     }
   });
@@ -334,7 +331,7 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
   // append in the params if any custom fields are passed after flattening the JSON
   if (!isEmptyObject(customParameters)) {
     customParameters = flattenJson(customParameters, '_', 'strict');
-    // eslint-disable-next-line no-param-reassign
+
     payload.params = {
       ...payload.params,
       ...customParameters,
@@ -565,7 +562,7 @@ const buildDeliverablePayload = (payload, Config) => {
 
 function sanitizeUserProperties(userPropertiesObj) {
   const sanitizedObj = {};
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  // eslint-disable-next-line no-restricted-syntax
   for (const key in userPropertiesObj) {
     const { value } = userPropertiesObj[key];
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {

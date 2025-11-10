@@ -1,5 +1,5 @@
 const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 const { wrapWithLabels } = require('@pyroscope/nodejs');
 const stats = require('./util/stats');
 

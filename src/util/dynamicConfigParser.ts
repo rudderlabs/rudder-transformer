@@ -1,9 +1,7 @@
-/* eslint-disable unicorn/no-for-loop */
 import { mapInBatches } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
 import { shouldSkipDynamicConfigProcessing } from './utils';
 
-/* eslint-disable no-param-reassign */
 const get = require('get-value');
 const unset = require('unset-value');
 

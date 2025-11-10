@@ -68,7 +68,7 @@ const responseHandler = (responseParams) => {
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     const { contacts, external_ids, key_id } = destinationRequest.body.JSON;
     const finalData = contacts || external_ids;
     finalData.forEach((event, idx) => {

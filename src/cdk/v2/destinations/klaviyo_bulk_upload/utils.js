@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { removeUndefinedValues } = require('../../../../v0/util');
 
 const locationAttributes = [

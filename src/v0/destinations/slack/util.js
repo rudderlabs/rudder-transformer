@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const { getFieldValueFromMessage } = require('../../util');
 
 /**

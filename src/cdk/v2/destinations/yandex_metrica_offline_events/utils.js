@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { InstrumentationError, isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 const moment = require('moment');
 

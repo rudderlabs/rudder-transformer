@@ -114,7 +114,6 @@ const putItemsHandler = (message, destination) => {
     if (key.toUpperCase() !== 'ITEM_ID') {
       value = properties && properties[keyMap[key]];
     } else {
-      // eslint-disable-next-line no-lonely-if
       if (!isDefinedAndNotNull(value) || isBlank(value)) {
         // itemId cannot be null
         value = String(lodash.get(message, keyMap[key]));

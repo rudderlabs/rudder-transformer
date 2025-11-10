@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const get = require('get-value');
 const { isDefinedAndNotNull, uuidv5 } = require('@rudderstack/integrations-lib');
 const { v4: uuidv4 } = require('uuid');

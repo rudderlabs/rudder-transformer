@@ -85,7 +85,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
-  // eslint-disable-next-line camelcase
+
   const { line_items: lineItems } = event;
   const productsList = getProductsFromLineItems(lineItems, lineItemsMappingJSON);
   message.setProperty('properties.products', productsList);

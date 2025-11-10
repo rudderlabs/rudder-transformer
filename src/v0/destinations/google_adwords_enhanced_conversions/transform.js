@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-
 const get = require('get-value');
 const { cloneDeep, isNumber } = require('lodash');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');

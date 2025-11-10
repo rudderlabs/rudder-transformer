@@ -1430,7 +1430,7 @@ describe('getType', () => {
     },
     {
       description: 'should handle array constructor',
-      input: new Array(),
+      input: [],
       expected: 'array',
     },
     {

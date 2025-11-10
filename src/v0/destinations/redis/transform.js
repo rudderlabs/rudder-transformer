@@ -11,12 +11,11 @@ const { EventType } = require('../../../constants');
 const processValues = (obj) => {
   Object.keys(obj).forEach((key) => {
     if (obj[key] === null || isObject(obj[key])) {
-      // eslint-disable-next-line no-param-reassign
       delete obj[key];
       return;
     }
     const val = obj[key];
-    // eslint-disable-next-line no-param-reassign
+
     obj[key] = lodash.isArray(val) ? JSON.stringify(val) : lodash.toString(val);
   });
 };

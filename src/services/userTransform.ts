@@ -241,7 +241,6 @@ export class UserTransformService {
         return ev;
       });
 
-      // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
         updatedEvents,

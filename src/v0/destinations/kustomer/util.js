@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');

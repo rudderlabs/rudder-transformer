@@ -342,7 +342,7 @@ const legacyBatchEvents = (destEvents) => {
         const { email, updatedProperties } = getEmailAndUpdatedProps(
           ev.message.body.JSON.properties,
         );
-        // eslint-disable-next-line no-param-reassign
+
         ev.message.body.JSON.properties = updatedProperties;
         identifyResponseList.push({
           email,

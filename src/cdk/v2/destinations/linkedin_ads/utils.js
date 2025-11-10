@@ -208,7 +208,6 @@ function constructPartialStatus(errorMessage) {
   const errorMap = {};
 
   try {
-    // eslint-disable-next-line no-cond-assign
     while ((match = errorPattern.exec(errorMessage)) !== null) {
       const [, index, message] = match;
       errorMap[index] = message;

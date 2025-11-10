@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { set, get } = require('lodash');
 const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {

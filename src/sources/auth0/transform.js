@@ -41,7 +41,7 @@ function processEvents(eventList) {
   const responses = [];
   eventList.forEach((event) => {
     let response = {};
-    // eslint-disable-next-line camelcase
+
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { data, log_id } = event;
     // Dropping the event if type is not present
@@ -60,7 +60,6 @@ function processEvents(eventList) {
         response = prepareTrackPayload(data);
       }
 
-      // eslint-disable-next-line camelcase
       response.properties.log_id = log_id;
       response.anonymousId = generateUUID();
       responses.push(removeUndefinedAndNullValues(response));

@@ -134,10 +134,7 @@ async function getSaleforceIdForRecord(
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) =>
-      typeof identifierValue !== 'undefined' &&
-      // eslint-disable-next-line eqeqeq
-      rec[identifierType] == identifierValue,
+    (rec) => typeof identifierValue !== 'undefined' && rec[identifierType] == identifierValue,
   );
 
   return searchRecord?.Id;
@@ -414,7 +411,6 @@ const processMetadataForRouter = (output) => {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach((metadataElement) => {
-    // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;

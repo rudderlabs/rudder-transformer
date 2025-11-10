@@ -86,7 +86,6 @@ const processEvent = (event) => {
   return response;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const process = async (event, _processParams) => {
   const token = await getAuthToken(authCache, formatConfig(event.destination), event.metadata);
   if (!token) {
@@ -167,7 +166,6 @@ function processMetadataForRouter(output) {
 
   // Add destInfo to each metadata element
   metadataArray.forEach((metadataElement) => {
-    // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });
 

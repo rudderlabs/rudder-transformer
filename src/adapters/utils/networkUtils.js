@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 const lodash = require('lodash');
 const { isEmpty } = require('lodash');
 const { AbortedError } = require('@rudderstack/integrations-lib');

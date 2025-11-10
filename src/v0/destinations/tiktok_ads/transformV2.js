@@ -1,5 +1,3 @@
-/* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/naming-convention */
 const set = require('set-value');
 const {
   ConfigurationError,
@@ -424,7 +422,7 @@ const buildBatchResponseForEvent = (batch) => {
 
 const separateTestEvents = (event, processedTestEvents, processedEvents) => {
   // only for already transformed payload
-  // eslint-disable-next-line no-param-reassign
+
   event.message = Array.isArray(event.message) ? event.message : [event.message];
 
   // not performing batching for test events as it is not supported
@@ -731,7 +729,7 @@ const batchEvents = (processedEvents, eventSource) => {
   const { pixelCode } = destination.Config;
   processedEvents.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
-    // eslint-disable-next-line no-unsafe-optional-chaining, unicorn/consistent-destructuring
+    // eslint-disable-next-line unicorn/consistent-destructuring
     if (eventData?.length + data.length > config.maxBatchSizeV2) {
       // Partner name must be added above "data": [..];
       responseLists.push(

@@ -123,7 +123,7 @@ describe('getHashedValue', () => {
       name: 'should hash non-hex64 values',
       input: 'test',
       expectedLength: 64,
-      expectedPattern: /^[a-f0-9]{64}$/i,
+      expectedPattern: /^[\da-f]{64}$/i,
     },
   ];
 

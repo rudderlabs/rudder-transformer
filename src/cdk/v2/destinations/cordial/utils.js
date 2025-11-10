@@ -21,7 +21,6 @@ const checkIfContactExists = async (config, contactId, email) => {
     },
   );
 
-  // eslint-disable-next-line no-underscore-dangle
   return processedResponse.status === 200 && !!processedResponse.response?._id;
 };
 

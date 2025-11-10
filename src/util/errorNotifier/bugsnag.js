@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const Bugsnag = require('@bugsnag/js');
 const stackTraceParser = require('stacktrace-parser');
 const {

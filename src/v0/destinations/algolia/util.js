@@ -70,7 +70,7 @@ const genericpayloadValidator = (payload) => {
 const createObjectArray = (objects, eventType) => {
   const objectList = [];
   const positionList = [];
-  // eslint-disable-next-line sonarjs/no-unused-collection
+
   const objectData = [];
   if (objects.length > 0) {
     objects.forEach((object, index) => {

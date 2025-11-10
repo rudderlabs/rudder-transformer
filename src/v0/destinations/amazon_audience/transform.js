@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { handleRtTfSingleEventError } = require('../../util');
 const { batchEvents, buildResponseWithUsers, getUserDetails } = require('./utils');

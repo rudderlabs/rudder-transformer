@@ -13,7 +13,6 @@ const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const populateResponseWithDontBatch = (rudderJobMetadata, response) => {
   const errorMessage = JSON.stringify(response);
   return rudderJobMetadata.map((metadata) => {
-    // eslint-disable-next-line no-param-reassign
     metadata.dontBatch = true;
     return {
       statusCode: 500,

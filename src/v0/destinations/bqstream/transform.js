@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const lodash = require('lodash');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');

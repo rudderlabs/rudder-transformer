@@ -103,22 +103,22 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
     .forEach((key) => {
       message.setProperty(`properties.${key}`, event[key]);
     });
-  // eslint-disable-next-line camelcase
+
   const { line_items: lineItems, billing_address, user_id, shipping_address, customer } = event;
   const productsList = getProductsListFromLineItems(lineItems);
   message.setProperty('properties.products', productsList);
   if (customer) {
     message.setPropertiesV2(customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
-  // eslint-disable-next-line camelcase
+
   if (shipping_address) {
     message.setProperty('traits.shippingAddress', shipping_address);
   }
-  // eslint-disable-next-line camelcase
+
   if (billing_address) {
     message.setProperty('traits.billingAddress', billing_address);
   }
-  // eslint-disable-next-line camelcase
+
   if (!message.userId && user_id) {
     message.setProperty('userId', user_id);
   }
@@ -185,7 +185,6 @@ const enrichNonIdentifyMessage = async (
 
 const enrichMessage = async (message, event, shopifyTopic, metricMetadata, redisData) => {
   if (message.userId) {
-    // eslint-disable-next-line no-param-reassign
     message.userId = String(message.userId);
   }
 
@@ -266,9 +265,9 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   let field;
   if (event.event === 'rudderIdentifier') {
     field = 'anonymousId';
-    // eslint-disable-next-line unicorn/consistent-destructuring
+
     const lineItemshash = getHashLineItems(event.cart);
-    // eslint-disable-next-line unicorn/consistent-destructuring
+
     value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
     stats.increment('shopify_redis_calls', {
       type: 'set',
@@ -283,7 +282,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
     */
   } else {
     field = 'sessionId';
-    // eslint-disable-next-line unicorn/consistent-destructuring
+
     value = ['sessionId', event.sessionId];
     /* cart_token: {
         anonymousId:'anon_id1',

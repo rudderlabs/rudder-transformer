@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/consistent-destructuring */
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const Cache = require('../../util/cache');
 const { AUTH_CACHE_TTL } = require('../../util/constant');

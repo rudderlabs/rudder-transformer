@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 const { NetworkError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
@@ -10,7 +9,6 @@ const { DESTINATION } = require('./config');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const responseHandler = (responseParams) => {
   const { destinationResponse } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;

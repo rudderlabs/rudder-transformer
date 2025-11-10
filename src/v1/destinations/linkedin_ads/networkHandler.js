@@ -21,7 +21,6 @@ const parseVersionDeprecationStatusCode = (status) => {
   return status;
 };
 
-// eslint-disable-next-line consistent-return
 // ref :
 // 1) https://learn.microsoft.com/en-us/linkedin/shared/api-guide/concepts/error-handling
 // 2) https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=http#api-error-details

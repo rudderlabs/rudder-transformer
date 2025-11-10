@@ -1,5 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-prototype-builtins */
 const Handlebars = require('handlebars');
 const get = require('get-value');
 const {

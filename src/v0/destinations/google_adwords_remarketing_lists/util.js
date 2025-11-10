@@ -25,7 +25,6 @@ const {
 const hashEncrypt = (object) => {
   Object.keys(object).forEach((key) => {
     if (hashAttributes.includes(key) && object[key]) {
-      // eslint-disable-next-line no-param-reassign
       object[key] = sha256(object[key]);
     }
   });

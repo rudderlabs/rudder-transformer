@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { MessageDetails, StatusCode, Stat } from './types';
 
 export class ErrorDetailsExtractor {

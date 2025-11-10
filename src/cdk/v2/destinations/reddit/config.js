@@ -1,4 +1,5 @@
 const ENDPOINT = 'https://ads-api.reddit.com/api/v2.0/conversions/events/';
+const V3_ENDPOINT = 'https://ads-api.reddit.com/api/v3/pixels/';
 const maxBatchSize = 1000;
 
 const ecomEventMaps = [
@@ -26,6 +27,7 @@ const ecomEventMaps = [
 
 module.exports = {
   ENDPOINT,
+  V3_ENDPOINT,
   maxBatchSize,
   ecomEventMaps,
 };

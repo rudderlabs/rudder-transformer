@@ -1,11 +1,9 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-import { newData } from './newData';
 
 const API_VERSION = 'v19';
 
-export const data = [
-  ...newData,
+export const newData = [
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',
@@ -186,8 +184,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -270,6 +270,14 @@ export const data = [
                         adPersonalization: 'UNSPECIFIED',
                         adUserData: 'UNSPECIFIED',
                       },
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -293,6 +301,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -385,6 +396,7 @@ export const data = [
                 conversionValue: '1',
                 currency: 'GBP',
                 orderId: 'PL-123QR',
+                total: 3456,
               },
               integrations: {
                 All: true,
@@ -475,8 +487,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -519,6 +533,7 @@ export const data = [
                   conversionValue: '1',
                   currency: 'GBP',
                   orderId: 'PL-123QR',
+                  total: 3456,
                 },
               },
               body: {
@@ -559,6 +574,19 @@ export const data = [
                       conversionValue: 1,
                       currencyCode: 'GBP',
                       orderId: 'PL-123QR',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19134062',
+                          value: '3456',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -582,6 +610,9 @@ export const data = [
       },
     },
     mockFns: (_) => timestampMock(_, '2023-02-06 19:44:25+05:30'),
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -763,8 +794,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -847,6 +880,19 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: '10',
+                        },
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19134062',
+                          value: '555',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -870,6 +916,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -1051,8 +1100,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -1110,6 +1161,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -1131,6 +1190,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -2017,8 +2079,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/111222333',
                 event: 'Page view',
                 customerId: '9625812972',
                 customVariables: [
@@ -2092,6 +2156,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/111222333',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2121,8 +2193,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/111222333',
                 event: 'Page view',
                 customerId: '9625812972',
                 customVariables: [
@@ -2180,6 +2254,14 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/111222333',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2201,6 +2283,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -2342,10 +2427,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -2381,6 +2467,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -2402,6 +2489,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -2540,8 +2630,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -2571,6 +2663,7 @@ export const data = [
                       callerId: 'callerId',
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
                     },
                   ],
                   partialFailure: true,
@@ -2592,6 +2685,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -2773,8 +2869,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -2831,6 +2929,14 @@ export const data = [
                       conversionDateTime: '2022-09-20 08:50:04+05:30',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      conversionAction: 'customers/9625812972/conversionActions/444555666',
+                      customVariables: [
+                        {
+                          conversionCustomVariable:
+                            'customers/9625812972/conversionCustomVariables/19131634',
+                          value: 'value',
+                        },
+                      ],
                     },
                   ],
                   partialFailure: true,
@@ -2854,6 +2960,9 @@ export const data = [
       },
     },
     mockFns: (_) => timestampMock(_, '2022-09-20 08:50:04+05:30'),
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -2993,8 +3102,10 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -3029,6 +3140,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3050,6 +3162,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -3494,10 +3609,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -3543,6 +3659,7 @@ export const data = [
                         },
                       ],
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3564,6 +3681,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -3698,7 +3818,6 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret1,
-
                 refresh_token: 'efgh5678',
               },
             },
@@ -3723,6 +3842,7 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionEnvironment: 'WEB',
                       gclid: 'gclid',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3736,7 +3856,7 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': '8617859087',
               },
               method: 'POST',
@@ -3753,6 +3873,7 @@ export const data = [
                 ],
                 customerId: '9625812972',
                 event: 'Sign-up - click',
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 properties: {
                   conversionDateTime: '2022-01-01 12:32:45-08:00',
                   gclid: 'gclid',
@@ -3768,6 +3889,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -3908,10 +4032,12 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
 
                 'login-customer-id': '8617859087',
               },
               params: {
+                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -3950,6 +4076,7 @@ export const data = [
                       gclid: 'gclid',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionEnvironment: 'WEB',
+                      conversionAction: 'customers/9625812972/conversionActions/848898416',
                     },
                   ],
                   partialFailure: true,
@@ -3971,6 +4098,9 @@ export const data = [
           },
         ],
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -4098,10 +4228,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4135,6 +4266,7 @@ export const data = [
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
                           CUSTOM_KEY: 'CUSTOM_VALUE',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4171,6 +4303,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4431,10 +4566,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4465,6 +4601,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4503,6 +4640,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4628,10 +4768,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4662,6 +4803,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2023-02-06 19:44:25+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4701,6 +4843,9 @@ export const data = [
       },
     },
     mockFns: (_) => timestampMock(_, '2023-02-06 19:44:25+05:30'),
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4828,10 +4973,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4862,6 +5008,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -4898,6 +5045,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -4990,10 +5140,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5024,6 +5175,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -5060,6 +5212,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -5148,10 +5303,12 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
+                'developer-token': 'test-developer-token-12345',
 
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5182,6 +5339,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2022-01-01 18:02:45+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [
                           {
@@ -5218,6 +5376,9 @@ export const data = [
       },
     },
     mockFns: (_) => timestampMock(_, '2022-01-01 18:02:45+05:30'),
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -5304,10 +5465,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5338,6 +5500,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [{}],
                       },
@@ -5369,10 +5532,13 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 27 : store conversion consent mapped through integrations object',
+    description: 'Test 26 : store conversion consent mapped through integrations object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5493,10 +5659,11 @@ export const data = [
               headers: {
                 Authorization: authHeader1,
                 'Content-Type': 'application/json',
-
+                'developer-token': 'test-developer-token-12345',
                 'login-customer-id': 'logincustomerid',
               },
               params: {
+                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5527,6 +5694,7 @@ export const data = [
                           transaction_amount_micros: '100000000',
                           currency_code: 'INR',
                           transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          conversion_action: 'customers/1112223333/conversionActions/848898416',
                         },
                         userIdentifiers: [{}],
                       },
@@ -5558,10 +5726,13 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 28 : when both gbraid and wbraid are available',
+    description: 'Test 27 : when both gbraid and wbraid are available',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5750,10 +5921,13 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 29 : store conversion which has value less than 0, should throw error',
+    description: 'Test 28 : store conversion which has value less than 0, should throw error',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5856,5 +6030,8 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
 ];

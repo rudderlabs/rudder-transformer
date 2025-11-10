@@ -6,6 +6,7 @@ const {
   AbortedError,
   ConfigurationError,
   InstrumentationError,
+  NetworkError,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
@@ -23,6 +24,7 @@ const {
 const {
   SEARCH_STREAM,
   CONVERSION_ACTION_ID_CACHE_TTL,
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
   trackCreateStoreConversionsMapping,
   trackAddStoreConversionsMapping,
   trackAddStoreAddressConversionsMapping,
@@ -37,12 +39,21 @@ const {
   CLICK_CONVERSION_ENDPOINT_PATH,
   STORE_CONVERSION_ENDPOINT_PATH,
 } = require('./config');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const {
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { finaliseConsent, getAuthErrCategory } = require('../../util/googleUtils');
+const {
+  finaliseConsent,
+  getAuthErrCategory,
+  getDeveloperToken,
+} = require('../../util/googleUtils');
+const tags = require('../../util/tags');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
+const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
 /**
  * validate destination config and check for existence of data
@@ -55,6 +66,48 @@ const validateDestinationConfig = ({ Config }) => {
 };
 
 /**
+ * Determines whether to use batch fetching for conversion metadata.
+ *
+ * When enabled (true):
+ * - Conversion action IDs and custom variables are fetched in batches
+ *   during the transformation phase
+ * - Reduces API calls and improves performance
+ * - Data is cached and reused across events
+ *
+ * When disabled (false):
+ * - Legacy flow: fetches conversion data per-request in network handler
+ * - One API call per event (slower but battle-tested)
+ *
+ * @returns {boolean} true to enable batch fetching, false for legacy per-request flow
+ */
+const isBatchFetchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
+
+const getHeader = (Config, metadata) => {
+  const { subAccount, loginCustomerId } = Config;
+  const response = {
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
+    'Content-Type': 'application/json',
+  };
+
+  const useBatchFetching = isBatchFetchingEnabled();
+  const developerToken = getDeveloperToken();
+  if (developerToken && useBatchFetching) {
+    response['developer-token'] = developerToken;
+  }
+
+  if (subAccount) {
+    if (loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+      response['login-customer-id'] = filteredLoginCustomerId;
+    } else {
+      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
+    }
+  }
+
+  return response;
+};
+
+/**
  * get conversionAction using the conversion name using searchStream endpoint
  * @param {*} customerId
  * @param {*} event
@@ -62,7 +115,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @returns
  */
 const getConversionActionId = async ({ headers, params, metadata }) => {
-  const conversionActionIdKey = sha256(params.event + params.customerId).toString();
+  const conversionActionIdKey = sha256(params.customerId + params.event).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
       'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
@@ -106,6 +159,244 @@ const getConversionActionId = async ({ headers, params, metadata }) => {
     }
     return conversionAction;
   });
+};
+
+/**
+ * Batch fetch multiple conversion actions in a single API call
+ * Returns a map of conversion names to resource names (does not cache - caller should handle caching)
+ * @param {string} customerId - The customer ID
+ * @param {string[]} conversionNames - Array of conversion action names to fetch
+ * @param {object} headers - Request headers
+ * @param {object} metadata - Request metadata
+ * @returns {Object} Map of conversion names to resource names
+ */
+const batchFetchConversionActions = async ({ customerId, conversionNames, headers, metadata }) => {
+  if (!Array.isArray(conversionNames) || conversionNames.length === 0) {
+    return {};
+  }
+
+  // Build query to fetch multiple conversion actions at once
+  const queryString = SqlString.format(
+    'SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN (?)',
+    [conversionNames],
+  );
+  const data = {
+    query: queryString,
+  };
+  const endpoint = SEARCH_STREAM.replace(CUSTOMER_ID_PARAM, customerId);
+  const requestOptions = {
+    headers,
+  };
+
+  let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
+    destType: 'google_adwords_offline_conversions',
+    feature: 'transformation',
+    endpointPath: `/googleAds:searchStream`,
+    requestMethod: 'POST',
+    module: 'transformation',
+    metadata,
+  });
+  searchStreamResponse = processAxiosResponse(searchStreamResponse);
+
+  const { response, status } = searchStreamResponse;
+
+  if (!isHttpStatusSuccess(status)) {
+    // Log more details for debugging
+    const errorMessage =
+      response?.[0]?.error?.message || response?.error?.message || JSON.stringify(response);
+    throw new AbortedError(
+      `[Google Ads Offline Conversions]:: ${errorMessage} during batch conversion action fetch`,
+      status,
+      response,
+      getAuthErrCategory(searchStreamResponse),
+    );
+  }
+
+  const results = get(searchStreamResponse, 'response.0.results') || [];
+  const conversionMap = {};
+
+  // Build result map from API response
+  results.forEach((result) => {
+    const { conversionAction } = result;
+    if (conversionAction && conversionAction.name && conversionAction.resourceName) {
+      conversionMap[conversionAction.name] = conversionAction.resourceName;
+    }
+  });
+
+  return conversionMap;
+};
+
+/**
+ * Get conversion action IDs for a customer ID with batch fetching support
+ * First checks cache for each conversion individually, then batch fetches any missing ones
+ * Uses individual cache keys: customerId + conversionName
+ * @param {string} customerId - The customer ID
+ * @param {string[]} conversionNames - Array of conversion names needed
+ * @param {object} headers - Request headers
+ * @param {object} metadata - Request metadata
+ * @returns {Object} Map of conversion names to resource names
+ */
+const getConversionActionIds = async ({ Config, metadata, customerId, conversionNames }) => {
+  if (!Array.isArray(conversionNames) || conversionNames.length === 0) {
+    return {};
+  }
+
+  const result = {};
+  const cacheMisses = [];
+
+  // Check cache for each conversion individually (synchronous check, no await in loop)
+  conversionNames.forEach((conversionName) => {
+    const cacheKey = sha256(customerId + conversionName).toString();
+    // Access cache directly without storeFunction
+    const cachedValue = conversionActionIdCache.cache.get(cacheKey);
+
+    if (cachedValue !== undefined) {
+      result[conversionName] = cachedValue;
+    } else {
+      cacheMisses.push(conversionName);
+    }
+  });
+
+  // If there are cache misses, batch fetch all missing conversions in single API call
+  if (cacheMisses.length > 0) {
+    const headers = getHeader(Config, metadata);
+    const fetchedConversions = await batchFetchConversionActions({
+      customerId,
+      conversionNames: cacheMisses,
+      headers,
+      metadata,
+    });
+
+    // Store each fetched conversion in cache with individual key and add to result
+    Object.keys(fetchedConversions).forEach((conversionName) => {
+      const cacheKey = sha256(customerId + conversionName).toString();
+      conversionActionIdCache.set(cacheKey, fetchedConversions[conversionName]);
+      result[conversionName] = fetchedConversions[conversionName];
+    });
+  }
+
+  return result;
+};
+
+/**
+ * Batch fetch multiple conversion custom variables in a single API call
+ * Returns a map of variable names to resource names (does not cache - caller should handle caching)
+ * @param {string} customerId - The customer ID
+ * @param {string[]} variableNames - Array of custom variable names to fetch
+ * @param {object} headers - Request headers
+ * @param {object} metadata - Request metadata
+ * @returns {Object} Map of variable names to resource names
+ */
+const batchFetchConversionCustomVariablesMap = async ({
+  customerId,
+  variableNames,
+  headers,
+  metadata,
+}) => {
+  if (!Array.isArray(variableNames) || variableNames.length === 0) {
+    return {};
+  }
+
+  // Build query to fetch multiple variables at once
+  const queryString = SqlString.format(
+    'SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN (?)',
+    [variableNames],
+  );
+  const data = {
+    query: queryString,
+  };
+  const endpoint = SEARCH_STREAM.replace(CUSTOMER_ID_PARAM, customerId);
+  const requestOptions = {
+    headers,
+  };
+
+  let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
+    destType: 'google_adwords_offline_conversions',
+    feature: 'transformation',
+    endpointPath: `/googleAds:searchStream`,
+    requestMethod: 'POST',
+    module: 'transformation',
+    metadata,
+  });
+  searchStreamResponse = processAxiosResponse(searchStreamResponse);
+  const { response, status } = searchStreamResponse;
+
+  if (!isHttpStatusSuccess(status)) {
+    throw new NetworkError(
+      `[Google Ads Offline Conversions]:: ${response?.[0]?.error?.message || response?.error?.message} during batch conversion custom variable fetch`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response || searchStreamResponse,
+      getAuthErrCategory(searchStreamResponse),
+    );
+  }
+
+  const results = get(searchStreamResponse, 'response.0.results') || [];
+  const variableMap = {};
+
+  // Build result map from API response
+  results.forEach((result) => {
+    const variable = result.conversionCustomVariable;
+    if (variable && variable.name && variable.resourceName) {
+      variableMap[variable.name] = variable.resourceName;
+    }
+  });
+
+  return variableMap;
+};
+
+/**
+ * Get conversion custom variables for a customer ID with batch fetching support
+ * First checks cache for each variable individually, then batch fetches any missing ones
+ * Uses individual cache keys: customerId + variableName
+ * @param {string} customerId - The customer ID
+ * @param {string[]} variableNames - Array of custom variable names needed
+ * @param {object} headers - Request headers
+ * @param {object} metadata - Request metadata
+ * @returns {Object} Map of variable names to resource names
+ */
+const getConversionCustomVariables = async ({ Config, metadata, customerId, variableNames }) => {
+  if (!Array.isArray(variableNames) || variableNames.length === 0) {
+    return {};
+  }
+
+  const result = {};
+  const cacheMisses = [];
+
+  // Check cache for each variable individually (synchronous check, no await in loop)
+  variableNames.forEach((variableName) => {
+    const cacheKey = sha256(customerId + variableName).toString();
+    // Access cache directly without storeFunction
+    const cachedValue = conversionCustomVariableCache.cache.get(cacheKey);
+
+    if (cachedValue !== undefined) {
+      result[variableName] = cachedValue;
+    } else {
+      cacheMisses.push(variableName);
+    }
+  });
+
+  // If there are cache misses, batch fetch all missing variables in single API call
+  if (cacheMisses.length > 0) {
+    const headers = getHeader(Config, metadata);
+    const fetchedVariablesMap = await batchFetchConversionCustomVariablesMap({
+      customerId,
+      variableNames,
+      headers,
+      metadata,
+    });
+
+    // Store each fetched variable in cache with individual key and add to result
+    Object.keys(fetchedVariablesMap).forEach((variableName) => {
+      const cacheKey = sha256(customerId + variableName).toString();
+      conversionCustomVariableCache.set(cacheKey, fetchedVariablesMap[variableName]);
+      result[variableName] = fetchedVariablesMap[variableName];
+    });
+  }
+
+  return result;
 };
 
 const generateItemListFromProducts = (products) => {
@@ -173,13 +464,16 @@ const requestBuilder = (
   event,
   filteredCustomerId,
   properties,
+  conversionActionId,
 ) => {
-  const { customVariables, subAccount, loginCustomerId } = Config;
+  const { customVariables } = Config;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpointDetails.endpoint;
   response.endpointPath = endpointDetails.path;
+
   response.params = {
+    conversionActionId,
     event,
     customerId: filteredCustomerId,
   };
@@ -188,19 +482,8 @@ const requestBuilder = (
     response.params.properties = properties;
   }
   response.body.JSON = payload;
-  response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
-    'Content-Type': 'application/json',
-  };
 
-  if (subAccount) {
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
-    } else {
-      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
-    }
-  }
+  response.headers = getHeader(Config, metadata);
   return response;
 };
 /**
@@ -233,12 +516,26 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
-const getCallConversionPayload = (message, filteredCustomerId, eventLevelConsentsData) => {
+const getCallConversionPayload = (
+  message,
+  filteredCustomerId,
+  eventLevelConsentsData,
+  conversionActionId,
+  customVariableList,
+) => {
   const payload = constructPayload(message, trackCallConversionsMapping);
   const endpointDetails = {
     endpoint: CALL_CONVERSION.replace(CUSTOMER_ID_PARAM, filteredCustomerId),
     path: CALL_CONVERSION_ENDPOINT_PATH,
   };
+
+  const useBatchFetching = isBatchFetchingEnabled();
+  if (useBatchFetching) {
+    set(payload, 'conversions[0].conversionAction', conversionActionId);
+    if (customVariableList.length > 0) {
+      set(payload, 'conversions.0.customVariables', customVariableList);
+    }
+  }
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
   payload.conversions[0].consent = finaliseConsent(consentConfigMap, eventLevelConsentsData);
   return { payload, endpointDetails };
@@ -248,7 +545,7 @@ const getCallConversionPayload = (message, filteredCustomerId, eventLevelConsent
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
+const getAddConversionPayload = (message, Config, eventLevelConsentsData, conversionActionId) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
@@ -270,6 +567,13 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
   payload.operations.create.transaction_attribute.transaction_amount_micros = `${
     payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
   }`;
+
+  const useBatchFetching = isBatchFetchingEnabled();
+  // add convertion conversion_action to transaction_attribute
+  if (useBatchFetching) {
+    payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
+  }
+
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
@@ -313,7 +617,13 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData) => {
   return payload;
 };
 
-const getStoreConversionPayload = (message, Config, filteredCustomerId, eventLevelConsentsData) => {
+const getStoreConversionPayload = (
+  message,
+  Config,
+  filteredCustomerId,
+  eventLevelConsentsData,
+  conversionActionId,
+) => {
   const { validateOnly } = Config;
   const endpointDetails = {
     endpoint: STORE_CONVERSION_CONFIG.replace(CUSTOMER_ID_PARAM, filteredCustomerId),
@@ -323,7 +633,12 @@ const getStoreConversionPayload = (message, Config, filteredCustomerId, eventLev
     event: filteredCustomerId,
     isStoreConversion: true,
     createJobPayload: getCreateJobPayload(message),
-    addConversionPayload: getAddConversionPayload(message, Config, eventLevelConsentsData),
+    addConversionPayload: getAddConversionPayload(
+      message,
+      Config,
+      eventLevelConsentsData,
+      conversionActionId,
+    ),
     executeJobPayload: { validate_only: validateOnly },
   };
   return { payload, endpointDetails };
@@ -381,6 +696,8 @@ const getClickConversionPayloadAndEndpoint = (
   Config,
   filteredCustomerId,
   eventLevelConsent,
+  conversionActionId,
+  customVariableList,
 ) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
@@ -413,6 +730,14 @@ const getClickConversionPayloadAndEndpoint = (
       }));
 
     set(payload, 'conversions[0].cartData.items', itemList);
+  }
+
+  const useBatchFetching = isBatchFetchingEnabled();
+  if (useBatchFetching) {
+    set(payload, 'conversions[0].conversionAction', conversionActionId);
+    if (customVariableList.length > 0) {
+      set(payload, 'conversions[0].customVariables', customVariableList);
+    }
   }
 
   payload = populateUserIdentifier({ email, phone, properties, payload, UserIdentifierSource });
@@ -465,10 +790,28 @@ const getConsentsDataFromIntegrationObj = (message) => {
   return integrationObj?.consents || {};
 };
 
+const getListCustomVariable = ({ properties, conversionCustomVariableMap, customVariables }) => {
+  const resultantCustomVariables = [];
+
+  Object.keys(customVariables).forEach((key) => {
+    if (properties[key] && conversionCustomVariableMap[customVariables[key]]) {
+      // 1. set custom variable name
+      // 2. set custom variable value
+      resultantCustomVariables.push({
+        conversionCustomVariable: conversionCustomVariableMap[customVariables[key]],
+        value: String(properties[key]),
+      });
+    }
+  });
+  return resultantCustomVariables;
+};
+
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
   getConversionActionId,
+  getConversionActionIds,
+  getConversionCustomVariables,
   removeHashToSha256TypeFromMappingJson,
   getStoreConversionPayload,
   requestBuilder,
@@ -479,4 +822,7 @@ module.exports = {
   getCallConversionPayload,
   updateConversion,
   getAddConversionPayload,
+  getHeader,
+  getListCustomVariable,
+  isBatchFetchingEnabled,
 };

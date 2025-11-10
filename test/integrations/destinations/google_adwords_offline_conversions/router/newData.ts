@@ -1,11 +1,9 @@
 import { authHeader1, secret1, secret3 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-import { newData } from './newData';
 
 const API_VERSION = 'v19';
 
-export const data = [
-  ...newData,
+export const newData = [
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',
@@ -497,8 +495,10 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
+                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
+                  conversionActionId: 'customers/9625812972/conversionActions/848898416',
                   event: 'Sign-up - click',
                   customerId: '9625812972',
                   customVariables: [
@@ -570,6 +570,14 @@ export const data = [
                         conversionDateTime: '2022-01-01 12:32:45-08:00',
                         conversionValue: 1,
                         currencyCode: 'GBP',
+                        conversionAction: 'customers/9625812972/conversionActions/848898416',
+                        customVariables: [
+                          {
+                            conversionCustomVariable:
+                              'customers/9625812972/conversionCustomVariables/19131634',
+                            value: 'value',
+                          },
+                        ],
                       },
                     ],
                     partialFailure: true,
@@ -632,8 +640,10 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
+                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
+                  conversionActionId: 'customers/9625812972/conversionActions/444555666',
                   event: 'search',
                   customerId: '9625812972',
                   customVariables: [
@@ -685,6 +695,14 @@ export const data = [
                         conversionDateTime: '2022-01-01 12:32:45-08:00',
                         conversionValue: 1,
                         currencyCode: 'GBP',
+                        conversionAction: 'customers/9625812972/conversionActions/444555666',
+                        customVariables: [
+                          {
+                            conversionCustomVariable:
+                              'customers/9625812972/conversionCustomVariables/19131634',
+                            value: 'value',
+                          },
+                        ],
                       },
                     ],
                     partialFailure: true,
@@ -748,8 +766,13 @@ export const data = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
+                    'developer-token': 'test-developer-token-12345',
                   },
-                  params: { event: 'Store sales', customerId: '7693729833' },
+                  params: {
+                    conversionActionId: 'customers/7693729833/conversionActions/444555666',
+                    event: 'Store sales',
+                    customerId: '7693729833',
+                  },
                   body: {
                     JSON: {
                       event: '7693729833',
@@ -777,6 +800,8 @@ export const data = [
                                 order_id: 'order id',
                                 currency_code: 'INR',
                                 transaction_date_time: '2019-10-14 16:45:18+05:30',
+                                conversion_action:
+                                  'customers/7693729833/conversionActions/444555666',
                               },
                               userIdentifiers: [
                                 {
@@ -798,6 +823,8 @@ export const data = [
                                 order_id: 'order id',
                                 currency_code: 'INR',
                                 transaction_date_time: '2019-10-14 16:45:18+05:30',
+                                conversion_action:
+                                  'customers/7693729833/conversionActions/948898416',
                               },
                               userIdentifiers: [
                                 {
@@ -829,8 +856,10 @@ export const data = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
+                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
+                    conversionActionId: 'customers/7693729833/conversionActions/948898416',
                     event: 'Order Completed',
                     customerId: '7693729833',
                     customVariables: [{ from: '', to: '' }],
@@ -861,6 +890,7 @@ export const data = [
                           conversionDateTime: '2019-10-14 16:45:18+05:30',
                           conversionValue: 100,
                           currencyCode: 'INR',
+                          conversionAction: 'customers/7693729833/conversionActions/948898416',
                         },
                       ],
                       partialFailure: true,
@@ -1001,6 +1031,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -1184,8 +1217,13 @@ export const data = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
+                  'developer-token': 'test-developer-token-12345',
                 },
-                params: { event: 'Store sales', customerId: '1234556775' },
+                params: {
+                  conversionActionId: 'customers/1234556775/conversionActions/948898416',
+                  event: 'Store sales',
+                  customerId: '1234556775',
+                },
                 body: {
                   JSON: {
                     event: '1234556775',
@@ -1208,6 +1246,7 @@ export const data = [
                               order_id: '12343-4886-294995',
                               currency_code: 'USD',
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
                             },
                             userIdentifiers: [
                               {
@@ -1281,5 +1320,8 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
 ];

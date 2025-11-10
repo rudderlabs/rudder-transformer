@@ -12,16 +12,15 @@ const {
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { getConversionActionId } = require('./utils');
+const { getConversionActionId, isBatchFetchingEnabled } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
-const { getDeveloperToken } = require('../../util/googleUtils');
+const { getDeveloperToken, getAuthErrCategory } = require('../../util/googleUtils');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
-const { getAuthErrCategory } = require('../../util/googleUtils');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
@@ -207,6 +206,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
+  const useBatchFetching = isBatchFetchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
@@ -216,12 +216,15 @@ const ProxyRequest = async (request) => {
     });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    const conversionId = await getConversionActionId({ headers, params, metadata });
-    if (Array.isArray(addPayload.operations)) {
-      addPayload.operations.forEach((operation) => {
-        set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-      });
+    if (!useBatchFetching) {
+      const conversionId = await getConversionActionId({ headers, params, metadata });
+      if (Array.isArray(addPayload.operations)) {
+        addPayload.operations.forEach((operation) => {
+          set(operation, 'create.transaction_attribute.conversion_action', conversionId);
+        });
+      }
     }
+
     await addConversionToJob({
       endpoint,
       headers,
@@ -240,12 +243,12 @@ const ProxyRequest = async (request) => {
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
-  if (params?.event) {
+  if (!useBatchFetching && params?.event) {
     const conversionActionId = await getConversionActionId({ headers, params, metadata });
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
   // customVariables would be undefined in case of Store Conversions
-  if (isValidCustomVariables(params.customVariables)) {
+  if (!useBatchFetching && isValidCustomVariables(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable({
       headers,

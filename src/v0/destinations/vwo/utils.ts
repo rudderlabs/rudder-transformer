@@ -8,11 +8,11 @@ import { VWOEventPayload } from './types';
  * 
  * @param message - RudderStack message object
  * @param userId - User identifier (userId or anonymousId)
+ * @param sessionId - Session identifier in unix seconds (should be consistent across events in the same session)
  * @returns Constructed VWO payload
  */
-export const buildVWOPayload = (message: RudderMessage, userId: string): VWOEventPayload => {
+export const buildVWOPayload = (message: RudderMessage, userId: string, sessionId: number): VWOEventPayload => {
   const timestamp = Date.now();
-  const sessionId = Math.floor(timestamp / 1000);
 
   // Extract event properties safely
   const eventProperties = message.properties || {};
@@ -75,7 +75,9 @@ export const getUserIdentifier = (message: RudderMessage): string => {
   if (message.anonymousId) {
     return message.anonymousId;
   }
-  throw new Error('Unreachable');
+  throw new InstrumentationError(
+    'Neither userId nor anonymousId is available. This should have been caught by validateVWOEvent.'
+  );
 };
 
 /**

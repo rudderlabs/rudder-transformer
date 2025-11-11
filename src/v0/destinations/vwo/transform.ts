@@ -67,17 +67,25 @@ const processEvent = (event: VWORouterRequest) => {
     throw new ConfigurationError('Account ID is required but not provided');
   }
 
+  // Validate region and get API endpoint
+  const apiEndpoint = API_ENDPOINTS[region];
+  if (!apiEndpoint) {
+    throw new ConfigurationError(
+      `Invalid region "${region}". Supported regions: ${Object.keys(API_ENDPOINTS).join(', ')}`
+    );
+  }
+
   // Validate required event fields
   validateVWOEvent(message);
 
   // Get user identifier
   const userId = getUserIdentifier(message);
 
-  // Build VWO payload
-  const payload = buildVWOPayload(message, userId);
+  // Generate session ID (unix seconds timestamp)
+  const sessionId = Math.floor(Date.now() / 1000);
 
-  // Get API endpoint for the specified region
-  const apiEndpoint = API_ENDPOINTS[region];
+  // Build VWO payload
+  const payload = buildVWOPayload(message, userId, sessionId);
 
   // Construct event name for VWO
   const eventName = `rudderstack.${message.type}`;

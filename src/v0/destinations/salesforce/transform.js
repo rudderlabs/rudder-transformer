@@ -1,4 +1,4 @@
-import { Salesforce } from '@rudderstack/integrations-lib';
+import { SalesforceSDK } from '@rudderstack/integrations-lib';
 
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
@@ -161,11 +161,6 @@ async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
       } catch (error) {
         throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
       }
-      if (queryResponse.totalSize === 0) {
-        throw new NetworkInstrumentationError(
-          `No record found for ${objectType} with ${identifierType} = '${id}'`,
-        );
-      }
 
       if (queryResponse.totalSize > 1) {
         throw new NetworkInstrumentationError(
@@ -173,7 +168,11 @@ async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
         );
       }
 
-      salesforceId = queryResponse.records[0].Id;
+      if (queryResponse.totalSize === 0) {
+        salesforceId = undefined;
+      } else {
+        salesforceId = queryResponse.records[0].Id;
+      }
     }
 
     salesforceMaps.push({
@@ -311,7 +310,7 @@ async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
 
   const { token, instanceUrl } = authInfo.authorizationData;
-  const salesforceSdk = new Salesforce({
+  const salesforceSdk = new SalesforceSDK.Salesforce({
     accessToken: token,
     instanceUrl,
   });
@@ -342,7 +341,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   try {
     const { token, instanceUrl } = authInfo.authorizationData;
 
-    salesforceSdk = new Salesforce({
+    salesforceSdk = new SalesforceSDK.Salesforce({
       accessToken: token,
       instanceUrl,
     });

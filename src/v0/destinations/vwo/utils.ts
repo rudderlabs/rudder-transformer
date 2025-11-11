@@ -69,7 +69,13 @@ export const validateVWOEvent = (message: RudderMessage): void => {
  * @returns User identifier string
  */
 export const getUserIdentifier = (message: RudderMessage): string => {
-  return message.userId || message.anonymousId || '';
+  if (message.userId) {
+    return message.userId;
+  }
+  if (message.anonymousId) {
+    return message.anonymousId;
+  }
+  throw new Error('Unreachable');
 };
 
 /**

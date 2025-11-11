@@ -77,7 +77,7 @@ const processEvent = (event: VWORouterRequest) => {
   const payload = buildVWOPayload(message, userId);
 
   // Get API endpoint for the specified region
-  const apiEndpoint = API_ENDPOINTS[region as keyof typeof API_ENDPOINTS] || API_ENDPOINTS.DEFAULT;
+  const apiEndpoint = API_ENDPOINTS[region];
 
   // Construct event name for VWO
   const eventName = `rudderstack.${message.type}`;

@@ -553,12 +553,10 @@ const getConsentsDataFromIntegrationObj = (message) => {
 const getListCustomVariable = ({ properties, conversionCustomVariableMap, customVariables }) => {
   const resultantCustomVariables = [];
 
-  for (const key of Object.keys(customVariables)) {
-    if (properties[key] && conversionCustomVariableMap[customVariables[key]]) {
-      // 1. set custom variable name
-      // 2. set custom variable value
+  for (const [key, value] of Object.entries(customVariables)) {
+    if (properties[key] && conversionCustomVariableMap[value]) {
       resultantCustomVariables.push({
-        conversionCustomVariable: conversionCustomVariableMap[customVariables[key]],
+        conversionCustomVariable: conversionCustomVariableMap[value],
         value: String(properties[key]),
       });
     }
@@ -636,7 +634,9 @@ const batchFetchConversionActions = async ({ customerId, conversionNames, header
 
 /**
  * Get conversion action IDs for a customer ID with batch fetching support
- * First checks cache for each conversion individually, then batch fetches any missing ones
+ * First checks cache for each conversion individually. If any conversion is missing,
+ * fetches ALL conversions in a single API call (since the API call cost is the same
+ * whether fetching one or many conversion actions).
  * Uses individual cache keys: customerId + conversionName
  * @param {string} customerId - The customer ID
  * @param {string[]} conversionNames - Array of conversion names needed
@@ -650,7 +650,7 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
   }
 
   const result = {};
-  const cacheMisses = [];
+  let hasCacheMiss = false;
 
   // Check cache for each conversion individually (synchronous check, no await in loop)
   for (const conversionName of conversionNames) {
@@ -662,16 +662,17 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
     if (cachedValue) {
       result[conversionName] = cachedValue;
     } else {
-      cacheMisses.push(conversionName);
+      hasCacheMiss = true;
     }
   }
 
-  // If there are cache misses, batch fetch all missing conversions in single API call
-  if (cacheMisses.length > 0) {
+  // If there are any cache misses, fetch ALL conversions in single API call
+  // since the API call cost is the same regardless of how many we fetch
+  if (hasCacheMiss) {
     const headers = getHeader(Config, metadata, true);
     const fetchedConversions = await batchFetchConversionActions({
       customerId,
-      conversionNames: cacheMisses,
+      conversionNames,
       headers,
       metadata,
     });
@@ -758,7 +759,9 @@ const batchFetchConversionCustomVariablesMap = async ({
 
 /**
  * Get conversion custom variables for a customer ID with batch fetching support
- * First checks cache for each variable individually, then batch fetches any missing ones
+ * First checks cache for each variable individually. If any variable is missing,
+ * fetches ALL variables in a single API call (since the API call cost is the same
+ * whether fetching one or many custom variables).
  * Uses individual cache keys: customerId + variableName
  * @param {string} customerId - The customer ID
  * @param {string[]} variableNames - Array of custom variable names needed
@@ -772,7 +775,7 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
   }
 
   const result = {};
-  const cacheMisses = [];
+  let hasCacheMiss = false;
 
   // Check cache for each variable individually (synchronous check, no await in loop)
   for (const variableName of variableNames) {
@@ -784,12 +787,13 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
     if (cachedValue) {
       result[variableName] = cachedValue;
     } else {
-      cacheMisses.push(variableName);
+      hasCacheMiss = true;
     }
   }
 
-  // If there are cache misses, batch fetch all missing variables in single API call
-  if (cacheMisses.length > 0) {
+  // If there are any cache misses, fetch ALL variables in single API call
+  // since the API call cost is the same regardless of how many we fetch
+  if (hasCacheMiss) {
     const headers = getHeader(Config, metadata, true);
     const fetchedVariablesMap = await batchFetchConversionCustomVariablesMap({
       customerId,

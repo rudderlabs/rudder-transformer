@@ -1,6 +1,3 @@
-// Mock axios BEFORE any imports to ensure it's available when @rudderstack/integrations-lib loads
-jest.mock('axios', () => jest.requireActual('axios'));
-
 const { when } = require('jest-when');
 jest.mock('node-fetch');
 const fetch = require('node-fetch', () => jest.fn());
@@ -24,12 +21,15 @@ const {
 const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require('../../src/util/utils');
 
+jest.setTimeout(30000);
+jest.mock('axios', () => ({
+  ...jest.requireActual('axios'),
+}));
+
 // Reset the axios mock adapter from @rudderstack/integrations-lib
 // The library creates a MockAdapter at module load time, which interferes with real HTTP calls
 const { mockAxiosFromLib } = require('@rudderstack/integrations-lib');
 mockAxiosFromLib.restore();
-
-jest.setTimeout(30000);
 
 const contructTrRevCode = (workspaceId, versionId, language = 'pythonfaas') => {
   return {
@@ -96,6 +96,12 @@ describe('Python Openfaas Transformation', () => {
     const originalEnv = process.env;
     let workspaceFns = [];
     let workspaceId = uuidv4();
+
+    beforeEach(() => {
+      // Re-restore mockAxiosFromLib before each test in case modules were reset
+      const { mockAxiosFromLib } = require('@rudderstack/integrations-lib');
+      mockAxiosFromLib.restore();
+    });
 
     const setupWorkspaceFns = async (workspaceId, count = 1) => {
       const fns = [];

@@ -36,6 +36,9 @@ properties:
       workspaceId:
         type: string
         description: The workspace id associated with the source
+      internalSecret:
+        type: object
+        description: The internal secret object for the source
       sourceDefinition:
         type: object
         description: The source definition object

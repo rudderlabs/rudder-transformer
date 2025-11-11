@@ -24,6 +24,11 @@ const {
 const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require('../../src/util/utils');
 
+// Reset the axios mock adapter from @rudderstack/integrations-lib
+// The library creates a MockAdapter at module load time, which interferes with real HTTP calls
+const { mockAxiosFromLib } = require('@rudderstack/integrations-lib');
+mockAxiosFromLib.restore();
+
 jest.setTimeout(30000);
 
 const contructTrRevCode = (workspaceId, versionId, language = 'pythonfaas') => {

@@ -1,4 +1,4 @@
-title: Source Hydration Response
+title: Source Hydration Failure Response
 type: object
 required:
   - batch
@@ -18,8 +18,9 @@ properties:
           type: string
           description: A unique identifier for the event in the batch
         event:
-          $ref: './rudderMessage.yaml'
           description: The input event object
+          allOf:
+            - $ref: './rudderMessage.yaml'
         statusCode:
           type: number
           description: Normalised status code for the hydration operation (always non-200 for failure)

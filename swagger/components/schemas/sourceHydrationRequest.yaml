@@ -17,8 +17,9 @@ properties:
           type: string
           description: A unique identifier for the event in the batch
         event:
-          $ref: './rudderMessage.yaml'
           description: The event object
+          allOf:
+            - $ref: './rudderMessage.yaml'
   source:
     type: object
     description: The source object

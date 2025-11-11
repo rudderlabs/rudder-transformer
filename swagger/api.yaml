@@ -62,7 +62,7 @@ paths:
     $ref: './routes/source.yaml#/~1{version}~1sources~1{source}'
 
   #Source Hydration Routes
-  /${version}/sources/{source}/hydrate:
+  /{version}/sources/{source}/hydrate:
     $ref: './routes/sourceHydration.yaml#/~1{version}~1sources~1{source}~1hydrate'
 
   #User Transform Routes

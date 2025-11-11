@@ -1,19 +1,47 @@
 bindings:
   - path: ./utils
   - path: ./config
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
+  - name: combineBatchRequestsWithSameJobIds
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
-  - name: transform
+  - name: decideVersion
+    template: |
+      $.decideVersion(^.[0].destination)
+
+  - name: transformWithV2
+    condition: $.outputs.decideVersion === "v2"
     externalWorkflow:
       path: ./procWorkflow.yaml
       bindings:
         - name: batchMode
           value: true
     loopOverInput: true
+
+  - name: transformWithV3
+    condition: $.outputs.decideVersion === "v3"
+    externalWorkflow:
+      path: ./procWorkflowV3.yaml
+      bindings:
+        - name: batchMode
+          value: true
+    loopOverInput: true
+
+  - name: transform
+    condition: $.outputs.decideVersion === "v2"
+    template: |
+      $.outputs.transformWithV2
+    else:
+      name: transformV3Output
+      template: |
+        $.outputs.transformWithV3
+
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
@@ -33,14 +61,10 @@ steps:
       })[]
 
   - name: batchSuccessfulEvents
-    description: Batches the successfulEvents using endpoint
+    description: Batches the successfulEvents based on the dontBatch in metadata and test_id in message body. If test_id is present in any of the transformed events, it is not batched.
     condition: $.outputs.successfulEvents.length
     template: |
-      const dontBatchTrueEvents =  $.outputs.successfulEvents{.metadata.dontBatch}[];
-      const dontBatchFalseEvents = $.outputs.successfulEvents{!.metadata.dontBatch}[];
-      const dontBatchTrueEventsChunks = $.chunk(dontBatchTrueEvents, 1);
-
-      let batches = [...$.batchEvents(dontBatchFalseEvents), ...$.batchEventChunks(dontBatchTrueEventsChunks)];
+      const batches = $.prepareBatches($.outputs.successfulEvents);
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -68,4 +92,4 @@ steps:
 
   - name: finalPayload
     template: |
-      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+      [...$.combineBatchRequestsWithSameJobIds($.outputs.batchSuccessfulEvents), ...$.outputs.failedEvents]

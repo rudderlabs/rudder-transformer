@@ -626,7 +626,7 @@ const batchFetchConversionActions = async ({ customerId, conversionNames, header
   // Build result map from API response
   for (const resultItem of results) {
     const { conversionAction } = resultItem;
-    if (conversionAction && conversionAction?.name && conversionAction?.resourceName) {
+    if (conversionAction?.name && conversionAction?.resourceName) {
       conversionMap[conversionAction.name] = conversionAction.resourceName;
     }
   }
@@ -659,7 +659,7 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
     // eslint-disable-next-line no-await-in-loop
     const cachedValue = await conversionActionIdCache.get(cacheKey);
 
-    if (cachedValue !== undefined) {
+    if (cachedValue) {
       result[conversionName] = cachedValue;
     } else {
       cacheMisses.push(conversionName);
@@ -748,7 +748,7 @@ const batchFetchConversionCustomVariablesMap = async ({
   // Build result map from API response
   for (const resultItem of results) {
     const variable = resultItem.conversionCustomVariable;
-    if (variable && variable?.name && variable?.resourceName) {
+    if (variable?.name && variable?.resourceName) {
       variableMap[variable.name] = variable.resourceName;
     }
   }

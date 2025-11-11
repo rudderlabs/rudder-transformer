@@ -1,3 +1,5 @@
+import { Salesforce } from '@rudderstack/integrations-lib';
+
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
 const {
@@ -24,13 +26,10 @@ const {
   getDestinationExternalIDObjectForRetl,
   handleRtTfSingleEventError,
   generateErrorObject,
-  isHttpStatusSuccess,
   getErrorRespEvents,
 } = require('../../util');
-const { salesforceResponseHandler, collectAuthorizationInfo, getAuthHeader } = require('./utils');
-const { handleHttpRequest } = require('../../../adapters/network');
+const { collectAuthorizationInfo, getAuthHeader } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
 // We also pass the incoming payload, the hit type to be generated and
@@ -100,49 +99,6 @@ function responseBuilderSimple(
   return response;
 }
 
-// Look up to salesforce using details passed as external id through payload
-async function getSaleforceIdForRecord(
-  authorizationData,
-  objectType,
-  identifierType,
-  identifierValue,
-  { destination, metadata },
-  authorizationFlow,
-) {
-  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
-  const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
-    'get',
-    objSearchUrl,
-    {
-      headers: getAuthHeader({ authorizationFlow, authorizationData }),
-    },
-    {
-      metadata,
-      destType: 'salesforce',
-      feature: 'transformation',
-      endpointPath: '/parameterizedSearch',
-      requestMethod: 'GET',
-      module: 'router',
-    },
-  );
-  if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
-    salesforceResponseHandler(
-      processedsfSearchResponse,
-      `:- SALESFORCE SEARCH BY ID`,
-      destination.ID,
-      authorizationFlow,
-    );
-  }
-  const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) =>
-      typeof identifierValue !== 'undefined' &&
-      // eslint-disable-next-line eqeqeq
-      rec[identifierType] == identifierValue,
-  );
-
-  return searchRecord?.Id;
-}
-
 // Check for externalId field under context and look for probable Salesforce objects
 // We'll make separate requests for every Salesforce Object types present under externalIds
 //
@@ -159,11 +115,8 @@ async function getSaleforceIdForRecord(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(
-  { message, destination, metadata },
-  authorizationData,
-  authorizationFlow,
-) {
+async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
+  const { salesforceSdk } = stateInfo;
   // define default map
   const salesforceMaps = [];
 
@@ -200,14 +153,27 @@ async function getSalesforceIdFromPayload(
 
     // Fetch the salesforce Id if the identifierType is not ID
     if (identifierType.toUpperCase() !== 'ID') {
-      salesforceId = await getSaleforceIdForRecord(
-        authorizationData,
-        objectType,
-        identifierType,
-        id,
-        { destination, metadata },
-        authorizationFlow,
-      );
+      let queryResponse;
+      try {
+        queryResponse = await salesforceSdk.query(
+          `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${id}'`,
+        );
+      } catch (error) {
+        throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
+      }
+      if (queryResponse.totalSize === 0) {
+        throw new NetworkInstrumentationError(
+          `No record found for ${objectType} with ${identifierType} = '${id}'`,
+        );
+      }
+
+      if (queryResponse.totalSize > 1) {
+        throw new NetworkInstrumentationError(
+          `Multiple records found for ${objectType} with ${identifierType} = '${id}'`,
+        );
+      }
+
+      salesforceId = queryResponse.records[0].Id;
     }
 
     salesforceMaps.push({
@@ -227,60 +193,52 @@ async function getSalesforceIdFromPayload(
     if (!email) {
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
-    const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
-    // request configuration will be conditional
-    const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
-      'get',
-      leadQueryUrl,
-      {
-        headers: getAuthHeader({ authorizationFlow, authorizationData }),
-      },
-      {
-        metadata,
-        destType: 'salesforce',
-        feature: 'transformation',
-        endpointPath: '/parameterizedSearch',
-        requestMethod: 'GET',
-        module: 'router',
-      },
-    );
-
-    if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
-      salesforceResponseHandler(
-        processedLeadQueryResponse,
-        `:- during Lead Query`,
-        destination.ID,
-        authorizationFlow,
+    let queryResponse;
+    try {
+      queryResponse = await salesforceSdk.query(
+        `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '${email}'`,
       );
+    } catch (error) {
+      throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
     }
-
-    if (processedLeadQueryResponse.response.searchRecords.length > 0) {
-      // if count is greater than zero, it means that lead exists, then only update it
-      // else the original endpoint, which is the one for creation - can be used
-      const record = processedLeadQueryResponse.response.searchRecords[0];
-      if (record.IsDeleted === true) {
-        if (record.IsConverted) {
-          throw new NetworkInstrumentationError('The contact has been deleted.');
-        } else {
-          throw new NetworkInstrumentationError('The lead has been deleted.');
-        }
-      }
-      if (record.IsConverted && destination.Config.useContactId) {
-        salesforceMaps.push({
-          salesforceType: 'Contact',
-          salesforceId: record.ConvertedContactId,
-        });
-      } else {
-        salesforceMaps.push({
-          salesforceType: 'Lead',
-          salesforceId: record.Id,
-        });
-      }
-    } else {
+    if (queryResponse.totalSize === 0) {
       salesforceMaps.push({
         salesforceType: 'Lead',
         salesforceId: undefined,
+      });
+      return salesforceMaps;
+    }
+
+    if (queryResponse.totalSize > 1) {
+      throw new NetworkInstrumentationError(
+        `Multiple records found for Lead with Email = '${email}'`,
+      );
+    }
+
+    // If exactly one record is found, check if the lead has been deleted
+    const record = queryResponse.records[0];
+    if (record.IsDeleted === true) {
+      if (record.IsConverted) {
+        throw new NetworkInstrumentationError('The contact has been deleted');
+      }
+
+      throw new NetworkInstrumentationError('The lead has been deleted.');
+    }
+    if (record.IsConverted && destination.Config.useContactId) {
+      if (record.ConvertedContactId === null) {
+        throw new NetworkInstrumentationError(
+          'The lead is converted but the converted contact id not found',
+        );
+      }
+      salesforceMaps.push({
+        salesforceType: 'Contact',
+        salesforceId: record.ConvertedContactId,
+      });
+    } else {
+      salesforceMaps.push({
+        salesforceType: 'Lead',
+        salesforceId: record.Id,
       });
     }
   }
@@ -288,11 +246,7 @@ async function getSalesforceIdFromPayload(
 }
 
 // Function for handling identify events
-async function processIdentify(
-  { message, destination, metadata },
-  authorizationData,
-  authorizationFlow,
-) {
+async function processIdentify({ message, destination, metadata }, stateInfo) {
   const { Name } = destination.DestinationDefinition;
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
@@ -316,9 +270,11 @@ async function processIdentify(
   // get salesforce object map
   const salesforceMaps = await getSalesforceIdFromPayload(
     { message, destination, metadata },
-    authorizationData,
-    authorizationFlow,
+    stateInfo,
   );
+
+  const { authInfo } = stateInfo;
+  const { authorizationData, authorizationFlow } = authInfo;
 
   // iterate over the object types found
   salesforceMaps.forEach((salesforceMap) => {
@@ -340,18 +296,11 @@ async function processIdentify(
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(
-  { message, destination, metadata },
-  authorizationData,
-  authorizationFlow,
-) {
+async function processSingleMessage({ message, destination, metadata }, stateInfo) {
   let response;
+
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(
-      { message, destination, metadata },
-      authorizationData,
-      authorizationFlow,
-    );
+    response = await processIdentify({ message, destination, metadata }, stateInfo);
   } else {
     throw new InstrumentationError(`message type ${message.type} is not supported`);
   }
@@ -360,16 +309,23 @@ async function processSingleMessage(
 
 async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
-  const response = await processSingleMessage(
-    event,
-    authInfo.authorizationData,
-    authInfo.authorizationFlow,
-  );
+
+  const { token, instanceUrl } = authInfo.authorizationData;
+  const salesforceSdk = new Salesforce({
+    accessToken: token,
+    instanceUrl,
+  });
+  const stateInfo = {
+    authInfo,
+    salesforceSdk,
+  };
+  const response = await processSingleMessage(event, stateInfo);
   return response;
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
   let authInfo;
+  let salesforceSdk;
   try {
     authInfo = await collectAuthorizationInfo(inputs[0]);
   } catch (error) {
@@ -378,6 +334,24 @@ const processRouterDest = async (inputs, reqMetadata) => {
       inputs.map((input) => input.metadata),
       errObj.status,
       `Authorisation failed: ${error.message}`,
+      errObj.statTags,
+    );
+    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+  }
+
+  try {
+    const { token, instanceUrl } = authInfo.authorizationData;
+
+    salesforceSdk = new Salesforce({
+      accessToken: token,
+      instanceUrl,
+    });
+  } catch (error) {
+    const errObj = generateErrorObject(error);
+    const respEvents = getErrorRespEvents(
+      inputs.map((input) => input.metadata),
+      errObj.status,
+      `Failed to create Salesforce SDK: ${error.message}`,
       errObj.statTags,
     );
     return [{ ...respEvents, destination: inputs?.[0]?.destination }];
@@ -392,8 +366,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }
 
         // unprocessed payload
+        const stateInfo = {
+          authInfo,
+          salesforceSdk,
+        };
         return getSuccessRespEvents(
-          await processSingleMessage(input, authInfo.authorizationData, authInfo.authorizationFlow),
+          await processSingleMessage(input, stateInfo),
           [input.metadata],
           input.destination,
         );

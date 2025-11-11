@@ -1,3 +1,6 @@
+// Mock axios BEFORE any imports to ensure it's available when @rudderstack/integrations-lib loads
+jest.mock('axios', () => jest.requireActual('axios'));
+
 const { when } = require('jest-when');
 jest.mock('node-fetch');
 const fetch = require('node-fetch', () => jest.fn());
@@ -22,9 +25,6 @@ const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require('../../src/util/utils');
 
 jest.setTimeout(30000);
-jest.mock('axios', () => ({
-  ...jest.requireActual('axios'),
-}));
 
 const contructTrRevCode = (workspaceId, versionId, language = 'pythonfaas') => {
   return {

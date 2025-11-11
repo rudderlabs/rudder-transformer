@@ -3,24 +3,36 @@ const mockLoggerInstance = {
   error: jest.fn(),
 };
 
-// Mock the axios module FIRST - before any other imports that might use it
+// Mock axios FIRST - before any imports that might load @rudderstack/integrations-lib
+// which has axios-mock-adapter in its mock_utils
 jest.mock('axios', () => {
-  const mockAxios = jest.fn(); // Mock the default axios function
-  mockAxios.get = jest.fn(); // Mock axios.get
-  mockAxios.post = jest.fn(); // Mock axios.post
-  mockAxios.put = jest.fn(); // Mock axios.put
-  mockAxios.patch = jest.fn(); // Mock axios.patch
-  mockAxios.delete = jest.fn(); // Mock axios.delete
-
-  // Mock the axios.create method if needed
+  const mockAxios = jest.fn();
+  mockAxios.get = jest.fn();
+  mockAxios.post = jest.fn();
+  mockAxios.put = jest.fn();
+  mockAxios.patch = jest.fn();
+  mockAxios.delete = jest.fn();
   mockAxios.create = jest.fn(() => mockAxios);
 
-  // Add defaults property to avoid axios-mock-adapter errors
+  // Add properties required by axios-mock-adapter
   mockAxios.defaults = {
     adapter: undefined,
+    headers: {
+      common: {},
+      delete: {},
+      get: {},
+      head: {},
+      post: {},
+      put: {},
+      patch: {},
+    },
+  };
+  mockAxios.interceptors = {
+    request: { use: jest.fn(), eject: jest.fn(), clear: jest.fn() },
+    response: { use: jest.fn(), eject: jest.fn(), clear: jest.fn() },
   };
 
-  return mockAxios; // Return the mocked axios
+  return mockAxios;
 });
 
 jest.mock('../util/stats', () => ({

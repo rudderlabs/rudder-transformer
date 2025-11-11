@@ -1,8 +1,12 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
+import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
+
+export interface Hydrator {
+  hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
+}
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -14,6 +18,10 @@ export class MiscService {
 
   public static getSourceHandler(source: string) {
     return require(`../sources/${source}/transform`);
+  }
+
+  public static getSourceHydrateHandler(source: string): Hydrator {
+    return require(`../sources/${source}/hydrate`);
   }
 
   public static getDeletionHandler(dest: string, version: string) {

@@ -553,7 +553,7 @@ const getConsentsDataFromIntegrationObj = (message) => {
 const getListCustomVariable = ({ properties, conversionCustomVariableMap, customVariables }) => {
   const resultantCustomVariables = [];
 
-  Object.keys(customVariables).forEach((key) => {
+  for (const key of Object.keys(customVariables)) {
     if (properties[key] && conversionCustomVariableMap[customVariables[key]]) {
       // 1. set custom variable name
       // 2. set custom variable value
@@ -562,7 +562,7 @@ const getListCustomVariable = ({ properties, conversionCustomVariableMap, custom
         value: String(properties[key]),
       });
     }
-  });
+  }
   return resultantCustomVariables;
 };
 
@@ -624,12 +624,12 @@ const batchFetchConversionActions = async ({ customerId, conversionNames, header
   const conversionMap = {};
 
   // Build result map from API response
-  results.forEach((result) => {
-    const { conversionAction } = result;
-    if (conversionAction && conversionAction.name && conversionAction.resourceName) {
+  for (const resultItem of results) {
+    const { conversionAction } = resultItem;
+    if (conversionAction && conversionAction?.name && conversionAction?.resourceName) {
       conversionMap[conversionAction.name] = conversionAction.resourceName;
     }
-  });
+  }
 
   return conversionMap;
 };
@@ -653,17 +653,18 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
   const cacheMisses = [];
 
   // Check cache for each conversion individually (synchronous check, no await in loop)
-  conversionNames.forEach((conversionName) => {
+  for (const conversionName of conversionNames) {
     const cacheKey = sha256(customerId + conversionName).toString();
     // Access cache directly without storeFunction
-    const cachedValue = conversionActionIdCache.cache.get(cacheKey);
+    // eslint-disable-next-line no-await-in-loop
+    const cachedValue = await conversionActionIdCache.get(cacheKey);
 
     if (cachedValue !== undefined) {
       result[conversionName] = cachedValue;
     } else {
       cacheMisses.push(conversionName);
     }
-  });
+  }
 
   // If there are cache misses, batch fetch all missing conversions in single API call
   if (cacheMisses.length > 0) {
@@ -676,11 +677,11 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
     });
 
     // Store each fetched conversion in cache with individual key and add to result
-    Object.keys(fetchedConversions).forEach((conversionName) => {
+    for (const [conversionName, value] of Object.entries(fetchedConversions)) {
       const cacheKey = sha256(customerId + conversionName).toString();
-      conversionActionIdCache.set(cacheKey, fetchedConversions[conversionName]);
-      result[conversionName] = fetchedConversions[conversionName];
-    });
+      conversionActionIdCache.set(cacheKey, value);
+      result[conversionName] = value;
+    }
   }
 
   return result;
@@ -745,12 +746,12 @@ const batchFetchConversionCustomVariablesMap = async ({
   const variableMap = {};
 
   // Build result map from API response
-  results.forEach((result) => {
-    const variable = result.conversionCustomVariable;
-    if (variable && variable.name && variable.resourceName) {
+  for (const resultItem of results) {
+    const variable = resultItem.conversionCustomVariable;
+    if (variable && variable?.name && variable?.resourceName) {
       variableMap[variable.name] = variable.resourceName;
     }
-  });
+  }
 
   return variableMap;
 };
@@ -774,17 +775,18 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
   const cacheMisses = [];
 
   // Check cache for each variable individually (synchronous check, no await in loop)
-  variableNames.forEach((variableName) => {
+  for (const variableName of variableNames) {
     const cacheKey = sha256(customerId + variableName).toString();
     // Access cache directly without storeFunction
-    const cachedValue = conversionCustomVariableCache.cache.get(cacheKey);
+    // eslint-disable-next-line no-await-in-loop
+    const cachedValue = await conversionCustomVariableCache.get(cacheKey);
 
-    if (cachedValue !== undefined) {
+    if (cachedValue) {
       result[variableName] = cachedValue;
     } else {
       cacheMisses.push(variableName);
     }
-  });
+  }
 
   // If there are cache misses, batch fetch all missing variables in single API call
   if (cacheMisses.length > 0) {
@@ -797,11 +799,11 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
     });
 
     // Store each fetched variable in cache with individual key and add to result
-    Object.keys(fetchedVariablesMap).forEach((variableName) => {
+    for (const [variableName, variableValue] of Object.entries(fetchedVariablesMap)) {
       const cacheKey = sha256(customerId + variableName).toString();
-      conversionCustomVariableCache.set(cacheKey, fetchedVariablesMap[variableName]);
-      result[variableName] = fetchedVariablesMap[variableName];
-    });
+      conversionCustomVariableCache.set(cacheKey, variableValue);
+      result[variableName] = variableValue;
+    }
   }
 
   return result;

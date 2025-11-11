@@ -662,7 +662,6 @@ export const newData = [
                   'Content-Type': 'application/json',
                 },
                 params: {
-                  conversionActionId: 'customers/9625812972/conversionActions/848898416',
                   event: 'Sign-up - click',
                   customerId: '9625812972',
                   customVariables: [
@@ -806,7 +805,6 @@ export const newData = [
                   'Content-Type': 'application/json',
                 },
                 params: {
-                  conversionActionId: 'customers/9625812972/conversionActions/444555666',
                   event: 'search',
                   customerId: '9625812972',
                   customVariables: [
@@ -931,7 +929,6 @@ export const newData = [
                     'Content-Type': 'application/json',
                   },
                   params: {
-                    conversionActionId: 'customers/7693729833/conversionActions/444555666',
                     event: 'Store sales',
                     customerId: '7693729833',
                   },
@@ -1020,7 +1017,6 @@ export const newData = [
                     'Content-Type': 'application/json',
                   },
                   params: {
-                    conversionActionId: 'customers/7693729833/conversionActions/948898416',
                     event: 'Order Completed',
                     customerId: '7693729833',
                     customVariables: [{ from: '', to: '' }],
@@ -1380,7 +1376,6 @@ export const newData = [
                   'Content-Type': 'application/json',
                 },
                 params: {
-                  conversionActionId: 'customers/1234556775/conversionActions/948898416',
                   event: 'Store sales',
                   customerId: '1234556775',
                 },

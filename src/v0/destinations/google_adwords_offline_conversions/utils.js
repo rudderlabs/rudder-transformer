@@ -226,7 +226,6 @@ const requestBuilder = (
   event,
   filteredCustomerId,
   properties,
-  conversionActionId,
 ) => {
   const { customVariables } = Config;
   const response = defaultRequestConfig();
@@ -235,7 +234,6 @@ const requestBuilder = (
   response.endpointPath = endpointDetails.path;
 
   response.params = {
-    conversionActionId,
     event,
     customerId: filteredCustomerId,
   };

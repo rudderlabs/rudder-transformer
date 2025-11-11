@@ -208,7 +208,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -510,7 +509,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -816,7 +814,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -1121,7 +1118,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -2099,7 +2095,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/111222333',
                 event: 'Page view',
                 customerId: '9625812972',
                 customVariables: [
@@ -2212,7 +2207,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/111222333',
                 event: 'Page view',
                 customerId: '9625812972',
                 customVariables: [
@@ -2447,7 +2441,6 @@ export const newData = [
                 'login-customer-id': '8617859087',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -2648,7 +2641,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -2886,7 +2878,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/444555666',
                 event: 'search',
                 customerId: '9625812972',
                 customVariables: [
@@ -3118,7 +3109,6 @@ export const newData = [
                 'Content-Type': 'application/json',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -3626,7 +3616,6 @@ export const newData = [
                 'login-customer-id': '8617859087',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -3886,7 +3875,7 @@ export const newData = [
                 ],
                 customerId: '9625812972',
                 event: 'Sign-up - click',
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
+
                 properties: {
                   conversionDateTime: '2022-01-01 12:32:45-08:00',
                   gclid: 'gclid',
@@ -4049,7 +4038,6 @@ export const newData = [
                 'login-customer-id': '8617859087',
               },
               params: {
-                conversionActionId: 'customers/9625812972/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '9625812972',
                 customVariables: [
@@ -4244,7 +4232,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4582,7 +4569,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4784,7 +4770,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -4989,7 +4974,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5156,7 +5140,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5319,7 +5302,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5480,7 +5462,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },
@@ -5674,7 +5655,6 @@ export const newData = [
                 'login-customer-id': 'logincustomerid',
               },
               params: {
-                conversionActionId: 'customers/1112223333/conversionActions/848898416',
                 event: 'Sign-up - click',
                 customerId: '1112223333',
               },

@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, secret3 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader401Test, secret3 } from './maskedSecrets';
 const API_VERSION = 'v19';
 
 const commonResponse = {
@@ -1289,5 +1289,35 @@ export const networkCallsData = [
       method: 'POST',
     },
     httpRes: commonResponse,
+  },
+  {
+    description:
+      'Mock 401 error response from searchStream API when access token is expired during batch fetching',
+    httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/9998887777/googleAds:searchStream`,
+      data: {
+        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Purchase Conversion')`,
+      },
+      headers: {
+        Authorization: authHeader401Test,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+        'login-customer-id': 'logincustomerid401',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: [
+        {
+          error: {
+            code: 401,
+            message:
+              'Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.',
+            status: 'UNAUTHENTICATED',
+          },
+        },
+      ],
+    },
   },
 ];

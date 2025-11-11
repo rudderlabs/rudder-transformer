@@ -1,4 +1,26 @@
-import { authHeader1, secret1 } from '../maskedSecrets';
+/**
+ * GAOC (Google Ads Offline Conversions) - New Test Suite with Batch Fetching Feature Flag
+ *
+ * IMPORTANT: These tests are duplicates of the existing processor test suite (data.ts) with a critical difference:
+ * All tests in this file include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to test the new
+ * batch fetching optimization feature for Google Ads Offline Conversions.
+ *
+ * Background:
+ * - GAOC now supports env-based feature flag: GAOC_ENABLE_BATCH_FETCHING
+ * - When enabled, conversion variable fetching is optimized with batch requests
+ * - These tests validate behavior with the feature flag ENABLED
+ * - The original tests (data.ts) validate behavior with the feature flag DISABLED (default)
+ *
+ * Relationship to original tests:
+ * - Test cases are based on test/integrations/destinations/google_adwords_offline_conversions/processor/data.ts
+ * - Test scenarios and expected behaviors are identical except for the feature flag setting
+ * - This allows parallel testing of both old (flag off) and new (flag on) behavior
+ *
+ * For PR reviewers: This is an intentional duplication to ensure backward compatibility while
+ * testing the new batch fetching feature. Once the feature is proven stable, we can remove old code and test
+ */
+
+import { authHeader1, secret1, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 
 const API_VERSION = 'v19';
@@ -6032,6 +6054,108 @@ export const newData = [
     mockFns: timestampMock,
     envOverrides: {
       GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
+  },
+  {
+    id: 'gaoc_processor_test_searchstream_401_error',
+    name: 'google_adwords_offline_conversions',
+    description:
+      'Test searchStream API returns 401 error (expired access token) during batch fetching - should trigger retry',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '+1234567890',
+                },
+              },
+              event: 'Product Purchased',
+              type: 'track',
+              messageId: 'test-message-id-401',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: 'test-anon-id-401',
+              userId: 'test-user-401',
+              properties: {
+                gclid: 'test-gclid-401',
+                conversionValue: 99.99,
+                currency: 'USD',
+                orderId: 'ORDER-401-TEST',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: secret401Test,
+                refresh_token: 'refresh_token_401',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '999-888-7777',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id-401',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Product Purchased',
+                    to: 'click',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Product Purchased',
+                    to: 'Purchase Conversion',
+                  },
+                ],
+                hashUserIdentifier: false,
+                defaultUserIdentifier: 'email',
+                validateOnly: false,
+                rudderAccountId: 'test-account-id',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during batch conversion action fetch","destinationResponse":[{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}]}',
+            metadata: {
+              secret: {
+                access_token: secret401Test,
+                refresh_token: 'refresh_token_401',
+              },
+            },
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 401,
+          },
+        ],
+      },
+    },
+    mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+      DEVELOPER_TOKEN: 'test-developer-token-12345',
     },
   },
 ];

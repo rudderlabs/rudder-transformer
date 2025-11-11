@@ -1,4 +1,20 @@
-import { authHeader1, authHeader2, secret3 } from '../../maskedSecrets';
+/**
+ * GAOC Data Delivery - OAuth Scenarios with Batch Fetching Feature Flag
+ *
+ * This file contains OAuth/authentication tests for GAOC data delivery (proxy v0 and v1).
+ * All tests include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to validate
+ * authentication behavior with the new batch fetching optimization feature.
+ *
+ * Test scenarios cover:
+ * - Proxy v0 API OAuth scenarios: Invalid credentials, insufficient scopes
+ * - Proxy v1 API OAuth scenarios: Invalid credentials, insufficient scopes, 2FA issues
+ * - Error response handling with proper authErrorCategory mapping
+ * - Both REFRESH_TOKEN and AUTH_STATUS_INACTIVE error categories
+ *
+ * Based on original dataDelivery OAuth tests but with batch fetching feature flag enabled.
+ */
+
+import { authHeader1, authHeader2 } from '../../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV1Payload,

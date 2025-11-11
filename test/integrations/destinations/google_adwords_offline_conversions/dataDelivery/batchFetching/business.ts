@@ -1,4 +1,20 @@
-import { authHeader1, secret3 } from '../../maskedSecrets';
+/**
+ * GAOC Data Delivery - Business Scenarios with Batch Fetching Feature Flag
+ *
+ * This file contains business logic tests for GAOC data delivery (proxy v0 and v1).
+ * All tests include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to validate
+ * the new batch fetching optimization feature.
+ *
+ * Test scenarios cover:
+ * - Proxy v0 API: Store conversions with offline user data jobs
+ * - Proxy v1 API: Click conversions, store conversions, and call conversions
+ * - Success cases: Valid requests returning 200 responses
+ * - Error cases: Invalid arguments, permission errors, etc.
+ *
+ * Based on original dataDelivery tests but with batch fetching feature flag enabled.
+ */
+
+import { authHeader1 } from '../../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,

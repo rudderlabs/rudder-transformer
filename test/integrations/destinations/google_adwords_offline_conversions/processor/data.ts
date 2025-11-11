@@ -1,11 +1,19 @@
+/**
+ * GAOC (Google Ads Offline Conversions) - Processor Tests (Standard Behavior)
+ *
+ * These tests validate the processor transformation with batch fetching DISABLED (default).
+ * For tests with batch fetching enabled (GAOC_ENABLE_BATCH_FETCHING=true),
+ * see batch-fetching-data.ts in the same directory.
+ */
+
 import { authHeader1, secret1 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-import { newData } from './newData';
+import { newData as batchFetchingData } from './batch-fetching-data';
 
 const API_VERSION = 'v19';
 
 export const data = [
-  ...newData,
+  ...batchFetchingData,
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',

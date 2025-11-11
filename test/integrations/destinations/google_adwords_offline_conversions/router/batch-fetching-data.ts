@@ -660,7 +660,6 @@ export const newData = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
                   conversionActionId: 'customers/9625812972/conversionActions/848898416',
@@ -805,7 +804,6 @@ export const newData = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
                   conversionActionId: 'customers/9625812972/conversionActions/444555666',
@@ -931,7 +929,6 @@ export const newData = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     conversionActionId: 'customers/7693729833/conversionActions/444555666',
@@ -1021,7 +1018,6 @@ export const newData = [
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
-                    'developer-token': 'test-developer-token-12345',
                   },
                   params: {
                     conversionActionId: 'customers/7693729833/conversionActions/948898416',
@@ -1382,7 +1378,6 @@ export const newData = [
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
-                  'developer-token': 'test-developer-token-12345',
                 },
                 params: {
                   conversionActionId: 'customers/1234556775/conversionActions/948898416',

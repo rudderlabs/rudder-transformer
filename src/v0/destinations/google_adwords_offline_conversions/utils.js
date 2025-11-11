@@ -82,7 +82,7 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const isBatchFetchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
 
-const getHeader = (Config, metadata) => {
+const getHeader = (Config, metadata, passToken = false) => {
   const { subAccount, loginCustomerId } = Config;
   const response = {
     Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
@@ -91,7 +91,7 @@ const getHeader = (Config, metadata) => {
 
   const useBatchFetching = isBatchFetchingEnabled();
   const developerToken = getDeveloperToken();
-  if (developerToken && useBatchFetching) {
+  if (developerToken && useBatchFetching && passToken) {
     response['developer-token'] = developerToken;
   }
 
@@ -669,7 +669,7 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
 
   // If there are cache misses, batch fetch all missing conversions in single API call
   if (cacheMisses.length > 0) {
-    const headers = getHeader(Config, metadata);
+    const headers = getHeader(Config, metadata, true);
     const fetchedConversions = await batchFetchConversionActions({
       customerId,
       conversionNames: cacheMisses,
@@ -790,7 +790,7 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
 
   // If there are cache misses, batch fetch all missing variables in single API call
   if (cacheMisses.length > 0) {
-    const headers = getHeader(Config, metadata);
+    const headers = getHeader(Config, metadata, true);
     const fetchedVariablesMap = await batchFetchConversionCustomVariablesMap({
       customerId,
       variableNames,

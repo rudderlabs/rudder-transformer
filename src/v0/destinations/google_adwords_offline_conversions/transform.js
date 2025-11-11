@@ -105,7 +105,6 @@ const getConversions = (
     event,
     filteredCustomerId,
     properties,
-    conversionActionId,
   );
 };
 

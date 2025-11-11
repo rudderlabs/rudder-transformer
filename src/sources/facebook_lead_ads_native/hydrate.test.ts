@@ -1,25 +1,20 @@
 import { hydrate } from './hydrate';
 import * as network from '../../adapters/network';
-import { SourceHydrationResponse } from '../../types';
+import { SourceHydrationOutput, SourceHydrationRequest } from '../../types/sourceHydration';
 
 jest.mock('../../adapters/network');
 
 const mockHttpGET = network.httpGET as jest.MockedFunction<typeof network.httpGET>;
 
-type SuccessResponse = Extract<SourceHydrationResponse, { jobs: unknown }> & {
-  jobs: Array<{
-    statusCode: number;
-    errorMessage?: string;
+type SuccessResponse = SourceHydrationOutput & {
+  batch: Array<{
     event?: {
       context?: {
         traits?: Record<string, unknown>;
       };
-      [key: string]: unknown;
     };
   }>;
 };
-
-type ErrorResponse = Extract<SourceHydrationResponse, { error: unknown }>;
 
 describe('Facebook Lead Ads Hydration', () => {
   beforeEach(() => {
@@ -27,7 +22,7 @@ describe('Facebook Lead Ads Hydration', () => {
   });
 
   const createValidInput = (leadIds: string[], accessToken: string = 'test_token') => ({
-    jobs: leadIds.map((leadId) => ({
+    batch: leadIds.map((leadId) => ({
       event: {
         anonymousId: leadId,
         context: {
@@ -147,7 +142,7 @@ describe('Facebook Lead Ads Hydration', () => {
           },
         },
         input: {
-          jobs: [
+          batch: [
             {
               event: {
                 anonymousId: '123456',
@@ -175,7 +170,7 @@ describe('Facebook Lead Ads Hydration', () => {
         expectedStatusCode: 200,
       },
       {
-        name: 'should handle job without context.traits',
+        name: 'should handle batch item without context.traits',
         mockResponse: {
           success: true,
           response: {
@@ -187,7 +182,7 @@ describe('Facebook Lead Ads Hydration', () => {
           },
         },
         input: {
-          jobs: [
+          batch: [
             {
               event: {
                 anonymousId: '123456',
@@ -207,7 +202,7 @@ describe('Facebook Lead Ads Hydration', () => {
         expectedStatusCode: 200,
       },
       {
-        name: 'should handle job without context',
+        name: 'should handle batch item without context',
         mockResponse: {
           success: true,
           response: {
@@ -219,7 +214,7 @@ describe('Facebook Lead Ads Hydration', () => {
           },
         },
         input: {
-          jobs: [
+          batch: [
             {
               event: {
                 anonymousId: '123456',
@@ -246,10 +241,10 @@ describe('Facebook Lead Ads Hydration', () => {
 
           const result = (await hydrate(input)) as SuccessResponse;
 
-          expect(result.jobs).toHaveLength(1);
-          expect(result.jobs[0].statusCode).toBe(expectedStatusCode);
-          expect(result.jobs[0].event?.context?.traits).toEqual(expectedTraits);
-          expect(result.jobs[0].errorMessage).toBeUndefined();
+          expect(result.batch).toHaveLength(1);
+          expect(result.batch[0].statusCode).toBe(expectedStatusCode);
+          expect(result.batch[0].event?.context?.traits).toEqual(expectedTraits);
+          expect(result.batch[0].errorMessage).toBeUndefined();
 
           if (verifyHttpCall) {
             expect(mockHttpGET).toHaveBeenCalledTimes(1);
@@ -272,9 +267,9 @@ describe('Facebook Lead Ads Hydration', () => {
       },
     );
 
-    it('should handle empty jobs array', async () => {
+    it('should handle empty batch array', async () => {
       const input = {
-        jobs: [],
+        batch: [],
         source: {
           internalSecret: {
             pageAccessToken: 'test_token',
@@ -282,9 +277,9 @@ describe('Facebook Lead Ads Hydration', () => {
         },
       };
 
-      const result = (await hydrate(input)) as SuccessResponse;
+      const result = await hydrate(input);
 
-      expect(result.jobs).toEqual([]);
+      expect(result.batch).toEqual([]);
       expect(mockHttpGET).not.toHaveBeenCalled();
     });
   });
@@ -320,11 +315,11 @@ describe('Facebook Lead Ads Hydration', () => {
 
     const result = (await hydrate(input)) as SuccessResponse;
 
-    expect(result.jobs).toHaveLength(2);
-    expect(result.jobs[0].statusCode).toBe(200);
-    expect(result.jobs[0].event?.context?.traits?.full_name).toBe('John Doe');
-    expect(result.jobs[1].statusCode).toBe(200);
-    expect(result.jobs[1].event?.context?.traits?.full_name).toBe('Jane Smith');
+    expect(result.batch).toHaveLength(2);
+    expect(result.batch[0].statusCode).toBe(200);
+    expect(result.batch[0].event?.context?.traits?.full_name).toBe('John Doe');
+    expect(result.batch[1].statusCode).toBe(200);
+    expect(result.batch[1].event?.context?.traits?.full_name).toBe('Jane Smith');
 
     expect(mockHttpGET).toHaveBeenCalledTimes(2);
   });
@@ -344,11 +339,11 @@ describe('Facebook Lead Ads Hydration', () => {
     });
 
     const input = createValidInput(['123456']);
-    const result = (await hydrate(input)) as SuccessResponse;
+    const result = await hydrate(input);
 
-    expect(result.jobs).toHaveLength(1);
-    expect(result.jobs[0].statusCode).toBe(401);
-    expect(result.jobs[0].errorMessage).toBe('Invalid OAuth access token');
+    expect(result.batch).toHaveLength(1);
+    expect(result.batch[0].statusCode).toBe(401);
+    expect(result.batch[0].errorMessage).toBe('Invalid OAuth access token');
   });
 
   it('should handle mixed success and failure responses', async () => {
@@ -381,43 +376,24 @@ describe('Facebook Lead Ads Hydration', () => {
 
     const result = (await hydrate(input)) as SuccessResponse;
 
-    expect(result.jobs).toHaveLength(2);
-    expect(result.jobs[0].statusCode).toBe(200);
-    expect(result.jobs[0].event?.context?.traits?.full_name).toBe('John Doe');
-    expect(result.jobs[0].errorMessage).toBeUndefined();
-    expect(result.jobs[1].statusCode).toBe(404);
-    expect(result.jobs[1].errorMessage).toBe('Lead not found');
+    expect(result.batch).toHaveLength(2);
+    expect(result.batch[0].statusCode).toBe(200);
+    expect(result.batch[0].event?.context?.traits?.full_name).toBe('John Doe');
+    expect(result.batch[0].errorMessage).toBeUndefined();
+    expect(result.batch[1].statusCode).toBe(404);
+    expect(result.batch[1].errorMessage).toBe('Lead not found');
   });
 
   describe('Input validation', () => {
-    const invalidInputTestCases = [
-      {
-        name: 'should return 400 when jobs is not an array',
-        input: {
-          jobs: 'not-an-array' as unknown,
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
-        },
-        expectedErrorPattern: 'Expected array',
-      },
-      {
-        name: 'should return 400 when jobs is missing',
-        input: {
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
-        },
-        expectedErrorPattern: 'jobs',
-      },
+    const invalidInputTestCases: {
+      name: string;
+      input: SourceHydrationRequest;
+      expectedError: string;
+    }[] = [
       {
         name: 'should return 400 when pageAccessToken is empty',
         input: {
-          jobs: [
+          batch: [
             {
               event: {
                 anonymousId: '123456',
@@ -430,12 +406,12 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           },
         },
-        expectedErrorPattern: 'Page access token is required',
+        expectedError: 'Page access token is required',
       },
       {
         name: 'should return 400 when internalSecret is missing',
         input: {
-          jobs: [
+          batch: [
             {
               event: {
                 anonymousId: '123456',
@@ -444,26 +420,16 @@ describe('Facebook Lead Ads Hydration', () => {
           ],
           source: {},
         },
-        expectedErrorPattern: 'internalSecret',
+        expectedError: 'source.internalSecret: Required',
       },
       {
-        name: 'should return 400 when job is missing event',
+        name: 'should return 400 when batch item event is missing anonymousId',
         input: {
-          jobs: [{}],
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
-        },
-        expectedErrorPattern: 'event',
-      },
-      {
-        name: 'should return 400 when job event is missing anonymousId',
-        input: {
-          jobs: [
+          batch: [
             {
-              event: {},
+              event: {
+                anonymousId: '',
+              },
             },
           ],
           source: {
@@ -472,20 +438,13 @@ describe('Facebook Lead Ads Hydration', () => {
             },
           },
         },
-        expectedErrorPattern: 'anonymousId',
-      },
-      {
-        name: 'should return 400 when entire input is invalid',
-        input: null,
-        expectedErrorPattern: 'Expected object',
+        expectedError: 'anonymousId is required',
       },
     ];
 
-    invalidInputTestCases.forEach(({ name, input, expectedErrorPattern }) => {
+    invalidInputTestCases.forEach(({ name, input, expectedError }) => {
       it(name, async () => {
-        const result = (await hydrate(input)) as ErrorResponse;
-        expect(result.statusCode).toBe(400);
-        expect(JSON.stringify(result.error)).toContain(expectedErrorPattern);
+        await expect(hydrate(input)).rejects.toThrow(expectedError);
         expect(mockHttpGET).not.toHaveBeenCalled();
       });
     });

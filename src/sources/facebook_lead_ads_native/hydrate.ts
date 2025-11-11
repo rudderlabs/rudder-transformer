@@ -1,39 +1,40 @@
 import { z } from 'zod';
+import { formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
-import { SourceHydrationJob, SourceHydrationResponse } from '../../types';
+import {
+  SourceHydrationOutput,
+  SourceHydrationRequestSchema,
+  HydrationBatchItemSchema,
+  HydrationSourceSchema,
+  HydrationEventSchema,
+  SourceHydrationRequest,
+} from '../../types/sourceHydration';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
 
-const RequestBodySchema = z
-  .object({
-    jobs: z.array(
-      z
-        .object({
-          event: z
-            .object({
-              anonymousId: z.string(),
-              context: z
-                .object({
-                  traits: z.record(z.unknown()).optional(),
-                })
-                .passthrough()
-                .optional(),
-            })
-            .passthrough(),
-        })
-        .passthrough(),
-    ),
-    source: z
-      .object({
-        internalSecret: z
+// Complete schema
+const FacebookLeadAdsHydrationInputSchema = SourceHydrationRequestSchema.extend({
+  batch: z.array(
+    HydrationBatchItemSchema.extend({
+      event: HydrationEventSchema.extend({
+        anonymousId: z.string().min(1, 'anonymousId is required'),
+        context: z
           .object({
-            pageAccessToken: z.string().min(1, 'Page access token is required'),
+            traits: z.record(z.unknown()).optional(),
           })
-          .passthrough(),
+          .passthrough()
+          .optional(),
+      }),
+    }),
+  ),
+  source: HydrationSourceSchema.extend({
+    internalSecret: z
+      .object({
+        pageAccessToken: z.string().min(1, 'Page access token is required'),
       })
       .passthrough(),
-  })
-  .passthrough();
+  }),
+});
 
 interface FacebookSuccessResponse {
   field_data?: {
@@ -87,30 +88,27 @@ async function fetchLeadData(leadId: string, accessToken: string): Promise<APIRe
 
 /**
  * Hydrates multiple lead IDs by fetching their data from Facebook in parallel
- * @param input - Object containing leadIds array and accessToken
+ * @param input - Object containing batch array and source config
  * @returns Promise with hydration results and overall status code
  */
-export async function hydrate(input: unknown): Promise<SourceHydrationResponse> {
+export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput> {
   // Validate input using Zod schema
-  const validationResult = RequestBodySchema.safeParse(input);
+  const validationResult = FacebookLeadAdsHydrationInputSchema.safeParse(input);
 
   if (!validationResult.success) {
-    return {
-      error: validationResult.error || 'Invalid input',
-      statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
-    };
+    throw new InstrumentationError(formatZodError(validationResult.error));
   }
 
-  const { jobs, source } = validationResult.data;
+  const { batch, source } = validationResult.data;
   const accessToken = source.internalSecret.pageAccessToken;
 
   // Fetch all leads in parallel and map results back to jobs
   const results = await Promise.all(
-    jobs.map(async (job) => {
+    batch.map(async (job) => {
       const leadgenId = job.event.anonymousId;
       const result = await fetchLeadData(leadgenId, accessToken);
 
-      const updatedJob: SourceHydrationJob = {
+      const updatedJob: SourceHydrationOutput['batch'][number] = {
         ...job,
         statusCode: result.statusCode,
       };
@@ -147,6 +145,6 @@ export async function hydrate(input: unknown): Promise<SourceHydrationResponse> 
   );
 
   return {
-    jobs: results,
+    batch: results,
   };
 }

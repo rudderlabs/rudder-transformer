@@ -1,8 +1,9 @@
 import {
   MetaTransferObject,
-  SourceHydrationResponse,
   SourceInputV2,
   SourceTransformationResponse,
+  SourceHydrationRequest,
+  SourceHydrationOutput,
 } from '../types/index';
 
 export interface SourceService {
@@ -15,7 +16,7 @@ export interface SourceService {
   ): Promise<SourceTransformationResponse[]>;
 
   sourceHydrateRoutine(
-    input: Record<string, unknown>,
+    input: SourceHydrationRequest,
     sourceType: string,
-  ): Promise<SourceHydrationResponse>;
+  ): Promise<SourceHydrationOutput>;
 }

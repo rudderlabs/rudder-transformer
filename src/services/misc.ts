@@ -1,11 +1,11 @@
 /* eslint-disable global-require, import/no-dynamic-require */
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata, SourceHydrationResponse } from '../types';
+import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
 
-export interface Hydrater {
-  hydrate(input: Record<string, unknown>): Promise<SourceHydrationResponse>;
+export interface Hydrator {
+  hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
 }
 
 export class MiscService {
@@ -20,7 +20,7 @@ export class MiscService {
     return require(`../sources/${source}/transform`);
   }
 
-  public static getSourceHydrateHandler(source: string): Hydrater {
+  public static getSourceHydrateHandler(source: string): Hydrator {
     return require(`../sources/${source}/hydrate`);
   }
 

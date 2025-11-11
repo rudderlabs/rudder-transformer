@@ -688,8 +688,9 @@ export const data = [
       request: {
         method: 'POST',
         body: {
-          jobs: [
+          batch: [
             {
+              id: '1234',
               event: {
                 anonymousId: '1459076748710713',
                 context: {},
@@ -720,8 +721,9 @@ export const data = [
       response: {
         status: 200,
         body: {
-          jobs: [
+          batch: [
             {
+              id: '1234',
               event: {
                 anonymousId: '1459076748710713',
                 context: {

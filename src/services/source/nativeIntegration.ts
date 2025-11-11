@@ -14,13 +14,17 @@ import {
   SourceTransformationResponse,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   FixMe,
-  SourceHydrationResponse,
+  SourceHydrationOutput,
+  SourceHydrationRequest,
 } from '../../types';
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
 import { getBodyFromV2SpecPayload } from '../../v0/util';
+import { HTTP_STATUS_CODES } from '../../v0/util/constant';
+
+const SUPPORTED_HYDRATION_SOURCE_TYPES = ['facebook_lead_ads_native'];
 
 export class NativeIntegrationSourceService implements SourceService {
   public getTags(extraErrorDetails: ErrorDetailerOptions = {}): MetaTransferObject {
@@ -84,9 +88,15 @@ export class NativeIntegrationSourceService implements SourceService {
   }
 
   public async sourceHydrateRoutine(
-    input: Record<string, unknown>,
+    input: SourceHydrationRequest,
     sourceType: string,
-  ): Promise<SourceHydrationResponse> {
+  ): Promise<SourceHydrationOutput> {
+    if (!SUPPORTED_HYDRATION_SOURCE_TYPES.includes(sourceType)) {
+      throw new TransformationError(
+        `Source ${sourceType} not supported for hydration`,
+        HTTP_STATUS_CODES.NOT_FOUND,
+      );
+    }
     const sourceHandler = FetchHandler.getSourceHydrateHandler(sourceType);
     return sourceHandler.hydrate(input);
   }

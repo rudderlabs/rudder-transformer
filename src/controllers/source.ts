@@ -1,10 +1,11 @@
 import { Context } from 'koa';
+import { BaseError, formatZodError } from '@rudderstack/integrations-lib';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { MiscService } from '../services/misc';
 import { SourcePostTransformationService } from '../services/source/postTransformation';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { SourceInputV2 } from '../types';
+import { SourceInputV2, SourceHydrationRequestSchema, SourceHydrationOutput } from '../types';
 import { HTTP_STATUS_CODES } from '../v0/util/constant';
 
 export class SourceController {
@@ -41,34 +42,47 @@ export class SourceController {
   }
 
   public static async sourceHydrate(ctx: Context) {
-    const requestBody = ctx.request.body as Record<string, unknown>;
-    const { source }: { source: string } = ctx.params;
-    const integrationService = ServiceSelector.getNativeSourceService();
-    let response;
-    try {
-      response = await integrationService.sourceHydrateRoutine(requestBody, source);
-    } catch (err: any) {
-      logger.error('error in sourceHydrateRoutine', { source, error: err?.message });
-      ctx.body = { error: 'Unexpected error during hydration' };
-      ctx.status = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+    const { source: sourceType } = ctx.params as { source: string };
+
+    // Validate and extract batch and source from request body at controller level
+    const validationResult = SourceHydrationRequestSchema.safeParse(ctx.request.body);
+    if (!validationResult.success) {
+      ctx.body = { error: formatZodError(validationResult.error) };
+      ctx.status = HTTP_STATUS_CODES.BAD_REQUEST;
       return;
     }
 
-    if ('error' in response) {
-      ctx.body = { error: response.error };
-      ctx.status = response.statusCode;
-    } else {
-      // Compute overall status code from jobs
-      let statusCode;
-      const firstError = response.jobs.find((job) => job.statusCode !== HTTP_STATUS_CODES.OK);
-      if (firstError) {
-        statusCode = firstError.statusCode;
-      } else {
-        statusCode = HTTP_STATUS_CODES.OK;
-      }
+    const { batch, source } = validationResult.data;
 
-      ctx.body = { jobs: response.jobs };
-      ctx.status = statusCode;
+    const integrationService = ServiceSelector.getNativeSourceService();
+    let response: SourceHydrationOutput;
+    try {
+      response = await integrationService.sourceHydrateRoutine({ batch, source }, sourceType);
+    } catch (err: any) {
+      logger.error('error in sourceHydrateRoutine', { source: sourceType, error: err?.message });
+      if (err instanceof BaseError) {
+        ctx.body = { error: err.message };
+        ctx.status = err.status;
+      } else {
+        // Unknown error - return 500
+        ctx.body = { error: 'Unexpected error during hydration' };
+        ctx.status = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+      }
+      return;
     }
+
+    // Compute overall status code from jobs
+    let statusCode;
+    const firstError = response.batch.find(
+      (job) => job.statusCode >= HTTP_STATUS_CODES.BAD_REQUEST,
+    );
+    if (firstError) {
+      statusCode = firstError.statusCode;
+    } else {
+      statusCode = HTTP_STATUS_CODES.OK;
+    }
+
+    ctx.body = { batch: response.batch };
+    ctx.status = statusCode;
   }
 }

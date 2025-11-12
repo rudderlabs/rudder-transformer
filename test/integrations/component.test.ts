@@ -27,6 +27,27 @@ import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
+import { restoreSalesforceSDKMock } from './mocks/salesforceSDK.mock';
+
+// Mock Salesforce SDK for component tests - must be before any imports that use it
+// Note: The mock query logic is maintained in ./mocks/salesforceSDK.mock.ts
+jest.mock('@rudderstack/integrations-lib', () => {
+  const actual = jest.requireActual('@rudderstack/integrations-lib');
+  // Import createMockQuery using require to avoid hoisting issues with ES modules
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { createMockQuery } = require('./mocks/salesforceSDK.mock');
+
+  return {
+    ...actual,
+    SalesforceSDK: {
+      Salesforce: jest.fn().mockImplementation(({ accessToken, instanceUrl }) => {
+        return {
+          query: createMockQuery(),
+        };
+      }),
+    },
+  };
+});
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -231,6 +252,8 @@ describe('Component Test Suite', () => {
       afterEach(() => {
         jest.resetAllMocks();
         jest.clearAllMocks();
+        // Restore the SalesforceSDK mock implementation after reset
+        restoreSalesforceSDKMock();
       });
       let testData: TestCaseData[] = getTestData(testDataPath);
       if (opts.index < testData.length && opts.index >= 0) {

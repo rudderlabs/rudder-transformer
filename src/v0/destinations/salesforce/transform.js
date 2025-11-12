@@ -1,5 +1,4 @@
-import { SalesforceSDK } from '@rudderstack/integrations-lib';
-
+const { SalesforceSDK } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
 const {

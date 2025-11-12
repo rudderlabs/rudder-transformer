@@ -6,9 +6,10 @@ on:
       PAT:
         description: 'Personal Access Token for repository access'
         required: true
+  workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -32,12 +33,51 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
 
-      - name: Get Latest Commit SHA
-        id: get_sha
+      - name: Get Latest Transformer Release Version
+        id: get_latest_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          latest_sha=$(git rev-parse HEAD)
-          echo "latest_sha=$latest_sha" >> $GITHUB_OUTPUT
-          echo "Latest commit SHA: $latest_sha"
+          # Get the latest release tag from GitHub API
+          latest_tag=$(gh api repos/rudderlabs/rudder-transformer/releases/latest --jq '.tag_name')
+
+          if [ -z "$latest_tag" ]; then
+            echo "No releases found"
+            exit 1
+          fi
+
+          echo "Latest transformer release: $latest_tag"
+          echo "latest_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+          # Extract version without 'v' prefix for go module tag
+          version=${latest_tag#v}
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "go_tag=go/v$version" >> $GITHUB_OUTPUT
+
+      - name: Check and Create Go Module Tag
+        id: create_go_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+          VERSION: ${{ steps.get_latest_version.outputs.version }}
+          GO_TAG: ${{ steps.get_latest_version.outputs.go_tag }}
+        run: |
+          echo "Checking if Go module tag $GO_TAG exists..."
+
+          # Fetch all tags
+          git fetch --tags origin
+
+          # Check if go tag already exists
+          if git rev-parse --verify "$GO_TAG" >/dev/null 2>&1; then
+            echo "Go module tag $GO_TAG already exists"
+            echo "Go tag exists and no force update requested"
+            echo "should_update=false" >> $GITHUB_OUTPUT
+          else
+            echo "Creating Go module tag $GO_TAG..."
+            git tag -a "$GO_TAG" -m "chore(go): release go module v$VERSION"
+            git push origin "refs/tags/$GO_TAG"
+            echo "Go module tag $GO_TAG created and pushed successfully"
+            echo "should_update=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Clone Ingestion Service Repo
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -62,14 +102,16 @@ jobs:
 
       - name: Update go.mod with Latest Transformer Version
         id: update
+        if: steps.create_go_tag.outputs.should_update == 'true'
         env:
-          LATEST_SHA: ${{ steps.get_sha.outputs.latest_sha }}
+          LATEST_TAG: ${{ steps.get_latest_version.outputs.latest_tag }}
+          GO_TAG: ${{ steps.get_latest_version.outputs.go_tag }}
         run: |
           set -euo pipefail
           cd rudder-ingestion-svc
 
           # Create a new branch for the update
-          branch_name="chore.update-transformer-go-tests"
+          branch_name="chore.update-transformer-go-${LATEST_TAG}"
 
           # Delete the branch if it exists (both locally and remotely)
           git branch -D $branch_name 2>/dev/null || true
@@ -78,9 +120,9 @@ jobs:
           # Create a new branch
           git checkout -b $branch_name
 
-          # Update the go.mod file with the latest commit SHA using go get
+          # Update the go.mod file with the latest release version using go get
           # This is the proper way to update Go dependencies
-          go get github.com/rudderlabs/rudder-transformer/go@$LATEST_SHA
+          go get github.com/rudderlabs/rudder-transformer/go@${GO_TAG}
 
           # Run go mod tidy to clean up and update go.sum
           go mod tidy
@@ -94,7 +136,7 @@ jobs:
 
           # Commit the changes
           git add go.mod go.sum
-          git commit -m "chore: update transformer-go to latest version"
+          git commit -m "chore: update transformer-go to ${LATEST_TAG}"
 
           # Push the branch
           git push --force-with-lease -u origin $branch_name
@@ -107,12 +149,27 @@ jobs:
         if: steps.update.outputs.has_changes == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
+          LATEST_TAG: ${{ steps.get_latest_version.outputs.latest_tag }}
         run: |
           cd rudder-ingestion-svc
 
           # Create a pull request
           gh pr create \
-            --title "chore: update transformer-go to latest version" \
-            --body "This PR updates the rudder-transformer/go dependency to the latest version from the main branch." \
+            --title "chore: update transformer-go to ${LATEST_TAG}" \
+            --body "This PR updates the rudder-transformer/go dependency to ${LATEST_TAG}." \
             --head ${{ steps.update.outputs.branch_name }} \
             --base main
+
+      - name: Summary
+        run: |
+          echo "## Update Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- **Latest Transformer Release**: ${{ steps.get_latest_version.outputs.latest_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Go Module Tag**: ${{ steps.get_latest_version.outputs.go_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Should Update**: ${{ steps.create_go_tag.outputs.should_update }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.update.outputs.has_changes }}" = "true" ]; then
+            echo "- **Status**: Pull request created successfully" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.create_go_tag.outputs.should_update }}" = "false" ]; then
+            echo "- **Status**: No update needed - Go tag already exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: No changes in go.mod" >> $GITHUB_STEP_SUMMARY
+          fi

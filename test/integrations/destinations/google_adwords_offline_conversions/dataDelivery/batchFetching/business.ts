@@ -556,9 +556,15 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: {
+                name: 'customers/111-222-3333/operations/abcd=',
+              },
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify({ name: 'customers/111-222-3333/operations/abcd=' }),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -603,20 +609,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -661,20 +671,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -719,11 +733,197 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+            destinationResponse: {
+              response: {
+                partialFailureError: {
+                  code: 3,
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            notAllowlistedError: 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE',
+                          },
+                          location: {
+                            fieldPathElements: [
+                              {
+                                fieldName: 'conversions',
+                                index: 0,
+                              },
+                              {
+                                fieldName: 'conversion_environment',
+                              },
+                            ],
+                          },
+                          message: 'Customer is not allowlisted for accessing this feature.',
+                          trigger: {
+                            int64Value: '2',
+                          },
+                        },
+                      ],
+                      requestId: 'dummyRequestId',
+                    },
+                  ],
+                  message:
+                    'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                },
+                results: [{}],
+              },
+              status: 200,
+            },
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                  'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
                 metadata: generateMetadata(1),
+                statusCode: 400,
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 400,
+          },
+        },
+      },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
+  },
+  {
+    id: 'gaoc_v1_scenario_6',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v1 API] :: Test click conversion API request which contains partially valid request',
+    successCriteria: 'Should return 400 with error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param4,
+            JSON: {
+              conversions: [
+                { ...validRequestPayload2.conversions[0] },
+                {
+                  cartData: {
+                    merchantId: 9876,
+                    feedCountryCode: 'feedCountryCode',
+                    feedLanguageCode: 'feedLanguageCode',
+                    localTransactionCost: 20,
+                    items: [
+                      {
+                        productId: '507f1f77bcf86cd799439011',
+                        quantity: 2,
+                        unitPrice: 50,
+                      },
+                    ],
+                  },
+                  userIdentifiers: [
+                    {
+                      userIdentifierSource: 'FIRST_PARTY',
+                      hashedPhoneNumber:
+                        '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                    },
+                  ],
+                  conversionEnvironment: 'WEB',
+                  conversionDateTime: '2025-11-12 16:21:53+05:30',
+                  conversionValue: 1,
+                  currencyCode: 'GBP',
+                  orderId: 'PL-123QR',
+                  conversionAction: 'customers/1234567891/conversionActions/848898417',
+                  consent: {
+                    adPersonalization: 'UNSPECIFIED',
+                    adUserData: 'UNSPECIFIED',
+                  },
+                },
+              ],
+              partialFailure: true,
+            },
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567893:uploadClickConversions`,
+          },
+          [generateMetadata(1), generateMetadata(2)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              "[Google Ads Offline Conversions]:: partialFailureError - The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+            destinationResponse: {
+              response: {
+                jobId: '5353383680802491057',
+                partialFailureError: {
+                  code: 3,
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v22.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            conversionUploadError: 'NO_CONVERSION_ACTION_FOUND',
+                          },
+                          location: {
+                            fieldPathElements: [
+                              {
+                                fieldName: 'conversions',
+                                index: 1,
+                              },
+                              {
+                                fieldName: 'conversion_action',
+                              },
+                            ],
+                          },
+                          message:
+                            "The conversion action specified in the upload request cannot be found. Make sure it's available in this account.",
+                          trigger: {
+                            stringValue: 'customers/4172647997/conversionActions/7377464874',
+                          },
+                        },
+                      ],
+                      requestId: 'f4J_sjHfhbgNieU4pkBOqg',
+                    },
+                  ],
+                  message:
+                    "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+                },
+                results: [
+                  {
+                    conversionAction: 'customers/1234567891/conversionActions/848898416',
+                    conversionDateTime: '2025-11-12 16:21:53+05:30',
+                    userIdentifiers: [
+                      {
+                        hashedPhoneNumber:
+                          '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                        userIdentifierSource: 'FIRST_PARTY',
+                      },
+                    ],
+                  },
+                  {},
+                ],
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+              {
+                error:
+                  "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+                metadata: generateMetadata(2),
                 statusCode: 400,
               },
             ],

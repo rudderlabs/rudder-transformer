@@ -512,9 +512,15 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: {
+                name: 'customers/111-222-3333/operations/abcd=',
+              },
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify({ name: 'customers/111-222-3333/operations/abcd=' }),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -556,20 +562,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -611,20 +621,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -666,10 +680,50 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+            destinationResponse: {
+              response: {
+                partialFailureError: {
+                  code: 3,
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            notAllowlistedError: 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE',
+                          },
+                          location: {
+                            fieldPathElements: [
+                              {
+                                fieldName: 'conversions',
+                                index: 0,
+                              },
+                              {
+                                fieldName: 'conversion_environment',
+                              },
+                            ],
+                          },
+                          message: 'Customer is not allowlisted for accessing this feature.',
+                          trigger: {
+                            int64Value: '2',
+                          },
+                        },
+                      ],
+                      requestId: 'dummyRequestId',
+                    },
+                  ],
+                  message:
+                    'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                },
+                results: [{}],
+              },
+              status: 200,
+            },
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                  'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

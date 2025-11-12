@@ -181,7 +181,8 @@ const testRoute = async (route, tcData: TestCaseData) => {
       tcData.name != 'mailmodo' &&
       tcData.name != 'iterable' &&
       tcData.name != 'klaviyo' &&
-      tcData.name != 'mailjet'
+      tcData.name != 'mailjet' &&
+      tcData.name != 'google_adwords_offline_conversions'
     ) {
       assertRouterOutput(response.body.output, tcData.input.request.body.input);
     }

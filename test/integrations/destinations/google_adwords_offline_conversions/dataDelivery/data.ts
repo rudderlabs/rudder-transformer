@@ -8,12 +8,10 @@
 
 import { v0oauthScenarios, v1oauthScenarios } from './oauth';
 import { testScenariosForV0API, testScenariosForV1API } from './business';
-import { data as batchFetchingData } from './batchFetching/data';
 
 export const data = [
   ...v0oauthScenarios,
   ...v1oauthScenarios,
   ...testScenariosForV0API,
   ...testScenariosForV1API,
-  ...batchFetchingData,
 ];

@@ -37,10 +37,6 @@ export class UserTransformController {
       await UserTransformService.transformRoutine(events, ctx.state.features, requestSize);
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
-    logger.debug(
-      '(User transform - router:/customTransform ):: Response from transformer',
-      ctx.response.body,
-    );
     return ctx;
   }
 
@@ -54,10 +50,6 @@ export class UserTransformController {
     );
     ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);
-    logger.debug(
-      '(User transform - router:/transformation/test ):: Response from transformer',
-      ctx.response.body,
-    );
     return ctx;
   }
 
@@ -73,10 +65,6 @@ export class UserTransformController {
       ctx.body = { error: error.message };
       ctx.status = 400;
     }
-    logger.debug(
-      '(User transform - router:/transformationLibrary/test ):: Response from transformer',
-      ctx.response.body,
-    );
     return ctx;
   }
 
@@ -99,10 +87,6 @@ export class UserTransformController {
       ctx.status = 400;
       ctx.body = { error: error.message };
     }
-    logger.debug(
-      '(User transform - router:/transformation/sethandle ):: Response from transformer',
-      ctx.request.body,
-    );
     return ctx;
   }
 
@@ -133,10 +117,6 @@ export class UserTransformController {
       ctx.status = 400;
       ctx.body = { error: err.error || err.message };
     }
-    logger.debug(
-      '(User transform - router:/extractLibs ):: Response from transformer',
-      ctx.request.body,
-    );
     return ctx;
   }
 }

@@ -28,7 +28,8 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 1. Clone this repository
 2. Setup the repository with `npm run setup`
 3. Build the service with `npm run build:clean`
-4. Start the server with `npm start`
+4. Build isloated-vm with `npm run prepare`
+5. Start the server with `npm start`
 
 ## Transformer without User Functions
 
@@ -371,16 +372,19 @@ The repository includes automated testing tools that streamline development work
 ### Prerequisites
 
 **For VS Code Integration:**
+
 - Install the [Command Variable](https://marketplace.visualstudio.com/items?itemName=rioj7.command-variable) extension
 - This extension is required for text transformation in VS Code tasks (converts multi-line selections to single arguments)
 
 **For Command Line Usage:**
+
 - Node.js and npm installed (npm includes `npx` for running packages)
 - TypeScript support (`ts-node`)
 
 ### Quick Usage
 
 **VS Code Integration (Recommended):**
+
 1. Open any test data file (e.g., `src/v0/destinations/facebook_pixel/data.ts`)
 2. Select an **entire test case object** OR at minimum the key fields:
    ```typescript
@@ -391,15 +395,16 @@ The repository includes automated testing tools that streamline development work
    ```
 3. Use Command Palette (`Cmd+Shift+P`) → "Tasks: Run Task" → Choose:
    - **"Create and run dt curl request"** - Generate curl for destination transformer API
-   - **"Create and run server curl request"** - Generate curl for server API (*processor feature only*)
+   - **"Create and run server curl request"** - Generate curl for server API (_processor feature only_)
    - **"Run component test on selected test case"** - Execute specific test case
 
 **Command Line:**
+
 ```bash
 # Generate destination transformer API curl
 npx ts-node scripts/dtApiCurlCreation.ts <test-file> "description: 'test name' feature: 'processor' module: 'destination' version: 'v1'"
 
-# Generate server API curl  
+# Generate server API curl
 npx ts-node scripts/serverApiCurlCreation.ts <test-file> "description: 'test name' feature: 'processor' module: 'destination'"
 
 # Run specific test case
@@ -415,6 +420,7 @@ npx ts-node scripts/runSingleTestCase.ts <test-file> "description: 'test name' f
 - **Support for all features**: processor, router, dataDelivery, userDeletion
 
 **Important Limitations:**
+
 - **Server curl request tool** only works with `processor` feature test cases (validates message type from request body)
 
 The tools automatically detect destination names, resolve data files, and construct appropriate URLs based on your test case configuration.

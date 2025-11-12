@@ -7,11 +7,13 @@ Implementation in **Javascript**
 ### Required Settings
 
 - **Client ID**: Required for authentication with Salesforce Marketing Cloud API
+
   - Must have appropriate permissions for the operations you want to perform
 
 - **Client Secret**: Required for authentication with Salesforce Marketing Cloud API
 
 - **Subdomain**: The subdomain of your Salesforce Marketing Cloud instance
+
   - Format: `[subdomain]` (e.g., `mycompany`)
   - This is used to construct the API endpoints
 
@@ -21,17 +23,21 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - ** Do Not Create or Update Contacts**: Enable to NOT create or update contacts in Salesforce Marketing Cloud
+
   - When enabled, Identify events will NOT create or update contacts in addition to updating data extensions
 
 - **Event to External Key Mapping**: Maps track events to data extension external keys
+
   - Format: `[event name]:[external key]`
   - Required for track events to be processed
 
 - **Event to Primary Key Mapping**: Maps track events to data extension primary keys
+
   - Format: `[event name]:[primary key]`
   - Default primary key is "Contact Key" if not specified
 
 - **Event to UUID Mapping**: Maps track events to UUID flag
+
   - Format: `[event name]:[true/false]`
   - Determines whether to use UUID as primary key
 
@@ -57,16 +63,17 @@ The SFMC destination uses several REST API endpoints to handle different types o
 
 #### Endpoints Overview
 
-| Endpoint | Purpose | Event Types | Use Cases |
-|----------|---------|-------------|-----------|
-| `auth.marketingcloudapis.com/v2/token` | Authentication | All | Obtaining access token for API calls |
-| `rest.marketingcloudapis.com/contacts/v1/contacts` | Contact Creation/Update | Identify | Creating or updating contacts in Contact Builder |
-| `rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}` | Data Extension Update | Identify, Track | Updating data in specified data extensions |
-| `rest.marketingcloudapis.com/interaction/v1/events` | Event Definition Trigger | Track | Triggering journeys via event definitions |
+| Endpoint                                                                                    | Purpose                  | Event Types     | Use Cases                                        |
+| ------------------------------------------------------------------------------------------- | ------------------------ | --------------- | ------------------------------------------------ |
+| `auth.marketingcloudapis.com/v2/token`                                                      | Authentication           | All             | Obtaining access token for API calls             |
+| `rest.marketingcloudapis.com/contacts/v1/contacts`                                          | Contact Creation/Update  | Identify        | Creating or updating contacts in Contact Builder |
+| `rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}` | Data Extension Update    | Identify, Track | Updating data in specified data extensions       |
+| `rest.marketingcloudapis.com/interaction/v1/events`                                         | Event Definition Trigger | Track           | Triggering journeys via event definitions        |
 
 #### Detailed Endpoint Information
 
 ##### Authentication Endpoint
+
 - **URL**: `https://{subdomain}.auth.marketingcloudapis.com/v2/token`
 - **Method**: POST
 - **Used For**: All event types
@@ -83,6 +90,7 @@ The SFMC destination uses several REST API endpoints to handle different types o
 - **Rate Limits**: No specific limit documented, but subject to overall API call limits
 
 ##### Contact Creation/Update Endpoint
+
 - **URL**: `https://{subdomain}.rest.marketingcloudapis.com/contacts/v1/contacts`
 - **Method**: POST
 - **Used For**: Identify events (when `createOrUpdateContacts` is enabled)
@@ -99,6 +107,7 @@ The SFMC destination uses several REST API endpoints to handle different types o
   - Limited attribute support in this implementation
 
 ##### Data Extension Update Endpoint
+
 - **URL**: `https://{subdomain}.rest.marketingcloudapis.com/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}`
 - **Method**: PUT
 - **Used For**: Identify and Track events
@@ -122,6 +131,7 @@ The SFMC destination uses several REST API endpoints to handle different types o
   - Primary key fields must exist in the data extension
 
 ##### Event Definition Trigger Endpoint
+
 - **URL**: `https://{subdomain}.rest.marketingcloudapis.com/interaction/v1/events`
 - **Method**: POST
 - **Used For**: Track events (when mapped to event definition keys)
@@ -143,11 +153,11 @@ The SFMC destination uses several REST API endpoints to handle different types o
 
 Salesforce Marketing Cloud enforces API rate limits based on your subscription level:
 
-| Edition | API Calls Per Year |
-|---------|-------------------|
-| Pro | 2 million |
-| Corporate | 6 million |
-| Enterprise | 200 million |
+| Edition    | API Calls Per Year |
+| ---------- | ------------------ |
+| Pro        | 2 million          |
+| Corporate  | 6 million          |
+| Enterprise | 200 million        |
 
 There are no specific hourly or daily limits, but it's recommended to not exceed 2,000 SOAP API calls per minute.
 
@@ -165,6 +175,7 @@ There are no specific hourly or daily limits, but it's recommended to not exceed
 ### Intermediate Calls
 
 #### Identify Flow (with Create or Update Contacts enabled)
+
 - **Supported**: Yes
 - **Use Case**: Creating or updating contacts in Salesforce Marketing Cloud
 - **Endpoint**: `/contacts/v1/contacts`
@@ -174,11 +185,7 @@ There are no specific hourly or daily limits, but it's recommended to not exceed
 // The condition that leads to intermediate identify call:
 if (category.type === 'identify' && !createOrUpdateContacts) {
   // first call to identify the contact
-  const identifyContactsPayload = responseBuilderForIdentifyContacts(
-    message,
-    subDomain,
-    authToken,
-  );
+  const identifyContactsPayload = responseBuilderForIdentifyContacts(message, subDomain, authToken);
   await handleHttpRequest(identifyContactsPayload, metadata);
   // second call to update data extension
   return responseBuilderForInsertData(
@@ -225,9 +232,11 @@ if (category.type === 'identify' && !createOrUpdateContacts) {
 ### Event Ordering
 
 #### Identify
+
 Identify events require strict event ordering as they update user profiles in data extensions. Processing events out of order could result in older data overwriting newer data.
 
 #### Track
+
 Track events that update data extensions also require strict event ordering to ensure data integrity. However, track events that trigger event definitions (journeys) are less sensitive to ordering as they typically represent discrete events.
 
 ### Data Replay Feasibility
@@ -247,15 +256,18 @@ Track events that update data extensions also require strict event ordering to e
 ### Multiplexing
 
 #### Identify Events with Create or Update Contacts Enabled
+
 - **Multiplexing**: YES
 - First API Call: `/contacts/v1/contacts` - To create or update the contact
 - Second API Call: `/hub/v1/dataevents/key:{externalKey}/rows/Contact Key:{contactKey}` - To update the data extension
 
 #### Track Events with Event Definition Mapping
+
 - **Multiplexing**: NO
 - Single API Call: `/interaction/v1/events` - To trigger the event definition
 
 #### Track Events with Data Extension Updates
+
 - **Multiplexing**: NO
 - Single API Call: `/hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}` - To update the data extension
 
@@ -281,6 +293,7 @@ Salesforce Marketing Cloud uses REST API v1 for the endpoints used by this desti
 The RETL (Reverse ETL) flow is a specialized path for handling events that have been mapped to the destination through RudderStack's Reverse ETL feature. This flow is triggered when the message contains `context.mappedToDestination` set to a truthy value.
 
 When a message is received with the `mappedToDestination` flag:
+
 1. The destination extracts destination-specific external ID information
 2. Currently, only "data extension" is supported as an object type
 3. The destination constructs a PUT request to update the Data Extension row

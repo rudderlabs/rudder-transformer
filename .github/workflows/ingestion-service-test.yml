@@ -25,13 +25,18 @@ jobs:
       TRANSFORMER_DOCKER_USERNAME: rudderlabs
       TRANSFORMER_DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - name: 'Clone ingestion service'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-ingestion-svc.git
       - name: Set up Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
         with:
           go-version-file: 'rudder-ingestion-svc/go.mod'
       - name: 'Update Go module to use current branch'

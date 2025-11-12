@@ -8,35 +8,35 @@ This document outlines the business logic and mappings used in the Amplitude des
 
 ### Common Field Mappings
 
-| RudderStack Field | Amplitude Field | Notes |
-|-------------------|-----------------|-------|
-| `userId` | `user_id` | Required if device_id is not present |
-| `anonymousId` | `device_id` | Required if user_id is not present |
-| `messageId` | `insert_id` | Used for deduplication on Amplitude's side |
-| `timestamp` | `time` | Converted to milliseconds if needed |
-| `context.ip` | `ip` | Used for geolocation |
-| `context.library` | `library` | Set to "rudderstack" |
+| RudderStack Field | Amplitude Field | Notes                                      |
+| ----------------- | --------------- | ------------------------------------------ |
+| `userId`          | `user_id`       | Required if device_id is not present       |
+| `anonymousId`     | `device_id`     | Required if user_id is not present         |
+| `messageId`       | `insert_id`     | Used for deduplication on Amplitude's side |
+| `timestamp`       | `time`          | Converted to milliseconds if needed        |
+| `context.ip`      | `ip`            | Used for geolocation                       |
+| `context.library` | `library`       | Set to "rudderstack"                       |
 
 ### Device and OS Information
 
-| RudderStack Field | Amplitude Field | Notes |
-|-------------------|-----------------|-------|
-| `context.os.name` | `os_name` | For web, extracted from user agent |
-| `context.os.version` | `os_version` | For web, extracted from user agent |
-| `context.device.model` | `device_model` | For web, extracted from user agent |
-| `context.device.manufacturer` | `device_manufacturer` | For web, extracted from user agent |
-| `context.device.type` | `platform` | For web, set to "Web" |
-| `context.device.brand` | `device_brand` | Only included if mapDeviceBrand is enabled |
+| RudderStack Field             | Amplitude Field       | Notes                                      |
+| ----------------------------- | --------------------- | ------------------------------------------ |
+| `context.os.name`             | `os_name`             | For web, extracted from user agent         |
+| `context.os.version`          | `os_version`          | For web, extracted from user agent         |
+| `context.device.model`        | `device_model`        | For web, extracted from user agent         |
+| `context.device.manufacturer` | `device_manufacturer` | For web, extracted from user agent         |
+| `context.device.type`         | `platform`            | For web, set to "Web"                      |
+| `context.device.brand`        | `device_brand`        | Only included if mapDeviceBrand is enabled |
 
 ### Location Information
 
-| RudderStack Field | Amplitude Field | Notes |
-|-------------------|-----------------|-------|
-| `context.location.latitude` | `location_lat` | Used for geolocation |
-| `context.location.longitude` | `location_lng` | Used for geolocation |
-| `context.location.city` | `city` | Used for geolocation |
-| `context.location.country` | `country` | Used for geolocation |
-| `context.location.region` | `region` | Used for geolocation |
+| RudderStack Field            | Amplitude Field | Notes                |
+| ---------------------------- | --------------- | -------------------- |
+| `context.location.latitude`  | `location_lat`  | Used for geolocation |
+| `context.location.longitude` | `location_lng`  | Used for geolocation |
+| `context.location.city`      | `city`          | Used for geolocation |
+| `context.location.country`   | `country`       | Used for geolocation |
+| `context.location.region`    | `region`        | Used for geolocation |
 
 ## API Endpoints and Request Flow
 
@@ -46,18 +46,21 @@ This document outlines the business logic and mappings used in the Amplitude des
 **Documentation**: [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
 
 **Request Flow**:
+
 1. Identify events are sent to the `/2/httpapi` endpoint
 2. The event_type is set to `$identify` (special Amplitude identifier)
 3. User traits are mapped to user_properties in the Amplitude payload
 4. If Enhanced User Operations is enabled, user properties are processed with operations like $set, $setOnce, etc.
 
 **Transformations**:
+
 1. User traits are mapped to Amplitude user properties
 2. The userId is mapped to Amplitude's user_id
 3. The anonymousId is mapped to Amplitude's device_id
 4. Device and OS information is extracted from context and mapped to Amplitude fields
 
 **Example Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -84,18 +87,21 @@ This document outlines the business logic and mappings used in the Amplitude des
 **Documentation**: [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
 
 **Request Flow**:
+
 1. Track events are sent to the `/2/httpapi` endpoint
 2. The event name is used as the event_type in Amplitude
 3. Event properties are included as event_properties in Amplitude
 4. If the event has revenue, special revenue handling is applied
 
 **Transformations**:
+
 1. Event name is preserved as the Amplitude event_type
 2. Event properties are included as Amplitude event_properties
 3. User traits (if present) are included as user_properties
 4. Device and OS information is extracted from context
 
 **Example Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -123,6 +129,7 @@ This document outlines the business logic and mappings used in the Amplitude des
 **Documentation**: [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
 
 **Request Flow**:
+
 1. Page/Screen events are sent to the `/2/httpapi` endpoint
 2. The event name is determined based on configuration:
    - For Page events: "Viewed [Category] [Name] Page" or custom name
@@ -130,10 +137,12 @@ This document outlines the business logic and mappings used in the Amplitude des
 3. Page/Screen properties are included as event_properties
 
 **Transformations**:
+
 - Page events: Properties like title, path, url, referrer are mapped to event_properties
 - Screen events: The screen name is mapped to event_properties.screen_name
 
 **Example Page Event Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -156,6 +165,7 @@ This document outlines the business logic and mappings used in the Amplitude des
 ```
 
 **Example Screen Event Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -179,22 +189,26 @@ This document outlines the business logic and mappings used in the Amplitude des
 **Primary Endpoint**: `/2/httpapi`
 **Secondary Endpoint**: `/groupidentify`
 **Documentation**:
+
 - [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
 - [Amplitude Group Identify API](https://www.docs.developers.amplitude.com/analytics/apis/group-identify-api/)
 
 **Request Flow**:
+
 1. Group events are sent to the `/2/httpapi` endpoint with event_type set to `$identify`
 2. Group information is added to the `groups` object in the payload
 3. Group information is also added to user_properties
 4. A separate request is made to the `/groupidentify` endpoint to update group properties
 
 **Transformations**:
+
 1. Group type and value are determined from configuration or event properties
 2. Group information is added to the `groups` object
 3. Group information is also added to user_properties
 4. Group traits are sent as group properties to the `/groupidentify` endpoint
 
 **Example HTTP API Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -217,6 +231,7 @@ This document outlines the business logic and mappings used in the Amplitude des
 ```
 
 **Example Group Identify Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -240,17 +255,20 @@ This document outlines the business logic and mappings used in the Amplitude des
 **Documentation**: [Amplitude HTTP API V2](https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/)
 
 **Request Flow**:
+
 1. Alias events are sent to the `/2/httpapi` endpoint
 2. The userId is mapped to global_user_id
 3. The previousId is mapped to user_id
 4. If unmap is set in integrations.Amplitude, special handling is applied
 
 **Transformations**:
+
 1. userId is mapped to global_user_id
 2. previousId is mapped to user_id
 3. If unmap is set, global_user_id is removed and user_id is set to the unmap value
 
 **Example Payload**:
+
 ```json
 {
   "api_key": "YOUR_API_KEY",
@@ -279,6 +297,7 @@ Track events with revenue property receive special handling:
 4. If trackRevenuePerProduct is enabled, each product generates a separate revenue event
 
 **Example Transformation**:
+
 ```javascript
 // Original event
 {
@@ -319,6 +338,7 @@ E-commerce events receive special handling:
 3. If trackRevenuePerProduct is enabled, revenue is tracked for each product
 
 **Example Transformation**:
+
 ```javascript
 // Original event
 {
@@ -392,6 +412,7 @@ When Enhanced User Operations is enabled, user properties are processed with ope
 6. Other properties are added to $set operation
 
 **Example Transformation**:
+
 ```javascript
 // Configuration
 {
@@ -453,6 +474,7 @@ When Enhanced User Operations is enabled, user properties are processed with ope
 When `integrations.Amplitude.skipUserPropertiesSync` is set to true, the `$skip_user_properties_sync` flag is added to the payload. This prevents Amplitude from syncing user properties across projects.
 
 **Example**:
+
 ```javascript
 // Original event
 {
@@ -494,6 +516,7 @@ User deletion requests are processed as follows:
 4. Requests include `requester: "RudderStack"` and `ignore_invalid_id: "true"`
 
 **Example Request**:
+
 ```json
 {
   "user_ids": ["user123", "user456", "user789"],

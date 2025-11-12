@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Not Supported**
 
 The MoEngage destination does not support RETL functionality. Evidence:
+
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -14,19 +15,24 @@ The MoEngage destination does not support RETL functionality. Evidence:
 Since RETL is not supported (no warehouse source type), the following analysis applies:
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Not applicable (no RETL support)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Not applicable as RETL is not supported.
 
 ## Alternative Approaches for Warehouse Data
@@ -53,6 +59,7 @@ Transform warehouse data into events using other tools and send through supporte
 ### 2. Direct API Integration
 
 Use MoEngage's APIs directly from your warehouse:
+
 - **Bulk Import API**: For large-scale data imports
 - **Track User API**: For user attribute updates
 - **Create Event API**: For event data ingestion
@@ -67,6 +74,7 @@ Implement custom solutions to extract data from warehouse and send to MoEngage A
 The MoEngage destination processes all events through the standard event stream logic:
 
 ### Supported Event Types
+
 - **Identify**: User profile updates via Track User API
 - **Track**: Event tracking via Create Event API
 - **Alias**: User identity merging
@@ -91,6 +99,7 @@ The MoEngage destination does not support RETL functionality. The destination:
 **Note**: For warehouse-based data activation, consider using MoEngage's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
 
 ### Supported Source Types
+
 ```json
 "supportedSourceTypes": [
   "android", "ios", "web", "unity", "amp", "cloud",

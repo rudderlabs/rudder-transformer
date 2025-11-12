@@ -276,14 +276,19 @@ const ProxyRequest = async (request) => {
     }
   }
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const { httpResponse } = await handleHttpRequest('constructor', requestBody, {
-    feature: 'proxy',
-    destType: 'google_adwords_offline_conversions',
-    endpointPath: `/proxy`,
-    requestMethod: 'POST',
-    module: 'dataDelivery',
-    metadata,
-  }, true);
+  const { httpResponse } = await handleHttpRequest(
+    'constructor',
+    requestBody,
+    {
+      feature: 'proxy',
+      destType: 'google_adwords_offline_conversions',
+      endpointPath: `/proxy`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
+      metadata,
+    },
+    true,
+  );
   return httpResponse;
 };
 

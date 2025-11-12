@@ -20,7 +20,7 @@ This integration enables retailers to sync customer profiles, track user behavio
   - Must be kept secure as it's marked as a secret key
   - Pattern validation: `(^\\{\\{.*\\|\\|(.*)\\}\\}$)|(^env[.].+)|^(.{1,100})$`
   - Maximum length: 100 characters
-  
+
 ### Connection Mode
 
 - **Supported**: Cloud mode only
@@ -101,11 +101,12 @@ This integration enables retailers to sync customer profiles, track user behavio
 
 ### Rate Limits
 
-| Endpoint | Event Types | Rate Limit | Batch Limits | Description |
-|----------|-------------|------------|--------------|-------------|
+| Endpoint                                       | Event Types                                                                                                                     | Rate Limit              | Batch Limits                                   | Description                                                                                                                                            |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `https://api.bluecore.app/api/track/mobile/v1` | `customer_patch`, `viewed_product`, `search`, `add_to_cart`, `remove_from_cart`, `wishlist`, `purchase`, `optin`, `unsubscribe` | Not publicly documented | No batching support - events sent individually | Bluecore Events/Tracking API for customer data collection and event tracking. Uses namespace-based authentication. Standard HTTP payload limits apply. |
 
 **Best Practices**:
+
 - Implement reasonable delays between requests to avoid overwhelming the API
 - Monitor response times and error rates to detect potential rate limiting
 - Use event filtering to reduce unnecessary volume
@@ -150,7 +151,6 @@ RudderStack provides default mappings for common e-commerce events:
 | `optin`                   | `optin`                  | Direct subscription event                     |
 | `unsubscribe`             | `unsubscribe`            | Direct subscription event                     |
 | `subscription_event`      | `optin` or `unsubscribe` | Mapped based on `channelConsents.email` value |
-
 
 ## Event Mapping Configuration
 

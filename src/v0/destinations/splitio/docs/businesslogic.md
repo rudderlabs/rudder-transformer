@@ -22,12 +22,14 @@ This document details the business logic and field mappings for the Split.io des
 **Purpose**: Track user identification and profile updates
 
 **Field Mappings**:
+
 - `eventTypeId`: Extracted from `traits.eventTypeId` or defaults to `identify`
 - `key`: Mapped from `userId` (required)
 - `trafficTypeName`: Extracted from `traits.trafficTypeName` or `context.traits.trafficTypeName`
 - `properties`: All traits except reserved fields
 
 **Business Logic**:
+
 ```javascript
 case EventType.IDENTIFY:
   traits = getFieldValueFromMessage(message, 'traits');
@@ -36,6 +38,7 @@ case EventType.IDENTIFY:
 ```
 
 **Reserved Fields** (excluded from properties):
+
 - `eventTypeId`
 - `environmentName`
 - `trafficTypeName`
@@ -48,11 +51,13 @@ case EventType.IDENTIFY:
 #### Track, Page, and Screen Events
 
 **Purpose**:
+
 - **Track Events**: Track custom events and user actions
 - **Page Events**: Track page views and navigation
 - **Screen Events**: Track screen views in mobile applications
 
 **Field Mappings**:
+
 - `eventTypeId`:
   - **Track**: Extracted from `event` field (no prefix modification)
   - **Page**: Extracted from `name` field, prefixed with `Viewed_` and suffixed with `_page`
@@ -63,6 +68,7 @@ case EventType.IDENTIFY:
 - `properties`: All event properties except reserved fields
 
 **Business Logic** (Shared Implementation):
+
 ```javascript
 case EventType.TRACK:
 case EventType.PAGE:
@@ -80,6 +86,7 @@ case EventType.SCREEN:
 ```
 
 **Example Transformations**:
+
 - **Track Event**:
   - Input: `event: "button_click"`
   - Output: `eventTypeId: "button_click"` (no modification)
@@ -95,11 +102,13 @@ case EventType.SCREEN:
 **Purpose**: Track group-related events and associations
 
 **Field Mappings**:
+
 - `eventTypeId`: Extracted from `traits.eventTypeId` or defaults to group identifier
 - `key`: Mapped from `userId` (required)
 - `properties`: All group traits except reserved fields
 
 **Business Logic**:
+
 ```javascript
 case EventType.GROUP:
   if (message.traits) {
@@ -161,6 +170,7 @@ The field mappings are defined in `src/v0/destinations/splitio/data/EventConfig.
 Nested objects in properties are flattened using dot notation:
 
 **Input**:
+
 ```json
 {
   "property1": {
@@ -175,6 +185,7 @@ Nested objects in properties are flattened using dot notation:
 ```
 
 **Output**:
+
 ```json
 {
   "property1.property2": 1,
@@ -211,6 +222,7 @@ function populateOutputProperty(inputObject) {
 **Split.io Official Requirements**: `/^[a-zA-Z0-9][-_\.a-zA-Z0-9]{0,62}$/` (allows up to 63 characters)
 
 **Rules**:
+
 - Must start with a letter or number
 - Can contain letters, numbers, hyphens, underscores, or periods
 - **Official Limit**: Maximum length of 63 characters (per Split.io documentation)
@@ -218,6 +230,7 @@ function populateOutputProperty(inputObject) {
 - Spaces are automatically replaced with underscores
 
 **Examples**:
+
 - ✅ Valid: `user_signup`, `page_view`, `button.click`
 - ❌ Invalid: `_invalid_start`, `toolongofaneventtypeidthatexceedsthemaximumlengthof63charactersallowed`
 

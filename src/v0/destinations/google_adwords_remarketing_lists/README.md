@@ -7,6 +7,7 @@ Implementation in **Javascript**
 ### Required Settings
 
 - **Customer ID**: The Google Ads customer ID for the account
+
   - Format: Numeric string (e.g., "1234567890")
   - Hyphens are automatically removed during processing
 
@@ -21,29 +22,36 @@ Implementation in **Javascript**
 ### Optional Settings
 
 - **Sub Account**: Enable if using a manager account to access sub-accounts
+
   - When enabled, **Login Customer ID** becomes required
   - Login Customer ID: The manager account customer ID
 
 - **List ID**: Target user list ID (required for cloud mode)
+
   - Can be provided via destination config or event properties
 
 - **Audience ID**: Alternative parameter name for List ID
+
   - Used in VDM v2 flows and some configurations
   - Functionally equivalent to List ID
 
 - **User Schema**: Defines which user identifiers to use
+
   - Options: `email`, `phone`, `addressInfo`
   - Default: `["email"]`
 
 - **Type of List**: Specifies the list type
+
   - Options: `General`, `userID`, `mobileDeviceID`
   - Default: `General`
 
 - **Hash Required**: Whether to hash user identifiers
+
   - Default: `true`
   - When enabled, email and phone numbers are SHA-256 hashed
 
 - **User Data Consent**: Consent status for ad user data
+
   - Options: `UNSPECIFIED`, `UNKNOWN`, `GRANTED`, `DENIED`
   - Default: `UNSPECIFIED`
 
@@ -74,13 +82,14 @@ Implementation in **Javascript**
 
 The Google Ads API enforces the following limits for offline user data jobs:
 
-| Operation Type | Rate Limit | Batch Limits | Description |
-|---------------|------------|--------------|-------------|
-| Create Offline User Data Job | Standard API limits | - | Creates a new job for user list operations |
-| Add Operations | Standard API limits | 100,000 user identifiers total | Adds user data operations to a job |
-| Run Job | Standard API limits | - | Executes the job with all operations |
+| Operation Type               | Rate Limit          | Batch Limits                   | Description                                |
+| ---------------------------- | ------------------- | ------------------------------ | ------------------------------------------ |
+| Create Offline User Data Job | Standard API limits | -                              | Creates a new job for user list operations |
+| Add Operations               | Standard API limits | 100,000 user identifiers total | Adds user data operations to a job         |
+| Run Job                      | Standard API limits | -                              | Executes the job with all operations       |
 
 **Important Notes:**
+
 - Jobs may take 6+ hours to complete processing
 - Daily API operation limits apply based on developer token access level
 - Basic access: 15,000 API operations per day
@@ -89,6 +98,7 @@ The Google Ads API enforces the following limits for offline user data jobs:
 - Concurrent modification errors may occur with simultaneous updates
 
 **Error Handling:**
+
 - `CONCURRENT_MODIFICATION` errors are retried with 500 status
 - Partial failure errors are handled gracefully
 - Invalid user identifiers are logged and skipped
@@ -101,11 +111,14 @@ The Google Ads API enforces the following limits for offline user data jobs:
 - **Use Case**: Three-step process for uploading user data to Customer Match lists
 
 #### Offline User Data Job Flow
+
 1. **Create Job**: `/customers/{customerId}/offlineUserDataJobs:create`
+
    - Creates a new offline user data job
    - Specifies the target user list and consent information
 
 2. **Add Operations**: `/customers/{customerId}/offlineUserDataJobs/{jobId}:addOperations`
+
    - Adds user identifier operations (create/remove) to the job
    - Supports batching of operations
 
@@ -170,6 +183,7 @@ The Google Ads API enforces the following limits for offline user data jobs:
 ### Event Ordering
 
 #### Audience List Events
+
 **Event ordering is NOT strictly required** for Customer Match user list operations. Google Ads Customer Match is designed to handle:
 
 - **Add Operations**: Users are added to the list regardless of order
@@ -179,16 +193,19 @@ The Google Ads API enforces the following limits for offline user data jobs:
 The destination processes operations in batches, and Google Ads applies the final state based on the most recent job execution.
 
 #### Record Events (VDM v2)
+
 **Event ordering is NOT strictly required** for record-based operations as they follow the same Customer Match principles.
 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes, missing data can be replayed safely
 - **Reason**: Customer Match operations are idempotent - adding existing users or removing non-existent users doesn't cause issues
 - **Recommendation**: Safe to replay missing audience list or record events
 
 #### Already Delivered Data Replay
+
 - **Feasible**: Yes, with considerations
 - **Add Operations**: Replaying add operations is safe as Google Ads handles duplicates
 - **Remove Operations**: Replaying remove operations may unintentionally remove users that were re-added
@@ -202,6 +219,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 #### Multiplexing Scenarios
 
 1. **Audience List Events**:
+
    - **Multiplexing**: YES (when both add and remove operations are present)
    - Single event with both add AND remove operations creates two separate offline user data jobs
    - Single event with only add OR only remove operations creates one offline user data job
@@ -215,10 +233,12 @@ The destination processes operations in batches, and Google Ads applies the fina
 ## Version Information
 
 ### Current Version
+
 - **Google Ads API Version**: v19
 - **Endpoint Base**: `https://googleads.googleapis.com/v19/customers`
 
 ### Version Deprecation
+
 - Google Ads API follows a regular deprecation cycle
 - Typically maintains 3-4 versions simultaneously
 - Older versions are deprecated approximately 12 months after new version release
@@ -226,6 +246,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 - **Upgrade Path**: When new versions are released, update the `API_VERSION` constant in `config.js`
 
 ### Breaking Changes
+
 - **NEEDS REVIEW**: Specific breaking changes between API versions require investigation
 - **Migration**: Version upgrades may require code changes for new field requirements
 - **Testing**: Thoroughly test with new API versions before production deployment
@@ -233,6 +254,7 @@ The destination processes operations in batches, and Google Ads applies the fina
 ## Documentation Links
 
 ### Google Ads API Documentation
+
 - [Customer Match Overview](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/get-started)
 - [Manage Customer Lists](https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/manage)
 - [Offline User Data Jobs](https://developers.google.com/google-ads/api/reference/rpc/v19/OfflineUserDataJobService)
@@ -249,23 +271,30 @@ For business logic and mappings information, please refer to [docs/businesslogic
 ## FAQ
 
 ### Why do jobs take so long to complete?
+
 Google Ads offline user data jobs are processed asynchronously and may take 6+ hours to complete. This is a limitation of the Google Ads API, not the RudderStack integration. The job status can be monitored through the Google Ads API.
 
 ### Can I use the same list for multiple campaigns?
+
 Yes, once a Customer Match list is created and populated, it can be used for targeting across multiple campaigns and ad groups within the same Google Ads account.
 
 ### What happens if I send duplicate user identifiers?
+
 Google Ads automatically handles duplicate user identifiers. Sending the same user multiple times will not create duplicates in the list.
 
 ### How do I handle consent requirements?
+
 Configure the `userDataConsent` and `personalizationConsent` settings according to your privacy compliance requirements. These settings are passed to Google Ads with each job.
 
 ### Why are some users not being added to the list?
+
 Common reasons include:
+
 - Invalid email format or phone number format
 - Users not matching Google's Customer Match requirements
 - Insufficient user data for matching
 - Privacy settings preventing matching
 
 ### Can I remove all users from a list?
+
 Yes, use the `remove_all` operation in an offline user data job. This operation must be the first operation in the job if other operations are included.

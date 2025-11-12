@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Not Supported**
 
 The Facebook Pixel destination does not support RETL functionality. Evidence:
+
 - `supportedSourceTypes` does not include `warehouse`
 - No warehouse source type support in configuration
 - RETL requires warehouse source type support
@@ -14,19 +15,24 @@ The Facebook Pixel destination does not support RETL functionality. Evidence:
 Since RETL is not supported (no warehouse source type), the following analysis applies:
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Not applicable (no RETL support)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Not applicable as RETL is not supported.
 
 ## Alternative Approaches for Warehouse Data
@@ -58,6 +64,7 @@ Transform warehouse data into events using other tools and send through supporte
 ### 2. Direct API Integration
 
 Use Facebook's Conversions API directly from your warehouse:
+
 - **Conversions API**: For server-side event tracking
 - **Offline Events API**: For offline conversion tracking
 - **Custom Audiences API**: For audience management
@@ -71,6 +78,7 @@ Implement custom solutions to extract data from warehouse and send to Facebook A
 The Facebook Pixel destination processes all events through the standard event stream logic:
 
 ### Supported Event Types
+
 - **Identify**: User identification via Conversions API
 - **Track**: Event tracking via Conversions API
 - **Page**: Page view events (converted to track events)
@@ -126,6 +134,7 @@ The Facebook Pixel destination does not support RETL functionality. The destinat
 **Note**: For warehouse-based data activation, consider using Facebook's direct APIs or other ETL solutions to transform warehouse data into events that can be sent through supported sources.
 
 ### Supported Source Types
+
 ```json
 "supportedSourceTypes": [
   "android", "ios", "web", "unity", "amp", "cloud",
@@ -136,6 +145,7 @@ The Facebook Pixel destination does not support RETL functionality. The destinat
 **Note**: `warehouse` is not included in supported source types, confirming no RETL support.
 
 ### Supported Message Types
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["identify", "page", "screen", "track"],
@@ -146,6 +156,7 @@ The Facebook Pixel destination does not support RETL functionality. The destinat
 ```
 
 **Limitations**:
+
 - No warehouse source type support
 - No VDM v1 or VDM v2 capabilities
 - Limited to standard event stream processing

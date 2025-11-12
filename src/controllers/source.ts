@@ -8,7 +8,6 @@ import { SourceInputV2 } from '../types';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
-    logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const input = ctx.request.body as SourceInputV2[];
     const { source }: { source: string } = ctx.params;
@@ -32,10 +31,6 @@ export class SourceController {
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Source-Transform):: Response from transformer::', {
-      srcResponse: ctx.body,
-      source,
-    });
     return ctx;
   }
 }

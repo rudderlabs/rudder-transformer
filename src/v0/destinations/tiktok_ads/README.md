@@ -28,6 +28,7 @@ TikTok Ads destination enables you to send event data from RudderStack to TikTok
 ### Optional Settings
 
 - **Access Token**: Required for cloud mode operations
+
   - TikTok Long Term Access Token for server-side event tracking
   - Example format: `1234ac663758946dfeXXXX20b394bbac611b371f7`
   - Must have appropriate permissions for the operations you want to perform
@@ -35,11 +36,13 @@ TikTok Ads destination enables you to send event data from RudderStack to TikTok
   - **Validation**: The destination will throw a `ConfigurationError` if missing when processing cloud mode events
 
 - **Event Version**: Choose between Events 1.0 and Events 2.0
+
   - **Events 2.0** (v2): Recommended, default option with enhanced features
   - **Events 1.0** (v1): Legacy version, will be deprecated by H2'2024
   - Default: v2
 
 - **Hash User Properties**: Enable automatic hashing of user data
+
   - Automatically hashes email, phone, and external_id using SHA-256
   - Only applicable for cloud mode
   - Default: true
@@ -62,6 +65,7 @@ TikTok Ads destination enables you to send event data from RudderStack to TikTok
 ### Event Filtering (Device Mode Only)
 
 - **Event Filtering Option**: Configure which events to send
+
   - **Disable**: Send all events (default)
   - **Allowlist**: Only send specified events
   - **Denylist**: Send all events except specified ones
@@ -78,6 +82,7 @@ TikTok Ads destination enables you to send event data from RudderStack to TikTok
 ### Consent Management
 
 - **Consent Management Provider**: Choose consent management solution
+
   - **OneTrust** (default), **Ketch**, **iubenda**, or **Custom**
   - For custom provider, specify resolution strategy (AND/OR logic)
 
@@ -109,41 +114,42 @@ TikTok Ads destination enables you to send event data from RudderStack to TikTok
 
 ### API Endpoints
 
-| Version | Single Event Endpoint | Batch Endpoint | Max Batch Size |
-|---------|----------------------|----------------|----------------|
-| Events 1.0 (v1) | `/open_api/v1.3/pixel/track/` | `/open_api/v1.3/pixel/batch/` | 50 |
-| Events 2.0 (v2) | `/open_api/v1.3/event/track/` | `/open_api/v1.3/event/track/` | 1000 |
+| Version         | Single Event Endpoint         | Batch Endpoint                | Max Batch Size |
+| --------------- | ----------------------------- | ----------------------------- | -------------- |
+| Events 1.0 (v1) | `/open_api/v1.3/pixel/track/` | `/open_api/v1.3/pixel/batch/` | 50             |
+| Events 2.0 (v2) | `/open_api/v1.3/event/track/` | `/open_api/v1.3/event/track/` | 1000           |
 
 **Note**: Events 2.0 uses the same endpoint for both single events and batch requests. The API automatically handles batching based on the request payload structure.
-
 
 ### Rate Limits
 
 The TikTok Business API enforces rate limits on all endpoints. The following table shows the official rate limits for both Events 1.0 and Events 2.0 endpoints across all subscription plans:
 
-| Endpoint        | Plan     | QPS    | QPM      | QPD         |
-|----------------|----------|--------|----------|-------------|
-| `/event/track/` | Basic    | 1,000  | 600,000  | 86,400,000  |
-| (Events 2.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
-|                | Premium  | 1,000  | 600,000  | 86,400,000  |
-|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
-| `/pixel/track/` | Basic    | 1,000  | 600,000  | 86,400,000  |
-| (Events 1.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
-|                | Premium  | 1,000  | 600,000  | 86,400,000  |
-|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
-| `/pixel/batch/` | Basic    | 1,000  | 600,000  | 86,400,000  |
-| (Events 1.0)    | Advanced | 1,000  | 600,000  | 86,400,000  |
-|                | Premium  | 1,000  | 600,000  | 86,400,000  |
-|                | Ultimate | 1,000  | 600,000  | 86,400,000  |
+| Endpoint        | Plan     | QPS   | QPM     | QPD        |
+| --------------- | -------- | ----- | ------- | ---------- |
+| `/event/track/` | Basic    | 1,000 | 600,000 | 86,400,000 |
+| (Events 2.0)    | Advanced | 1,000 | 600,000 | 86,400,000 |
+|                 | Premium  | 1,000 | 600,000 | 86,400,000 |
+|                 | Ultimate | 1,000 | 600,000 | 86,400,000 |
+| `/pixel/track/` | Basic    | 1,000 | 600,000 | 86,400,000 |
+| (Events 1.0)    | Advanced | 1,000 | 600,000 | 86,400,000 |
+|                 | Premium  | 1,000 | 600,000 | 86,400,000 |
+|                 | Ultimate | 1,000 | 600,000 | 86,400,000 |
+| `/pixel/batch/` | Basic    | 1,000 | 600,000 | 86,400,000 |
+| (Events 1.0)    | Advanced | 1,000 | 600,000 | 86,400,000 |
+|                 | Premium  | 1,000 | 600,000 | 86,400,000 |
+|                 | Ultimate | 1,000 | 600,000 | 86,400,000 |
 
-**Legend**: 
+**Legend**:
+
 - **QPS**: Queries Per Second
-- **QPM**: Queries Per Minute  
+- **QPM**: Queries Per Minute
 - **QPD**: Queries Per Day
 
 #### Rate Limit Implementation
 
 TikTok's rate limiting is applied at multiple levels:
+
 - **Per App ID**: Rate limits are enforced per TikTok app ID
 - **Per Access Token**: Limits may vary based on access token permissions
 - **Dynamic Limits**: Actual limits may vary based on system load and usage patterns
@@ -152,12 +158,12 @@ TikTok's rate limiting is applied at multiple levels:
 
 The destination implements rate limit handling through specific error codes:
 
-| Error Code | Description | Handling |
-|------------|-------------|----------|
-| 40100 | Rate limit exceeded | Throws `ThrottledError` for retry logic |
-| 40001 | Authentication/Authorization error | Throws `AbortedError` (non-retryable) |
-| 40002 | Request validation error | Throws `AbortedError` (non-retryable) |
-| 0, 20001 | Success codes | Request processed successfully |
+| Error Code | Description                        | Handling                                |
+| ---------- | ---------------------------------- | --------------------------------------- |
+| 40100      | Rate limit exceeded                | Throws `ThrottledError` for retry logic |
+| 40001      | Authentication/Authorization error | Throws `AbortedError` (non-retryable)   |
+| 40002      | Request validation error           | Throws `AbortedError` (non-retryable)   |
+| 0, 20001   | Success codes                      | Request processed successfully          |
 
 When the API returns error code `40100`, the destination automatically triggers retry logic with exponential backoff to handle temporary rate limit violations.
 
@@ -200,6 +206,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 #### Event Name Mapping
 
 - **Built-in Mappings**: Supports automatic mapping of common e-commerce events
+
   - `product added to wishlist` → `AddToWishlist`
   - `product added` → `AddToCart`
   - `checkout started` → `InitiateCheckout`
@@ -240,11 +247,13 @@ When the API returns error code `40100`, the destination automatically triggers 
 #### Version-Specific Features
 
 **Events 1.0 (v1)**:
+
 - Legacy pixel-based tracking
 - Limited user data fields
 - 50 events per batch limit
 
 **Events 2.0 (v2)**:
+
 - Enhanced event tracking with more user data fields
 - Support for additional user properties (first_name, last_name, city, country, state, zip_code)
 - Higher batch limits (1000 events)
@@ -256,10 +265,12 @@ When the API returns error code `40100`, the destination automatically triggers 
 #### Required Fields
 
 **Configuration Level**:
+
 - **Pixel Code**: Required for all operations
 - **Access Token**: Required for cloud mode operations
 
 **Message Level**:
+
 - **Event Type**: Must be `track` (only supported message type for cloud mode)
 - **Event Name**: Required and must be a non-empty string
 
@@ -299,6 +310,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 ### Event Ordering
 
 #### Track Events
+
 - **Ordering Required**: Recommended but not strictly enforced by TikTok
 - **Timestamp Handling**:
   - **Events 1.0 (v1)**: Uses `timestamp` field in ISO format
@@ -307,6 +319,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 - **Note**: Events may get out of order due to `test_event_code` properties (since test events bypass batching), but the destination ensures proper ordering for regular events before sending to TikTok
 
 #### Deduplication Support
+
 - **Event ID**: TikTok supports event deduplication using `event_id` parameter
 - **Mechanism**: When the same `event_id` is sent multiple times, TikTok will deduplicate and count only one event
 - **Use Case**: Enables safe replay of events and prevents duplicate counting when using both Pixel and Events API
@@ -314,11 +327,13 @@ When the API returns error code `40100`, the destination automatically triggers 
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes, for track events
 - **Reason**: TikTok's timestamp-based processing allows sending historical events
 - **Best Practice**: Include proper `event_time` (v2) or `timestamp` (v1) to maintain chronological order
 
 #### Already Delivered Data Replay
+
 - **Feasible**: Yes, with proper event deduplication
 - **Requirements**:
   - Use consistent `event_id` for the same logical event
@@ -334,6 +349,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 #### Multiplexing Scenarios
 
 1. **Events to Standard Mapping**:
+
    - **Multiplexing**: YES
    - **Condition**: When a single event is mapped to multiple TikTok standard events via `eventsToStandard` configuration
    - **Example**: One `addToCart` event mapped to both `CompletePayment` and `Download` events
@@ -355,16 +371,16 @@ When the API returns error code `40100`, the destination automatically triggers 
 
 ### Version Comparison
 
-| Feature | Events 1.0 (v1) | Events 2.0 (v2) |
-|---------|------------------|------------------|
-| **API Endpoint** | `/open_api/v1.3/pixel/track/` | `/open_api/v1.3/event/track/` |
-| **Batch Endpoint** | `/open_api/v1.3/pixel/batch/` | `/open_api/v1.3/event/track/` |
-| **Max Batch Size** | 50 events | 1000 events |
-| **Timestamp Field** | `timestamp` (ISO format) | `event_time` (Unix seconds, required) |
-| **User Data Fields** | Basic (email, phone, external_id) | Extended (includes first_name, last_name, city, country, state, zip_code) |
-| **Data Structure** | Pixel-based format | Enhanced event format |
-| **Content Type Default** | `product_group` | `product` |
-| **Limited Data Use** | Not supported | Supported via `limited_data_use` parameter |
+| Feature                  | Events 1.0 (v1)                   | Events 2.0 (v2)                                                           |
+| ------------------------ | --------------------------------- | ------------------------------------------------------------------------- |
+| **API Endpoint**         | `/open_api/v1.3/pixel/track/`     | `/open_api/v1.3/event/track/`                                             |
+| **Batch Endpoint**       | `/open_api/v1.3/pixel/batch/`     | `/open_api/v1.3/event/track/`                                             |
+| **Max Batch Size**       | 50 events                         | 1000 events                                                               |
+| **Timestamp Field**      | `timestamp` (ISO format)          | `event_time` (Unix seconds, required)                                     |
+| **User Data Fields**     | Basic (email, phone, external_id) | Extended (includes first_name, last_name, city, country, state, zip_code) |
+| **Data Structure**       | Pixel-based format                | Enhanced event format                                                     |
+| **Content Type Default** | `product_group`                   | `product`                                                                 |
+| **Limited Data Use**     | Not supported                     | Supported via `limited_data_use` parameter                                |
 
 ### Deprecation Timeline
 
@@ -382,17 +398,21 @@ When the API returns error code `40100`, the destination automatically triggers 
 **When migrating from Events 1.0 to Events 2.0:**
 
 1. **Timestamp Format**:
+
    - v1: ISO string format (`2020-09-17T19:49:27Z`)
    - v2: Unix timestamp in seconds (`1600372167`)
 
 2. **API Endpoints**:
+
    - v1: Separate endpoints for single and batch requests
    - v2: Single endpoint handles both individual and batch requests
 
 3. **Required Fields**:
+
    - v2 requires `event_time` field (automatically populated by RudderStack)
 
 4. **User Data Structure**:
+
    - v2 supports additional user fields for better matching
 
 5. **Batch Size Limits**:
@@ -407,7 +427,7 @@ When the API returns error code `40100`, the destination automatically triggers 
 
 - **Official Documentation**: [TikTok Business API Overview](https://business-api.tiktok.com/portal/docs)
 - **Events API Overview**: [TikTok Events API Overview](https://ads.tiktok.com/help/article/events-api)
-- **Events 2.0 API usage**  [TikTok Events API usage](https://business-api.tiktok.com/portal/docs?id=1771100779668482)
+- **Events 2.0 API usage** [TikTok Events API usage](https://business-api.tiktok.com/portal/docs?id=1771100779668482)
 - **Standard Events**: [TikTok Standard Events Parameters](https://ads.tiktok.com/help/article/standard-events-parameters?lang=en)
 - **Pixel Setup**: [TikTok Pixel Setup Guide](https://ads.tiktok.com/help/article/get-started-pixel)
 - **Rate Limits**: [TikTok API Limits Documentation](https://business-api.tiktok.com/portal/docs?id=1771100779668482#item-link-API%20limits)

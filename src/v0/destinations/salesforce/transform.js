@@ -1,10 +1,7 @@
 const { SalesforceSDK } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
-const {
-  InstrumentationError,
-  NetworkInstrumentationError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   SF_API_VERSION,
@@ -27,7 +24,12 @@ const {
   generateErrorObject,
   getErrorRespEvents,
 } = require('../../util');
-const { collectAuthorizationInfo, getAuthHeader } = require('./utils');
+const {
+  collectAuthorizationInfo,
+  getAuthHeader,
+  getSalesforceIdForRecord,
+  getSalesforceIdForLead,
+} = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
@@ -114,8 +116,7 @@ function responseBuilderSimple(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
-  const { salesforceSdk } = stateInfo;
+async function getSalesforceIdFromPayload({ message, destination, metadata }, stateInfo) {
   // define default map
   const salesforceMaps = [];
 
@@ -152,26 +153,14 @@ async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
 
     // Fetch the salesforce Id if the identifierType is not ID
     if (identifierType.toUpperCase() !== 'ID') {
-      let queryResponse;
-      try {
-        queryResponse = await salesforceSdk.query(
-          `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${id}'`,
-        );
-      } catch (error) {
-        throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
-      }
-
-      if (queryResponse.totalSize > 1) {
-        throw new NetworkInstrumentationError(
-          `Multiple records found for ${objectType} with ${identifierType} = '${id}'`,
-        );
-      }
-
-      if (queryResponse.totalSize === 0) {
-        salesforceId = undefined;
-      } else {
-        salesforceId = queryResponse.records[0].Id;
-      }
+      salesforceId = await getSalesforceIdForRecord({
+        objectType,
+        identifierType,
+        identifierValue: id,
+        destination,
+        metadata,
+        stateInfo,
+      });
     }
 
     salesforceMaps.push({
@@ -192,53 +181,13 @@ async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
 
-    let queryResponse;
-    try {
-      queryResponse = await salesforceSdk.query(
-        `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '${email}'`,
-      );
-    } catch (error) {
-      throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
-    }
-    if (queryResponse.totalSize === 0) {
-      salesforceMaps.push({
-        salesforceType: 'Lead',
-        salesforceId: undefined,
-      });
-      return salesforceMaps;
-    }
-
-    if (queryResponse.totalSize > 1) {
-      throw new NetworkInstrumentationError(
-        `Multiple records found for Lead with Email = '${email}'`,
-      );
-    }
-
-    // If exactly one record is found, check if the lead has been deleted
-    const record = queryResponse.records[0];
-    if (record.IsDeleted === true) {
-      if (record.IsConverted) {
-        throw new NetworkInstrumentationError('The contact has been deleted');
-      }
-
-      throw new NetworkInstrumentationError('The lead has been deleted.');
-    }
-    if (record.IsConverted && destination.Config.useContactId) {
-      if (record.ConvertedContactId === null) {
-        throw new NetworkInstrumentationError(
-          'The lead is converted but the converted contact id not found',
-        );
-      }
-      salesforceMaps.push({
-        salesforceType: 'Contact',
-        salesforceId: record.ConvertedContactId,
-      });
-    } else {
-      salesforceMaps.push({
-        salesforceType: 'Lead',
-        salesforceId: record.Id,
-      });
-    }
+    const salesforceLeadContactDetails = await getSalesforceIdForLead({
+      email,
+      destination,
+      metadata,
+      stateInfo,
+    });
+    salesforceMaps.push(salesforceLeadContactDetails);
   }
   return salesforceMaps;
 }

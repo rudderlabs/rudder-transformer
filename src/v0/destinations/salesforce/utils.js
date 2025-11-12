@@ -4,6 +4,7 @@ const {
   AbortedError,
   OAuthSecretError,
   isDefinedAndNotNullAndNotEmpty,
+  NetworkInstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -22,7 +23,10 @@ const {
   LEGACY,
   OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
+  SF_API_VERSION,
 } = require('./config');
+
+require('dotenv').config();
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
@@ -242,10 +246,226 @@ const getAuthHeader = (authInfo) => {
     : { Authorization: authorizationData.token };
 };
 
+// Look up to salesforce using details passed as external id through payload
+async function getSalesforceIdForRecordUsingHttp(
+  objectType,
+  identifierType,
+  identifierValue,
+  { destination, metadata },
+  authInfo,
+) {
+  const { authorizationData, authorizationFlow } = authInfo;
+  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
+  const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
+    'get',
+    objSearchUrl,
+    {
+      headers: getAuthHeader({ authorizationFlow, authorizationData }),
+    },
+    {
+      metadata,
+      destType: 'salesforce',
+      feature: 'transformation',
+      endpointPath: '/parameterizedSearch',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+  if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
+    salesforceResponseHandler(
+      processedsfSearchResponse,
+      `:- SALESFORCE SEARCH BY ID`,
+      destination.ID,
+      authorizationFlow,
+    );
+  }
+  const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
+    (rec) =>
+      typeof identifierValue !== 'undefined' &&
+      // eslint-disable-next-line eqeqeq
+      rec[identifierType] == identifierValue,
+  );
+
+  return searchRecord?.Id;
+}
+
+async function getSalesforceIdForRecordUsingSdk(
+  salesforceSdk,
+  objectType,
+  identifierType,
+  identifierValue,
+) {
+  let queryResponse;
+  try {
+    queryResponse = await salesforceSdk.query(
+      `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${identifierValue}'`,
+    );
+  } catch (error) {
+    throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
+  }
+
+  if (queryResponse.totalSize > 1) {
+    throw new NetworkInstrumentationError(
+      `Multiple records found for ${objectType} with ${identifierType} = '${identifierValue}'`,
+    );
+  }
+
+  if (queryResponse.totalSize === 0) {
+    return undefined;
+  }
+  return queryResponse.records[0].Id;
+}
+
+async function getSalesforceIdForRecord({
+  objectType,
+  identifierType,
+  identifierValue,
+  destination,
+  metadata,
+  stateInfo,
+}) {
+  const whiteListedWorkspaces = process.env.WHITE_LISTED_WORKSPACES_SALESFORCE?.split(',')?.map?.(
+    (s) => s?.trim?.(),
+  );
+  if (whiteListedWorkspaces?.includes(metadata.workspaceId)) {
+    return getSalesforceIdForRecordUsingSdk(
+      stateInfo.salesforceSdk,
+      objectType,
+      identifierType,
+      identifierValue,
+    );
+  }
+
+  return getSalesforceIdForRecordUsingHttp(
+    objectType,
+    identifierType,
+    identifierValue,
+    { destination, metadata },
+    stateInfo.authInfo,
+  );
+}
+
+async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination) {
+  let queryResponse;
+  try {
+    queryResponse = await salesforceSdk.query(
+      `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '${email}'`,
+    );
+  } catch (error) {
+    throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
+  }
+  if (queryResponse.totalSize === 0) {
+    return {
+      salesforceType: 'Lead',
+      salesforceId: undefined,
+    };
+  }
+
+  if (queryResponse.totalSize > 1) {
+    throw new NetworkInstrumentationError(
+      `Multiple records found for Lead with Email = '${email}'`,
+    );
+  }
+
+  // If exactly one record is found, check if the lead has been deleted
+  const record = queryResponse.records[0];
+  if (record.IsDeleted === true) {
+    if (record.IsConverted) {
+      throw new NetworkInstrumentationError('The contact has been deleted');
+    }
+    throw new NetworkInstrumentationError('The lead has been deleted.');
+  }
+  if (record.IsConverted && destination.Config.useContactId) {
+    if (record.ConvertedContactId === null) {
+      throw new NetworkInstrumentationError(
+        'The lead is converted but the converted contact id not found',
+      );
+    }
+    return {
+      salesforceType: 'Contact',
+      salesforceId: record.ConvertedContactId,
+    };
+  }
+  return {
+    salesforceType: 'Lead',
+    salesforceId: record.Id,
+  };
+}
+
+async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, metadata) {
+  const { authorizationData, authorizationFlow } = authInfo;
+  const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
+
+  // request configuration will be conditional
+  const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
+    'get',
+    leadQueryUrl,
+    {
+      headers: getAuthHeader({ authorizationFlow, authorizationData }),
+    },
+    {
+      metadata,
+      destType: 'salesforce',
+      feature: 'transformation',
+      endpointPath: '/parameterizedSearch',
+      requestMethod: 'GET',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
+    salesforceResponseHandler(
+      processedLeadQueryResponse,
+      `:- during Lead Query`,
+      destination.ID,
+      authorizationFlow,
+    );
+  }
+
+  if (processedLeadQueryResponse.response.searchRecords.length > 0) {
+    // if count is greater than zero, it means that lead exists, then only update it
+    // else the original endpoint, which is the one for creation - can be used
+    const record = processedLeadQueryResponse.response.searchRecords[0];
+    if (record.IsDeleted === true) {
+      if (record.IsConverted) {
+        throw new NetworkInstrumentationError('The contact has been deleted.');
+      } else {
+        throw new NetworkInstrumentationError('The lead has been deleted.');
+      }
+    }
+    if (record.IsConverted && destination.Config.useContactId) {
+      return {
+        salesforceType: 'Contact',
+        salesforceId: record.ConvertedContactId,
+      };
+    }
+    return {
+      salesforceType: 'Lead',
+      salesforceId: record.Id,
+    };
+  }
+  return {
+    salesforceType: 'Lead',
+    salesforceId: undefined,
+  };
+}
+
+async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
+  const whiteListedWorkspaces = process.env.WHITE_LISTED_WORKSPACES_SALESFORCE?.split(',')?.map?.(
+    (s) => s?.trim?.(),
+  );
+  if (whiteListedWorkspaces?.includes(metadata.workspaceId)) {
+    return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
+  }
+  return getSalesforceIdForLeadUsingHttp(email, destination, stateInfo.authInfo, metadata);
+}
+
 module.exports = {
   getAccessTokenOauth,
   salesforceResponseHandler,
   getAccessToken,
   collectAuthorizationInfo,
   getAuthHeader,
+  getSalesforceIdForRecord,
+  getSalesforceIdForLead,
 };

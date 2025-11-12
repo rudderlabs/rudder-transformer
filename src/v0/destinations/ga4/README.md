@@ -64,11 +64,13 @@ Implementation in **JavaScript**
 #### GA4 (Standard)
 
 **Cloud Mode:**
+
 - Track
 - Group
 - Page
 
 **Device Mode:**
+
 - **Web**: Identify, Track, Page, Group
 - **Android**: Identify, Track, Screen
 - **iOS**: Identify, Track, Screen
@@ -76,11 +78,13 @@ Implementation in **JavaScript**
 #### GA4_V2 (OAuth)
 
 **Cloud Mode:**
+
 - Track
 - Group
 - Page
 
 **Device Mode:**
+
 - **Web**: Identify, Page (limited device mode support)
 
 ### Batching Support
@@ -94,20 +98,21 @@ Implementation in **JavaScript**
 
 The GA4 Measurement Protocol API has the following characteristics:
 
-| Aspect | Limit | Description |
-|--------|-------|-------------|
-| Events per request | 25 events | Maximum events that can be sent in a single API request |
-| Event parameters | 25 parameters | Maximum parameters per event |
-| User properties | 25 properties | Maximum user properties per request |
-| Event name length | 40 characters | Maximum length for event names |
-| Parameter name length | 40 characters | Maximum length for parameter names |
-| Parameter value length | 100 characters (Standard GA4)<br>500 characters (GA4 360) | Maximum length for parameter values |
-| User property name length | 24 characters | Maximum length for user property names |
-| User property value length | 36 characters | Maximum length for user property values |
-| Item parameters | 10 custom parameters | Maximum custom parameters per item |
-| Request payload size | 130 KB | Maximum size of the POST request body |
+| Aspect                     | Limit                                                     | Description                                             |
+| -------------------------- | --------------------------------------------------------- | ------------------------------------------------------- |
+| Events per request         | 25 events                                                 | Maximum events that can be sent in a single API request |
+| Event parameters           | 25 parameters                                             | Maximum parameters per event                            |
+| User properties            | 25 properties                                             | Maximum user properties per request                     |
+| Event name length          | 40 characters                                             | Maximum length for event names                          |
+| Parameter name length      | 40 characters                                             | Maximum length for parameter names                      |
+| Parameter value length     | 100 characters (Standard GA4)<br>500 characters (GA4 360) | Maximum length for parameter values                     |
+| User property name length  | 24 characters                                             | Maximum length for user property names                  |
+| User property value length | 36 characters                                             | Maximum length for user property values                 |
+| Item parameters            | 10 custom parameters                                      | Maximum custom parameters per item                      |
+| Request payload size       | 130 KB                                                    | Maximum size of the POST request body                   |
 
 **Special Parameter Exceptions:**
+
 - `page_title`: 300 characters maximum
 - `page_referrer`: 420 characters maximum
 - `page_location`: 1,000 characters maximum
@@ -136,6 +141,7 @@ The GA4 Measurement Protocol API has the following characteristics:
 ### OAuth Support
 
 - **GA4 (Standard)**: No OAuth support
+
   - Uses API Secret for authentication
   - Manual configuration of Measurement ID and API Secret required
 
@@ -151,6 +157,7 @@ The GA4 Measurement Protocol API has the following characteristics:
 #### Client ID Management
 
 - **gtag Client Type**: Uses `client_id` for user identification
+
   - Priority: `ga4ClientId` (from externalId) > `anonymousId` > `rudderId`
   - Required for gtag-based implementations
 
@@ -194,6 +201,7 @@ The GA4 Measurement Protocol API has the following characteristics:
 ### Event Ordering
 
 #### Track, Page, Group Events
+
 **Event ordering is recommended** for GA4 events due to the following considerations:
 
 - **Timestamp Handling**: GA4 Measurement Protocol uses timestamps to determine event order
@@ -231,14 +239,17 @@ The GA4 Measurement Protocol API has the following characteristics:
 #### Multiplexing Scenarios
 
 1. **Track Events**:
+
    - **Multiplexing**: NO
    - Single API Call to `/mp/collect` with event data and user properties in one payload
 
 2. **Page Events**:
-   - **Multiplexing**: NO  
+
+   - **Multiplexing**: NO
    - Converted to `page_view` event and sent as single API call to `/mp/collect`
 
 3. **Group Events**:
+
    - **Multiplexing**: NO
    - Converted to `join_group` event and sent as single API call to `/mp/collect`
 

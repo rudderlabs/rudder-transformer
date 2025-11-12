@@ -44,12 +44,39 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
+  check_actor:
+    runs-on: ubuntu-latest
+    name: Check if actor is dependabot
+    outputs:
+      is_dependabot: ${{ steps.check.outputs.is_dependabot }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Check actor
+        id: check
+        run: |
+          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+            echo "is_dependabot=true" >> $GITHUB_OUTPUT
+            echo "Actor is dependabot[bot] - skipping certain steps"
+          else
+            echo "is_dependabot=false" >> $GITHUB_OUTPUT
+            echo "Actor is ${{ github.actor }} - proceeding normally"
+          fi
+
   get_sha:
     runs-on: ubuntu-latest
     name: Get SHA information
     outputs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout SHA
         id: getSHA
         run: |
@@ -67,12 +94,17 @@ jobs:
     outputs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 1
       - id: files
-        uses: Ana06/get-changed-files@v1.2
+        uses: Ana06/get-changed-files@a2f6df8c195e713211f9f6258baafc445149355b # v1.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           format: 'json'
@@ -93,45 +125,58 @@ jobs:
   build-transformer-image-arm64:
     name: Build Transformer Docker Image ARM64
     runs-on: [self-hosted, Linux, ARM64, ubuntu-22]
-    needs: [get_sha, get_changed_files]
+    needs: [check_actor, get_sha, get_changed_files]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3.5.0
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
-      - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+      # This step is needed to ensure we run tests on a locally built image.
+      # The rudderlabs/build-scan-push-action does not respect the 'load' input parameter
+      # because it's designed for building and pushing images, not loading them locally.
+      - name: Build and load Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
         with:
           context: .
           file: ${{ inputs.dockerfile }}
-          target: ${{ inputs.load_target }}
           load: true
+          platforms: linux/arm64
+          push: false
           tags: ${{ inputs.build_tag }}
-          push: true
-          platforms: |
-            linux/arm64
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          target: ${{ inputs.load_target }}
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ inputs.build_tag }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          echo "Running tests on Docker image: $BUILD_TAG"
+          echo "Running JavaScript tests..."
+          docker run --rm $BUILD_TAG npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -149,45 +194,58 @@ jobs:
   build-transformer-image-amd64:
     name: Build Transformer Docker Image AMD64
     runs-on: [self-hosted, Linux, X64]
-    needs: [get_sha, get_changed_files]
+    needs: [check_actor, get_sha, get_changed_files]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3.5.0
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
-      - name: Build Docker Image
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+      # This step is needed to ensure we run tests on a locally built image.
+      # The rudderlabs/build-scan-push-action does not respect the 'load' input parameter
+      # because it's designed for building and pushing images, not loading them locally.
+      - name: Build and load Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
         with:
           context: .
           file: ${{ inputs.dockerfile }}
-          target: ${{ inputs.load_target }}
           load: true
+          platforms: linux/amd64
+          push: false
           tags: ${{ inputs.build_tag }}
-          push: true
-          platforms: |
-            linux/amd64
-          # cache-from: type=gha
-          # cache-to: type=gha,mode=max
+          target: ${{ inputs.load_target }}
 
       - name: Run Tests
-        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == true }}
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ inputs.build_tag }}
         run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+          echo "Running tests on Docker image: $BUILD_TAG"
+          echo "Running JavaScript tests..."
+          docker run --rm $BUILD_TAG npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@v1.8.1
+        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -205,17 +263,23 @@ jobs:
   create-manifest:
     name: Create multi-arch manifest
     runs-on: ubuntu-latest
-    needs: [build-transformer-image-amd64, build-transformer-image-arm64]
+    needs: [check_actor, build-transformer-image-amd64, build-transformer-image-arm64]
+    if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Login to DockerHub
-        uses: docker/login-action@v3.5.0
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
       - name: Create multi-arch manifest
         run: |

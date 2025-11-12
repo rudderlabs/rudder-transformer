@@ -1,6 +1,6 @@
 output:
   status: 200
-  message: "[BLOOMREACH_CATALOG Response V1 Handler] - Request Processed Successfully"
+  message: '[BLOOMREACH_CATALOG Response V1 Handler] - Request Processed Successfully'
   destinationResponse:
     response:
       - queued: true
@@ -9,49 +9,49 @@ output:
         success: true
     status: 200
     headers:
-      server: "nginx"
-      date: "Mon, 06 Jan 2025 03:45:29 GMT"
-      content-type: "application/json"
+      server: 'nginx'
+      date: 'Mon, 06 Jan 2025 03:45:29 GMT'
+      content-type: 'application/json'
       x-ratelimit-limit: 5
       x-ratelimit-remaining: 4
       x-ratelimit-reset: 1736135140
-      retry-after: "Mon, 06 Jan 2025 03:45:40 GMT"
-      strict-transport-security: "max-age=31536000; includeSubDomains"
-      via: "1.1 google"
-      alt-svc: "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
-      transfer-encoding: "chunked"
+      retry-after: 'Mon, 06 Jan 2025 03:45:40 GMT'
+      strict-transport-security: 'max-age=31536000; includeSubDomains'
+      via: '1.1 google'
+      alt-svc: 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000'
+      transfer-encoding: 'chunked'
 response:
   - statusCode: 200
-    error: "success"
+    error: 'success'
     metadata:
-      userId: "<<>>12345<<>>12345"
+      userId: '<<>>12345<<>>12345'
       jobId: 1
-      sourceId: "2ifsnRxzoONtZeIoGxgNWsr4xx"
-      sourceCategory: ""
-      destinationId: "2JIqVoWNvSOHa9ppKOqSxxx"
+      sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
+      sourceCategory: ''
+      destinationId: '2JIqVoWNvSOHa9ppKOqSxxx'
       attemptNum: 0
-      receivedAt: "2024-07-17T16:45:40.114+05:30"
-      createdAt: "2024-07-17T11:15:41.140Z"
-      firstAttemptedAt: ""
-      transformAt: "router"
-      workspaceId: "2hSS1hZ8kuCpUZAAYsQucAFdxxx"
+      receivedAt: '2024-07-17T16:45:40.114+05:30'
+      createdAt: '2024-07-17T11:15:41.140Z'
+      firstAttemptedAt: ''
+      transformAt: 'router'
+      workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
       secret: null
-      workerAssignedTime: "2024-07-17T16:45:41.264239+05:30"
+      workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
       dontBatch: false
   - statusCode: 200
-    error: "success"
+    error: 'success'
     metadata:
-      userId: "<<>>12345<<>>12345"
+      userId: '<<>>12345<<>>12345'
       jobId: 2
-      sourceId: "2ifsnRxzoONtZeIoGxgNWsr4xx"
-      sourceCategory: ""
-      destinationId: "2JIqVoWNvSOHa9ppKOqSxxx"
+      sourceId: '2ifsnRxzoONtZeIoGxgNWsr4xx'
+      sourceCategory: ''
+      destinationId: '2JIqVoWNvSOHa9ppKOqSxxx'
       attemptNum: 0
-      receivedAt: "2024-07-17T16:45:40.114+05:30"
-      createdAt: "2024-07-17T11:15:41.140Z"
-      firstAttemptedAt: ""
-      transformAt: "router"
-      workspaceId: "2hSS1hZ8kuCpUZAAYsQucAFdxxx"
+      receivedAt: '2024-07-17T16:45:40.114+05:30'
+      createdAt: '2024-07-17T11:15:41.140Z'
+      firstAttemptedAt: ''
+      transformAt: 'router'
+      workspaceId: '2hSS1hZ8kuCpUZAAYsQucAFdxxx'
       secret: null
-      workerAssignedTime: "2024-07-17T16:45:41.264239+05:30"
+      workerAssignedTime: '2024-07-17T16:45:41.264239+05:30'
       dontBatch: false

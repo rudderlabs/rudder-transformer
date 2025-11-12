@@ -36,8 +36,13 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 1
 
@@ -90,8 +95,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces
@@ -108,8 +118,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Restart Deployment
         # # This action restarts the deployment in the specified namespaces
@@ -119,4 +134,4 @@ jobs:
           aws-region: us-east-1
           k8s-cluster: dev-rudder
           k8s-namespace: retl-int,hostedmt-dev
-          deployment-name: rudderstack-transformer         
+          deployment-name: rudderstack-transformer

@@ -28,13 +28,14 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 **Requirement**: Advanced Mapping must be enabled in destination configuration
 
 **Request Flow**:
+
 1. **Configuration Check**: Verify that `advancedMapping` is enabled
    ```javascript
    if (advancedMapping) {
      category = CONFIG_CATEGORIES.USERDATA;
    } else {
      throw new ConfigurationError(
-       'For identify events, "Advanced Mapping" configuration must be enabled'
+       'For identify events, "Advanced Mapping" configuration must be enabled',
      );
    }
    ```
@@ -43,6 +44,7 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 4. **API Request**: Send to `/events` endpoint
 
 **Transformations**:
+
 1. User traits are mapped to Facebook's user data fields using `FBPIXELUserDataConfig.json`
 2. PII data is automatically hashed using SHA-256
 3. External ID is derived from userId, traits.userId, traits.id, or anonymousId
@@ -55,6 +57,7 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 **Endpoint**: `/events`
 
 **Request Flow**:
+
 1. **Event Name Validation**: Ensure event name is present and is a string
 2. **Event Mapping**: Check if event should be mapped to a Facebook standard event
 3. **Category Determination**: Determine event category (standard vs custom)
@@ -62,7 +65,9 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 5. **API Request**: Send to `/events` endpoint
 
 **Transformations**:
+
 1. **Standard E-commerce Events**: Automatic mapping to Facebook standard events:
+
    - `Product List Viewed` → `ViewContent`
    - `Product Viewed` → `ViewContent`
    - `Product Added` → `AddToCart`
@@ -71,6 +76,7 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
    - `Checkout Started` → `InitiateCheckout`
 
 2. **Custom Event Processing**:
+
    - Event properties are flattened and included in custom_data
    - Reserved properties are excluded: `opt_out`, `event_id`, `action_source`
    - Special arrays (`content_ids`, `contents`) are preserved without flattening
@@ -84,12 +90,14 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 **Endpoint**: `/events`
 
 **Request Flow**:
+
 1. **Standard Page Call Check**: Determine if page events should be sent as standard PageView events
 2. **Event Name Construction**: Create appropriate event name
 3. **Payload Construction**: Create payload with user_data and custom_data
 4. **API Request**: Send to `/events` endpoint
 
 **Transformations**:
+
 1. **Standard PageView**: When `standardPageCall` is enabled, sent as Facebook's standard PageView event
 2. **Custom Page Event**: When disabled, sent as custom event with page information
 3. **Property Mapping**: Page properties are included in custom_data
@@ -102,6 +110,7 @@ All event types (Identify, Track, Page, Screen) are sent to the same endpoint wi
 Similar to Page events but for mobile screen views
 
 **Transformations**:
+
 1. Screen events are treated similarly to page events
 2. Screen name and properties are mapped to custom_data
 3. User data is included in user_data section
@@ -113,40 +122,42 @@ Similar to Page events but for mobile screen views
 **Automatic Hashing**: The destination automatically processes PII data according to Facebook's requirements
 
 **Default PII Properties**:
+
 - email, firstName, lastName, first_name, last_name
 - gender, city, country, phone, state, zip, postalCode, birthday
 
 **Processing Logic**:
+
 1. **Whitelist Processing**: Properties in whitelist are included even if they contain PII
 2. **Blacklist Processing**: Properties in blacklist are excluded or hashed based on configuration
 3. **Default PII Handling**: Default PII properties are automatically hashed unless whitelisted
 4. **Custom Hashing**: Integration object can specify custom hashing behavior
 
 **Example Configuration**:
+
 ```javascript
 // Blacklist with hashing
-blacklistPiiProperties: [
-  { blacklistPiiProperties: 'phone', blacklistPiiHash: true }
-]
+blacklistPiiProperties: [{ blacklistPiiProperties: 'phone', blacklistPiiHash: true }];
 
 // Whitelist (no hashing)
-whitelistPiiProperties: [
-  { whitelistPiiProperties: 'email' }
-]
+whitelistPiiProperties: [{ whitelistPiiProperties: 'email' }];
 ```
 
 ### Event Duration Validation
 
 **Validation Rules**:
+
 - **Standard Events**: Events must be sent within 7 days of their occurrence or up to 1 minute in the future
 - **Physical Store Events**: Events with `action_source` set to `physical_store` must be sent within 62 days of their occurrence
 
 **Implementation**:
+
 ```javascript
 const verifyEventDuration = (message, destination, timeStamp) => {
-  const actionSource = get(message, 'traits.action_source') ||
-                      get(message, 'context.traits.action_source') ||
-                      get(message, 'properties.action_source');
+  const actionSource =
+    get(message, 'traits.action_source') ||
+    get(message, 'context.traits.action_source') ||
+    get(message, 'properties.action_source');
 
   const start = moment.unix(moment(timeStamp).format('X'));
   const current = moment.unix(moment().format('X'));
@@ -160,7 +171,7 @@ const verifyEventDuration = (message, destination, timeStamp) => {
 
   if (deltaDay > defaultSupportedDelta || deltaMin > 1) {
     throw new InstrumentationError(
-      `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`
+      `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`,
     );
   }
 };
@@ -171,21 +182,26 @@ const verifyEventDuration = (message, destination, timeStamp) => {
 **Automatic Detection**: The destination sets the `action_source` parameter based on the event channel
 
 **Mapping Logic**:
+
 ```javascript
 const getActionSource = (commonData, channel) => {
   if (commonData.action_source && ACTION_SOURCES_VALUES.includes(commonData.action_source)) {
     return commonData.action_source;
   }
-  
+
   switch (channel) {
-    case 'web': return 'website';
-    case 'mobile': return 'app';
-    default: return 'other';
+    case 'web':
+      return 'website';
+    case 'mobile':
+      return 'app';
+    default:
+      return 'other';
   }
 };
 ```
 
 **Supported Action Sources**:
+
 - email, website, app, phone_call, chat, physical_store, system_generated, other
 
 ### Limited Data Usage (CCPA Compliance)
@@ -193,6 +209,7 @@ const getActionSource = (commonData, channel) => {
 **Configuration**: When `limitedDataUSage` is enabled
 
 **Implementation**:
+
 ```javascript
 if (limitedDataUSage) {
   const dataProcessingOptions = get(message, 'context.dataProcessingOptions');
@@ -211,6 +228,7 @@ if (limitedDataUSage) {
 **Configuration**: When `testDestination` is enabled
 
 **Implementation**:
+
 - Events are sent to Facebook's test environment
 - Requires `testEventCode` configuration
 - Used for testing and validation purposes
@@ -222,6 +240,7 @@ The mapping configuration is defined in JSON files within the destination direct
 ### User Data Mapping (`FBPIXELUserDataConfig.json`)
 
 Maps RudderStack user fields to Facebook user data fields:
+
 - `external_id`: Mapped from userId, traits.userId, traits.id, or anonymousId (hashed)
 - `em`: Email address (trimmed, lowercased, hashed)
 - `ph`: Phone number (hashed)
@@ -237,6 +256,7 @@ Maps RudderStack user fields to Facebook user data fields:
 ### Common Data Mapping (`FBPIXELCommonConfig.json`)
 
 Maps common event fields:
+
 - `event_name`: Event name
 - `event_time`: Event timestamp
 - `event_id`: Unique event identifier

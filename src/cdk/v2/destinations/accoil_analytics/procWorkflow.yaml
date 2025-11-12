@@ -17,7 +17,7 @@ steps:
         "message type " + .message.type + " is not supported");
       $.assertConfig(.destination.Config.apiKey, "apiKey must be supplied in destination config");
 
-#   Note our auth does not require a password in basic auth just the string "key:"
+  #   Note our auth does not require a password in basic auth just the string "key:"
   - name: prepareContext
     template: |
       $.context.messageType = .message.type.toLowerCase();

@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The Split.io destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - Supports data flow from warehouses/databases to Split.io
@@ -12,20 +13,26 @@ The Split.io destination supports RETL functionality. Evidence:
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard Split.io configuration applies:
+
 - **API Key**: Same API key used for event stream functionality
 - **Environment**: Split.io environment identifier
 
@@ -42,6 +49,7 @@ Split.io supports RETL through warehouse sources with JSON mapper functionality:
 - **Mapping**: JSON mapper transforms warehouse data to Split.io event format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["group", "identify", "page", "screen", "track"]
@@ -83,11 +91,13 @@ The Split.io destination processes RETL events through the same logic as event s
 ## Rate Limits and Constraints
 
 ### Split.io API Limits
+
 - **Events API**: Rate limits vary by plan (check Split.io documentation)
 - **Event Batch Size**: Standard batching applies
 - **Event Properties**: Standard Split.io event parameters
 
 ### RETL Processing Constraints
+
 - **Message Types**: Supports all standard event types (group, identify, page, screen, track)
 - **JSON Mapper Only**: No visual mapper or VDM v2 support
 - **Cloud Mode Only**: Device mode not supported for RETL
@@ -104,6 +114,7 @@ The Split.io destination supports RETL functionality through:
 - **API Integration**: Split.io Events API for event delivery
 
 **Limitations**:
+
 - No VDM v1 or VDM v2 support (JSON mapper only)
 - Cloud mode only for RETL functionality
 

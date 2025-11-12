@@ -41,6 +41,7 @@ steps:
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       $.assert(.message.event || .message.name, "event_name could not be mapped. Aborting.")
+
   - name: commonFields
     description: |
       Builds common fields in destination payload.
@@ -65,6 +66,7 @@ steps:
         "language": .properties.language ??
                     .context.traits.language ??
                     .context.locale,
+        "advertiser_tracking_enabled": $.outputs.apiVersion === {{$.API_VERSION.v5}} && typeof .context.device.adTrackingEnabled === "boolean" ? .context.device.adTrackingEnabled : undefined,
         "opt_out": .context.device.adTrackingEnabled !== undefined ? !.context.device.adTrackingEnabled,
         "event_id": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "app_id": ^.destination.Config.appId,

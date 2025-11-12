@@ -54,7 +54,7 @@ jest.mock('@rudderstack/integrations-lib', () => {
 // npm run test:ts -- component  --destination=adobe_analytics --feature=router
 // npm run test:ts -- component  --destination=adobe_analytics --feature=dataDelivery --index=0
 // Use below command to see verbose results
-// npm run test:ts -- component  --destination=adobe_analytics --feature=router --verbose=true
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router --verbose true
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true
@@ -62,12 +62,13 @@ jest.mock('@rudderstack/integrations-lib', () => {
 const command = new Command();
 command
   .allowUnknownOption()
+  .allowExcessArguments()
   .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
   .option('-i, --index <number>', 'Enter Test index', parseInt)
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
-  .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
-  .option('-verbose, --v <string>', 'Enter "true" If you want to see verbose test results')
+  .option('--id <string>', 'Enter unique "Id" of the test case you want to run')
+  .option('-v, --verbose <string>', 'Enter "true" If you want to see verbose test results')
   .option('-s, --source <string>', 'Enter Source Name')
   .parse();
 
@@ -98,6 +99,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'bluecore',
   'postscript',
   'attentive_tag',
+  'dub',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [

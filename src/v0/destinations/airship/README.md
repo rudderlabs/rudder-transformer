@@ -14,11 +14,13 @@ Implementation in **JavaScript**
 ### Optional Settings
 
 - **App Key**: Required for Track events
+
   - Used specifically for custom events API calls
   - Generated from Airship dashboard: Settings > Project Details > App Key
   - Required when sending Track events, optional for Identify and Group events
 
 - **Data Center**: Specifies the Airship data center to use
+
   - **Default**: `false` (US data center)
   - **Options**:
     - `false` - US data center (go.urbanairship.com)
@@ -48,13 +50,14 @@ Implementation in **JavaScript**
 
 Airship does not enforce strict rate limits but provides best practice recommendations:
 
-| Operation Type | Recommended Batch Size | Best Practice |
-|---------------|----------------------|---------------|
-| Tag Updates | Up to 1,000 users | Batch tag operations when possible |
-| Custom Events | Up to 100 events | Send custom events in parallel |
-| Named User Operations | No specific limit | Use parallel processing for better performance |
+| Operation Type        | Recommended Batch Size | Best Practice                                  |
+| --------------------- | ---------------------- | ---------------------------------------------- |
+| Tag Updates           | Up to 1,000 users      | Batch tag operations when possible             |
+| Custom Events         | Up to 100 events       | Send custom events in parallel                 |
+| Named User Operations | No specific limit      | Use parallel processing for better performance |
 
 **General Guidelines**:
+
 - Airship's servers have a 60-second timeout
 - API requests generally return in under 1 second
 - No hard rate limiting implemented
@@ -63,6 +66,7 @@ Airship does not enforce strict rate limits but provides best practice recommend
 - API response limit: 1,000 objects maximum per response
 
 **Error Handling**:
+
 - 429 Too Many Requests: Implement exponential backoff retry logic
 - 503 Service Unavailable: Retry with exponential backoff
 - 400 Bad Request: Check payload validation and format
@@ -91,12 +95,14 @@ Airship does not enforce strict rate limits but provides best practice recommend
 ### Additional Functionalities
 
 #### Named User Management
+
 - **Supported**: Yes
 - **Implementation**: All events are associated with Named Users in Airship
 - **User ID Requirement**: `userId` is required for all event types
 - Named Users are automatically created/updated when events are processed
 
 #### Tag Management
+
 - **Supported**: Yes
 - **Implementation**: Tags are managed through traits in Identify and Group events
 - **Tag Groups**:
@@ -105,6 +111,7 @@ Airship does not enforce strict rate limits but provides best practice recommend
 - **Operations**: Add and remove tags based on trait values
 
 #### Attribute Management
+
 - **Supported**: Yes
 - **Implementation**: User attributes are set through traits in Identify and Group events
 - **Timestamp Handling**: Configurable timestamp attributes are automatically converted to Airship format
@@ -112,6 +119,7 @@ Airship does not enforce strict rate limits but provides best practice recommend
 - **Remove Attributes**: Support for removing attributes through integrations object
 
 #### Custom Events
+
 - **Supported**: Yes
 - **Implementation**: Track events are sent as custom events to Airship
 - **Event Properties**: Custom properties are extracted and sent with events
@@ -121,24 +129,28 @@ Airship does not enforce strict rate limits but provides best practice recommend
 ### Validations
 
 #### General Validations
+
 - **User ID**: Required for all event types, maps to Airship Named User ID
 - **API Key**: Required for all event types for authentication
 - **App Key**: Required specifically for Track events
 - **Message Type**: Must be one of: identify, track, group
 
 #### Identify/Group Event Validations
+
 - **Traits**: Must be present and non-empty object
 - **Attributes**: Boolean traits are processed as tags, non-boolean as attributes
 - **JSON Attributes**: Arrays are not supported in JSON attributes (will throw error)
 - **Timestamp Attributes**: Must be convertible to Airship timestamp format
 
 #### Track Event Validations
+
 - **Event Name**: Required field, cannot be empty
 - **Session ID**: If provided, must be convertible to UUID format
 - **Properties**: Custom properties are extracted, reserved properties are excluded
 - **Value Field**: If string type, processed same as event name (lowercase, underscore replacement)
 
 #### Data Type Restrictions
+
 - **JSON Attributes**: Arrays not supported, only objects and primitive values
 - **Timestamp Format**: Must be convertible to `YYYY-MM-DD[T]HH:mm:ss[Z]` format
 - **Tag Values**: Boolean traits determine add (true) or remove (false) operations
@@ -149,19 +161,25 @@ Airship does not enforce strict rate limits but provides best practice recommend
 ### Event Ordering
 
 #### Identify Events
+
 Event ordering is **not strictly required** for Identify events. Airship handles attribute updates idempotently, meaning:
+
 - Later attributes will overwrite earlier ones
 - Tag operations (add/remove) are processed independently
 - No timestamp-based ordering is enforced by Airship
 
 #### Track Events
+
 Event ordering is **not strictly required** for Track events. Each custom event in Airship:
+
 - Is treated as a unique occurrence with its own event ID
 - Includes a timestamp field that Airship uses for chronological ordering
 - Does not depend on delivery order for proper processing
 
 #### Group Events
+
 Event ordering is **not strictly required** for Group events. Similar to Identify events:
+
 - Group attributes and tags are processed idempotently
 - Later updates overwrite earlier ones
 - No strict ordering dependency
@@ -171,6 +189,7 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 ### Data Replay Feasibility
 
 #### Missing Data Replay
+
 - **Feasible**: Yes
 - **Reason**: Since event ordering is not strictly required, missing data can be replayed without issues
 - **Considerations**:
@@ -180,6 +199,7 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 #### Already Delivered Data Replay
 
 - **Identify/Group Events**:
+
   - **Feasible**: Yes, but with considerations
   - **Behavior**: Replaying will overwrite existing attributes and update tags
   - **Risk**: May overwrite newer data with older data if timestamps are not considered
@@ -197,6 +217,7 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
 #### Multiplexing Scenarios
 
 1. **Identify Events with Both Tags and Attributes**:
+
    - **Multiplexing**: YES
    - **Conditions**: When traits contain both tag-eligible and attribute-eligible data
    - **API Calls**:
@@ -205,6 +226,7 @@ Event ordering is **not strictly required** for Group events. Similar to Identif
    - **Note**: This is true multiplexing as both calls deliver different aspects of the same event
 
 2. **Group Events with Both Tags and Attributes**:
+
    - **Multiplexing**: YES
    - **Conditions**: When group traits contain both tag-eligible and attribute-eligible data
    - **API Calls**:

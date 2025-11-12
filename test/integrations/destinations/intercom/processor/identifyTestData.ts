@@ -799,7 +799,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -849,7 +849,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -899,7 +899,7 @@ export const identifyTestData = [
       request: {
         body: [
           {
-            destination: {   hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
+            destination: { hasDynamicConfig: false, ...v1Destination, apiVersion: undefined },
             message: {
               anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               context: {
@@ -1098,6 +1098,198 @@ export const identifyTestData = [
             }),
             statusCode: 200,
             metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-17',
+    name: 'intercom',
+    description:
+      'V2 version : user_id set as indentifier in rETL flow and that user_id is not present on intercom',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain create user payload with post method and with both user_id and external_id in the body along with other traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [
+                  {
+                    id: 'user@1',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+              traits: {
+                custom_attributes: {
+                  key1: 'value1',
+                  key2: 'value2',
+                },
+                name: 'Test Name',
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              attemptNum: 1,
+              destinationId: 'default-destinationId',
+              dontBatch: false,
+              jobId: 1,
+              secret: {
+                accessToken: 'commonAccessToken',
+              },
+              sourceId: 'default-sourceId',
+              userId: 'default-userId',
+              workspaceId: 'default-workspaceId',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  custom_attributes: {
+                    key1: 'value1',
+                    key2: 'value2',
+                  },
+                  external_id: 'user@1',
+                  name: 'Test Name',
+                  user_id: 'user@1',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://api.intercom.io/contacts',
+              files: {},
+              headers: {
+                Accept: 'application/json',
+                Authorization: 'Bearer intercom1',
+                'Content-Type': 'application/json',
+                'Intercom-Version': '2.10',
+                'User-Agent': 'RudderStack',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'intercom-identify-test-18',
+    name: 'intercom',
+    description:
+      'V2 version : user_id set as indentifier in rETL flow and that user_id is present on intercom',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain update user payload with put method and with both user_id and external_id in the body along with other traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: {
+              context: {
+                externalId: [
+                  {
+                    id: 'user@2',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+              traits: {
+                custom_attributes: {
+                  key1: 'value1',
+                  key2: 'value2',
+                },
+                name: 'Test Name',
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              attemptNum: 1,
+              destinationId: 'default-destinationId',
+              dontBatch: false,
+              jobId: 1,
+              secret: {
+                accessToken: 'commonAccessToken',
+              },
+              sourceId: 'default-sourceId',
+              userId: 'default-userId',
+              workspaceId: 'default-workspaceId',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  custom_attributes: {
+                    key1: 'value1',
+                    key2: 'value2',
+                  },
+                  external_id: 'user@2',
+                  name: 'Test Name',
+                  user_id: 'user@2',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://api.intercom.io/contacts/70701240741e45d040',
+              files: {},
+              headers: {
+                Accept: 'application/json',
+                Authorization: 'Bearer intercom1',
+                'Content-Type': 'application/json',
+                'Intercom-Version': '2.10',
+                'User-Agent': 'RudderStack',
+              },
+              method: 'PUT',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
           },
         ],
       },

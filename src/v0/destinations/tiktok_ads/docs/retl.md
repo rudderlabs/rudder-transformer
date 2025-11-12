@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The TikTok Ads destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - Supports data flow from warehouses/databases to TikTok Ads
@@ -12,20 +13,26 @@ The TikTok Ads destination supports RETL functionality. Evidence:
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard TikTok Ads configuration applies:
+
 - **Access Token**: Same access token used for event stream functionality
 - **Pixel Code**: Required for Events API
 - **Test Event Code**: Optional, for testing events
@@ -43,6 +50,7 @@ TikTok Ads supports RETL through warehouse sources with JSON mapper functionalit
 - **Mapping**: JSON mapper transforms warehouse data to TikTok Ads event format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["track"]
@@ -86,11 +94,13 @@ The TikTok Ads destination processes RETL events through the same logic as event
 ## Rate Limits and Constraints
 
 ### TikTok Ads API Limits
+
 - **Events API**: 1000 requests per minute per access token
 - **Event Batch Size**: Up to 1000 events per request
 - **Event Properties**: Standard TikTok Ads event parameters
 
 ### RETL Processing Constraints
+
 - **Message Types**: Limited to track events only
 - **JSON Mapper Only**: No visual mapper or VDM v2 support
 - **Cloud Mode Only**: Device mode not supported for RETL
@@ -137,6 +147,7 @@ While RETL is not currently supported, the integration could potentially be exte
 3. **Profile Updates**: If TikTok introduces profile-based APIs
 
 However, any such extensions would require:
+
 - Updates to the destination configuration
 - New transformer logic for record event handling
 - Compliance with TikTok's API capabilities and limitations
@@ -153,6 +164,7 @@ The TikTok Ads destination supports RETL functionality through:
 - **API Integration**: TikTok Ads Events API for event delivery
 
 **Limitations**:
+
 - No VDM v1 or VDM v2 support (JSON mapper only)
 - Limited to track events only
 - No identify, page, screen, group, or alias event support for RETL

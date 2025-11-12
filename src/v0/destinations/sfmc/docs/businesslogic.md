@@ -15,34 +15,34 @@ The SFMC destination uses two main mapping configurations:
 
 The following fields are mapped from RudderStack Identify events to SFMC data extension fields:
 
-| SFMC Field | RudderStack Source | Required |
-|------------|-------------------|----------|
-| App Name | context.app.name | No |
-| App Version | context.app.version | No |
-| App Build | context.app.build | No |
-| UTM Campaign | context.campaign.name | No |
-| UTM Source | context.campaign.source | No |
-| UTM Medium | context.campaign.medium | No |
-| UTM Term | context.campaign.term | No |
-| UTM Content | context.campaign.content | No |
-| Locale | context.locale | No |
-| User Agent | context.userAgent | No |
-| IP Address | context.ip, request_ip | No |
-| Last Name | lastName | No |
-| First Name | firstName | No |
-| Ad Tracking Enabled | context.device.adTrackingEnabled | No |
-| Device Manufacturer | context.device.manufacturer | No |
-| Device-model | context.device.model | No |
-| Device Name | context.device.name | No |
-| Device Type | context.device.type | No |
-| Bluetooth Enabled | context.network.bluetooth | No |
-| Network Carrier | context.network.carrier | No |
-| Cellular Enabled | context.network.cellular | No |
-| Wifi Enabled | context.network.wifi | No |
-| Screen Density | context.screen.density | No |
-| Screen Height | context.screen.height | No |
-| Screen Width | context.screen.width | No |
-| Email | email | No |
+| SFMC Field          | RudderStack Source               | Required |
+| ------------------- | -------------------------------- | -------- |
+| App Name            | context.app.name                 | No       |
+| App Version         | context.app.version              | No       |
+| App Build           | context.app.build                | No       |
+| UTM Campaign        | context.campaign.name            | No       |
+| UTM Source          | context.campaign.source          | No       |
+| UTM Medium          | context.campaign.medium          | No       |
+| UTM Term            | context.campaign.term            | No       |
+| UTM Content         | context.campaign.content         | No       |
+| Locale              | context.locale                   | No       |
+| User Agent          | context.userAgent                | No       |
+| IP Address          | context.ip, request_ip           | No       |
+| Last Name           | lastName                         | No       |
+| First Name          | firstName                        | No       |
+| Ad Tracking Enabled | context.device.adTrackingEnabled | No       |
+| Device Manufacturer | context.device.manufacturer      | No       |
+| Device-model        | context.device.model             | No       |
+| Device Name         | context.device.name              | No       |
+| Device Type         | context.device.type              | No       |
+| Bluetooth Enabled   | context.network.bluetooth        | No       |
+| Network Carrier     | context.network.carrier          | No       |
+| Cellular Enabled    | context.network.cellular         | No       |
+| Wifi Enabled        | context.network.wifi             | No       |
+| Screen Density      | context.screen.density           | No       |
+| Screen Height       | context.screen.height            | No       |
+| Screen Width        | context.screen.width             | No       |
+| Email               | email                            | No       |
 
 ### Track Event Mapping
 
@@ -103,11 +103,7 @@ When a message with `type = identify` is received:
 ```javascript
 if (category.type === 'identify' && !createOrUpdateContacts) {
   // first call to identify the contact
-  const identifyContactsPayload = responseBuilderForIdentifyContacts(
-    message,
-    subDomain,
-    authToken,
-  );
+  const identifyContactsPayload = responseBuilderForIdentifyContacts(message, subDomain, authToken);
   await handleHttpRequest(identifyContactsPayload, metadata);
   // second call to update data extension
   return responseBuilderForInsertData(
@@ -254,6 +250,7 @@ POST https://{subdomain}.rest.marketingcloudapis.com/interaction/v1/events
 ```
 
 The payload includes:
+
 - ContactKey: The contact ID from the event properties
 - EventDefinitionKey: The mapped event definition key
 - Data: All properties from the event

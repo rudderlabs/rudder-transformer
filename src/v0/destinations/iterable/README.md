@@ -7,6 +7,7 @@ Implementation in **Javascript** (v0) and **TypeScript** (v1)
 ### Required Settings
 
 - **API Key**: Required for authentication with Iterable REST API
+
   - Must have appropriate permissions for the operations you want to perform
   - For user deletion, the API key must have the `users.delete` permission
   - Configured via `apiKey` parameter
@@ -21,14 +22,17 @@ Implementation in **Javascript** (v0) and **TypeScript** (v1)
 ### Optional Settings
 
 - **Register Device or Browser API Key**: Optional API key for device/browser token registration
+
   - Used for mobile push notifications and web push notifications
   - Configured via `registerDeviceOrBrowserApiKey` parameter
 
 - **Use Native SDK**: Enable native SDK for web device mode
+
   - Allows client-side tracking when enabled
   - Configured via `useNativeSDK.web` parameter
 
 - **Prefer User ID**: Controls whether to prefer userId over email for user identification
+
   - Default: `true`
   - Configured via `preferUserId` parameter
 
@@ -43,6 +47,7 @@ Implementation in **Javascript** (v0) and **TypeScript** (v1)
 ### Supported Message Types
 
 #### Cloud Mode
+
 - **Identify**: User profile creation and updates
 - **Track**: Event tracking including custom events and e-commerce
 - **Page**: Page view tracking
@@ -50,6 +55,7 @@ Implementation in **Javascript** (v0) and **TypeScript** (v1)
 - **Alias**: Email address updates
 
 #### Device Mode (Web Only)
+
 - **Identify**: User profile updates via native SDK
 - **Track**: Event tracking via native SDK
 
@@ -58,30 +64,32 @@ Implementation in **Javascript** (v0) and **TypeScript** (v1)
 Iterable supports batching for the following message types to optimize performance and reduce API calls:
 
 #### Identify Events
+
 - **Endpoint**: `/api/users/bulkUpdate`
 - **Batch Size**: Up to 4MB request size (~1000 users)
 - **Rate Limit**: 5 requests/second per API key
 
 #### Track Events
+
 - **Endpoint**: `/api/events/trackBulk`
 - **Batch Size**: Up to 4MB request size (~1000 events)
 - **Rate Limit**: 10 requests/second per project
 
 ### API Endpoints and Rate Limits
 
-| Endpoint | Event Types | Rate Limit | Batch Limits | Description |
-|----------|-------------|------------|--------------|-------------|
-| `/users/bulkUpdate` | Identify | 5 requests/second per API key | 4MB request size (~1000 users) | Bulk user profile updates |
-| `/events/trackBulk` | Track, Page, Screen | 10 requests/second per project | 4MB request size (~1000 events) | Bulk event tracking |
-| `/events/track` | Track, Page, Screen | 2000 requests/second per project | Single event | Individual event tracking |
-| `/users/update` | Identify | 500 requests/second | Single user | Individual user updates |
-| `/commerce/trackPurchase` | Track (Order Completed) | - | Single purchase | Purchase tracking |
-| `/commerce/updateCart` | Track (Product Added/Removed) | - | Single cart update | Shopping cart updates |
-| `/users/updateEmail` | Alias | - | Single user | Email address updates |
-| `/users/registerDeviceToken` | Device Registration | 500 requests/second per project | Single device | Mobile push token registration |
-| `/users/registerBrowserToken` | Browser Registration | - | Single browser | Web push token registration |
-| `/users/byUserId/{userId}` | User Deletion | 100 requests/second | Single user | User data deletion |
-| `/catalogs/{objectType}/items` | RETL Catalog | 100 requests/second | 1000 items | Catalog item management |
+| Endpoint                       | Event Types                   | Rate Limit                       | Batch Limits                    | Description                    |
+| ------------------------------ | ----------------------------- | -------------------------------- | ------------------------------- | ------------------------------ |
+| `/users/bulkUpdate`            | Identify                      | 5 requests/second per API key    | 4MB request size (~1000 users)  | Bulk user profile updates      |
+| `/events/trackBulk`            | Track, Page, Screen           | 10 requests/second per project   | 4MB request size (~1000 events) | Bulk event tracking            |
+| `/events/track`                | Track, Page, Screen           | 2000 requests/second per project | Single event                    | Individual event tracking      |
+| `/users/update`                | Identify                      | 500 requests/second              | Single user                     | Individual user updates        |
+| `/commerce/trackPurchase`      | Track (Order Completed)       | -                                | Single purchase                 | Purchase tracking              |
+| `/commerce/updateCart`         | Track (Product Added/Removed) | -                                | Single cart update              | Shopping cart updates          |
+| `/users/updateEmail`           | Alias                         | -                                | Single user                     | Email address updates          |
+| `/users/registerDeviceToken`   | Device Registration           | 500 requests/second per project  | Single device                   | Mobile push token registration |
+| `/users/registerBrowserToken`  | Browser Registration          | -                                | Single browser                  | Web push token registration    |
+| `/users/byUserId/{userId}`     | User Deletion                 | 100 requests/second              | Single user                     | User data deletion             |
+| `/catalogs/{objectType}/items` | RETL Catalog                  | 100 requests/second              | 1000 items                      | Catalog item management        |
 
 ### Intermediate Calls
 
@@ -142,6 +150,7 @@ The destination supports multiple data centers with automatic endpoint routing:
 #### RETL Support
 
 **Supported**: Yes, through VDM v1 and catalog management
+
 - **VDM v1**: Supported (`supportsVisualMapper: true`)
 - **VDM v2**: Not supported (no record message type)
 - **Catalog Operations**: Dynamic catalog endpoints based on object type
@@ -153,33 +162,39 @@ The destination supports multiple data centers with automatic endpoint routing:
 Event ordering requirements vary by event type based on their impact on user profiles and data consistency:
 
 #### Identify Events
+
 - **Ordering Required**: **YES** - Strict event ordering required
 - **Reason**: Identify events update user profiles and attributes. Out-of-order processing can result in newer user data being overwritten by older data, leading to incorrect user profiles
 - **Risk**: Profile attributes may become stale or incorrect if events are processed out of sequence
 - **Batching Impact**: Events within the same batch maintain relative order, but cross-batch ordering is not guaranteed
 
 #### Alias Events
+
 - **Ordering Required**: **YES** - Strict event ordering required
 - **Reason**: Alias events change user email addresses and affect identity resolution. Processing out of order can result in incorrect email mappings
 - **Risk**: User identity confusion and incorrect email associations
 
 #### Track Events
+
 - **Ordering Required**: **FLEXIBLE** - Timestamp-based ordering sufficient
 - **Reason**: Track events include `createdAt` timestamps that Iterable uses for chronological ordering. Events can be processed out of order as long as timestamps are preserved
 - **Timestamp Handling**: All track events include timestamps for proper chronological context within Iterable
 - **Batching Impact**: Parallel batch processing is acceptable due to timestamp preservation
 
 #### Page/Screen Events
+
 - **Ordering Required**: **FLEXIBLE** - Timestamp-based ordering sufficient
 - **Reason**: Similar to track events, page/screen events rely on timestamps for chronological ordering
 - **Analytics Impact**: Timestamps ensure proper user journey reconstruction regardless of processing order
 
 #### Commerce Events (Purchase, Cart Updates)
+
 - **Ordering Required**: **FLEXIBLE** - Timestamp-based ordering sufficient
 - **Reason**: Commerce events include timestamps and are processed individually, maintaining chronological context
 - **Processing**: Sent individually rather than batched, reducing ordering concerns
 
 #### Device/Browser Token Registration
+
 - **Ordering Required**: **NO** - Order not critical
 - **Reason**: Token registration is idempotent - the latest token registration overwrites previous ones
 - **Impact**: Out-of-order processing has no negative impact on functionality
@@ -278,6 +293,7 @@ A: The destination automatically batches identify events via `/api/users/bulkUpd
 
 **Q: Why are some events not being batched?**
 A: Events may not be batched if they:
+
 - Target different API endpoints (e.g., commerce events)
 - Exceed the 4MB size limit
 - Require device/browser token registration
@@ -285,6 +301,7 @@ A: Events may not be batched if they:
 
 **Q: What are the rate limits for Iterable API?**
 A: Rate limits vary by endpoint:
+
 - Bulk endpoints: 5-10 requests/second (per API key or project)
 - Individual endpoints: 5-2000 requests/second (varies by endpoint)
 - Device token registration: 500 requests/second per project
@@ -294,12 +311,14 @@ A: Rate limits vary by endpoint:
 
 **Q: How are e-commerce events handled differently?**
 A: Specific track events are automatically mapped to commerce endpoints:
+
 - "Order Completed" → `/api/commerce/trackPurchase`
 - "Product Added/Removed" → `/api/commerce/updateCart`
-These events are not batched and are sent individually.
+  These events are not batched and are sent individually.
 
 **Q: What is multiplexing and when does it occur?**
 A: Multiplexing occurs when a single input event generates multiple API calls. This happens when:
+
 - Identify events contain device/browser tokens (triggers additional registration calls)
 - Events require both user updates and token registration
 
@@ -307,6 +326,7 @@ A: Multiplexing occurs when a single input event generates multiple API calls. T
 
 **Q: How do I register device tokens for push notifications?**
 A: Include device token information in the event context:
+
 ```json
 {
   "context": {
@@ -326,10 +346,11 @@ A: The `registerDeviceOrBrowserApiKey` is an optional separate API key specifica
 
 **Q: What should I do if I receive user deletion errors?**
 A: User deletion errors can occur if:
+
 - The user doesn't exist (404 - this is handled gracefully)
 - Invalid API key or insufficient permissions (400/401)
 - Rate limiting (429)
-Check your API key permissions and ensure it has user deletion rights.
+  Check your API key permissions and ensure it has user deletion rights.
 
 **Q: How are bulk operation failures handled?**
 A: Bulk operations can have partial failures. The destination processes individual event failures within bulk responses and provides detailed error information for each failed event while allowing successful events to proceed.
@@ -338,6 +359,7 @@ A: Bulk operations can have partial failures. The destination processes individu
 
 **Q: How do I know which data center to use?**
 A: Check your Iterable account URL:
+
 - If it's `app.iterable.com`, use `USDC`
 - If it's `app.eu.iterable.com`, use `EUDC`
 
@@ -359,24 +381,28 @@ A: User events (object type 'users') are routed to standard identify endpoints, 
 
 **Q: Which events require strict ordering?**
 A: Event ordering requirements vary by type:
+
 - **Strict Ordering Required**: Identify and Alias events (risk of profile corruption)
 - **Flexible Ordering**: Track, Page/Screen, Commerce events (timestamp-based ordering)
 - **No Ordering Required**: Device/Browser token registration (idempotent operations)
 
 **Q: Can I replay missing data safely?**
 A: Yes, missing data can be replayed for all event types:
+
 - Use proper timestamp filtering to target missing data periods
 - Ensure timestamps are preserved for chronological context
 - All event types support historical data insertion
 
 **Q: What happens if I replay already delivered data?**
 A: Replaying already delivered data has different impacts:
+
 - **Safe to Replay**: Device/Browser registration, User deletion (idempotent)
 - **Risky to Replay**: Identify events (overwrites profiles), Track/Commerce events (creates duplicates)
 - **Conditional**: Alias events (same email change is safe, different changes create conflicts)
 
 **Q: Does Iterable support event deduplication?**
 A: No, Iterable destination does not implement automatic deduplication:
+
 - No unique ID-based deduplication for events
 - Relies on timestamp-based chronological processing
 - Profile updates are merged rather than deduplicated
@@ -384,6 +410,7 @@ A: No, Iterable destination does not implement automatic deduplication:
 
 **Q: How should I handle data replay scenarios?**
 A: Follow these guidelines for data replay:
+
 - **Missing Data**: Safe to replay all events with timestamp filtering
 - **Delivered Data**: Only replay idempotent operations (tokens, deletions)
 - **Profile Corrections**: Use identify events cautiously - only if overwriting is intended

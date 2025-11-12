@@ -9,15 +9,18 @@ This document details the business logic, field mappings, and data transformatio
 ### Track Event Processing
 
 1. **Event Validation**
+
    - Validate event name is present and is a string
    - Check if event is allowed based on configuration
 
 2. **Event Name Resolution**
+
    - Check built-in event mappings (`eventNameMapping`)
    - Check custom event mappings (`eventsToStandard`)
    - Validate against TikTok standard events if custom events are disabled
 
 3. **Payload Construction**
+
    - Map RudderStack event fields to TikTok format
    - Process user data and apply hashing if enabled
    - Handle product arrays and content mapping
@@ -30,50 +33,50 @@ This document details the business logic, field mappings, and data transformatio
 
 ### Common Fields (Both Versions)
 
-| RudderStack Field | TikTok Field | Notes |
-|-------------------|--------------|-------|
-| `messageId` | `event_id` | Used for deduplication |
-| `properties.eventId` | `event_id` | Takes precedence over messageId |
-| `properties.testEventCode` | `test_event_code` | For testing purposes |
-| `properties.contents` | `properties.contents` | Product array |
-| `properties.currency` | `properties.currency` | ISO currency code |
-| `properties.value` | `properties.value` | Event value |
-| `properties.description` | `properties.description` | Event description |
-| `properties.query` | `properties.query` | Search query |
+| RudderStack Field          | TikTok Field             | Notes                           |
+| -------------------------- | ------------------------ | ------------------------------- |
+| `messageId`                | `event_id`               | Used for deduplication          |
+| `properties.eventId`       | `event_id`               | Takes precedence over messageId |
+| `properties.testEventCode` | `test_event_code`        | For testing purposes            |
+| `properties.contents`      | `properties.contents`    | Product array                   |
+| `properties.currency`      | `properties.currency`    | ISO currency code               |
+| `properties.value`         | `properties.value`       | Event value                     |
+| `properties.description`   | `properties.description` | Event description               |
+| `properties.query`         | `properties.query`       | Search query                    |
 
 ### Events 1.0 (v1) Specific Fields
 
-| RudderStack Field | TikTok Field | Notes |
-|-------------------|--------------|-------|
-| `timestamp` | `timestamp` | ISO format timestamp |
-| `properties.category` | `properties.content_category` | Content category |
-| `properties.name` | `properties.content_name` | Content name |
-| `properties.product_id` | `properties.content_id` | Converted to string |
-| `properties.clickId` | `context.ad.callback` | Click tracking |
-| `context.ip` | `context.ip` | User IP address |
-| `context.userAgent` | `context.user_agent` | User agent string |
+| RudderStack Field       | TikTok Field                  | Notes                |
+| ----------------------- | ----------------------------- | -------------------- |
+| `timestamp`             | `timestamp`                   | ISO format timestamp |
+| `properties.category`   | `properties.content_category` | Content category     |
+| `properties.name`       | `properties.content_name`     | Content name         |
+| `properties.product_id` | `properties.content_id`       | Converted to string  |
+| `properties.clickId`    | `context.ad.callback`         | Click tracking       |
+| `context.ip`            | `context.ip`                  | User IP address      |
+| `context.userAgent`     | `context.user_agent`          | User agent string    |
 
 ### Events 2.0 (v2) Specific Fields
 
-| RudderStack Field | TikTok Field | Notes |
-|-------------------|--------------|-------|
-| `timestamp` | `event_time` | Unix timestamp (seconds), required |
-| `properties.limited_data_use` | `limited_data_use` | Privacy compliance |
-| `properties.url` | `page.url` | Page URL |
-| `properties.referrer` | `page.referrer` | Page referrer |
-| `context.locale` | `user.locale` | User locale |
-| `properties.ttclid` | `user.ttclid` | TikTok click ID |
-| `properties.ttp` | `user.ttp` | TikTok tracking parameter |
-| `traits.email` | `user.email` | User email (hashed) |
-| `traits.phone` | `user.phone` | User phone (hashed) |
-| `context.ip` | `user.ip` | User IP address |
-| `context.userAgent` | `user.user_agent` | User agent string |
-| `firstName` | `user.first_name` | Hashed first name |
-| `lastName` | `user.last_name` | Hashed last name |
-| `context.traits.city` | `user.city` | User city |
-| `context.traits.country` | `user.country` | User country |
-| `context.traits.state` | `user.state` | User state |
-| `zipcode` | `user.zip_code` | Hashed zip code |
+| RudderStack Field             | TikTok Field       | Notes                              |
+| ----------------------------- | ------------------ | ---------------------------------- |
+| `timestamp`                   | `event_time`       | Unix timestamp (seconds), required |
+| `properties.limited_data_use` | `limited_data_use` | Privacy compliance                 |
+| `properties.url`              | `page.url`         | Page URL                           |
+| `properties.referrer`         | `page.referrer`    | Page referrer                      |
+| `context.locale`              | `user.locale`      | User locale                        |
+| `properties.ttclid`           | `user.ttclid`      | TikTok click ID                    |
+| `properties.ttp`              | `user.ttp`         | TikTok tracking parameter          |
+| `traits.email`                | `user.email`       | User email (hashed)                |
+| `traits.phone`                | `user.phone`       | User phone (hashed)                |
+| `context.ip`                  | `user.ip`          | User IP address                    |
+| `context.userAgent`           | `user.user_agent`  | User agent string                  |
+| `firstName`                   | `user.first_name`  | Hashed first name                  |
+| `lastName`                    | `user.last_name`   | Hashed last name                   |
+| `context.traits.city`         | `user.city`        | User city                          |
+| `context.traits.country`      | `user.country`     | User country                       |
+| `context.traits.state`        | `user.state`       | User state                         |
+| `zipcode`                     | `user.zip_code`    | Hashed zip code                    |
 
 ## Event Name Mappings
 
@@ -89,25 +92,26 @@ const eventNameMapping = {
   'payment info entered': 'AddPaymentInfo',
   'checkout step completed': 'CompletePayment',
   'order completed': 'PlaceAnOrder',
-  'viewcontent': 'ViewContent',
-  'clickbutton': 'ClickButton',
-  'search': 'Search',
-  'contact': 'Contact',
-  'download': 'Download',
-  'submitform': 'SubmitForm',
-  'completeregistration': 'CompleteRegistration',
-  'subscribe': 'Subscribe',
-  'purchase': 'Purchase',
-  'lead': 'Lead',
-  'customizeproduct': 'CustomizeProduct',
-  'findlocation': 'FindLocation',
-  'schedule': 'Schedule'
+  viewcontent: 'ViewContent',
+  clickbutton: 'ClickButton',
+  search: 'Search',
+  contact: 'Contact',
+  download: 'Download',
+  submitform: 'SubmitForm',
+  completeregistration: 'CompleteRegistration',
+  subscribe: 'Subscribe',
+  purchase: 'Purchase',
+  lead: 'Lead',
+  customizeproduct: 'CustomizeProduct',
+  findlocation: 'FindLocation',
+  schedule: 'Schedule',
 };
 ```
 
 ### TikTok Standard Events
 
 Supported standard events include:
+
 - **E-commerce**: AddToCart, AddToWishlist, InitiateCheckout, AddPaymentInfo, CompletePayment, PlaceAnOrder, Purchase
 - **Engagement**: ViewContent, ClickButton, Search, Contact, Download, SubmitForm
 - **Registration**: CompleteRegistration, Subscribe
@@ -155,7 +159,7 @@ RudderStack's `properties.products` array is transformed into TikTok's `contents
 
 ### Content Type Handling
 
-- **Default Content Type**: 
+- **Default Content Type**:
   - v1: `product_group`
   - v2: `product`
 - **Priority**: `product.contentType` > `properties.contentType` > `properties.content_type` > default
@@ -168,16 +172,19 @@ RudderStack's `properties.products` array is transformed into TikTok's `contents
 When `hashUserProperties` is enabled (default: true):
 
 1. **Email Processing**:
+
    - Trim whitespace
    - Convert to lowercase
    - Apply SHA-256 hashing
 
 2. **Phone Processing**:
+
    - Trim whitespace
    - Apply SHA-256 hashing
    - Supports both single values and arrays
 
 3. **External ID Processing**:
+
    - Trim whitespace
    - Apply SHA-256 hashing
    - Supports both single values and arrays
@@ -192,6 +199,7 @@ When `hashUserProperties` is enabled (default: true):
 ### Required Fields
 
 1. **Configuration Level**:
+
    - `pixelCode`: Always required
    - `accessToken`: Required for cloud mode
 
@@ -218,10 +226,12 @@ When `hashUserProperties` is enabled (default: true):
 ### Common Error Scenarios
 
 1. **Configuration Errors**:
+
    - Missing Access Token: `ConfigurationError`
    - Missing Pixel Code: `ConfigurationError`
 
 2. **Validation Errors**:
+
    - Invalid event name: `InstrumentationError`
    - Missing event type: `InstrumentationError`
    - Unsupported message type: `InstrumentationError`

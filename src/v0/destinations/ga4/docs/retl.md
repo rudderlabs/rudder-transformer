@@ -5,6 +5,7 @@
 **RETL (Reverse ETL) Support**: **Yes**
 
 The GA4 destination supports RETL functionality. Evidence:
+
 - `supportedSourceTypes` includes `warehouse` which indicates RETL support
 - JSON mapper is supported by default (no `disableJsonMapper: true` in config)
 - Supports data flow from warehouses/databases to GA4
@@ -12,20 +13,26 @@ The GA4 destination supports RETL functionality. Evidence:
 ## RETL Support Analysis
 
 ### Which type of retl support does it have?
+
 - **JSON Mapper**: Supported (default, no `disableJsonMapper: true`)
 - **VDM V1**: Not supported (`supportsVisualMapper` not present in `db-config.json`)
 - **VDM V2**: Not supported (no `record` in `supportedMessageTypes`)
 
 ### Does it have vdm support?
+
 **No** - `supportsVisualMapper` is not present in `db-config.json`
 
 ### Does it have vdm v2 support?
+
 **No** - Missing both:
+
 - `supportedMessageTypes > record` in `db-config.json`
 - Record event type handling in transformer code
 
 ### Connection config
+
 Standard GA4 configuration applies:
+
 - **Measurement ID**: Same measurement ID used for event stream functionality
 - **API Secret**: Required for Measurement Protocol v4
 - **Firebase App ID**: Optional, for enhanced measurement
@@ -43,6 +50,7 @@ GA4 supports RETL through warehouse sources with JSON mapper functionality:
 - **Mapping**: JSON mapper transforms warehouse data to GA4 event format
 
 ### Supported Message Types for RETL
+
 ```json
 "supportedMessageTypes": {
   "cloud": ["track", "group", "page"]
@@ -102,12 +110,14 @@ switch (messageType) {
 ## Rate Limits and Constraints
 
 ### GA4 API Limits
+
 - **Measurement Protocol v4**: 20 requests per second per measurement ID
 - **Event Batch Size**: Up to 25 events per request
 - **Event Properties**: Maximum 25 custom parameters per event
 - **Event Name Length**: Maximum 40 characters
 
 ### RETL Processing Constraints
+
 - **Message Types**: Limited to track, page, and group events
 - **JSON Mapper Only**: No visual mapper or VDM v2 support
 - **Cloud Mode Only**: Device mode not supported for RETL
@@ -124,6 +134,7 @@ The GA4 destination supports RETL functionality through:
 - **API Integration**: Measurement Protocol v4 for event delivery
 
 **Limitations**:
+
 - No VDM v1 or VDM v2 support (JSON mapper only)
 - Limited to track, page, and group events
 - No identify, screen, or alias event support for RETL

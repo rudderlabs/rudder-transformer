@@ -15,11 +15,11 @@ command
   .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
   .option('-i, --index <number>', 'Enter Test index')
-  .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
-  .option('-dp, --dataPlane <string>', 'Enter Data Plane URL')
-  .option('-wk, --writeKey <string>', 'Enter Write Key')
+  .option('--id <string>', 'Enter unique "Id" of the test case you want to run')
+  .option('--dp, --dataPlane <string>', 'Enter Data Plane URL')
+  .option('--wk, --writeKey <string>', 'Enter Write Key')
   .option(
-    '-fk, --filterKeys <string>',
+    '--fk, --filterKeys <string>',
     'Enter Keys to filter from the test data(originalTimestamp, timestamp, messageId etc)',
   )
   .parse();

@@ -16,6 +16,7 @@
 - For such events, the transformer uses `traits` (Identify) or direct payload (Track/Group) as final payload without rebuilding standard mappings.
 
 Where used in workflows:
+
 - Identify v2: `rEtlPayload = getFieldValueFromMessage(message, "traits")` and then forwarded to the contact payload with additional filtering and validation.
 - Identify v1: `rEtlPayload` similarly used, merged with v1-specific fields.
 - Track: When `mappedToDestination`, the payload is taken from input and metadata normalization applied (`addMetadataToPayload`).

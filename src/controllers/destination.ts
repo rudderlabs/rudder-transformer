@@ -15,11 +15,9 @@ import { getIntegrationVersion } from '../util/utils';
 import { checkInvalidRtTfEvents } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
-import logger from '../logger';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
-    logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     let resplist: ProcessorTransformationResponse[];
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     let events = ctx.request.body as ProcessorTransformationRequest[];
@@ -72,7 +70,6 @@ export class DestinationController {
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
-    logger.debug('Native(Router-Transform):: Requst to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
@@ -86,9 +83,6 @@ export class DestinationController {
         },
       ];
 
-      logger.debug(
-        `[${destination}] Invalid router transform payload structure: ${JSON.stringify(events)}`,
-      );
       ctx.body = { output: errorRespEvents };
       ControllerUtility.postProcess(ctx);
       return ctx;
@@ -140,7 +134,6 @@ export class DestinationController {
   }
 
   public static batchProcess(ctx: Context) {
-    logger.debug('Native(Process-Transform-Batch):: Requst to transformer::', ctx.request.body);
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;

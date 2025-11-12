@@ -252,6 +252,7 @@ export const trackTestData = [
               JSON: {
                 ...properties,
                 user_id: 'user@1',
+                external_id: 'user@1',
                 event_name: 'Product Viewed',
               },
             }),

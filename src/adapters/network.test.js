@@ -28,16 +28,8 @@ jest.mock('../util/stats', () => ({
 }));
 const stats = require('../util/stats');
 
-jest.mock('@rudderstack/integrations-lib', () => {
-  return {
-    ...jest.requireActual('@rudderstack/integrations-lib'),
-    structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
-  };
-});
-
-const { PlatformError } = require('@rudderstack/integrations-lib');
-
-// Mock the axios module
+// Mock the axios module first, before mocking integrations-lib
+// This ensures axios has the proper structure (defaults.adapter) that MockAdapter expects
 jest.mock('axios', () => {
   const mockAxios = jest.fn(); // Mock the default axios function
   mockAxios.get = jest.fn(); // Mock axios.get
@@ -49,8 +41,22 @@ jest.mock('axios', () => {
   // Mock the axios.create method if needed
   mockAxios.create = jest.fn(() => mockAxios);
 
+  // Add defaults object with adapter property that MockAdapter expects
+  mockAxios.defaults = {
+    adapter: undefined,
+  };
+
   return mockAxios; // Return the mocked axios
 });
+
+jest.mock('@rudderstack/integrations-lib', () => {
+  return {
+    ...jest.requireActual('@rudderstack/integrations-lib'),
+    structuredLogger: jest.fn().mockReturnValue(mockLoggerInstance),
+  };
+});
+
+const { PlatformError } = require('@rudderstack/integrations-lib');
 
 const axios = require('axios');
 

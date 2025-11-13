@@ -58,7 +58,7 @@ class Cache {
     if (result !== null && result !== undefined) {
       // Handle special case where result has 'value' and 'age' properties
       // This allows store functions to specify custom TTL
-      if (typeof result === 'object' && result !== null && 'value' in result && 'age' in result) {
+      if (typeof result === 'object' && 'value' in result && 'age' in result) {
         this.cache.set(key, result.value, result.age);
         retVal = result.value;
       } else {

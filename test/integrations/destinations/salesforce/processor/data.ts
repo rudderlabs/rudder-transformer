@@ -1402,7 +1402,7 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret2,
-                instance_url: 'http://dummyurl.com',
+                instance_url: 'https://dummyurl.com',
               },
             },
             message: {
@@ -1469,7 +1469,7 @@ export const data = [
             metadata: {
               secret: {
                 access_token: secret2,
-                instance_url: 'http://dummyurl.com',
+                instance_url: 'https://dummyurl.com',
               },
             },
             output: {
@@ -1477,7 +1477,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'http://dummyurl.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
+                'https://dummyurl.com/services/data/v50.0/sobjects/custom_object__c/a005g0000383kmUAAQ?_HttpMethod=PATCH',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader2,

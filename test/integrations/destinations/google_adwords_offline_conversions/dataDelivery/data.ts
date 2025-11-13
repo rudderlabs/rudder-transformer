@@ -6,12 +6,7 @@
  * see batchFetching/data.ts.
  */
 
-import { v0oauthScenarios, v1oauthScenarios } from './oauth';
-import { testScenariosForV0API, testScenariosForV1API } from './business';
+import { v1oauthScenarios } from './oauth';
+import { testScenariosForV1API } from './business';
 
-export const data = [
-  ...v0oauthScenarios,
-  ...v1oauthScenarios,
-  ...testScenariosForV0API,
-  ...testScenariosForV1API,
-];
+export const data = [...v1oauthScenarios, ...testScenariosForV1API];

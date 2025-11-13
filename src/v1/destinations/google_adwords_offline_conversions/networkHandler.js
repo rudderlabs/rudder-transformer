@@ -180,9 +180,10 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
 const getConversionCustomVariableHashMap = (arrays) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
-    arrays.forEach((array) => {
-      hashMap[array.conversionCustomVariable.name] = array.conversionCustomVariable.resourceName;
-    });
+    for (const element of arrays) {
+      hashMap[element.conversionCustomVariable.name] =
+        element.conversionCustomVariable.resourceName;
+    }
   }
   return hashMap;
 };
@@ -228,9 +229,9 @@ const ProxyRequest = async (request) => {
     if (!useBatchFetching) {
       const conversionId = await getConversionActionId({ headers, params, metadata });
       if (Array.isArray(addPayload.operations)) {
-        addPayload.operations.forEach((operation) => {
+        for (const operation of addPayload.operations) {
           set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-        });
+        }
       }
     }
 
@@ -272,7 +273,7 @@ const ProxyRequest = async (request) => {
     let { customVariables } = params;
     const resultantCustomVariables = [];
     customVariables = getHashFromArray(customVariables, 'from', 'to', false);
-    Object.keys(customVariables).forEach((key) => {
+    for (const key of Object.keys(customVariables)) {
       if (properties[key] && conversionCustomVariable[customVariables[key]]) {
         // 1. set custom variable name
         // 2. set custom variable value
@@ -281,7 +282,7 @@ const ProxyRequest = async (request) => {
           value: String(properties[key]),
         });
       }
-    });
+    }
 
     if (resultantCustomVariables) {
       set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);

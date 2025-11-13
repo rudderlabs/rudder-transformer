@@ -329,13 +329,13 @@ const batchClickCallEvents = async (clickCallEvents) => {
   // Group events by endpoint and customerId
   const eventGroups = {};
 
-  clickCallEvents.forEach((event) => {
+  for (const event of clickCallEvents) {
     const { endpointPath } = event.message;
     if (!eventGroups[endpointPath]) {
       eventGroups[endpointPath] = [];
     }
     eventGroups[endpointPath].push(event);
-  });
+  }
 
   // Process each group (each group has same endpoint and customerId)
   // eslint-disable-next-line no-restricted-syntax

@@ -47,8 +47,9 @@ steps:
     template: |
       $.addExternalIdToTraits(.message);
       const payload = $.getFieldValueFromMessage(.message, "traits");
+      // this is applicable for v2 only
       // if email is present, we are not mapping user_id to external_id
-      payload.external_id = !payload.email ? payload.user_id : null;
+      payload.external_id = $.outputs.apiVersion === "v2" && !payload.email ? payload.user_id : null;
       payload;
 
   - name: searchContact

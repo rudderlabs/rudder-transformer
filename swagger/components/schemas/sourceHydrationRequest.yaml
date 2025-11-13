@@ -1,0 +1,52 @@
+title: Source Hydration Request
+type: object
+required:
+  - batch
+  - source
+properties:
+  batch:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      required:
+        - id
+        - event
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the event in the batch
+        event:
+          description: The event object
+          allOf:
+            - $ref: './rudderMessage.yaml'
+  source:
+    type: object
+    description: The source object
+    required:
+      - id
+      - config
+      - workspaceId
+      - sourceDefinition
+    properties:
+      id:
+        type: string
+        description: The id of the source
+      config:
+        type: object
+        description: The source configuration object
+      workspaceId:
+        type: string
+        description: The workspace id associated with the source
+      internalSecret:
+        type: object
+        description: The internal secret object for the source
+      sourceDefinition:
+        type: object
+        description: The source definition object
+        required:
+          - name
+        properties:
+          name:
+            type: string
+            description: The name of the source definition

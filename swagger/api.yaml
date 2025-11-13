@@ -31,7 +31,7 @@ paths:
   /features:
     $ref: './routes/misc.yaml#/~1features'
 
-  #Destination Routes
+  #Destination Transformation Routes
   /{version}/destinations/{destination}:
     $ref: './routes/destination.yaml#/~1{version}~1destinations~1{destination}'
   /routerTransform:
@@ -57,9 +57,13 @@ paths:
   /{version}/destinations/{destination}/proxyTest:
     $ref: './routes/delivery.yaml#/~1{version}~1destinations~1{destination}~1proxyTest'
 
-  #Source Routes
+  #Source Transformation Routes
   /{version}/sources/{source}:
     $ref: './routes/source.yaml#/~1{version}~1sources~1{source}'
+
+  #Source Hydration Routes
+  /{version}/sources/{source}/hydrate:
+    $ref: './routes/sourceHydration.yaml#/~1{version}~1sources~1{source}~1hydrate'
 
   #User Transform Routes
   /customTransform:

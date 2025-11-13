@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { formatZodError, InstrumentationError, commonAuthSecretT, AmazonDestinationAuthSecretT1 } from '@rudderstack/integrations-lib';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import {

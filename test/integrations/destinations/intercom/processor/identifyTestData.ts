@@ -1295,4 +1295,95 @@ export const identifyTestData = [
       },
     },
   },
+  {
+    id: 'intercom-identify-test-19',
+    name: 'intercom',
+    description: 'V1 version : user_id set as indentifier in rETL flow',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain create user payload with post method and with only user_id in the body along with other traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v1Destination,
+            message: {
+              context: {
+                externalId: [
+                  {
+                    id: 'user@2',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+              traits: {
+                custom_attributes: {
+                  key1: 'value1',
+                  key2: 'value2',
+                },
+                name: 'Test Name',
+              },
+              type: 'identify',
+              timestamp,
+              originalTimestamp,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              attemptNum: 1,
+              destinationId: 'default-destinationId',
+              dontBatch: false,
+              jobId: 1,
+              secret: {
+                accessToken: 'commonAccessToken',
+              },
+              sourceId: 'default-sourceId',
+              userId: 'default-userId',
+              workspaceId: 'default-workspaceId',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  update_last_request_at: true,
+                  name: 'Test Name',
+                  user_id: 'user@2',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://api.intercom.io/users',
+              files: {},
+              headers: {
+                Accept: 'application/json',
+                Authorization: 'Bearer intercom4',
+                'Content-Type': 'application/json',
+                'Intercom-Version': '1.4',
+                'User-Agent': 'RudderStack',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

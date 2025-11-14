@@ -24,7 +24,7 @@ const {
   getConversionActionIds,
   getConversionCustomVariables,
   getListCustomVariable,
-  isBatchFetchingEnabled,
+  isClickCallBatchingEnabled,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -141,7 +141,7 @@ const trackResponseBuilder = async (message, metadata, destination) => {
   const conversionName = eventsToConversionsNamesMapping[event];
   let conversionActionId;
   let customVariableList = [];
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   if (useBatchFetching) {
     const { customerId } = destination.Config;
     const filteredCustomerId = removeHyphens(customerId);

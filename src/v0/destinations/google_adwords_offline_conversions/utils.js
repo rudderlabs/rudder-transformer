@@ -80,7 +80,7 @@ const validateDestinationConfig = ({ Config }) => {
  *
  * @returns {boolean} true to enable batch fetching, false for legacy per-request flow
  */
-const isBatchFetchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
+const isClickCallBatchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
 
 /**
  * Constructs HTTP request headers for Google Ads API calls
@@ -309,7 +309,7 @@ const getCallConversionPayload = (
     path: CALL_CONVERSION_ENDPOINT_PATH,
   };
 
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   if (useBatchFetching) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
     if (customVariableList.length > 0) {
@@ -348,7 +348,7 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
     payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
   }`;
 
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   // add convertion conversion_action to transaction_attribute
   if (useBatchFetching) {
     payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
@@ -512,7 +512,7 @@ const getClickConversionPayloadAndEndpoint = (
     set(payload, 'conversions[0].cartData.items', itemList);
   }
 
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   if (useBatchFetching) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
     if (customVariableList.length > 0) {
@@ -702,13 +702,13 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
   }
 
   // Read final values from cache and return result
-  const convesionActionMap = await Promise.all(
+  const conversionActionMap = await Promise.all(
     conversionNames.map(async (conversionName) => {
       const key = sha256(customerId + conversionName).toString();
       return [conversionName, await conversionActionIdCache.get(key)];
     }),
   );
-  return Object.fromEntries(convesionActionMap);
+  return Object.fromEntries(conversionActionMap);
 };
 
 /**
@@ -860,7 +860,7 @@ module.exports = {
   updateConversion,
   getAddConversionPayload,
   getListCustomVariable,
-  isBatchFetchingEnabled,
+  isClickCallBatchingEnabled,
   getConversionActionIds,
   getConversionCustomVariables,
 };

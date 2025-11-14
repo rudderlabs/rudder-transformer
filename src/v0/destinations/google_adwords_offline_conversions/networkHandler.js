@@ -12,7 +12,7 @@ const {
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { getConversionActionId, isBatchFetchingEnabled } = require('./utils');
+const { getConversionActionId, isClickCallBatchingEnabled } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
 const { getDeveloperToken, getAuthErrCategory } = require('../../util/googleUtils');
@@ -206,7 +206,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,

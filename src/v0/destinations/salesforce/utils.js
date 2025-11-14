@@ -26,8 +26,6 @@ const {
   SF_API_VERSION,
 } = require('./config');
 
-require('dotenv').config();
-
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
 /**
@@ -246,7 +244,23 @@ const getAuthHeader = (authInfo) => {
     : { Authorization: authorizationData.token };
 };
 
-// Look up to salesforce using details passed as external id through payload
+const isWorkspaceSupportedForSoql = (workspaceId) => {
+  const soqlSupportedWorkspaceIds = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS?.split(
+    ',',
+  )?.map?.((s) => s?.trim?.());
+  return soqlSupportedWorkspaceIds?.includes(workspaceId);
+};
+
+/**
+ * Look up to salesforce using details passed as external id through payload
+ *
+ * @param {string} objectType The Salesforce object type.
+ * @param {string} identifierType The Salesforce field type.
+ * @param {string} identifierValue The Salesforce field value.
+ * @param {{ destination: Record<string, any>, metadata: Record<string, object> }} params The destination and metadata.
+ * @param {{ authorizationData: Record<string, any>, authorizationFlow: string }} authInfo The authorization data and flow.
+ * @returns {Promise<string>} The Salesforce ID for the record. Returns undefined if the record is not found.
+ */
 async function getSalesforceIdForRecordUsingHttp(
   objectType,
   identifierType,
@@ -289,6 +303,14 @@ async function getSalesforceIdForRecordUsingHttp(
   return searchRecord?.Id;
 }
 
+/**
+ * Get the Salesforce ID for a record using the Salesforce SDK
+ * @param {SalesforceSDK} salesforceSdk The Salesforce SDK instance.
+ * @param {string} objectType The Salesforce object type.
+ * @param {string} identifierType The Salesforce field type.
+ * @param {string} identifierValue The Salesforce field value.
+ * @returns {Promise<string>} The Salesforce ID for the record. Returns undefined if the record is not found.
+ */
 async function getSalesforceIdForRecordUsingSdk(
   salesforceSdk,
   objectType,
@@ -306,7 +328,7 @@ async function getSalesforceIdForRecordUsingSdk(
 
   if (queryResponse.totalSize > 1) {
     throw new NetworkInstrumentationError(
-      `Multiple records found for ${objectType} with ${identifierType} = '${identifierValue}'`,
+      `Multiple ${objectType} records found with ${identifierType} '${identifierValue}'`,
     );
   }
 
@@ -316,6 +338,16 @@ async function getSalesforceIdForRecordUsingSdk(
   return queryResponse.records[0].Id;
 }
 
+/**
+ * Get the Salesforce ID for a record using the Salesforce SDK or HTTP
+ * @param {string} objectType The Salesforce object type.
+ * @param {string} identifierType The Salesforce field type.
+ * @param {string} identifierValue The Salesforce field value.
+ * @param {Record<string, any>} destination The destination.
+ * @param {Record<string, any>} metadata The metadata.
+ * @param {Record<string, any>} stateInfo The state info.
+ * @returns {Promise<string>} The Salesforce ID for the record. Returns undefined if the record is not found.
+ */
 async function getSalesforceIdForRecord({
   objectType,
   identifierType,
@@ -324,10 +356,7 @@ async function getSalesforceIdForRecord({
   metadata,
   stateInfo,
 }) {
-  const whiteListedWorkspaces = process.env.WHITE_LISTED_WORKSPACES_SALESFORCE?.split(',')?.map?.(
-    (s) => s?.trim?.(),
-  );
-  if (whiteListedWorkspaces?.includes(metadata.workspaceId)) {
+  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
     return getSalesforceIdForRecordUsingSdk(
       stateInfo.salesforceSdk,
       objectType,
@@ -345,6 +374,13 @@ async function getSalesforceIdForRecord({
   );
 }
 
+/**
+ * Get the Salesforce ID for a lead using the Salesforce SDK
+ * @param {SalesforceSDK} salesforceSdk The Salesforce SDK instance.
+ * @param {string} email The email of the lead.
+ * @param {Record<string, any>} destination The destination.
+ * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
+ */
 async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination) {
   let queryResponse;
   try {
@@ -362,9 +398,7 @@ async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination)
   }
 
   if (queryResponse.totalSize > 1) {
-    throw new NetworkInstrumentationError(
-      `Multiple records found for Lead with Email = '${email}'`,
-    );
+    throw new NetworkInstrumentationError(`Multiple lead records found with email '${email}'`);
   }
 
   // If exactly one record is found, check if the lead has been deleted
@@ -392,9 +426,18 @@ async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination)
   };
 }
 
+/**
+ * Get the Salesforce ID for a lead using HTTP
+ * @param {string} email The email of the lead.
+ * @param {Record<string, any>} destination The destination.
+ * @param {Record<string, any>} authInfo The authorization info.
+ * @param {Record<string, any>} metadata The metadata.
+ * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
+ */
 async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, metadata) {
+  const encodedEmail = encodeURIComponent(email);
   const { authorizationData, authorizationFlow } = authInfo;
-  const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
+  const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${encodedEmail}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
   // request configuration will be conditional
   const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
@@ -450,11 +493,16 @@ async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, met
   };
 }
 
+/**
+ * Get the Salesforce ID for a lead using the Salesforce SDK or HTTP
+ * @param {string} email The email of the lead.
+ * @param {Record<string, any>} destination The destination.
+ * @param {Record<string, any>} metadata The metadata.
+ * @param {Record<string, any>} stateInfo The state info.
+ * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
+ */
 async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
-  const whiteListedWorkspaces = process.env.WHITE_LISTED_WORKSPACES_SALESFORCE?.split(',')?.map?.(
-    (s) => s?.trim?.(),
-  );
-  if (whiteListedWorkspaces?.includes(metadata.workspaceId)) {
+  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
     return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
   }
   return getSalesforceIdForLeadUsingHttp(email, destination, stateInfo.authInfo, metadata);

@@ -175,7 +175,7 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
     // need to perform a parameterized search for this using email
-    const email = encodeURIComponent(getFieldValueFromMessage(message, 'email'));
+    const email = getFieldValueFromMessage(message, 'email');
 
     if (!email) {
       throw new InstrumentationError('Invalid Email address for Lead Objet');

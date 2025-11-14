@@ -6124,7 +6124,6 @@ export const newData = [
     mockFns: timestampMock,
     envOverrides: {
       GAOC_ENABLE_BATCH_FETCHING: 'true',
-      DEVELOPER_TOKEN: 'test-developer-token-12345',
     },
   },
 ];

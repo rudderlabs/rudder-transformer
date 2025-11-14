@@ -89,9 +89,10 @@ const getHeader = (Config, metadata, passToken = false) => {
     'Content-Type': 'application/json',
   };
 
-  const useBatchFetching = isBatchFetchingEnabled();
   const developerToken = getDeveloperToken();
-  if (developerToken && useBatchFetching && passToken) {
+  // Developer token is sensitive and should not be exposed in the UI (live events or failure events).
+  // The passToken flag ensures it's only included for internal API calls.
+  if (developerToken && passToken) {
     response['developer-token'] = developerToken;
   }
 

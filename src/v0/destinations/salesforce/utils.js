@@ -525,4 +525,5 @@ module.exports = {
   getAuthHeader,
   getSalesforceIdForRecord,
   getSalesforceIdForLead,
+  isWorkspaceSupportedForSoql,
 };

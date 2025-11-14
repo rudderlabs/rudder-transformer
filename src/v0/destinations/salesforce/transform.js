@@ -29,6 +29,7 @@ const {
   getAuthHeader,
   getSalesforceIdForRecord,
   getSalesforceIdForLead,
+  isWorkspaceSupportedForSoql,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 // Basic response builder
@@ -257,11 +258,14 @@ async function processSingleMessage({ message, destination, metadata }, stateInf
 async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
 
-  const { token, instanceUrl } = authInfo.authorizationData;
-  const salesforceSdk = new SalesforceSDK.Salesforce({
-    accessToken: token,
-    instanceUrl,
-  });
+  let salesforceSdk;
+  if (isWorkspaceSupportedForSoql(event?.metadata?.workspaceId ?? '')) {
+    const { token, instanceUrl } = authInfo.authorizationData;
+    salesforceSdk = new SalesforceSDK.Salesforce({
+      accessToken: token,
+      instanceUrl,
+    });
+  }
   const stateInfo = {
     authInfo,
     salesforceSdk,
@@ -287,12 +291,15 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   try {
-    const { token, instanceUrl } = authInfo.authorizationData;
+    const metadata = inputs?.[0]?.metadata;
+    if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+      const { token, instanceUrl } = authInfo.authorizationData;
 
-    salesforceSdk = new SalesforceSDK.Salesforce({
-      accessToken: token,
-      instanceUrl,
-    });
+      salesforceSdk = new SalesforceSDK.Salesforce({
+        accessToken: token,
+        instanceUrl,
+      });
+    }
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(

@@ -37,6 +37,7 @@ const helper = require('./helper');
  * @param {*} event
  * @param {*} conversionType
  * @param {*} conversionActionId
+ * @param {*} customVariableList
  * @returns
  */
 const getConversions = (

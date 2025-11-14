@@ -82,9 +82,13 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const isBatchFetchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
 
-const getHeader = (Config, metadata, passToken = false) => {
+const getReqHeaders = (Config, metadata, passToken = false) => {
   const { subAccount, loginCustomerId } = Config;
-  const response = {
+  if (subAccount && !loginCustomerId) {
+    throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
+  }
+
+  const headers = {
     Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
   };
@@ -93,19 +97,15 @@ const getHeader = (Config, metadata, passToken = false) => {
   // Developer token is sensitive and should not be exposed in the UI (live events or failure events).
   // The passToken flag ensures it's only included for internal API calls.
   if (developerToken && passToken) {
-    response['developer-token'] = developerToken;
+    headers['developer-token'] = developerToken;
   }
 
-  if (subAccount) {
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-      response['login-customer-id'] = filteredLoginCustomerId;
-    } else {
-      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
-    }
+  if (subAccount && loginCustomerId) {
+    const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+    headers['login-customer-id'] = filteredLoginCustomerId;
   }
 
-  return response;
+  return headers;
 };
 
 /**
@@ -244,7 +244,7 @@ const requestBuilder = (
   }
   response.body.JSON = payload;
 
-  response.headers = getHeader(Config, metadata);
+  response.headers = getReqHeaders(Config, metadata);
   return response;
 };
 /**
@@ -574,7 +574,7 @@ const getListCustomVariable = ({ properties, conversionCustomVariableMap, custom
  * @param {object} metadata - Request metadata
  * @returns {Object} Map of conversion names to resource names
  */
-const batchFetchConversionActions = async ({ customerId, conversionNames, headers, metadata }) => {
+const batchFetchConversionActions = async ({ Config, customerId, conversionNames, metadata }) => {
   if (!Array.isArray(conversionNames) || conversionNames.length === 0) {
     return {};
   }
@@ -584,6 +584,7 @@ const batchFetchConversionActions = async ({ customerId, conversionNames, header
     'SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN (?)',
     [conversionNames],
   );
+  const headers = getReqHeaders(Config, metadata, true);
   const data = {
     query: queryString,
   };
@@ -609,7 +610,7 @@ const batchFetchConversionActions = async ({ customerId, conversionNames, header
     const errorMessage =
       response?.[0]?.error?.message || response?.error?.message || JSON.stringify(response);
     throw new NetworkError(
-      `[Google Ads Offline Conversions]:: ${errorMessage} during batch conversion action fetch`,
+      `[Google Ads Offline Conversions]:: Unable to fetch conversions action - ${errorMessage}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -669,11 +670,10 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
   // If there are any cache misses, fetch ALL conversions in single API call
   // since the API call cost is the same regardless of how many we fetch
   if (hasCacheMiss) {
-    const headers = getHeader(Config, metadata, true);
     const fetchedConversions = await batchFetchConversionActions({
+      Config,
       customerId,
       conversionNames,
-      headers,
       metadata,
     });
 
@@ -698,9 +698,9 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
  * @returns {Object} Map of variable names to resource names
  */
 const batchFetchConversionCustomVariablesMap = async ({
+  Config,
   customerId,
   variableNames,
-  headers,
   metadata,
 }) => {
   if (!Array.isArray(variableNames) || variableNames.length === 0) {
@@ -712,6 +712,7 @@ const batchFetchConversionCustomVariablesMap = async ({
     'SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN (?)',
     [variableNames],
   );
+  const headers = getReqHeaders(Config, metadata, true);
   const data = {
     query: queryString,
   };
@@ -733,7 +734,7 @@ const batchFetchConversionCustomVariablesMap = async ({
 
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `[Google Ads Offline Conversions]:: ${response?.[0]?.error?.message || response?.error?.message} during batch conversion custom variable fetch`,
+      `[Google Ads Offline Conversions]:: Unable to fetch conversions custom variables - ${response?.[0]?.error?.message || response?.error?.message}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -793,11 +794,10 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
   // If there are any cache misses, fetch ALL variables in single API call
   // since the API call cost is the same regardless of how many we fetch
   if (hasCacheMiss) {
-    const headers = getHeader(Config, metadata, true);
     const fetchedVariablesMap = await batchFetchConversionCustomVariablesMap({
+      Config,
       customerId,
       variableNames,
-      headers,
       metadata,
     });
 
@@ -827,7 +827,6 @@ module.exports = {
   getCallConversionPayload,
   updateConversion,
   getAddConversionPayload,
-  getHeader,
   getListCustomVariable,
   isBatchFetchingEnabled,
   getConversionActionIds,

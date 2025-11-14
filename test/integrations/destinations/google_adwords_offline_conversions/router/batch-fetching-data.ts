@@ -112,7 +112,7 @@ export const newData = [
             {
               authErrorCategory: 'REFRESH_TOKEN',
               error:
-                '{"message":"[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during batch conversion action fetch","destinationResponse":[{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}]}',
+                '{\"message\":\"[Google Ads Offline Conversions]:: Unable to fetch conversions action - Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"destinationResponse\":[{\"error\":{\"code\":401,\"message\":\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"status\":\"UNAUTHENTICATED\"}}]}',
               metadata: [
                 {
                   secret: {

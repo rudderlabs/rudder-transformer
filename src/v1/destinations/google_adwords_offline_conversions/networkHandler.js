@@ -253,39 +253,41 @@ const ProxyRequest = async (request) => {
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
-  if (!useBatchFetching && params?.event) {
-    const conversionActionId = await getConversionActionId({ headers, params, metadata });
-    set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
-  }
-  // customVariables would be undefined in case of Store Conversions
-  if (!useBatchFetching && isValidCustomVariables(params.customVariables)) {
-    // fetch all conversion custom variable in google ads
-    let conversionCustomVariable = await getConversionCustomVariable({
-      headers,
-      params,
-      metadata,
-    });
-
-    // convert it into hashMap
-    conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
-
-    const { properties } = params;
-    let { customVariables } = params;
-    const resultantCustomVariables = [];
-    customVariables = getHashFromArray(customVariables, 'from', 'to', false);
-    for (const key of Object.keys(customVariables)) {
-      if (properties[key] && conversionCustomVariable[customVariables[key]]) {
-        // 1. set custom variable name
-        // 2. set custom variable value
-        resultantCustomVariables.push({
-          conversionCustomVariable: conversionCustomVariable[customVariables[key]],
-          value: String(properties[key]),
-        });
-      }
+  if (!useBatchFetching) {
+    if (params?.event) {
+      const conversionActionId = await getConversionActionId({ headers, params, metadata });
+      set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
     }
+    // customVariables would be undefined in case of Store Conversions
+    if (isValidCustomVariables(params.customVariables)) {
+      // fetch all conversion custom variable in google ads
+      let conversionCustomVariable = await getConversionCustomVariable({
+        headers,
+        params,
+        metadata,
+      });
 
-    if (resultantCustomVariables) {
-      set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
+      // convert it into hashMap
+      conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
+
+      const { properties } = params;
+      let { customVariables } = params;
+      const resultantCustomVariables = [];
+      customVariables = getHashFromArray(customVariables, 'from', 'to', false);
+      for (const key of Object.keys(customVariables)) {
+        if (properties[key] && conversionCustomVariable[customVariables[key]]) {
+          // 1. set custom variable name
+          // 2. set custom variable value
+          resultantCustomVariables.push({
+            conversionCustomVariable: conversionCustomVariable[customVariables[key]],
+            value: String(properties[key]),
+          });
+        }
+      }
+
+      if (resultantCustomVariables) {
+        set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
+      }
     }
   }
   const requestBody = { url: endpoint, data: body.JSON, headers, method };

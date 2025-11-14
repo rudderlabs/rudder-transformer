@@ -82,6 +82,25 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const isBatchFetchingEnabled = () => process.env.GAOC_ENABLE_BATCH_FETCHING === 'true';
 
+/**
+ * Constructs HTTP request headers for Google Ads API calls
+ *
+ * This function builds the required headers for authenticating and routing requests to the Google Ads API.
+ * It handles:
+ * - OAuth 2.0 authorization via access token
+ * - Developer token inclusion (only for internal API calls to avoid exposing in UI)
+ * - Login customer ID for sub-account/MCC (Manager Account) scenarios
+ *
+ * @param {Object} Config - Destination configuration object
+ * @param {boolean} Config.subAccount - Whether sub-account mode is enabled
+ * @param {string} [Config.loginCustomerId] - Login customer ID for MCC accounts (required if subAccount=true)
+ * @param {Object} metadata - Request metadata containing authentication data
+ * @param {boolean} [passToken=false] - Whether to include developer token in headers
+ *   - true: Include developer token (for internal API calls during transformation)
+ *   - false: Exclude developer token (for requests exposed in UI/logs)
+ * @returns {Object} HTTP headers object with Authorization, Content-Type, and optionally developer-token and login-customer-id
+ * @throws {ConfigurationError} If subAccount is enabled but loginCustomerId is not provided
+ */
 const getReqHeaders = (Config, metadata, passToken = false) => {
   const { subAccount, loginCustomerId } = Config;
   if (subAccount && !loginCustomerId) {
@@ -635,40 +654,39 @@ const batchFetchConversionActions = async ({ Config, customerId, conversionNames
 };
 
 /**
- * Get conversion action IDs for a customer ID with batch fetching support
- * First checks cache for each conversion individually. If any conversion is missing,
- * fetches ALL conversions in a single API call (since the API call cost is the same
- * whether fetching one or many conversion actions).
- * Uses individual cache keys: customerId + conversionName
- * @param {string} customerId - The customer ID
- * @param {string[]} conversionNames - Array of conversion names needed
- * @param {object} headers - Request headers
- * @param {object} metadata - Request metadata
- * @returns {Object} Map of conversion names to resource names
+ * Get conversion action IDs for multiple conversion names with optimized batch fetching and caching
+ *
+ * This function retrieves Google Ads conversion action resource names for the given conversion names.
+ * It uses an optimized caching strategy:
+ * 1. First checks cache for each conversion individually (parallel reads)
+ * 2. If ANY conversion is missing from cache, fetches ALL conversions in a single API call
+ *    (API call cost is the same whether fetching one or many conversion actions)
+ * 3. Stores fetched values in cache with individual keys (customerId + conversionName)
+ * 4. Always reads final values from cache and returns result map
+ *
+ * @param {Object} params - Function parameters
+ * @param {Object} params.Config - Destination configuration object containing credentials and settings
+ * @param {Object} params.metadata - Request metadata for tracking and authentication
+ * @param {string} params.customerId - The Google Ads customer ID (without hyphens)
+ * @param {string[]} params.conversionNames - Array of conversion action names to fetch
+ * @returns {Promise<Object>} Map of conversion names to resource names (e.g., {'Purchase': 'customers/123/conversionActions/456'})
+ * @throws {NetworkError} If API call fails or returns non-success status
  */
 const getConversionActionIds = async ({ Config, metadata, customerId, conversionNames }) => {
   if (!Array.isArray(conversionNames) || conversionNames.length === 0) {
     return {};
   }
 
-  const result = {};
-  let hasCacheMiss = false;
+  const cachedConversionActions = await Promise.all(
+    conversionNames.map((name) => {
+      const key = sha256(customerId + name).toString();
+      return conversionActionIdCache.get(key);
+    }),
+  );
+  // eslint-disable-next-line unicorn/prefer-includes
+  const hasCacheMiss = cachedConversionActions.some((v) => v === undefined);
 
-  // Check cache for each conversion individually (synchronous check, no await in loop)
-  for (const conversionName of conversionNames) {
-    const cacheKey = sha256(customerId + conversionName).toString();
-    // Access cache directly without storeFunction
-    // eslint-disable-next-line no-await-in-loop
-    const cachedValue = await conversionActionIdCache.get(cacheKey);
-    if (cachedValue === undefined) {
-      hasCacheMiss = true;
-      break;
-    }
-    result[conversionName] = cachedValue;
-  }
-
-  // If there are any cache misses, fetch ALL conversions in single API call
-  // since the API call cost is the same regardless of how many we fetch
+  // If cache miss, fetch all → store → done
   if (hasCacheMiss) {
     const fetchedConversions = await batchFetchConversionActions({
       Config,
@@ -677,15 +695,20 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
       metadata,
     });
 
-    // Store each fetched conversion in cache with individual key and add to result
-    for (const [conversionName, value] of Object.entries(fetchedConversions)) {
-      const cacheKey = sha256(customerId + conversionName).toString();
-      conversionActionIdCache.set(cacheKey, value);
-      result[conversionName] = value;
+    for (const [conversionName, conversionValue] of Object.entries(fetchedConversions)) {
+      const key = sha256(customerId + conversionName).toString();
+      conversionActionIdCache.set(key, conversionValue);
     }
   }
 
-  return result;
+  // Read final values from cache and return result
+  const convesionActionMap = await Promise.all(
+    conversionNames.map(async (conversionName) => {
+      const key = sha256(customerId + conversionName).toString();
+      return [conversionName, await conversionActionIdCache.get(key)];
+    }),
+  );
+  return Object.fromEntries(convesionActionMap);
 };
 
 /**
@@ -759,40 +782,43 @@ const batchFetchConversionCustomVariablesMap = async ({
 };
 
 /**
- * Get conversion custom variables for a customer ID with batch fetching support
- * First checks cache for each variable individually. If any variable is missing,
- * fetches ALL variables in a single API call (since the API call cost is the same
- * whether fetching one or many custom variables).
- * Uses individual cache keys: customerId + variableName
- * @param {string} customerId - The customer ID
- * @param {string[]} variableNames - Array of custom variable names needed
- * @param {object} headers - Request headers
- * @param {object} metadata - Request metadata
- * @returns {Object} Map of variable names to resource names
+ * Get conversion custom variables for multiple variable names with optimized batch fetching and caching
+ *
+ * This function retrieves Google Ads conversion custom variable resource names for the given variable names.
+ * Custom variables allow tracking additional conversion-level information beyond standard conversion data.
+ * It uses an optimized caching strategy:
+ * 1. First checks cache for each variable individually (parallel reads)
+ * 2. If ANY variable is missing from cache, fetches ALL variables in a single API call
+ *    (API call cost is the same whether fetching one or many custom variables)
+ * 3. Stores fetched values in cache with individual keys (customerId + variableName)
+ *    - Stores null for variables not found in Google Ads (to avoid repeated API calls)
+ * 4. Always reads final values from cache and returns result map
+ *
+ * @param {Object} params - Function parameters
+ * @param {Object} params.Config - Destination configuration object containing credentials and settings
+ * @param {Object} params.metadata - Request metadata for tracking and authentication
+ * @param {string} params.customerId - The Google Ads customer ID (without hyphens)
+ * @param {string[]} params.variableNames - Array of custom variable names to fetch (must be pre-defined in Google Ads UI)
+ * @returns {Promise<Object>} Map of variable names to resource names, or null if variable doesn't exist
+ * @throws {NetworkError} If API call fails or returns non-success status
  */
 const getConversionCustomVariables = async ({ Config, metadata, customerId, variableNames }) => {
   if (!Array.isArray(variableNames) || variableNames.length === 0) {
     return {};
   }
 
-  const result = {};
-  let hasCacheMiss = false;
+  const cachedConversionCustomVariables = await Promise.all(
+    variableNames.map((variableName) => {
+      const cacheKey = sha256(customerId + variableName).toString();
+      return conversionCustomVariableCache.get(cacheKey);
+    }),
+  );
+  const hasCacheMiss = cachedConversionCustomVariables.some(
+    (cachedConversionCustomVariable) =>
+      cachedConversionCustomVariable !== null && cachedConversionCustomVariable === undefined,
+  );
 
-  // Check cache for each variable individually (synchronous check, no await in loop)
-  for (const variableName of variableNames) {
-    const cacheKey = sha256(customerId + variableName).toString();
-    // Access cache directly without storeFunction
-    // eslint-disable-next-line no-await-in-loop
-    const cachedValue = await conversionCustomVariableCache.get(cacheKey);
-    if (cachedValue !== null && cachedValue === undefined) {
-      hasCacheMiss = true;
-      break;
-    }
-    result[variableName] = cachedValue;
-  }
-
-  // If there are any cache misses, fetch ALL variables in single API call
-  // since the API call cost is the same regardless of how many we fetch
+  // If cache miss, fetch all → store → done
   if (hasCacheMiss) {
     const fetchedVariablesMap = await batchFetchConversionCustomVariablesMap({
       Config,
@@ -806,11 +832,17 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
       const cacheKey = sha256(customerId + variableName).toString();
       const variableValue = fetchedVariablesMap[variableName] ?? null;
       conversionCustomVariableCache.set(cacheKey, variableValue);
-      result[variableName] = variableValue;
     }
   }
 
-  return result;
+  // Step 3: ALWAYS read final values from cache and return result
+  const conversionCustomVariablesMap = await Promise.all(
+    variableNames.map(async (name) => {
+      const cacheKey = sha256(customerId + name).toString();
+      return [name, await conversionCustomVariableCache.get(cacheKey)];
+    }),
+  );
+  return Object.fromEntries(conversionCustomVariablesMap);
 };
 
 module.exports = {

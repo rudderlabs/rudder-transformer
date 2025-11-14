@@ -225,7 +225,7 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   // eslint-disable-next-line @typescript-eslint/no-shadow
   message.forEach((message) => {
     if (message.body.JSON?.isStoreConversion) {
@@ -358,7 +358,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
 
   await forEachInBatches(inputs, async (event) => {
     try {

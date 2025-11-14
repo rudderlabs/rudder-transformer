@@ -15,7 +15,7 @@ const {
 } = require('../../../v0/util');
 const {
   getConversionActionId,
-  isBatchFetchingEnabled,
+  isClickCallBatchingEnabled,
 } = require('../../../v0/destinations/google_adwords_offline_conversions/utils');
 const Cache = require('../../../v0/util/cache');
 const {
@@ -216,7 +216,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
-  const useBatchFetching = isBatchFetchingEnabled();
+  const useBatchFetching = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,

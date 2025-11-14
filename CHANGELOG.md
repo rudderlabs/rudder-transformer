@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.112.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.0...v1.112.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* intercom legacy version mapping ([#4778](https://github.com/rudderlabs/rudder-transformer/issues/4778)) ([e2cee00](https://github.com/rudderlabs/rudder-transformer/commit/e2cee002a64a27b808124dbafa57b7b134db63b5))
+
 ## [1.112.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.2...v1.112.0) (2025-11-11)
 
 

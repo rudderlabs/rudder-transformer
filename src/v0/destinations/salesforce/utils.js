@@ -13,6 +13,7 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 const Cache = require('../../util/cache');
+const stats = require('../../../util/stats');
 const {
   CLIENT_ID,
   CLIENT_SECRET,
@@ -317,6 +318,10 @@ async function getSalesforceIdForRecordUsingSdk(
   identifierType,
   identifierValue,
 ) {
+  stats.increment('salesforce_soql_lookup_count', {
+    method: 'getSalesforceIdForRecordUsingSdk',
+    objectType,
+  });
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
@@ -382,6 +387,10 @@ async function getSalesforceIdForRecord({
  * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
  */
 async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination) {
+  stats.increment('salesforce_soql_lookup_count', {
+    method: 'getSalesforceIdForLeadUsingSdk',
+    objectType: 'Lead',
+  });
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(

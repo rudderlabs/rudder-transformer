@@ -659,12 +659,11 @@ const getConversionActionIds = async ({ Config, metadata, customerId, conversion
     // Access cache directly without storeFunction
     // eslint-disable-next-line no-await-in-loop
     const cachedValue = await conversionActionIdCache.get(cacheKey);
-
-    if (cachedValue) {
-      result[conversionName] = cachedValue;
-    } else {
+    if (cachedValue === undefined) {
       hasCacheMiss = true;
+      break;
     }
+    result[conversionName] = cachedValue;
   }
 
   // If there are any cache misses, fetch ALL conversions in single API call
@@ -784,12 +783,11 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
     // Access cache directly without storeFunction
     // eslint-disable-next-line no-await-in-loop
     const cachedValue = await conversionCustomVariableCache.get(cacheKey);
-
-    if (cachedValue) {
-      result[variableName] = cachedValue;
-    } else {
+    if (cachedValue !== null && cachedValue === undefined) {
       hasCacheMiss = true;
+      break;
     }
+    result[variableName] = cachedValue;
   }
 
   // If there are any cache misses, fetch ALL variables in single API call
@@ -804,8 +802,9 @@ const getConversionCustomVariables = async ({ Config, metadata, customerId, vari
     });
 
     // Store each fetched variable in cache with individual key and add to result
-    for (const [variableName, variableValue] of Object.entries(fetchedVariablesMap)) {
+    for (const variableName of variableNames) {
       const cacheKey = sha256(customerId + variableName).toString();
+      const variableValue = fetchedVariablesMap[variableName] ?? null;
       conversionCustomVariableCache.set(cacheKey, variableValue);
       result[variableName] = variableValue;
     }

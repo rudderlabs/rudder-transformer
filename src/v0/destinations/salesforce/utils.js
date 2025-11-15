@@ -249,7 +249,7 @@ const isWorkspaceSupportedForSoql = (workspaceId) => {
   const soqlSupportedWorkspaceIds = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS?.split(
     ',',
   )?.map?.((s) => s?.trim?.());
-  return soqlSupportedWorkspaceIds?.includes(workspaceId);
+  return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
 };
 
 /**
@@ -524,6 +524,10 @@ module.exports = {
   collectAuthorizationInfo,
   getAuthHeader,
   getSalesforceIdForRecord,
+  getSalesforceIdForRecordUsingHttp,
+  getSalesforceIdForRecordUsingSdk,
   getSalesforceIdForLead,
+  getSalesforceIdForLeadUsingHttp,
+  getSalesforceIdForLeadUsingSdk,
   isWorkspaceSupportedForSoql,
 };

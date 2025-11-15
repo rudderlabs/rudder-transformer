@@ -1,7 +1,9 @@
-import { MiscService } from '../services/misc';
+import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {
   private static sourceHandlerMap: Map<string, any> = new Map();
+
+  private static sourceHydrateHandlerMap: Map<string, Hydrator> = new Map();
 
   private static destHandlerMap: Map<string, any> = new Map();
 
@@ -27,6 +29,16 @@ export class FetchHandler {
       this.sourceHandlerMap.set(source, sourceHandler);
     }
     return sourceHandler;
+  }
+
+  public static getSourceHydrateHandler(source: string): Hydrator {
+    const sourceHydrateHandler = this.sourceHydrateHandlerMap.get(source);
+    if (sourceHydrateHandler) {
+      return sourceHydrateHandler;
+    }
+    const newSourceHydrateHandler = MiscService.getSourceHydrateHandler(source);
+    this.sourceHydrateHandlerMap.set(source, newSourceHydrateHandler);
+    return newSourceHydrateHandler;
   }
 
   public static getDeletionHandler(dest: string, version: string) {

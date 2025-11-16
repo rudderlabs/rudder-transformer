@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable no-undef */
 const { gzip } = require('node:zlib');
 const lodash = require('lodash');
 const http = require('http');

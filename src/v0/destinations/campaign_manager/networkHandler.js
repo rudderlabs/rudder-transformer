@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');

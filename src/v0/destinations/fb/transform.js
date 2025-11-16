@@ -165,7 +165,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
 function getCorrectedTypedValue(pathToKey, value) {
   const type = eventPropToTypeMapping[pathToKey];
   // TODO: we should remove this eslint rule or comeup with a better way
-  // eslint-disable-next-line valid-typeof
+
   if (typeof value === type) {
     return value;
   }

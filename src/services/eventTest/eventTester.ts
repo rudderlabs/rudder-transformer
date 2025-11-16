@@ -3,7 +3,7 @@ import { FixMe } from '../../types';
 
 export class EventTesterService {
   private static getDestHandler(version, destination) {
-    // eslint-disable-next-line global-require, import/no-dynamic-require
+    // eslint-disable-next-line import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
   }
 
@@ -126,7 +126,6 @@ export class EventTesterService {
 
             const transformedPayloads = response.dest_transformed_payload;
             for (const payload of transformedPayloads) {
-              // eslint-disable-next-line no-await-in-loop
               const parsedResponse = await sendToDestination(dest, payload);
 
               let contentType = '';

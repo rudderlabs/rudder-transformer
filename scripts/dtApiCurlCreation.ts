@@ -13,7 +13,7 @@ import {
 type SupportedFeature = 'processor' | 'router' | 'dataDelivery' | 'userDeletion';
 
 // Build URL for the request
-// eslint-disable-next-line consistent-return
+
 function buildURL(feature: string, destination: string, version): string {
   const urls: Record<SupportedFeature, string> = {
     processor: `http://localhost:9090/${version}/destinations/${destination}`,

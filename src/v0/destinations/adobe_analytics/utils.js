@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-plusplus */
-/* eslint-disable array-callback-return */
+
 /* eslint-disable unicorn/no-for-loop */
-/* eslint-disable no-restricted-syntax */
+
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');

@@ -1,5 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import cloneDeep from 'lodash/cloneDeep';
 import groupBy from 'lodash/groupBy';

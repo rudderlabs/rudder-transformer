@@ -10,7 +10,7 @@ import {
 } from './common';
 
 // Build URL for the request
-// eslint-disable-next-line consistent-return
+
 function buildURL(messageType: string): string {
   const baseEndPoint = 'http://localhost:8080/v1/';
   const serverUrlMap = {

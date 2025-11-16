@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');

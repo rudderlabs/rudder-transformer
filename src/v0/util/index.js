@@ -66,7 +66,6 @@ const removeUndefinedAndNullRecurse = (obj) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const key in obj) {
     if (obj[key] === null || obj[key] === undefined) {
-      // eslint-disable-next-line no-param-reassign
       delete obj[key];
     } else if (typeof obj[key] === 'object') {
       removeUndefinedAndNullRecurse(obj[key]);
@@ -879,7 +878,6 @@ function handleExcludes(value, excludes, formattedVal) {
   if (typeof value === 'object') {
     // exclude the fields from the formattedVal
     excludes.forEach((key) => {
-      // eslint-disable-next-line no-param-reassign
       delete formattedVal[key];
     });
   } else {
@@ -1436,7 +1434,6 @@ function deleteObjectProperty(object, pathToObject) {
     }
   }
 
-  // eslint-disable-next-line no-param-reassign
   delete object[pathToObject.pop()];
 }
 
@@ -1470,7 +1467,6 @@ function checkEmptyStringInarray(array) {
 function getStringValueOfJSON(json) {
   let output = '';
   Object.keys(json).forEach((key) => {
-    // eslint-disable-next-line no-prototype-builtins
     if (json.hasOwnProperty(key)) {
       output += `${key}: ${json[key]} `;
     }
@@ -1521,7 +1517,6 @@ function addExternalIdToTraits(message) {
 const adduserIdFromExternalId = (message) => {
   const externalId = get(message, 'context.externalId.0.id');
   if (externalId) {
-    // eslint-disable-next-line no-param-reassign
     message.userId = externalId;
   }
 };
@@ -1848,7 +1843,6 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       let resp = input.message;
       // transform if not already done
       if (!input.message.statusCode) {
-        // eslint-disable-next-line no-await-in-loop
         resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
@@ -2235,7 +2229,7 @@ const findExistingBatch = (batch, metadataMap) => {
 const removeDuplicateMetadata = (mergedBatches) => {
   mergedBatches.forEach((batch) => {
     const metadataSet = new Set();
-    // eslint-disable-next-line no-param-reassign
+
     batch.metadata = batch.metadata.filter((metadataItem) => {
       if (!metadataSet.has(metadataItem.jobId)) {
         metadataSet.add(metadataItem.jobId);

@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-param-reassign */
 const {
   ConfigurationError,
   InstrumentationError,

@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 const jsonpath = require('rs-jsonpath');
 
 function mapWithJsonPath(message, targetObject, sourcePath, targetPath) {

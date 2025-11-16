@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary, no-restricted-syntax, no-prototype-builtins */
 const Handlebars = require('handlebars');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');

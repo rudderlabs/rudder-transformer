@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { isDefinedAndNotNull } = require('../../util');
 /**
  * Optimizes the error response by merging the metadata of the same error type and adding it to the result array.

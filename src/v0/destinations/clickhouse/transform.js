@@ -21,11 +21,10 @@ function getDataTypeOverride(key, val, options) {
       }
       if (dataType === 'float' && finalDataType === 'int') {
         finalDataType = 'float';
-        // eslint-disable-next-line no-continue
+
         continue;
       }
       if (dataType === 'int' && finalDataType === 'float') {
-        // eslint-disable-next-line no-continue
         continue;
       }
       finalDataType = 'string';

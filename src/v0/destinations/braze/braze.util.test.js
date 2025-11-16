@@ -332,7 +332,6 @@ describe('dedup utility tests', () => {
           destType: 'braze',
           feature: 'transformation',
           endpointPath: '/users/export/ids',
-          feature: 'transformation',
           module: 'router',
           requestMethod: 'POST',
         },

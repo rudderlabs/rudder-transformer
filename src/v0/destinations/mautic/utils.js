@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
 const validator = require('validator');
 const {

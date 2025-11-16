@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {

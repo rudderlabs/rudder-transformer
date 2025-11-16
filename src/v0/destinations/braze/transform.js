@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary,no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
 const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');

@@ -70,7 +70,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
-    // eslint-disable-next-line unicorn/consistent-destructuring
+
     if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
       const conversionTimestamp = timestamp || originalTimestamp;
       const conversionDateTime = helper.formatTimestamp(conversionTimestamp);

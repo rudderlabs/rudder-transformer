@@ -1,4 +1,3 @@
-/* eslint-disable no-await-in-loop */
 const chunk = require('lodash/chunk');
 const omit = require('lodash/omit');
 const set = require('set-value');

@@ -1,4 +1,3 @@
-/* eslint-disable */
 const { parentPort } = require('worker_threads');
 const { MESSAGE_TYPES } = require('./metricsAggregator');
 const { AggregatorRegistry } = require('prom-client');

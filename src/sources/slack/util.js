@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const path = require('path');
 const fs = require('fs');
 

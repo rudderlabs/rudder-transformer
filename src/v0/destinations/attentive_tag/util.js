@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const get = require('get-value');
 const moment = require('moment');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');

@@ -47,7 +47,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       contact_list_id: config.defaultContactList,
     };
     deleteContactPayload[`${customIdentifier}`] = curBatch;
-    // eslint-disable-next-line no-await-in-loop
+
     const deletionResponse = await httpPOST(
       endpoint,
       {

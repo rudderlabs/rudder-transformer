@@ -1,11 +1,7 @@
-/* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
-/* eslint-disable no-continue */
-/* eslint-disable no-prototype-builtins */
+
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
+
 const is = require('is');
 const extend = require('@ndhoule/extend');
 const each = require('component-each');

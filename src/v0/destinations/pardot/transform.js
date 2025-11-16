@@ -1,6 +1,3 @@
-/* eslint-disable no-lonely-if */
-/* eslint-disable no-else-return */
-
 /**
  * Doc for the file:
  * This destination in general uses upsert API exposed by Pardot for creation/updation of a prospect

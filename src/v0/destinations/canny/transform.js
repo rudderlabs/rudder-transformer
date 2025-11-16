@@ -110,7 +110,6 @@ const trackResponseBuilder = async (message, { Config }, metadata) => {
     if (configuredSourceEvent === event) {
       const destinationEvents = configuredEventsMap[event];
       for (const destinationEvent of destinationEvents) {
-        // eslint-disable-next-line no-await-in-loop
         const response = await getTrackResponse(apiKey, message, destinationEvent, metadata);
         responseArray.push(response);
       }

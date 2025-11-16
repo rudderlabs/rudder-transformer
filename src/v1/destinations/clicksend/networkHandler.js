@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../../v0/util/index');

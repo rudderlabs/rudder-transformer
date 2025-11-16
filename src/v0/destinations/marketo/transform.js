@@ -1,6 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-use-before-define */
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
 const {
@@ -478,7 +475,6 @@ function processMetadataForRouter(output) {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach((metadataElement) => {
-    // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;

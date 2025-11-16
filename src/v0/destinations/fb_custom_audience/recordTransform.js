@@ -1,4 +1,3 @@
-/* eslint-disable no-const-assign */
 const lodash = require('lodash');
 const {
   InstrumentationError,

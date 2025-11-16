@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
@@ -43,7 +42,6 @@ const checkContentType = (contents, contentType) => {
   if (Array.isArray(contents)) {
     contents.forEach((content) => {
       if (!content.content_type) {
-        // eslint-disable-next-line no-param-reassign
         content.content_type = contentType || 'product_group';
       }
     });
@@ -227,7 +225,7 @@ function batchEvents(eventsChunk) {
 
 function getEventChunks(event, trackResponseList, eventsChunk) {
   // only for already transformed payload
-  // eslint-disable-next-line no-param-reassign
+
   event.message = Array.isArray(event.message) ? event.message : [event.message];
 
   if (event.message[0].body.JSON.test_event_code) {

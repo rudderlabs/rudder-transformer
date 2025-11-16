@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const get = require('get-value');
 const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
@@ -137,7 +137,7 @@ const CustomAttributeOperationUtil = {
       });
       opsResultArray.push(myObj);
     }
-    // eslint-disable-next-line no-underscore-dangle
+
     data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
       ? mergeObjectsUpdateOperation
       : false;
@@ -514,7 +514,6 @@ const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
     );
   };
 
-  // eslint-disable-next-line no-plusplus
   for (let i = 0; i < maxLength; i++) {
     addItem(attributesArray[i], 'attributes');
     addItem(eventsArray[i], 'events');
@@ -728,7 +727,6 @@ function setExternalIdOrAliasObject(payload, message) {
     return setExternalId(payload, message);
   }
 
-  // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
   return setAliasObject(payload, message);
 }

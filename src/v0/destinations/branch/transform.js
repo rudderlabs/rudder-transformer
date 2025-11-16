@@ -44,7 +44,7 @@ function getCategoryAndName(rudderEventName) {
   for (const category of categoriesList) {
     let requiredName = null;
     let requiredCategory = null;
-    // eslint-disable-next-line array-callback-return, sonarjs/no-ignored-return
+
     Object.keys(category.name).forEach((branchKey) => {
       if (
         typeof branchKey === 'string' &&
@@ -113,7 +113,6 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
 
   let valFound = false;
   if (category.content_items) {
-    // eslint-disable-next-line sonarjs/no-ignored-return
     Object.keys(category.content_items).forEach((branchMappingProperty) => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
@@ -152,7 +151,6 @@ function getCommonPayload(message, category, evName) {
   const customData = {};
   let productObj = {};
 
-  // eslint-disable-next-line default-case
   switch (message.type) {
     case EventType.TRACK:
       rudderPropertiesObj = get(message, 'properties') ? message.properties : null;

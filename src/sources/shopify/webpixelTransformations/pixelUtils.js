@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { isDefinedAndNotNull, removeNullValues } = require('@rudderstack/integrations-lib');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');

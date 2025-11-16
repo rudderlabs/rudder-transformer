@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file, @typescript-eslint/return-await */
 const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;

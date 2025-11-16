@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const { performance } = require('perf_hooks');
 // Import the util module
 const { groupEventsByType } = require('./index');

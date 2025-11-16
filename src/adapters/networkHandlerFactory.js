@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
 const path = require('path');
 const { networkHandler: GenericNetworkHandler } = require('./networkhandler/genericNetworkHandler');

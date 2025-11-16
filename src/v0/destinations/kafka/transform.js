@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 const groupBy = require('lodash/groupBy');
 const cloneDeep = require('lodash/cloneDeep');
 const {

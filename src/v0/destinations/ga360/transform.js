@@ -413,7 +413,7 @@ function processRefundEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // full refund, only populate order_id
-    // eslint-disable-next-line camelcase
+
     parameters.ti = order_id;
   }
   // Finally fill up with mandatory and directly mapped fields
@@ -547,7 +547,7 @@ function processProductEvent(message, destination) {
   }
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { sku, product_id } = message.properties;
-  // eslint-disable-next-line camelcase
+
   const productId = product_id;
 
   if (!productId || productId.length === 0) {

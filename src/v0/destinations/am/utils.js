@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 // We want to send the following kind of device properties from web platform
 // which is not readily available, so have to parse the user-agent
 // using similar  ua parsing logic used by AM native web sdk
@@ -176,7 +175,6 @@ const userPropertiesPostProcess = (rawPayload) => {
     user_properties.$set = setProps;
   }
 
-  // eslint-disable-next-line no-param-reassign
   rawPayload.user_properties = user_properties;
   return rawPayload;
 };

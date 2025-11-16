@@ -26,7 +26,7 @@ export function extractField(data: string, key: string, required = true): string
 }
 
 // Get destination name from path
-// eslint-disable-next-line consistent-return
+
 export function getDestination(filePath: string): string {
   const normalizedPath = filePath.replace(/\\/g, '/'); // Normalize for cross-platform compatibility
   const match = normalizedPath.match(/destinations\/([^/]+)/);
@@ -42,7 +42,6 @@ export async function resolveDataFile(basePath: string): Promise<string> {
   for (const candidate of candidates) {
     const fullPath = path.join(dir, candidate);
     try {
-      // eslint-disable-next-line no-await-in-loop
       await fs.access(fullPath);
       return fullPath;
     } catch {
@@ -53,7 +52,7 @@ export async function resolveDataFile(basePath: string): Promise<string> {
 }
 
 // Import the data module
-// eslint-disable-next-line consistent-return
+
 export async function importDataModule(filePath: string): Promise<any[]> {
   try {
     const mod = await import(filePath);

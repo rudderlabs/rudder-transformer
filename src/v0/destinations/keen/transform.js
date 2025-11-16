@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-nested-ternary */
 const isIp = require('is-ip');
 const validUrl = require('valid-url');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');

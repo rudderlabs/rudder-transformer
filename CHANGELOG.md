@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.113.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.1...v1.113.0) (2025-11-17)
+
+
+### Features
+
+* add set method support for cache class ([#4755](https://github.com/rudderlabs/rudder-transformer/issues/4755)) ([2372c56](https://github.com/rudderlabs/rudder-transformer/commit/2372c567f570cf5bad0a8f1515dd1644c9a01982))
+* implement source hydration for facebook lead ads native ([#4752](https://github.com/rudderlabs/rudder-transformer/issues/4752)) ([b2ba069](https://github.com/rudderlabs/rudder-transformer/commit/b2ba069bea4ed9b0d4fda992ef7ac1556fa67687))
+* update salesforce to soql ([#4771](https://github.com/rudderlabs/rudder-transformer/issues/4771)) ([123fcdf](https://github.com/rudderlabs/rudder-transformer/commit/123fcdf5f7199bfd46907ad37fb67b3f55f40f1b))
+
 ### [1.112.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.0...v1.112.1) (2025-11-13)
 
 

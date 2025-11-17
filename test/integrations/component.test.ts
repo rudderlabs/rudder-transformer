@@ -27,7 +27,6 @@ import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
 import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
-import { restoreSalesforceSDKMock } from './mocks/salesforceSDK.mock';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -234,7 +233,6 @@ describe('Component Test Suite', () => {
       afterEach(() => {
         jest.resetAllMocks();
         jest.clearAllMocks();
-        // Restore the SalesforceSDK mock implementation after reset
       });
       let testData: TestCaseData[] = getTestData(testDataPath);
       if (opts.index < testData.length && opts.index >= 0) {

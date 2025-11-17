@@ -318,10 +318,6 @@ async function getSalesforceIdForRecordUsingSdk(
   identifierType,
   identifierValue,
 ) {
-  stats.increment('salesforce_soql_lookup_count', {
-    method: 'getSalesforceIdForRecordUsingSdk',
-    objectType,
-  });
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
@@ -362,6 +358,11 @@ async function getSalesforceIdForRecord({
   stateInfo,
 }) {
   if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+    stats.increment('salesforce_soql_lookup_count', {
+      method: 'getSalesforceIdForRecordUsingSdk',
+      workspaceId: metadata?.workspaceId ?? '',
+      objectType,
+    });
     return getSalesforceIdForRecordUsingSdk(
       stateInfo.salesforceSdk,
       objectType,
@@ -387,10 +388,6 @@ async function getSalesforceIdForRecord({
  * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
  */
 async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination) {
-  stats.increment('salesforce_soql_lookup_count', {
-    method: 'getSalesforceIdForLeadUsingSdk',
-    objectType: 'Lead',
-  });
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
@@ -512,6 +509,11 @@ async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, met
  */
 async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
   if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+    stats.increment('salesforce_soql_lookup_count', {
+      method: 'getSalesforceIdForLeadUsingSdk',
+      workspaceId: metadata?.workspaceId ?? '',
+      objectType: 'Lead',
+    });
     return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
   }
   return getSalesforceIdForLeadUsingHttp(email, destination, stateInfo.authInfo, metadata);

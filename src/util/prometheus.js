@@ -1034,7 +1034,7 @@ class Prometheus {
         name: 'salesforce_soql_lookup_count',
         help: 'Count of SOQL-based lookups executed using Salesforce SDK',
         type: 'counter',
-        labelNames: ['method', 'objectType'],
+        labelNames: ['method', 'objectType', 'workspaceId'],
       },
     ];
 

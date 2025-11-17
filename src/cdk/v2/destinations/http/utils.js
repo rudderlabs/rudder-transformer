@@ -115,10 +115,11 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
   }
   const pathParamsSubString = getPathParamsSubString(message, pathParams);
   // If pathParams is empty, preserve single trailing slash; otherwise remove all trailing slashes
-  const requestUrl = pathParamsSubString
-    ? apiUrl.replace(/\/{1,10}$/, '')
-    : apiUrl.replace(/\/{2,10}$/, '/');
-  return `${requestUrl}${pathParamsSubString}`;
+  if (pathParamsSubString === '') {
+    return apiUrl.replace(/\/{2,10}$/, '/');
+  }
+  const requestUrl = apiUrl.replace(/\/{1,10}$/, '');
+  return `${requestUrl}${pathParamsSubString}`.replace(/\/{2,10}$/, '/');
 };
 
 const sanitizeKey = (key) =>

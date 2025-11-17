@@ -24,12 +24,7 @@
  * testing the new batch fetching feature. Once the feature is proven stable, we can remove old code and test.
  */
 
-import { v0oauthScenarios, v1oauthScenarios } from './oauth';
-import { testScenariosForV0API, testScenariosForV1API } from './business';
+import { v1oauthScenarios } from './oauth';
+import { testScenariosForV1API } from './business';
 
-export const data = [
-  ...v0oauthScenarios,
-  ...v1oauthScenarios,
-  ...testScenariosForV0API,
-  ...testScenariosForV1API,
-];
+export const data = [...v1oauthScenarios, ...testScenariosForV1API];

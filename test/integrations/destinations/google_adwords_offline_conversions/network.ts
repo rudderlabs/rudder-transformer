@@ -840,6 +840,42 @@ export const networkCallsData = [
   },
   {
     httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/googleAds:searchStream`,
+      data: {
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+      },
+      method: 'POST',
+      params: { destination: 'google_adwords_offline_conversion' },
+    },
+    httpRes: {
+      data: [
+        {
+          results: [
+            {
+              conversionCustomVariable: {
+                resourceName: 'customers/7693729833/conversionCustomVariables/19131634',
+                name: 'revenue',
+              },
+            },
+            {
+              conversionCustomVariable: {
+                resourceName: 'customers/7693729833/conversionCustomVariables/19134062',
+                name: 'cost',
+              },
+            },
+          ],
+        },
+      ],
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/googleAds:searchStream`,
       data: {
         query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
@@ -1152,6 +1188,7 @@ export const networkCallsData = [
             },
           ],
         },
+        results: [{}],
       },
     },
   },
@@ -1242,6 +1279,145 @@ export const networkCallsData = [
             },
           ],
         },
+        results: [{}],
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567893:uploadClickConversions`,
+      data: {
+        conversions: [
+          {
+            gbraid: 'gbraid',
+            wbraid: 'wbraid',
+            externalAttributionData: {
+              externalAttributionCredit: 10,
+              externalAttributionModel: 'externalAttributionModel',
+            },
+            cartData: {
+              merchantId: 9876,
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              items: [{ productId: '507f1f77bcf86cd799439011', quantity: 2, unitPrice: 50 }],
+            },
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
+              },
+            ],
+            conversionEnvironment: 'WEB',
+            gclid: 'gclid',
+            conversionDateTime: '2022-01-01 12:32:45-08:00',
+            conversionValue: 1,
+            currencyCode: 'GBP',
+            orderId: 'PL-123QR',
+            conversionAction: 'customers/1234567891/conversionActions/848898416',
+            customVariables: [
+              {
+                conversionCustomVariable: 'customers/1234567891/conversionCustomVariables/19131634',
+                value: 'value',
+              },
+            ],
+          },
+          {
+            cartData: {
+              merchantId: 9876,
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              items: [
+                {
+                  productId: '507f1f77bcf86cd799439011',
+                  quantity: 2,
+                  unitPrice: 50,
+                },
+              ],
+            },
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+              },
+            ],
+            conversionEnvironment: 'WEB',
+            conversionDateTime: '2025-11-12 16:21:53+05:30',
+            conversionValue: 1,
+            currencyCode: 'GBP',
+            orderId: 'PL-123QR',
+            conversionAction: 'customers/1234567891/conversionActions/848898417',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
+          },
+        ],
+        partialFailure: true,
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+        'developer-token': 'test-developer-token-12345',
+      },
+      method: 'POST',
+      params: { destination: 'google_adwords_offline_conversion' },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        partialFailureError: {
+          code: 3,
+          message:
+            "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.ads.googleads.v22.errors.GoogleAdsFailure',
+              errors: [
+                {
+                  errorCode: {
+                    conversionUploadError: 'NO_CONVERSION_ACTION_FOUND',
+                  },
+                  message:
+                    "The conversion action specified in the upload request cannot be found. Make sure it's available in this account.",
+                  trigger: {
+                    stringValue: 'customers/4172647997/conversionActions/7377464874',
+                  },
+                  location: {
+                    fieldPathElements: [
+                      {
+                        fieldName: 'conversions',
+                        index: 1,
+                      },
+                      {
+                        fieldName: 'conversion_action',
+                      },
+                    ],
+                  },
+                },
+              ],
+              requestId: 'f4J_sjHfhbgNieU4pkBOqg',
+            },
+          ],
+        },
+        results: [
+          {
+            conversionAction: 'customers/1234567891/conversionActions/848898416',
+            conversionDateTime: '2025-11-12 16:21:53+05:30',
+            userIdentifiers: [
+              {
+                userIdentifierSource: 'FIRST_PARTY',
+                hashedPhoneNumber:
+                  '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+              },
+            ],
+          },
+          {},
+        ],
+        jobId: '5353383680802491057',
       },
     },
   },

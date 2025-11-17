@@ -220,221 +220,6 @@ const expectedStatTags = {
   workspaceId: 'default-workspaceId',
 };
 
-export const testScenariosForV0API = [
-  {
-    id: 'gaoc_v0_scenario_1',
-    name: 'google_adwords_offline_conversions',
-    description:
-      '[Proxy v0 API] :: Test for invalid argument - where the destination responds with 400 with invalid argument error',
-    successCriteria: 'Should return 400 with error with destination response',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: generateProxyV0Payload({
-          headers: headers.header1,
-          params: params.param1,
-          JSON: invalidArgumentRequestPayload,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/11122233331/offlineUserDataJobs`,
-        }),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 400,
-        body: {
-          output: {
-            status: 400,
-            message:
-              '[Google Ads Offline Conversions]:: Request contains an invalid argument. during google_ads_offline_store_conversions Add Conversion',
-            destinationResponse: {
-              error: {
-                code: 400,
-                details: [
-                  {
-                    '@type': 'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
-                    errors: [
-                      {
-                        errorCode: {
-                          offlineUserDataJobError: 'INVALID_SHA256_FORMAT',
-                        },
-                        message: 'The SHA256 encoded value is malformed.',
-                        location: {
-                          fieldPathElements: [
-                            {
-                              fieldName: 'operations',
-                              index: 0,
-                            },
-                            {
-                              fieldName: 'create',
-                            },
-                            {
-                              fieldName: 'user_identifiers',
-                              index: 0,
-                            },
-                            {
-                              fieldName: 'hashed_email',
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                    requestId: '68697987',
-                  },
-                ],
-                message: 'Request contains an invalid argument.',
-                status: 'INVALID_ARGUMENT',
-              },
-            },
-            statTags: expectedStatTags,
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'gaoc_v0_scenario_2',
-    name: 'google_adwords_offline_conversions',
-    description:
-      '[Proxy v0 API] :: Test for a valid operations request with a successful 200 response from the destination',
-    successCriteria: 'Should return 200 with no error with destination response',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: generateProxyV0Payload({
-          headers: headers.header1,
-          params: params.param1,
-          JSON: validRequestPayload1,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/offlineUserDataJobs`,
-        }),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            status: 200,
-            message:
-              '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
-            destinationResponse: {
-              response: {
-                name: 'customers/111-222-3333/operations/abcd=',
-              },
-              status: 200,
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'gaoc_v0_scenario_3',
-    name: 'google_adwords_offline_conversions',
-    description:
-      '[Proxy v0 API] :: Test for a valid request with a successful 200 response from the destination',
-    successCriteria: 'Should return 200 with no error with destination response',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: generateProxyV0Payload({
-          headers: headers.header2,
-          params: params.param2,
-          JSON: validRequestPayload2,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
-        }),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            status: 200,
-            message:
-              '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
-            destinationResponse: {
-              response: [
-                {
-                  adjustmentType: 'ENHANCEMENT',
-                  conversionAction: 'customers/1234567891/conversionActions/874224905',
-                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                  gclidDateTimePair: {
-                    gclid: '1234',
-                    conversionDateTime: '2021-01-01 12:32:45-08:00',
-                  },
-                  orderId: '12345',
-                },
-              ],
-              status: 200,
-            },
-          },
-        },
-      },
-    },
-  },
-  {
-    id: 'gaoc_v0_scenario_4',
-    name: 'google_adwords_offline_conversions',
-    description:
-      '[Proxy v0 API] :: Test for a valid conversion action request with a successful 200 response from the destination',
-    successCriteria: 'Should return 200 with no error with destination response',
-    scenario: 'Business',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: generateProxyV0Payload({
-          headers: headers.header2,
-          params: params.param3,
-          JSON: validRequestPayload2,
-          endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891:uploadClickConversions`,
-        }),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: {
-          output: {
-            destinationResponse: {
-              response: [
-                {
-                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                  adjustmentType: 'ENHANCEMENT',
-                  conversionAction: 'customers/1234567891/conversionActions/874224905',
-                  gclidDateTimePair: {
-                    conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    gclid: '1234',
-                  },
-                  orderId: '12345',
-                },
-              ],
-              status: 200,
-            },
-            message:
-              '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
-            status: 200,
-          },
-        },
-      },
-    },
-  },
-];
-
 export const testScenariosForV1API = [
   {
     id: 'gaoc_v1_scenario_1',
@@ -512,9 +297,15 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: {
+                name: 'customers/111-222-3333/operations/abcd=',
+              },
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify({ name: 'customers/111-222-3333/operations/abcd=' }),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -556,20 +347,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -611,20 +406,24 @@ export const testScenariosForV1API = [
           output: {
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            destinationResponse: {
+              response: [
+                {
+                  adjustmentDateTime: '2021-01-01 12:32:45-08:00',
+                  adjustmentType: 'ENHANCEMENT',
+                  conversionAction: 'customers/1234567891/conversionActions/874224905',
+                  gclidDateTimePair: {
+                    conversionDateTime: '2021-01-01 12:32:45-08:00',
+                    gclid: '1234',
+                  },
+                  orderId: '12345',
+                },
+              ],
+              status: 200,
+            },
             response: [
               {
-                error: JSON.stringify([
-                  {
-                    adjustmentType: 'ENHANCEMENT',
-                    conversionAction: 'customers/1234567891/conversionActions/874224905',
-                    adjustmentDateTime: '2021-01-01 12:32:45-08:00',
-                    gclidDateTimePair: {
-                      gclid: '1234',
-                      conversionDateTime: '2021-01-01 12:32:45-08:00',
-                    },
-                    orderId: '12345',
-                  },
-                ]),
+                error: 'success',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },
@@ -665,11 +464,51 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+              '[Google Ads Offline Conversions]:: Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+            destinationResponse: {
+              response: {
+                partialFailureError: {
+                  code: 3,
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            notAllowlistedError: 'CUSTOMER_NOT_ALLOWLISTED_FOR_THIS_FEATURE',
+                          },
+                          location: {
+                            fieldPathElements: [
+                              {
+                                fieldName: 'conversions',
+                                index: 0,
+                              },
+                              {
+                                fieldName: 'conversion_environment',
+                              },
+                            ],
+                          },
+                          message: 'Customer is not allowlisted for accessing this feature.',
+                          trigger: {
+                            int64Value: '2',
+                          },
+                        },
+                      ],
+                      requestId: 'dummyRequestId',
+                    },
+                  ],
+                  message:
+                    'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                },
+                results: [{}],
+              },
+              status: 200,
+            },
             response: [
               {
                 error:
-                  '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                  'Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

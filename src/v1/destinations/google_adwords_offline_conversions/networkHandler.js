@@ -216,7 +216,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
-  const shouldBatchCallConversionEvents = isClickCallBatchingEnabled();
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
@@ -226,7 +226,7 @@ const ProxyRequest = async (request) => {
     });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    if (!shouldBatchCallConversionEvents) {
+    if (!shouldBatchClickCallConversionEvents) {
       const conversionId = await getConversionActionId({ headers, params, metadata });
       if (Array.isArray(addPayload.operations)) {
         for (const operation of addPayload.operations) {
@@ -253,7 +253,7 @@ const ProxyRequest = async (request) => {
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
-  if (!shouldBatchCallConversionEvents) {
+  if (!shouldBatchClickCallConversionEvents) {
     if (params?.event) {
       const conversionActionId = await getConversionActionId({ headers, params, metadata });
       set(body.JSON, 'conversions.0.conversionAction', conversionActionId);

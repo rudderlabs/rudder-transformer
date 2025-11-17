@@ -309,8 +309,8 @@ const getCallConversionPayload = (
     path: CALL_CONVERSION_ENDPOINT_PATH,
   };
 
-  const useBatchFetching = isClickCallBatchingEnabled();
-  if (useBatchFetching) {
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
+  if (shouldBatchClickCallConversionEvents) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
     if (customVariableList.length > 0) {
       set(payload, 'conversions.0.customVariables', customVariableList);
@@ -348,9 +348,9 @@ const getAddConversionPayload = (message, Config, eventLevelConsentsData, conver
     payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
   }`;
 
-  const useBatchFetching = isClickCallBatchingEnabled();
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   // add convertion conversion_action to transaction_attribute
-  if (useBatchFetching) {
+  if (shouldBatchClickCallConversionEvents) {
     payload.operations.create.transaction_attribute.conversion_action = conversionActionId;
   }
 
@@ -512,8 +512,8 @@ const getClickConversionPayloadAndEndpoint = (
     set(payload, 'conversions[0].cartData.items', itemList);
   }
 
-  const useBatchFetching = isClickCallBatchingEnabled();
-  if (useBatchFetching) {
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
+  if (shouldBatchClickCallConversionEvents) {
     set(payload, 'conversions[0].conversionAction', conversionActionId);
     if (customVariableList.length > 0) {
       set(payload, 'conversions[0].customVariables', customVariableList);

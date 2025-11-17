@@ -142,8 +142,8 @@ const trackResponseBuilder = async (message, metadata, destination) => {
   const conversionName = eventsToConversionsNamesMapping[event];
   let conversionActionId;
   let customVariableList = [];
-  const useBatchFetching = isClickCallBatchingEnabled();
-  if (useBatchFetching) {
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
+  if (shouldBatchClickCallConversionEvents) {
     const { customerId } = destination.Config;
     const filteredCustomerId = removeHyphens(customerId);
 
@@ -225,12 +225,12 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
-  const useBatchFetching = isClickCallBatchingEnabled();
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   // eslint-disable-next-line @typescript-eslint/no-shadow
   message.forEach((message) => {
     if (message.body.JSON?.isStoreConversion) {
       storeSalesEvents.push({ message, metadata, destination });
-    } else if (useBatchFetching) {
+    } else if (shouldBatchClickCallConversionEvents) {
       // When batching is enabled, keep the full event structure for batching
       clickCallEvents.push({ message, metadata, destination });
     } else {
@@ -358,7 +358,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
-  const useBatchFetching = isClickCallBatchingEnabled();
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
 
   await forEachInBatches(inputs, async (event) => {
     try {
@@ -391,7 +391,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   // Batch click/call conversions when feature flag is enabled
-  if (useBatchFetching && clickCallEvents.length > 0) {
+  if (shouldBatchClickCallConversionEvents && clickCallEvents.length > 0) {
     clickCallEventsBatchedResponseList = await batchClickCallEvents(clickCallEvents);
   }
 
@@ -399,7 +399,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // appending all kinds of batches
   batchedResponseList = batchedResponseList
     .concat(storeSalesEventsBatchedResponseList)
-    .concat(useBatchFetching ? clickCallEventsBatchedResponseList : clickCallEvents)
+    .concat(
+      shouldBatchClickCallConversionEvents ? clickCallEventsBatchedResponseList : clickCallEvents,
+    )
     .concat(errorRespList);
   return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };

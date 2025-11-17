@@ -505,7 +505,7 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+              '[Google Ads Offline Conversions]:: Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
             destinationResponse: {
               response: {
                 partialFailureError: {
@@ -631,7 +631,7 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              "[Google Ads Offline Conversions]:: partialFailureError - The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+              "[Google Ads Offline Conversions]:: The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
             destinationResponse: {
               response: {
                 jobId: '5353383680802491057',

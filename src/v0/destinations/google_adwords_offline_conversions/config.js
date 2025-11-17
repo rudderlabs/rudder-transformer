@@ -19,6 +19,7 @@ const SEARCH_STREAM_ENDPOINT_PATH = 'searchStream';
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:${SEARCH_STREAM_ENDPOINT_PATH}`;
 
 // Batch size limit for click and call conversions
+// https://developers.google.com/google-ads/api/docs/best-practices/quotas
 const MAX_CONVERSIONS_PER_BATCH = 2000;
 
 const STORE_CONVERSION_ENDPOINT_PATH = 'offlineUserDataJobs';

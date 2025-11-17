@@ -216,7 +216,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
-  const useBatchFetching = isClickCallBatchingEnabled();
+  const shouldBatchCallConversionEvents = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
@@ -226,7 +226,7 @@ const ProxyRequest = async (request) => {
     });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    if (!useBatchFetching) {
+    if (!shouldBatchCallConversionEvents) {
       const conversionId = await getConversionActionId({ headers, params, metadata });
       if (Array.isArray(addPayload.operations)) {
         for (const operation of addPayload.operations) {
@@ -253,7 +253,7 @@ const ProxyRequest = async (request) => {
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
-  if (!useBatchFetching) {
+  if (!shouldBatchCallConversionEvents) {
     if (params?.event) {
       const conversionActionId = await getConversionActionId({ headers, params, metadata });
       set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
@@ -343,7 +343,7 @@ const responseHandler = (responseParams) => {
 
     const data = {
       status: 400,
-      message: `[Google Ads Offline Conversions]:: partialFailureError - ${errorMessage}`,
+      message: `[Google Ads Offline Conversions]:: ${errorMessage}`,
       destinationResponse,
       statTags: {
         errorCategory: 'network',

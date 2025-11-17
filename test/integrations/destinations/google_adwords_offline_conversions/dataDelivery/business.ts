@@ -464,7 +464,7 @@ export const testScenariosForV1API = [
         body: {
           output: {
             message:
-              '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+              '[Google Ads Offline Conversions]:: Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
             destinationResponse: {
               response: {
                 partialFailureError: {

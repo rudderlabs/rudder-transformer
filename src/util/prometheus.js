@@ -1030,6 +1030,12 @@ class Prometheus {
         labelNames: ['destination_id', 'source_id'],
         buckets: [10, 50, 100, 200, 500, 800, 1000],
       },
+      {
+        name: 'salesforce_soql_lookup_count',
+        help: 'Count of SOQL-based lookups executed using Salesforce SDK',
+        type: 'counter',
+        labelNames: ['method', 'objectType', 'workspaceId'],
+      },
     ];
 
     for (const metric of metrics) {

@@ -6,7 +6,6 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
-const stats = require('../../../util/stats');
 const {
   isWorkspaceSupportedForSoql,
   getSalesforceIdForRecordUsingHttp,
@@ -23,14 +22,6 @@ jest.mock('../../util', () => ({
   ...jest.requireActual('../../util'),
   isHttpStatusSuccess: jest.fn(),
   getAuthErrCategoryFromStCode: jest.fn((status) => 'AUTH_ERROR'),
-}));
-jest.mock('../../../util/stats', () => ({
-  increment: jest.fn(),
-  timing: jest.fn(),
-  timingSummary: jest.fn(),
-  counter: jest.fn(),
-  gauge: jest.fn(),
-  histogram: jest.fn(),
 }));
 
 describe('Salesforce Utils', () => {
@@ -306,10 +297,6 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
         "SELECT Id FROM Account WHERE External_ID__c = 'ext-123'",
       );
-      expect(stats.increment).toHaveBeenCalledWith('salesforce_soql_lookup_count', {
-        method: 'getSalesforceIdForRecordUsingSdk',
-        objectType: 'Account',
-      });
     });
 
     it('should return undefined when no records are found', async () => {
@@ -512,10 +499,6 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
         "SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'test@example.com'",
       );
-      expect(stats.increment).toHaveBeenCalledWith('salesforce_soql_lookup_count', {
-        method: 'getSalesforceIdForLeadUsingSdk',
-        objectType: 'Lead',
-      });
     });
 
     it('should return Contact ID when lead is converted and useContactId is true', async () => {

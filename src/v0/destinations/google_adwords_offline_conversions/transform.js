@@ -21,6 +21,10 @@ const {
   getClickConversionPayloadAndEndpoint,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
+  getConversionActionIds,
+  getConversionCustomVariables,
+  getListCustomVariable,
+  isClickCallBatchingEnabled,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -32,9 +36,19 @@ const helper = require('./helper');
  * @param {*} param2
  * @param {*} event
  * @param {*} conversionType
+ * @param {*} conversionActionId
+ * @param {*} customVariableList
  * @returns
  */
-const getConversions = (message, metadata, { Config }, event, conversionType) => {
+const getConversions = (
+  message,
+  metadata,
+  { Config },
+  event,
+  conversionType,
+  conversionActionId,
+  customVariableList,
+) => {
   let convertedPayload = {};
   const { customerId } = Config;
   const { properties, timestamp, originalTimestamp } = message;
@@ -49,6 +63,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       Config,
       filteredCustomerId,
       eventLevelConsentsData,
+      conversionActionId,
+      customVariableList,
     );
   } else if (conversionType === 'store') {
     convertedPayload = getStoreConversionPayload(
@@ -56,6 +72,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       Config,
       filteredCustomerId,
       eventLevelConsentsData,
+      conversionActionId,
     );
   } else {
     // call conversions
@@ -63,6 +80,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       message,
       filteredCustomerId,
       eventLevelConsentsData,
+      conversionActionId,
+      customVariableList,
     );
   }
   const { payload, endpointDetails } = convertedPayload;
@@ -96,7 +115,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = (message, metadata, destination) => {
+const trackResponseBuilder = async (message, metadata, destination) => {
   let { eventsToConversionsNamesMapping, eventsToOfflineConversionsTypeMapping } =
     destination.Config;
   let { event } = message;
@@ -118,6 +137,55 @@ const trackResponseBuilder = (message, metadata, destination) => {
       `Event name '${event}' is not present in the mapping provided in the dashboard.`,
     );
   }
+
+  const conversionName = eventsToConversionsNamesMapping[event];
+  let conversionActionId;
+  let customVariableList = [];
+  const useBatchFetching = isClickCallBatchingEnabled();
+  if (useBatchFetching) {
+    const { customerId } = destination.Config;
+    const filteredCustomerId = removeHyphens(customerId);
+
+    // Batch fetch conversion action IDs (deduplicate conversion names)
+    const uniqueConversionNames = [...new Set(Object.values(eventsToConversionsNamesMapping))];
+    const conversionActionIdsMap = await getConversionActionIds({
+      Config: destination.Config,
+      metadata,
+      customerId: filteredCustomerId,
+      conversionNames: uniqueConversionNames,
+    });
+    conversionActionId = conversionActionIdsMap[conversionName];
+    if (!conversionActionId) {
+      throw new ConfigurationError(
+        `Unable to find conversionActionId for conversion:${conversionName}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
+      );
+    }
+
+    // Batch fetch conversion variable name (deduplicate variable names)
+    const { customVariables: customVariablesConfig } = destination.Config;
+    const customVariablesMap = getHashFromArray(customVariablesConfig, 'from', 'to', false);
+    // Extract variable names that we need to fetch
+    const listOfVariableToFetch = [
+      ...new Set(
+        Object.values(customVariablesMap).filter(
+          (variableName) => variableName && variableName !== '',
+        ),
+      ),
+    ];
+    const conversionCustomVariableMap = await getConversionCustomVariables({
+      Config: destination.Config,
+      metadata,
+      customerId: filteredCustomerId,
+      variableNames: listOfVariableToFetch,
+    });
+    const { properties } = message;
+    customVariableList = getListCustomVariable({
+      properties,
+      conversionCustomVariableMap,
+      customVariables: customVariablesMap,
+    });
+  }
+
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
   conversionTypes.forEach((conversionType) => {
     responseList.push(
@@ -125,8 +193,10 @@ const trackResponseBuilder = (message, metadata, destination) => {
         message,
         metadata,
         destination,
-        eventsToConversionsNamesMapping[event],
+        conversionName,
         conversionType,
+        conversionActionId,
+        customVariableList,
       ),
     );
   });
@@ -144,7 +214,7 @@ const process = async (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.TRACK) {
-    response = trackResponseBuilder(message, metadata, destination);
+    response = await trackResponseBuilder(message, metadata, destination);
   } else {
     throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

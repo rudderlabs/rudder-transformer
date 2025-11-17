@@ -1,19 +1,174 @@
 /**
- * GAOC (Google Ads Offline Conversions) - Router Tests (Standard Behavior)
+ * GAOC (Google Ads Offline Conversions) - Router Tests with Batch Fetching Feature Flag
  *
- * These tests validate the router transformation with batch fetching DISABLED (default).
- * For tests with batch fetching enabled (GAOC_ENABLE_BATCH_FETCHING=true),
- * see batch-fetching-data.ts in the same directory.
+ * IMPORTANT: These tests are duplicates of the existing router test suite (data.ts) with a critical difference:
+ * All tests in this file include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to test the new
+ * batch fetching optimization feature for Google Ads Offline Conversions.
+ *
+ * Background:
+ * - GAOC now supports env-based feature flag: GAOC_ENABLE_BATCH_FETCHING
+ * - When enabled, conversion variable fetching is optimized with batch requests
+ * - These tests validate router transformation behavior with the feature flag ENABLED
+ * - The original tests (data.ts) validate behavior with the feature flag DISABLED (default)
+ *
+ * Relationship to original tests:
+ * - Test cases are based on test/integrations/destinations/google_adwords_offline_conversions/router/data.ts
+ * - Test scenarios and expected behaviors are identical except for the feature flag setting
+ * - This allows parallel testing of both old (flag off) and new (flag on) behavior
+ *
+ * For PR reviewers: This is an intentional duplication to ensure backward compatibility while
+ * testing the new batch fetching feature. Once the feature is proven stable, we can remove old code and test.
  */
 
-import { authHeader1, secret1, secret3 } from '../maskedSecrets';
+import { authHeader1, secret1, secret3, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
-import { newData as batchFetchingData } from './batch-fetching-data';
 
 const API_VERSION = 'v19';
 
-export const data = [
-  ...batchFetchingData,
+export const newData = [
+  {
+    id: 'gaoc_router_test_searchstream_401_error',
+    name: 'google_adwords_offline_conversions',
+    description:
+      'Test searchStream API returns 401 error (expired access token) during batch fetching - should trigger retry',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    phone: '+1234567890',
+                  },
+                },
+                event: 'Product Purchased',
+                type: 'track',
+                messageId: 'test-message-id-401',
+                originalTimestamp: '2019-10-14T11:15:18.299Z',
+                anonymousId: 'test-anon-id-401',
+                userId: 'test-user-401',
+                properties: {
+                  gclid: 'test-gclid-401',
+                  conversionValue: 99.99,
+                  currency: 'USD',
+                  orderId: 'ORDER-401-TEST',
+                },
+                integrations: {
+                  All: true,
+                },
+                sentAt: '2019-10-14T11:15:53.296Z',
+              },
+              metadata: {
+                secret: {
+                  access_token: secret401Test,
+                  refresh_token: 'refresh_token_401',
+                  developer_token: secret3,
+                },
+                jobId: 1,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  customerId: '999-888-7777',
+                  subAccount: true,
+                  loginCustomerId: 'login-customer-id-401',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Product Purchased',
+                      to: 'click',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Product Purchased',
+                      to: 'Purchase Conversion',
+                    },
+                  ],
+                  hashUserIdentifier: false,
+                  defaultUserIdentifier: 'email',
+                  validateOnly: false,
+                  rudderAccountId: 'test-account-id',
+                },
+                hasDynamicConfig: false,
+              },
+            },
+          ],
+          destType: 'google_adwords_offline_conversions',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              authErrorCategory: 'REFRESH_TOKEN',
+              error:
+                '{\"message\":\"[Google Ads Offline Conversions]:: Unable to fetch conversions action - Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"destinationResponse\":[{\"error\":{\"code\":401,\"message\":\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\",\"status\":\"UNAUTHENTICATED\"}}]}',
+              metadata: [
+                {
+                  secret: {
+                    access_token: secret401Test,
+                    refresh_token: 'refresh_token_401',
+                    developer_token: secret3,
+                  },
+                  jobId: 1,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 401,
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+                errorCategory: 'network',
+                errorType: 'aborted',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              destination: {
+                Config: {
+                  customerId: '999-888-7777',
+                  subAccount: true,
+                  loginCustomerId: 'login-customer-id-401',
+                  eventsToOfflineConversionsTypeMapping: [
+                    {
+                      from: 'Product Purchased',
+                      to: 'click',
+                    },
+                  ],
+                  eventsToConversionsNamesMapping: [
+                    {
+                      from: 'Product Purchased',
+                      to: 'Purchase Conversion',
+                    },
+                  ],
+                  hashUserIdentifier: false,
+                  defaultUserIdentifier: 'email',
+                  validateOnly: false,
+                  rudderAccountId: 'test-account-id',
+                },
+                hasDynamicConfig: false,
+              },
+            },
+          ],
+        },
+      },
+    },
+    mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+      DEVELOPER_TOKEN: 'test-developer-token-12345',
+    },
+  },
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',
@@ -578,6 +733,14 @@ export const data = [
                         conversionDateTime: '2022-01-01 12:32:45-08:00',
                         conversionValue: 1,
                         currencyCode: 'GBP',
+                        conversionAction: 'customers/9625812972/conversionActions/848898416',
+                        customVariables: [
+                          {
+                            conversionCustomVariable:
+                              'customers/9625812972/conversionCustomVariables/19131634',
+                            value: 'value',
+                          },
+                        ],
                       },
                     ],
                     partialFailure: true,
@@ -693,6 +856,14 @@ export const data = [
                         conversionDateTime: '2022-01-01 12:32:45-08:00',
                         conversionValue: 1,
                         currencyCode: 'GBP',
+                        conversionAction: 'customers/9625812972/conversionActions/444555666',
+                        customVariables: [
+                          {
+                            conversionCustomVariable:
+                              'customers/9625812972/conversionCustomVariables/19131634',
+                            value: 'value',
+                          },
+                        ],
                       },
                     ],
                     partialFailure: true,
@@ -757,7 +928,10 @@ export const data = [
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
                   },
-                  params: { event: 'Store sales', customerId: '7693729833' },
+                  params: {
+                    event: 'Store sales',
+                    customerId: '7693729833',
+                  },
                   body: {
                     JSON: {
                       event: '7693729833',
@@ -785,6 +959,8 @@ export const data = [
                                 order_id: 'order id',
                                 currency_code: 'INR',
                                 transaction_date_time: '2019-10-14 16:45:18+05:30',
+                                conversion_action:
+                                  'customers/7693729833/conversionActions/444555666',
                               },
                               userIdentifiers: [
                                 {
@@ -806,6 +982,8 @@ export const data = [
                                 order_id: 'order id',
                                 currency_code: 'INR',
                                 transaction_date_time: '2019-10-14 16:45:18+05:30',
+                                conversion_action:
+                                  'customers/7693729833/conversionActions/948898416',
                               },
                               userIdentifiers: [
                                 {
@@ -869,6 +1047,7 @@ export const data = [
                           conversionDateTime: '2019-10-14 16:45:18+05:30',
                           conversionValue: 100,
                           currencyCode: 'INR',
+                          conversionAction: 'customers/7693729833/conversionActions/948898416',
                         },
                       ],
                       partialFailure: true,
@@ -1009,6 +1188,9 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     name: 'google_adwords_offline_conversions',
@@ -1193,7 +1375,10 @@ export const data = [
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
                 },
-                params: { event: 'Store sales', customerId: '1234556775' },
+                params: {
+                  event: 'Store sales',
+                  customerId: '1234556775',
+                },
                 body: {
                   JSON: {
                     event: '1234556775',
@@ -1216,6 +1401,7 @@ export const data = [
                               order_id: '12343-4886-294995',
                               currency_code: 'USD',
                               transaction_date_time: '2019-10-14 16:45:18+05:30',
+                              conversion_action: 'customers/1234556775/conversionActions/948898416',
                             },
                             userIdentifiers: [
                               {
@@ -1289,5 +1475,8 @@ export const data = [
       },
     },
     mockFns: timestampMock,
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
 ];

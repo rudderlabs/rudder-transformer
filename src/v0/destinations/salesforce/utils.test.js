@@ -6,6 +6,7 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   isWorkspaceSupportedForSoql,
   getSalesforceIdForRecordUsingHttp,
@@ -335,6 +336,111 @@ describe('Salesforce Utils', () => {
       ).rejects.toThrow('Failed to query Salesforce: Query failed');
     });
 
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "session expired" (lowercase)', async () => {
+      const errorMessage = 'SOQL query failed: session expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('session expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "SESSION EXPIRED" (uppercase)', async () => {
+      const errorMessage = 'SOQL query failed: SESSION EXPIRED or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('SESSION EXPIRED');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "Session Expired" (mixed case)', async () => {
+      const errorMessage = 'SOQL query failed: Session Expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('Session Expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
     it('should handle special characters in identifier value', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
@@ -653,6 +759,108 @@ describe('Salesforce Utils', () => {
       await expect(
         getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
       ).rejects.toThrow('Failed to query Salesforce: Query failed');
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "session expired" (lowercase)', async () => {
+      const errorMessage = 'SOQL query failed: session expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('session expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "SESSION EXPIRED" (uppercase)', async () => {
+      const errorMessage = 'SOQL query failed: SESSION EXPIRED or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('SESSION EXPIRED');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "Session Expired" (mixed case)', async () => {
+      const errorMessage = 'SOQL query failed: Session Expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('Session Expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
     });
   });
 

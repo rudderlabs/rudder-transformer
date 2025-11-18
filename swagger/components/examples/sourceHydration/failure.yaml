@@ -1,0 +1,33 @@
+batch:
+  - id: 'event_id_1'
+    event:
+      context:
+        traits:
+          page_id: 'page_id'
+          form_id: 'form_id'
+      type: identify
+      anonymousId: 'leadgen_id'
+      timestamp: '1970-01-01T00:00:00.000Z'
+      messageId: 'page_id-form_id-leadgen_id'
+      originalTimestamp: '1970-01-01T00:00:00.000Z'
+      sentAt: '1970-01-01T00:00:00.000Z'
+      integrations:
+        All: true
+    statusCode: 429
+    errorMessage: 'Too many requests'
+  - id: 'event_id_2'
+    event:
+      context:
+        traits:
+          page_id: 'page_id'
+          form_id: 'form_id'
+      type: identify
+      anonymousId: 'leadgen_id'
+      timestamp: '1970-01-01T00:00:00.000Z'
+      messageId: 'page_id-form_id-leadgen_id'
+      originalTimestamp: '1970-01-01T00:00:00.000Z'
+      sentAt: '1970-01-01T00:00:00.000Z'
+      integrations:
+        All: true
+    statusCode: 400
+    errorMessage: 'Page access token is invalid'

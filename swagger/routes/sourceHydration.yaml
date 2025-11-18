@@ -1,0 +1,56 @@
+/{version}/sources/{source}/hydrate:
+  post:
+    tags:
+      - Source Hydration
+    summary: Hydrates the source events with additional data
+    parameters:
+      - in: path
+        name: version
+        required: true
+        description: The version of the API
+        schema:
+          type: string
+          enum:
+            - v2
+      - in: path
+        name: source
+        description: The source type. The lowercase value of the source name in the definition.
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/sourceHydrationRequest.yaml'
+      examples:
+        request:
+          summary: Source Hydration Request
+          $ref: '../components/examples/sourceHydration/request.yaml'
+    responses:
+      200:
+        description: Success (all events in the batch were hydrated successfully).
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '../components/schemas/sourceHydrationSuccessResponse.yaml'
+            examples:
+              success:
+                summary: Source Hydration Success
+                $ref: '../components/examples/sourceHydration/success.yaml'
+      default:
+        description: |
+          Failure (one or more events in the batch were not hydrated successfully). 
+          The response will contain the events that were hydrated successfully and the events that were not hydrated successfully.
+          The first non-200 status code of the events hydration operation is returned as the status code of the response.
+
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '../components/schemas/sourceHydrationFailureResponse.yaml'
+            examples:
+              failure:
+                summary: Source Hydration Failure
+                $ref: '../components/examples/sourceHydration/failure.yaml'

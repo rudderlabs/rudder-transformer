@@ -26,7 +26,7 @@ import { assertRouterOutput, responses } from '../testHelper';
 import { initaliseReport } from '../test_reporter/reporter';
 import { FetchHandler } from '../../src/helpers/fetchHandlers';
 import { enhancedTestUtils } from '../test_reporter/allureReporter';
-import { configureBatchProcessingDefaults } from '@rudderstack/integrations-lib';
+import { configureBatchProcessingDefaults, axiosFromLib } from '@rudderstack/integrations-lib';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -225,6 +225,9 @@ const sourceTestHandler = async (tcData) => {
 const mockAdapter = new MockAxiosAdapter(axios as any, { onNoMatch: 'throwException' });
 registerAxiosMocks(mockAdapter, getTestMockData(opts.destination || opts.source));
 
+const mockAxiosFromLib = new MockAxiosAdapter(axiosFromLib as any, { onNoMatch: 'throwException' });
+registerAxiosMocks(mockAxiosFromLib, getTestMockData(opts.destination || opts.source));
+
 describe('Component Test Suite', () => {
   if (allTestDataFilePaths.length === 0) {
     // Reason: No test cases matched the given criteria
@@ -266,6 +269,7 @@ describe('Component Test Suite', () => {
                 }
 
                 tcData?.mockFns?.(mockAdapter);
+                tcData?.mockFns?.(mockAxiosFromLib);
 
                 switch (tcData.module) {
                   case tags.MODULES.DESTINATION:
@@ -274,6 +278,7 @@ describe('Component Test Suite', () => {
                   case tags.MODULES.SOURCE:
                     FetchHandler['sourceHandlerMap'] = new Map();
                     tcData?.mockFns?.(mockAdapter);
+                    tcData?.mockFns?.(mockAxiosFromLib);
                     await sourceTestHandler(tcData);
                     break;
                   default:

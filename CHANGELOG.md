@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.113.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.1...v1.113.0) (2025-11-17)
+
+
+### Features
+
+* add set method support for cache class ([#4755](https://github.com/rudderlabs/rudder-transformer/issues/4755)) ([2372c56](https://github.com/rudderlabs/rudder-transformer/commit/2372c567f570cf5bad0a8f1515dd1644c9a01982))
+* implement source hydration for facebook lead ads native ([#4752](https://github.com/rudderlabs/rudder-transformer/issues/4752)) ([b2ba069](https://github.com/rudderlabs/rudder-transformer/commit/b2ba069bea4ed9b0d4fda992ef7ac1556fa67687))
+* update salesforce to soql ([#4771](https://github.com/rudderlabs/rudder-transformer/issues/4771)) ([123fcdf](https://github.com/rudderlabs/rudder-transformer/commit/123fcdf5f7199bfd46907ad37fb67b3f55f40f1b))
+
+### [1.112.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.0...v1.112.1) (2025-11-13)
+
+
+### Bug Fixes
+
+* intercom legacy version mapping ([#4778](https://github.com/rudderlabs/rudder-transformer/issues/4778)) ([e2cee00](https://github.com/rudderlabs/rudder-transformer/commit/e2cee002a64a27b808124dbafa57b7b134db63b5))
+
+## [1.112.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.2...v1.112.0) (2025-11-11)
+
+
+### Features
+
+* add advertiser_tracking_enabled mapping for pinterest without featureFlag ([#4740](https://github.com/rudderlabs/rudder-transformer/issues/4740)) ([c215fcd](https://github.com/rudderlabs/rudder-transformer/commit/c215fcd575a2ed188c8860389a3a7b4eae5b5db8))
+* add validation of diff in staging deployment workflow ([#4722](https://github.com/rudderlabs/rudder-transformer/issues/4722)) ([d85d396](https://github.com/rudderlabs/rudder-transformer/commit/d85d396d914fb564d706c1497fc9c78d37872aea))
+* introduce e2e tests UT ([#4686](https://github.com/rudderlabs/rudder-transformer/issues/4686)) ([fead46a](https://github.com/rudderlabs/rudder-transformer/commit/fead46aeb31d1ba458e1ef87ce7c1db5b5644663))
+* **reddit:** onboard v3 api ([#4699](https://github.com/rudderlabs/rudder-transformer/issues/4699)) ([acd18d1](https://github.com/rudderlabs/rudder-transformer/commit/acd18d19b405119a4c2d235e15e08f0441d5d09b))
+* source transformation endpoint for facebook_lead_ads_native source ([#4746](https://github.com/rudderlabs/rudder-transformer/issues/4746)) ([689261a](https://github.com/rudderlabs/rudder-transformer/commit/689261ae01b924dc46260418c6c05b4a4fdf6169))
+
+
+### Bug Fixes
+
+* intercom rETL flow when user_id only provided as identifier ([#4739](https://github.com/rudderlabs/rudder-transformer/issues/4739)) ([c44292f](https://github.com/rudderlabs/rudder-transformer/commit/c44292f9916f9aeb3534acbbb5e49291f919af44))
+
 ### [1.111.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.111.1...v1.111.2) (2025-10-30)
 
 

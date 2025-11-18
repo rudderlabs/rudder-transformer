@@ -326,7 +326,7 @@ async function getSalesforceIdForRecordUsingSdk(
     );
   } catch (error) {
     // check if the error message contains 'session expired'
-    if (error.message && error.message.toLowerCase().includes('session expired')) {
+    if (error.message?.toLowerCase().includes('session expired')) {
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${error.message}`,
         500,
@@ -412,7 +412,7 @@ async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination)
     );
   } catch (error) {
     // check if the error message contains 'session expired'
-    if (error.message && error.message.toLowerCase().includes('session expired')) {
+    if (error.message?.toLowerCase().includes('session expired')) {
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${error.message}`,
         500,

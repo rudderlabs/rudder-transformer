@@ -498,40 +498,76 @@ describe('Salesforce Utils', () => {
       }
     });
 
-    it('should throw TypeError when error message is a number (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is a number', async () => {
       const error = { message: 500 };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'External_ID__c', 'ext-123'),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: 500');
+      }
     });
 
-    it('should throw TypeError when error message is an object (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is an object', async () => {
       const error = { message: { code: 500, detail: 'Internal error' } };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'External_ID__c', 'ext-123'),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: [object Object]');
+      }
     });
 
-    it('should throw TypeError when error message is an array (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is an array', async () => {
       const error = { message: ['Error 1', 'Error 2'] };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'External_ID__c', 'ext-123'),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: Error 1,Error 2');
+      }
     });
 
-    it('should throw TypeError when error message is a boolean (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is a boolean', async () => {
       const error = { message: true };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'External_ID__c', 'ext-123'),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: true');
+      }
     });
 
     it('should handle special characters in identifier value', async () => {
@@ -1010,40 +1046,72 @@ describe('Salesforce Utils', () => {
       }
     });
 
-    it('should throw TypeError when error message is a number (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is a number', async () => {
       const error = { message: 500 };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: 500');
+      }
     });
 
-    it('should throw TypeError when error message is an object (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is an object', async () => {
       const error = { message: { code: 500, detail: 'Internal error' } };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: [object Object]');
+      }
     });
 
-    it('should throw TypeError when error message is an array (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is an array', async () => {
       const error = { message: ['Error 1', 'Error 2'] };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: Error 1,Error 2');
+      }
     });
 
-    it('should throw TypeError when error message is a boolean (toLowerCase fails)', async () => {
+    it('should throw NetworkInstrumentationError when error message is a boolean', async () => {
       const error = { message: true };
       mockSalesforceSdk.query.mockRejectedValueOnce(error);
 
-      await expect(
-        getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
-      ).rejects.toThrow(TypeError);
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: true');
+      }
     });
   });
 

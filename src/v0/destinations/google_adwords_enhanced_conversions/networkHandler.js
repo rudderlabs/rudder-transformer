@@ -20,7 +20,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
-const { statsClient } = require('../../../util/stats');
+const statsClient = require('../../../util/stats');
 const logger = require('../../../logger');
 
 /**

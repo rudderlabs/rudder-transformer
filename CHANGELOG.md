@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.114.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.0...v1.114.0) (2025-11-19)
+
+
+### Features
+
+* lib upgrade with new sdks functionality ([8e96ad1](https://github.com/rudderlabs/rudder-transformer/commit/8e96ad105a60f65f0521cef3f1b7d1789a2c3e06))
+* lib upgrade with new sdks functionality ([#4785](https://github.com/rudderlabs/rudder-transformer/issues/4785)) ([f5a422b](https://github.com/rudderlabs/rudder-transformer/commit/f5a422be46dfa0061d9b8e3d333d0a501e1fc4fe))
+
+
+### Bug Fixes
+
+* handle refresh scenario for the sdk response ([#4791](https://github.com/rudderlabs/rudder-transformer/issues/4791)) ([7a4352f](https://github.com/rudderlabs/rudder-transformer/commit/7a4352f3db68851e368da6918868fa3c87699940))
+
 ## [1.113.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.112.1...v1.113.0) (2025-11-17)
 
 

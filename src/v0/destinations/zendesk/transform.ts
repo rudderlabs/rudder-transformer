@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FixMe } from '../../../types';
+
 const get = require('get-value');
 const set = require('set-value');
 const {
@@ -154,7 +157,7 @@ const payloadBuilderforUpdatingEmail = async (
 ) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
-  const respLists = [];
+  const respLists: unknown[] = [];
   let duplicateEmailIdentity;
   let currentPrimaryEmailIdentity;
 
@@ -170,7 +173,7 @@ const payloadBuilderforUpdatingEmail = async (
           identity.type === 'email' && identity.value !== newEmail && identity.primary === true,
       );
     }
-  } catch (error) {
+  } catch (error: FixMe) {
     logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
     return [];
   }
@@ -232,7 +235,7 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         if (response.status !== 201) {
           logger.debug(`${NAME}:: Failed to create User Field : `, field);
         }
-      } catch (error) {
+      } catch (error: FixMe) {
         if (error.response && error.response.status !== 422) {
           logger.debug(`${NAME}:: Cannot create User field `, field, error);
         }
@@ -249,7 +252,7 @@ async function checkAndCreateUserFields(
   baseEndpoint,
   metadata,
 ) {
-  let newFields = [];
+  let newFields: unknown[] = [];
 
   const url = baseEndpoint + categoryEndpoint;
   const config = { headers };
@@ -278,7 +281,7 @@ async function checkAndCreateUserFields(
         await createUserFields(url, config, newFields, fieldJson, metadata);
       }
     }
-  } catch (error) {
+  } catch (error: FixMe) {
     logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
 }
@@ -349,7 +352,7 @@ async function getUserId(message, headers, baseEndpoint, type, metadata) {
 
     const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
-  } catch (error) {
+  } catch (error: FixMe) {
     logger.debug(`${NAME}:: Cannot get userId : ${error.response}`);
     return undefined;
   }
@@ -370,7 +373,7 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint, met
     if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
     }
-  } catch (error) {
+  } catch (error: FixMe) {
     logger.debug(`${NAME}:: Error :`);
     logger.debug(error?.response?.data || error);
   }
@@ -385,7 +388,11 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const { name, email } = traits;
   const userId = getFieldValueFromMessage(message, 'userId');
 
-  const userObject = { name, external_id: userId, email };
+  const userObject: { verified?: boolean; name: unknown; external_id: unknown; email: unknown } = {
+    name,
+    external_id: userId,
+    email,
+  };
   if (destinationConfig.createUsersAsVerified) {
     userObject.verified = true;
   }
@@ -547,7 +554,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
 
   const payload = getIdentifyPayload(message, category, destinationConfig, 'identify');
   const url = baseEndpoint + category.createOrUpdateUserEndpoint;
-  const returnList = [];
+  const returnList: unknown[] = [];
 
   // create or update the user
   const userIdByZendesk = await createOrUpdateUser(payload, url, headers, metadata);
@@ -575,7 +582,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers, baseEndpoint, metadata);
+    const userId = await getUserId(message, headers, baseEndpoint, 'identify', metadata);
     if (userId) {
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
@@ -607,7 +614,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
           await removeUserFromOrganizationMembership(deleteResponse.endpoint, headers, metadata);
           returnList.push(deleteResponse);
         }
-      } catch (error) {
+      } catch (error: FixMe) {
         logger.debug(`${NAME}:: ${error}`);
       }
     }
@@ -646,6 +653,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
         headers,
         destinationConfig,
         baseEndpoint,
+        'track',
         metadata,
       );
       if (!zendeskUserId) {
@@ -658,7 +666,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
       userEmail = email;
     }
     zendeskUserID = zendeskUserID || userResponse?.data?.users?.[0]?.id;
-  } catch (error) {
+  } catch (error: FixMe) {
     throw new NetworkError(
       `Failed to fetch user with email: ${userEmail} due to ${error.message}`,
       error.status,
@@ -773,7 +781,7 @@ async function processSingleMessage(event) {
   }
 }
 
-async function process(event) {
+async function processEvent(event) {
   const resp = await processSingleMessage(event);
   return resp;
 }
@@ -786,7 +794,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await process(input);
+          resp = await processEvent(input);
         }
 
         return getSuccessRespEvents(
@@ -805,4 +813,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process: processEvent, processRouterDest };

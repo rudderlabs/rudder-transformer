@@ -128,6 +128,7 @@ export type RouterTransformationResponse = {
   statusCode: number;
   error?: string;
   statTags?: object;
+  authErrorCategory?: string;
 };
 
 /**

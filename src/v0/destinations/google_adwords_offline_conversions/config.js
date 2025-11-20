@@ -18,6 +18,10 @@ const CALL_CONVERSION = `${BASE_ENDPOINT}:${CALL_CONVERSION_ENDPOINT_PATH}`;
 const SEARCH_STREAM_ENDPOINT_PATH = 'searchStream';
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:${SEARCH_STREAM_ENDPOINT_PATH}`;
 
+// Batch size limit for click and call conversions
+// https://developers.google.com/google-ads/api/docs/best-practices/quotas
+const MAX_CONVERSIONS_PER_BATCH = 2000;
+
 const STORE_CONVERSION_ENDPOINT_PATH = 'offlineUserDataJobs';
 const STORE_CONVERSION_CONFIG = `${BASE_ENDPOINT}/${STORE_CONVERSION_ENDPOINT_PATH}`;
 const CONFIG_CATEGORIES = {
@@ -77,4 +81,5 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
+  MAX_CONVERSIONS_PER_BATCH,
 };

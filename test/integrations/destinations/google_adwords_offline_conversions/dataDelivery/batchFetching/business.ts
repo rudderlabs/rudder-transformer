@@ -1,9 +1,25 @@
-import { authHeader1, secret3 } from '../maskedSecrets';
+/**
+ * GAOC Data Delivery - Business Scenarios with Batch Fetching Feature Flag
+ *
+ * This file contains business logic tests for GAOC data delivery (proxy v0 and v1).
+ * All tests include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to validate
+ * the new batch fetching optimization feature.
+ *
+ * Test scenarios cover:
+ * - Proxy v0 API: Store conversions with offline user data jobs
+ * - Proxy v1 API: Click conversions, store conversions, and call conversions
+ * - Success cases: Valid requests returning 200 responses
+ * - Error cases: Invalid arguments, permission errors, etc.
+ *
+ * Based on original dataDelivery tests but with batch fetching feature flag enabled.
+ */
+
+import { authHeader1 } from '../../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
-} from '../../../testUtils';
+} from '../../../../testUtils';
 
 const API_VERSION = 'v19';
 
@@ -16,6 +32,7 @@ const transactionAttribute = {
   },
   transaction_amount_micros: '100000000',
   transaction_date_time: '2019-10-14 11:15:18+00:00',
+  conversion_action: 'customers/1112223333/conversionActions/848898416',
 };
 
 const createJobPayload = {
@@ -60,10 +77,10 @@ const headers = {
 const params = {
   param1: {
     customerId: '1112223333',
-    event: 'Sign-up - click',
+    conversionActionId: 'customers/1112223333/conversionActions/848898416',
   },
   param2: {
-    event: 'Sign-up - click',
+    conversionActionId: 'customers/1234567891/conversionActions/848898416',
     customerId: '1234567891',
     customVariables: [
       {
@@ -102,7 +119,12 @@ const params = {
 
 params['param3'] = { ...params.param2, customVariables: [] };
 
-params['param4'] = { ...params.param3, customerId: '1234567893', conversionEnvironment: 'APP' };
+params['param4'] = {
+  ...params.param3,
+  customerId: '1234567893',
+  conversionEnvironment: 'APP',
+  conversionActionId: 'customers/1234567893/conversionActions/848898417',
+};
 
 const validRequestPayload1 = {
   addConversionPayload: {
@@ -165,6 +187,13 @@ const validRequestPayload2 = {
       conversionValue: 1,
       currencyCode: 'GBP',
       orderId: 'PL-123QR',
+      conversionAction: 'customers/1234567891/conversionActions/848898416',
+      customVariables: [
+        {
+          conversionCustomVariable: 'customers/1234567891/conversionCustomVariables/19131634',
+          value: 'value',
+        },
+      ],
     },
   ],
   partialFailure: true,
@@ -265,6 +294,9 @@ export const testScenariosForV1API = [
         },
       },
     },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     id: 'gaoc_v1_scenario_2',
@@ -314,6 +346,9 @@ export const testScenariosForV1API = [
           },
         },
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -374,6 +409,9 @@ export const testScenariosForV1API = [
         },
       },
     },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     id: 'gaoc_v1_scenario_4',
@@ -432,6 +470,9 @@ export const testScenariosForV1API = [
           },
         },
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -518,6 +559,155 @@ export const testScenariosForV1API = [
           },
         },
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
+  },
+  {
+    id: 'gaoc_v1_scenario_6',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v1 API] :: Test click conversion API request which contains partially valid request',
+    successCriteria: 'Should return 400 with error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param4,
+            JSON: {
+              conversions: [
+                { ...validRequestPayload2.conversions[0] },
+                {
+                  cartData: {
+                    merchantId: 9876,
+                    feedCountryCode: 'feedCountryCode',
+                    feedLanguageCode: 'feedLanguageCode',
+                    localTransactionCost: 20,
+                    items: [
+                      {
+                        productId: '507f1f77bcf86cd799439011',
+                        quantity: 2,
+                        unitPrice: 50,
+                      },
+                    ],
+                  },
+                  userIdentifiers: [
+                    {
+                      userIdentifierSource: 'FIRST_PARTY',
+                      hashedPhoneNumber:
+                        '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                    },
+                  ],
+                  conversionEnvironment: 'WEB',
+                  conversionDateTime: '2025-11-12 16:21:53+05:30',
+                  conversionValue: 1,
+                  currencyCode: 'GBP',
+                  orderId: 'PL-123QR',
+                  conversionAction: 'customers/1234567891/conversionActions/848898417',
+                  consent: {
+                    adPersonalization: 'UNSPECIFIED',
+                    adUserData: 'UNSPECIFIED',
+                  },
+                },
+              ],
+              partialFailure: true,
+            },
+            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567893:uploadClickConversions`,
+          },
+          [generateMetadata(1), generateMetadata(2)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              "[Google Ads Offline Conversions]:: The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+            destinationResponse: {
+              response: {
+                jobId: '5353383680802491057',
+                partialFailureError: {
+                  code: 3,
+                  details: [
+                    {
+                      '@type':
+                        'type.googleapis.com/google.ads.googleads.v22.errors.GoogleAdsFailure',
+                      errors: [
+                        {
+                          errorCode: {
+                            conversionUploadError: 'NO_CONVERSION_ACTION_FOUND',
+                          },
+                          location: {
+                            fieldPathElements: [
+                              {
+                                fieldName: 'conversions',
+                                index: 1,
+                              },
+                              {
+                                fieldName: 'conversion_action',
+                              },
+                            ],
+                          },
+                          message:
+                            "The conversion action specified in the upload request cannot be found. Make sure it's available in this account.",
+                          trigger: {
+                            stringValue: 'customers/4172647997/conversionActions/7377464874',
+                          },
+                        },
+                      ],
+                      requestId: 'f4J_sjHfhbgNieU4pkBOqg',
+                    },
+                  ],
+                  message:
+                    "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+                },
+                results: [
+                  {
+                    conversionAction: 'customers/1234567891/conversionActions/848898416',
+                    conversionDateTime: '2025-11-12 16:21:53+05:30',
+                    userIdentifiers: [
+                      {
+                        hashedPhoneNumber:
+                          '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                        userIdentifierSource: 'FIRST_PARTY',
+                      },
+                    ],
+                  },
+                  {},
+                ],
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error: 'success',
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+              {
+                error:
+                  "The conversion action specified in the upload request cannot be found. Make sure it's available in this account., at conversions[1].conversion_action",
+                metadata: generateMetadata(2),
+                statusCode: 400,
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 400,
+          },
+        },
+      },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
 ];

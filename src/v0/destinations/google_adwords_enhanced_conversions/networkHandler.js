@@ -20,7 +20,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 const tags = require('../../util/tags');
 const { getAuthErrCategory } = require('../../util/googleUtils');
-const { statsClient } = require('../../../util/stats');
+const statsClient = require('../../../util/stats');
 const logger = require('../../../logger');
 
 /**
@@ -85,7 +85,7 @@ const getConversionActionId = async ({ params, googleAds }) => {
  * @returns
  */
 const gaecProxyRequest = async (request) => {
-  const { body, params } = request;
+  const { body, params, metadata } = request;
   const googleAds = new GoogleAdsSDK.GoogleAds(
     {
       accessToken: params.accessToken,
@@ -97,6 +97,11 @@ const gaecProxyRequest = async (request) => {
       httpClient: {
         statsClient,
         logger,
+        defaultStatTags: {
+          destType: 'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS',
+          feature: 'proxy',
+          metadata,
+        },
       },
     },
   );

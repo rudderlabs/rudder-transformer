@@ -4662,7 +4662,7 @@ export const data = [
       },
     },
     envOverrides: {
-      BRAZE_PURCHASE_OBJ: 'true',
+      BRAZE_EMPTY_ATTRIBUTES_FIX: 'true',
     },
   },
 ];

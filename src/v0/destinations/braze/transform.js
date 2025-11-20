@@ -375,7 +375,9 @@ function processGroup(message, destination) {
       );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
-    subscriptionGroup.external_ids = [message.userId];
+    if (message.userId) {
+      subscriptionGroup.external_ids = [message.userId];
+    }
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
     if (phone) {

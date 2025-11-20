@@ -319,9 +319,12 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       message,
       destination,
       {
-        attributes: [attributePayload],
         purchases: purchaseObjs,
         partner: BRAZE_PARTNER_NAME,
+        ...(attributePayload &&
+          Object.keys(attributePayload).length > 0 && {
+            attributes: [attributePayload],
+          }),
       },
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );

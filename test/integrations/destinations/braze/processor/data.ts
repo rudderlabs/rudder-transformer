@@ -4531,4 +4531,138 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description:
+      'Order Completed event with empty attributePayload - should NOT include attributes array',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                restApiKey: secret1,
+                prefixProperties: false,
+                useNativeSDK: false,
+                dataCenter: 'us-01',
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+            message: {
+              type: 'track',
+              event: 'Order Completed',
+              userId: 'test-user-456',
+              anonymousId: 'anon-id-789',
+              channel: 'web',
+              context: {
+                os: {
+                  name: 'Windows',
+                  version: '11',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '2.0.0',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                locale: 'en-US',
+                screen: {
+                  density: 1,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '2.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              },
+              messageId: 'msg-order-completed-456',
+              originalTimestamp: '2024-01-24T13:00:00.000Z',
+              properties: {
+                order_id: 'order-67890',
+                currency: 'USD',
+                revenue: 200.0,
+                shipping: 15.0,
+                tax: 20.0,
+                total: 235.0,
+                products: [
+                  {
+                    product_id: 'product-002',
+                    sku: 'SKU-002',
+                    name: 'Deluxe Widget',
+                    price: 100.0,
+                    quantity: 2,
+                    category: 'Electronics',
+                    currency: 'USD',
+                  },
+                ],
+              },
+              receivedAt: '2024-01-24T13:00:01.000Z',
+              request_ip: '192.168.1.2',
+              sentAt: '2024-01-24T13:00:00.500Z',
+              timestamp: '2024-01-24T13:00:00.500Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.iad-01.braze.com/users/track',
+              endpointPath: 'users/track',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: authHeader1,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  purchases: [
+                    {
+                      product_id: 'product-002',
+                      price: 100.0,
+                      currency: 'USD',
+                      quantity: 2,
+                      time: '2024-01-24T13:00:00.500Z',
+                      external_id: 'test-user-456',
+                    },
+                  ],
+                  partner: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'test-user-456',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    envOverrides: {
+      BRAZE_EMPTY_ATTRIBUTES_FIX: 'true',
+    },
+  },
 ];

@@ -45,7 +45,7 @@ const {
 } = require('./config');
 
 const logger = require('../../../logger');
-const { getEndpointFromConfig, formatGender, isNewPurchaseObjEnabled } = require('./util');
+const { getEndpointFromConfig, formatGender, isEmptyAttributesFixEnabled } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { processBatchedIdentify } = require('./identityResolutionUtils');
@@ -315,7 +315,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     eventName.toLowerCase() === 'order completed'
   ) {
     const purchaseObjs = getPurchaseObjs(message, destination.Config);
-    const orderCompletedPayload = isNewPurchaseObjEnabled()
+    const orderCompletedPayload = isEmptyAttributesFixEnabled()
       ? {
           ...requestJson,
           purchases: purchaseObjs,

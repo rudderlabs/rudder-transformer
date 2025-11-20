@@ -4409,4 +4409,126 @@ export const data = [
       },
     },
   },
+  {
+    name: 'braze',
+    description: 'Test 32: Test subscription group call with anonymousId only',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'group',
+              event: 'Order Completed',
+              sentAt: '2020-09-14T12:09:37.491Z',
+              anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.3',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  url: 'file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  path: '/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                  title: 'Fullstory Test',
+                  search: '',
+                  referrer: '',
+                },
+                locale: 'en-GB',
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'manashi@gmaiol.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.3',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+              },
+              messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
+              groupId: '1234',
+              traits: {
+                email: 'abc@test.com',
+                subscriptionState: 'unsubscribed',
+              },
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2020-09-14T12:09:37.491Z',
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                restApiKey: secret1,
+                prefixProperties: true,
+                useNativeSDK: false,
+                enableSubscriptionGroupInGroupCall: true,
+                dataCenter: 'eu-01',
+              },
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+              endpointPath: 'v2/subscription/status/set',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: authHeader1,
+              },
+              params: {},
+              body: {
+                JSON: {
+                  subscription_groups: [
+                    {
+                      subscription_group_id: '1234',
+                      subscription_state: 'unsubscribed',
+                      emails: ['abc@test.com'],
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

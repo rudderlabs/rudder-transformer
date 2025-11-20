@@ -315,7 +315,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     eventName.toLowerCase() === 'order completed'
   ) {
     const purchaseObjs = getPurchaseObjs(message, destination.Config);
-    const orderCompletdPayload = isNewPurchaseObjEnabled()
+    const orderCompletedPayload = isNewPurchaseObjEnabled()
       ? {
           ...requestJson,
           purchases: purchaseObjs,
@@ -328,7 +328,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     return buildResponse(
       message,
       destination,
-      orderCompletdPayload,
+      orderCompletedPayload,
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }

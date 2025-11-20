@@ -899,6 +899,8 @@ function handleReservedProperties(props) {
   return _.omit(props, reserved);
 }
 
+const isNewPurchaseObjEnabled = () => process.env.BRAZE_PURCHASE_OBJ === 'true';
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -917,4 +919,5 @@ module.exports = {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  isNewPurchaseObjEnabled,
 };

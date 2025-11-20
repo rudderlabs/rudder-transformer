@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.114.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.1...v1.114.0) (2025-11-20)
+
+
+### Features
+
+* send external_ids only when userId is present ([#4801](https://github.com/rudderlabs/rudder-transformer/issues/4801)) ([0737620](https://github.com/rudderlabs/rudder-transformer/commit/07376208679f0b97fdef17ce4ab9bd5edfc82e3b))
+
+
+### Bug Fixes
+
+* **braze:** include userAttribute only when not an empty object in attributes ([#4802](https://github.com/rudderlabs/rudder-transformer/issues/4802)) ([c740b23](https://github.com/rudderlabs/rudder-transformer/commit/c740b23951f2449e7eb4c3d6d61b66370881a9b5))
+
 ### [1.113.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.0...v1.113.1) (2025-11-19)
 
 

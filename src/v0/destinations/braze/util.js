@@ -899,6 +899,8 @@ function handleReservedProperties(props) {
   return _.omit(props, reserved);
 }
 
+const isEmptyAttributesFixEnabled = () => process.env.BRAZE_EMPTY_ATTRIBUTES_FIX === 'true';
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -917,4 +919,5 @@ module.exports = {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  isEmptyAttributesFixEnabled,
 };

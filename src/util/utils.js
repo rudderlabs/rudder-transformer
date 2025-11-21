@@ -78,7 +78,7 @@ const staticLookup =
 
 const httpAgentWithDnsLookup = (scheme, transformationTags) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
+  return new httpModule.Agent({ lookup: staticLookup(transformationTags), keepAlive: false });
 };
 
 const blockLocalhostRequests = (url) => {

@@ -6,7 +6,7 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { process: processV2 } = require('./transformV2');
 const { EventType } = require('../../../constants');
-const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS } = require('./config');
+const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS, PARTNER_NAME } = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -28,6 +28,7 @@ const responseBuilder = (payload, endpoint, eventType) => {
     response.headers = {
       Accept: JSON_MIME_TYPE,
       'Content-Type': JSON_MIME_TYPE,
+      'OneSignal-Usage': PARTNER_NAME,
     };
     if (eventType.toLowerCase() === 'identify' && endpoint === '/players') {
       response.method = defaultPostRequestConfig.requestMethod;

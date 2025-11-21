@@ -109,7 +109,7 @@ const combineSubscriptionGroups = (subscriptionGroups) => {
     if (group.phones?.length) {
       result.phones = [...new Set(group.phones)];
     }
-    if (group.external_ids.length > 0) {
+    if (group.external_ids?.length) {
       result.external_ids = [...new Set(group.external_ids)];
     }
     return result;

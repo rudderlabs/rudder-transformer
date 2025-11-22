@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.115.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.114.0...v1.115.0) (2025-11-21)
+
+
+### Features
+
+* send external_ids only when userId is present from router ([#4805](https://github.com/rudderlabs/rudder-transformer/issues/4805)) ([75d7a2a](https://github.com/rudderlabs/rudder-transformer/commit/75d7a2aa91a288ae7313c0352596b28704e8aa48))
+
 ## [1.114.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.1...v1.114.0) (2025-11-20)
 
 

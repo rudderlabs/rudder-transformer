@@ -908,6 +908,234 @@ const basicRouterTests = [
       BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
     },
   },
+  {
+    name: 'braze',
+    description: 'subscription group call with anonymousId only, it should not add external_ids',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                event: 'Order Completed',
+                sentAt: '2020-09-14T12:09:37.491Z',
+                anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
+                channel: 'web',
+                context: {
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  app: {
+                    name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.3',
+                    namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                    path: '/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                    title: 'Fullstory Test',
+                    search: '',
+                    referrer: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    density: 2,
+                  },
+                  traits: {
+                    email: 'manashi@gmaiol.com',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.3',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+                },
+                messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
+                groupId: '1234',
+                traits: {
+                  email: 'abc@test.com',
+                  subscriptionState: 'unsubscribed',
+                },
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2020-09-14T12:09:37.491Z',
+              },
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  restApiKey: 'secret1',
+                  prefixProperties: true,
+                  useNativeSDK: false,
+                  enableSubscriptionGroupInGroupCall: true,
+                  dataCenter: 'eu-01',
+                },
+                DestinationDefinition: {
+                  DisplayName: 'Braze',
+                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                  Name: 'BRAZE',
+                },
+                Enabled: true,
+                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+                Name: 'Braze',
+                Transformations: [],
+              },
+              metadata: { jobId: 1, userId: 'u1' },
+            },
+            {
+              message: {
+                type: 'group',
+                event: 'Order Completed',
+                sentAt: '2020-09-14T12:09:37.491Z',
+                anonymousId: 'c6ff1462-b692-43d6-8f6a-659efedc99ea',
+                channel: 'web',
+                context: {
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  app: {
+                    name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.3',
+                    namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'file:///Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                    path: '/Users/manashi/Desktop/rudder-all-sdk-application-testing/Fullstory%20test%20By%20JS%20SDK/braze.html',
+                    title: 'Fullstory Test',
+                    search: '',
+                    referrer: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    density: 2,
+                  },
+                  traits: {
+                    email: 'manashi@gmaiol.com',
+                  },
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.3',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36',
+                },
+                messageId: '24ecc509-ce3e-473c-8483-ba1ea2c195cb',
+                groupId: '1234',
+                traits: {
+                  email: 'abc1@test.com',
+                  subscriptionState: 'unsubscribed',
+                },
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2020-09-14T12:09:37.491Z',
+              },
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  restApiKey: 'secret1',
+                  prefixProperties: true,
+                  useNativeSDK: false,
+                  enableSubscriptionGroupInGroupCall: true,
+                  dataCenter: 'eu-01',
+                },
+                DestinationDefinition: {
+                  DisplayName: 'Braze',
+                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                  Name: 'BRAZE',
+                },
+                Enabled: true,
+                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+                Name: 'Braze',
+                Transformations: [],
+              },
+              metadata: { jobId: 2, userId: 'u2' },
+            },
+          ],
+          destType: 'braze',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://rest.fra-01.braze.eu/v2/subscription/status/set',
+                  endpointPath: 'v2/subscription/status/set',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: 'Bearer secret1',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      subscription_groups: [
+                        {
+                          subscription_group_id: '1234',
+                          subscription_state: 'unsubscribed',
+                          emails: ['abc@test.com', 'abc1@test.com'],
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u2' },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                hasDynamicConfig: false,
+                Config: {
+                  restApiKey: 'secret1',
+                  prefixProperties: true,
+                  useNativeSDK: false,
+                  enableSubscriptionGroupInGroupCall: true,
+                  dataCenter: 'eu-01',
+                },
+                DestinationDefinition: {
+                  DisplayName: 'Braze',
+                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                  Name: 'BRAZE',
+                },
+                Enabled: true,
+                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+                Name: 'Braze',
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {
+      BRAZE_BATCH_IDENTIFY_RESOLUTION: 'false',
+    },
+  },
 ];
 
 const basicRouterTestsWithBatchIdentityResolutionEnabled = basicRouterTests.map((test) => {

@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { FixMe } from '../../../types';
+import { type FixMe } from '../../../types';
 
 const get = require('get-value');
 const set = require('set-value');

@@ -2350,4 +2350,113 @@ export const data = [
       },
     },
   },
+  {
+    name: 'adj',
+    description:
+      'Test 20 -> do not include callback_params when all properties are in rejectParams list',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'Application Installed',
+              sentAt: '2022-09-28T20:14:44.995Z',
+              userId: 'sample_user_id',
+              context: {
+                device: {
+                  id: 'sample_device_id',
+                  type: 'android',
+                  advertisingId: '_sample',
+                },
+                traits: {
+                  userId: '_sample_uid',
+                  anonymousId: '_sample_anonid',
+                },
+              },
+              timestamp: '2022-09-28T20:14:43.314Z',
+              request_ip: '71.189.106.156',
+              originalTimestamp: '2022-09-28T20:14:44.995Z',
+              properties: {
+                revenue: 20,
+              },
+            },
+            destination: {
+              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
+              Name: 'ADJ',
+              DestinationDefinition: {
+                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
+                Name: 'ADJ',
+                DisplayName: 'Adjust',
+                Config: {
+                  destConfig: {
+                    android: ['useNativeSDK'],
+                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
+                    ios: ['useNativeSDK'],
+                    reactnative: ['useNativeSDK'],
+                  },
+                  excludeKeys: [],
+                  includeKeys: ['appToken', 'customMappings', 'delay'],
+                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
+                },
+              },
+              Config: {
+                appToken: 'testAppToken',
+                customMappings: [{ from: 'Application Installed', to: '3fdmll' }],
+                partnerParamsKeys: [
+                  { from: 'key1', to: 'partnerParamKey-1' },
+                  { from: 'key2', to: 'partnerParamKey-2' },
+                  { from: 'revenue', to: 'price' },
+                  { from: 'novalue', to: 'check' },
+                  { from: 'Custom_Val_NA', to: 'Custom_dest' },
+                ],
+                environment: true,
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://s2s.adjust.com/event',
+              headers: { Accept: '*/*' },
+              params: {
+                event_token: '3fdmll',
+                ip_address: '71.189.106.156',
+                android_id: 'sample_device_id',
+                gps_adid: '_sample',
+                s2s: 1,
+                app_token: 'testAppToken',
+                currency: 'USD',
+                environment: 'production',
+                revenue: 20,
+                partner_params: {
+                  price: '20',
+                },
+              },
+              body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

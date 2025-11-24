@@ -8,13 +8,9 @@ The V1 user transformation system provides a secure, isolated environment for ex
 
 - [Architecture Overview](#architecture-overview)
 - [Request Flow](#request-flow)
-- [IVM (Isolated-VM) Deep Dive](#ivm-isolated-vm-deep-dive)
+- [IVM (Isolated-VM)](#ivm-isolated-vm)
 - [External API Architecture](#external-api-architecture)
 - [Test Mode](#test-mode)
-- [Factory Pattern](#factory-pattern)
-- [Configuration](#configuration)
-- [Security Considerations](#security-considerations)
-- [Performance & Observability](#performance--observability)
 
 ---
 

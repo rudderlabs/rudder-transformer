@@ -37,7 +37,6 @@ on:
         required: true
 
 permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
   contents: read # This is required for actions/checkout
 
 env:
@@ -175,7 +174,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        uses: rudderlabs/build-scan-push-action@56e67ba9f8573e1d05d164612b4530c8e4a1ad01 # v2.0.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -183,6 +182,8 @@ jobs:
           target: ${{ inputs.push_target }}
           push: true
           tags: ${{ inputs.push_tags }}-arm64
+          aws-signer-public-key: ${{ vars.AWS_SIGNER_PUBLIC_KEY }}
+          aws-signer-profile-arn: ${{ vars.AWS_SIGNER_PROFILE_ARN }}
           platforms: |
             linux/arm64
           build-args: |
@@ -244,7 +245,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: rudderlabs/build-scan-push-action@b909a7c1c2a84abedbcf9e56a959304af7af870a # v1.8.1
+        uses: rudderlabs/build-scan-push-action@56e67ba9f8573e1d05d164612b4530c8e4a1ad01 # v2.0.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -252,6 +253,8 @@ jobs:
           target: ${{ inputs.push_target }}
           push: true
           tags: ${{ inputs.push_tags }}-amd64
+          aws-signer-public-key: ${{ vars.AWS_SIGNER_PUBLIC_KEY }}
+          aws-signer-profile-arn: ${{ vars.AWS_SIGNER_PROFILE_ARN }}
           platforms: |
             linux/amd64
           build-args: |

@@ -53,6 +53,7 @@ const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v24.0';
  * Fetches lead data from Facebook Graph API for a single lead ID
  * @param leadId - The Facebook lead ID to fetch
  * @param accessToken - Facebook access token
+ * @param metadata - Metadata for API call metrics
  * @returns Promise with lead data or error
  */
 async function fetchLeadData(

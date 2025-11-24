@@ -1,3 +1,4 @@
+const { mapValues } = require('lodash');
 const get = require('get-value');
 const {
   InstrumentationError,
@@ -68,7 +69,9 @@ function responseBuilderSimple(message, category, destination) {
       rejectParams.forEach((rejectParam) => {
         delete payload.callback_params[rejectParam];
       });
-      payload.callback_params = JSON.stringify(flattenJson(payload.callback_params));
+      payload.callback_params = JSON.stringify(
+        mapValues(flattenJson(payload.callback_params), String),
+      );
     } else {
       payload.callback_params = null;
     }

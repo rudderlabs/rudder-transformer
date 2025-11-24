@@ -398,13 +398,14 @@ async function createUser(
     metadata,
   });
 
-  if (!isHttpStatusSuccess(resp.status)) {
-    throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
-  }
-
-  if (!resp.response || !resp.response.user || !resp.response.user.id) {
+  if (
+    !isHttpStatusSuccess(resp.status) ||
+    !resp.response ||
+    !resp.response.user ||
+    !resp.response.user.id
+  ) {
     logger.debug(`${NAME}:: Couldn't create User: ${name}`);
-    throw new NetworkInstrumentationError('user not found');
+    throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }
 
   const userID = resp?.response?.user?.id;

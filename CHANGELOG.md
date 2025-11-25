@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.115.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.115.0...v1.115.1) (2025-11-25)
+
+
+### Bug Fixes
+
+* **adj:** convert callback_params object values to string  ([#4817](https://github.com/rudderlabs/rudder-transformer/issues/4817)) ([52973a0](https://github.com/rudderlabs/rudder-transformer/commit/52973a06cca8fbf32f0721de75d75c42b2ca5615))
+
 ## [1.115.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.114.0...v1.115.0) (2025-11-21)
 
 

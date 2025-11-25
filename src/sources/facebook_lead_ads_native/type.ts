@@ -26,8 +26,8 @@ export type OutputEventType = {
   type: string;
   context: {
     traits: {
-      page_id: string;
-      form_id: string;
+      pageId: string;
+      formId: string;
     };
   };
   originalTimestamp?: string;

@@ -74,8 +74,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291121',
+                      pageId: '112464600187556',
+                      formId: '1616801872291121',
                     },
                   },
                   anonymousId: '1459076748710713',
@@ -87,8 +87,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291122',
+                      pageId: '112464600187556',
+                      formId: '1616801872291122',
                     },
                   },
                   anonymousId: '1459076748710714',
@@ -100,8 +100,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187557',
-                      form_id: '1616801872291123',
+                      pageId: '112464600187557',
+                      formId: '1616801872291123',
                     },
                   },
                   anonymousId: '1459076748710715',
@@ -227,8 +227,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291122',
+                      pageId: '112464600187556',
+                      formId: '1616801872291122',
                     },
                   },
                   anonymousId: '1459076748710714',
@@ -465,8 +465,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291122',
+                      pageId: '112464600187556',
+                      formId: '1616801872291122',
                     },
                   },
                   anonymousId: '1459076748710714',
@@ -537,8 +537,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291122',
+                      pageId: '112464600187556',
+                      formId: '1616801872291122',
                     },
                   },
                   anonymousId: '1459076748710714',
@@ -600,8 +600,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291121',
+                      pageId: '112464600187556',
+                      formId: '1616801872291121',
                     },
                   },
                   anonymousId: '1459076748710713',
@@ -662,8 +662,8 @@ export const data = [
                   type: 'identify',
                   context: {
                     traits: {
-                      page_id: '112464600187556',
-                      form_id: '1616801872291121',
+                      pageId: '112464600187556',
+                      formId: '1616801872291121',
                     },
                   },
                   anonymousId: '1459076748710713',

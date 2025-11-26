@@ -1,3 +1,4 @@
+const { mapValues } = require('lodash');
 const get = require('get-value');
 const {
   InstrumentationError,
@@ -65,10 +66,17 @@ function responseBuilderSimple(message, category, destination) {
     }
 
     if (payload.callback_params) {
+      // Remove revenue and currency from callback_params as they are sent separately
       rejectParams.forEach((rejectParam) => {
         delete payload.callback_params[rejectParam];
       });
-      payload.callback_params = JSON.stringify(flattenJson(payload.callback_params));
+      // Convert callback_params values to strings and stringify the object as per Adjust API requirements
+      // https://dev.adjust.com/en/api/s2s-api/events#share-custom-data
+      // Set to null if empty after filtering to avoid sending empty object
+      const stringifiedParams = JSON.stringify(
+        mapValues(flattenJson(payload.callback_params), String),
+      );
+      payload.callback_params = stringifiedParams === '{}' ? null : stringifiedParams;
     } else {
       payload.callback_params = null;
     }

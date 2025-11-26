@@ -1,6 +1,12 @@
 name: Update Ingestion Service with Latest Transformer Version
 
 on:
+  workflow_run:
+    workflows: ['Publish New GitHub Release']
+    types:
+      - completed
+    branches:
+      - main
   workflow_call:
     secrets:
       PAT:
@@ -16,6 +22,8 @@ jobs:
   update-ingestion-service:
     name: Update Ingestion Service with Latest Transformer Version
     runs-on: ubuntu-latest
+    # Only run if the workflow_run was successful (doesn't apply to manual triggers)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -122,7 +130,8 @@ jobs:
 
           # Update the go.mod file with the latest release version using go get
           # This is the proper way to update Go dependencies
-          go get github.com/rudderlabs/rudder-transformer/go@${GO_TAG}
+          # Note: Use LATEST_TAG (e.g., v1.115.0)
+          go get github.com/rudderlabs/rudder-transformer/go@${LATEST_TAG}
 
           # Run go mod tidy to clean up and update go.sum
           go mod tidy

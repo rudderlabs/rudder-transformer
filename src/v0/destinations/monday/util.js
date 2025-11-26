@@ -11,6 +11,8 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
+const BOARD_DATA_INVALID_ERROR = 'Board data is invalid or missing';
+
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
  * and returning the groupId.
@@ -19,7 +21,16 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @returns
  */
 const getGroupId = (groupTitle, board) => {
+  if (!board?.boards?.[0]) {
+    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
+  }
+  
   const { groups } = board.boards[0];
+  
+  if (!groups || !Array.isArray(groups)) {
+    throw new ConfigurationError(`No groups found in the board`);
+  }
+  
   let groupId;
   groups.forEach((group) => {
     if (group.title === groupTitle) {
@@ -40,7 +51,16 @@ const getGroupId = (groupTitle, board) => {
  * @returns
  */
 const getColumnId = (columnTitle, board) => {
+  if (!board?.boards?.[0]) {
+    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
+  }
+  
   const { columns } = board.boards[0];
+  
+  if (!columns || !Array.isArray(columns)) {
+    throw new ConfigurationError(`No columns found in the board`);
+  }
+  
   let columnId;
   columns.forEach((column) => {
     if (column.title === columnTitle) {
@@ -62,7 +82,16 @@ const getColumnId = (columnTitle, board) => {
  * @returns
  */
 const getColumnValue = (properties, columnName, key, board) => {
+  if (!board?.boards?.[0]) {
+    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
+  }
+  
   const { columns } = board.boards[0];
+  
+  if (!columns || !Array.isArray(columns)) {
+    return undefined;
+  }
+  
   let columnValue;
   columns.forEach((column) => {
     if (column.title === columnName && properties[key]) {

@@ -82,17 +82,22 @@ Implementation in **JavaScript**
 
 #### Batch Limits
 
-| API Version     | Operation                        | Endpoint                                                          | Batch Size  | Notes                     |
-| --------------- | -------------------------------- | ----------------------------------------------------------------- | ----------- | ------------------------- |
-| Legacy API (v1) | Identify                         | `/contacts/v1/contact/batch/`                                     | 1000        | Create or update contacts |
-| New API (v3)    | Identify - Create                | `/crm/v3/objects/contacts/batch/create`                           | 100         | Create new contacts       |
-| New API (v3)    | Identify - Update                | `/crm/v3/objects/contacts/batch/update`                           | 100         | Update existing contacts  |
-| New API (v3)    | Identify - Create Objects (rETL) | `/crm/v3/objects/:objectType/batch/create`                        | 100         | Create custom objects     |
-| New API (v3)    | Identify - Update Objects (rETL) | `/crm/v3/objects/:objectType/batch/update`                        | 100         | Update custom objects     |
-| New API (v3)    | Identify - Associations (rETL)   | `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create` | 100         | Create associations       |
-| Both versions   | Track                            | N/A                                                               | No batching | Individual requests only  |
+| API Version     | Operation                        | Endpoint                                                          | Batch Size  | Notes                          |
+| --------------- | -------------------------------- | ----------------------------------------------------------------- | ----------- | ------------------------------ |
+| Legacy API (v1) | Identify                         | `/contacts/v1/contact/batch/`                                     | 1000        | Create or update contacts      |
+| Legacy API (v1) | Track                            | `https://track.hubspot.com/v1/event`                              | No batching | Individual requests only       |
+| New API (v3)    | Identify - Create                | `/crm/v3/objects/contacts/batch/create`                           | 100         | Create new contacts            |
+| New API (v3)    | Identify - Update                | `/crm/v3/objects/contacts/batch/update`                           | 100         | Update existing contacts       |
+| New API (v3)    | Identify - Create Objects (rETL) | `/crm/v3/objects/:objectType/batch/create`                        | 100         | Create custom objects          |
+| New API (v3)    | Identify - Update Objects (rETL) | `/crm/v3/objects/:objectType/batch/update`                        | 100         | Update custom objects          |
+| New API (v3)    | Identify - Associations (rETL)   | `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create` | 100         | Create associations            |
+| New API (v3)    | Track - Single                   | `/events/v3/send`                                                 | No batching | Individual event completion    |
+| New API (v3)    | Track - Batch                    | `/events/v3/send/batch`                                           | 500         | Batch events (NOT IMPLEMENTED) |
 
-**Note**: The destination automatically handles:
+**Note**:
+
+- The `/events/v3/send/batch` endpoint is available in HubSpot API but is **not yet implemented** in this destination. Track events currently use only the single event endpoint (`/events/v3/send`).
+- The destination automatically handles:
 
 - Duplicate email addresses within a batch (for create operations)
 - Duplicate contact IDs within a batch (for update operations)
@@ -116,20 +121,21 @@ The HubSpot API enforces rate limits based on your **HubSpot subscription tier**
 
 #### Special Endpoint-Specific Limits
 
-| Endpoint                                                          | Event Types                      | Rate Limit                    | Batch Limits                          | Description                             |
-| ----------------------------------------------------------------- | -------------------------------- | ----------------------------- | ------------------------------------- | --------------------------------------- |
-| `/contacts/v1/contact/batch/`                                     | Identify (Legacy API)            | Per tier                      | 1000 contacts per request             | Legacy batch create/update contacts     |
-| `/crm/v3/objects/contacts`                                        | Identify (New API)               | Per tier                      | 100 contacts per batch request        | Create or update single contact         |
-| `/crm/v3/objects/contacts/batch/create`                           | Identify (New API)               | Per tier                      | 100 contacts per request              | Batch create contacts                   |
-| `/crm/v3/objects/contacts/batch/update`                           | Identify (New API)               | Per tier                      | 100 contacts per request              | Batch update contacts                   |
-| `/crm/v3/objects/contacts/search`                                 | Identify (New API)               | **5 requests per second**     | Returns up to 200 results per page    | Search for existing contacts            |
-| `/crm/v3/objects/:objectType/search`                              | Identify (rETL)                  | **5 requests per second**     | Returns up to 200 results per page    | Search for existing objects             |
-| `/crm/v3/objects/:objectType/batch/create`                        | Identify (rETL)                  | Per tier                      | 100 objects per request               | Batch create custom objects             |
-| `/crm/v3/objects/:objectType/batch/update`                        | Identify (rETL)                  | Per tier                      | 100 objects per request               | Batch update custom objects             |
-| `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create` | Identify (rETL - Associations)   | Per tier                      | 100 associations per request          | Batch create associations               |
-| `https://track.hubspot.com/v1/event`                              | Track (Legacy API)               | Per tier                      | N/A                                   | Legacy track events                     |
-| `/events/v3/send`                                                 | Track (New API)                  | **1,250 requests per second** | 500 events per batch (batch endpoint) | Custom behavioral events                |
-| `/properties/v1/contacts/properties`                              | Internal (for property fetching) | Per tier                      | N/A                                   | Fetch contact properties for validation |
+| Endpoint                                                          | Event Types                      | Rate Limit                    | Description                             |
+| ----------------------------------------------------------------- | -------------------------------- | ----------------------------- | --------------------------------------- |
+| `/contacts/v1/contact/batch/`                                     | Identify (Legacy API)            | Per tier                      | Legacy batch create/update contacts     |
+| `/crm/v3/objects/contacts`                                        | Identify (New API)               | Per tier                      | Single contact operations (NOT USED)    |
+| `/crm/v3/objects/contacts/batch/create`                           | Identify (New API)               | Per tier                      | Batch create contacts (USED)            |
+| `/crm/v3/objects/contacts/batch/update`                           | Identify (New API)               | Per tier                      | Batch update contacts (USED)            |
+| `/crm/v3/objects/contacts/search`                                 | Identify (New API)               | **5 requests per second**     | Search for existing contacts            |
+| `/crm/v3/objects/:objectType/search`                              | Identify (rETL)                  | **5 requests per second**     | Search for existing objects             |
+| `/crm/v3/objects/:objectType/batch/create`                        | Identify (rETL)                  | Per tier                      | Batch create custom objects             |
+| `/crm/v3/objects/:objectType/batch/update`                        | Identify (rETL)                  | Per tier                      | Batch update custom objects             |
+| `/crm/v3/associations/:fromObjectType/:toObjectType/batch/create` | Identify (rETL - Associations)   | Per tier                      | Batch create associations               |
+| `https://track.hubspot.com/v1/event`                              | Track (Legacy API)               | Per tier                      | Legacy track events                     |
+| `/events/v3/send`                                                 | Track (New API)                  | **1,250 requests per second** | Custom behavioral events (single)       |
+| `/events/v3/send/batch`                                           | Track (New API)                  | **1,250 requests per second** | Custom behavioral events (batch)        |
+| `/properties/v1/contacts/properties`                              | Internal (for property fetching) | Per tier                      | Fetch contact properties for validation |
 
 #### Important Notes on Rate Limits
 

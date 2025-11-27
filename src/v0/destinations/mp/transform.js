@@ -169,7 +169,7 @@ const getEventValueForTrackEvent = (message, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   // This is to conform with SDKs sending timestamp component with messageId
   // example: "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9"
-  if (mappedProperties.$insert_id) {
+  if (mappedProperties.$insert_id && typeof mappedProperties.$insert_id === 'string') {
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
 

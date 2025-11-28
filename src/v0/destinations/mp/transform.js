@@ -167,9 +167,13 @@ const processIncrementalProperties = (message, destination, propIncrements) => {
 
 const getEventValueForTrackEvent = (message, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
-  // This is to conform with SDKs sending timestamp component with messageId
+  // messageId should be the type string SDKs send timestamp in messageId
   // example: "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9"
-  if (mappedProperties.$insert_id && typeof mappedProperties.$insert_id === 'string') {
+  // https://developer.mixpanel.com/reference/track-event#body-params
+  if (mappedProperties.$insert_id) {
+    if (typeof mappedProperties.$insert_id !== 'string') {
+      throw new InstrumentationError('messageId should be of type string');
+    }
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
 

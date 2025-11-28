@@ -219,10 +219,36 @@ if (traitsFound) {
 
 ### Proxy Delivery
 
-- **Supported**: No
-- **Source Code Path**: N/A
+- **Supported**: Yes (Proxy v1)
+- **Source Code Path**: [src/v1/destinations/hs/networkHandler.ts](../../../v1/destinations/hs/networkHandler.ts)
+- **Test Cases**: [test/integrations/destinations/hs/dataDelivery/](../../../../../test/integrations/destinations/hs/dataDelivery/)
 
-> HubSpot destination does not implement a custom `networkHandler.js` for proxy delivery. All HTTP requests are handled by the default network layer.
+#### Proxy v1 Implementation
+
+HubSpot implements proxy v1 to provide granular handling of partial batch failures. The implementation includes:
+
+**Key Features**:
+
+- Handles both legacy API (`legacyApi`) and new API (`newApi`) versions
+- Supports partial batch failure handling for the new API version
+- Individual status codes and error messages for each event in a batch
+- Uses the `dontBatch` flag to prevent problematic events from being batched in future attempts
+
+**Response Handling**:
+The network handler processes different scenarios:
+
+- **Single Event**: Single event in a batch
+- **Legacy API with Multiple Events**: All-or-nothing batch processing
+- **New API with Multiple Events**: Granular success/failure for each event
+- **New API with Partial Failures**: Handles cases where `results` and `errors` arrays are returned
+
+**Error Handling**:
+
+- For 400-level errors with batched events, returns 500 status with `dontBatch: true` to trigger retry with individual events
+- Uses `TransformerProxyError` for proper error reporting to rudder-server
+- Maps authentication errors appropriately using `getAuthErrCategoryFromStCode`
+
+For implementation details, see the [Proxy Implementation Guide](../../../../../memory-bank/17_proxy_implementation_guide.md).
 
 ### User Deletion
 
@@ -242,12 +268,6 @@ if (traitsFound) {
 > - Private App Access Token authentication
 >
 > OAuth flow is not currently implemented.
-
-### Partial Batching Response Handling
-
-- **Supported**: No
-
-> HubSpot destination does not implement v1 proxy delivery with networkHandler, therefore partial batching response handling is not available. Batch requests are processed as all-or-nothing operations.
 
 ### Additional Functionalities
 

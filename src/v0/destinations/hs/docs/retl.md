@@ -6,12 +6,12 @@ The HubSpot destination provides comprehensive support for Real-time Extract, Tr
 
 ## RETL Support Status
 
-✅ **Fully Supported**
+✅ **Partially Supported**
 
-- **Warehouse Sources**: Supported (`supportedSourceTypes` includes `warehouse` in `db-config.json`)
-- **Visual Data Mapper (VDM) V1**: Supported (`supportsVisualMapper: true` in `db-config.json`)
-- **VDM V2**: Supported (`supportedMessageTypes` includes `record` in `db-config.json`)
-- **JSON Mapper**: Supported (default, not disabled)
+- **Warehouse Sources**: ✅ Supported (`supportedSourceTypes` includes `warehouse` in `db-config.json`)
+- **Visual Data Mapper (VDM) V1**: ✅ Supported (`supportsVisualMapper: true` in `db-config.json`)
+- **VDM V2**: ❌ **NOT Supported** (transformer does not handle `record` event type)
+- **JSON Mapper**: ✅ Supported (default, not disabled)
 
 ## Supported RETL Modes
 
@@ -30,11 +30,10 @@ The HubSpot destination provides comprehensive support for Real-time Extract, Tr
 
 ### 3. Visual Data Mapper V2 (VDM V2)
 
-- **Status**: Supported (`supportedMessageTypes.cloud` includes `record`)
-- **Message Type**: `record`
-- **Use Case**: Enhanced visual mapping with record-level transformations
-- **Requirements**: Requires New API (v3) and proper object type configuration
-- **Note**: Implementation includes `record` event type handling in transformer code
+- **Status**: ❌ **NOT Supported**
+- **Reason**: Transformer code does not handle `record` event type
+- **Code Reference**: [transform.js:34-54](../transform.js#L34-L54) - Switch statement only handles `identify` and `track` types
+- **Note**: While warehouse sources and VDM V1 work via `identify` events with `mappedToDestination: true`, full VDM V2 with `record` type is not implemented
 
 ## API Version Requirements
 
@@ -44,7 +43,7 @@ The HubSpot destination provides comprehensive support for Real-time Extract, Tr
 | Custom Objects           | ✗               | ✓            | New API  |
 | Associations             | ✗               | ✓            | New API  |
 | Bulk Search Optimization | ✗               | ✓            | New API  |
-| VDM V2 (Record Type)     | ✗               | ✓            | New API  |
+| VDM V2 (Record Type)     | ✗               | ✗            | N/A      |
 
 **Recommendation**: Use New API (v3) for all rETL use cases to access full functionality.
 
@@ -626,21 +625,27 @@ Error: Property hs_object_id cannot be set
 
 ## Limitations
 
-### 1. Record Event Type
+### 1. Record Event Type - VDM V2
 
-**Status**: ⚠️ **NEEDS REVIEW**
+**Status**: ❌ **NOT SUPPORTED**
 
-While `db-config.json` indicates support for `record` event type:
+The HubSpot destination does **not** support the `record` event type required for VDM V2:
 
-```json
-{
-  "supportedMessageTypes": {
-    "cloud": ["identify", "track"]
-  }
-}
-```
+**Evidence**:
 
-The `record` type is not explicitly listed, though the guide indicates VDM V2 support requires it. Further investigation needed to confirm full `record` type handling.
+1. **Transformer Code**: The switch statement in [transform.js:34-54](../transform.js#L34-L54) only handles `EventType.IDENTIFY` and `EventType.TRACK`. Any `record` type events will throw an error: `"Message type record is not supported"`
+
+2. **VDM V2 Requirements** (per memory-bank guidelines):
+   - ❌ `supportedMessageTypes` must include `record` in `db-config.json`
+   - ❌ **AND** transformer code must have logic handling `record` event type
+
+**Current Behavior**:
+
+- HubSpot uses `identify` events with `mappedToDestination: true` for warehouse syncs
+- This provides VDM V1 functionality but not full VDM V2 capabilities
+- The `record` event type is defined in constants but not handled by HubSpot transformer
+
+**Recommendation**: If VDM V2 support is needed, implement a case for `EventType.RECORD` in the transform.js switch statement.
 
 ### 2. Search API Limitations
 

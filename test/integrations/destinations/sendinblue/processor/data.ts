@@ -1719,4 +1719,86 @@ export const data = [
       },
     },
   },
+  {
+    name: 'sendinblue',
+    description:
+      'Track events with contactAttributeMapping provided in webapp and sendTraitsInTrack is true but no traits are provided',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              sentAt: '2021-01-03T17:02:53.195Z',
+              channel: 'web',
+              event: 'Order Completed',
+              properties: {
+                email: 'john_doe@example.com',
+              },
+              context: {},
+              rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
+              messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+              anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
+              originalTimestamp: '2021-01-03T17:02:53.193Z',
+            },
+            destination: {
+              Config: {
+                apiKey: 'apiKey123',
+                clientKey: 'clientKey123',
+                doi: false,
+                contactAttributeMapping: [
+                  {
+                    from: 'location',
+                    to: 'LOCATION',
+                  },
+                ],
+                sendTraitsInTrack: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  email: 'john_doe@example.com',
+                  event: 'Order Completed',
+                  eventdata: {
+                    id: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+                    data: {
+                      email: 'john_doe@example.com',
+                    },
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://in-automate.sendinblue.com/api/v2/trackEvent',
+              files: {},
+              headers: {
+                'Content-Type': 'application/json',
+                'ma-key': 'clientKey123',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              version: '1',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

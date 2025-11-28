@@ -978,7 +978,7 @@ const batch = (destEvents) => {
 
 const createBatchResponse = (destination, metadata, mergedEvent) => {
   stats.histogram('am_batch_size_based_on_user_id', mergedEvent.events.length, {
-    destination_id: destination.id,
+    destination_id: destination.ID,
     source_id: metadata?.[0]?.sourceId,
   });
   const batchResponse = defaultBatchRequestConfig();

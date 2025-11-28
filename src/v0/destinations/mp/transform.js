@@ -166,14 +166,16 @@ const processIncrementalProperties = (message, destination, propIncrements) => {
 };
 
 const getEventValueForTrackEvent = (message, destination) => {
+  // messageId is there, it should be of type string
+  if (message.messageId && typeof message.messageId !== 'string') {
+    throw new InstrumentationError('messageId should be of type string');
+  }
+
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
-  // messageId should be the type string SDKs send timestamp in messageId
+  // SDKs send timestamp in messageId
   // example: "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9"
   // https://developer.mixpanel.com/reference/track-event#body-params
   if (mappedProperties.$insert_id) {
-    if (typeof mappedProperties.$insert_id !== 'string') {
-      throw new InstrumentationError('messageId should be of type string');
-    }
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
 

@@ -400,12 +400,10 @@ async function createUser(
 
   if (
     !isHttpStatusSuccess(resp.status) ||
-    !resp.response ||
-    !resp.response.user ||
-    !resp.response.user.id
+    !resp.response?.user?.id
   ) {
     logger.debug(`${NAME}:: Couldn't create User: ${name}`);
-    throw new NetworkInstrumentationError(`Couldn't find user with name: ${name}`);
+    throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }
 
   const userID = resp?.response?.user?.id;
@@ -502,8 +500,8 @@ async function createOrganization(
     metadata,
   });
 
-  if (!isHttpStatusSuccess(resp.status) || !resp.response || !resp.response.organization) {
-    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
+  if (!isHttpStatusSuccess(resp.status) || !resp.response?.organization) {
+    logger.debug(`${NAME}:: Couldn't create organization: ${message.traits.name}`);
     return undefined;
   }
 

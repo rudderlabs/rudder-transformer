@@ -58,9 +58,8 @@ const responseBuilder = (payload, endpoint, Config) => {
 const buildPageLoadPayload = (message, campaignId, impactAppId, enableEmailHashing) => {
   let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]);
   if (isDefinedAndNotNull(payload.CustomerEmail)) {
-    payload.CustomerEmail = enableEmailHashing
-      ? sha1(payload?.CustomerEmail.trim())
-      : payload?.CustomerEmail;
+    const emailString = String(payload?.CustomerEmail);
+    payload.CustomerEmail = enableEmailHashing ? sha1(emailString?.trim()) : emailString;
   }
   payload.CampaignId = campaignId;
   if (isDefinedAndNotNullAndNotEmpty(impactAppId)) {

@@ -313,7 +313,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
   const { partialFailureError, results } = destinationResponse.response;
   const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
-  if (isHttpStatusSuccess(status) && !partialFailureError) {
+  if (isHttpStatusSuccess(status) && (!partialFailureError || partialFailureError.code === 0)) {
     // for google ads offline conversions the partialFailureError returns with status 200
     return {
       status,
@@ -331,7 +331,7 @@ const responseHandler = (responseParams) => {
   // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
   if (partialFailureError && partialFailureError.code !== 0) {
     const errorMessage = partialFailureError.message || 'unknown error format';
-    const responseWithIndividualEvents = rudderJobMetadata.map((metadata, i) => {
+    const responseWithIndividualEvents = metaDataArray.map((metadata, i) => {
       const eventResponse = results?.[i] ?? {};
       const isEventFailed = isEmptyObject(eventResponse);
       return {

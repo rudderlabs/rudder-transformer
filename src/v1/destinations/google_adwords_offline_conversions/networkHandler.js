@@ -313,7 +313,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
   const { partialFailureError, results } = destinationResponse.response;
   const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
-  if (isHttpStatusSuccess(status) && !partialFailureError) {
+  if (isHttpStatusSuccess(status) && (!partialFailureError || partialFailureError.code === 0)) {
     // for google ads offline conversions the partialFailureError returns with status 200
     return {
       status,

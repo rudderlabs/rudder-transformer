@@ -405,7 +405,7 @@ async function createUser(
     !resp.response.user.id
   ) {
     logger.debug(`${NAME}:: Couldn't create User: ${name}`);
-    throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
+    throw new NetworkInstrumentationError(`Couldn't find user with name: ${name}`);
   }
 
   const userID = resp?.response?.user?.id;
@@ -623,15 +623,24 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
 
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
+  const { processedResponse: userResponse } = await handleHttpRequest('get', url, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  });
+  if (!isHttpStatusSuccess(userResponse.status)) {
+    throw new NetworkError(
+      `Failed to fetch user with email: ${userEmail} due to ${userResponse.response.error}`,
+      userResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(userResponse.status),
+      },
+    );
+  }
   try {
-    const { processedResponse: userResponse } = await handleHttpRequest('get', url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
     if (!get(userResponse, 'response.users.0.id') || userResponse.response.count === 0) {
       const { zendeskUserId, email } = await createUser(
         message,

@@ -331,7 +331,7 @@ const responseHandler = (responseParams) => {
   // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
   if (partialFailureError && partialFailureError.code !== 0) {
     const errorMessage = partialFailureError.message || 'unknown error format';
-    const responseWithIndividualEvents = rudderJobMetadata.map((metadata, i) => {
+    const responseWithIndividualEvents = metaDataArray.map((metadata, i) => {
       const eventResponse = results?.[i] ?? {};
       const isEventFailed = isEmptyObject(eventResponse);
       return {

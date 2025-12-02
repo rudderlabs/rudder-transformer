@@ -14,16 +14,22 @@ const stats = require('../../util/stats');
 class Cache {
   /**
    * Creates a new Cache instance
-   * @param name
+   * @param {string} name - Name of the cache instance for metric tagging
    * @param {number} ttlSeconds - Default time-to-live for cache entries in seconds
+   * @param {Object} defaultTags - Default tags to add to cache stats
    */
-  constructor(name, ttlSeconds) {
+  constructor(name, ttlSeconds, defaultTags = {}) {
     this.name = name;
+    this.defaultTags = defaultTags;
+
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
       useClones: false,
     });
+    this.cache.on('set', this.emitStats.bind(this));
+    this.cache.on('del', this.emitStats.bind(this));
+    this.cache.on('expired', this.emitStats.bind(this));
   }
 
   /**
@@ -64,11 +70,9 @@ class Cache {
       // This allows store functions to specify custom TTL
       if (typeof result === 'object' && 'value' in result && 'age' in result) {
         this.cache.set(key, result.value, result.age);
-        this.emitStats();
         retVal = result.value;
       } else {
         this.cache.set(key, result);
-        this.emitStats();
       }
     }
     return retVal;
@@ -91,14 +95,10 @@ class Cache {
    * cache.set('myKey', { data: 'value' }, 60);
    */
   set(key, value, ttl) {
-    let result;
     if (ttl !== undefined) {
-      result = this.cache.set(key, value, ttl);
-    } else {
-      result = this.cache.set(key, value);
+      return this.cache.set(key, value, ttl);
     }
-    this.emitStats();
-    return result;
+    return this.cache.set(key, value);
   }
 
   /**
@@ -107,17 +107,15 @@ class Cache {
    * @returns {number} Number of deleted entries
    */
   del(key) {
-    const result = this.cache.del(key);
-    this.emitStats();
-    return result;
+    return this.cache.del(key);
   }
 
   emitStats() {
     const cacheStats = this.cache.getStats();
-    const tags = { name: this.name };
+    const tags = { name: this.name, ...this.defaultTags };
 
-    stats.gauge('node_cache_hits', cacheStats.hits, tags);
-    stats.gauge('node_cache_misses', cacheStats.misses, tags);
+    stats.counter('node_cache_hits', cacheStats.hits, tags);
+    stats.counter('node_cache_misses', cacheStats.misses, tags);
     stats.gauge('node_cache_keys', cacheStats.keys, tags);
     stats.gauge('node_cache_ksize', cacheStats.ksize, tags);
     stats.gauge('node_cache_vsize', cacheStats.vsize, tags);

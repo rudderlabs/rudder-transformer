@@ -127,6 +127,7 @@ describe('Source controller tests', () => {
         description: string;
         requestBody: SourceHydrationRequest;
         mockOutput: SourceHydrationOutput;
+        hydrationOutput: SourceHydrationOutput;
         expectedStatus: number;
         expectedBody: (output: { batch: unknown }) => { batch: unknown };
       }[] = [
@@ -135,6 +136,12 @@ describe('Source controller tests', () => {
           requestBody: {
             batch: [{ event: { field: 'value1' } }, { event: { field: 'value2' } }],
             source: { id: 'source-1' },
+          },
+          hydrationOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
+              { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
+            ],
           },
           mockOutput: {
             batch: [
@@ -155,12 +162,15 @@ describe('Source controller tests', () => {
             ],
             source: { id: 'source-1' },
           },
-          mockOutput: {
+          hydrationOutput: {
             batch: [
               { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
               { event: { field: 'value2' }, statusCode: 400, error: 'Invalid data' },
               { event: { field: 'value3' }, statusCode: 200, data: { field: 'value3' } },
             ],
+          },
+          mockOutput: {
+            batch: [],
           },
           expectedStatus: 400,
           expectedBody: (output) => ({ batch: output.batch }),
@@ -171,6 +181,9 @@ describe('Source controller tests', () => {
             batch: [],
             source: { id: 'source-1' },
           },
+          hydrationOutput: {
+            batch: [],
+          },
           mockOutput: {
             batch: [],
           },
@@ -180,10 +193,17 @@ describe('Source controller tests', () => {
       ];
 
       testCases.forEach(
-        ({ description, requestBody, mockOutput, expectedStatus, expectedBody }) => {
+        ({
+          description,
+          requestBody,
+          mockOutput,
+          hydrationOutput,
+          expectedStatus,
+          expectedBody,
+        }) => {
           test(description, async () => {
             const mockSourceService = new NativeIntegrationSourceService();
-            mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(mockOutput);
+            mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(hydrationOutput);
 
             const getNativeSourceServiceSpy = jest
               .spyOn(ServiceSelector, 'getNativeSourceService')

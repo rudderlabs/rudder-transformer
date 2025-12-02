@@ -335,16 +335,38 @@ export const rETLRecordRouterRequestVDMv1: RouterTransformationRequest = {
 };
 
 export const rETLRecordRouterRequestForVDMV2Flow: RouterTransformationRequest = {
-  input: rETLRecordRouterRequest.input.map((event) => {
-    event.connection = {
-      config: { destination: { schemaVersion: '1.1', ...event.destination.Config } },
-      sourceId: 'randomSourceId',
-      destinationId: 'randomDestinationId',
-      enabled: true,
-    };
-    event.message.identifiers = event.message.fields;
-    return event;
-  }),
+  input: [
+    ...rETLRecordRouterRequest.input.map((event) => {
+      event.connection = {
+        config: { destination: { schemaVersion: '1.1', ...event.destination.Config } },
+        sourceId: 'randomSourceId',
+        destinationId: 'randomDestinationId',
+        enabled: true,
+      };
+      event.message.identifiers = event.message.fields;
+      return event;
+    }),
+    {
+      destination: destination,
+      message: {
+        action: 'insert',
+        context: {
+          ip: '14.5.67.21',
+          library: {
+            name: 'http',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        fields: {
+          email: '',
+          phone: null,
+        },
+        type: 'record',
+      },
+      metadata: generateGoogleOAuthMetadata(6),
+    },
+  ],
 
   destType: 'google_adwords_remarketing_lists',
 };

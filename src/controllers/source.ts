@@ -71,7 +71,13 @@ export class SourceController {
       (job) => job.statusCode >= HTTP_STATUS_CODES.BAD_REQUEST,
     );
     if (firstError) {
-      ctx.body = { batch: [] };
+      // Since server doesn't handle partial success
+      // no need to return events in case of any error
+      const batch = response.batch.map((job) => ({
+        ...job,
+        event: undefined,
+      }));
+      ctx.body = { batch };
       ctx.status = firstError.statusCode;
     } else {
       ctx.body = { batch: response.batch };

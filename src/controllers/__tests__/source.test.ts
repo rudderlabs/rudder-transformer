@@ -126,10 +126,9 @@ describe('Source controller tests', () => {
       const testCases: {
         description: string;
         requestBody: SourceHydrationRequest;
-        mockOutput: SourceHydrationOutput;
+        expectedOutput: Record<string, unknown>;
         hydrationOutput: SourceHydrationOutput;
         expectedStatus: number;
-        expectedBody: (output: { batch: unknown }) => { batch: unknown };
       }[] = [
         {
           description: 'all jobs successful',
@@ -143,14 +142,13 @@ describe('Source controller tests', () => {
               { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
             ],
           },
-          mockOutput: {
+          expectedOutput: {
             batch: [
               { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
               { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
             ],
           },
           expectedStatus: 200,
-          expectedBody: (output) => ({ batch: output.batch }),
         },
         {
           description: 'one job failed - returns first error status code',
@@ -165,15 +163,22 @@ describe('Source controller tests', () => {
           hydrationOutput: {
             batch: [
               { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
-              { event: { field: 'value2' }, statusCode: 400, error: 'Invalid data' },
+              {
+                event: { field: 'value2' },
+                statusCode: 400,
+                errorMessage: 'Invalid data',
+              },
               { event: { field: 'value3' }, statusCode: 200, data: { field: 'value3' } },
             ],
           },
-          mockOutput: {
-            batch: [],
+          expectedOutput: {
+            batch: [
+              { statusCode: 200, data: { field: 'value1' } },
+              { statusCode: 400, errorMessage: 'Invalid data' },
+              { statusCode: 200, data: { field: 'value3' } },
+            ],
           },
           expectedStatus: 400,
-          expectedBody: (output) => ({ batch: output.batch }),
         },
         {
           description: 'empty batch - all jobs successful',
@@ -184,23 +189,15 @@ describe('Source controller tests', () => {
           hydrationOutput: {
             batch: [],
           },
-          mockOutput: {
+          expectedOutput: {
             batch: [],
           },
           expectedStatus: 200,
-          expectedBody: () => ({ batch: [] }),
         },
       ];
 
       testCases.forEach(
-        ({
-          description,
-          requestBody,
-          mockOutput,
-          hydrationOutput,
-          expectedStatus,
-          expectedBody,
-        }) => {
+        ({ description, requestBody, expectedOutput, hydrationOutput, expectedStatus }) => {
           test(description, async () => {
             const mockSourceService = new NativeIntegrationSourceService();
             mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(hydrationOutput);
@@ -215,7 +212,7 @@ describe('Source controller tests', () => {
               .send(requestBody);
 
             expect(response.status).toEqual(expectedStatus);
-            expect(response.body).toEqual(expectedBody(mockOutput));
+            expect(response.body).toEqual(expectedOutput);
 
             expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
             expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);

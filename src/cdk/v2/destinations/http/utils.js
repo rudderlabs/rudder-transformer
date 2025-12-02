@@ -114,16 +114,7 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
     return apiUrl;
   }
   const pathParamsSubString = getPathParamsSubString(message, pathParams);
-  // If pathParams is empty, preserve the trailing slash state of apiUrl
-  if (pathParamsSubString === '') {
-    // Only normalize multiple consecutive slashes to single slash, preserve existence
-    return apiUrl.replace(/\/{2,}$/, '/');
-  }
-  // Remove trailing slashes from apiUrl before combining with pathParams
-  const requestUrl = apiUrl.replace(/\/+$/, '');
-  const combinedUrl = `${requestUrl}${pathParamsSubString}`;
-  // Preserve trailing slash if the combined result naturally has one
-  return combinedUrl.replace(/\/{2,}$/, '/');
+  return `${apiUrl}${pathParamsSubString}`.replace(/([^:]\/)\/+/g, '$1');
 };
 
 const sanitizeKey = (key) =>

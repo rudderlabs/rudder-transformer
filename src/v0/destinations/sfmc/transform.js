@@ -38,7 +38,7 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const Cache = require('../../util/cache');
 
-const accessTokenCache = new Cache(ACCESS_TOKEN_CACHE_TTL);
+const accessTokenCache = new Cache('SFMC_ACCESS_TOKEN', ACCESS_TOKEN_CACHE_TTL);
 const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm

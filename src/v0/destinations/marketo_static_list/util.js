@@ -3,7 +3,7 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const Cache = require('../../util/cache');
 const { AUTH_CACHE_TTL } = require('../../util/constant');
 
-const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
+const authCache = new Cache('MARKETO_STATIC_LIST_AUTH', AUTH_CACHE_TTL); // 1 hr
 
 /**
  * Fetches the ids from the array of objects

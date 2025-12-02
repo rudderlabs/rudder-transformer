@@ -1,11 +1,16 @@
 const Cache = require('../../src/v0/util/cache');
+const stats = require('../../src/util/stats');
+
+jest.mock('../../src/util/stats', () => ({
+  gauge: jest.fn(),
+}));
 
 describe('Cache class', () => {
   let cache;
   const DEFAULT_TTL = 5; // 5 seconds
 
   beforeEach(() => {
-    cache = new Cache(DEFAULT_TTL);
+    cache = new Cache("TEST", DEFAULT_TTL);
   });
 
   describe('set method', () => {
@@ -78,7 +83,7 @@ describe('Cache class', () => {
     });
 
     it('should return undefined for expired keys when no store function provided', async () => {
-      const shortTTLCache = new Cache(0.1); // 100ms TTL
+      const shortTTLCache = new Cache("TEST", 0.1); // 100ms TTL
       const key = 'expiredKey';
 
       shortTTLCache.set(key, 'value');
@@ -233,6 +238,25 @@ describe('Cache class', () => {
       const result = await cache.get(key);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('stats emission', () => {
+    it('should emit stats', async () => {
+      const cache = new Cache("TEST", 60);
+      // Perform some operations
+      cache.set('key1', 'value1');
+      await cache.get('key1');
+      await cache.get('key2', () => Promise.resolve('value2'));
+      cache.del('key1');
+
+      // Verify stats were emitted
+      expect(stats.gauge).toHaveBeenCalled();
+      expect(stats.gauge).toHaveBeenCalledWith('node_cache_hits', 1, { name: 'TEST' });
+      expect(stats.gauge).toHaveBeenCalledWith('node_cache_misses', 0, { name: 'TEST' });
+      expect(stats.gauge).toHaveBeenCalledWith('node_cache_keys', 1, { name: 'TEST' });
+      expect(stats.gauge).toHaveBeenCalledWith('node_cache_ksize', 4, { name: 'TEST' });
+      expect(stats.gauge).toHaveBeenCalledWith('node_cache_vsize', 6, { name: 'TEST' });
     });
   });
 });

@@ -1,4 +1,4 @@
-const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { NetworkError, InstrumentationError, isObject } = require('@rudderstack/integrations-lib');
 const validator = require('validator');
 const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require('./config');
 const {
@@ -92,22 +92,6 @@ const checkIfContactExists = async (identifier, apiKey, metadata) => {
 };
 
 /**
- * Function to remove duplicate traits from user traits
- * @param {*} userTraits {"location":"San Francisco","LOCATION":"San Francisco"}
- * @param {*} attributeMap {"area_code":"AREA","location":"LOCATION"}
- * @returns // {"LOCATION":"San Francisco"}
- */
-const refineUserTraits = (userTraits, attributeMap) => {
-  const refinedTraits = userTraits;
-  Object.keys(userTraits).forEach((key) => {
-    if (Object.prototype.hasOwnProperty.call(attributeMap, key)) {
-      delete refinedTraits[key];
-    }
-  });
-  return refinedTraits;
-};
-
-/**
  * Function to transform user traits for identify and track call with the help of contact attribute mapping defined in webapp
  * Contact attribute mapping -> [{"from":"area_code","to":"AREA"},{"from":"location","to":"LOCATION"}]
  * @param {*} traits
@@ -119,14 +103,19 @@ const transformUserTraits = (traits, contactAttributeMapping) => {
   const attributeMap = getHashFromArray(contactAttributeMapping, 'from', 'to', false);
 
   const userTraits = traits;
-  Object.keys(attributeMap).forEach((key) => {
-    const traitValue = traits[key];
-    if (traitValue) {
-      userTraits[attributeMap[key]] = traitValue;
-    }
-  });
+  if (isObject(traits) && Object.keys(traits).length > 0) {
+    Object.entries(attributeMap).forEach(([key, value]) => {
+      const traitValue = traits[key];
+      if (traitValue) {
+        userTraits[value] = traitValue;
+        if (key !== value) {
+          delete userTraits[key];
+        }
+      }
+    });
+  }
 
-  return refineUserTraits(userTraits, attributeMap);
+  return userTraits;
 };
 
 // Prepare track event data. Event data consists `id` and `data`.

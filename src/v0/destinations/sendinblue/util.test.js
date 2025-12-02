@@ -174,5 +174,23 @@ describe('transformUserTraits', () => {
 
       expect(result).toEqual(['item1', 'item2']);
     });
+
+    it('should handle traits with when contactAttributeMapping has same key and value', () => {
+      const traits = {
+        tags: ['tag1', 'tag2'],
+        location: 'Mumbai',
+      };
+      const contactAttributeMapping = [
+        { from: 'tags', to: 'tags' },
+        { from: 'location', to: 'LOCATION' },
+      ];
+
+      const result = transformUserTraits(traits, contactAttributeMapping);
+
+      expect(result).toEqual({
+        tags: ['tag1', 'tag2'],
+        LOCATION: 'Mumbai',
+      });
+    });
   });
 });

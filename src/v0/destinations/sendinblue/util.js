@@ -1,4 +1,4 @@
-const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { NetworkError, InstrumentationError, isObject } = require('@rudderstack/integrations-lib');
 const validator = require('validator');
 const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require('./config');
 const {
@@ -103,12 +103,14 @@ const transformUserTraits = (traits, contactAttributeMapping) => {
   const attributeMap = getHashFromArray(contactAttributeMapping, 'from', 'to', false);
 
   const userTraits = traits;
-  if (traits && typeof traits === 'object' && Object.keys(traits).length > 0) {
-    Object.keys(attributeMap).forEach((key) => {
+  if (isObject(traits) && Object.keys(traits).length > 0) {
+    Object.entries(attributeMap).forEach(([key, value]) => {
       const traitValue = traits[key];
       if (traitValue) {
-        userTraits[attributeMap[key]] = traitValue;
-        delete userTraits[key];
+        userTraits[value] = traitValue;
+        if (key !== value) {
+          delete userTraits[key];
+        }
       }
     });
   }

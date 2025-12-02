@@ -102,13 +102,15 @@ const combineSubscriptionGroups = (subscriptionGroups) => {
     const result = {
       subscription_group_id: group.subscription_group_id,
       subscription_state: group.subscription_state,
-      external_ids: [...new Set(group.external_ids)],
     };
     if (group.emails?.length) {
       result.emails = [...new Set(group.emails)];
     }
     if (group.phones?.length) {
       result.phones = [...new Set(group.phones)];
+    }
+    if (group.external_ids?.length) {
+      result.external_ids = [...new Set(group.external_ids)];
     }
     return result;
   });
@@ -899,6 +901,8 @@ function handleReservedProperties(props) {
   return _.omit(props, reserved);
 }
 
+const isEmptyAttributesFixEnabled = () => process.env.BRAZE_EMPTY_ATTRIBUTES_FIX === 'true';
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -917,4 +921,5 @@ module.exports = {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  isEmptyAttributesFixEnabled,
 };

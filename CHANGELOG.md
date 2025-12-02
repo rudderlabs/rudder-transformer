@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.115.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.115.0...v1.115.1) (2025-11-25)
+
+
+### Bug Fixes
+
+* **adj:** convert callback_params object values to string  ([#4817](https://github.com/rudderlabs/rudder-transformer/issues/4817)) ([52973a0](https://github.com/rudderlabs/rudder-transformer/commit/52973a06cca8fbf32f0721de75d75c42b2ca5615))
+
+## [1.115.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.114.0...v1.115.0) (2025-11-21)
+
+
+### Features
+
+* send external_ids only when userId is present from router ([#4805](https://github.com/rudderlabs/rudder-transformer/issues/4805)) ([75d7a2a](https://github.com/rudderlabs/rudder-transformer/commit/75d7a2aa91a288ae7313c0352596b28704e8aa48))
+
+## [1.114.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.1...v1.114.0) (2025-11-20)
+
+
+### Features
+
+* send external_ids only when userId is present ([#4801](https://github.com/rudderlabs/rudder-transformer/issues/4801)) ([0737620](https://github.com/rudderlabs/rudder-transformer/commit/07376208679f0b97fdef17ce4ab9bd5edfc82e3b))
+
+
+### Bug Fixes
+
+* **braze:** include userAttribute only when not an empty object in attributes ([#4802](https://github.com/rudderlabs/rudder-transformer/issues/4802)) ([c740b23](https://github.com/rudderlabs/rudder-transformer/commit/c740b23951f2449e7eb4c3d6d61b66370881a9b5))
+
 ### [1.113.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.113.0...v1.113.1) (2025-11-19)
 
 

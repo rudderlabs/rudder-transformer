@@ -179,9 +179,3 @@ jobs:
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill
-
-  update-ingestion-service:
-    name: Update Ingestion Service with Latest Transformer Version
-    uses: ./.github/workflows/update-ingestion-service.yml
-    secrets:
-      PAT: ${{ secrets.PAT }}

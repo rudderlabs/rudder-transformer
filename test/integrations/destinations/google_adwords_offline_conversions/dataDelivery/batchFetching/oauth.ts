@@ -1,10 +1,26 @@
-import { authHeader1, authHeader2, secret3 } from '../maskedSecrets';
+/**
+ * GAOC Data Delivery - OAuth Scenarios with Batch Fetching Feature Flag
+ *
+ * This file contains OAuth/authentication tests for GAOC data delivery (proxy v0 and v1).
+ * All tests include `envOverrides: { GAOC_ENABLE_BATCH_FETCHING: 'true' }` to validate
+ * authentication behavior with the new batch fetching optimization feature.
+ *
+ * Test scenarios cover:
+ * - Proxy v0 API OAuth scenarios: Invalid credentials, insufficient scopes
+ * - Proxy v1 API OAuth scenarios: Invalid credentials, insufficient scopes, 2FA issues
+ * - Error response handling with proper authErrorCategory mapping
+ * - Both REFRESH_TOKEN and AUTH_STATUS_INACTIVE error categories
+ *
+ * Based on original dataDelivery OAuth tests but with batch fetching feature flag enabled.
+ */
+
+import { authHeader1, authHeader2 } from '../../maskedSecrets';
 import {
   generateMetadata,
   generateProxyV1Payload,
   generateProxyV0Payload,
-} from '../../../testUtils';
-import { defaultAccessToken } from '../../../common/secrets';
+} from '../../../../testUtils';
+import { defaultAccessToken } from '../../../../common/secrets';
 
 const API_VERSION = 'v19';
 
@@ -16,7 +32,7 @@ const commonHeaders = {
 
 const commonParams = {
   customerId: '1112223333',
-  event: 'Sign-up - click',
+  conversionActionId: 'customers/1112223333/conversionActions/848898416',
 };
 
 const commonRequestPayload = {
@@ -67,12 +83,6 @@ const commonRequestPayload = {
 const commonRequestParameters = {
   headers: commonHeaders,
   params: commonParams,
-  JSON: commonRequestPayload,
-};
-
-const invalidPayload = {
-  headers: commonHeaders,
-  params: { customerId: '1112223334', event: 'Sign-up - click' },
   JSON: commonRequestPayload,
 };
 
@@ -134,6 +144,9 @@ export const v1oauthScenarios = [
         },
       },
     },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
+    },
   },
   {
     id: 'gaoc_v1_oauth_scenario_2',
@@ -179,6 +192,9 @@ export const v1oauthScenarios = [
           },
         },
       },
+    },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
   {
@@ -251,76 +267,8 @@ export const v1oauthScenarios = [
         },
       },
     },
-  },
-  {
-    id: 'gaoc_v1_oauth_scenario_4',
-    name: 'google_adwords_offline_conversions',
-    description:
-      "[Proxy v1 API] :: Oauth when the user doesn't enabled 2 factor authentication but the google ads account has it enabled for not store sales conversion",
-    successCriteria: 'The proxy should return 401 with authErrorCategory as AUTH_STATUS_INACTIVE',
-    scenario: 'Oauth',
-    feature: 'dataDelivery',
-    module: 'destination',
-    version: 'v1',
-    input: {
-      request: {
-        body: generateProxyV1Payload(
-          {
-            ...{ ...invalidPayload, JSON: { isStoreConversion: false } },
-            headers: {
-              Authorization: authHeader2,
-              'Content-Type': 'application/json',
-              'developer-token': 'test-developer-token-12345',
-              'login-customer-id': 'logincustomerid',
-            },
-            endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/customerid/offlineUserDataJobs`,
-          },
-          metadataArray,
-        ),
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 401,
-        body: {
-          output: {
-            authErrorCategory: 'AUTH_STATUS_INACTIVE',
-            message:
-              '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
-            response: [
-              {
-                error:
-                  '[Google Ads Offline Conversions]:: [{"error":{"code":401,"details":[{"@type":"type.googleapis.com/google.ads.googleads.v16.errors.GoogleAdsFailure","errors":[{"errorCode":{"authenticationError":"TWO_STEP_VERIFICATION_NOT_ENROLLED"},"message":"An account administrator changed this account\'s authentication settings. To access this Google Ads account, enable 2-Step Verification in your Google account at https://www.google.com/landing/2step."}],"requestId":"wy4ZYbsjWcgh6uC2Ruc_Zg"}],"message":"Request is missing required authentication credential. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                statusCode: 401,
-              },
-            ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            status: 401,
-          },
-        },
-      },
+    envOverrides: {
+      GAOC_ENABLE_BATCH_FETCHING: 'true',
     },
   },
 ];

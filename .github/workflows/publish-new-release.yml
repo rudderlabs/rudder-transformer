@@ -153,22 +153,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT }}
 
-      - name: Delete Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'release/')
-        with:
-          branches: 'release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
-      - name: Delete Hotfix Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
-        with:
-          branches: 'hotfix-release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
       - name: Notify Slack Channel
         id: slack
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
@@ -198,7 +182,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D> <@U021E50QAGY>"
+                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D>"
                   }
                 }
               ]

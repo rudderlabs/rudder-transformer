@@ -46,8 +46,8 @@ function processEvent(inputEvent: InputEventType): OutputEventType[] {
         messageId: `${value.page_id}-${value.form_id}-${value.leadgen_id}`,
         context: {
           traits: {
-            page_id: value.page_id,
-            form_id: value.form_id,
+            pageId: value.page_id,
+            formId: value.form_id,
           },
         },
         originalTimestamp: value.created_time

@@ -53,9 +53,14 @@ const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v24.0';
  * Fetches lead data from Facebook Graph API for a single lead ID
  * @param leadId - The Facebook lead ID to fetch
  * @param accessToken - Facebook access token
+ * @param metadata - Metadata for API call metrics
  * @returns Promise with lead data or error
  */
-async function fetchLeadData(leadId: string, accessToken: string): Promise<APIResponse> {
+async function fetchLeadData(
+  leadId: string,
+  accessToken: string,
+  metadata: Record<string, unknown>,
+): Promise<APIResponse> {
   const url = `${FACEBOOK_GRAPH_API_URL}/${leadId}`;
   const clientResponse = await httpGET(
     url,
@@ -69,6 +74,7 @@ async function fetchLeadData(leadId: string, accessToken: string): Promise<APIRe
       feature: 'hydration',
       endpointPath: '/leadId',
       requestMethod: 'GET',
+      metadata,
     },
   );
 
@@ -106,7 +112,10 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
   const results = await Promise.all(
     batch.map(async (job) => {
       const leadgenId = job.event.anonymousId;
-      const result = await fetchLeadData(leadgenId, accessToken);
+      const result = await fetchLeadData(leadgenId, accessToken, {
+        sourceId: source.id,
+        workspaceId: source.workspaceId,
+      });
 
       const updatedJob: SourceHydrationOutput['batch'][number] = {
         ...job,

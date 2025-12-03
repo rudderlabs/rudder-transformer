@@ -9,7 +9,12 @@ export const HydrationBatchItemSchema = z
   })
   .passthrough();
 
-export const HydrationSourceSchema = z.object({}).passthrough();
+export const HydrationSourceSchema = z
+  .object({
+    id: z.string().optional(),
+    workspaceId: z.string().optional(),
+  })
+  .passthrough();
 
 export const SourceHydrationRequestSchema = z.object({
   batch: z.array(HydrationBatchItemSchema),

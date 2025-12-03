@@ -31,6 +31,8 @@ describe('Facebook Lead Ads Hydration', () => {
       },
     })),
     source: {
+      id: 'source_id',
+      workspaceId: 'workspace_id',
       internalSecret: {
         pageAccessToken: accessToken,
       },
@@ -38,6 +40,13 @@ describe('Facebook Lead Ads Hydration', () => {
   });
 
   describe('successful hydration', () => {
+    const source = {
+      id: 'source_id',
+      workspaceId: 'workspace_id',
+      internalSecret: {
+        pageAccessToken: 'test_token',
+      },
+    };
     const testCases = [
       {
         name: 'should successfully hydrate single lead with field_data',
@@ -155,11 +164,7 @@ describe('Facebook Lead Ads Hydration', () => {
               },
             },
           ],
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
+          source,
         },
         expectedTraits: {
           existingTrait: 'value',
@@ -190,11 +195,7 @@ describe('Facebook Lead Ads Hydration', () => {
               },
             },
           ],
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
+          source,
         },
         expectedTraits: {
           email: 'test@example.com',
@@ -221,11 +222,7 @@ describe('Facebook Lead Ads Hydration', () => {
               },
             },
           ],
-          source: {
-            internalSecret: {
-              pageAccessToken: 'test_token',
-            },
-          },
+          source,
         },
         expectedTraits: {
           email: 'test@example.com',
@@ -260,6 +257,10 @@ describe('Facebook Lead Ads Hydration', () => {
                 feature: 'hydration',
                 endpointPath: '/leadId',
                 requestMethod: 'GET',
+                metadata: {
+                  sourceId: 'source_id',
+                  workspaceId: 'workspace_id',
+                },
               },
             );
           }

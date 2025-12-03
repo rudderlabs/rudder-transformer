@@ -45,7 +45,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'The access token could not be decrypted',
+            message: 'FB error code: 190, The access token could not be decrypted',
             destinationResponse: {
               error: {
                 code: 190,
@@ -147,7 +147,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
             destinationResponse: {
               error: {
                 message: 'Invalid parameter',
@@ -203,7 +203,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 429,
-            message: 'User request limit reached',
+            message: 'FB error code: 17, User request limit reached',
             destinationResponse: {
               error: {
                 message: 'User request limit reached',
@@ -258,7 +258,7 @@ export const v0TestData = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
             destinationResponse: {
               error: {
                 message:
@@ -311,7 +311,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid Parameter',
+            message: 'FB error code: 100, subcode: 34, Invalid Parameter',
             destinationResponse: {
               error: {
                 message: 'Invalid Parameter',
@@ -363,7 +363,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Unsupported post request. some problem with sent parameters',
+            message:
+              'FB error code: 100, subcode: 38, Unsupported post request. some problem with sent parameters',
             destinationResponse: {
               error: {
                 message: 'Unsupported post request. some problem with sent parameters',
@@ -415,7 +416,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Some error in permission',
+            message: 'FB error code: 3, subcode: 10, Some error in permission',
             destinationResponse: {
               error: {
                 message: 'Some error in permission',
@@ -467,13 +468,13 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message: JSON.stringify({
+            message: `FB error code: 5, subcode: 12, ${JSON.stringify({
               message: 'Unhandled random error',
               type: 'RandomException',
               code: 5,
               error_subcode: 12,
               fbtrace_id: 'facebook_px_trace_id_10',
-            }),
+            })}`,
             destinationResponse: {
               error: {
                 message: 'Unhandled random error',
@@ -531,7 +532,7 @@ export const v0TestData = [
           output: {
             status: 400,
             message:
-              'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
+              'FB error code: 100, subcode: 2804009, Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
             destinationResponse: {
               error: {
                 message: 'Invalid parameter',
@@ -590,7 +591,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message: '(#21009) The data set upload is temporarily not ready.',
+            message: 'FB error code: 21009, (#21009) The data set upload is temporarily not ready.',
             destinationResponse: {
               error: {
                 message: '(#21009) The data set upload is temporarily not ready.',

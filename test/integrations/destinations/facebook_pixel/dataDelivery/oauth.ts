@@ -28,11 +28,11 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Some error in permission',
+            message: 'FB error code: 3, subcode: 10, Some error in permission',
             statTags,
             response: [
               {
-                error: 'Some error in permission',
+                error: 'FB error code: 3, subcode: 10, Some error in permission',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

@@ -32,7 +32,7 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'Invalid OAuth access token.',
+      expectedMessage: 'FB error code: 190, subcode: 463, Invalid OAuth access token.',
       expectedStatus: 400,
     },
     {
@@ -48,7 +48,7 @@ describe('errorResponseHandler', () => {
         status: 400,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'Event sent after seven days.',
+      expectedMessage: 'FB error code: 100, subcode: 2804003, Event sent after seven days.',
       expectedStatus: 400,
     },
     {
@@ -63,7 +63,8 @@ describe('errorResponseHandler', () => {
         status: 500,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: JSON.stringify({ code: 999, error_subcode: 9999 }),
+      expectedMessage:
+        'FB error code: 999, subcode: 9999, ' + JSON.stringify({ code: 999, error_subcode: 9999 }),
       expectedStatus: 500,
     },
     {
@@ -78,7 +79,7 @@ describe('errorResponseHandler', () => {
         status: 429,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'Rate limit exceeded.',
+      expectedMessage: 'FB error code: 4, Rate limit exceeded.',
       expectedStatus: 429,
     },
     {
@@ -94,7 +95,7 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'Invalid OAuth token.',
+      expectedMessage: 'FB error code: 190, subcode: 460, Invalid OAuth token.',
       expectedStatus: 400,
     },
     {
@@ -113,7 +114,7 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: ConfigurationAuthError,
       expectedMessage:
-        'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+        'FB error code: 190, The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
       expectedStatus: 400,
     },
     {
@@ -130,7 +131,7 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'Unknown auth error during response transformation',
+      expectedMessage: 'FB error code: 190, Unknown auth error during response transformation',
       expectedStatus: 400,
     },
     {
@@ -145,7 +146,8 @@ describe('errorResponseHandler', () => {
         status: 400,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'Unknown failure during response transformation',
+      expectedMessage:
+        'FB error code: 100, subcode: 9999, Unknown failure during response transformation',
       expectedStatus: 400,
     },
     {
@@ -161,7 +163,7 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: NetworkError,
       expectedMessage:
-        'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+        'FB error code: 1487301, Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
       expectedStatus: 400,
     },
     {
@@ -176,7 +178,7 @@ describe('errorResponseHandler', () => {
         status: 429,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'Rate limit exceeded.',
+      expectedMessage: 'FB error code: 17, Rate limit exceeded.',
       expectedStatus: 429,
     },
     {
@@ -191,7 +193,7 @@ describe('errorResponseHandler', () => {
         status: 500,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'Unhandled error.',
+      expectedMessage: 'FB error code: 9999, Unhandled error.',
       expectedStatus: 500,
     },
   ];

@@ -150,12 +150,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
+              'FB error code: 294, Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
             statTags,
             response: [
               {
                 error:
-                  'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
+                  'FB error code: 294, Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -194,12 +194,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+              'FB error code: 1487301, Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
             statTags,
             response: [
               {
                 error:
-                  'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+                  'FB error code: 1487301, Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -237,11 +237,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Custom Audience Has Been Deleted',
+            message: 'FB error code: 1487366, Custom Audience Has Been Deleted',
             statTags,
             response: [
               {
-                error: 'Custom Audience Has Been Deleted',
+                error: 'FB error code: 1487366, Custom Audience Has Been Deleted',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -279,11 +279,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Failed to update the custom audience',
+            message: 'FB error code: 2650, Failed to update the custom audience',
             statTags,
             response: [
               {
-                error: 'Failed to update the custom audience',
+                error: 'FB error code: 2650, Failed to update the custom audience',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -322,11 +322,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'The number of parameters exceeded the maximum for this operation',
+            message:
+              'FB error code: 105, The number of parameters exceeded the maximum for this operation',
             statTags,
             response: [
               {
-                error: 'The number of parameters exceeded the maximum for this operation',
+                error:
+                  'FB error code: 105, The number of parameters exceeded the maximum for this operation',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -364,11 +366,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 403,
-            message: '(#200) The current user can not update audience 23861283180290489',
+            message:
+              'FB error code: 200, (#200) The current user can not update audience 23861283180290489',
             statTags,
             response: [
               {
-                error: '(#200) The current user can not update audience 23861283180290489',
+                error:
+                  'FB error code: 200, (#200) The current user can not update audience 23861283180290489',
                 statusCode: 403,
                 metadata: generateMetadata(1),
               },
@@ -407,7 +411,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+              'FB error code: 190, subcode: 463, Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -417,7 +421,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             response: [
               {
                 error:
-                  'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+                  'FB error code: 190, subcode: 463, Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -455,7 +459,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: '(#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
+            message:
+              'FB error code: 100, (#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
             statTags: {
               ...statTags,
               errorCategory: 'network',
@@ -463,7 +468,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: '(#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
+                error:
+                  'FB error code: 100, (#100) Value-Based Custom Audience requires LOOKALIKE_VALUE attribute.',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

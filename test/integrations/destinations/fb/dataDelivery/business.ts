@@ -148,7 +148,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid OAuth 2.0 access token',
+            message: 'FB error code: 190, Invalid OAuth 2.0 access token',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -157,7 +157,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: 'Invalid OAuth 2.0 access token',
+                error: 'FB error code: 190, Invalid OAuth 2.0 access token',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -240,11 +240,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
             statTags,
             response: [
               {
-                error: 'Event Timestamp Too Old',
+                error: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -285,12 +285,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
             statTags,
             response: [
               {
                 error:
-                  "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+                  "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

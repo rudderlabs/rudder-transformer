@@ -261,6 +261,14 @@ const getStatus = (error) => {
   return { status: errorStatus, errorMessage, stats: errorDetail?.stat };
 };
 
+const addErrorCodePrefix = (errorMessage, code, subCode) => {
+  if (errorMessage && (code || subCode)) {
+    const subCodePart = subCode ? `, subcode: ${subCode}` : '';
+    return `FB error code: ${code}${subCodePart}, ${errorMessage}`;
+  }
+  return errorMessage;
+};
+
 const errorResponseHandler = (destResponse) => {
   const { response } = destResponse;
   if (!response.error) {
@@ -268,6 +276,7 @@ const errorResponseHandler = (destResponse) => {
     return;
   }
   const { error } = response;
+  const { code: fbErrorCode, error_subcode: fbErrorSubCode, message: fbErrorMessage } = error;
   const { status, errorMessage, stats: errorStatTags } = getStatus(error);
 
   // check errorMessage is falsy
@@ -277,12 +286,20 @@ const errorResponseHandler = (destResponse) => {
     errorStatTags?.[TAG_NAMES.ERROR_TYPE] === ERROR_TYPES.AUTH
   ) {
     throw new ConfigurationAuthError(
-      errorMessage || error.message || 'Unknown auth error during response transformation',
+      addErrorCodePrefix(
+        errorMessage || fbErrorMessage || 'Unknown auth error during response transformation',
+        fbErrorCode,
+        fbErrorSubCode,
+      ),
       { ...response, status: destResponse.status },
     );
   }
   throw new NetworkError(
-    `${errorMessage || error.message || 'Unknown failure during response transformation'}`,
+    addErrorCodePrefix(
+      `${errorMessage || fbErrorMessage || 'Unknown failure during response transformation'}`,
+      fbErrorCode,
+      fbErrorSubCode,
+    ),
     status,
     {
       ...errorStatTags,

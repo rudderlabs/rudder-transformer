@@ -31,14 +31,14 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 429,
-            message: 'User request limit reached',
+            message: 'FB error code: 17, User request limit reached',
             statTags: {
               ...statTags,
               errorType: 'throttled',
             },
             response: [
               {
-                error: 'User request limit reached',
+                error: 'FB error code: 17, User request limit reached',
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },
@@ -72,13 +72,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 500,
-            message: JSON.stringify({
+            message: `FB error code: 5, subcode: 12, ${JSON.stringify({
               message: 'Unhandled random error',
               type: 'RandomException',
               code: 5,
               error_subcode: 12,
               fbtrace_id: 'facebook_px_trace_id_10',
-            }),
+            })}`,
             statTags: {
               ...statTags,
               errorType: 'retryable',
@@ -86,13 +86,13 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: JSON.stringify({
+                error: `FB error code: 5, subcode: 12, ${JSON.stringify({
                   message: 'Unhandled random error',
                   type: 'RandomException',
                   code: 5,
                   error_subcode: 12,
                   fbtrace_id: 'facebook_px_trace_id_10',
-                }),
+                })}`,
                 statusCode: 500,
                 metadata: generateMetadata(1),
               },

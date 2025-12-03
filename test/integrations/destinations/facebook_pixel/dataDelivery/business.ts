@@ -54,7 +54,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'The access token could not be decrypted',
+            message: 'FB error code: 190, The access token could not be decrypted',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -63,7 +63,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: 'The access token could not be decrypted',
+                error: 'FB error code: 190, The access token could not be decrypted',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -137,11 +137,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
             statTags,
             response: [
               {
-                error: 'Event Timestamp Too Old',
+                error: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -176,12 +176,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
             statTags,
             response: [
               {
                 error:
-                  "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+                  "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -215,11 +215,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid Parameter',
+            message: 'FB error code: 100, subcode: 34, Invalid Parameter',
             statTags,
             response: [
               {
-                error: 'Invalid Parameter',
+                error: 'FB error code: 100, subcode: 34, Invalid Parameter',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -253,11 +253,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Unsupported post request. some problem with sent parameters',
+            message:
+              'FB error code: 100, subcode: 38, Unsupported post request. some problem with sent parameters',
             statTags,
             response: [
               {
-                error: 'Unsupported post request. some problem with sent parameters',
+                error:
+                  'FB error code: 100, subcode: 38, Unsupported post request. some problem with sent parameters',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

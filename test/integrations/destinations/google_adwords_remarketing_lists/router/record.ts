@@ -102,6 +102,7 @@ export const rETLRecordRouterRequest: RouterTransformationRequest = {
           lastName: 'rudderlabs',
           country: 'US',
           postalCode: '1245',
+          city: '',
         },
         type: 'record',
       },
@@ -358,11 +359,17 @@ export const rETLRecordRouterRequestForVDMV2Flow: RouterTransformationRequest = 
         },
         recordId: '2',
         rudderId: '2',
-        fields: {
+        identifiers: {
           email: '',
           phone: null,
         },
         type: 'record',
+      },
+      connection: {
+        config: { destination: { schemaVersion: '1.1', ...destination } },
+        sourceId: 'randomSourceId',
+        destinationId: 'randomDestinationId',
+        enabled: true,
       },
       metadata: generateGoogleOAuthMetadata(6),
     },

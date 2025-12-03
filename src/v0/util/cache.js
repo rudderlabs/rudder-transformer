@@ -16,11 +16,11 @@ class Cache {
    * Creates a new Cache instance
    * @param {string} name - Name of the cache instance for metric tagging
    * @param {number} ttlSeconds - Default time-to-live for cache entries in seconds
-   * @param {Object} defaultTags - Default tags to add to cache stats
+   * @param {Object} defaultStatTags - Default tags to add to cache stats
    */
-  constructor(name, ttlSeconds, defaultTags = {}) {
+  constructor(name, ttlSeconds, defaultStatTags = {}) {
     this.name = name;
-    this.defaultTags = defaultTags;
+    this.defaultStatTags = defaultStatTags;
 
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
@@ -48,11 +48,11 @@ class Cache {
    * const value = await cache.get('myKey'); // undefined if not cached
    */
   async get(key, storeFunction) {
-    // Check if key exists in cache (use has() to handle falsy values correctly)
-    if (this.cache.has(key)) {
-      const value = this.cache.get(key);
-      this.emitStats();
-      return Promise.resolve(value);
+    // Check if key exists in cache
+    const cacheVal = this.cache.get(key);
+    this.emitStats();
+    if (cacheVal !== undefined) {
+      return Promise.resolve(cacheVal);
     }
 
     // If no store function provided, return undefined (cache miss)
@@ -112,7 +112,7 @@ class Cache {
 
   emitStats() {
     const cacheStats = this.cache.getStats();
-    const tags = { name: this.name, ...this.defaultTags };
+    const tags = { name: this.name, ...this.defaultStatTags };
 
     stats.counter('node_cache_hits', cacheStats.hits, tags);
     stats.counter('node_cache_misses', cacheStats.misses, tags);

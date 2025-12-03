@@ -249,10 +249,35 @@ describe('Cache class', () => {
         expect(result).toEqual(`test value ${i}`);
       }
       expect(stats.getStats('node_cache_hits', {name: 'TEST'})).toBe(times / 2);
-      expect(stats.getStats('node_cache_misses', {name: 'TEST'})).toBe(0);
+      expect(stats.getStats('node_cache_misses', {name: 'TEST'})).toBe(1);
       expect(stats.getStats('node_cache_keys', {name: 'TEST'})).toBe(times);
       expect(stats.getStats('node_cache_ksize', {name: 'TEST'})).toBe(times * 8);
       expect(stats.getStats('node_cache_vsize', {name: 'TEST'})).toBe(times * 12);
+    });
+
+    it('should correctly handle falsy values using get() instead of has()', async () => {
+      // This test verifies that using get() instead of has() correctly handles
+      // falsy values that would be problematic with has() check
+      const testCases = [
+        { key: 'zero', value: 0 },
+        { key: 'false', value: false },
+        { key: 'emptyString', value: '' },
+        { key: 'null', value: null },
+        { key: 'undefined', value: null },
+      ];
+
+      for (const { key, value } of testCases) {
+        // Get should return the falsy value (not undefined)
+        const result = await cache.get(key);
+        expect(result).toBeUndefined();
+
+        // Set falsy value directly
+        cache.set(key, value);
+
+        // Verify it's actually cached by getting again
+        const result2 = await cache.get(key);
+        expect(result2).toBe(value);
+      }
     });
   });
 

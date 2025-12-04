@@ -2,11 +2,17 @@ import { Metadata } from '../../../../types';
 
 export type RegionKeys = 'US' | 'AU' | 'EU' | 'IN' | 'CN' | 'JP' | 'CA';
 
+export type ZohoMetadata = Metadata & {
+  secret: {
+    accessToken: string;
+  };
+};
+
 export type TransformedResponseToBeBatched = {
   upsertData: unknown[];
   deletionData: string[];
-  upsertSuccessMetadata: Metadata[];
-  deletionSuccessMetadata: Metadata[];
+  upsertSuccessMetadata: ZohoMetadata[];
+  deletionSuccessMetadata: ZohoMetadata[];
 };
 
 export type DestConfig = {
@@ -19,12 +25,6 @@ export type DestConfig = {
 
 export type ConnectionConfig = {
   destination: DestConfig;
-};
-
-export type ZohoMetadata = Metadata & {
-  secret: {
-    accessToken: string;
-  };
 };
 
 export type Message = {

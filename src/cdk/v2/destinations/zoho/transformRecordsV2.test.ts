@@ -1,8 +1,8 @@
-const { processRecordInputsV2 } = require('./transformRecordV2');
+import { processRecordInputsV2 } from './transformRecordV2';
 
 describe('processRecordInputsV2', () => {
   it('should return an empty array if no inputs are provided', async () => {
-    const result = await processRecordInputsV2([]);
+    const result = await processRecordInputsV2([], undefined);
     expect(result).toEqual([]);
   });
 
@@ -10,22 +10,21 @@ describe('processRecordInputsV2', () => {
     const result = await processRecordInputsV2(
       [
         {
-          id: '1',
-          metadata: {},
-          type: 'record',
+          metadata: {
+            secret: {
+              accessToken: 'test-token',
+            },
+          },
+          message: {},
         },
-      ],
-      null,
+      ] as any,
+      undefined as any,
     );
     expect(result).toEqual([]);
   });
 
   it('should return an empty array if no destination config is provided', async () => {
-    const result = await processRecordInputsV2([], {
-      destination: {
-        config: {},
-      },
-    });
+    const result = await processRecordInputsV2([], {} as any);
     expect(result).toEqual([]);
   });
 
@@ -34,18 +33,19 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
-          },
-        ],
-        {
-          destination: {
-            Config: {
-              Region: 'US',
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
             },
+            message: {},
           },
-        },
+        ] as any,
+        {
+          Config: {
+            region: 'US' as const,
+          },
+        } as any,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -55,19 +55,20 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
+            },
+            message: {},
             connection: {},
           },
-        ],
+        ] as any,
         {
-          destination: {
-            Config: {
-              Region: 'US',
-            },
+          Config: {
+            region: 'US' as const,
           },
-        },
+        } as any,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -77,20 +78,20 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
-            destination: {
-              config: { region: 'US' },
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
             },
+            message: {},
             connection: {
               config: {
-                destination: {},
+                destination: {} as any,
               },
             },
           },
-        ],
-        { destination: { config: { region: 'US' } } },
+        ] as any,
+        { Config: { region: 'US' as const } } as any,
       ),
     ).rejects.toThrow('Object and identifierMappings are required in destination config');
   });

@@ -1,4 +1,4 @@
-const {
+import {
   getHashFromArray,
   isDefinedAndNotNull,
   ConfigurationError,
@@ -6,16 +6,18 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedNullEmptyExclBoolInt,
   ZOHO_SDK,
-} = require('@rudderstack/integrations-lib');
-const { isEmpty } = require('lodash');
-const { isHttpStatusSuccess } = require('../../../../v0/util');
-const { handleHttpRequest } = require('../../../../adapters/network');
-const { CommonUtils } = require('../../../../util/common');
+} from '@rudderstack/integrations-lib';
+import { isEmpty } from 'lodash';
+import { isHttpStatusSuccess } from '../../../../v0/util';
+import { handleHttpRequest } from '../../../../adapters/network';
+import { CommonUtils } from '../../../../util/common';
+import { Destination } from '../../../../types';
+import { RegionKeys, DestConfig } from './types';
 
-const getRegion = (destination) => {
+const getRegion = (destination: Destination): RegionKeys | undefined => {
   // Check if deliveryAccount or accountDefinition is missing; if so, return region from Config
   if (!destination?.deliveryAccount?.accountDefinition) {
-    return destination?.Config?.region;
+    return destination?.Config?.region as RegionKeys;
   }
   // Extract region from deliveryAccount options
   const region = destination.deliveryAccount?.options?.region;
@@ -24,10 +26,16 @@ const getRegion = (destination) => {
     throw new PlatformError('Region is not defined in delivery account options', 500);
   }
   // Return the region from deliveryAccount options
-  return region;
+  return region as RegionKeys;
 };
 
-const deduceModuleInfoV2 = (destination, destConfig) => {
+type Connection = {
+  object: string;
+  identifierMappings: Array<{ to: string }>;
+  multiSelectFieldLevelDecision?: Array<{ from: string; to: string }>;
+};
+
+const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) => {
   const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
   return {
@@ -40,7 +48,10 @@ const deduceModuleInfoV2 = (destination, destConfig) => {
   };
 };
 
-function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
+function validatePresenceOfMandatoryPropertiesV2(
+  objectName: string,
+  object: Record<string, unknown>,
+) {
   const { ZOHO } = ZOHO_SDK;
   const moduleWiseMandatoryFields = ZOHO.fetchModuleWiseMandatoryFields(objectName);
   if (isEmpty(moduleWiseMandatoryFields)) {
@@ -58,9 +69,9 @@ function validatePresenceOfMandatoryPropertiesV2(objectName, object) {
   };
 }
 
-const formatMultiSelectFieldsV2 = (destConfig, fields) => {
+const formatMultiSelectFieldsV2 = (destConfig: DestConfig, fields: Record<string, unknown>) => {
   const multiSelectFields = getHashFromArray(
-    destConfig.multiSelectFieldLevelDecision,
+    destConfig.multiSelectFieldLevelDecision || [],
     'from',
     'to',
     false,
@@ -78,8 +89,12 @@ const formatMultiSelectFieldsV2 = (destConfig, fields) => {
   return formattedFields;
 };
 
-const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operationModuleType) => {
-  let additionalFields = [];
+const handleDuplicateCheckV2 = (
+  addDefaultDuplicateCheck: unknown,
+  identifierType: string[],
+  operationModuleType: string,
+) => {
+  let additionalFields: string[] = [];
 
   if (addDefaultDuplicateCheck) {
     const { ZOHO } = ZOHO_SDK;
@@ -91,7 +106,7 @@ const handleDuplicateCheckV2 = (addDefaultDuplicateCheck, identifierType, operat
 
 // Zoho has limitation that where clause should be formatted in a specific way
 // ref: https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
-const groupConditions = (conditions) => {
+const groupConditions = (conditions: string[]): string => {
   if (conditions.length === 1) {
     return conditions[0]; // No need for grouping with a single condition
   }
@@ -104,9 +119,10 @@ const groupConditions = (conditions) => {
 // supported data type in where clause
 // ref: https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
 // ref: https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
-const generateWhereClause = (fields) => {
-  const conditions = Object.keys(removeUndefinedNullEmptyExclBoolInt(fields)).map((key) => {
-    const value = fields[key];
+const generateWhereClause = (fields: Record<string, unknown>) => {
+  const cleanedFields = removeUndefinedNullEmptyExclBoolInt(fields) as Record<string, unknown>;
+  const conditions = Object.keys(cleanedFields).map((key) => {
+    const value = cleanedFields[key];
     if (Array.isArray(value)) {
       return `${key} = '${value.join(';')}'`;
     }
@@ -119,7 +135,7 @@ const generateWhereClause = (fields) => {
   return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
 };
 
-const generateSqlQuery = (module, fields) => {
+const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
   // Generate the WHERE clause based on the fields
   // Limiting to 25 fields
   const entries = Object.entries(fields).slice(0, 25);
@@ -132,7 +148,12 @@ const generateSqlQuery = (module, fields) => {
   return `SELECT id FROM ${module} ${whereClause}`;
 };
 
-const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
+const sendCOQLRequest = async (
+  region: RegionKeys | undefined,
+  accessToken: string,
+  object: string,
+  selectQuery: string,
+) => {
   try {
     if (selectQuery === '') {
       return {
@@ -185,9 +206,11 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
 
     return {
       erroneous: false,
-      message: searchResult.processedResponse.response.data.map((record) => record.id),
+      message: searchResult.processedResponse.response.data.map(
+        (record: { id: string }) => record.id,
+      ),
     };
-  } catch (error) {
+  } catch (error: any) {
     return {
       erroneous: true,
       message: error.message,
@@ -195,7 +218,19 @@ const sendCOQLRequest = async (region, accessToken, object, selectQuery) => {
   }
 };
 
-const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig }) => {
+type SearchRecordParams = {
+  identifiers: Record<string, unknown>;
+  metadata: { secret: { accessToken: string } };
+  destination: Destination;
+  destConfig: Connection;
+};
+
+const searchRecordIdV2 = async ({
+  identifiers,
+  metadata,
+  destination,
+  destConfig,
+}: SearchRecordParams) => {
   try {
     const region = getRegion(destination);
     const { object } = destConfig;
@@ -203,7 +238,7 @@ const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig
     const selectQuery = generateSqlQuery(object, identifiers);
     const result = await sendCOQLRequest(region, metadata.secret.accessToken, object, selectQuery);
     return result;
-  } catch (error) {
+  } catch (error: any) {
     return {
       erroneous: true,
       message: error.message,
@@ -212,7 +247,7 @@ const searchRecordIdV2 = async ({ identifiers, metadata, destination, destConfig
 };
 
 // ref : https://www.zoho.com/crm/developer/docs/api/v6/upsert-records.html#:~:text=The%20trigger%20input%20can%20be%20workflow%2C%20approval%2C%20or%20blueprint.%20If%20the%20trigger%20is%20not%20mentioned%2C%20the%20workflows%2C%20approvals%20and%20blueprints%20related%20to%20the%20API%20will%20get%20executed.%20Enter%20the%20trigger%20value%20as%20%5B%5D%20to%20not%20execute%20the%20workflows.
-const calculateTrigger = (trigger) => {
+const calculateTrigger = (trigger: unknown) => {
   if (trigger === 'Default') {
     return null;
   }
@@ -222,9 +257,14 @@ const calculateTrigger = (trigger) => {
   return [trigger];
 };
 
-const validateConfigurationIssue = (Config, operationModuleType) => {
+type ValidateConfig = {
+  multiSelectFieldLevelDecision?: Array<{ from: string; to: string }>;
+  module?: string;
+};
+
+const validateConfigurationIssue = (Config: ValidateConfig, operationModuleType: string) => {
   const hashMapMultiselect = getHashFromArray(
-    Config.multiSelectFieldLevelDecision,
+    Config.multiSelectFieldLevelDecision || [],
     'from',
     'to',
     false,
@@ -237,7 +277,7 @@ const validateConfigurationIssue = (Config, operationModuleType) => {
   }
 };
 
-module.exports = {
+export {
   deduceModuleInfoV2,
   validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,

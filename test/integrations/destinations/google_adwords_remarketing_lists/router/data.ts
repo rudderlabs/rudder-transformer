@@ -1549,6 +1549,35 @@ export const data = [
               },
             },
             {
+              batched: false,
+              error: 'Event has no valid identifiers',
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 6,
+                  secret: {
+                    access_token: 'commonAccessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              statusCode: 400,
+            },
+            {
               metadata: [
                 {
                   jobId: 5,

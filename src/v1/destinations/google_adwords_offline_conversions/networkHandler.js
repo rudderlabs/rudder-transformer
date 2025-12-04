@@ -31,7 +31,10 @@ const {
 const tags = require('../../../v0/util/tags');
 const { CommonUtils } = require('../../../util/common');
 
-const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
+const conversionCustomVariableCache = new Cache(
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_CUSTOM_VARIABLE',
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+);
 
 const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;

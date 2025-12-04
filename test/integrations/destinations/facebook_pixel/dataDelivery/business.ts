@@ -54,7 +54,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'FB error code: 190, The access token could not be decrypted',
+            message:
+              'The access token could not be decrypted. Facebook responded with error code: 190',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -63,7 +64,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: 'FB error code: 190, The access token could not be decrypted',
+                error:
+                  'The access token could not be decrypted. Facebook responded with error code: 190',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -137,11 +139,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
+            message:
+              'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
             statTags,
             response: [
               {
-                error: 'FB error code: 100, subcode: 2804003, Event Timestamp Too Old',
+                error:
+                  'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -176,12 +180,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
             statTags,
             response: [
               {
                 error:
-                  "FB error code: 100, subcode: 33, Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+                  "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -215,11 +219,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'FB error code: 100, subcode: 34, Invalid Parameter',
+            message: 'Invalid Parameter. Facebook responded with error code: 100 and sub-code: 34',
             statTags,
             response: [
               {
-                error: 'FB error code: 100, subcode: 34, Invalid Parameter',
+                error:
+                  'Invalid Parameter. Facebook responded with error code: 100 and sub-code: 34',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -254,12 +259,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              'FB error code: 100, subcode: 38, Unsupported post request. some problem with sent parameters',
+              'Unsupported post request. some problem with sent parameters. Facebook responded with error code: 100 and sub-code: 38',
             statTags,
             response: [
               {
                 error:
-                  'FB error code: 100, subcode: 38, Unsupported post request. some problem with sent parameters',
+                  'Unsupported post request. some problem with sent parameters. Facebook responded with error code: 100 and sub-code: 38',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

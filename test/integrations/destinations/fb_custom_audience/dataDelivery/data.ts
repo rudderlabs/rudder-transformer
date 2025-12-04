@@ -150,7 +150,7 @@ export const existingTestData = [
               status: 400,
             },
             message:
-              'FB error code: 294, Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
+              'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist. Facebook responded with error code: 294',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -219,7 +219,7 @@ export const existingTestData = [
               status: 400,
             },
             message:
-              'FB error code: 1487301, Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+              'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account. Facebook responded with error code: 1487301',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -286,7 +286,8 @@ export const existingTestData = [
               },
               status: 400,
             },
-            message: 'FB error code: 1487366, Custom Audience Has Been Deleted',
+            message:
+              'Custom Audience Has Been Deleted. Facebook responded with error code: 1487366',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -353,7 +354,8 @@ export const existingTestData = [
               },
               status: 400,
             },
-            message: 'FB error code: 2650, Failed to update the custom audience',
+            message:
+              'Failed to update the custom audience. Facebook responded with error code: 2650',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -422,7 +424,7 @@ export const existingTestData = [
               status: 400,
             },
             message:
-              'FB error code: 105, The number of parameters exceeded the maximum for this operation',
+              'The number of parameters exceeded the maximum for this operation. Facebook responded with error code: 105',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -489,7 +491,8 @@ export const existingTestData = [
               },
               status: 429,
             },
-            message: 'FB error code: 80003, There have been too many calls to this ad-account.',
+            message:
+              'There have been too many calls to this ad-account.. Facebook responded with error code: 80003',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -558,7 +561,7 @@ export const existingTestData = [
               status: 403,
             },
             message:
-              'FB error code: 200, (#200) The current user can not update audience 23861283180290489',
+              '(#200) The current user can not update audience 23861283180290489. Facebook responded with error code: 200',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -631,7 +634,7 @@ export const existingTestData = [
               status: 400,
             },
             message:
-              'FB error code: 190, subcode: 463, Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+              'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.. Facebook responded with error code: 190 and sub-code: 463',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -700,7 +703,8 @@ export const existingTestData = [
               },
               status: 400,
             },
-            message: 'FB error code: 2655, Marketing Messaging TOS not accepted.',
+            message:
+              'Marketing Messaging TOS not accepted.. Facebook responded with error code: 2655',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
@@ -770,7 +774,7 @@ export const existingTestData = [
               status: 400,
             },
             message:
-              'FB error code: 190, The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+              'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.. Facebook responded with error code: 190',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',

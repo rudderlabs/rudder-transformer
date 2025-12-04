@@ -31,7 +31,8 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message: 'FB error code: 80003, There have been too many calls to this ad-account.',
+            message:
+              'There have been too many calls to this ad-account.. Facebook responded with error code: 80003',
             statTags: {
               ...statTags,
               errorType: 'throttled',
@@ -39,7 +40,8 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             status: 429,
             response: [
               {
-                error: 'FB error code: 80003, There have been too many calls to this ad-account.',
+                error:
+                  'There have been too many calls to this ad-account.. Facebook responded with error code: 80003',
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },

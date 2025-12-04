@@ -32,7 +32,8 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'FB error code: 190, subcode: 463, Invalid OAuth access token.',
+      expectedMessage:
+        'Invalid OAuth access token.. Facebook responded with error code: 190 and sub-code: 463',
       expectedStatus: 400,
     },
     {
@@ -48,7 +49,8 @@ describe('errorResponseHandler', () => {
         status: 400,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'FB error code: 100, subcode: 2804003, Event sent after seven days.',
+      expectedMessage:
+        'Event sent after seven days.. Facebook responded with error code: 100 and sub-code: 2804003',
       expectedStatus: 400,
     },
     {
@@ -64,7 +66,8 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: NetworkError,
       expectedMessage:
-        'FB error code: 999, subcode: 9999, ' + JSON.stringify({ code: 999, error_subcode: 9999 }),
+        JSON.stringify({ code: 999, error_subcode: 9999 }) +
+        '. Facebook responded with error code: 999 and sub-code: 9999',
       expectedStatus: 500,
     },
     {
@@ -79,7 +82,7 @@ describe('errorResponseHandler', () => {
         status: 429,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'FB error code: 4, Rate limit exceeded.',
+      expectedMessage: 'Rate limit exceeded.. Facebook responded with error code: 4',
       expectedStatus: 429,
     },
     {
@@ -95,7 +98,8 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'FB error code: 190, subcode: 460, Invalid OAuth token.',
+      expectedMessage:
+        'Invalid OAuth token.. Facebook responded with error code: 190 and sub-code: 460',
       expectedStatus: 400,
     },
     {
@@ -114,7 +118,7 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: ConfigurationAuthError,
       expectedMessage:
-        'FB error code: 190, The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.',
+        'The token has expired on Saturday, 23-Sep-23 23:29:14 PDT. The current time is Monday, 07-Apr-25 03:48:44 PDT.. Facebook responded with error code: 190',
       expectedStatus: 400,
     },
     {
@@ -131,7 +135,8 @@ describe('errorResponseHandler', () => {
         status: 401,
       },
       expectedErrorClass: ConfigurationAuthError,
-      expectedMessage: 'FB error code: 190, Unknown auth error during response transformation',
+      expectedMessage:
+        'Unknown auth error during response transformation. Facebook responded with error code: 190',
       expectedStatus: 400,
     },
     {
@@ -147,7 +152,7 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: NetworkError,
       expectedMessage:
-        'FB error code: 100, subcode: 9999, Unknown failure during response transformation',
+        'Unknown failure during response transformation. Facebook responded with error code: 100 and sub-code: 9999',
       expectedStatus: 400,
     },
     {
@@ -163,7 +168,7 @@ describe('errorResponseHandler', () => {
       },
       expectedErrorClass: NetworkError,
       expectedMessage:
-        'FB error code: 1487301, Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+        'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account. Facebook responded with error code: 1487301',
       expectedStatus: 400,
     },
     {
@@ -178,7 +183,7 @@ describe('errorResponseHandler', () => {
         status: 429,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'FB error code: 17, Rate limit exceeded.',
+      expectedMessage: 'Rate limit exceeded.. Facebook responded with error code: 17',
       expectedStatus: 429,
     },
     {
@@ -193,7 +198,7 @@ describe('errorResponseHandler', () => {
         status: 500,
       },
       expectedErrorClass: NetworkError,
-      expectedMessage: 'FB error code: 9999, Unhandled error.',
+      expectedMessage: 'Unhandled error.. Facebook responded with error code: 9999',
       expectedStatus: 500,
     },
   ];

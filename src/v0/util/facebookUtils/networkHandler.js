@@ -261,10 +261,10 @@ const getStatus = (error) => {
   return { status: errorStatus, errorMessage, stats: errorDetail?.stat };
 };
 
-const addErrorCodePrefix = (errorMessage, code, subCode) => {
+const addErrorCodeSuffix = (errorMessage, code, subCode) => {
   if (errorMessage && (code || subCode)) {
-    const subCodePart = subCode ? `, subcode: ${subCode}` : '';
-    return `FB error code: ${code}${subCodePart}, ${errorMessage}`;
+    const subCodePart = subCode ? ` and sub-code: ${subCode}` : '';
+    return `${errorMessage}. Facebook responded with error code: ${code}${subCodePart}`;
   }
   return errorMessage;
 };
@@ -286,7 +286,7 @@ const errorResponseHandler = (destResponse) => {
     errorStatTags?.[TAG_NAMES.ERROR_TYPE] === ERROR_TYPES.AUTH
   ) {
     throw new ConfigurationAuthError(
-      addErrorCodePrefix(
+      addErrorCodeSuffix(
         errorMessage || fbErrorMessage || 'Unknown auth error during response transformation',
         fbErrorCode,
         fbErrorSubCode,
@@ -295,7 +295,7 @@ const errorResponseHandler = (destResponse) => {
     );
   }
   throw new NetworkError(
-    addErrorCodePrefix(
+    addErrorCodeSuffix(
       `${errorMessage || fbErrorMessage || 'Unknown failure during response transformation'}`,
       fbErrorCode,
       fbErrorSubCode,

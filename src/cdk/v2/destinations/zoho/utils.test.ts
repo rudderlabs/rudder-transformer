@@ -1,15 +1,14 @@
 jest.mock('../../../../adapters/network');
-import { ConfigurationError, PlatformError } from '@rudderstack/integrations-lib';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import { handleHttpRequest } from '../../../../adapters/network';
 import {
   deduceModuleInfoV2,
-  validateConfigurationIssue,
   formatMultiSelectFieldsV2,
   calculateTrigger,
   searchRecordIdV2,
   getRegion,
 } from './utils';
-import { Destination, Connection, RouterTransformationRequestData } from '../../../../types';
+import { Destination } from '../../../../types';
 
 describe('formatMultiSelectFieldsV2', () => {
   const testCases = [
@@ -434,103 +433,6 @@ describe('deduceModuleInfoV2', () => {
     });
   });
 });
-
-// describe('validateConfigurationIssue', () => {
-//   const testCases = [
-//     {
-//       name: 'should throw ConfigurationError when hashMapMultiselect is not empty, Config.module is different from operationModuleType, and action is not delete',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [{ from: 'field1', to: 'true' }],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleB',
-//       },
-//       expectError: true,
-//       errorType: ConfigurationError,
-//       errorMessage:
-//         'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
-//     },
-//     {
-//       name: 'should not throw an error when hashMapMultiselect is not empty, Config.module is the same as operationModuleType',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [{ from: 'field1', to: 'true' }],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleA',
-//       },
-//       expectError: false,
-//     },
-//     {
-//       name: 'should not throw an error when hashMapMultiselect is empty, Config.module is different from operationModuleType',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleB',
-//       },
-//       expectError: false,
-//     },
-//     {
-//       name: 'should not throw an error when hashMapMultiselect is empty, Config.module is the same as operationModuleType',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleA',
-//       },
-//       expectError: false,
-//     },
-//     {
-//       name: 'should not throw an error when multiSelectFieldLevelDecision has entries without from key',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [{ to: 'true' }],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleB',
-//       },
-//       expectError: false,
-//     },
-//     {
-//       name: 'should throw ConfigurationError when multiSelectFieldLevelDecision has mixed case from keys, Config.module is different from operationModuleType',
-//       input: {
-//         config: {
-//           multiSelectFieldLevelDecision: [
-//             { from: 'FIELD1', to: 'true' },
-//             { from: 'field2', to: 'false' },
-//           ],
-//           module: 'moduleA',
-//         },
-//         operationModuleType: 'moduleB',
-//       },
-//       expectError: true,
-//       errorType: ConfigurationError,
-//       errorMessage:
-//         'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
-//     },
-//   ];
-
-//   testCases.forEach(({ name, input, expectError, errorType, errorMessage }) => {
-//     it(name, () => {
-//       if (expectError) {
-//         expect(() =>
-//           validateConfigurationIssue(input.config as ValidateConfig, input.operationModuleType),
-//         ).toThrow(errorType);
-//         expect(() => validateConfigurationIssue(input.config, input.operationModuleType)).toThrow(
-//           errorMessage,
-//         );
-//       } else {
-//         expect(() =>
-//           validateConfigurationIssue(input.config, input.operationModuleType),
-//         ).not.toThrow();
-//       }
-//     });
-//   });
-// });
 
 describe('getRegion', () => {
   const testCases = [

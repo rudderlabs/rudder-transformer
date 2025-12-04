@@ -1,4 +1,4 @@
-import { Metadata } from '../../../../types';
+import { Metadata, Destination } from '../../../../types';
 
 export type RegionKeys = 'US' | 'AU' | 'EU' | 'IN' | 'CN' | 'JP' | 'CA';
 
@@ -31,4 +31,11 @@ export type Message = {
   fields?: Record<string, unknown>;
   action?: string;
   identifiers?: Record<string, unknown>;
+};
+
+export type SearchRecordParams = {
+  identifiers: Record<string, unknown>;
+  metadata: { secret: { accessToken: string } };
+  destination: Destination;
+  destConfig: DestConfig;
 };

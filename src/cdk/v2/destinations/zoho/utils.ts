@@ -1,7 +1,6 @@
 import {
   getHashFromArray,
   isDefinedAndNotNull,
-  ConfigurationError,
   PlatformError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedNullEmptyExclBoolInt,
@@ -12,7 +11,7 @@ import { isHttpStatusSuccess } from '../../../../v0/util';
 import { handleHttpRequest } from '../../../../adapters/network';
 import { CommonUtils } from '../../../../util/common';
 import { Destination } from '../../../../types';
-import { RegionKeys, DestConfig } from './types';
+import { RegionKeys, DestConfig, SearchRecordParams } from './types';
 
 const getRegion = (destination: Destination): RegionKeys | undefined => {
   // Check if deliveryAccount or accountDefinition is missing; if so, return region from Config
@@ -27,12 +26,6 @@ const getRegion = (destination: Destination): RegionKeys | undefined => {
   }
   // Return the region from deliveryAccount options
   return region as RegionKeys;
-};
-
-type Connection = {
-  object: string;
-  identifierMappings: Array<{ to: string }>;
-  multiSelectFieldLevelDecision?: Array<{ from: string; to: string }>;
 };
 
 const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) => {
@@ -218,13 +211,6 @@ const sendCOQLRequest = async (
   }
 };
 
-type SearchRecordParams = {
-  identifiers: Record<string, unknown>;
-  metadata: { secret: { accessToken: string } };
-  destination: Destination;
-  destConfig: Connection;
-};
-
 const searchRecordIdV2 = async ({
   identifiers,
   metadata,
@@ -257,26 +243,6 @@ const calculateTrigger = (trigger: unknown) => {
   return [trigger];
 };
 
-type ValidateConfig = {
-  multiSelectFieldLevelDecision?: Array<{ from: string; to: string }>;
-  module?: string;
-};
-
-const validateConfigurationIssue = (Config: ValidateConfig, operationModuleType: string) => {
-  const hashMapMultiselect = getHashFromArray(
-    Config.multiSelectFieldLevelDecision || [],
-    'from',
-    'to',
-    false,
-  );
-
-  if (Object.keys(hashMapMultiselect).length > 0 && Config.module !== operationModuleType) {
-    throw new ConfigurationError(
-      'Object Chosen in Visual Data Mapper is not consistent with Module type selected in destination configuration. Aborting Events.',
-    );
-  }
-};
-
 export {
   deduceModuleInfoV2,
   validatePresenceOfMandatoryPropertiesV2,
@@ -284,6 +250,5 @@ export {
   handleDuplicateCheckV2,
   searchRecordIdV2,
   calculateTrigger,
-  validateConfigurationIssue,
   getRegion,
 };

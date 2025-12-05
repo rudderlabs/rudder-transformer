@@ -398,10 +398,7 @@ async function createUser(
     metadata,
   });
 
-  if (
-    !isHttpStatusSuccess(resp.status) ||
-    !resp.response?.user?.id
-  ) {
+  if (!isHttpStatusSuccess(resp.status) || !resp.response?.user?.id) {
     logger.debug(`${NAME}:: Couldn't create User: ${name}`);
     throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }

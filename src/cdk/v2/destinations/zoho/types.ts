@@ -5,8 +5,6 @@ import {
   Metadata,
 } from '../../../../types';
 
-export type RegionKeys = 'US' | 'AU' | 'EU' | 'IN' | 'CN' | 'JP' | 'CA';
-
 export type ZohoMetadata = Metadata & {
   secret: {
     accessToken: string;

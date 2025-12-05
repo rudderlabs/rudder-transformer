@@ -10,13 +10,13 @@ import { isEmpty } from 'lodash';
 import { isHttpStatusSuccess } from '../../../../v0/util';
 import { handleHttpRequest } from '../../../../adapters/network';
 import { CommonUtils } from '../../../../util/common';
-import { Destination } from '../../../../types';
-import { RegionKeys, DestConfig, SearchRecordParams } from './types';
+import { Destination, FixMe } from '../../../../types';
+import { DestConfig, SearchRecordParams } from './types';
 
-const getRegion = (destination: Destination): RegionKeys | undefined => {
+const getRegion = (destination: Destination): string => {
   // Check if deliveryAccount or accountDefinition is missing; if so, return region from Config
   if (!destination?.deliveryAccount?.accountDefinition) {
-    return destination?.Config?.region as RegionKeys;
+    return destination?.Config?.region as string;
   }
   // Extract region from deliveryAccount options
   const region = destination.deliveryAccount?.options?.region;
@@ -25,7 +25,7 @@ const getRegion = (destination: Destination): RegionKeys | undefined => {
     throw new PlatformError('Region is not defined in delivery account options', 500);
   }
   // Return the region from deliveryAccount options
-  return region as RegionKeys;
+  return region as string;
 };
 
 const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) => {
@@ -34,7 +34,7 @@ const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) =>
   return {
     operationModuleType: object,
     upsertEndPoint: ZOHO_SDK.ZOHO.getBaseRecordUrl({
-      dataCenter: getRegion(destination),
+      dataCenter: getRegion(destination) as FixMe,
       moduleName: object,
     }),
     identifierType,
@@ -142,7 +142,7 @@ const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
 };
 
 const sendCOQLRequest = async (
-  region: RegionKeys | undefined,
+  region: string | undefined,
   accessToken: string,
   object: string,
   selectQuery: string,
@@ -157,7 +157,7 @@ const sendCOQLRequest = async (
     }
 
     const searchURL = ZOHO_SDK.ZOHO.getBaseRecordUrl({
-      dataCenter: region,
+      dataCenter: region as FixMe,
       moduleName: 'coql',
     });
     const searchResult = await handleHttpRequest(

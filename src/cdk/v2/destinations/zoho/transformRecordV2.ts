@@ -71,8 +71,7 @@ const responseBuilder = (
     response.body.JSON = removeUndefinedAndNullValues(payload);
     response.endpoint = `${commonEndPoint}/upsert`;
   } else {
-    const idsString = Array.isArray(items) ? items.join(',') : String(items);
-    response.endpoint = `${commonEndPoint}?ids=${idsString}&wf_trigger=${trigger !== 'None'}`;
+    response.endpoint = `${commonEndPoint}?ids=${items.join(',')}&wf_trigger=${trigger !== 'None'}`;
     response.method = defaultDeleteRequestConfig.requestMethod;
   }
 

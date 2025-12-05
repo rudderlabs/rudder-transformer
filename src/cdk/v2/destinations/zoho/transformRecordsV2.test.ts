@@ -1,4 +1,6 @@
 import { processRecordInputsV2 } from './transformRecordV2';
+import { ZohoRouterIORequest } from './types';
+import { Destination } from '../../../../types';
 
 describe('processRecordInputsV2', () => {
   it('should return an empty array if no inputs are provided', async () => {
@@ -17,14 +19,14 @@ describe('processRecordInputsV2', () => {
           },
           message: {},
         },
-      ] as any,
-      undefined as any,
+      ] as unknown as ZohoRouterIORequest[],
+      undefined,
     );
     expect(result).toEqual([]);
   });
 
   it('should return an empty array if no destination config is provided', async () => {
-    const result = await processRecordInputsV2([], {} as any);
+    const result = await processRecordInputsV2([], {} as unknown as Destination);
     expect(result).toEqual([]);
   });
 
@@ -40,12 +42,12 @@ describe('processRecordInputsV2', () => {
             },
             message: {},
           },
-        ] as any,
+        ] as unknown as ZohoRouterIORequest[],
         {
           Config: {
             region: 'US' as const,
           },
-        } as any,
+        } as unknown as Destination,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -63,12 +65,12 @@ describe('processRecordInputsV2', () => {
             message: {},
             connection: {},
           },
-        ] as any,
+        ] as unknown as ZohoRouterIORequest[],
         {
           Config: {
             region: 'US' as const,
           },
-        } as any,
+        } as unknown as Destination,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -86,12 +88,12 @@ describe('processRecordInputsV2', () => {
             message: {},
             connection: {
               config: {
-                destination: {} as any,
+                destination: {} as unknown as Destination,
               },
             },
           },
-        ] as any,
-        { Config: { region: 'US' as const } } as any,
+        ] as unknown as ZohoRouterIORequest[],
+        { Config: { region: 'US' as const } } as unknown as Destination,
       ),
     ).rejects.toThrow('Object and identifierMappings are required in destination config');
   });

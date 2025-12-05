@@ -24,13 +24,12 @@ import {
   calculateTrigger,
 } from './utils';
 import { REFRESH_TOKEN } from '../../../../adapters/networkhandler/authConstants';
-import { Destination, Connection, RouterTransformationRequestData } from '../../../../types';
+import { Destination } from '../../../../types';
 import {
+  ZohoRouterIORequest,
   TransformedResponseToBeBatched,
   DestConfig,
-  ConnectionConfig,
   ZohoMetadata,
-  Message,
 } from './types';
 
 // Main response builder function
@@ -157,12 +156,7 @@ const batchResponseBuilder = (
  * @returns {Promise<void>} - A promise that resolves once the upsert operation is handled.
  */
 const handleUpsert = async (
-  input: RouterTransformationRequestData<
-    Message,
-    Destination,
-    Connection<ConnectionConfig>,
-    ZohoMetadata
-  >,
+  input: ZohoRouterIORequest,
   allFields: Record<string, unknown>,
   operationModuleType: string,
   destConfig: DestConfig,
@@ -226,12 +220,7 @@ const handleSearchError = (
  * @param {Array} errorResponseList - The list to store error responses.
  */
 const handleDeletion = async (
-  input: RouterTransformationRequestData<
-    Message,
-    Destination,
-    Connection<ConnectionConfig>,
-    ZohoMetadata
-  >,
+  input: ZohoRouterIORequest,
   identifiers: Record<string, unknown>,
   destination: Destination,
   destConfig: DestConfig,
@@ -269,12 +258,7 @@ const handleDeletion = async (
  * @param {Object} conConfig - The connection configuration object.
  */
 const processInput = async (
-  input: RouterTransformationRequestData<
-    Message,
-    Destination,
-    Connection<ConnectionConfig>,
-    ZohoMetadata
-  >,
+  input: ZohoRouterIORequest,
   operationModuleType: string,
   destination: Destination,
   transformedResponseToBeBatched: TransformedResponseToBeBatched,
@@ -345,15 +329,7 @@ const appendSuccessResponses = (
  * @param {Object} destination - The destination object containing configuration.
  * @returns {Array} - An array of responses after processing the record inputs.
  */
-const processRecordInputsV2 = async (
-  inputs: RouterTransformationRequestData<
-    Message,
-    Destination,
-    Connection<ConnectionConfig>,
-    ZohoMetadata
-  >[],
-  destination?: Destination,
-) => {
+const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?: Destination) => {
   if (!inputs || inputs.length === 0) {
     return [];
   }

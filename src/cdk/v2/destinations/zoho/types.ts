@@ -1,4 +1,9 @@
-import { Metadata, Destination } from '../../../../types';
+import {
+  RouterTransformationRequestData,
+  Destination,
+  Connection,
+  Metadata,
+} from '../../../../types';
 
 export type RegionKeys = 'US' | 'AU' | 'EU' | 'IN' | 'CN' | 'JP' | 'CA';
 
@@ -39,3 +44,10 @@ export type SearchRecordParams = {
   destination: Destination;
   destConfig: DestConfig;
 };
+
+export type ZohoRouterIORequest = RouterTransformationRequestData<
+  Message,
+  Destination,
+  Connection<ConnectionConfig>,
+  ZohoMetadata
+>;

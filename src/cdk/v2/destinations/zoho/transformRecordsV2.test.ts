@@ -1,8 +1,10 @@
-const { processRecordInputsV2 } = require('./transformRecordV2');
+import { processRecordInputsV2 } from './transformRecordV2';
+import { ZohoRouterIORequest } from './types';
+import { Destination } from '../../../../types';
 
 describe('processRecordInputsV2', () => {
   it('should return an empty array if no inputs are provided', async () => {
-    const result = await processRecordInputsV2([]);
+    const result = await processRecordInputsV2([], undefined);
     expect(result).toEqual([]);
   });
 
@@ -10,22 +12,21 @@ describe('processRecordInputsV2', () => {
     const result = await processRecordInputsV2(
       [
         {
-          id: '1',
-          metadata: {},
-          type: 'record',
+          metadata: {
+            secret: {
+              accessToken: 'test-token',
+            },
+          },
+          message: {},
         },
-      ],
-      null,
+      ] as unknown as ZohoRouterIORequest[],
+      undefined,
     );
     expect(result).toEqual([]);
   });
 
   it('should return an empty array if no destination config is provided', async () => {
-    const result = await processRecordInputsV2([], {
-      destination: {
-        config: {},
-      },
-    });
+    const result = await processRecordInputsV2([], {} as unknown as Destination);
     expect(result).toEqual([]);
   });
 
@@ -34,18 +35,19 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
-          },
-        ],
-        {
-          destination: {
-            Config: {
-              Region: 'US',
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
             },
+            message: {},
           },
-        },
+        ] as unknown as ZohoRouterIORequest[],
+        {
+          Config: {
+            region: 'US' as const,
+          },
+        } as unknown as Destination,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -55,19 +57,20 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
+            },
+            message: {},
             connection: {},
           },
-        ],
+        ] as unknown as ZohoRouterIORequest[],
         {
-          destination: {
-            Config: {
-              Region: 'US',
-            },
+          Config: {
+            region: 'US' as const,
           },
-        },
+        } as unknown as Destination,
       ),
     ).rejects.toThrow('Connection destination config is required');
   });
@@ -77,20 +80,20 @@ describe('processRecordInputsV2', () => {
       processRecordInputsV2(
         [
           {
-            id: '1',
-            metadata: {},
-            type: 'record',
-            destination: {
-              config: { region: 'US' },
+            metadata: {
+              secret: {
+                accessToken: 'test-token',
+              },
             },
+            message: {},
             connection: {
               config: {
-                destination: {},
+                destination: {} as unknown as Destination,
               },
             },
           },
-        ],
-        { destination: { config: { region: 'US' } } },
+        ] as unknown as ZohoRouterIORequest[],
+        { Config: { region: 'US' as const } } as unknown as Destination,
       ),
     ).rejects.toThrow('Object and identifierMappings are required in destination config');
   });

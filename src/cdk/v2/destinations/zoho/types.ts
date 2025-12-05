@@ -23,7 +23,7 @@ export type TransformedResponseToBeBatched = {
 export type DestConfig = {
   trigger?: string;
   addDefaultDuplicateCheck?: boolean;
-  multiSelectFieldLevelDecision?: Array<{ from: string; to: string }>;
+  multiSelectFieldLevelDecision: Array<{ from: string; to: string }>;
   object: string;
   identifierMappings: Array<{ from: string; to: string }>;
 };

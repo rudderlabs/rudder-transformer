@@ -64,7 +64,7 @@ function validatePresenceOfMandatoryPropertiesV2(
 
 const formatMultiSelectFieldsV2 = (destConfig: DestConfig, fields: Record<string, unknown>) => {
   const multiSelectFields = getHashFromArray(
-    destConfig.multiSelectFieldLevelDecision || [],
+    destConfig.multiSelectFieldLevelDecision,
     'from',
     'to',
     false,

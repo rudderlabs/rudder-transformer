@@ -97,6 +97,7 @@ describe('searchRecordIdV2', () => {
     destination: {
       object: 'Leads',
       identifierMappings: [{ to: 'Email', from: 'Email' }],
+      multiSelectFieldLevelDecision: [],
     },
   };
   const mockQuery = "SELECT id FROM Leads WHERE Email = 'test@example.com'";
@@ -368,6 +369,7 @@ describe('deduceModuleInfoV2', () => {
         destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
+          multiSelectFieldLevelDecision: [],
         },
       },
       expected: {
@@ -383,6 +385,7 @@ describe('deduceModuleInfoV2', () => {
         destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
+          multiSelectFieldLevelDecision: [],
         },
       },
       expected: {
@@ -398,6 +401,7 @@ describe('deduceModuleInfoV2', () => {
         destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
+          multiSelectFieldLevelDecision: [],
         },
       },
       expected: {
@@ -413,6 +417,7 @@ describe('deduceModuleInfoV2', () => {
         destConfig: {
           object: 'Leads',
           identifierMappings: [{ to: 'Email', from: 'Email' }],
+          multiSelectFieldLevelDecision: [],
         },
       },
       expected: {
@@ -571,19 +576,20 @@ describe('getRegion', () => {
 
   testCases.forEach(
     ({ name, input, expected, expectError, errorType, errorMessage, errorStatus }) => {
+      const regionInput = input as unknown as Destination;
       it(name, () => {
         if (expectError) {
-          expect(() => getRegion(input as unknown as Destination)).toThrow(errorType);
-          expect(() => getRegion(input as unknown as Destination)).toThrow(errorMessage);
+          expect(() => getRegion(regionInput)).toThrow(errorType);
+          expect(() => getRegion(regionInput)).toThrow(errorMessage);
 
           // Test the error status code
           try {
-            getRegion(input as unknown as Destination);
+            getRegion(regionInput);
           } catch (error: any) {
             expect(error.status).toBe(errorStatus);
           }
         } else {
-          expect(getRegion(input as unknown as Destination)).toBe(expected);
+          expect(getRegion(regionInput)).toBe(expected);
         }
       });
     },

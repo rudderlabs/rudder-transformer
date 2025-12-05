@@ -34,7 +34,7 @@ import {
 
 // Main response builder function
 const responseBuilder = (
-  items: unknown[] | string[],
+  items: unknown[],
   destConfig: DestConfig,
   identifierType: string[],
   operationModuleType: string,
@@ -190,7 +190,7 @@ const handleSearchError = (
     | { message: { code?: string } }
     | { erroneous: boolean; code?: string; message: unknown },
 ) => {
-  const message = 'message' in searchResponse ? searchResponse.message : searchResponse;
+  const { message } = searchResponse;
   const code =
     typeof message === 'object' && message && 'code' in message ? message.code : undefined;
 
@@ -238,8 +238,7 @@ const handleDeletion = async (
     const error = handleSearchError(searchResponse);
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
   } else {
-    const messageArray = Array.isArray(searchResponse.message) ? searchResponse.message : [];
-    transformedResponseToBeBatched.deletionData.push(...messageArray);
+    transformedResponseToBeBatched.deletionData.push(...searchResponse.message);
     transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
   }
 };
@@ -284,7 +283,7 @@ const processInput = async (
       errorResponseList,
     );
   } else {
-    if (isEmptyObject(identifiers)) {
+    if (isEmptyObject(identifiers) || !identifiers) {
       const error = new InstrumentationError('`identifiers` cannot be empty');
       errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
       return;
@@ -292,7 +291,7 @@ const processInput = async (
 
     await handleDeletion(
       input,
-      identifiers || {},
+      identifiers,
       destination,
       destConfig,
       transformedResponseToBeBatched,

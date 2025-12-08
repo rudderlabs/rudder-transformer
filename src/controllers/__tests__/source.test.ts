@@ -138,14 +138,14 @@ describe('Source controller tests', () => {
           },
           hydrationOutput: {
             batch: [
-              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
-              { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
+              { event: { field: 'value2' }, statusCode: 200, randomData: 'randomData2' },
             ],
           },
           expectedOutput: {
             batch: [
-              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
-              { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
+              { event: { field: 'value2' }, statusCode: 200, randomData: 'randomData2' },
             ],
           },
           expectedStatus: 200,
@@ -162,20 +162,20 @@ describe('Source controller tests', () => {
           },
           hydrationOutput: {
             batch: [
-              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
               {
                 event: { field: 'value2' },
                 statusCode: 400,
                 errorMessage: 'Invalid data',
               },
-              { event: { field: 'value3' }, statusCode: 200, data: { field: 'value3' } },
+              { event: { field: 'value3' }, statusCode: 200, randomData: 'randomData3' },
             ],
           },
           expectedOutput: {
             batch: [
-              { statusCode: 200, data: { field: 'value1' } },
+              { statusCode: 200, randomData: 'randomData1' },
               { statusCode: 400, errorMessage: 'Invalid data' },
-              { statusCode: 200, data: { field: 'value3' } },
+              { statusCode: 200, randomData: 'randomData3' },
             ],
           },
           expectedStatus: 400,

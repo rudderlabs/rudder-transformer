@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.116.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.0...v1.116.1) (2025-12-08)
+
+
+### Bug Fixes
+
+* skip returning events on source hydration errors  ([#4851](https://github.com/rudderlabs/rudder-transformer/issues/4851)) ([4b255b7](https://github.com/rudderlabs/rudder-transformer/commit/4b255b758546fab23bfb99197e8a8724d0f7cc62))
+
 ## [1.116.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.115.1...v1.116.0) (2025-12-02)
 
 

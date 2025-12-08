@@ -2,6 +2,7 @@ import {
   InstrumentationError,
   ConfigurationError,
   RetryableError,
+  NetworkError,
 } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import {
@@ -22,6 +23,9 @@ import {
   handleDuplicateCheckV2,
   searchRecordIdV2,
   calculateTrigger,
+  batchedSearchRecordIds,
+  getRegion,
+  isDeletionLookupBatchingEnabled,
 } from './utils';
 import { REFRESH_TOKEN } from '../../../../adapters/networkhandler/authConstants';
 import { Destination } from '../../../../types';
@@ -30,6 +34,9 @@ import {
   TransformedResponseToBeBatched,
   DestConfig,
   ZohoMetadata,
+  DeletionQueueItem,
+  ProcessedCOQLAPIErrorResponse,
+  ConfigMap,
 } from './types';
 
 // Main response builder function
@@ -177,36 +184,38 @@ const handleUpsert = async (
 };
 
 /**
- * Handles search errors in Zoho record search.
- * If the search response message code is 'INVALID_TOKEN', returns a RetryableError with a specific message and status code.
- * Otherwise, returns a ConfigurationError with a message indicating failure to fetch Zoho ID for a record.
+ * Handles COQL search errors and converts them to appropriate error types.
+ * Maps Zoho API error codes to specific error classes for proper retry/abort handling.
  *
- * @param {Object} searchResponse - The response object from the search operation.
- * @returns {RetryableError|ConfigurationError} - The error object based on the search response.
+ * @param {ProcessedCOQLAPIErrorResponse} searchResponse - The error response from COQL search
+ * @returns {RetryableError | NetworkError | InstrumentationError} Appropriate error based on response
+ *
+ * Error mapping:
+ * - INVALID_TOKEN: RetryableError with REFRESH_TOKEN auth type (triggers token refresh)
+ * - INSTRUMENTATION_ERROR: InstrumentationError (abort event)
+ * - Other API errors: NetworkError with status code (retry/abort based on status)
+ * - Missing API response: InstrumentationError (abort event)
  */
-const handleSearchError = (
-  searchResponse:
-    | { message: { code?: string } }
-    | { erroneous: boolean; code?: string; message: unknown },
-) => {
-  const { message } = searchResponse;
-  const code =
-    typeof message === 'object' && message && 'code' in message ? message.code : undefined;
+const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
+  const { apiResponse, apiStatus, message: rootMessage } = searchResponse;
+  if (apiResponse && apiStatus) {
+    const { code, message } = apiResponse;
+    if (code === 'INVALID_TOKEN') {
+      return new RetryableError(
+        `[Zoho]:: ${JSON.stringify(apiResponse)} during zoho record search`,
+        500,
+        apiResponse,
+        REFRESH_TOKEN,
+      );
+    }
+    if (code === 'INSTRUMENTATION_ERROR') {
+      return new InstrumentationError(`failed to fetch zoho id for record for: ${message}`);
+    }
 
-  if (code === 'INVALID_TOKEN') {
-    return new RetryableError(
-      `[Zoho]:: ${JSON.stringify(message)} during zoho record search`,
-      500,
-      message,
-      REFRESH_TOKEN,
-    );
+    return new NetworkError(`failed to fetch zoho id for record: ${message}`, apiStatus);
   }
-  if (code === 'INSTRUMENTATION_ERROR') {
-    return new InstrumentationError(`failed to fetch zoho id for record for: ${message}`);
-  }
-  return new ConfigurationError(
-    `failed to fetch zoho id for record for ${JSON.stringify(message)}`,
-  );
+
+  return new InstrumentationError(`failed to fetch zoho id for record: ${rootMessage}`);
 };
 
 /**
@@ -233,11 +242,12 @@ const handleDeletion = async (
     destConfig,
   });
 
-  if (searchResponse.erroneous) {
+  if (!searchResponse.status) {
     const error = handleSearchError(searchResponse);
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
   } else {
-    transformedResponseToBeBatched.deletionData.push(...searchResponse.message);
+    const recordIds = searchResponse.records.map((record) => record.id);
+    transformedResponseToBeBatched.deletionData.push(...recordIds);
     transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
   }
 };
@@ -245,15 +255,16 @@ const handleDeletion = async (
 /**
  * Process the input message based on the specified action.
  * If the 'fields' in the input message are empty, an error is generated.
- * Determines whether to handle an upsert operation or a deletion operation based on the action.
+ * Determines whether to handle an upsert operation or queue a deletion operation based on the action.
  *
  * @param {Object} input - The input message containing the fields.
- * @param {string} action - The action to be performed ('insert', 'update', or other).
  * @param {string} operationModuleType - The type of operation module.
- * @param {Object} Config - The configuration object.
+ * @param {Object} destination - The destination configuration.
  * @param {Object} transformedResponseToBeBatched - The object to store transformed responses.
  * @param {Array} errorResponseList - The list to store error responses.
- * @param {Object} conConfig - The connection configuration object.
+ * @param {Object} destConfig - The connection destination configuration object.
+ * @param {Array} deletionQueue - The queue to store deletion events for batched processing.
+ * @param {Array} deletionQueueErrors - The list to store immediate deletion errors.
  */
 const processInput = async (
   input: ZohoRouterIORequest,
@@ -262,6 +273,7 @@ const processInput = async (
   transformedResponseToBeBatched: TransformedResponseToBeBatched,
   errorResponseList: unknown[],
   destConfig: DestConfig,
+  deletionQueue: DeletionQueueItem[],
 ) => {
   const { fields, action, identifiers } = input.message;
   const allFields = { ...identifiers, ...fields };
@@ -288,14 +300,14 @@ const processInput = async (
       return;
     }
 
-    await handleDeletion(
+    deletionQueue.push({
       input,
       identifiers,
       destination,
       destConfig,
-      transformedResponseToBeBatched,
-      errorResponseList,
-    );
+      eventIndex: deletionQueue.length,
+      module: destConfig.object,
+    });
   }
 };
 
@@ -320,6 +332,56 @@ const appendSuccessResponses = (
   });
 };
 
+const handleDeletionBatching = async ({
+  object,
+  destination,
+  deletionQueue,
+  identifierMappings,
+  transformedResponseToBeBatched,
+  errorResponseList,
+}: {
+  object: string;
+  destination: Destination;
+  deletionQueue: DeletionQueueItem[];
+  identifierMappings: ConfigMap;
+  transformedResponseToBeBatched: TransformedResponseToBeBatched;
+  errorResponseList: unknown[];
+}) => {
+  // Batched COQL approach - more efficient, uses IN/OR queries
+  const region = getRegion(destination);
+  const { secret } = deletionQueue[0].input.metadata;
+  const { accessToken } = secret;
+
+  const identifierFields = Object.values(getHashFromArray(identifierMappings));
+
+  const { successMap, errorMap } = await batchedSearchRecordIds({
+    deletionQueue,
+    region,
+    accessToken,
+    module: object,
+    identifierFields,
+  });
+
+  // Phase 3: Process batched search results
+  deletionQueue.forEach((queuedEvent) => {
+    const { input, eventIndex } = queuedEvent;
+
+    if (errorMap[eventIndex]) {
+      // COQL search failed for this event
+      const error = handleSearchError(errorMap[eventIndex]);
+      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    } else if (successMap[eventIndex]) {
+      // COQL search succeeded - add record IDs to deletion batch
+      transformedResponseToBeBatched.deletionData.push(...successMap[eventIndex]);
+      transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+    } else {
+      // Shouldn't reach here - defensive handling
+      const error = new ConfigurationError('Unexpected error: no result for deletion event');
+      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    }
+  });
+};
+
 /**
  * Process multiple record inputs for a destination.
  *
@@ -337,6 +399,8 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
 
   const response: unknown[] = [];
   const errorResponseList: unknown[] = [];
+  // Phase 1: Process all events, queue deletions (don't execute COQL yet)
+  const deletionQueue: DeletionQueueItem[] = [];
   const { Config } = destination;
   const { destination: destConfig } = inputs[0].connection?.config || {};
   if (!destConfig) {
@@ -370,9 +434,43 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
         transformedResponseToBeBatched,
         errorResponseList,
         destConfig,
+        deletionQueue,
       ),
     ),
   );
+
+  // Phase 2: Execute COQL searches for all queued deletions
+  if (deletionQueue.length > 0) {
+    const {
+      metadata: { workspaceId },
+    } = inputs[0];
+    const useBatchedDeletion = isDeletionLookupBatchingEnabled(workspaceId);
+    if (useBatchedDeletion) {
+      await handleDeletionBatching({
+        destination,
+        deletionQueue,
+        identifierMappings,
+        object,
+        transformedResponseToBeBatched,
+        errorResponseList,
+      });
+    } else {
+      // Legacy one-by-one deletion approach
+      await Promise.all(
+        deletionQueue.map(async (queuedEvent) => {
+          const { input, identifiers, destination: dest, destConfig: dConfig } = queuedEvent;
+          await handleDeletion(
+            input,
+            identifiers,
+            dest,
+            dConfig,
+            transformedResponseToBeBatched,
+            errorResponseList,
+          );
+        }),
+      );
+    }
+  }
 
   const {
     upsertResponseArray,

@@ -7,6 +7,7 @@ import {
   calculateTrigger,
   searchRecordIdV2,
   getRegion,
+  buildBatchedCOQLQueryWithIN,
 } from './utils';
 import { Destination } from '../../../../types';
 
@@ -122,8 +123,10 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: 'not-an-array',
+        apiStatus: 200,
       },
     },
     {
@@ -139,8 +142,10 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: undefined,
+        apiStatus: 200,
       },
     },
     {
@@ -158,8 +163,10 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: null,
+        apiStatus: 200,
       },
     },
     {
@@ -177,8 +184,10 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: [],
+        apiStatus: 200,
       },
     },
     {
@@ -196,8 +205,8 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: false,
-        message: ['123'],
+        status: true,
+        records: [{ id: '123' }],
       },
     },
     {
@@ -248,8 +257,8 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: false,
-        message: ['123', '456'],
+        status: true,
+        records: [{ id: '123' }, { id: '456' }],
       },
     },
     {
@@ -265,8 +274,9 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'Bad Request Error',
+        status: false,
+        apiStatus: 400,
+        apiResponse: 'Bad Request Error',
       },
     },
     {
@@ -276,7 +286,7 @@ describe('searchRecordIdV2', () => {
       name: 'should handle HTTP request error',
       error: new Error('Network Error'),
       expected: {
-        erroneous: true,
+        status: false,
         message: 'Network Error',
       },
     },
@@ -340,8 +350,7 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        code: 'INSTRUMENTATION_ERROR',
+        status: false,
         message: 'Identifier values are not provided for Leads',
       },
     },
@@ -594,4 +603,193 @@ describe('getRegion', () => {
       });
     },
   );
+});
+
+describe('buildBatchedCOQLQueryWithIN', () => {
+  const testCases = [
+    {
+      name: 'should return empty string when filters array is empty',
+      input: {
+        module: 'Leads',
+        filters: [],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected: '',
+    },
+    {
+      name: 'should return empty string when all filter values are empty/null/undefined',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: '', Phone: null },
+          { Email: undefined, Phone: '' },
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected: '',
+    },
+    {
+      name: 'should build query with single field and single value',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: 'test@example.com' }],
+        identifierFields: ['Email'],
+      },
+      expected: "SELECT id, Email FROM Leads WHERE Email in ('test@example.com')",
+    },
+    {
+      name: 'should build query with single field and multiple values',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: 'a@test.com' }, { Email: 'b@test.com' }, { Email: 'c@test.com' }],
+        identifierFields: ['Email'],
+      },
+      expected:
+        "SELECT id, Email FROM Leads WHERE Email in ('a@test.com', 'b@test.com', 'c@test.com')",
+    },
+    {
+      name: 'should deduplicate values across filters for same field',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: 'duplicate@test.com', Phone: '123' },
+          { Email: 'duplicate@test.com', Phone: '456' },
+          { Email: 'unique@test.com', Phone: '123' },
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected:
+        "SELECT id, Email, Phone FROM Leads WHERE (Email in ('duplicate@test.com', 'unique@test.com') OR Phone in ('123', '456'))",
+    },
+    {
+      name: 'should handle numeric field values without quotes',
+      input: {
+        module: 'Leads',
+        filters: [{ id: 100 }, { id: 200 }, { id: 300 }],
+        identifierFields: ['id'],
+      },
+      expected: 'SELECT id, id FROM Leads WHERE id in (100, 200, 300)',
+    },
+    {
+      name: 'should handle array values by joining with semicolons',
+      input: {
+        module: 'Leads',
+        filters: [{ categories: ['cat1', 'cat2'] }, { categories: ['cat3', 'cat4', 'cat5'] }],
+        identifierFields: ['categories'],
+      },
+      expected:
+        "SELECT id, categories FROM Leads WHERE categories in ('cat1;cat2', 'cat3;cat4;cat5')",
+    },
+    {
+      name: 'should escape single quotes in string values',
+      input: {
+        module: 'Leads',
+        filters: [{ Name: "O'Brien" }, { Name: "D'Angelo" }],
+        identifierFields: ['Name'],
+      },
+      expected: "SELECT id, Name FROM Leads WHERE Name in ('O\\'Brien', 'D\\'Angelo')",
+    },
+    {
+      name: 'should limit IN clause to 50 values maximum',
+      input: {
+        module: 'Leads',
+        filters: Array.from({ length: 60 }, (_, i) => ({ Email: `user${i}@test.com` })),
+        identifierFields: ['Email'],
+      },
+      expected: `SELECT id, Email FROM Leads WHERE Email in (${Array.from({ length: 50 }, (_, i) => `'user${i}@test.com'`).join(', ')})`,
+    },
+    {
+      name: 'should handle filters with partial field coverage',
+      input: {
+        module: 'Contacts',
+        filters: [
+          { Email: 'a@test.com', Phone: '111' },
+          { Email: 'b@test.com' }, // No Phone
+          { Phone: '222' }, // No Email
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected:
+        "SELECT id, Email, Phone FROM Contacts WHERE (Email in ('a@test.com', 'b@test.com') OR Phone in ('111', '222'))",
+    },
+    {
+      name: 'should handle boolean values as strings',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: 'test@example.com', is_active: true },
+          { Email: 'test2@example.com', is_active: false },
+        ],
+        identifierFields: ['Email', 'is_active'],
+      },
+      expected:
+        "SELECT id, Email, is_active FROM Leads WHERE (Email in ('test@example.com', 'test2@example.com') OR is_active in ('true', 'false'))",
+    },
+    {
+      name: 'should handle zero as a valid numeric value',
+      input: {
+        module: 'Leads',
+        filters: [{ score: 0 }, { score: 100 }],
+        identifierFields: ['score'],
+      },
+      expected: 'SELECT id, score FROM Leads WHERE score in (0, 100)',
+    },
+    {
+      name: 'should handle 10 identifier fields with complex nested OR grouping',
+      input: {
+        module: 'Contacts',
+        filters: [
+          {
+            Email: 'user1@test.com',
+            Phone: '111-1111',
+            External_ID: 'EXT001',
+            Company: 'Acme Corp',
+            Title: 'CEO',
+            Country: 'US',
+            City: 'New York',
+            Zip: '10001',
+            LinkedIn: 'linkedin.com/in/user1',
+            Twitter: '@user1',
+          },
+          {
+            Email: 'user2@test.com',
+            Phone: '222-2222',
+            External_ID: 'EXT002',
+            Company: 'Tech Inc',
+            Title: 'CTO',
+            Country: 'CA',
+            City: 'Toronto',
+            Zip: 'M5H 2N2',
+            LinkedIn: 'linkedin.com/in/user2',
+            Twitter: '@user2',
+          },
+        ],
+        identifierFields: [
+          'Email',
+          'Phone',
+          'External_ID',
+          'Company',
+          'Title',
+          'Country',
+          'City',
+          'Zip',
+          'LinkedIn',
+          'Twitter',
+        ],
+      },
+      expected:
+        "SELECT id, Email, Phone, External_ID, Company, Title, Country, City, Zip, LinkedIn, Twitter FROM Contacts WHERE ((Email in ('user1@test.com', 'user2@test.com') OR Phone in ('111-1111', '222-2222')) OR ((External_ID in ('EXT001', 'EXT002') OR Company in ('Acme Corp', 'Tech Inc')) OR ((Title in ('CEO', 'CTO') OR Country in ('US', 'CA')) OR ((City in ('New York', 'Toronto') OR Zip in ('10001', 'M5H 2N2')) OR (LinkedIn in ('linkedin.com/in/user1', 'linkedin.com/in/user2') OR Twitter in ('@user1', '@user2'))))))",
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = buildBatchedCOQLQueryWithIN(
+        input.module,
+        input.filters,
+        input.identifierFields,
+      );
+      expect(result).toBe(expected);
+    });
+  });
 });

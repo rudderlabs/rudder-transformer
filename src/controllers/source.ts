@@ -67,17 +67,22 @@ export class SourceController {
     }
 
     // Compute overall status code from jobs
-    let statusCode;
     const firstError = response.batch.find(
       (job) => job.statusCode >= HTTP_STATUS_CODES.BAD_REQUEST,
     );
     if (firstError) {
-      statusCode = firstError.statusCode;
+      // Since server doesn't handle partial success
+      // no need to return events in case of any error
+      ctx.body = {
+        batch: response.batch.map((job) => ({
+          ...job,
+          event: undefined,
+        })),
+      };
+      ctx.status = firstError.statusCode;
     } else {
-      statusCode = HTTP_STATUS_CODES.OK;
+      ctx.body = { batch: response.batch };
+      ctx.status = HTTP_STATUS_CODES.OK;
     }
-
-    ctx.body = { batch: response.batch };
-    ctx.status = statusCode;
   }
 }

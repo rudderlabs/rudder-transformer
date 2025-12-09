@@ -18,6 +18,7 @@ import {
   ProcessedCOQLAPISuccessResponse,
   ProcessedCOQLAPIErrorResponse,
   DeletionQueueItem,
+  COQLResultMapping,
 } from './types';
 import { COQL_BATCH_SIZE } from './config';
 
@@ -44,6 +45,14 @@ const getRegion = (destination: Destination): string => {
   return region as string;
 };
 
+/**
+ * Deduces module information required for Zoho operations.
+ * Extracts object name, identifier types, and constructs the upsert endpoint URL.
+ *
+ * @param {Destination} destination - The destination configuration object
+ * @param {DestConfig} destConfig - The destination-specific configuration
+ * @returns {Object} Module info containing operationModuleType, upsertEndPoint, and identifierType array
+ */
 const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) => {
   const { object, identifierMappings } = destConfig;
   const identifierType = identifierMappings.map(({ to }) => to);
@@ -57,6 +66,14 @@ const deduceModuleInfoV2 = (destination: Destination, destConfig: DestConfig) =>
   };
 };
 
+/**
+ * Validates that all mandatory fields for a Zoho module have non-empty values.
+ * Checks against module-specific required fields defined in Zoho SDK.
+ *
+ * @param {string} objectName - Zoho module name (e.g., 'Leads', 'Contacts')
+ * @param {Record<string, unknown>} object - The record object to validate
+ * @returns {Object | undefined} Validation result with status and missingField array, or undefined if no mandatory fields
+ */
 function validatePresenceOfMandatoryPropertiesV2(
   objectName: string,
   object: Record<string, unknown>,
@@ -78,6 +95,14 @@ function validatePresenceOfMandatoryPropertiesV2(
   };
 }
 
+/**
+ * Formats multi-select fields by wrapping their values in arrays as required by Zoho API.
+ * Uses configuration mapping to identify which fields need array wrapping.
+ *
+ * @param {DestConfig} destConfig - The destination-specific configuration
+ * @param {Record<string, unknown>} fields - The fields object to format
+ * @returns {Record<string, unknown>} Formatted fields with multi-select values wrapped in arrays
+ */
 const formatMultiSelectFieldsV2 = (destConfig: DestConfig, fields: Record<string, unknown>) => {
   const multiSelectFields = getHashFromArray(
     destConfig.multiSelectFieldLevelDecision,
@@ -98,6 +123,15 @@ const formatMultiSelectFieldsV2 = (destConfig: DestConfig, fields: Record<string
   return formattedFields;
 };
 
+/**
+ * Determines which fields to use for duplicate checking during upsert operations.
+ * Combines identifier fields with module-specific duplicate check fields if enabled.
+ *
+ * @param {unknown} addDefaultDuplicateCheck - Flag to enable module-specific duplicate check fields
+ * @param {string[]} identifierType - Array of identifier field names
+ * @param {string} operationModuleType - Zoho module name (e.g., 'Leads', 'Contacts')
+ * @returns {string[]} Deduplicated array of field names to use for duplicate checking
+ */
 const handleDuplicateCheckV2 = (
   addDefaultDuplicateCheck: unknown,
   identifierType: string[],
@@ -113,8 +147,20 @@ const handleDuplicateCheckV2 = (
   return Array.from(new Set([...identifierType, ...additionalFields]));
 };
 
-// Zoho has limitation that where clause should be formatted in a specific way
-// ref: https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
+/**
+ * Groups conditions with AND operator using Zoho COQL nested grouping convention.
+ * Recursively creates nested parentheses: (A AND (B AND C)) or ((A AND B) AND C).
+ * Required by Zoho COQL - flat format (A AND B AND C) is not allowed.
+ *
+ * @param {string[]} conditions - Array of condition strings to group with AND
+ * @returns {string} Nested AND condition string with proper parentheses
+ * @see https://www.zoho.com/crm/developer/docs/api/v6/COQL-Limitations.html
+ *
+ * @example
+ * groupConditions(['A', 'B', 'C']) // Returns: "(A AND (B AND C))"
+ * groupConditions(['A', 'B']) // Returns: "(A AND B)"
+ * groupConditions(['A']) // Returns: "A"
+ */
 const groupConditions = (conditions: string[]): string => {
   if (conditions.length === 1) {
     return conditions[0]; // No need for grouping with a single condition
@@ -138,7 +184,7 @@ const groupConditions = (conditions: string[]): string => {
  * groupConditionsWithOR(['A', 'B']) // Returns: "(A OR B)"
  * groupConditionsWithOR(['A']) // Returns: "A"
  */
-const groupConditionsWithOR = (conditions) => {
+const groupConditionsWithOR = (conditions: string[]) => {
   if (conditions.length === 1) {
     return conditions[0]; // No need for grouping with a single condition
   }
@@ -148,9 +194,20 @@ const groupConditionsWithOR = (conditions) => {
   return `(${groupConditionsWithOR(conditions.slice(0, 2))} OR ${groupConditionsWithOR(conditions.slice(2))})`;
 };
 
-// supported data type in where clause
-// ref: https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
-// ref: https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
+/**
+ * Generates a WHERE clause for COQL queries from field-value pairs.
+ * Handles different data types (strings, numbers, arrays) according to Zoho COQL syntax.
+ * Cleans input by removing undefined, null, and empty values.
+ *
+ * @param {Record<string, unknown>} fields - Field-value pairs to convert to WHERE conditions
+ * @returns {string} WHERE clause with nested AND conditions, or empty string if no valid fields
+ * @see https://help.zoho.com/portal/en/kb/creator/developer-guide/forms/add-and-manage-fields/articles/understand-fields#Types_of_fields
+ * @see https://www.zoho.com/crm/developer/docs/api/v6/Get-Records-through-COQL-Query.html
+ *
+ * @example
+ * generateWhereClause({ Email: 'test@example.com', Phone: '123' })
+ * // Returns: "WHERE (Email = 'test@example.com' AND Phone = '123')"
+ */
 const generateWhereClause = (fields: Record<string, unknown>) => {
   const cleanedFields = removeUndefinedNullEmptyExclBoolInt(fields) as Record<string, unknown>;
   const conditions = Object.keys(cleanedFields).map((key) => {
@@ -167,6 +224,18 @@ const generateWhereClause = (fields: Record<string, unknown>) => {
   return conditions.length > 0 ? `WHERE ${groupConditions(conditions)}` : '';
 };
 
+/**
+ * Generates a complete COQL SELECT query to find record IDs by identifier fields.
+ * Limits fields to first 25 to avoid Zoho API restrictions.
+ *
+ * @param {string} module - Zoho module name (e.g., 'Leads', 'Contacts')
+ * @param {Record<string, unknown>} fields - Identifier field-value pairs
+ * @returns {string} Complete COQL query string or empty string if no valid WHERE clause
+ *
+ * @example
+ * generateSqlQuery('Leads', { Email: 'test@example.com', Phone: '123' })
+ * // Returns: "SELECT id FROM Leads WHERE (Email = 'test@example.com' AND Phone = '123')"
+ */
 const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
   // Generate the WHERE clause based on the fields
   // Limiting to 25 fields
@@ -186,8 +255,10 @@ const generateSqlQuery = (module: string, fields: Record<string, unknown>) => {
  *
  * @param {string | undefined} region - Zoho region (e.g., 'US', 'EU')
  * @param {string} accessToken - Zoho OAuth access token
- * @param {string} object - Zoho module name (e.g., 'Leads', 'Contacts')
  * @param {string} selectQuery - COQL SELECT query string
+ * @param {object} options - Optional configuration
+ * @param {string} options.moduleName - Zoho module name for error messages (optional)
+ * @param {boolean} options.returnEmptyOnNoResults - Return empty array instead of error for no results
  * @returns {Promise<ProcessedCOQLAPISuccessResponse | ProcessedCOQLAPIErrorResponse>} Normalized response with records or error
  */
 const sendCOQLRequest = async (
@@ -240,7 +311,7 @@ const sendCOQLRequest = async (
     return {
       status: false,
       message: `No ${object} is found for record identifier`,
-      apiResponse: response.data,
+      apiResponse: response,
       apiStatus: status,
     };
   }
@@ -293,7 +364,7 @@ const searchRecordIdV2 = async ({
  * isDeletionLookupBatchingEnabled('workspace3') // Returns: false
  *
  */
-const isDeletionLookupBatchingEnabled = (workspaceId) => {
+const isDeletionLookupBatchingEnabled = (workspaceId: string | undefined) => {
   // If no workspaceId provided (tests or legacy behavior), disable batching
   if (!workspaceId) {
     return false;
@@ -367,8 +438,8 @@ const buildBatchedCOQLQueryWithIN = (
       .map((v) => {
         // Numbers don't need quotes
         if (typeof v === 'number') return v;
-        // Strings need quotes, escape any quotes in the string
-        return `'${String(v).replace(/'/g, "\\'")}'`;
+        // Escape backslashes first, then single quotes
+        return `'${String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
       })
       .join(', ');
 
@@ -380,7 +451,9 @@ const buildBatchedCOQLQueryWithIN = (
   const whereClause = groupConditionsWithOR(inClauses);
 
   // Include identifier fields in SELECT for result mapping
-  const selectFields = ['id', ...identifierFields].join(', ');
+  const selectFields = identifierFields.includes('id')
+    ? identifierFields.join(', ')
+    : ['id', ...identifierFields].join(', ');
 
   return `SELECT ${selectFields} FROM ${module} WHERE ${whereClause}`;
 };
@@ -406,7 +479,10 @@ const buildBatchedCOQLQueryWithIN = (
  *
  * Returns: [R1, R3] (R2 excluded because Email='a' but Phone='456' doesn't match any filter)
  */
-const filterExactMatches = (records, filters): Array<Record<string, string>> =>
+const filterExactMatches = (
+  records: Array<Record<string, string>>,
+  filters: Array<Record<string, string>>,
+): Array<Record<string, string>> =>
   records.filter((record) =>
     filters.some((filter) =>
       Object.entries(filter).every(([field, value]) => {
@@ -449,18 +525,37 @@ const createIdentifierKey = (identifiers: Record<string, unknown>): string => {
 
 /**
  * Maps COQL results back to individual events using exact matching.
+ * Creates a lookup map by identifier hash and matches each event to its corresponding record IDs.
  *
- * @param {Array<Object>} eventBatch - Batch of deletion events with identifiers
- * @param {Array<Object>} records - Filtered records from COQL (already exact matches)
+ * @param {DeletionQueueItem[]} eventBatch - Batch of deletion events with identifiers and event indexes
+ * @param {Array<Record<string, string>>} records - Filtered records from COQL (already exact matches)
  * @param {string} module - Zoho module name for error messages
- * @returns {Object} { successMap: {eventIndex: [recordIds]}, errorMap: {eventIndex: error} }
+ * @returns {COQLResultMapping} Result object with successMap (eventIndex -> recordIds[]) and errorMap (eventIndex -> error)
+ *
+ * @example
+ * eventBatch = [
+ *   { eventIndex: 0, identifiers: { Email: 'a@test.com', Phone: '123' } },
+ *   { eventIndex: 1, identifiers: { Email: 'b@test.com', Phone: '456' } }
+ * ]
+ * records = [
+ *   { id: 'R1', Email: 'a@test.com', Phone: '123' },
+ *   { id: 'R2', Email: 'b@test.com', Phone: '456' }
+ * ]
+ * Returns: {
+ *   successMap: { 0: ['R1'], 1: ['R2'] },
+ *   errorMap: {}
+ * }
  */
-const mapCOQLResultsToEvents = (eventBatch, records, module) => {
-  const successMap = {};
-  const errorMap = {};
+const mapCOQLResultsToEvents = (
+  eventBatch: DeletionQueueItem[],
+  records: Array<Record<string, string>>,
+  module: string,
+): COQLResultMapping => {
+  const successMap: Record<number, string[]> = {};
+  const errorMap: Record<number, ProcessedCOQLAPIErrorResponse> = {};
 
   // Build lookup map: identifierKey -> [recordIds]
-  const recordsByKey = {};
+  const recordsByKey: Record<string, string[]> = {};
   records.forEach((record) => {
     // Extract identifier fields from record (exclude 'id')
     const identifiers = { ...record };
@@ -491,85 +586,38 @@ const mapCOQLResultsToEvents = (eventBatch, records, module) => {
 };
 
 /**
- * Executes a single batched COQL query with IN/OR clauses and filters results.
+ * Main orchestrator for batched COQL searches using IN/OR + Post-Filter approach.
+ * Splits deletion queue into batches of up to 50 events (Zoho IN clause limit),
+ * executes all batch queries in parallel using Promise.all for optimal performance,
+ * filters results to exact matches, and maps them back to individual events.
  *
- * @param {BatchedCOQLQueryParams} params - Query parameters
- * @param {Array<DeletionQueueItem>} params.eventBatch - Batch of deletion events (max 50)
- * @param {string} params.region - Zoho region
- * @param {string} params.accessToken - Zoho access token
- * @param {string} params.module - Zoho module name
- * @param {Array<string>} params.identifierFields - List of identifier field names
- * @returns {Promise<ProcessedCOQLAPIResponse>} Response containing records or error information
- */
-const executeBatchedCOQLQuery = async ({
-  selectQuery,
-  region,
-  accessToken,
-}: {
-  selectQuery: string;
-  region: string;
-  accessToken: string;
-}): Promise<ProcessedCOQLAPISuccessResponse | ProcessedCOQLAPIErrorResponse> => {
-  const searchURL = ZOHO_SDK.ZOHO.getBaseRecordUrl({
-    dataCenter: region as FixMe, // Type assertion: region is validated by getRegion()
-    moduleName: 'coql',
-  });
-
-  const searchResult = await handleHttpRequest(
-    'post',
-    searchURL,
-    { select_query: selectQuery },
-    {
-      headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-      },
-    },
-    {
-      destType: 'zoho',
-      feature: 'deleteRecords',
-      requestMethod: 'POST',
-      endpointPath: searchURL,
-      module: 'router',
-    },
-  );
-
-  const { status, response } = searchResult.processedResponse;
-
-  // Handle non-success status codes
-  if (!isHttpStatusSuccess(status)) {
-    return {
-      message: response,
-      status: false,
-      apiStatus: status,
-      apiResponse: response,
-    };
-  }
-
-  // Handle empty results (204 or no data)
-  if (status === 204 || !CommonUtils.isNonEmptyArray(response?.data)) {
-    return {
-      status: true,
-      records: [], // Empty results - will be handled by mapping
-    };
-  }
-
-  return {
-    status: true,
-    records: response.data,
-  };
-};
-
-/**
- * Main orchestrator for batched COQL searches with IN/OR + Post-Filter approach.
- * Processes deletion events in batches of up to 50 (Zoho IN clause limit).
- * All batches are processed in parallel using Promise.all for improved performance.
+ * Performance: Processes N events in ceiling(N/50) parallel queries instead of N sequential queries.
  *
- * @param {Array<Object>} deletionQueue - Array of queued deletion events
- * @param {string} region - Zoho region
- * @param {string} accessToken - Zoho access token
- * @param {string} module - Zoho module name
- * @param {Array<string>} identifierFields - List of identifier field names
- * @returns {Object} { successMap: {eventIndex: [recordIds]}, errorMap: {eventIndex: error} }
+ * Error Handling:
+ * - 204 responses (no records found) are converted to empty success results and processed by mapCOQLResultsToEvents
+ * - Authentication errors (401), rate limits (429), and other API errors (4xx/5xx) are preserved in errorMap
+ * - Each error includes apiStatus and apiResponse for proper error categorization (REFRESH_TOKEN, retryable, etc.)
+ *
+ * @param {Object} params - Search parameters
+ * @param {Array<DeletionQueueItem>} params.deletionQueue - Queue of deletion events with identifiers and event indexes
+ * @param {string} params.region - Zoho region (e.g., 'US', 'EU')
+ * @param {string} params.accessToken - Zoho OAuth access token
+ * @param {string} params.module - Zoho module name (e.g., 'Leads', 'Contacts')
+ * @param {Array<string>} params.identifierFields - List of identifier field names for SELECT clause
+ * @returns {Promise<Object>} Result object with successMap (eventIndex -> recordIds[]) and errorMap (eventIndex -> error)
+ *
+ * @example
+ * const result = await batchedSearchRecordIds({
+ *   deletionQueue: [
+ *     { eventIndex: 0, identifiers: { Email: 'a@test.com', Phone: '123' } },
+ *     { eventIndex: 1, identifiers: { Email: 'b@test.com', Phone: '456' } }
+ *   ],
+ *   region: 'US',
+ *   accessToken: 'token123',
+ *   module: 'Leads',
+ *   identifierFields: ['Email', 'Phone']
+ * });
+ * // Returns: { successMap: { 0: ['id1'], 1: ['id2'] }, errorMap: {} }
  */
 const batchedSearchRecordIds = async ({
   deletionQueue,
@@ -594,7 +642,7 @@ const batchedSearchRecordIds = async ({
 
   // Process all batches in parallel using Promise.all
   const batchPromises = batches.items.map(async (batch) => {
-    const identifiersList = batch.map<Record<string, string>>((event) => event.identifiers);
+    const identifiersList = batch.map((event) => event.identifiers);
 
     const selectQuery = buildBatchedCOQLQueryWithIN(module, identifiersList, identifierFields);
 
@@ -604,12 +652,20 @@ const batchedSearchRecordIds = async ({
             status: false,
             message: `Identifier values are not provided for ${module}`,
           }
-        : await executeBatchedCOQLQuery({
-            selectQuery,
-            region,
-            accessToken,
-          });
+        : await sendCOQLRequest(region, accessToken, module, selectQuery);
 
+    // Convert 204/empty responses to empty success results
+    // But preserve actual API errors (401, 500, etc.) to be handled as errors
+    if (result.status === false && result.apiStatus === 204) {
+      return {
+        batch,
+        identifiersList,
+        result: {
+          status: true,
+          records: [], // Empty results - will be handled by mapping
+        },
+      };
+    }
     return {
       batch,
       identifiersList,
@@ -638,7 +694,22 @@ const batchedSearchRecordIds = async ({
   return { successMap, errorMap };
 };
 
-// ref : https://www.zoho.com/crm/developer/docs/api/v6/upsert-records.html#:~:text=The%20trigger%20input%20can%20be%20workflow%2C%20approval%2C%20or%20blueprint.%20If%20the%20trigger%20is%20not%20mentioned%2C%20the%20workflows%2C%20approvals%20and%20blueprints%20related%20to%20the%20API%20will%20get%20executed.%20Enter%20the%20trigger%20value%20as%20%5B%5D%20to%20not%20execute%20the%20workflows.
+/**
+ * Calculates the trigger parameter for Zoho API requests based on configuration.
+ * Controls which workflows, approvals, and blueprints are executed during the operation.
+ *
+ * @param {unknown} trigger - Trigger configuration value ('Default', 'None', or specific trigger name)
+ * @returns {null | Array | string} Trigger value for API request:
+ *   - null: Execute all workflows/approvals/blueprints (when 'Default')
+ *   - []: Skip all workflows (when 'None')
+ *   - [trigger]: Execute specific trigger only
+ * @see https://www.zoho.com/crm/developer/docs/api/v6/upsert-records.html
+ *
+ * @example
+ * calculateTrigger('Default') // Returns: null (execute all)
+ * calculateTrigger('None') // Returns: [] (skip all)
+ * calculateTrigger('workflow') // Returns: ['workflow'] (execute specific)
+ */
 const calculateTrigger = (trigger: unknown) => {
   if (trigger === 'Default') {
     return null;

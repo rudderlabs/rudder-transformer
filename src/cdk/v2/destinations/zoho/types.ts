@@ -79,7 +79,7 @@ export type DeletionQueueItem = {
  * Zoho COQL API error response structure returned by the Zoho API.
  * Contains error code, details, message, and status information.
  */
-export type COQLAPIResponse = {
+export type COQLAPIErrorResponse = {
   /** Error code from Zoho API (e.g., 'INVALID_TOKEN', 'NO_PERMISSION') */
   code: string;
   /** Additional error details from Zoho API */
@@ -113,5 +113,16 @@ export type ProcessedCOQLAPIErrorResponse = {
   /** HTTP status code from the API response (e.g., 401, 429, 500) */
   apiStatus?: number;
   /** Original Zoho API error response with code and details */
-  apiResponse?: COQLAPIResponse;
+  apiResponse?: COQLAPIErrorResponse;
+};
+
+/**
+ * Result of mapping COQL query results to individual deletion events.
+ * Maps event indexes to either successfully found record IDs or error details.
+ */
+export type COQLResultMapping = {
+  /** Map of event index to array of Zoho record IDs found for that event */
+  successMap: Record<number, string[]>;
+  /** Map of event index to error response for events where records were not found */
+  errorMap: Record<number, ProcessedCOQLAPIErrorResponse>;
 };

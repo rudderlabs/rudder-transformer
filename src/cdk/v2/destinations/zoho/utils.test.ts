@@ -125,7 +125,9 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
-        apiResponse: 'not-an-array',
+        apiResponse: {
+          data: 'not-an-array',
+        },
         apiStatus: 200,
       },
     },
@@ -144,7 +146,7 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
-        apiResponse: undefined,
+        apiResponse: {},
         apiStatus: 200,
       },
     },
@@ -165,7 +167,9 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
-        apiResponse: null,
+        apiResponse: {
+          data: null,
+        },
         apiStatus: 200,
       },
     },
@@ -186,7 +190,9 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
-        apiResponse: [],
+        apiResponse: {
+          data: [],
+        },
         apiStatus: 200,
       },
     },
@@ -668,7 +674,7 @@ describe('buildBatchedCOQLQueryWithIN', () => {
         filters: [{ id: 100 }, { id: 200 }, { id: 300 }],
         identifierFields: ['id'],
       },
-      expected: 'SELECT id, id FROM Leads WHERE id in (100, 200, 300)',
+      expected: 'SELECT id FROM Leads WHERE id in (100, 200, 300)',
     },
     {
       name: 'should handle array values by joining with semicolons',

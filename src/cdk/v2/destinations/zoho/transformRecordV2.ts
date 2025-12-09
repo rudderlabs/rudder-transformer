@@ -245,11 +245,12 @@ const handleDeletion = async (
   if (!searchResponse.status) {
     const error = handleSearchError(searchResponse);
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-  } else {
-    const recordIds = searchResponse.records.map((record) => record.id);
-    transformedResponseToBeBatched.deletionData.push(...recordIds);
-    transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+    return;
   }
+
+  const recordIds = searchResponse.records.map((record) => record.id);
+  transformedResponseToBeBatched.deletionData.push(...recordIds);
+  transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
 };
 
 /**

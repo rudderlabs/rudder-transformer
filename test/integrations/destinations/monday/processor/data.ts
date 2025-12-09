@@ -1478,7 +1478,8 @@ export const data = [
   },
   {
     name: 'monday',
-    description: 'Board with null groups array should throw ConfigurationError when groupTitle is provided',
+    description:
+      'Board with null groups array should throw ConfigurationError when groupTitle is provided',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

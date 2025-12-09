@@ -24,13 +24,13 @@ const getGroupId = (groupTitle, board) => {
   if (!board?.boards?.[0]) {
     throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
   }
-  
+
   const { groups } = board.boards[0];
-  
+
   if (!groups || !Array.isArray(groups)) {
     throw new ConfigurationError(`No groups found in the board`);
   }
-  
+
   let groupId;
   groups.forEach((group) => {
     if (group.title === groupTitle) {
@@ -54,13 +54,13 @@ const getColumnId = (columnTitle, board) => {
   if (!board?.boards?.[0]) {
     throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
   }
-  
+
   const { columns } = board.boards[0];
-  
+
   if (!columns || !Array.isArray(columns)) {
     throw new ConfigurationError(`No columns found in the board`);
   }
-  
+
   let columnId;
   columns.forEach((column) => {
     if (column.title === columnTitle) {
@@ -91,7 +91,7 @@ const getColumnValue = (properties, columnName, key, board) => {
   if (!columns || !Array.isArray(columns)) {
     throw new ConfigurationError(`No columns found in the board`);
   }
-  
+
   let columnValue;
   columns.forEach((column) => {
     if (column.title === columnName && properties[key]) {

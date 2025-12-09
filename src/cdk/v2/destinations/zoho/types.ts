@@ -61,15 +61,7 @@ export type ZohoRouterIORequest = RouterTransformationRequestData<
  * enabling efficient batched COQL queries with IN/OR clauses.
  */
 export type DeletionQueueItem = {
-  /** The original router input request with full event data */
   input: ZohoRouterIORequest;
-  /** Identifier fields used to look up the record in Zoho (e.g., {Email: 'test@test.com'}) */
-  identifiers: Record<string, unknown>;
-  /** Destination configuration including region and settings */
-  destination: Destination;
-  /** Destination-specific config including module name and identifier mappings */
-  destConfig: DestConfig;
-  /** Index of this event in the original batch for result mapping */
   eventIndex: number;
 };
 

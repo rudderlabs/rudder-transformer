@@ -4,6 +4,7 @@ import {
   RetryableError,
   NetworkError,
   TransformationError,
+  groupByInBatches,
 } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import {
@@ -230,15 +231,24 @@ const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
  */
 const handleDeletion = async (
   input: ZohoRouterIORequest,
-  identifiers: Record<string, unknown>,
   destination: Destination,
   destConfig: DestConfig,
   transformedResponseToBeBatched: TransformedResponseToBeBatched,
   errorResponseList: unknown[],
 ) => {
+  const {
+    message: { identifiers },
+    metadata,
+  } = input;
+
+  if (isEmptyObject(identifiers) || !identifiers) {
+    const error = new InstrumentationError('`identifiers` cannot be empty');
+    errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    return;
+  }
   const searchResponse = await searchRecordIdV2({
     identifiers,
-    metadata: input.metadata,
+    metadata,
     destination,
     destConfig,
   });
@@ -251,7 +261,7 @@ const handleDeletion = async (
 
   const recordIds = searchResponse.records.map((record) => record.id as string);
   transformedResponseToBeBatched.deletionData.push(...recordIds);
-  transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+  transformedResponseToBeBatched.deletionSuccessMetadata.push(metadata);
 };
 
 /**
@@ -270,13 +280,11 @@ const handleDeletion = async (
 const processInput = async (
   input: ZohoRouterIORequest,
   operationModuleType: string,
-  destination: Destination,
   transformedResponseToBeBatched: TransformedResponseToBeBatched,
   errorResponseList: unknown[],
   destConfig: DestConfig,
-  deletionQueue: DeletionQueueItem[],
 ) => {
-  const { fields, action, identifiers } = input.message;
+  const { fields, identifiers } = input.message;
   const allFields = { ...identifiers, ...fields };
 
   if (isEmptyObject(allFields)) {
@@ -285,31 +293,14 @@ const processInput = async (
     return;
   }
 
-  if (action === 'insert' || action === 'update') {
-    await handleUpsert(
-      input,
-      allFields,
-      operationModuleType,
-      destConfig,
-      transformedResponseToBeBatched,
-      errorResponseList,
-    );
-  } else {
-    if (isEmptyObject(identifiers) || !identifiers) {
-      const error = new InstrumentationError('`identifiers` cannot be empty');
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-      return;
-    }
-
-    deletionQueue.push({
-      input,
-      identifiers,
-      destination,
-      destConfig,
-      eventIndex: deletionQueue.length,
-      // module: destConfig.object,
-    });
-  }
+  await handleUpsert(
+    input,
+    allFields,
+    operationModuleType,
+    destConfig,
+    transformedResponseToBeBatched,
+    errorResponseList,
+  );
 };
 
 /**
@@ -336,51 +327,69 @@ const appendSuccessResponses = (
 const handleDeletionBatching = async ({
   object,
   destination,
-  deletionQueue,
+  deletionEvents,
   identifierMappings,
   transformedResponseToBeBatched,
   errorResponseList,
 }: {
   object: string;
   destination: Destination;
-  deletionQueue: DeletionQueueItem[];
+  deletionEvents: ZohoRouterIORequest[];
   identifierMappings: ConfigMap;
   transformedResponseToBeBatched: TransformedResponseToBeBatched;
   errorResponseList: unknown[];
 }) => {
-  // Batched COQL approach - more efficient, uses IN/OR queries
-  const region = getRegion(destination);
-  const { secret } = deletionQueue[0].input.metadata;
-  const { accessToken } = secret;
+  const deletionQueue: DeletionQueueItem[] = [];
+  for (const event of deletionEvents) {
+    const {
+      message: { identifiers },
+    } = event;
 
-  const identifierFields = Object.values(getHashFromArray(identifierMappings));
-
-  const { successMap, errorMap } = await batchedSearchRecordIds({
-    deletionQueue,
-    region,
-    accessToken,
-    module: object,
-    identifierFields,
-  });
-
-  // Phase 3: Process batched search results
-  deletionQueue.forEach((queuedEvent) => {
-    const { input, eventIndex } = queuedEvent;
-
-    if (errorMap[eventIndex]) {
-      // COQL search failed for this event
-      const error = handleSearchError(errorMap[eventIndex]);
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-    } else if (successMap[eventIndex]) {
-      // COQL search succeeded - add record IDs to deletion batch
-      transformedResponseToBeBatched.deletionData.push(...successMap[eventIndex]);
-      transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+    if (!identifiers || isEmptyObject(identifiers)) {
+      const error = new InstrumentationError('`identifiers` cannot be empty');
+      errorResponseList.push(handleRtTfSingleEventError(event, error, {}));
     } else {
-      // Shouldn't reach here - defensive handling
-      const error = new TransformationError('Unexpected error: no result for deletion event');
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      deletionQueue.push({
+        input: event,
+        eventIndex: deletionQueue.length,
+      });
     }
-  });
+  }
+
+  if (deletionQueue.length > 0) {
+    const region = getRegion(destination);
+    const { secret } = deletionQueue[0].input.metadata;
+    const { accessToken } = secret;
+
+    const identifierFields = Object.values(getHashFromArray(identifierMappings));
+
+    const { successMap, errorMap } = await batchedSearchRecordIds({
+      deletionQueue,
+      region,
+      accessToken,
+      module: object,
+      identifierFields,
+    });
+
+    // Phase 3: Process batched search results
+    deletionQueue.forEach((queuedEvent) => {
+      const { input, eventIndex } = queuedEvent;
+
+      if (errorMap[eventIndex]) {
+        // COQL search failed for this event
+        const error = handleSearchError(errorMap[eventIndex]);
+        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      } else if (successMap[eventIndex]) {
+        // COQL search succeeded - add record IDs to deletion batch
+        transformedResponseToBeBatched.deletionData.push(...successMap[eventIndex]);
+        transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+      } else {
+        // Shouldn't reach here - defensive handling
+        const error = new TransformationError('Unexpected error: no result for deletion event');
+        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+      }
+    });
+  }
 };
 
 /**
@@ -400,8 +409,6 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
 
   const response: unknown[] = [];
   const errorResponseList: unknown[] = [];
-  // Phase 1: Process all events, queue deletions (don't execute COQL yet)
-  const deletionQueue: DeletionQueueItem[] = [];
   const { Config } = destination;
   const { destination: destConfig } = inputs[0].connection?.config || {};
   if (!destConfig) {
@@ -421,27 +428,39 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
     deletionData: [],
   };
 
+  const groupedRecordsByAction = await groupByInBatches<ZohoRouterIORequest, string>(
+    inputs,
+    (event) => event.message?.action?.toLowerCase() || '',
+  );
+
+  const insertAndUpsertEvents = [
+    ...(groupedRecordsByAction && groupedRecordsByAction.insert
+      ? groupedRecordsByAction.insert
+      : []),
+    ...(groupedRecordsByAction && groupedRecordsByAction.update
+      ? groupedRecordsByAction.update
+      : []),
+  ];
+
   const { operationModuleType, identifierType, upsertEndPoint } = deduceModuleInfoV2(
     destination,
     destConfig,
   );
 
   await Promise.all(
-    inputs.map((input) =>
+    insertAndUpsertEvents.map((input) =>
       processInput(
         input,
         operationModuleType,
-        destination,
         transformedResponseToBeBatched,
         errorResponseList,
         destConfig,
-        deletionQueue,
       ),
     ),
   );
 
-  // Phase 2: Execute COQL searches for all queued deletions
-  if (deletionQueue.length > 0) {
+  const deletionEvents = groupedRecordsByAction.delete;
+  if (deletionEvents && deletionEvents.length > 0) {
     const {
       metadata: { workspaceId },
     } = inputs[0];
@@ -449,7 +468,7 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
     if (useBatchedDeletion) {
       await handleDeletionBatching({
         destination,
-        deletionQueue,
+        deletionEvents,
         identifierMappings,
         object,
         transformedResponseToBeBatched,
@@ -458,13 +477,11 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
     } else {
       // Legacy one-by-one deletion approach
       await Promise.all(
-        deletionQueue.map(async (queuedEvent) => {
-          const { input, identifiers, destination: dest, destConfig: dConfig } = queuedEvent;
+        deletionEvents.map(async (deletionEvent) => {
           await handleDeletion(
-            input,
-            identifiers,
-            dest,
-            dConfig,
+            deletionEvent,
+            destination,
+            destConfig,
             transformedResponseToBeBatched,
             errorResponseList,
           );

@@ -173,7 +173,7 @@ const groupConditions = (conditions: string[]): string => {
 
 /**
  * Groups conditions with OR operator using Zoho COQL nested grouping convention.
- * Recursively creates nested parentheses: (A OR (B OR C)) or ((A OR B) OR C).
+ * Recursively creates nested parentheses: ((A OR B) OR C).
  * Required by Zoho COQL - flat format (A OR B OR C) is not allowed.
  *
  * @param {string[]} conditions - Array of condition strings to group with OR
@@ -571,7 +571,8 @@ const mapCOQLResultsToEvents = (
 
   // Match events to records
   eventBatch.forEach((event) => {
-    const key = createIdentifierKey(event.identifiers);
+    const identifiers = event.input.message.identifiers as Record<string, unknown>;
+    const key = createIdentifierKey(identifiers);
 
     if (recordsByKey[key]) {
       successMap[event.eventIndex] = recordsByKey[key];
@@ -643,7 +644,7 @@ const batchedSearchRecordIds = async ({
 
   // Process all batches in parallel using Promise.all
   const batchPromises = batches.items.map(async (batch) => {
-    const identifiersList = batch.map((event) => event.identifiers);
+    const identifiersList = batch.map((event) => event.input.message.identifiers);
 
     const selectQuery = buildBatchedCOQLQueryWithIN(module, identifiersList, identifierFields);
 

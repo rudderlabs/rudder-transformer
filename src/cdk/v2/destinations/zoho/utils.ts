@@ -480,9 +480,9 @@ const buildBatchedCOQLQueryWithIN = (
  * Returns: [R1, R3] (R2 excluded because Email='a' but Phone='456' doesn't match any filter)
  */
 const filterExactMatches = (
-  records: Array<Record<string, string>>,
-  filters: Array<Record<string, string>>,
-): Array<Record<string, string>> =>
+  records: Array<Record<string, unknown>>,
+  filters: Array<Record<string, unknown>>,
+): Array<Record<string, unknown>> =>
   records.filter((record) =>
     filters.some((filter) =>
       Object.entries(filter).every(([field, value]) => {
@@ -548,7 +548,7 @@ const createIdentifierKey = (identifiers: Record<string, unknown>): string => {
  */
 const mapCOQLResultsToEvents = (
   eventBatch: DeletionQueueItem[],
-  records: Array<Record<string, string>>,
+  records: Array<Record<string, unknown>>,
   module: string,
 ): COQLResultMapping => {
   const successMap: Record<number, string[]> = {};
@@ -565,7 +565,7 @@ const mapCOQLResultsToEvents = (
     if (!recordsByKey[key]) {
       recordsByKey[key] = [];
     }
-    recordsByKey[key].push(record.id);
+    recordsByKey[key].push(record.id as string);
   });
 
   // Match events to records

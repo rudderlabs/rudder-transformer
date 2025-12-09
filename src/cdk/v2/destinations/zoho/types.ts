@@ -90,6 +90,8 @@ export type COQLAPIErrorResponse = {
   status: string;
 };
 
+export type COQLRecord = Record<string, unknown>;
+
 /**
  * Processed COQL API response for successful queries.
  * Contains the retrieved records with their identifier fields and IDs.
@@ -98,7 +100,7 @@ export type ProcessedCOQLAPISuccessResponse = {
   /** Always true for success responses */
   status: true;
   /** Array of records returned from COQL query, including id and identifier fields */
-  records: Array<Record<string, string>>;
+  records: COQLRecord[];
 };
 
 /**

@@ -248,7 +248,7 @@ const handleDeletion = async (
     return;
   }
 
-  const recordIds = searchResponse.records.map((record) => record.id);
+  const recordIds = searchResponse.records.map((record) => record.id as string);
   transformedResponseToBeBatched.deletionData.push(...recordIds);
   transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
 };

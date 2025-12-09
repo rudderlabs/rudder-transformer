@@ -85,11 +85,11 @@ const getColumnValue = (properties, columnName, key, board) => {
   if (!board?.boards?.[0]) {
     throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
   }
-  
+
   const { columns } = board.boards[0];
-  
+
   if (!columns || !Array.isArray(columns)) {
-    return undefined;
+    throw new ConfigurationError(`No columns found in the board`);
   }
   
   let columnValue;

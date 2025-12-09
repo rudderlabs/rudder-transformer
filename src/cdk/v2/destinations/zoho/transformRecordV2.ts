@@ -3,6 +3,7 @@ import {
   ConfigurationError,
   RetryableError,
   NetworkError,
+  TransformationError,
 } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
 import {
@@ -265,7 +266,6 @@ const handleDeletion = async (
  * @param {Array} errorResponseList - The list to store error responses.
  * @param {Object} destConfig - The connection destination configuration object.
  * @param {Array} deletionQueue - The queue to store deletion events for batched processing.
- * @param {Array} deletionQueueErrors - The list to store immediate deletion errors.
  */
 const processInput = async (
   input: ZohoRouterIORequest,
@@ -307,7 +307,7 @@ const processInput = async (
       destination,
       destConfig,
       eventIndex: deletionQueue.length,
-      module: destConfig.object,
+      // module: destConfig.object,
     });
   }
 };
@@ -377,7 +377,7 @@ const handleDeletionBatching = async ({
       transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
     } else {
       // Shouldn't reach here - defensive handling
-      const error = new ConfigurationError('Unexpected error: no result for deletion event');
+      const error = new TransformationError('Unexpected error: no result for deletion event');
       errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
     }
   });

@@ -149,7 +149,7 @@ const handleDuplicateCheckV2 = (
 
 /**
  * Groups conditions with AND operator using Zoho COQL nested grouping convention.
- * Recursively creates nested parentheses: (A AND (B AND C)) or ((A AND B) AND C).
+ * Recursively creates nested parentheses: ((A OR B) OR C).
  * Required by Zoho COQL - flat format (A AND B AND C) is not allowed.
  *
  * @param {string[]} conditions - Array of condition strings to group with AND
@@ -351,7 +351,7 @@ const searchRecordIdV2 = async ({
 
 /**
  * Determines if batched deletion lookup is enabled for a given workspace.
- * Uses ZOHO_DELETION_BATCHING_LOOKUP environment variable as a feature flag.
+ * Uses DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS environment variable as a feature flag.
  * If env var is not set or empty, batching is enabled by default.
  * If env var is set, only workspaces in the comma-separated list get batching.
  *
@@ -359,7 +359,7 @@ const searchRecordIdV2 = async ({
  * @returns {boolean} True if batched deletion lookup should be used, false for legacy one-by-one approach
  *
  * @example
- * // Env: ZOHO_DELETION_BATCHING_LOOKUP="workspace1,workspace2"
+ * // Env: DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS="workspace1,workspace2"
  * isDeletionLookupBatchingEnabled('workspace1') // Returns: true
  * isDeletionLookupBatchingEnabled('workspace3') // Returns: false
  *
@@ -371,9 +371,10 @@ const isDeletionLookupBatchingEnabled = (workspaceId: string | undefined) => {
   }
 
   // Check if this workspace is in the feature flag list
-  const zohoDeletionBatchingLookup = process.env.ZOHO_DELETION_BATCHING_LOOKUP?.split(',')?.map?.(
-    (s) => s?.trim?.(),
-  );
+  const zohoDeletionBatchingLookup =
+    process.env.DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS?.split(',')?.map?.((s) =>
+      s?.trim?.(),
+    );
 
   // If env var not set, enable batching by default for backward compatibility
   if (!zohoDeletionBatchingLookup || zohoDeletionBatchingLookup.length === 0) {

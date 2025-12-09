@@ -105,7 +105,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -224,7 +224,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -360,7 +360,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -451,7 +451,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -539,7 +539,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -630,7 +630,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
   {
@@ -954,7 +954,7 @@ export const deleteDataBatch = [
     },
     mockFns: deletionBatchMock,
     envOverrides: {
-      ZOHO_DELETION_BATCHING_LOOKUP: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
     },
   },
 ];

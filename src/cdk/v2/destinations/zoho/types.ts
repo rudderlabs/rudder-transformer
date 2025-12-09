@@ -71,8 +71,6 @@ export type DeletionQueueItem = {
   destConfig: DestConfig;
   /** Index of this event in the original batch for result mapping */
   eventIndex: number;
-  /** Zoho module name (e.g., 'Leads', 'Contacts') */
-  module: string;
 };
 
 /**

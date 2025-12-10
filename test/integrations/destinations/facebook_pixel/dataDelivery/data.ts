@@ -45,7 +45,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'The access token could not be decrypted',
+            message:
+              'The access token could not be decrypted. Facebook responded with error code: 190',
             destinationResponse: {
               error: {
                 code: 190,
@@ -147,7 +148,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message:
+              'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
             destinationResponse: {
               error: {
                 message: 'Invalid parameter',
@@ -203,7 +205,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 429,
-            message: 'User request limit reached',
+            message: 'User request limit reached. Facebook responded with error code: 17',
             destinationResponse: {
               error: {
                 message: 'User request limit reached',
@@ -258,7 +260,7 @@ export const v0TestData = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
             destinationResponse: {
               error: {
                 message:
@@ -311,7 +313,7 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid Parameter',
+            message: 'Invalid Parameter. Facebook responded with error code: 100 and sub-code: 34',
             destinationResponse: {
               error: {
                 message: 'Invalid Parameter',
@@ -363,7 +365,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Unsupported post request. some problem with sent parameters',
+            message:
+              'Unsupported post request. some problem with sent parameters. Facebook responded with error code: 100 and sub-code: 38',
             destinationResponse: {
               error: {
                 message: 'Unsupported post request. some problem with sent parameters',
@@ -415,7 +418,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 400,
-            message: 'Some error in permission',
+            message:
+              'Some error in permission. Facebook responded with error code: 3 and sub-code: 10',
             destinationResponse: {
               error: {
                 message: 'Some error in permission',
@@ -467,13 +471,13 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message: JSON.stringify({
+            message: `${JSON.stringify({
               message: 'Unhandled random error',
               type: 'RandomException',
               code: 5,
               error_subcode: 12,
               fbtrace_id: 'facebook_px_trace_id_10',
-            }),
+            })}. Facebook responded with error code: 5 and sub-code: 12`,
             destinationResponse: {
               error: {
                 message: 'Unhandled random error',
@@ -531,7 +535,7 @@ export const v0TestData = [
           output: {
             status: 400,
             message:
-              'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99',
+              'Your purchase event doesn’t include a value parameter. Enter a value. For example: 1.99. Facebook responded with error code: 100 and sub-code: 2804009',
             destinationResponse: {
               error: {
                 message: 'Invalid parameter',
@@ -590,7 +594,8 @@ export const v0TestData = [
         body: {
           output: {
             status: 500,
-            message: '(#21009) The data set upload is temporarily not ready.',
+            message:
+              '(#21009) The data set upload is temporarily not ready.. Facebook responded with error code: 21009',
             destinationResponse: {
               error: {
                 message: '(#21009) The data set upload is temporarily not ready.',

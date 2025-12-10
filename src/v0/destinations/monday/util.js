@@ -11,8 +11,6 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const BOARD_DATA_INVALID_ERROR = 'Board data is invalid or missing';
-
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
  * and returning the groupId.
@@ -21,10 +19,6 @@ const BOARD_DATA_INVALID_ERROR = 'Board data is invalid or missing';
  * @returns
  */
 const getGroupId = (groupTitle, board) => {
-  if (!board?.boards?.[0]) {
-    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
-  }
-
   const { groups } = board.boards[0];
 
   if (!groups || !Array.isArray(groups)) {
@@ -51,10 +45,6 @@ const getGroupId = (groupTitle, board) => {
  * @returns
  */
 const getColumnId = (columnTitle, board) => {
-  if (!board?.boards?.[0]) {
-    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
-  }
-
   const { columns } = board.boards[0];
 
   if (!columns || !Array.isArray(columns)) {
@@ -82,10 +72,6 @@ const getColumnId = (columnTitle, board) => {
  * @returns
  */
 const getColumnValue = (properties, columnName, key, board) => {
-  if (!board?.boards?.[0]) {
-    throw new ConfigurationError(BOARD_DATA_INVALID_ERROR);
-  }
-
   const { columns } = board.boards[0];
 
   if (!columns || !Array.isArray(columns)) {

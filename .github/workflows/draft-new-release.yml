@@ -7,12 +7,20 @@ permissions:
   pull-requests: write
 
 jobs:
+  validate-actor:
+    uses: ./.github/workflows/validate-actor.yml
+    with:
+      team_names: 'integrations,data-management'
+    secrets:
+      PAT: ${{ secrets.PAT }}
+
   draft-new-release:
     name: Draft New Release
     runs-on: ubuntu-latest
+    needs: validate-actor
 
     # Only allow release stakeholders to initiate releases
-    if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020'  || github.actor == 'koladilip' || github.actor == 'utsabc' || github.actor == 'vinayteki95' || github.actor == 'maheshkutty' || github.actor == 'abhimanyubabbar' || github.actor == 'achettyiitr') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'koladilip' || github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'chandumlg' || github.triggering_actor == 'utsabc' || github.triggering_actor == 'maheshkutty' || github.triggering_actor == 'vinayteki95' || github.triggering_actor == 'abhimanyubabbar' || github.triggering_actor == 'achettyiitr')
+    if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/'))
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1

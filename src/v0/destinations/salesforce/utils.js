@@ -28,7 +28,7 @@ const {
 } = require('./config');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
-const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
+const ACCESS_TOKEN_CACHE = new Cache('SALESFORCE_ACCESS_TOKEN', ACCESS_TOKEN_CACHE_TTL);
 
 /**
  * Extracts and returns the error message from a response object.

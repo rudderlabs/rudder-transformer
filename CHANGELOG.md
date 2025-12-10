@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.117.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.1...v1.117.0) (2025-12-09)
+
+
+### Features
+
+* cache stats ([daae455](https://github.com/rudderlabs/rudder-transformer/commit/daae4555d52c49129694ae9cfe7ad319aaa29ea1))
+* cache stats ([#4833](https://github.com/rudderlabs/rudder-transformer/issues/4833)) ([c80a9e7](https://github.com/rudderlabs/rudder-transformer/commit/c80a9e7e283a506d667936947c5b9f0ebdf9148b))
+
+
+### Bug Fixes
+
+* **garl:** add validation for null/undefined/empty identifier fields ([#4836](https://github.com/rudderlabs/rudder-transformer/issues/4836)) ([bec35c1](https://github.com/rudderlabs/rudder-transformer/commit/bec35c1766081e24a6cfedc5e54b97a216c3723d))
+* preserve trailing slash for http destination ([#4786](https://github.com/rudderlabs/rudder-transformer/issues/4786)) ([1bbb698](https://github.com/rudderlabs/rudder-transformer/commit/1bbb6984f877faaf0ecbf7b523fa0548f1cc438a))
+* prometheus stats name ([3d0d468](https://github.com/rudderlabs/rudder-transformer/commit/3d0d46869a584e887d6277e7ca42b6a1338e0f0f))
+* prometheus stats name ([#4841](https://github.com/rudderlabs/rudder-transformer/issues/4841)) ([1efae71](https://github.com/rudderlabs/rudder-transformer/commit/1efae715eaeff1b243d873364b17e581c8cf6c3f))
+
 ### [1.116.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.0...v1.116.1) (2025-12-08)
 
 

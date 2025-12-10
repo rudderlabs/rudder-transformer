@@ -4661,8 +4661,5 @@ export const data = [
         ],
       },
     },
-    envOverrides: {
-      BRAZE_EMPTY_ATTRIBUTES_FIX: 'true',
-    },
   },
 ];

@@ -14,7 +14,10 @@ const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const { getDeveloperToken } = require('../../util/googleUtils');
 const Cache = require('../../util/cache');
 
-const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
+const conversionActionIdCache = new Cache(
+  'GOOGLE_ADWORDS_ENHANCED_CONVERSIONS_ACTION_ID',
+  CONVERSION_ACTION_ID_CACHE_TTL,
+);
 
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 

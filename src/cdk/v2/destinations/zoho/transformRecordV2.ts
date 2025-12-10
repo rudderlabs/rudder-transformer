@@ -1,10 +1,10 @@
-const {
+import {
   InstrumentationError,
   ConfigurationError,
   RetryableError,
-} = require('@rudderstack/integrations-lib');
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const {
+} from '@rudderstack/integrations-lib';
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getSuccessRespEvents,
@@ -13,27 +13,34 @@ const {
   isEmptyObject,
   defaultDeleteRequestConfig,
   getHashFromArray,
-} = require('../../../../v0/util');
-const zohoConfig = require('./config');
-const {
+} from '../../../../v0/util';
+import * as zohoConfig from './config';
+import {
   deduceModuleInfoV2,
   validatePresenceOfMandatoryPropertiesV2,
   formatMultiSelectFieldsV2,
   handleDuplicateCheckV2,
   searchRecordIdV2,
   calculateTrigger,
-} = require('./utils');
-const { REFRESH_TOKEN } = require('../../../../adapters/networkhandler/authConstants');
+} from './utils';
+import { REFRESH_TOKEN } from '../../../../adapters/networkhandler/authConstants';
+import { Destination } from '../../../../types';
+import {
+  ZohoRouterIORequest,
+  TransformedResponseToBeBatched,
+  DestConfig,
+  ZohoMetadata,
+} from './types';
 
 // Main response builder function
 const responseBuilder = (
-  items,
-  destConfig,
-  identifierType,
-  operationModuleType,
-  commonEndPoint,
-  isUpsert,
-  metadata,
+  items: unknown[],
+  destConfig: DestConfig,
+  identifierType: string[],
+  operationModuleType: string,
+  commonEndPoint: string,
+  isUpsert: boolean,
+  metadata: ZohoMetadata[],
 ) => {
   const { trigger, addDefaultDuplicateCheck, multiSelectFieldLevelDecision } = destConfig;
 
@@ -71,15 +78,15 @@ const responseBuilder = (
   return response;
 };
 const batchResponseBuilder = (
-  transformedResponseToBeBatched,
-  config,
-  destConfig,
-  identifierType,
-  operationModuleType,
-  upsertEndPoint,
+  transformedResponseToBeBatched: TransformedResponseToBeBatched,
+  config: unknown,
+  destConfig: DestConfig,
+  identifierType: string[],
+  operationModuleType: string,
+  upsertEndPoint: string,
 ) => {
-  const upsertResponseArray = [];
-  const deletionResponseArray = [];
+  const upsertResponseArray: unknown[] = [];
+  const deletionResponseArray: unknown[] = [];
   const { upsertData, deletionData, upsertSuccessMetadata, deletionSuccessMetadata } =
     transformedResponseToBeBatched;
 
@@ -148,12 +155,12 @@ const batchResponseBuilder = (
  * @returns {Promise<void>} - A promise that resolves once the upsert operation is handled.
  */
 const handleUpsert = async (
-  input,
-  allFields,
-  operationModuleType,
-  destConfig,
-  transformedResponseToBeBatched,
-  errorResponseList,
+  input: ZohoRouterIORequest,
+  allFields: Record<string, unknown>,
+  operationModuleType: string,
+  destConfig: DestConfig,
+  transformedResponseToBeBatched: TransformedResponseToBeBatched,
+  errorResponseList: unknown[],
 ) => {
   const eventErroneous = validatePresenceOfMandatoryPropertiesV2(destConfig.object, allFields);
 
@@ -177,22 +184,28 @@ const handleUpsert = async (
  * @param {Object} searchResponse - The response object from the search operation.
  * @returns {RetryableError|ConfigurationError} - The error object based on the search response.
  */
-const handleSearchError = (searchResponse) => {
-  if (searchResponse.message.code === 'INVALID_TOKEN') {
+const handleSearchError = (
+  searchResponse:
+    | { message: { code?: string } }
+    | { erroneous: boolean; code?: string; message: unknown },
+) => {
+  const { message } = searchResponse;
+  const code =
+    typeof message === 'object' && message && 'code' in message ? message.code : undefined;
+
+  if (code === 'INVALID_TOKEN') {
     return new RetryableError(
-      `[Zoho]:: ${JSON.stringify(searchResponse.message)} during zoho record search`,
+      `[Zoho]:: ${JSON.stringify(message)} during zoho record search`,
       500,
-      searchResponse.message,
+      message,
       REFRESH_TOKEN,
     );
   }
-  if (searchResponse.message.code === 'INSTRUMENTATION_ERROR') {
-    return new InstrumentationError(
-      `failed to fetch zoho id for record for: ${searchResponse.message}`,
-    );
+  if (code === 'INSTRUMENTATION_ERROR') {
+    return new InstrumentationError(`failed to fetch zoho id for record for: ${message}`);
   }
   return new ConfigurationError(
-    `failed to fetch zoho id for record for ${JSON.stringify(searchResponse.message)}`,
+    `failed to fetch zoho id for record for ${JSON.stringify(message)}`,
   );
 };
 
@@ -206,12 +219,12 @@ const handleSearchError = (searchResponse) => {
  * @param {Array} errorResponseList - The list to store error responses.
  */
 const handleDeletion = async (
-  input,
-  identifiers,
-  destination,
-  destConfig,
-  transformedResponseToBeBatched,
-  errorResponseList,
+  input: ZohoRouterIORequest,
+  identifiers: Record<string, unknown>,
+  destination: Destination,
+  destConfig: DestConfig,
+  transformedResponseToBeBatched: TransformedResponseToBeBatched,
+  errorResponseList: unknown[],
 ) => {
   const searchResponse = await searchRecordIdV2({
     identifiers,
@@ -243,12 +256,12 @@ const handleDeletion = async (
  * @param {Object} conConfig - The connection configuration object.
  */
 const processInput = async (
-  input,
-  operationModuleType,
-  destination,
-  transformedResponseToBeBatched,
-  errorResponseList,
-  destConfig,
+  input: ZohoRouterIORequest,
+  operationModuleType: string,
+  destination: Destination,
+  transformedResponseToBeBatched: TransformedResponseToBeBatched,
+  errorResponseList: unknown[],
+  destConfig: DestConfig,
 ) => {
   const { fields, action, identifiers } = input.message;
   const allFields = { ...identifiers, ...fields };
@@ -269,7 +282,7 @@ const processInput = async (
       errorResponseList,
     );
   } else {
-    if (isEmptyObject(identifiers)) {
+    if (isEmptyObject(identifiers) || !identifiers) {
       const error = new InstrumentationError('`identifiers` cannot be empty');
       errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
       return;
@@ -294,7 +307,12 @@ const processInput = async (
  * @param {Array} metadataChunks - An array containing metadata chunks.
  * @param {string} destination - The destination for the success responses.
  */
-const appendSuccessResponses = (response, responseArray, metadataChunks, destination) => {
+const appendSuccessResponses = (
+  response: unknown[],
+  responseArray: unknown[],
+  metadataChunks: { items: unknown[][] },
+  destination: Destination,
+) => {
   responseArray.forEach((batchedResponse, index) => {
     response.push(
       getSuccessRespEvents(batchedResponse, metadataChunks.items[index], destination, true),
@@ -309,7 +327,7 @@ const appendSuccessResponses = (response, responseArray, metadataChunks, destina
  * @param {Object} destination - The destination object containing configuration.
  * @returns {Array} - An array of responses after processing the record inputs.
  */
-const processRecordInputsV2 = async (inputs, destination) => {
+const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?: Destination) => {
   if (!inputs || inputs.length === 0) {
     return [];
   }
@@ -317,8 +335,8 @@ const processRecordInputsV2 = async (inputs, destination) => {
     return [];
   }
 
-  const response = [];
-  const errorResponseList = [];
+  const response: unknown[] = [];
+  const errorResponseList: unknown[] = [];
   const { Config } = destination;
   const { destination: destConfig } = inputs[0].connection?.config || {};
   if (!destConfig) {
@@ -331,7 +349,7 @@ const processRecordInputsV2 = async (inputs, destination) => {
     );
   }
 
-  const transformedResponseToBeBatched = {
+  const transformedResponseToBeBatched: TransformedResponseToBeBatched = {
     upsertData: [],
     upsertSuccessMetadata: [],
     deletionSuccessMetadata: [],
@@ -380,4 +398,4 @@ const processRecordInputsV2 = async (inputs, destination) => {
   return [...response, ...errorResponseList];
 };
 
-module.exports = { processRecordInputsV2 };
+export { processRecordInputsV2 };

@@ -1,16 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { type FixMe } from '../../../types';
+import { NetworkError, NetworkInstrumentationError } from '@rudderstack/integrations-lib';
+import { handleHttpRequest } from '../../../adapters/network';
+import { isHttpStatusSuccess } from '../../util';
 
 const get = require('get-value');
 const set = require('set-value');
 const {
-  NetworkInstrumentationError,
   InstrumentationError,
-  NetworkError,
   isDefinedAndNotNull,
   mapInBatches,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 
 const { EventType } = require('../../../constants');
 const {
@@ -173,8 +171,12 @@ const payloadBuilderforUpdatingEmail = async (
           identity.type === 'email' && identity.value !== newEmail && identity.primary === true,
       );
     }
-  } catch (error: FixMe) {
-    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
+  } catch (error: unknown) {
+    if (error instanceof NetworkError) {
+      logger.debug(`${NAME}:: Error :`, error.message);
+    } else {
+      logger.debug(`${NAME}:: Error :`, error);
+    }
     return [];
   }
 
@@ -223,23 +225,14 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         },
       };
 
-      try {
-        const response = await myAxios.post(url, fieldData, config, {
-          destType: 'zendesk',
-          feature: 'transformation',
-          endpointPath: '/users/userId/identities',
-          requestMethod: 'POST',
-          module: 'router',
-          metadata,
-        });
-        if (response.status !== 201) {
-          logger.debug(`${NAME}:: Failed to create User Field : `, field);
-        }
-      } catch (error: FixMe) {
-        if (error.response && error.response.status !== 422) {
-          logger.debug(`${NAME}:: Cannot create User field `, field, error);
-        }
-      }
+      await handleHttpRequest('post', url, fieldData, config, {
+        destType: 'zendesk',
+        feature: 'transformation',
+        endpointPath: '/users/userId/identities',
+        requestMethod: 'POST',
+        module: 'router',
+        metadata,
+      });
     }),
   );
 }
@@ -257,32 +250,29 @@ async function checkAndCreateUserFields(
   const url = baseEndpoint + categoryEndpoint;
   const config = { headers };
 
-  try {
-    const response = await myAxios.get(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    });
-    const fields = get(response.data, fieldJson);
-    if (response.data && fields) {
-      // get existing user_fields and concatenate them with default fields
-      let existingKeys = fields.map((field) => field.key);
-      existingKeys = existingKeys.concat(defaultFields[fieldJson]);
+  const { processedResponse: response } = await handleHttpRequest('get', url, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
+  });
 
-      // check for new fields
-      const traitKeys = Object.keys(traits);
-      newFields = traitKeys.filter(
-        (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
-      );
+  const fields = get(response.response, fieldJson);
+  if (response.response && fields) {
+    // get existing user_fields and concatenate them with default fields
+    let existingKeys = fields.map((field) => field.key);
+    existingKeys = existingKeys.concat(defaultFields[fieldJson]);
 
-      if (newFields.length > 0) {
-        await createUserFields(url, config, newFields, fieldJson, metadata);
-      }
+    // check for new fields
+    const traitKeys = Object.keys(traits);
+    newFields = traitKeys.filter(
+      (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
+    );
+
+    if (newFields.length > 0) {
+      await createUserFields(url, config, newFields, fieldJson, metadata);
     }
-  } catch (error: FixMe) {
-    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
 }
 
@@ -336,51 +326,49 @@ async function getUserId(message, headers, baseEndpoint, type, metadata) {
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
 
-  try {
-    const resp = await myAxios.get(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
-    if (!resp || !resp.data || resp.data.count === 0) {
-      logger.debug(`${NAME}:: User not found`);
-      return undefined;
-    }
-
-    const zendeskUserId = resp?.data?.users?.[0]?.id;
-    return zendeskUserId;
-  } catch (error: FixMe) {
-    logger.debug(`${NAME}:: Cannot get userId : ${error.response}`);
+  const { processedResponse: resp } = await handleHttpRequest('get', url, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  });
+  if (!isHttpStatusSuccess(resp.status)) {
+    logger.debug(`${NAME}:: Cannot get user id: ${resp.response}`);
     return undefined;
   }
+  if (!resp || !resp.response || resp.response.count === 0) {
+    logger.debug(`${NAME}:: User not found`);
+    return undefined;
+  }
+
+  const zendeskUserId = resp?.response?.users?.[0]?.id;
+  return zendeskUserId;
 }
 
 async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint, metadata) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
-  try {
-    const response = await myAxios.get(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath: '/users/userId/organization_memberships.json',
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
-    if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
-      return true;
-    }
-  } catch (error: FixMe) {
-    logger.debug(`${NAME}:: Error :`);
-    logger.debug(error?.response?.data || error);
-  }
-  return false;
+  const { processedResponse: response } = await handleHttpRequest('get', url, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath: '/users/userId/organization_memberships.json',
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  });
+  return response?.response?.organization_memberships?.[0]?.organization_id === orgId;
 }
 
-async function createUser(message, headers, destinationConfig, baseEndpoint, type, metadata) {
+async function createUser(
+  message,
+  headers,
+  destinationConfig,
+  baseEndpoint,
+  type,
+  metadata,
+): Promise<{ zendeskUserId?: string; email?: string }> {
   const traits =
     type === 'group'
       ? get(message, CONTEXT_TRAITS_KEY_PATH)
@@ -401,29 +389,23 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const config = { headers };
   const payload = { user: userObject };
 
-  try {
-    const resp = await myAxios.post(url, payload, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath: '/users/create_or_update.json',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    });
+  const { processedResponse: resp } = await handleHttpRequest('post', url, payload, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath: '/users/create_or_update.json',
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
+  });
 
-    if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      logger.debug(`${NAME}:: Couldn't create User: ${name}`);
-      throw new NetworkInstrumentationError('user not found');
-    }
-
-    const userID = resp?.data?.user?.id;
-    const userEmail = resp?.data?.user.email;
-    return { zendeskUserId: userID, email: userEmail };
-  } catch (error) {
-    logger.debug(error);
-    logger.debug(`Couldn't find user: ${name}`);
+  if (!isHttpStatusSuccess(resp.status) || !resp.response?.user?.id) {
+    logger.debug(`${NAME}:: Couldn't create User: ${name}`);
     throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }
+
+  const userID = resp?.response?.user?.id;
+  const userEmail = resp?.response?.user.email;
+  return { zendeskUserId: userID, email: userEmail };
 }
 
 async function getUserMembershipPayload(
@@ -506,29 +488,22 @@ async function createOrganization(
   const url = baseEndpoint + category.createEndpoint;
   const config = { headers };
 
-  try {
-    const resp = await myAxios.post(url, payload, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath: '/organizations/create_or_update.json',
-      requestMethod: 'POST',
-      module: 'router',
-      metadata,
-    });
+  const { processedResponse: resp } = await handleHttpRequest('post', url, payload, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath: '/organizations/create_or_update.json',
+    requestMethod: 'POST',
+    module: 'router',
+    metadata,
+  });
 
-    if (!resp.data || !resp.data.organization) {
-      logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
-      return undefined;
-    }
-
-    const orgId = resp?.data?.organization?.id;
-    return orgId;
-  } catch (error) {
-    logger.debug(
-      `${NAME}:: Couldn't create Organization: ${message.traits.name} and error: ${error}`,
-    );
+  if (!isHttpStatusSuccess(resp.status) || !resp.response?.organization) {
+    logger.debug(`${NAME}:: Couldn't create organization: ${message.traits.name}`);
     return undefined;
   }
+
+  const orgId = resp?.response?.organization?.id;
+  return orgId;
 }
 
 function validateUserId(message) {
@@ -587,21 +562,26 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const response = await myAxios.get(membershipUrl, config, {
-          destType: 'zendesk',
-          feature: 'transformation',
-          endpointPath: '/users/userId/organization_memberships.json',
-          requestMethod: 'GET',
-          module: 'router',
-          metadata,
-        });
+        const { processedResponse: response } = await handleHttpRequest(
+          'get',
+          membershipUrl,
+          config,
+          {
+            destType: 'zendesk',
+            feature: 'transformation',
+            endpointPath: '/users/userId/organization_memberships.json',
+            requestMethod: 'GET',
+            module: 'router',
+            metadata,
+          },
+        );
         if (
-          response.data &&
-          response.data.organization_memberships &&
-          response.data.organization_memberships.length > 0 &&
-          orgId === response.data.organization_memberships[0].organization_id
+          response.response &&
+          response.response.organization_memberships &&
+          response.response.organization_memberships.length > 0 &&
+          orgId === response.response.organization_memberships[0].organization_id
         ) {
-          const membershipId = response.data.organization_memberships[0]?.id;
+          const membershipId = response.response.organization_memberships[0]?.id;
           const deleteResponse = defaultRequestConfig();
 
           deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
@@ -614,7 +594,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
           await removeUserFromOrganizationMembership(deleteResponse.endpoint, headers, metadata);
           returnList.push(deleteResponse);
         }
-      } catch (error: FixMe) {
+      } catch (error: unknown) {
         logger.debug(`${NAME}:: ${error}`);
       }
     }
@@ -638,16 +618,25 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
 
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
+  const { processedResponse: userResponse } = await handleHttpRequest('get', url, config, {
+    destType: 'zendesk',
+    feature: 'transformation',
+    endpointPath,
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  });
+  if (!isHttpStatusSuccess(userResponse.status)) {
+    throw new NetworkError(
+      `Failed to fetch user with email: ${userEmail} due to ${userResponse.response.error}`,
+      userResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(userResponse.status),
+      },
+    );
+  }
   try {
-    const userResponse = await myAxios.get(url, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-      endpointPath,
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
-    if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
+    if (!get(userResponse, 'response.users.0.id') || userResponse.response.count === 0) {
       const { zendeskUserId, email } = await createUser(
         message,
         headers,
@@ -665,16 +654,18 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint, m
       zendeskUserID = zendeskUserId;
       userEmail = email;
     }
-    zendeskUserID = zendeskUserID || userResponse?.data?.users?.[0]?.id;
-  } catch (error: FixMe) {
-    throw new NetworkError(
-      `Failed to fetch user with email: ${userEmail} due to ${error.message}`,
-      error.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status),
-      },
-      error?.response?.data,
-    );
+    zendeskUserID = zendeskUserID || userResponse?.response?.users?.[0]?.id;
+  } catch (error: unknown) {
+    if (error instanceof NetworkInstrumentationError) {
+      throw new NetworkError(
+        `Failed to fetch user with email: ${userEmail} due to ${error?.message}`,
+        error.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status),
+        },
+      );
+    }
+    throw error;
   }
 
   const sourceName = getSourceName(destinationConfig);

@@ -8,6 +8,7 @@ import {
   searchRecordIdV2,
   getRegion,
   buildBatchedCOQLQueryWithIN,
+  chunkByIdentifierLimit,
 } from './utils';
 import { Destination } from '../../../../types';
 
@@ -796,6 +797,309 @@ describe('buildBatchedCOQLQueryWithIN', () => {
         input.identifierFields,
       );
       expect(result).toBe(expected);
+    });
+  });
+});
+
+describe('chunkByIdentifierLimit', () => {
+  // Helper function to count unique identifier values in a batch
+  const countUniqueIdentifiers = (batch: any[]): Record<string, number> => {
+    const uniqueValues: Record<string, Set<unknown>> = {};
+
+    batch.forEach((event) => {
+      const identifiers = event.input.message.identifiers;
+      Object.entries(identifiers).forEach(([field, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          if (!uniqueValues[field]) {
+            uniqueValues[field] = new Set();
+          }
+          const normalizedValue = Array.isArray(value) ? value.join(';') : value;
+          uniqueValues[field].add(normalizedValue);
+        }
+      });
+    });
+
+    const counts: Record<string, number> = {};
+    Object.entries(uniqueValues).forEach(([field, valueSet]) => {
+      counts[field] = valueSet.size;
+    });
+    return counts;
+  };
+
+  const testCases = [
+    {
+      name: 'should return empty array when deletion queue is empty',
+      input: {
+        deletionQueue: [],
+        maxValuesPerField: 50,
+      },
+      expected: 0, // Number of batches
+    },
+    {
+      name: 'should create multiple batches when Phone hits limit first (10 unique emails, 100 unique phones)',
+      input: {
+        deletionQueue: Array.from({ length: 100 }, (_, i) => ({
+          eventIndex: i,
+          input: {
+            message: {
+              identifiers: {
+                Email: `user${i % 10}@test.com`, // Only 10 unique emails
+                Phone: `phone${i}`, // 100 unique phones - this will hit limit at 50
+              },
+            },
+          },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because Phone hits 50 unique values first
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events (50 unique phones)
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Only 10 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Exactly 50 unique phones (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // Remaining 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Still only 10 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Another 50 unique phones
+      },
+    },
+    {
+      name: 'should create multiple batches when Email hits limit first (100 unique emails)',
+      input: {
+        deletionQueue: Array.from({ length: 100 }, (_, i) => ({
+          eventIndex: i,
+          input: {
+            message: {
+              identifiers: {
+                Email: `user${i}@test.com`, // 100 unique emails
+                Phone: `${i % 20}`, // Only 20 unique phones (cycles through 0-19)
+              },
+            },
+          },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because Email hits 50 unique values
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events (50 unique emails)
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Exactly 50 unique emails (at limit)
+        expect(uniqueCounts.Phone).toBeLessThanOrEqual(20); // At most 20 unique phones
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // Remaining 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Another 50 unique emails
+        expect(uniqueCounts.Phone).toBeLessThanOrEqual(20); // At most 20 unique phones
+      },
+    },
+    {
+      name: 'should handle events with only some identifiers present',
+      input: {
+        deletionQueue: [
+          {
+            eventIndex: 0,
+            input: { message: { identifiers: { Email: 'a@test.com', Phone: '111' } } },
+          },
+          {
+            eventIndex: 1,
+            input: { message: { identifiers: { Email: 'b@test.com' } } }, // No Phone
+          },
+          {
+            eventIndex: 2,
+            input: { message: { identifiers: { Phone: '222' } } }, // No Email
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch, only 2 unique emails and 2 unique phones
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(3);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(2); // 2 unique emails (a, b)
+        expect(uniqueCounts.Phone).toBe(2); // 2 unique phones (111, 222)
+      },
+    },
+    {
+      name: 'should handle null, undefined, and empty string values in identifiers',
+      input: {
+        deletionQueue: [
+          {
+            eventIndex: 0,
+            input: { message: { identifiers: { Email: 'a@test.com', Phone: null } } },
+          },
+          {
+            eventIndex: 1,
+            input: { message: { identifiers: { Email: undefined, Phone: '111' } } },
+          },
+          {
+            eventIndex: 2,
+            input: { message: { identifiers: { Email: '', Phone: '222' } } },
+          },
+          {
+            eventIndex: 3,
+            input: { message: { identifiers: { Email: 'b@test.com', Phone: '333' } } },
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch, only 2 valid unique emails
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(4);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(2); // Only 2 valid emails (a, b) - null/undefined/empty ignored
+        expect(uniqueCounts.Phone).toBe(3); // 3 valid phones (111, 222, 333) - null ignored
+      },
+    },
+    {
+      name: 'should handle array values in identifiers',
+      input: {
+        deletionQueue: Array.from({ length: 60 }, (_, i) => ({
+          eventIndex: i,
+          input: {
+            message: {
+              identifiers: {
+                Categories: [`cat${i}`, `cat${i + 1}`], // Arrays joined with semicolon
+              },
+            },
+          },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because we have 60 unique array combinations
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Categories).toBe(50); // 50 unique category combinations
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(10);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Categories).toBe(10); // Remaining 10 unique combinations
+      },
+    },
+    {
+      name: 'should create new batch exactly when limit is reached (boundary test)',
+      input: {
+        deletionQueue: [
+          // First 50 events with unique emails (fills to limit)
+          ...Array.from({ length: 50 }, (_, i) => ({
+            eventIndex: i,
+            input: {
+              message: {
+                identifiers: { Email: `user${i}@test.com` },
+              },
+            },
+          })),
+          // 51st event should trigger new batch
+          {
+            eventIndex: 50,
+            input: {
+              message: {
+                identifiers: { Email: 'user50@test.com' },
+              },
+            },
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches: first with 50 events, second with 1 event
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Exactly 50 unique emails (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(1);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(1); // 1 unique email in second batch
+      },
+    },
+    {
+      name: 'should handle repeated identifiers across events (deduplication)',
+      input: {
+        deletionQueue: [
+          // 100 events but only 10 unique email values (repeated 10 times each)
+          ...Array.from({ length: 100 }, (_, i) => ({
+            eventIndex: i,
+            input: {
+              message: {
+                identifiers: { Email: `user${i % 10}@test.com` },
+              },
+            },
+          })),
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch because only 10 unique emails
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(100);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Only 10 unique emails despite 100 events
+      },
+    },
+    {
+      name: 'should split when Phone hits limit before Email',
+      input: {
+        deletionQueue: [
+          // First 30 events: unique phones, repeated emails (5 emails, 30 phones)
+          ...Array.from({ length: 30 }, (_, i) => ({
+            eventIndex: i,
+            input: {
+              message: {
+                identifiers: {
+                  Email: `user${i % 5}@test.com`, // Only 5 unique emails
+                  Phone: `phone${i}`, // 30 unique phones
+                },
+              },
+            },
+          })),
+          // Next 25 events: more unique phones (total 55 phones)
+          ...Array.from({ length: 25 }, (_, i) => ({
+            eventIndex: 30 + i,
+            input: {
+              message: {
+                identifiers: {
+                  Email: `user${i % 5}@test.com`, // Still only 5 unique emails
+                  Phone: `phone${30 + i}`, // Phones 30-54 (total 55)
+                },
+              },
+            },
+          })),
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches: Phone hits 50 after 50 events, then remaining 5 events
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(5); // Only 5 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Exactly 50 unique phones (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(5); // Remaining 5 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(5); // Still only 5 unique emails
+        expect(uniqueCounts.Phone).toBe(5); // Remaining 5 unique phones (51-55)
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected, validateFirstBatch, validateSecondBatch }: any) => {
+    it(name, () => {
+      const result = chunkByIdentifierLimit(input.deletionQueue, input.maxValuesPerField);
+
+      expect(result.length).toBe(expected);
+
+      if (validateFirstBatch && result.length > 0) {
+        validateFirstBatch(result[0]);
+      }
+
+      if (validateSecondBatch && result.length > 1) {
+        validateSecondBatch(result[1]);
+      }
     });
   });
 });

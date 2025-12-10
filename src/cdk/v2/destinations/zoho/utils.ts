@@ -1,4 +1,3 @@
-import { BatchUtils } from '@rudderstack/workflow-engine';
 import {
   getHashFromArray,
   isDefinedAndNotNull,
@@ -588,17 +587,90 @@ const mapCOQLResultsToEvents = (
 };
 
 /**
+ * Chunks deletion queue based on whichever identifier field hits the limit of 50 unique values first.
+ * Iterates through events and adds them to current batch until ANY identifier field reaches 50 unique values,
+ * then starts a new batch.
+ *
+ * @param {DeletionQueueItem[]} deletionQueue - Queue of deletion events with identifiers
+ * @param {number} maxValuesPerField - Maximum unique values per field (default: 50 for Zoho IN clause)
+ * @returns {DeletionQueueItem[][]} Array of batches, each respecting the identifier limit
+ *
+ * @example
+ * // Events with Email and Phone identifiers
+ * // If Email hits 50 unique values after 60 events, batch those 60 events (even if Phone only has 30 unique values)
+ * // Continue with remaining events in next batch
+ */
+const chunkByIdentifierLimit = (
+  deletionQueue: DeletionQueueItem[],
+  maxValuesPerField: number = COQL_BATCH_SIZE,
+): DeletionQueueItem[][] => {
+  if (deletionQueue.length === 0) return [];
+
+  const batches: DeletionQueueItem[][] = [];
+  let currentBatch: DeletionQueueItem[] = [];
+  let currentFieldValues: Record<string, Set<unknown>> = {};
+
+  deletionQueue.forEach((event) => {
+    const identifiers = event.input.message.identifiers as Record<string, unknown>;
+
+    // Check if adding this event would cause ANY field to exceed the limit
+    let wouldExceedLimit = false;
+
+    Object.entries(identifiers).forEach(([field, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        // Initialize tracking for this field if needed
+        if (!currentFieldValues[field]) {
+          currentFieldValues[field] = new Set();
+        }
+
+        // Normalize value for comparison (handle arrays)
+        const normalizedValue = Array.isArray(value) ? value.join(';') : value;
+
+        // Check if this is a new unique value that would exceed limit
+        if (
+          !currentFieldValues[field].has(normalizedValue) &&
+          currentFieldValues[field].size >= maxValuesPerField
+        ) {
+          wouldExceedLimit = true;
+        }
+      }
+    });
+
+    // If adding this event would exceed limit on ANY field, start new batch
+    if (wouldExceedLimit && currentBatch.length > 0) {
+      batches.push(currentBatch);
+      currentBatch = [];
+      currentFieldValues = {};
+    }
+
+    // Add event to current batch and update field tracking
+    currentBatch.push(event);
+    Object.entries(identifiers).forEach(([field, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        if (!currentFieldValues[field]) {
+          currentFieldValues[field] = new Set();
+        }
+        const normalizedValue = Array.isArray(value) ? value.join(';') : value;
+        currentFieldValues[field].add(normalizedValue);
+      }
+    });
+  });
+
+  // Add the last batch if not empty
+  if (currentBatch.length > 0) {
+    batches.push(currentBatch);
+  }
+
+  return batches;
+};
+
+/**
  * Main orchestrator for batched COQL searches using IN/OR + Post-Filter approach.
- * Splits deletion queue into batches of up to 50 events (Zoho IN clause limit),
- * executes all batch queries in parallel using Promise.all for optimal performance,
- * filters results to exact matches, and maps them back to individual events.
  *
- * Performance: Processes N events in ceiling(N/50) parallel queries instead of N sequential queries.
- *
- * Error Handling:
- * - 204 responses (no records found) are converted to empty success results and processed by mapCOQLResultsToEvents
- * - Authentication errors (401), rate limits (429), and other API errors (4xx/5xx) are preserved in errorMap
- * - Each error includes apiStatus and apiResponse for proper error categorization (REFRESH_TOKEN, retryable, etc.)
+ * **Batching Strategy:**
+ * - Chunks deletion queue based on unique identifier values, NOT event count
+ * - Creates new batch when ANY identifier field reaches 50 unique values
+ * - This respects Zoho's IN clause limit of 50 values per field
  *
  * @param {Object} params - Search parameters
  * @param {Array<DeletionQueueItem>} params.deletionQueue - Queue of deletion events with identifiers and event indexes
@@ -609,10 +681,11 @@ const mapCOQLResultsToEvents = (
  * @returns {Promise<Object>} Result object with successMap (eventIndex -> recordIds[]) and errorMap (eventIndex -> error)
  *
  * @example
+ * // Example with 2 events in 1 batch (both identifiers well under limit)
  * const result = await batchedSearchRecordIds({
  *   deletionQueue: [
- *     { eventIndex: 0, identifiers: { Email: 'a@test.com', Phone: '123' } },
- *     { eventIndex: 1, identifiers: { Email: 'b@test.com', Phone: '456' } }
+ *     { eventIndex: 0, input: { message: { identifiers: { Email: 'a@test.com', Phone: '123' } } } },
+ *     { eventIndex: 1, input: { message: { identifiers: { Email: 'b@test.com', Phone: '456' } } } }
  *   ],
  *   region: 'US',
  *   accessToken: 'token123',
@@ -620,6 +693,21 @@ const mapCOQLResultsToEvents = (
  *   identifierFields: ['Email', 'Phone']
  * });
  * // Returns: { successMap: { 0: ['id1'], 1: ['id2'] }, errorMap: {} }
+ *
+ * @example
+ * // Example with 100 events batched into 2 queries (phone hits 50 unique values)
+ * const result = await batchedSearchRecordIds({
+ *   deletionQueue: [
+ *     // 100 events with 10 unique emails, 100 unique phones
+ *     // Batch 1: First 50 events (Phone: 0-49, Email repeating)
+ *     // Batch 2: Next 50 events (Phone: 50-99, Email repeating)
+ *   ],
+ *   region: 'US',
+ *   accessToken: 'token123',
+ *   module: 'Leads',
+ *   identifierFields: ['Email', 'Phone']
+ * });
+ * // Returns: { successMap: { 0: ['id1'], 1: ['id2'], ... }, errorMap: {} }
  */
 const batchedSearchRecordIds = async ({
   deletionQueue,
@@ -637,14 +725,14 @@ const batchedSearchRecordIds = async ({
   const successMap = {};
   const errorMap = {};
 
-  // Split into batches based on COQL_BATCH_SIZE (default 50 for IN clause limit)
-  const batches = BatchUtils.chunkArrayBySizeAndLength(deletionQueue, {
-    maxItems: COQL_BATCH_SIZE,
-  });
+  // Split into batches based on whichever identifier field hits 50 unique values first
+  const batches = chunkByIdentifierLimit(deletionQueue, COQL_BATCH_SIZE);
 
   // Process all batches in parallel using Promise.all
-  const batchPromises = batches.items.map(async (batch) => {
-    const identifiersList = batch.map((event) => event.input.message.identifiers);
+  const batchPromises = batches.map(async (batch) => {
+    const identifiersList = batch.map(
+      (event) => event.input.message.identifiers as Record<string, unknown>,
+    );
 
     const selectQuery = buildBatchedCOQLQueryWithIN(module, identifiersList, identifierFields);
 
@@ -736,4 +824,5 @@ export {
   buildBatchedCOQLQueryWithIN,
   filterExactMatches,
   createIdentifierKey,
+  chunkByIdentifierLimit,
 };

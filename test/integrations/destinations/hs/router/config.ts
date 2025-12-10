@@ -19,6 +19,10 @@ export const destination = {
             from: 'Price',
             to: 'cost',
           },
+          {
+            from: 'isVersionUpdated',
+            to: 'isVersionUpdated',
+          },
         ],
       },
       {

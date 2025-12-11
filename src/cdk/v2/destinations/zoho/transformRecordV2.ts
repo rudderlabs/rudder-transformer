@@ -241,7 +241,7 @@ const handleDeletion = async (
     metadata,
   } = input;
 
-  if (isEmptyObject(identifiers) || !identifiers) {
+  if (!identifiers || isEmptyObject(identifiers)) {
     const error = new InstrumentationError('`identifiers` cannot be empty');
     errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
     return;

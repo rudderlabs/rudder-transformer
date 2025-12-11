@@ -110,7 +110,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_1_v2',
+    id: 'zoho_deletion_batch_2',
     description:
       'Successful batch deletion of multiple Lead records (2 records batched into single DELETE request with comma-separated IDs)',
     feature: 'router',
@@ -229,7 +229,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_2_v2',
+    id: 'zoho_deletion_batch_3',
     description:
       'Partial batch success: one existing record deleted successfully, one non-existent record fails with 400 instrumentation error',
     feature: 'router',
@@ -365,7 +365,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_2_v2',
+    id: 'zoho_deletion_batch_4',
     description:
       'Authentication failure during record lookup: expired access token returns 500 retryable error with REFRESH_TOKEN auth category',
     feature: 'router',
@@ -456,7 +456,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_2_v2',
+    id: 'zoho_deletion_batch_5',
     description:
       'Validation error: empty identifiers object (no Email field) returns 400 error with dataValidation category',
     feature: 'router',
@@ -544,7 +544,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_1_v2',
+    id: 'zoho_deletion_batch_6',
     description:
       'Validation error: identifiers present but with empty Email value returns 400 error (identifier values not provided)',
     feature: 'router',
@@ -635,7 +635,7 @@ export const deleteDataBatch = [
   },
   {
     name: destType,
-    id: 'zoho_deletion_batch_5_records_partial_failure',
+    id: 'zoho_deletion_batch_7',
     description:
       'Partial batch deletion failure: 5 Lead records where record 3 is not found in Zoho, resulting in 3 successful batched deletions and 1 failed record',
     feature: 'router',

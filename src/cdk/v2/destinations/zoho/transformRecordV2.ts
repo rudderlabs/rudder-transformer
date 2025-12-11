@@ -214,7 +214,7 @@ const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
       );
     }
     if (code === 'INSTRUMENTATION_ERROR') {
-      return new InstrumentationError(`failed to fetch zoho id for record for: ${message}`);
+      return new InstrumentationError(`failed to fetch zoho id for record: ${message}`);
     }
 
     return new NetworkError(

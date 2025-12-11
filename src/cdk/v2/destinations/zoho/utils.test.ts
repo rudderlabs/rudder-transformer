@@ -807,7 +807,7 @@ describe('chunkByIdentifierLimit', () => {
     const uniqueValues: Record<string, Set<unknown>> = {};
 
     batch.forEach((event) => {
-      const identifiers = event.input.message.identifiers;
+      const identifiers = event.message.identifiers;
       Object.entries(identifiers).forEach(([field, value]) => {
         if (value !== null && value !== undefined && value !== '') {
           if (!uniqueValues[field]) {
@@ -839,15 +839,13 @@ describe('chunkByIdentifierLimit', () => {
       name: 'should create multiple batches when Phone hits limit first (10 unique emails, 100 unique phones)',
       input: {
         deletionQueue: Array.from({ length: 100 }, (_, i) => ({
-          eventIndex: i,
-          input: {
-            message: {
-              identifiers: {
-                Email: `user${i % 10}@test.com`, // Only 10 unique emails
-                Phone: `phone${i}`, // 100 unique phones - this will hit limit at 50
-              },
+          message: {
+            identifiers: {
+              Email: `user${i % 10}@test.com`, // Only 10 unique emails
+              Phone: `phone${i}`, // 100 unique phones - this will hit limit at 50
             },
           },
+          metadata: { jobId: i },
         })),
         maxValuesPerField: 50,
       },
@@ -869,15 +867,13 @@ describe('chunkByIdentifierLimit', () => {
       name: 'should create multiple batches when Email hits limit first (100 unique emails)',
       input: {
         deletionQueue: Array.from({ length: 100 }, (_, i) => ({
-          eventIndex: i,
-          input: {
-            message: {
-              identifiers: {
-                Email: `user${i}@test.com`, // 100 unique emails
-                Phone: `${i % 20}`, // Only 20 unique phones (cycles through 0-19)
-              },
+          message: {
+            identifiers: {
+              Email: `user${i}@test.com`, // 100 unique emails
+              Phone: `${i % 20}`, // Only 20 unique phones (cycles through 0-19)
             },
           },
+          metadata: { jobId: i },
         })),
         maxValuesPerField: 50,
       },
@@ -900,16 +896,16 @@ describe('chunkByIdentifierLimit', () => {
       input: {
         deletionQueue: [
           {
-            eventIndex: 0,
-            input: { message: { identifiers: { Email: 'a@test.com', Phone: '111' } } },
+            message: { identifiers: { Email: 'a@test.com', Phone: '111' } },
+            metadata: { jobId: 0 },
           },
           {
-            eventIndex: 1,
-            input: { message: { identifiers: { Email: 'b@test.com' } } }, // No Phone
+            message: { identifiers: { Email: 'b@test.com' } }, // No Phone
+            metadata: { jobId: 1 },
           },
           {
-            eventIndex: 2,
-            input: { message: { identifiers: { Phone: '222' } } }, // No Email
+            message: { identifiers: { Phone: '222' } }, // No Email
+            metadata: { jobId: 2 },
           },
         ],
         maxValuesPerField: 50,
@@ -927,20 +923,20 @@ describe('chunkByIdentifierLimit', () => {
       input: {
         deletionQueue: [
           {
-            eventIndex: 0,
-            input: { message: { identifiers: { Email: 'a@test.com', Phone: null } } },
+            message: { identifiers: { Email: 'a@test.com', Phone: null } },
+            metadata: { jobId: 0 },
           },
           {
-            eventIndex: 1,
-            input: { message: { identifiers: { Email: undefined, Phone: '111' } } },
+            message: { identifiers: { Email: undefined, Phone: '111' } },
+            metadata: { jobId: 1 },
           },
           {
-            eventIndex: 2,
-            input: { message: { identifiers: { Email: '', Phone: '222' } } },
+            message: { identifiers: { Email: '', Phone: '222' } },
+            metadata: { jobId: 2 },
           },
           {
-            eventIndex: 3,
-            input: { message: { identifiers: { Email: 'b@test.com', Phone: '333' } } },
+            message: { identifiers: { Email: 'b@test.com', Phone: '333' } },
+            metadata: { jobId: 3 },
           },
         ],
         maxValuesPerField: 50,
@@ -957,14 +953,12 @@ describe('chunkByIdentifierLimit', () => {
       name: 'should handle array values in identifiers',
       input: {
         deletionQueue: Array.from({ length: 60 }, (_, i) => ({
-          eventIndex: i,
-          input: {
-            message: {
-              identifiers: {
-                Categories: [`cat${i}`, `cat${i + 1}`], // Arrays joined with semicolon
-              },
+          message: {
+            identifiers: {
+              Categories: [`cat${i}`, `cat${i + 1}`], // Arrays joined with semicolon
             },
           },
+          metadata: { jobId: i },
         })),
         maxValuesPerField: 50,
       },
@@ -986,21 +980,17 @@ describe('chunkByIdentifierLimit', () => {
         deletionQueue: [
           // First 50 events with unique emails (fills to limit)
           ...Array.from({ length: 50 }, (_, i) => ({
-            eventIndex: i,
-            input: {
-              message: {
-                identifiers: { Email: `user${i}@test.com` },
-              },
+            message: {
+              identifiers: { Email: `user${i}@test.com` },
             },
+            metadata: { jobId: i },
           })),
           // 51st event should trigger new batch
           {
-            eventIndex: 50,
-            input: {
-              message: {
-                identifiers: { Email: 'user50@test.com' },
-              },
+            message: {
+              identifiers: { Email: 'user50@test.com' },
             },
+            metadata: { jobId: 50 },
           },
         ],
         maxValuesPerField: 50,
@@ -1023,12 +1013,10 @@ describe('chunkByIdentifierLimit', () => {
         deletionQueue: [
           // 100 events but only 10 unique email values (repeated 10 times each)
           ...Array.from({ length: 100 }, (_, i) => ({
-            eventIndex: i,
-            input: {
-              message: {
-                identifiers: { Email: `user${i % 10}@test.com` },
-              },
+            message: {
+              identifiers: { Email: `user${i % 10}@test.com` },
             },
+            metadata: { jobId: i },
           })),
         ],
         maxValuesPerField: 50,
@@ -1046,27 +1034,23 @@ describe('chunkByIdentifierLimit', () => {
         deletionQueue: [
           // First 30 events: unique phones, repeated emails (5 emails, 30 phones)
           ...Array.from({ length: 30 }, (_, i) => ({
-            eventIndex: i,
-            input: {
-              message: {
-                identifiers: {
-                  Email: `user${i % 5}@test.com`, // Only 5 unique emails
-                  Phone: `phone${i}`, // 30 unique phones
-                },
+            message: {
+              identifiers: {
+                Email: `user${i % 5}@test.com`, // Only 5 unique emails
+                Phone: `phone${i}`, // 30 unique phones
               },
             },
+            metadata: { jobId: i },
           })),
           // Next 25 events: more unique phones (total 55 phones)
           ...Array.from({ length: 25 }, (_, i) => ({
-            eventIndex: 30 + i,
-            input: {
-              message: {
-                identifiers: {
-                  Email: `user${i % 5}@test.com`, // Still only 5 unique emails
-                  Phone: `phone${30 + i}`, // Phones 30-54 (total 55)
-                },
+            message: {
+              identifiers: {
+                Email: `user${i % 5}@test.com`, // Still only 5 unique emails
+                Phone: `phone${30 + i}`, // Phones 30-54 (total 55)
               },
             },
+            metadata: { jobId: 30 + i },
           })),
         ],
         maxValuesPerField: 50,

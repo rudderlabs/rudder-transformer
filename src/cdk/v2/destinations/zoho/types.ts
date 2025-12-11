@@ -56,16 +56,6 @@ export type ZohoRouterIORequest = RouterTransformationRequestData<
 >;
 
 /**
- * Represents a deletion event that has been queued for batched COQL processing.
- * Used to defer deletion lookups until all events have been processed,
- * enabling efficient batched COQL queries with IN/OR clauses.
- */
-export type DeletionQueueItem = {
-  input: ZohoRouterIORequest;
-  eventIndex: number;
-};
-
-/**
  * Zoho COQL API error response structure returned by the Zoho API.
  * Contains error code, details, message, and status information.
  */

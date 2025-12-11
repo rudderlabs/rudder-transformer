@@ -16,8 +16,8 @@ import {
   SearchRecordParams,
   ProcessedCOQLAPISuccessResponse,
   ProcessedCOQLAPIErrorResponse,
-  DeletionQueueItem,
   COQLResultMapping,
+  ZohoRouterIORequest,
 } from './types';
 import { COQL_BATCH_SIZE } from './config';
 
@@ -551,7 +551,7 @@ const createIdentifierKey = (identifiers: Record<string, unknown>): string => {
  * }
  */
 const mapCOQLResultsToEvents = (
-  eventBatch: DeletionQueueItem[],
+  eventBatch: ZohoRouterIORequest[],
   records: Array<Record<string, unknown>>,
   module: string,
 ): COQLResultMapping => {
@@ -574,13 +574,16 @@ const mapCOQLResultsToEvents = (
 
   // Match events to records
   eventBatch.forEach((event) => {
-    const identifiers = event.input.message.identifiers as Record<string, unknown>;
+    const identifiers = event.message.identifiers as Record<string, unknown>;
+    const {
+      metadata: { jobId },
+    } = event;
     const key = createIdentifierKey(identifiers);
 
     if (recordsByKey[key]) {
-      successMap[event.eventIndex] = recordsByKey[key];
+      successMap[jobId] = recordsByKey[key];
     } else {
-      errorMap[event.eventIndex] = {
+      errorMap[jobId] = {
         status: false,
         message: `No ${module} is found for record identifier ${key}`,
       };
@@ -605,17 +608,17 @@ const mapCOQLResultsToEvents = (
  * // Continue with remaining events in next batch
  */
 const chunkByIdentifierLimit = (
-  deletionQueue: DeletionQueueItem[],
+  deletionQueue: ZohoRouterIORequest[],
   maxValuesPerField: number = COQL_BATCH_SIZE,
-): DeletionQueueItem[][] => {
+): ZohoRouterIORequest[][] => {
   if (deletionQueue.length === 0) return [];
 
-  const batches: DeletionQueueItem[][] = [];
-  let currentBatch: DeletionQueueItem[] = [];
+  const batches: ZohoRouterIORequest[][] = [];
+  let currentBatch: ZohoRouterIORequest[] = [];
   let currentFieldValues: Record<string, Set<unknown>> = {};
 
   deletionQueue.forEach((event) => {
-    const identifiers = event.input.message.identifiers as Record<string, unknown>;
+    const identifiers = event.message.identifiers as Record<string, unknown>;
 
     // Check if adding this event would cause ANY field to exceed the limit
     let wouldExceedLimit = false;
@@ -720,7 +723,7 @@ const batchedSearchRecordIds = async ({
   module,
   identifierFields,
 }: {
-  deletionQueue: DeletionQueueItem[];
+  deletionQueue: ZohoRouterIORequest[];
   region: string;
   accessToken: string;
   module: string;
@@ -735,7 +738,7 @@ const batchedSearchRecordIds = async ({
   // Process all batches in parallel using Promise.all
   const batchPromises = batches.map(async (batch) => {
     const identifiersList = batch.map(
-      (event) => event.input.message.identifiers as Record<string, unknown>,
+      (event) => event.message.identifiers as Record<string, unknown>,
     );
 
     const selectQuery = buildBatchedCOQLQueryWithIN(module, identifiersList, identifierFields);
@@ -780,7 +783,10 @@ const batchedSearchRecordIds = async ({
       Object.assign(errorMap, mapped.errorMap);
     } else {
       batch.forEach((event) => {
-        errorMap[event.eventIndex] = result;
+        const {
+          metadata: { jobId },
+        } = event;
+        errorMap[jobId] = result;
       });
     }
   });

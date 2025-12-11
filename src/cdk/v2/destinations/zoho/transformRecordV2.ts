@@ -36,7 +36,6 @@ import {
   TransformedResponseToBeBatched,
   DestConfig,
   ZohoMetadata,
-  DeletionQueueItem,
   ProcessedCOQLAPIErrorResponse,
   ConfigMap,
 } from './types';
@@ -354,7 +353,7 @@ const handleDeletionBatching = async ({
   transformedResponseToBeBatched: TransformedResponseToBeBatched;
   errorResponseList: unknown[];
 }) => {
-  const deletionQueue: DeletionQueueItem[] = [];
+  const deletionQueue: ZohoRouterIORequest[] = [];
   for (const event of deletionEvents) {
     const {
       message: { identifiers },
@@ -364,16 +363,13 @@ const handleDeletionBatching = async ({
       const error = new InstrumentationError('`identifiers` cannot be empty');
       errorResponseList.push(handleRtTfSingleEventError(event, error, {}));
     } else {
-      deletionQueue.push({
-        input: event,
-        eventIndex: deletionQueue.length,
-      });
+      deletionQueue.push(event);
     }
   }
 
   if (deletionQueue.length > 0) {
     const region = getRegion(destination);
-    const { secret } = deletionQueue[0].input.metadata;
+    const { secret } = deletionQueue[0].metadata;
     const { accessToken } = secret;
 
     const identifierFields = Object.values(getHashFromArray(identifierMappings));
@@ -386,21 +382,22 @@ const handleDeletionBatching = async ({
       identifierFields,
     });
 
-    deletionQueue.forEach((queuedEvent) => {
-      const { input, eventIndex } = queuedEvent;
+    deletionQueue.forEach((event) => {
+      const { metadata } = event;
+      const { jobId } = metadata;
 
-      if (errorMap[eventIndex]) {
+      if (errorMap[jobId]) {
         // COQL search failed for this event
-        const error = handleSearchError(errorMap[eventIndex]);
-        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-      } else if (successMap[eventIndex]) {
+        const error = handleSearchError(errorMap[jobId]);
+        errorResponseList.push(handleRtTfSingleEventError(event, error, {}));
+      } else if (successMap[jobId]) {
         // COQL search succeeded - add record IDs to deletion batch
-        transformedResponseToBeBatched.deletionData.push(...successMap[eventIndex]);
-        transformedResponseToBeBatched.deletionSuccessMetadata.push(input.metadata);
+        transformedResponseToBeBatched.deletionData.push(...successMap[jobId]);
+        transformedResponseToBeBatched.deletionSuccessMetadata.push(metadata);
       } else {
         // Shouldn't reach here - defensive handling
         const error = new TransformationError('Unexpected error: no result for deletion event');
-        errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+        errorResponseList.push(handleRtTfSingleEventError(event, error, {}));
       }
     });
   }

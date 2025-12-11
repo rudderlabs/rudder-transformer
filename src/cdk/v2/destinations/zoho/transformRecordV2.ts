@@ -17,6 +17,9 @@ import {
   defaultDeleteRequestConfig,
   getHashFromArray,
 } from '../../../../v0/util';
+import { TAG_NAMES } from '../../../../v0/util/tags';
+import { getDynamicErrorType } from '../../../../adapters/utils/networkUtils';
+// const tags = require('../../../v0/util/tags');
 import * as zohoConfig from './config';
 import {
   deduceModuleInfoV2,
@@ -199,6 +202,7 @@ const handleUpsert = async (
  */
 const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
   const { apiResponse, apiStatus, message: rootMessage } = searchResponse;
+
   if (apiResponse && apiStatus) {
     const { code, message } = apiResponse;
     if (code === 'INVALID_TOKEN') {
@@ -213,7 +217,14 @@ const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
       return new InstrumentationError(`failed to fetch zoho id for record for: ${message}`);
     }
 
-    return new NetworkError(`failed to fetch zoho id for record: ${message}`, apiStatus);
+    return new NetworkError(
+      `failed to fetch zoho id for record: ${message}`,
+      apiStatus,
+      {
+        [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(apiStatus),
+      },
+      apiResponse,
+    );
   }
 
   return new InstrumentationError(`failed to fetch zoho id for record: ${rootMessage}`);

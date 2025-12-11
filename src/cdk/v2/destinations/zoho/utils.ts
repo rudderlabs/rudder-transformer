@@ -310,8 +310,6 @@ const sendCOQLRequest = async (
     return {
       status: false,
       message: `No ${object} is found for record identifier`,
-      apiResponse: response,
-      apiStatus: status,
     };
   }
 

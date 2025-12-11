@@ -269,6 +269,7 @@ const sendCOQLRequest = async (
   if (selectQuery === '') {
     return {
       status: false,
+      errorType: 'instrumentation',
       message: `Identifier values are not provided for ${object}`,
     };
   }
@@ -309,7 +310,10 @@ const sendCOQLRequest = async (
   if (status === 204 || !CommonUtils.isNonEmptyArray(response?.data)) {
     return {
       status: false,
+      errorType: 'instrumentation',
       message: `No ${object} is found for record identifier`,
+      apiStatus: status,
+      apiResponse: response,
     };
   }
 
@@ -746,6 +750,7 @@ const batchedSearchRecordIds = async ({
       selectQuery === ''
         ? {
             status: false,
+            errorType: 'instrumentation',
             message: `Identifier values are not provided for ${module}`,
           }
         : await sendCOQLRequest(region, accessToken, module, selectQuery);

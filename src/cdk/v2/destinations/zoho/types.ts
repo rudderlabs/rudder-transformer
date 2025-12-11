@@ -92,6 +92,8 @@ export type ProcessedCOQLAPIErrorResponse = {
   status: false;
   /** Error message describing the failure */
   message?: string;
+  /** Type of error, e.g., 'instrumentation', 'api', 'network', etc. */
+  errorType?: string;
   /** HTTP status code from the API response (e.g., 401, 429, 500) */
   apiStatus?: number;
   /** Original Zoho API error response with code and details */

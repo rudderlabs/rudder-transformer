@@ -126,6 +126,11 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: 'not-an-array',
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -143,6 +148,9 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
+        apiResponse: {},
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -162,6 +170,11 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: null,
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -181,6 +194,11 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: [],
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -345,6 +363,7 @@ describe('searchRecordIdV2', () => {
       expected: {
         status: false,
         message: 'Identifier values are not provided for Leads',
+        errorType: 'instrumentation',
       },
     },
   ];

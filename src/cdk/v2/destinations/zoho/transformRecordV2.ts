@@ -201,7 +201,11 @@ const handleUpsert = async (
  * - Missing API response: InstrumentationError (abort event)
  */
 const handleSearchError = (searchResponse: ProcessedCOQLAPIErrorResponse) => {
-  const { apiResponse, apiStatus, message: rootMessage } = searchResponse;
+  const { apiResponse, apiStatus, message: rootMessage, errorType } = searchResponse;
+
+  if (errorType === 'instrumentation') {
+    return new InstrumentationError(`failed to fetch zoho id for record: ${rootMessage}`);
+  }
 
   if (apiResponse && apiStatus) {
     const { code, message } = apiResponse;

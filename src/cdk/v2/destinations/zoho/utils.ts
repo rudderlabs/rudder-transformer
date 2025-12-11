@@ -592,76 +592,78 @@ const mapCOQLResultsToEvents = (
 };
 
 /**
- * Chunks deletion queue based on whichever identifier field hits the limit of 50 unique values first.
- * Iterates through events and adds them to current batch until ANY identifier field reaches 50 unique values,
+ * Chunks deletion queue based on whichever identifier field hits the limit of unique values first.
+ * Iterates through events and adds them to current batch until ANY identifier field reaches exactly the max unique values limit,
  * then starts a new batch.
  *
- * @param {DeletionQueueItem[]} deletionQueue - Queue of deletion events with identifiers
+ * **Important Note**: The event that causes a field to reach the limit is included in the current batch,
+ * then a new batch starts fresh. Each batch will have at most maxValuesPerField unique values for any given field.
+ * The limit is never exceeded because only new unique values are counted via Set.add().
+ *
+ * @param {ZohoRouterIORequest[]} deletionQueue - Queue of deletion events with identifiers
  * @param {number} maxValuesPerField - Maximum unique values per field (default: 50 for Zoho IN clause)
- * @returns {DeletionQueueItem[][]} Array of batches, each respecting the identifier limit
+ * @returns {ZohoRouterIORequest[][]} Array of batches, each respecting the identifier limit
  *
  * @example
  * // Events with Email and Phone identifiers
- * // If Email hits 50 unique values after 60 events, batch those 60 events (even if Phone only has 30 unique values)
- * // Continue with remaining events in next batch
+ * // If Phone reaches exactly 50 unique values at event 60, that event is included in current batch, then new batch starts
+ * // Batch 1: Events 1-60 (Phone has exactly 50 unique values, Email has 30)
+ * // Batch 2: Events 61-N (starts fresh with empty tracking)
  */
 const chunkByIdentifierLimit = (
   deletionQueue: ZohoRouterIORequest[],
   maxValuesPerField: number = COQL_BATCH_SIZE,
 ): ZohoRouterIORequest[][] => {
+  // Handle empty queue early
   if (deletionQueue.length === 0) return [];
 
-  const batches: ZohoRouterIORequest[][] = [];
-  let currentBatch: ZohoRouterIORequest[] = [];
-  let currentFieldValues: Record<string, Set<unknown>> = {};
+  // Initialize batch tracking
+  const batches: ZohoRouterIORequest[][] = []; // Final array of batches to return
+  let currentBatch: ZohoRouterIORequest[] = []; // Current batch being built
+  let currentFieldValues: Record<string, Set<unknown>> = {}; // Track unique values per field in current batch
+
+  // Flag to track if current event caused any field to hit the limit
+  let wouldExceedLimit = false;
 
   deletionQueue.forEach((event) => {
+    // Extract identifiers from the current event
     const identifiers = event.message.identifiers as Record<string, unknown>;
 
-    // Check if adding this event would cause ANY field to exceed the limit
-    let wouldExceedLimit = false;
-
+    // Process each identifier field (e.g., Email, Phone, etc.)
     Object.entries(identifiers).forEach(([field, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        // Initialize tracking for this field if needed
+      if (isDefinedAndNotNullAndNotEmpty(value)) {
+        // Initialize Set for this field if first time seeing it in current batch
         if (!currentFieldValues[field]) {
           currentFieldValues[field] = new Set();
         }
 
-        // Normalize value for comparison (handle arrays)
+        // Normalize arrays to semicolon-separated strings (Zoho format)
         const normalizedValue = Array.isArray(value) ? value.join(';') : value;
 
-        // Check if this is a new unique value that would exceed limit
-        if (
-          !currentFieldValues[field].has(normalizedValue) &&
-          currentFieldValues[field].size >= maxValuesPerField
-        ) {
+        // Add to Set (Set automatically handles duplicates - won't add if already exists)
+        currentFieldValues[field].add(normalizedValue);
+
+        // Check if adding this value caused the field to reach the limit
+        if (currentFieldValues[field].size >= maxValuesPerField) {
           wouldExceedLimit = true;
         }
       }
     });
 
-    // If adding this event would exceed limit on ANY field, start new batch
-    if (wouldExceedLimit && currentBatch.length > 0) {
-      batches.push(currentBatch);
-      currentBatch = [];
-      currentFieldValues = {};
-    }
-
-    // Add event to current batch and update field tracking
+    // Add current event to the batch (BEFORE checking if we need to finalize)
+    // This means the event that triggers the limit IS included in the current batch
     currentBatch.push(event);
-    Object.entries(identifiers).forEach(([field, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        if (!currentFieldValues[field]) {
-          currentFieldValues[field] = new Set();
-        }
-        const normalizedValue = Array.isArray(value) ? value.join(';') : value;
-        currentFieldValues[field].add(normalizedValue);
-      }
-    });
+
+    // If limit reached, finalize current batch and start fresh
+    if (wouldExceedLimit && currentBatch.length > 0) {
+      batches.push(currentBatch); // Save completed batch
+      currentBatch = []; // Start new empty batch
+      currentFieldValues = {}; // Reset field tracking for new batch
+      wouldExceedLimit = false; // Reset flag
+    }
   });
 
-  // Add the last batch if not empty
+  // Add the last batch if it has any events
   if (currentBatch.length > 0) {
     batches.push(currentBatch);
   }

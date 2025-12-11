@@ -277,7 +277,7 @@ const handleDeletion = async (
  * @param {Object} destConfig - The connection destination configuration object.
  * @param {Array} deletionQueue - The queue to store deletion events for batched processing.
  */
-const processInput = async (
+const processInsertUpdateRecord = async (
   input: ZohoRouterIORequest,
   operationModuleType: string,
   transformedResponseToBeBatched: TransformedResponseToBeBatched,
@@ -324,6 +324,21 @@ const appendSuccessResponses = (
   });
 };
 
+/**
+ * Handles deletion operations using batched COQL API lookups for improved performance.
+ * This function optimizes deletion by batching multiple record ID lookups into fewer API calls,
+ * reducing network overhead compared to individual lookups per event.
+ *
+ * @param {Object} params - The deletion batching parameters
+ * @param {string} params.object - The Zoho module/object type (e.g., 'Contacts', 'Leads')
+ * @param {Destination} params.destination - The destination configuration containing credentials and region
+ * @param {ZohoRouterIORequest[]} params.deletionEvents - Array of deletion events to process
+ * @param {ConfigMap} params.identifierMappings - Mapping of identifier fields used for record lookup
+ * @param {TransformedResponseToBeBatched} params.transformedResponseToBeBatched - Accumulator object for successful deletion record IDs and metadata
+ * @param {unknown[]} params.errorResponseList - Accumulator array for error responses
+ * @returns {Promise<void>} Resolves when all deletion events are processed and batched
+ *
+ */
 const handleDeletionBatching = async ({
   object,
   destination,
@@ -371,7 +386,6 @@ const handleDeletionBatching = async ({
       identifierFields,
     });
 
-    // Phase 3: Process batched search results
     deletionQueue.forEach((queuedEvent) => {
       const { input, eventIndex } = queuedEvent;
 
@@ -449,7 +463,7 @@ const processRecordInputsV2 = async (inputs: ZohoRouterIORequest[], destination?
 
   await Promise.all(
     insertAndUpsertEvents.map((input) =>
-      processInput(
+      processInsertUpdateRecord(
         input,
         operationModuleType,
         transformedResponseToBeBatched,

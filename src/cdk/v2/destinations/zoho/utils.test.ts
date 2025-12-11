@@ -697,10 +697,10 @@ describe('buildBatchedCOQLQueryWithIN', () => {
       expected: "SELECT id, Name FROM Leads WHERE Name in ('O\\'Brien', 'D\\'Angelo')",
     },
     {
-      name: 'should limit IN clause to 50 values maximum',
+      name: 'should process IN clause to 50 values',
       input: {
         module: 'Leads',
-        filters: Array.from({ length: 60 }, (_, i) => ({ Email: `user${i}@test.com` })),
+        filters: Array.from({ length: 50 }, (_, i) => ({ Email: `user${i}@test.com` })),
         identifierFields: ['Email'],
       },
       expected: `SELECT id, Email FROM Leads WHERE Email in (${Array.from({ length: 50 }, (_, i) => `'user${i}@test.com'`).join(', ')})`,

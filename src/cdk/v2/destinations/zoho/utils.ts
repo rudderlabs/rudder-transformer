@@ -408,11 +408,17 @@ const buildBatchedCOQLQueryWithIN = (
 ): string => {
   if (filters.length === 0) return '';
 
-  // Collect unique values per field across all filters
+  // Collect unique values per field across all filters (only for identifier fields)
   const fieldValues: Record<string, Set<unknown>> = {};
   filters.forEach((filter) => {
     Object.entries(filter).forEach(([field, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
+      // Only process fields that are in identifierFields
+      if (
+        identifierFields.includes(field) &&
+        value !== null &&
+        value !== undefined &&
+        value !== ''
+      ) {
         if (!fieldValues[field]) fieldValues[field] = new Set();
 
         // Handle different value types
@@ -431,10 +437,7 @@ const buildBatchedCOQLQueryWithIN = (
   const inClauses = Object.entries(fieldValues).map(([field, valuesSet]) => {
     const values = Array.from(valuesSet);
 
-    // Zoho IN clause limit is 50 values - take first 50 if exceeded
-    const limitedValues = values.slice(0, 50);
-
-    const valueList = limitedValues
+    const valueList = values
       .map((v) => {
         // Numbers don't need quotes
         if (typeof v === 'number') return v;

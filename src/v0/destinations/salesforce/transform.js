@@ -179,7 +179,7 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
     const email = getFieldValueFromMessage(message, 'email');
 
     if (!email) {
-      throw new InstrumentationError('Invalid Email address for Lead Objet');
+      throw new InstrumentationError('Email is required for Lead Object');
     }
 
     const salesforceLeadContactDetails = await getSalesforceIdForLead({

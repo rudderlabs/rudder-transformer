@@ -1,11 +1,11 @@
 import { TransformationError } from '@rudderstack/integrations-lib';
 import { EventType } from '../../constants';
 import { InputEventType, OutputEventType, FacebookEntry, FacebookChange } from './type';
-import { SourceInputV2 } from '../../types';
+import { Source, SourceInputV2 } from '../../types';
 import { getBodyFromV2SpecPayload } from '../../v0/util';
 import logger from '../../logger';
 
-function processEvent(inputEvent: InputEventType): OutputEventType[] {
+function processEvent(source: Source, inputEvent: InputEventType): OutputEventType[] {
   if (inputEvent.object !== 'page') {
     throw new TransformationError('object field must be "page"');
   }
@@ -39,11 +39,20 @@ function processEvent(inputEvent: InputEventType): OutputEventType[] {
         return;
       }
 
+      /*
+        - If multiple sources are subscribed to the same leadgen events, and the messageId doesn’t include the sourceId,
+          data plane’s deduplication logic might treat events for different sources as duplicates and drop them.
+          Include the sourceId to ensure that each source’s events are considered distinct.
+        - Keep the messageId short to avoid increasing data plane's disk size requirements.
+      */
+      // Ensure to keep the messageId
+      const messageId = `${source.ID}-${value.leadgen_id}`;
+
       // Create the RudderStack identify event
       const event: OutputEventType = {
         type: EventType.IDENTIFY,
         anonymousId: value.leadgen_id,
-        messageId: `${value.page_id}-${value.form_id}-${value.leadgen_id}`,
+        messageId,
         context: {
           traits: {
             pageId: value.page_id,
@@ -68,7 +77,7 @@ function processEvent(inputEvent: InputEventType): OutputEventType[] {
 
 const process = (payload: SourceInputV2) => {
   const body = getBodyFromV2SpecPayload(payload);
-  return processEvent(body);
+  return processEvent(payload.source, body);
 };
 
 export { process };

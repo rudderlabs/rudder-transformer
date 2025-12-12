@@ -1,5 +1,6 @@
 import { FetchHandler } from '../../../helpers/fetchHandlers';
 import {
+  Source,
   SourceTransformationResponse,
   SourceTransformationSuccessResponse,
 } from '../../../types/index';
@@ -22,6 +23,7 @@ describe('NativeIntegration Source Service', () => {
 
     const event = {
       request: { body: JSON.stringify({ message: { a: 'b' } }) },
+      source: {} as Source,
       headers,
     };
     const events = [event, event];
@@ -65,6 +67,7 @@ describe('NativeIntegration Source Service', () => {
 
       const event = {
         request: { body: JSON.stringify({ message: { a: 'b' } }) },
+        source: {} as Source,
         headers,
       };
       const events = [event, event];

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.117.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.0...v1.117.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* zendesk group and identify events failing with error fields.map is not a function ([778f69d](https://github.com/rudderlabs/rudder-transformer/commit/778f69d2f133ce2c547019d77b28ff70ca00d3ba))
+
 ## [1.117.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.1...v1.117.0) (2025-12-09)
 
 

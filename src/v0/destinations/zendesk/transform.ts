@@ -258,21 +258,28 @@ async function checkAndCreateUserFields(
     metadata,
   });
 
-  const fields = get(response.response, fieldJson);
-  if (response.response && fields) {
-    // get existing user_fields and concatenate them with default fields
-    let existingKeys = fields.map((field) => field.key);
-    existingKeys = existingKeys.concat(defaultFields[fieldJson]);
-
-    // check for new fields
-    const traitKeys = Object.keys(traits);
-    newFields = traitKeys.filter(
-      (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
-    );
-
-    if (newFields.length > 0) {
-      await createUserFields(url, config, newFields, fieldJson, metadata);
+  try {
+    const fields = get(response.response, fieldJson);
+    if (response.response && fields) {
+      // get existing user_fields and concatenate them with default fields
+      if (!Array.isArray(fields)) {
+        logger.warn(`${NAME}:: Fields is not an array. It's type is ${typeof fields}`);
+      }
+      let existingKeys = fields.map((field) => field.key);
+      existingKeys = existingKeys.concat(defaultFields[fieldJson]);
+  
+      // check for new fields
+      const traitKeys = Object.keys(traits);
+      newFields = traitKeys.filter(
+        (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
+      );
+  
+      if (newFields.length > 0) {
+        await createUserFields(url, config, newFields, fieldJson, metadata);
+      }
     }
+  } catch (error) {
+    logger.error(`${NAME}:: Error :`, error);
   }
 }
 

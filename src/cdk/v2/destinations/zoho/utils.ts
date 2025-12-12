@@ -148,7 +148,7 @@ const handleDuplicateCheckV2 = (
 
 /**
  * Groups conditions with AND operator using Zoho COQL nested grouping convention.
- * Recursively creates nested parentheses: ((A OR B) OR C).
+ * Recursively creates nested parentheses: ((A AND B) AND C).
  * Required by Zoho COQL - flat format (A AND B AND C) is not allowed.
  *
  * @param {string[]} conditions - Array of condition strings to group with AND
@@ -351,7 +351,7 @@ const searchRecordIdV2 = async ({
 // ============================================================================
 
 // Check if this workspace is in the feature flag list
-const zohoBatchDeletionLookupWorkspaces =
+const getZohoBatchDeletionLookupWorkspaces = () =>
   process.env.DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS?.split(',')?.map?.((s) =>
     s?.trim?.(),
   );
@@ -377,9 +377,11 @@ const isDeletionLookupBatchingEnabled = (workspaceId: string | undefined) => {
     return false;
   }
 
+  // Get workspace list at runtime to support test environment overrides
+  const zohoBatchDeletionLookupWorkspaces = getZohoBatchDeletionLookupWorkspaces();
   // If env var not set, enable batching by default for backward compatibility
   if (!zohoBatchDeletionLookupWorkspaces || zohoBatchDeletionLookupWorkspaces.length === 0) {
-    return true;
+    return false;
   }
 
   return zohoBatchDeletionLookupWorkspaces.includes(workspaceId);

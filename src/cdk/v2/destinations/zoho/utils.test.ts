@@ -7,6 +7,8 @@ import {
   calculateTrigger,
   searchRecordIdV2,
   getRegion,
+  buildBatchedCOQLQueryWithIN,
+  chunkByIdentifierLimit,
 } from './utils';
 import { Destination } from '../../../../types';
 
@@ -122,8 +124,13 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: 'not-an-array',
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -139,8 +146,11 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: {},
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -158,8 +168,13 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: null,
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -177,8 +192,13 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'No Leads is found with record details',
+        status: false,
+        message: 'No Leads is found for record identifier',
+        apiResponse: {
+          data: [],
+        },
+        apiStatus: 200,
+        errorType: 'instrumentation',
       },
     },
     {
@@ -196,8 +216,8 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: false,
-        message: ['123'],
+        status: true,
+        records: [{ id: '123' }],
       },
     },
     {
@@ -248,8 +268,8 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: false,
-        message: ['123', '456'],
+        status: true,
+        records: [{ id: '123' }, { id: '456' }],
       },
     },
     {
@@ -265,8 +285,9 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        message: 'Bad Request Error',
+        status: false,
+        apiStatus: 400,
+        apiResponse: 'Bad Request Error',
       },
     },
     {
@@ -276,7 +297,7 @@ describe('searchRecordIdV2', () => {
       name: 'should handle HTTP request error',
       error: new Error('Network Error'),
       expected: {
-        erroneous: true,
+        status: false,
         message: 'Network Error',
       },
     },
@@ -340,9 +361,9 @@ describe('searchRecordIdV2', () => {
         },
       },
       expected: {
-        erroneous: true,
-        code: 'INSTRUMENTATION_ERROR',
+        status: false,
         message: 'Identifier values are not provided for Leads',
+        errorType: 'instrumentation',
       },
     },
   ];
@@ -594,4 +615,480 @@ describe('getRegion', () => {
       });
     },
   );
+});
+
+describe('buildBatchedCOQLQueryWithIN', () => {
+  const testCases = [
+    {
+      name: 'should return empty string when filters array is empty',
+      input: {
+        module: 'Leads',
+        filters: [],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected: '',
+    },
+    {
+      name: 'should return empty string when all filter values are empty/null/undefined',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: '', Phone: null },
+          { Email: undefined, Phone: '' },
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected: '',
+    },
+    {
+      name: 'should build query with single field and single value',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: 'test@example.com' }],
+        identifierFields: ['Email'],
+      },
+      expected: "SELECT id, Email FROM Leads WHERE Email in ('test@example.com')",
+    },
+    {
+      name: 'should build query with single field and multiple values',
+      input: {
+        module: 'Leads',
+        filters: [{ Email: 'a@test.com' }, { Email: 'b@test.com' }, { Email: 'c@test.com' }],
+        identifierFields: ['Email'],
+      },
+      expected:
+        "SELECT id, Email FROM Leads WHERE Email in ('a@test.com', 'b@test.com', 'c@test.com')",
+    },
+    {
+      name: 'should deduplicate values across filters for same field',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: 'duplicate@test.com', Phone: '123' },
+          { Email: 'duplicate@test.com', Phone: '456' },
+          { Email: 'unique@test.com', Phone: '123' },
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected:
+        "SELECT id, Email, Phone FROM Leads WHERE (Email in ('duplicate@test.com', 'unique@test.com') OR Phone in ('123', '456'))",
+    },
+    {
+      name: 'should handle numeric field values without quotes',
+      input: {
+        module: 'Leads',
+        filters: [{ id: 100 }, { id: 200 }, { id: 300 }],
+        identifierFields: ['id'],
+      },
+      expected: 'SELECT id FROM Leads WHERE id in (100, 200, 300)',
+    },
+    {
+      name: 'should handle array values by joining with semicolons',
+      input: {
+        module: 'Leads',
+        filters: [{ categories: ['cat1', 'cat2'] }, { categories: ['cat3', 'cat4', 'cat5'] }],
+        identifierFields: ['categories'],
+      },
+      expected:
+        "SELECT id, categories FROM Leads WHERE categories in ('cat1;cat2', 'cat3;cat4;cat5')",
+    },
+    {
+      name: 'should escape single quotes in string values',
+      input: {
+        module: 'Leads',
+        filters: [{ Name: "O'Brien" }, { Name: "D'Angelo" }],
+        identifierFields: ['Name'],
+      },
+      expected: "SELECT id, Name FROM Leads WHERE Name in ('O\\'Brien', 'D\\'Angelo')",
+    },
+    {
+      name: 'should process IN clause to 50 values',
+      input: {
+        module: 'Leads',
+        filters: Array.from({ length: 50 }, (_, i) => ({ Email: `user${i}@test.com` })),
+        identifierFields: ['Email'],
+      },
+      expected: `SELECT id, Email FROM Leads WHERE Email in (${Array.from({ length: 50 }, (_, i) => `'user${i}@test.com'`).join(', ')})`,
+    },
+    {
+      name: 'should handle filters with partial field coverage',
+      input: {
+        module: 'Contacts',
+        filters: [
+          { Email: 'a@test.com', Phone: '111' },
+          { Email: 'b@test.com' }, // No Phone
+          { Phone: '222' }, // No Email
+        ],
+        identifierFields: ['Email', 'Phone'],
+      },
+      expected:
+        "SELECT id, Email, Phone FROM Contacts WHERE (Email in ('a@test.com', 'b@test.com') OR Phone in ('111', '222'))",
+    },
+    {
+      name: 'should handle boolean values as strings',
+      input: {
+        module: 'Leads',
+        filters: [
+          { Email: 'test@example.com', is_active: true },
+          { Email: 'test2@example.com', is_active: false },
+        ],
+        identifierFields: ['Email', 'is_active'],
+      },
+      expected:
+        "SELECT id, Email, is_active FROM Leads WHERE (Email in ('test@example.com', 'test2@example.com') OR is_active in ('true', 'false'))",
+    },
+    {
+      name: 'should handle zero as a valid numeric value',
+      input: {
+        module: 'Leads',
+        filters: [{ score: 0 }, { score: 100 }],
+        identifierFields: ['score'],
+      },
+      expected: 'SELECT id, score FROM Leads WHERE score in (0, 100)',
+    },
+    {
+      name: 'should handle 10 identifier fields with complex nested OR grouping',
+      input: {
+        module: 'Contacts',
+        filters: [
+          {
+            Email: 'user1@test.com',
+            Phone: '111-1111',
+            External_ID: 'EXT001',
+            Company: 'Acme Corp',
+            Title: 'CEO',
+            Country: 'US',
+            City: 'New York',
+            Zip: '10001',
+            LinkedIn: 'linkedin.com/in/user1',
+            Twitter: '@user1',
+          },
+          {
+            Email: 'user2@test.com',
+            Phone: '222-2222',
+            External_ID: 'EXT002',
+            Company: 'Tech Inc',
+            Title: 'CTO',
+            Country: 'CA',
+            City: 'Toronto',
+            Zip: 'M5H 2N2',
+            LinkedIn: 'linkedin.com/in/user2',
+            Twitter: '@user2',
+          },
+        ],
+        identifierFields: [
+          'Email',
+          'Phone',
+          'External_ID',
+          'Company',
+          'Title',
+          'Country',
+          'City',
+          'Zip',
+          'LinkedIn',
+          'Twitter',
+        ],
+      },
+      expected:
+        "SELECT id, Email, Phone, External_ID, Company, Title, Country, City, Zip, LinkedIn, Twitter FROM Contacts WHERE ((Email in ('user1@test.com', 'user2@test.com') OR Phone in ('111-1111', '222-2222')) OR ((External_ID in ('EXT001', 'EXT002') OR Company in ('Acme Corp', 'Tech Inc')) OR ((Title in ('CEO', 'CTO') OR Country in ('US', 'CA')) OR ((City in ('New York', 'Toronto') OR Zip in ('10001', 'M5H 2N2')) OR (LinkedIn in ('linkedin.com/in/user1', 'linkedin.com/in/user2') OR Twitter in ('@user1', '@user2'))))))",
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected }) => {
+    it(name, () => {
+      const result = buildBatchedCOQLQueryWithIN(
+        input.module,
+        input.filters,
+        input.identifierFields,
+      );
+      expect(result).toBe(expected);
+    });
+  });
+});
+
+describe('chunkByIdentifierLimit', () => {
+  // Helper function to count unique identifier values in a batch
+  const countUniqueIdentifiers = (batch: any[]): Record<string, number> => {
+    const uniqueValues: Record<string, Set<unknown>> = {};
+
+    batch.forEach((event) => {
+      const identifiers = event.message.identifiers;
+      Object.entries(identifiers).forEach(([field, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          if (!uniqueValues[field]) {
+            uniqueValues[field] = new Set();
+          }
+          const normalizedValue = Array.isArray(value) ? value.join(';') : value;
+          uniqueValues[field].add(normalizedValue);
+        }
+      });
+    });
+
+    const counts: Record<string, number> = {};
+    Object.entries(uniqueValues).forEach(([field, valueSet]) => {
+      counts[field] = valueSet.size;
+    });
+    return counts;
+  };
+
+  const testCases = [
+    {
+      name: 'should return empty array when deletion queue is empty',
+      input: {
+        deletionQueue: [],
+        maxValuesPerField: 50,
+      },
+      expected: 0, // Number of batches
+    },
+    {
+      name: 'should create multiple batches when Phone hits limit first (10 unique emails, 100 unique phones)',
+      input: {
+        deletionQueue: Array.from({ length: 100 }, (_, i) => ({
+          message: {
+            identifiers: {
+              Email: `user${i % 10}@test.com`, // Only 10 unique emails
+              Phone: `phone${i}`, // 100 unique phones - this will hit limit at 50
+            },
+          },
+          metadata: { jobId: i },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because Phone hits 50 unique values first
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events (50 unique phones)
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Only 10 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Exactly 50 unique phones (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // Remaining 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Still only 10 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Another 50 unique phones
+      },
+    },
+    {
+      name: 'should create multiple batches when Email hits limit first (100 unique emails)',
+      input: {
+        deletionQueue: Array.from({ length: 100 }, (_, i) => ({
+          message: {
+            identifiers: {
+              Email: `user${i}@test.com`, // 100 unique emails
+              Phone: `${i % 20}`, // Only 20 unique phones (cycles through 0-19)
+            },
+          },
+          metadata: { jobId: i },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because Email hits 50 unique values
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events (50 unique emails)
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Exactly 50 unique emails (at limit)
+        expect(uniqueCounts.Phone).toBeLessThanOrEqual(20); // At most 20 unique phones
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // Remaining 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Another 50 unique emails
+        expect(uniqueCounts.Phone).toBeLessThanOrEqual(20); // At most 20 unique phones
+      },
+    },
+    {
+      name: 'should handle events with only some identifiers present',
+      input: {
+        deletionQueue: [
+          {
+            message: { identifiers: { Email: 'a@test.com', Phone: '111' } },
+            metadata: { jobId: 0 },
+          },
+          {
+            message: { identifiers: { Email: 'b@test.com' } }, // No Phone
+            metadata: { jobId: 1 },
+          },
+          {
+            message: { identifiers: { Phone: '222' } }, // No Email
+            metadata: { jobId: 2 },
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch, only 2 unique emails and 2 unique phones
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(3);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(2); // 2 unique emails (a, b)
+        expect(uniqueCounts.Phone).toBe(2); // 2 unique phones (111, 222)
+      },
+    },
+    {
+      name: 'should handle null, undefined, and empty string values in identifiers',
+      input: {
+        deletionQueue: [
+          {
+            message: { identifiers: { Email: 'a@test.com', Phone: null } },
+            metadata: { jobId: 0 },
+          },
+          {
+            message: { identifiers: { Email: undefined, Phone: '111' } },
+            metadata: { jobId: 1 },
+          },
+          {
+            message: { identifiers: { Email: '', Phone: '222' } },
+            metadata: { jobId: 2 },
+          },
+          {
+            message: { identifiers: { Email: 'b@test.com', Phone: '333' } },
+            metadata: { jobId: 3 },
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch, only 2 valid unique emails
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(4);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(2); // Only 2 valid emails (a, b) - null/undefined/empty ignored
+        expect(uniqueCounts.Phone).toBe(3); // 3 valid phones (111, 222, 333) - null ignored
+      },
+    },
+    {
+      name: 'should handle array values in identifiers',
+      input: {
+        deletionQueue: Array.from({ length: 60 }, (_, i) => ({
+          message: {
+            identifiers: {
+              Categories: [`cat${i}`, `cat${i + 1}`], // Arrays joined with semicolon
+            },
+          },
+          metadata: { jobId: i },
+        })),
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches because we have 60 unique array combinations
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Categories).toBe(50); // 50 unique category combinations
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(10);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Categories).toBe(10); // Remaining 10 unique combinations
+      },
+    },
+    {
+      name: 'should create new batch exactly when limit is reached (boundary test)',
+      input: {
+        deletionQueue: [
+          // First 50 events with unique emails (fills to limit)
+          ...Array.from({ length: 50 }, (_, i) => ({
+            message: {
+              identifiers: { Email: `user${i}@test.com` },
+            },
+            metadata: { jobId: i },
+          })),
+          // 51st event should trigger new batch
+          {
+            message: {
+              identifiers: { Email: 'user50@test.com' },
+            },
+            metadata: { jobId: 50 },
+          },
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches: first with 50 events, second with 1 event
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(50); // Exactly 50 unique emails (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(1);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(1); // 1 unique email in second batch
+      },
+    },
+    {
+      name: 'should handle repeated identifiers across events (deduplication)',
+      input: {
+        deletionQueue: [
+          // 100 events but only 10 unique email values (repeated 10 times each)
+          ...Array.from({ length: 100 }, (_, i) => ({
+            message: {
+              identifiers: { Email: `user${i % 10}@test.com` },
+            },
+            metadata: { jobId: i },
+          })),
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 1, // Single batch because only 10 unique emails
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(100);
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(10); // Only 10 unique emails despite 100 events
+      },
+    },
+    {
+      name: 'should split when Phone hits limit before Email',
+      input: {
+        deletionQueue: [
+          // First 30 events: unique phones, repeated emails (5 emails, 30 phones)
+          ...Array.from({ length: 30 }, (_, i) => ({
+            message: {
+              identifiers: {
+                Email: `user${i % 5}@test.com`, // Only 5 unique emails
+                Phone: `phone${i}`, // 30 unique phones
+              },
+            },
+            metadata: { jobId: i },
+          })),
+          // Next 25 events: more unique phones (total 55 phones)
+          ...Array.from({ length: 25 }, (_, i) => ({
+            message: {
+              identifiers: {
+                Email: `user${i % 5}@test.com`, // Still only 5 unique emails
+                Phone: `phone${30 + i}`, // Phones 30-54 (total 55)
+              },
+            },
+            metadata: { jobId: 30 + i },
+          })),
+        ],
+        maxValuesPerField: 50,
+      },
+      expected: 2, // Two batches: Phone hits 50 after 50 events, then remaining 5 events
+      validateFirstBatch: (batch: any[]) => {
+        expect(batch.length).toBe(50); // First 50 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(5); // Only 5 unique emails
+        expect(uniqueCounts.Phone).toBe(50); // Exactly 50 unique phones (at limit)
+      },
+      validateSecondBatch: (batch: any[]) => {
+        expect(batch.length).toBe(5); // Remaining 5 events
+        const uniqueCounts = countUniqueIdentifiers(batch);
+        expect(uniqueCounts.Email).toBe(5); // Still only 5 unique emails
+        expect(uniqueCounts.Phone).toBe(5); // Remaining 5 unique phones (51-55)
+      },
+    },
+  ];
+
+  testCases.forEach(({ name, input, expected, validateFirstBatch, validateSecondBatch }: any) => {
+    it(name, () => {
+      const result = chunkByIdentifierLimit(input.deletionQueue, input.maxValuesPerField);
+
+      expect(result.length).toBe(expected);
+
+      if (validateFirstBatch && result.length > 0) {
+        validateFirstBatch(result[0]);
+      }
+
+      if (validateSecondBatch && result.length > 1) {
+        validateSecondBatch(result[1]);
+      }
+    });
+  });
 });

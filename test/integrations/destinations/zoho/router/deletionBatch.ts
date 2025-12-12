@@ -45,7 +45,7 @@ export const deleteDataBatch = [
                 type: 'record',
               },
               metadata: {
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 jobId: 2,
                 userId: 'u1',
                 secret: {
@@ -89,7 +89,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -105,7 +105,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -125,7 +125,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token',
                 },
@@ -158,7 +158,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token',
                 },
@@ -200,7 +200,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 1,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -208,7 +208,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -224,7 +224,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -243,7 +243,7 @@ export const deleteDataBatch = [
               message: deletionPayload1V2,
               metadata: {
                 jobId: 1,
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 userId: 'u1',
                 secret: {
                   accessToken: 'correct-access-token',
@@ -276,7 +276,7 @@ export const deleteDataBatch = [
               },
               metadata: {
                 jobId: 2,
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 userId: 'u1',
                 secret: {
                   accessToken: 'correct-access-token',
@@ -318,7 +318,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 1,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -333,7 +333,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -350,7 +350,7 @@ export const deleteDataBatch = [
                 module: 'destination',
                 implementation: 'cdkV2',
                 feature: 'router',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
               },
               destination: commonDeletionDestConfig,
             },
@@ -360,7 +360,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -399,7 +399,7 @@ export const deleteDataBatch = [
               },
               metadata: {
                 jobId: 2,
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 userId: 'u1',
                 secret: {
                   accessToken: 'expired-access-token',
@@ -429,7 +429,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'expired-access-token',
                   },
@@ -442,7 +442,7 @@ export const deleteDataBatch = [
                 module: 'destination',
                 implementation: 'cdkV2',
                 feature: 'router',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
               },
             },
           ],
@@ -451,7 +451,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -489,7 +489,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token',
                 },
@@ -513,7 +513,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -529,7 +529,7 @@ export const deleteDataBatch = [
                 module: 'destination',
                 implementation: 'cdkV2',
                 feature: 'router',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
               },
               destination: commonDeletionDestConfig,
             },
@@ -539,7 +539,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -578,7 +578,7 @@ export const deleteDataBatch = [
               },
               metadata: {
                 jobId: 2,
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 userId: 'u1',
                 secret: {
                   accessToken: 'correct-access-token',
@@ -603,7 +603,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token',
                   },
@@ -620,7 +620,7 @@ export const deleteDataBatch = [
                 module: 'destination',
                 implementation: 'cdkV2',
                 feature: 'router',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
               },
               destination: commonDeletionDestConfig,
             },
@@ -630,7 +630,7 @@ export const deleteDataBatch = [
     },
     mockFns: defaultMockFns,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
   {
@@ -674,7 +674,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 1,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token-partial',
                 },
@@ -711,7 +711,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 2,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token-partial',
                 },
@@ -748,7 +748,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 3,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token-partial',
                 },
@@ -785,7 +785,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 4,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token-partial',
                 },
@@ -822,7 +822,7 @@ export const deleteDataBatch = [
               metadata: {
                 jobId: 5,
                 userId: 'u1',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
                 secret: {
                   accessToken: 'correct-access-token-partial',
                 },
@@ -864,7 +864,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 1,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token-partial',
                   },
@@ -872,7 +872,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 2,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token-partial',
                   },
@@ -880,7 +880,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 4,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token-partial',
                   },
@@ -912,7 +912,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 5,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token-partial',
                   },
@@ -927,7 +927,7 @@ export const deleteDataBatch = [
                 {
                   jobId: 3,
                   userId: 'u1',
-                  workspaceId: 'workspaceId1',
+                  workspaceId: 'workspaceId2',
                   secret: {
                     accessToken: 'correct-access-token-partial',
                   },
@@ -944,7 +944,7 @@ export const deleteDataBatch = [
                 module: 'destination',
                 implementation: 'cdkV2',
                 feature: 'router',
-                workspaceId: 'workspaceId1',
+                workspaceId: 'workspaceId2',
               },
               destination: commonDeletionDestConfig,
             },
@@ -954,7 +954,7 @@ export const deleteDataBatch = [
     },
     mockFns: deletionBatchMock,
     envOverrides: {
-      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId1',
+      DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS: 'workspaceId2',
     },
   },
 ];

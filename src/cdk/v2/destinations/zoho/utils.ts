@@ -351,11 +351,10 @@ const searchRecordIdV2 = async ({
 // ============================================================================
 
 // Check if this workspace is in the feature flag list
-const getZohoBatchDeletionLookupWorkspaces = () =>
+const zohoBatchDeletionLookupWorkspaces =
   process.env.DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS?.split(',')?.map?.((s) =>
     s?.trim?.(),
   );
-
 /**
  * Determines if batched deletion lookup is enabled for a given workspace.
  * Uses DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS environment variable as a feature flag.
@@ -377,9 +376,7 @@ const isDeletionLookupBatchingEnabled = (workspaceId: string | undefined) => {
     return false;
   }
 
-  // Get workspace list at runtime to support test environment overrides
-  const zohoBatchDeletionLookupWorkspaces = getZohoBatchDeletionLookupWorkspaces();
-  // If env var not set, enable batching by default for backward compatibility
+  // If env var not set, disable batching by default for backward compatibility
   if (!zohoBatchDeletionLookupWorkspaces || zohoBatchDeletionLookupWorkspaces.length === 0) {
     return false;
   }

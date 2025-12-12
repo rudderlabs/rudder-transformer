@@ -267,13 +267,13 @@ async function checkAndCreateUserFields(
       }
       let existingKeys = fields.map((field) => field.key);
       existingKeys = existingKeys.concat(defaultFields[fieldJson]);
-  
+
       // check for new fields
       const traitKeys = Object.keys(traits);
       newFields = traitKeys.filter(
         (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
       );
-  
+
       if (newFields.length > 0) {
         await createUserFields(url, config, newFields, fieldJson, metadata);
       }

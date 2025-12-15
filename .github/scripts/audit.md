@@ -315,30 +315,30 @@ Categorization logic:
      - List of any errors encountered during the process
      - All logging is done via `console.log()` - no files are created
 
-9. **Verify analysis completion and ticket creation**
+10. **Verify analysis completion and ticket creation**
 
-   - After logging the summary, verify that the audit process completed successfully:
-   - **Analysis Verification**:
-     - All versioned integrations from versions.json were analyzed (non-versioned destinations correctly filtered out)
-     - Codebase search was performed for each integration
-     - Web search was used to review documentation for version details
-     - Priorities and due dates were calculated for all integrations
-     - All integrations were properly categorized
-   - **Ticket Creation Verification**:
-     - Master ticket was created and has a valid ID and URL
-     - Number of subtickets created matches the number of integrations requiring action
-     - Each subticket contains:
-       - Detailed analysis from codebase search findings
-       - Information gathered from web_search of documentation
-       - Correct priority level based on sunset dates and version gaps
-       - Appropriate due date calculated from priority logic
-       - Complete ticket description with all relevant details
-   - **Error Handling**: If verification fails, log specific errors and ensure all available information is still captured in created tickets
-   - **Completion**: The audit is considered complete only when:
-     - All analysis steps are finished
-     - All required Linear tickets are created successfully
-     - Summary is logged to console
-     - Any errors are documented in the summary log
+    - After logging the summary, verify that the audit process completed successfully:
+    - **Analysis Verification**:
+      - All versioned integrations from versions.json were analyzed (non-versioned destinations correctly filtered out)
+      - Codebase search was performed for each integration
+      - Web search was used to review documentation for version details
+      - Priorities and due dates were calculated for all integrations
+      - All integrations were properly categorized
+    - **Ticket Creation Verification**:
+      - Master ticket was created and has a valid ID and URL
+      - Number of subtickets created matches the number of integrations requiring action
+      - Each subticket contains:
+        - Detailed analysis from codebase search findings
+        - Information gathered from web_search of documentation
+        - Correct priority level based on sunset dates and version gaps
+        - Appropriate due date calculated from priority logic
+        - Complete ticket description with all relevant details
+    - **Error Handling**: If verification fails, log specific errors and ensure all available information is still captured in created tickets
+    - **Completion**: The audit is considered complete only when:
+      - All analysis steps are finished
+      - All required Linear tickets are created successfully
+      - Summary is logged to console
+      - Any errors are documented in the summary log
 
 **linearApi.js Functions Available:**
 

@@ -75,13 +75,11 @@ Conduct an AI-assisted audit of all integrations from `.github/scripts/versions.
 
 - Read and parse `.github/scripts/versions.json`
 - Extract for each integration:
-- Destination name
-- Current API versions in CloudMode Services
-- Latest API Version rolled out
-- Latest SDK Version rolled out
-- Sunset dates (Current SDK Version and backend version)
-- Documentation links (API and SDK)
-- Comments/notes
+- Destination
+- Version currently referred in CloudMode Services
+- Link to check Versions documentation
+- Latest Version rolled out
+- Sunset Date Current Version used in backend
 
 2. **Detect and filter non-versioned APIs**
 

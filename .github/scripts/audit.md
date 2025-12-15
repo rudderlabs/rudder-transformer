@@ -110,9 +110,25 @@ Conduct an AI-assisted audit of all integrations from `.github/scripts/versions.
   ```
 - Only proceed with versioned destinations for subsequent analysis phases
 
+3. **Enforce full coverage of versioned destinations**
+
+- After filtering, build the set of versioned destinations (`versionedDestinations`)
+- During analysis, track every destination actually processed (`analyzedDestinations`)
+- **Hard rule**: if any versioned destination is missing from `analyzedDestinations`, fail the audit immediately (exit non-zero) and log the missing names for debugging
+- Example check:
+  ```javascript
+  const versionedNames = new Set(versionedDestinations.map((d) => d.Destination));
+  const analyzedNames = new Set(analyzedDestinations.map((d) => d.Destination));
+  const missing = [...versionedNames].filter((n) => !analyzedNames.has(n));
+  if (missing.length > 0) {
+    console.error(`Coverage check failed. Missing analyses for: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+  ```
+
 ### Phase 2: Analysis with Cursor
 
-3. **Analyze integrations using Cursor**
+4. **Analyze integrations using Cursor**
 
 - For each integration from versions.json (non-versioned destinations already filtered out):
   - **Codebase Search**: Use Cursor's semantic codebase search to:
@@ -133,7 +149,7 @@ Conduct an AI-assisted audit of all integrations from `.github/scripts/versions.
 
 ### Phase 3: Priority Calculation and Categorization
 
-4. **Calculate priority and due dates**
+5. **Calculate priority and due dates**
 
 - Parse sunset dates (see Date Parsing section for supported formats)
 - For multiple sunset dates in one field, use the earliest one for priority calculation
@@ -152,7 +168,7 @@ Conduct an AI-assisted audit of all integrations from `.github/scripts/versions.
   - **Low (4)**: > 365 days until sunset OR minor version updates → Due: 12 months from analysis date
 - Handle edge cases: "TBD", "Not mentioned", "NA", "n/a", "Not applicable", ambiguous dates → Mark as Low priority (4) or Unknown category
 
-5. **Categorize integrations**
+6. **Categorize integrations**
 
 Categorization logic:
 
@@ -174,7 +190,7 @@ Categorization logic:
 
 ### Phase 4: Linear Ticket Creation
 
-6. **Create master Linear ticket**
+7. **Create master Linear ticket**
 
 - Use `.github/scripts/linearApi.js` helper module directly (no script execution needed)
 - Before creating the ticket, query for required IDs:
@@ -229,7 +245,7 @@ Categorization logic:
     - **Cycle**: Current (queried via `getCurrentCycleId(LINEAR_TEAM_ID)`)
     - **Project**: Uses `LINEAR_PROJECT_ID` if provided (optional)
 
-7. **Create subtickets for each integration requiring action**
+8. **Create subtickets for each integration requiring action**
 
 - For each integration categorized as "Action Required":
 - Call `createIssue()` function directly:
@@ -253,7 +269,7 @@ Categorization logic:
     - Priority and due dates are correctly assigned based on sunset dates and version gaps
     - Ticket descriptions include all relevant information from documentation review
 
-8. **Log analysis summary**
+9. **Log analysis summary**
 
    - After all analysis and ticket creation is complete, log a summary of what was done to console:
 
@@ -263,6 +279,10 @@ Categorization logic:
    console.log(`Skipped (Non-versioned APIs): ${skippedCount}`);
    if (skippedCount > 0) {
      console.log(`  - ${skippedDestinations.map((d) => d.Destination).join(', ')}`);
+   }
+   console.log(`Coverage validation: ${coveragePassed ? 'PASSED' : 'FAILED'}`);
+   if (!coveragePassed) {
+     console.log(`  Missing analyses for: ${missingDestinations.join(', ')}`);
    }
    console.log(`Total Integrations Analyzed: ${totalIntegrations}`);
    console.log(`\nBy Category:`);

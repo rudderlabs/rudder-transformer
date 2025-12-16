@@ -114,7 +114,7 @@ export const data = [
                   headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    'OneSignal-Usage': 'Rudderstack | Partner Integration',
+                    'OneSignal-Usage': 'RudderStack',
                   },
                   params: {},
                   body: {
@@ -150,7 +150,7 @@ export const data = [
                   headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                    'OneSignal-Usage': 'Rudderstack | Partner Integration',
+                    'OneSignal-Usage': 'RudderStack',
                   },
                   params: {},
                   body: {
@@ -207,7 +207,7 @@ export const data = [
                 headers: {
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
-                  'OneSignal-Usage': 'Rudderstack | Partner Integration',
+                  'OneSignal-Usage': 'RudderStack',
                 },
                 version: '1',
                 endpoint:

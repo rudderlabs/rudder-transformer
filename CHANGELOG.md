@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.118.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.1...v1.118.0) (2025-12-16)
+
+
+### Features
+
+* update onesignal header as per request ([#4866](https://github.com/rudderlabs/rudder-transformer/issues/4866)) ([037d4b8](https://github.com/rudderlabs/rudder-transformer/commit/037d4b876068d8effb8e555cccee5c90f056a474))
+* **zoho:** do batch lookup of records for deletion ([#4855](https://github.com/rudderlabs/rudder-transformer/issues/4855)) ([53b387e](https://github.com/rudderlabs/rudder-transformer/commit/53b387ea6b595306a13201c3e05c1431604a53b6))
+
+
+### Bug Fixes
+
+* **facebook_ads_native:** data plane deduplication dropping valid events ([#4862](https://github.com/rudderlabs/rudder-transformer/issues/4862)) ([303c6be](https://github.com/rudderlabs/rudder-transformer/commit/303c6be62dcfa72f2e3a801e9e6571de718762c5))
+* **hs:** preserve 0 and false value of track event ([#4859](https://github.com/rudderlabs/rudder-transformer/issues/4859)) ([444c5b7](https://github.com/rudderlabs/rudder-transformer/commit/444c5b77207892ffe70e33947af03526a3f1c242))
+* monday dest fails for missing columns in board ([#4757](https://github.com/rudderlabs/rudder-transformer/issues/4757)) ([37fa435](https://github.com/rudderlabs/rudder-transformer/commit/37fa435e238a89738de4384a9150946275740de3))
+
 ### [1.117.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.0...v1.117.1) (2025-12-12)
 
 

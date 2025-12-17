@@ -1,4 +1,16 @@
-const { staticLookup, dnsCallbackStorage } = require('./utils');
+jest.mock('node-fetch');
+jest.mock('./stats');
+jest.mock('dns', () => ({
+  promises: {
+    Resolver: jest.fn().mockImplementation(() => ({
+      resolve4: jest.fn().mockResolvedValue([{ address: '93.184.216.34', ttl: 300 }]),
+    })),
+  },
+}));
+
+const fetch = require('node-fetch');
+const stats = require('./stats');
+const { staticLookup, dnsCallbackStorage, fetchWithDnsWrapper } = require('./utils');
 
 describe('staticLookup', () => {
   const RECORD_TYPE_A = 4;
@@ -67,5 +79,88 @@ describe('staticLookup', () => {
         resolve(HOST_NAME, options, callback);
       });
     });
+  });
+});
+
+describe('fetchWithDnsWrapper', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    process.env = { ...originalEnv };
+    fetch.mockResolvedValue({ ok: true, status: 200 });
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+  });
+
+  it('should set up onDnsResolved callback that calls stats.timing with transformation tags', async () => {
+    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
+    const transformationTags = { workspaceId: 'ws123', transformationId: 'tr456' };
+
+    // Capture the callback stored in dnsCallbackStorage during the fetch
+    let capturedCallback;
+    const originalRun = dnsCallbackStorage.run.bind(dnsCallbackStorage);
+    jest.spyOn(dnsCallbackStorage, 'run').mockImplementation((callback, fn) => {
+      capturedCallback = callback;
+      return originalRun(callback, fn);
+    });
+
+    await fetchWithDnsWrapper(transformationTags, 'https://example.com/api');
+
+    // Simulate DNS resolution callback
+    capturedCallback({ resolveStartTime: new Date(), cacheHit: true, error: false });
+
+    expect(stats.timing).toHaveBeenCalledWith(
+      'fetch_dns_resolve_time',
+      expect.any(Date),
+      expect.objectContaining({
+        workspaceId: 'ws123',
+        transformationId: 'tr456',
+        cacheHit: true,
+      }),
+    );
+  });
+
+  it('should use shared https agent for https URLs', async () => {
+    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
+
+    await fetchWithDnsWrapper({}, 'https://example.com/api');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://example.com/api',
+      expect.objectContaining({
+        agent: expect.any(Object),
+      }),
+    );
+
+    const firstCallAgent = fetch.mock.calls[0][1].agent;
+
+    await fetchWithDnsWrapper({}, 'https://example.com/other');
+
+    const secondCallAgent = fetch.mock.calls[1][1].agent;
+    expect(secondCallAgent).toBe(firstCallAgent);
+  });
+
+  it('should use shared http agent for http URLs', async () => {
+    process.env.DNS_RESOLVE_FETCH_HOST = 'true';
+
+    await fetchWithDnsWrapper({}, 'http://example.com/api');
+    const firstCallAgent = fetch.mock.calls[0][1].agent;
+
+    await fetchWithDnsWrapper({}, 'http://example.com/other');
+    const secondCallAgent = fetch.mock.calls[1][1].agent;
+
+    expect(secondCallAgent).toBe(firstCallAgent);
+  });
+
+  it('should bypass DNS wrapper when DNS_RESOLVE_FETCH_HOST is not true', async () => {
+    process.env.DNS_RESOLVE_FETCH_HOST = 'false';
+
+    await fetchWithDnsWrapper({}, 'https://example.com/api');
+
+    expect(fetch).toHaveBeenCalledWith('https://example.com/api');
+    expect(stats.timing).not.toHaveBeenCalled();
   });
 });

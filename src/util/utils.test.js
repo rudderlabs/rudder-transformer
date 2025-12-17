@@ -1,10 +1,10 @@
 const { staticLookup } = require('./utils');
 
 describe('staticLookup', () => {
-  const transformationTags = { tag: 'value' };
   const RECORD_TYPE_A = 4;
   const HOST_NAME = 'example.com';
   const fetchAddressFromHostName = jest.fn();
+  const onDnsResolved = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -15,31 +15,36 @@ describe('staticLookup', () => {
       name: 'should resolve the hostname and return the IP address',
       mockResponse: { address: '192.168.1.1', cacheHit: true },
       expectedArgs: [null, '192.168.1.1', RECORD_TYPE_A],
+      expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
     {
       name: 'should resolve the hostname and return the IP address with all option',
       options: { all: true },
       mockResponse: { address: '192.168.1.1', cacheHit: true },
       expectedArgs: [null, [{ address: '192.168.1.1', family: RECORD_TYPE_A }]],
+      expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
     {
       name: 'should handle errors from fetchAddressFromHostName',
       mockResponse: { error: 'DNS error', errorCode: 'ENOTFOUND' },
       expectedArgs: [new Error(`unable to resolve IP address for ${HOST_NAME}`), null],
+      expectedDnsResolvedCall: { cacheHit: false, error: true },
     },
     {
       name: 'should handle empty address',
       mockResponse: { address: '', cacheHit: true },
       expectedArgs: [new Error(`resolved empty list of IP address for ${HOST_NAME}`), null],
+      expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
     {
       name: 'should handle localhost address',
       mockResponse: { address: '127.0.0.1', cacheHit: true },
       expectedArgs: [new Error(`cannot use 127.0.0.1 as IP address`), null],
+      expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
   ];
 
-  testCases.forEach(({ name, options, mockResponse, expectedArgs }) => {
+  testCases.forEach(({ name, options, mockResponse, expectedArgs, expectedDnsResolvedCall }) => {
     it(name, async () => {
       if (mockResponse.error) {
         const error = new Error(mockResponse.error);
@@ -49,10 +54,13 @@ describe('staticLookup', () => {
         fetchAddressFromHostName.mockResolvedValueOnce(mockResponse);
       }
 
-      const resolve = staticLookup(transformationTags, fetchAddressFromHostName);
+      const resolve = staticLookup(onDnsResolved, fetchAddressFromHostName);
       const callback = (...args) => {
         expect(fetchAddressFromHostName).toHaveBeenCalledWith(HOST_NAME);
         expect(args).toEqual(expectedArgs);
+        expect(onDnsResolved).toHaveBeenCalledWith(
+          expect.objectContaining(expectedDnsResolvedCall),
+        );
       };
 
       resolve(HOST_NAME, options, callback);

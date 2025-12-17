@@ -45,16 +45,15 @@ const fetchAddressFromHostName = async (hostname) => {
 };
 
 const staticLookup =
-  (transformationTags, fetchAddress = fetchAddressFromHostName) =>
+  (onDnsResolved, fetchAddress = fetchAddressFromHostName) =>
   (hostname, options, cb) => {
     const resolveStartTime = new Date();
 
     fetchAddress(hostname)
       .then(({ address, cacheHit }) => {
-        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-          ...transformationTags,
-          cacheHit,
-        });
+        if (onDnsResolved) {
+          onDnsResolved({ resolveStartTime, cacheHit, error: false });
+        }
 
         if (!address) {
           cb(new Error(`resolved empty list of IP address for ${hostname}`), null);
@@ -68,17 +67,16 @@ const staticLookup =
       })
       .catch((error) => {
         logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
-        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-          ...transformationTags,
-          error: 'true',
-        });
+        if (onDnsResolved) {
+          onDnsResolved({ resolveStartTime, cacheHit: false, error: true });
+        }
         cb(new Error(`unable to resolve IP address for ${hostname}`), null);
       });
   };
 
-const httpAgentWithDnsLookup = (scheme, transformationTags) => {
+const httpAgentWithDnsLookup = (scheme, onDnsResolved) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
+  return new httpModule.Agent({ lookup: staticLookup(onDnsResolved) });
 };
 
 const blockLocalhostRequests = (url) => {
@@ -115,8 +113,15 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
-  // assign resolved agent to fetch
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
+
+  const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, {
+      ...transformationTags,
+      ...(error ? { error: 'true' } : { cacheHit }),
+    });
+  };
+
+  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, onDnsResolved);
   return await fetch(fetchURL, fetchOptions);
 };
 

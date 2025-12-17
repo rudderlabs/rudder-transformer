@@ -1,4 +1,4 @@
-const { staticLookup } = require('./utils');
+const { staticLookup, dnsCallbackStorage } = require('./utils');
 
 describe('staticLookup', () => {
   const RECORD_TYPE_A = 4;
@@ -54,7 +54,7 @@ describe('staticLookup', () => {
         fetchAddressFromHostName.mockResolvedValueOnce(mockResponse);
       }
 
-      const resolve = staticLookup(onDnsResolved, fetchAddressFromHostName);
+      const resolve = staticLookup(fetchAddressFromHostName);
       const callback = (...args) => {
         expect(fetchAddressFromHostName).toHaveBeenCalledWith(HOST_NAME);
         expect(args).toEqual(expectedArgs);
@@ -63,7 +63,9 @@ describe('staticLookup', () => {
         );
       };
 
-      resolve(HOST_NAME, options, callback);
+      dnsCallbackStorage.run(onDnsResolved, () => {
+        resolve(HOST_NAME, options, callback);
+      });
     });
   });
 });

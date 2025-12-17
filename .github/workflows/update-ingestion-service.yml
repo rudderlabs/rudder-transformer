@@ -5,8 +5,6 @@ on:
     workflows: ['Publish New GitHub Release']
     types:
       - completed
-    branches:
-      - main
   workflow_call:
     secrets:
       PAT:
@@ -23,7 +21,15 @@ jobs:
     name: Update Ingestion Service with Latest Transformer Version
     runs-on: ubuntu-latest
     # Only run if the workflow_run was successful (doesn't apply to manual triggers)
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'workflow_call' || github.event.workflow_run.conclusion == 'success' }}
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'workflow_call' ||
+      (
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.pull_requests[0].merged == true &&
+        github.event.workflow_run.pull_requests[0].base.ref == 'main'
+      )
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1

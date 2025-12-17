@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
+const { AsyncLocalStorage } = require('async_hooks');
 
 const util = require('util');
 const NodeCache = require('node-cache');
@@ -10,6 +11,7 @@ const logger = require('../logger');
 const stats = require('./stats');
 
 const resolver = new Resolver();
+const dnsCallbackStorage = new AsyncLocalStorage();
 
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
@@ -45,9 +47,10 @@ const fetchAddressFromHostName = async (hostname) => {
 };
 
 const staticLookup =
-  (onDnsResolved, fetchAddress = fetchAddressFromHostName) =>
+  (fetchAddress = fetchAddressFromHostName) =>
   (hostname, options, cb) => {
     const resolveStartTime = new Date();
+    const onDnsResolved = dnsCallbackStorage.getStore();
 
     fetchAddress(hostname)
       .then(({ address, cacheHit }) => {
@@ -74,10 +77,15 @@ const staticLookup =
       });
   };
 
-const httpAgentWithDnsLookup = (scheme, onDnsResolved) => {
-  const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(onDnsResolved) });
-};
+const sharedHttpAgent = new http.Agent({
+  keepAlive: true,
+  lookup: staticLookup(),
+});
+
+const sharedHttpsAgent = new https.Agent({
+  keepAlive: true,
+  lookup: staticLookup(),
+});
 
 const blockLocalhostRequests = (url) => {
   try {
@@ -121,8 +129,8 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
     });
   };
 
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, onDnsResolved);
-  return await fetch(fetchURL, fetchOptions);
+  fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
+  return dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
 };
 
 class RespStatusError extends Error {
@@ -259,6 +267,7 @@ module.exports = {
   extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
   staticLookup,
+  dnsCallbackStorage,
   shouldSkipDynamicConfigProcessing,
   shouldGroupByDestinationConfig,
 };

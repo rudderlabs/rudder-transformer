@@ -180,7 +180,10 @@ describe('fetchWithDnsWrapper', () => {
 
     await fetchWithDnsWrapper({}, 'https://example.com/api');
 
-    expect(fetch).toHaveBeenCalledWith('https://example.com/api');
+    expect(fetch).toHaveBeenCalledWith(
+      'https://example.com/api',
+      expect.objectContaining({ agent: expect.any(Object) }),
+    );
     expect(stats.timing).not.toHaveBeenCalled();
   });
 });

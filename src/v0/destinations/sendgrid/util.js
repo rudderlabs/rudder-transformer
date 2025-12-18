@@ -29,7 +29,7 @@ const { httpGET } = require('../../../adapters/network');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
-const customFieldsCache = new Cache(AUTH_CACHE_TTL);
+const customFieldsCache = new Cache('SENDGRID_CUSTOM_FIELD', AUTH_CACHE_TTL);
 
 const isValidBase64 = (content) => {
   const re = /^(?:[\d+/A-Za-z]{4})*(?:[\d+/A-Za-z]{2}==|[\d+/A-Za-z]{3}=)?$/;

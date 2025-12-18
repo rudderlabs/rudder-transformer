@@ -52,8 +52,14 @@ const {
 } = require('../../util/googleUtils');
 const tags = require('../../util/tags');
 
-const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
-const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
+const conversionActionIdCache = new Cache(
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_ACTION_ID',
+  CONVERSION_ACTION_ID_CACHE_TTL,
+);
+const conversionCustomVariableCache = new Cache(
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_CUSTOM_VARIABLE',
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+);
 
 /**
  * validate destination config and check for existence of data

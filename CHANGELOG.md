@@ -2,6 +2,70 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.118.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.1...v1.118.0) (2025-12-16)
+
+
+### Features
+
+* update onesignal header as per request ([#4866](https://github.com/rudderlabs/rudder-transformer/issues/4866)) ([037d4b8](https://github.com/rudderlabs/rudder-transformer/commit/037d4b876068d8effb8e555cccee5c90f056a474))
+* **zoho:** do batch lookup of records for deletion ([#4855](https://github.com/rudderlabs/rudder-transformer/issues/4855)) ([53b387e](https://github.com/rudderlabs/rudder-transformer/commit/53b387ea6b595306a13201c3e05c1431604a53b6))
+
+
+### Bug Fixes
+
+* **facebook_ads_native:** data plane deduplication dropping valid events ([#4862](https://github.com/rudderlabs/rudder-transformer/issues/4862)) ([303c6be](https://github.com/rudderlabs/rudder-transformer/commit/303c6be62dcfa72f2e3a801e9e6571de718762c5))
+* **hs:** preserve 0 and false value of track event ([#4859](https://github.com/rudderlabs/rudder-transformer/issues/4859)) ([444c5b7](https://github.com/rudderlabs/rudder-transformer/commit/444c5b77207892ffe70e33947af03526a3f1c242))
+* monday dest fails for missing columns in board ([#4757](https://github.com/rudderlabs/rudder-transformer/issues/4757)) ([37fa435](https://github.com/rudderlabs/rudder-transformer/commit/37fa435e238a89738de4384a9150946275740de3))
+
+### [1.117.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.0...v1.117.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* zendesk group and identify events failing with error fields.map is not a function ([778f69d](https://github.com/rudderlabs/rudder-transformer/commit/778f69d2f133ce2c547019d77b28ff70ca00d3ba))
+
+## [1.117.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.1...v1.117.0) (2025-12-09)
+
+
+### Features
+
+* cache stats ([daae455](https://github.com/rudderlabs/rudder-transformer/commit/daae4555d52c49129694ae9cfe7ad319aaa29ea1))
+* cache stats ([#4833](https://github.com/rudderlabs/rudder-transformer/issues/4833)) ([c80a9e7](https://github.com/rudderlabs/rudder-transformer/commit/c80a9e7e283a506d667936947c5b9f0ebdf9148b))
+
+
+### Bug Fixes
+
+* **garl:** add validation for null/undefined/empty identifier fields ([#4836](https://github.com/rudderlabs/rudder-transformer/issues/4836)) ([bec35c1](https://github.com/rudderlabs/rudder-transformer/commit/bec35c1766081e24a6cfedc5e54b97a216c3723d))
+* preserve trailing slash for http destination ([#4786](https://github.com/rudderlabs/rudder-transformer/issues/4786)) ([1bbb698](https://github.com/rudderlabs/rudder-transformer/commit/1bbb6984f877faaf0ecbf7b523fa0548f1cc438a))
+* prometheus stats name ([3d0d468](https://github.com/rudderlabs/rudder-transformer/commit/3d0d46869a584e887d6277e7ca42b6a1338e0f0f))
+* prometheus stats name ([#4841](https://github.com/rudderlabs/rudder-transformer/issues/4841)) ([1efae71](https://github.com/rudderlabs/rudder-transformer/commit/1efae715eaeff1b243d873364b17e581c8cf6c3f))
+
+### [1.116.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.116.0...v1.116.1) (2025-12-08)
+
+
+### Bug Fixes
+
+* skip returning events on source hydration errors  ([#4851](https://github.com/rudderlabs/rudder-transformer/issues/4851)) ([4b255b7](https://github.com/rudderlabs/rudder-transformer/commit/4b255b758546fab23bfb99197e8a8724d0f7cc62))
+
+## [1.116.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.115.1...v1.116.0) (2025-12-02)
+
+
+### Features
+
+* add header for partnership in one_signal ([#4782](https://github.com/rudderlabs/rudder-transformer/issues/4782)) ([c646d6e](https://github.com/rudderlabs/rudder-transformer/commit/c646d6e0e50b00c05784f1f0ce4e5d711fa97b4e))
+* gaoc click and call batching ([#4788](https://github.com/rudderlabs/rudder-transformer/issues/4788)) ([6cf339c](https://github.com/rudderlabs/rudder-transformer/commit/6cf339c9582b93203a59a5a24cd1522c6bcf628d))
+* int 4194 add validation for nullundefined traits in sendinblue ([#4825](https://github.com/rudderlabs/rudder-transformer/issues/4825)) ([91bb6bf](https://github.com/rudderlabs/rudder-transformer/commit/91bb6bff7f8825199b2213d7c7775be564f166a0))
+* lib upgrade with new sdks functionality ([8e96ad1](https://github.com/rudderlabs/rudder-transformer/commit/8e96ad105a60f65f0521cef3f1b7d1789a2c3e06))
+* lib upgrade with new sdks functionality ([#4785](https://github.com/rudderlabs/rudder-transformer/issues/4785)) ([f5a422b](https://github.com/rudderlabs/rudder-transformer/commit/f5a422be46dfa0061d9b8e3d333d0a501e1fc4fe))
+
+
+### Bug Fixes
+
+* **facebook_lead_ads_native:** updated event structure to use camel casing ([#4810](https://github.com/rudderlabs/rudder-transformer/issues/4810)) ([11b72e7](https://github.com/rudderlabs/rudder-transformer/commit/11b72e74e14c25ccf67beb846c806148779c3593))
+* **gaoc:** handle case when partialFailureError code is zero ([#4832](https://github.com/rudderlabs/rudder-transformer/issues/4832)) ([6f03faf](https://github.com/rudderlabs/rudder-transformer/commit/6f03fafed9f03f63b4dcd382ccfc8c245f36cb29))
+* handle refresh scenario for the sdk response ([#4791](https://github.com/rudderlabs/rudder-transformer/issues/4791)) ([7a4352f](https://github.com/rudderlabs/rudder-transformer/commit/7a4352f3db68851e368da6918868fa3c87699940))
+* **mp:** handle non-string messageId to prevent slice error ([#4824](https://github.com/rudderlabs/rudder-transformer/issues/4824)) ([6d65b27](https://github.com/rudderlabs/rudder-transformer/commit/6d65b27191f3b09007960e224d9555f929cd1ac5))
+
 ### [1.115.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.115.0...v1.115.1) (2025-11-25)
 
 

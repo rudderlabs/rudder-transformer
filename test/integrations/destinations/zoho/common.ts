@@ -444,9 +444,50 @@ const commonConnectionConfigV2_4: Connection = {
       identifierMappings: [
         {
           from: 'email',
-          to: 'email',
+          to: 'Email',
         },
       ],
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
+const commonDeletionConnectionConfigV2_MultipleIdentifiers: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'Email',
+        },
+        {
+          from: 'phone',
+          to: 'Phone',
+        },
+        {
+          from: 'company',
+          to: 'Company',
+        },
+        {
+          from: 'website',
+          to: 'Website',
+        },
+        {
+          from: 'lead_source',
+          to: 'Lead_Source',
+        },
+      ],
+      addDefaultDuplicateCheck: true,
       multiSelectFieldLevelDecision: [
         { from: 'multi-language', to: 'true' },
         { from: 'multi class', to: 'false' },
@@ -479,4 +520,5 @@ export {
   commonConnectionConfigV2_4,
   commonConnectionConfigCustomModuleV2,
   commonDeletionConnectionConfigV2,
+  commonDeletionConnectionConfigV2_MultipleIdentifiers,
 };

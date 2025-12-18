@@ -24,7 +24,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/stale@5f858e3efba33a5ca4407a664cc011ad407f2008 # v10.1.0
+      - uses: actions/stale@997185467fa4f803885201cee163a9f38240193d # v10.1.1
         with:
           repo-token: ${{ secrets.PAT }}
           operations-per-run: 200
@@ -51,7 +51,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Delete Old Branches
         uses: beatlabs/delete-old-branches-action@4eeeb8740ff8b3cb310296ddd6b43c3387734588 # v0.0.11

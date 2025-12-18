@@ -31,7 +31,10 @@ const {
 const tags = require('../../../v0/util/tags');
 const { CommonUtils } = require('../../../util/common');
 
-const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
+const conversionCustomVariableCache = new Cache(
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_CUSTOM_VARIABLE',
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+);
 
 const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;
@@ -313,7 +316,7 @@ const responseHandler = (responseParams) => {
   const { status } = destinationResponse;
   const { partialFailureError, results } = destinationResponse.response;
   const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
-  if (isHttpStatusSuccess(status) && !partialFailureError) {
+  if (isHttpStatusSuccess(status) && (!partialFailureError || partialFailureError.code === 0)) {
     // for google ads offline conversions the partialFailureError returns with status 200
     return {
       status,
@@ -331,7 +334,7 @@ const responseHandler = (responseParams) => {
   // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
   if (partialFailureError && partialFailureError.code !== 0) {
     const errorMessage = partialFailureError.message || 'unknown error format';
-    const responseWithIndividualEvents = rudderJobMetadata.map((metadata, i) => {
+    const responseWithIndividualEvents = metaDataArray.map((metadata, i) => {
       const eventResponse = results?.[i] ?? {};
       const isEventFailed = isEmptyObject(eventResponse);
       return {

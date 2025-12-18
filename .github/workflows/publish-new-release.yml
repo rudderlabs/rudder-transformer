@@ -37,7 +37,7 @@ jobs:
           echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
@@ -152,22 +152,6 @@ jobs:
             --body ":crown: *An automated PR*"
         env:
           GH_TOKEN: ${{ secrets.PAT }}
-
-      - name: Delete Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'release/')
-        with:
-          branches: 'release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
-      - name: Delete Hotfix Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
-        with:
-          branches: 'hotfix-release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
 
       - name: Notify Slack Channel
         id: slack

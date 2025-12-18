@@ -321,11 +321,10 @@ export const deleteData = [
               ],
               batched: false,
               statusCode: 400,
-              error:
-                'failed to fetch zoho id for record for "No Leads is found with record details"',
+              error: 'failed to fetch zoho id for record: No Leads is found for record identifier',
               statTags: {
                 errorCategory: 'dataValidation',
-                errorType: 'configuration',
+                errorType: 'instrumentation',
                 destType: 'ZOHO',
                 module: 'destination',
                 implementation: 'cdkV2',
@@ -571,10 +570,10 @@ export const deleteData = [
               batched: false,
               statusCode: 400,
               error:
-                'failed to fetch zoho id for record for "Identifier values are not provided for Leads"',
+                'failed to fetch zoho id for record: Identifier values are not provided for Leads',
               statTags: {
                 errorCategory: 'dataValidation',
-                errorType: 'configuration',
+                errorType: 'instrumentation',
                 destType: 'ZOHO',
                 module: 'destination',
                 implementation: 'cdkV2',

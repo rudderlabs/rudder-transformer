@@ -13,7 +13,6 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 const Cache = require('../../util/cache');
-const stats = require('../../../util/stats');
 const {
   CLIENT_ID,
   CLIENT_SECRET,
@@ -373,30 +372,13 @@ async function getSalesforceIdForRecord({
   objectType,
   identifierType,
   identifierValue,
-  destination,
-  metadata,
   stateInfo,
 }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
-    stats.increment('salesforce_soql_lookup_count', {
-      method: 'getSalesforceIdForRecordUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
-      objectType,
-    });
-    return getSalesforceIdForRecordUsingSdk(
-      stateInfo.salesforceSdk,
-      objectType,
-      identifierType,
-      identifierValue,
-    );
-  }
-
-  return getSalesforceIdForRecordUsingHttp(
+  return getSalesforceIdForRecordUsingSdk(
+    stateInfo.salesforceSdk,
     objectType,
     identifierType,
     identifierValue,
-    { destination, metadata },
-    stateInfo.authInfo,
   );
 }
 
@@ -546,16 +528,8 @@ async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, met
  * @param {Record<string, any>} stateInfo The state info.
  * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
  */
-async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
-    stats.increment('salesforce_soql_lookup_count', {
-      method: 'getSalesforceIdForLeadUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
-      objectType: 'Lead',
-    });
-    return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
-  }
-  return getSalesforceIdForLeadUsingHttp(email, destination, stateInfo.authInfo, metadata);
+async function getSalesforceIdForLead({ email, destination, stateInfo }) {
+  return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
 }
 
 module.exports = {

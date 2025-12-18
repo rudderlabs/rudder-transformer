@@ -72,7 +72,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -112,7 +112,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -220,7 +220,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -261,7 +261,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -302,7 +302,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -412,7 +412,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -521,7 +521,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -630,7 +630,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               params: {},
               body: {
@@ -735,7 +735,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               version: '1',
               endpoint:
@@ -826,7 +826,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               version: '1',
               endpoint:
@@ -911,7 +911,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               version: '1',
               endpoint:
@@ -990,7 +990,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               version: '1',
               endpoint:
@@ -1074,7 +1074,7 @@ export const data = [
               headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
-                'OneSignal-Usage': 'RudderStack',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
               },
               version: '1',
               endpoint:

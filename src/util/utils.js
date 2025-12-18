@@ -3,7 +3,7 @@ const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
-const { AsyncLocalStorage } = require('async_hooks');
+const { AsyncLocalStorage } = require('node:async_hooks');
 
 const util = require('util');
 const NodeCache = require('node-cache');
@@ -80,13 +80,13 @@ const staticLookup =
 const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
   process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
 const SHARED_HTTP_AGENT_TIMEOUT = process.env.SHARED_HTTP_AGENT_TIMEOUT
-  ? parseInt(process.env.SHARED_HTTP_AGENT_TIMEOUT, 10)
+  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_TIMEOUT, 10)
   : 60000;
 const SHARED_HTTP_AGENT_MAX_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_SOCKETS
-  ? parseInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 10)
+  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 10)
   : 200;
 const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS
-  ? parseInt(process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS, 10)
+  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS, 10)
   : 10;
 
 const sharedAgentOptions = {

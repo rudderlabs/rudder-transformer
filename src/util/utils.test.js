@@ -12,6 +12,26 @@ const fetch = require('node-fetch');
 const stats = require('./stats');
 const { staticLookup, dnsCallbackStorage, fetchWithDnsWrapper } = require('./utils');
 
+describe('asyncHooks behaviour', () => {
+  it('should propagate correctly', () => {
+    const { AsyncLocalStorage } = require('async_hooks');
+    const ctx = new AsyncLocalStorage();
+
+    let count = 0;
+    const someFunction = () => {
+      const data = ctx.getStore();
+      if (count === 0) {
+        expect(data).toBe('test1');
+      } else {
+        expect(data).toBe('test2');
+      }
+      count++;
+    };
+    ctx.run('test1', someFunction);
+    ctx.run('test2', someFunction);
+  });
+});
+
 describe('staticLookup', () => {
   const RECORD_TYPE_A = 4;
   const HOST_NAME = 'example.com';

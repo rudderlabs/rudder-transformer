@@ -77,17 +77,42 @@ const staticLookup =
       });
   };
 
-const sharedHttpAgent = new http.Agent({
-  keepAlive: true,
+const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
+  process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
+const SHARED_HTTP_AGENT_TIMEOUT = process.env.SHARED_HTTP_AGENT_TIMEOUT
+  ? parseInt(process.env.SHARED_HTTP_AGENT_TIMEOUT, 10)
+  : 60000;
+const SHARED_HTTP_AGENT_MAX_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_SOCKETS
+  ? parseInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 10)
+  : 200;
+const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS
+  ? parseInt(process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS, 10)
+  : 10;
+
+const sharedAgentOptions = {
+  keepAlive: !SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE,
+  timeout: SHARED_HTTP_AGENT_TIMEOUT,
+  maxSockets: SHARED_HTTP_AGENT_MAX_SOCKETS,
+  maxFreeSockets: SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
+};
+
+const sharedHttpAgent = new http.Agent(sharedAgentOptions);
+const sharedHttpsAgent = new https.Agent(sharedAgentOptions);
+
+const sharedHttpAgentWithLookup = new http.Agent({
+  ...sharedAgentOptions,
   lookup: staticLookup(),
 });
 
-const sharedHttpsAgent = new https.Agent({
-  keepAlive: true,
+const sharedHttpsAgentWithLookup = new https.Agent({
+  ...sharedAgentOptions,
   lookup: staticLookup(),
 });
 
 const blockLocalhostRequests = (url) => {
+  if (process.env.ALLOW_LOCALHOST_FETCH === 'true') {
+    return;
+  }
   try {
     const parseUrl = new URL(url);
     const { hostname } = parseUrl;
@@ -109,10 +134,6 @@ const blockInvalidProtocolRequests = (url) => {
 };
 
 const fetchWithDnsWrapper = async (transformationTags, ...args) => {
-  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
-    return await fetch(...args);
-  }
-
   if (args.length === 0) {
     throw new Error('fetch url is required');
   }
@@ -121,6 +142,11 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
+  fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
+
+  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
+    return await fetch(fetchURL, fetchOptions);
+  }
 
   const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
@@ -129,7 +155,8 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
     });
   };
 
-  fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
+  fetchOptions.agent =
+    schemeName === 'https' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
   return dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
 };
 

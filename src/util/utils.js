@@ -77,17 +77,20 @@ const staticLookup =
       });
   };
 
+const parseEnvInt = (value, defaultValue) => {
+  if (!value) return defaultValue;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? defaultValue : parsed;
+};
+
 const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
   process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
-const SHARED_HTTP_AGENT_TIMEOUT = process.env.SHARED_HTTP_AGENT_TIMEOUT
-  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_TIMEOUT, 10)
-  : 60000;
-const SHARED_HTTP_AGENT_MAX_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_SOCKETS
-  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 10)
-  : 200;
-const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS
-  ? Number.parseInt(process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS, 10)
-  : 10;
+const SHARED_HTTP_AGENT_TIMEOUT = parseEnvInt(process.env.SHARED_HTTP_AGENT_TIMEOUT, 60000);
+const SHARED_HTTP_AGENT_MAX_SOCKETS = parseEnvInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 200);
+const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = parseEnvInt(
+  process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
+  10,
+);
 
 const sharedAgentOptions = {
   keepAlive: !SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE,

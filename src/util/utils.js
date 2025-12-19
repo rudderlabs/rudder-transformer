@@ -145,9 +145,9 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
-  fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
 
   if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
+    fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
     return await fetch(fetchURL, fetchOptions);
   }
 

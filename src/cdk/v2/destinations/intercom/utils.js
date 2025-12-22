@@ -4,6 +4,7 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
+  warn,
 } = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
 const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
@@ -291,6 +292,9 @@ const searchContact = async (message, destination, metadata) => {
   }
   // if lookup field value is not present, we are returning null
   if (!lookupFieldValue) {
+    warn('Lookup field value is not present for searchContact', {
+      lookupField,
+    });
     return null;
   }
   const data = JSON.stringify({

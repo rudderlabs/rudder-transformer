@@ -503,6 +503,18 @@ describe('searchContact utility test', () => {
       );
     }
   });
+  it('Should return null if lookup field value is not present', async () => {
+    const message = {
+      context: {
+        traits: { phone: '+91 9999999999' },
+        integrations: { INTERCOM: { lookup: 'email' } },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    const result = await searchContact(message, destination);
+    expect(result).toBeNull();
+  });
 });
 
 describe('createOrUpdateCompany utility test', () => {

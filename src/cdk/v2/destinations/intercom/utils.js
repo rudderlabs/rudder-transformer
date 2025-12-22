@@ -289,6 +289,10 @@ const searchContact = async (message, destination, metadata) => {
     lookupField = 'external_id';
     lookupFieldValue = message.traits.external_id;
   }
+  // if lookup field value is not present, we are returning null
+  if (!lookupFieldValue) {
+    return null;
+  }
   const data = JSON.stringify({
     query: {
       operator: 'AND',

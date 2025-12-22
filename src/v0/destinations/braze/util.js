@@ -457,7 +457,9 @@ const processDeduplication = (userStore, payload, destinationId, failedLookupIde
   // Check if this event's identifier failed to lookup due to API failure
   const identifier = payload.external_id || payload.user_alias?.alias_name;
   if (failedLookupIdentifiers && failedLookupIdentifiers.has(identifier)) {
-    stats.increment('braze_dedup_skipped_due_to_lookup_failure', { destination_id: destinationId });
+    stats.increment('braze_dedup_skipped_due_to_lookup_failure_count', {
+      destination_id: destinationId,
+    });
   }
 
   const dedupedAttributePayload = BrazeDedupUtility.deduplicate(payload, userStore);

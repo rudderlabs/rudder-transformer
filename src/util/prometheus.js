@@ -643,7 +643,7 @@ class Prometheus {
       },
       {
         name: 'braze_lookup_success_count',
-        help: 'braze look-up success count',
+        help: 'Count of events where user look up was successful in Braze destination transformation.',
         type: 'counter',
         labelNames: ['http_status', 'destination_id'],
       },
@@ -671,7 +671,7 @@ class Prometheus {
         ],
       },
       {
-        name: 'braze_dedup_skipped_due_to_lookup_failure',
+        name: 'braze_dedup_skipped_due_to_lookup_failure_count',
         help: 'Count of events that skipped deduplication due to lookup API failure',
         type: 'counter',
         labelNames: ['destination_id'],

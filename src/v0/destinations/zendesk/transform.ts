@@ -233,7 +233,7 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         module: 'router',
         metadata,
       });
-      if (!isHttpStatusSuccess(processedResponse.response)) {
+      if (!isHttpStatusSuccess(processedResponse.status)) {
         logger.error(`Failed to create user field: ${processedResponse.response.error}`);
       }
     }),

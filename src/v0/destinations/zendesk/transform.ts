@@ -234,7 +234,7 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         metadata,
       });
       if (!isHttpStatusSuccess(processedResponse.status)) {
-        logger.error(`Failed to create user field: ${processedResponse.response.error}`);
+        logger.error(`${NAME}:: Failed to create user field: ${processedResponse.response.error}`);
       }
     }),
   );
@@ -262,7 +262,7 @@ async function checkAndCreateUserFields(
   });
 
   if (!isHttpStatusSuccess(response.status)) {
-    logger.warn(`Failed to check user fields: ${response.response.error}`);
+    logger.warn(`${NAME}:: Failed to check user fields: ${response.response.error}`);
     return;
   }
   const fields = get(response.response, fieldJson);

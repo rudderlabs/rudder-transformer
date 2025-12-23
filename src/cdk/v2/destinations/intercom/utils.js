@@ -291,8 +291,13 @@ const searchContact = async (message, destination, metadata) => {
     lookupFieldValue = message.traits.external_id;
   }
   // if lookup field value is not present, we are returning null
-  if (!lookupFieldValue) {
-    warn('Lookup field value is not present for searchContact', {
+  if (
+    !isDefinedAndNotNull(lookupFieldValue) ||
+    (typeof lookupFieldValue !== 'string' &&
+      typeof lookupFieldValue !== 'number' &&
+      typeof lookupFieldValue !== 'boolean')
+  ) {
+    warn('Lookup field value is not defined or not a string, number, or boolean', {
       lookupField,
     });
     return null;

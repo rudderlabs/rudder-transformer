@@ -71,11 +71,27 @@ jobs:
       skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+  build-transformer-image-ecr:
+    name: Build Transformer Docker Image(ECR) - Prod
+    # Only merged pull requests from release candidate branches must trigger
+    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
+    needs: [ generate-tag-names ]
+    uses: ./.github/workflows/build-push-docker-image-ecr.yml
+    with:
+      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
+      dockerfile: Dockerfile
+      load_target: development
+      push_target: production
+      build_type: dt
+      use_merge_sha: true
+      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
 
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request
     runs-on: ubuntu-latest
-    needs: [generate-tag-names, build-transformer-image]
+    needs: [generate-tag-names, build-transformer-image, build-transformer-image-ecr]
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer

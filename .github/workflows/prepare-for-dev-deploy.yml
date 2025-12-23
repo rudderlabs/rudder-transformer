@@ -90,6 +90,35 @@ jobs:
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  build-transformer-image-ecr:
+    name: Build Transformer Docker Image(ECR) - Dev
+    # Only merged pull requests must trigger
+    if: github.event.pull_request.merged == true
+    needs: [ generate-tag-names ]
+    uses: ./.github/workflows/build-push-docker-image-ecr.yml
+    with:
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
+      dockerfile: Dockerfile
+      load_target: development
+      push_target: production
+      use_merge_sha: true
+
+  build-user-transformer-image-ecr:
+    name: Build User Transformer Docker Image(ECR) - Dev
+    # Only merged pull requests must trigger
+    if: github.event.pull_request.merged == true
+    needs: [ generate-tag-names ]
+    uses: ./.github/workflows/build-push-docker-image-ecr.yml
+    with:
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      dockerfile: Dockerfile-ut-func
+      load_target: development
+      push_target: production
+
   restart-k8s-deployment:
     name: Restart K8s Deployment
     runs-on: ubuntu-latest

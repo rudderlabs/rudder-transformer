@@ -1,0 +1,315 @@
+name: Build Transformer Docker Image - ECR
+
+on:
+  workflow_call:
+    inputs:
+      build_tag:
+        required: true
+        type: string
+      push_tags:
+        required: true
+        type: string
+      img_tag:
+        required: true
+        type: string
+      dockerfile:
+        required: true
+        type: string
+      load_target:
+        required: true
+        type: string
+      push_target:
+        required: true
+        type: string
+      build_type:
+        type: string
+      use_merge_sha:
+        type: boolean
+        default: false
+      skip_tests:
+        type: boolean
+        default: false
+        description: if this option is true, we would skip tests while building docker image
+      workflow_url:
+        type: string
+    secrets:
+      DOCKERHUB_TOKEN:
+        required: true
+
+permissions:
+  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
+  contents: read # This is required for actions/checkout
+
+
+jobs:
+  check_actor:
+    runs-on: ubuntu-latest
+    name: Check if actor is dependabot
+    outputs:
+      is_dependabot: ${{ steps.check.outputs.is_dependabot }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Check actor
+        id: check
+        run: |
+          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+            echo "is_dependabot=true" >> $GITHUB_OUTPUT
+            echo "Actor is dependabot[bot] - skipping certain steps"
+          else
+            echo "is_dependabot=false" >> $GITHUB_OUTPUT
+            echo "Actor is ${{ github.actor }} - proceeding normally"
+          fi
+
+  get_sha:
+    runs-on: ubuntu-latest
+    name: Get SHA information
+    outputs:
+      sha: ${{steps.getSHA.outputs.SHA}}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout SHA
+        id: getSHA
+        run: |
+          if ${{inputs.use_merge_sha}} == true; then
+            sha=$(echo ${{github.sha}})
+          else
+            sha=$(echo ${{ github.event.pull_request.head.sha }})
+          fi
+          echo "SHA: $sha"
+          echo "SHA=$sha" >> $GITHUB_OUTPUT
+
+  get_changed_files:
+    runs-on: ubuntu-latest
+    name: Get Changed files
+    outputs:
+      should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 1
+      - id: files
+        uses: Ana06/get-changed-files@a2f6df8c195e713211f9f6258baafc445149355b # v1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          format: 'json'
+      - id: processing
+        run: |
+          readarray -t modified_files <<<"$(jq -r '.[]' <<<'${{ steps.files.outputs.modified }}')"
+          echo "Modified files: $modified_files"
+          found=false
+          for modified_file in "${modified_files[@]}"; do
+            if [[ "$modified_file" == "Dockerfile" || "$modified_file" == "docker-compose.yml" || "$modified_file" == "Dockerfile" || "$modified_file" == "Dockerfile-ut-func" ]]; then
+              found=true
+              break
+            fi
+          done
+          echo "Match Found: $found"
+          echo "::set-output name=should_execute_tests::$found"
+
+
+
+  build-transformer-image-arm64:
+    name: Build Transformer Docker Image ARM64
+    runs-on: [self-hosted, Linux, ARM64, ubuntu-22]
+    needs: [check_actor, get_sha, get_changed_files]
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          ref: ${{ needs.get_sha.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Configure AWS Credentials
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
+        with:
+          role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_ECR_REGION }}
+          role-session-name: ${{ github.event.repository.name }}
+
+      - name: Login to ECR
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      # This step is needed to ensure we run tests on a locally built image.
+      # The rudderlabs/build-scan-push-action does not respect the 'load' input parameter
+      # because it's designed for building and pushing images, not loading them locally.
+      - name: Build and load Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          load: true
+          platforms: linux/arm64
+          push: false
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.build_tag }}
+          target: ${{ inputs.load_target }}
+
+      - name: Run Tests
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.build_tag }}
+        run: |
+          echo "Running tests on Docker image: $BUILD_TAG"
+          echo "Running JavaScript tests..."
+          docker run --rm $BUILD_TAG npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm $BUILD_TAG npm run test:ts:ci
+
+      - name: Build and Push Multi-platform Images
+        uses: rudderlabs/build-scan-push-action@96d7bfca912dd2e8805dbb322dc2540504ecac1e # v2.1.0
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.push_target }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-arm64
+          platforms: |
+            linux/arm64
+          build-args: |
+            version=${{ inputs.img_tag }}-arm64
+            GIT_COMMIT_SHA=${{ github.sha }}
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
+
+  build-transformer-image-amd64:
+    name: Build Transformer Docker Image AMD64
+    runs-on: [self-hosted, Linux, X64]
+    needs: [check_actor, get_sha, get_changed_files]
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          ref: ${{ needs.get_sha.outputs.sha }}
+          fetch-depth: 1
+
+      - name: Configure AWS Credentials
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
+        with:
+          role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_ECR_REGION }}
+          role-session-name: ${{ github.event.repository.name }}
+
+      - name: Login to ECR
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      # This step is needed to ensure we run tests on a locally built image.
+      # The rudderlabs/build-scan-push-action does not respect the 'load' input parameter
+      # because it's designed for building and pushing images, not loading them locally.
+      - name: Build and load Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          load: true
+          platforms: linux/amd64
+          push: false
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.build_tag }}
+          target: ${{ inputs.load_target }}
+
+      - name: Run Tests
+        if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
+        env:
+          BUILD_TAG: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.build_tag }}
+        run: |
+          echo "Running tests on Docker image: $BUILD_TAG"
+          echo "Running JavaScript tests..."
+          docker run --rm $BUILD_TAG npm run test:js:ci
+          echo "Running TypeScript tests..."
+          docker run --rm $BUILD_TAG npm run test:ts:ci
+
+      - name: Build and Push Multi-platform Images
+        uses: rudderlabs/build-scan-push-action@96d7bfca912dd2e8805dbb322dc2540504ecac1e # v2.1.0
+        if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.push_target }}
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-amd64
+          platforms: |
+            linux/amd64
+          build-args: |
+            version=${{ inputs.img_tag }}-amd64
+            GIT_COMMIT_SHA=${{ github.sha }}
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
+
+  create-manifest:
+    name: Create multi-arch manifest
+    runs-on: ubuntu-latest
+    needs: [check_actor, build-transformer-image-amd64, build-transformer-image-arm64]
+    if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
+
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        with:
+          egress-policy: audit
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
+        with:
+          role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_ECR_REGION }}
+          role-session-name: ${{ github.event.repository.name }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+      - name: Create multi-arch manifest
+        run: |
+          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }} ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-amd64 ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-arm64
+
+      - name: Create latest multi-arch manifest
+        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-dt-deploy.yaml`
+        if: ${{ inputs.build_type == 'dt' }}
+        run: |
+          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/rudderstack/rudder-transformer:latest ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-amd64 ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-arm64
+
+      - name: Create latest ut multi-arch manifest
+        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-ut-deploy.yaml`
+        if: ${{ inputs.build_type == 'ut' }}
+        run: |
+          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/rudderstack/rudder-transformer:ut-latest ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-amd64 ${{ steps.login-ecr.outputs.registry }}/${{ inputs.push_tags }}-arm64

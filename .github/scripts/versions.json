@@ -1,0 +1,345 @@
+[
+  {
+    "Destination": "Active campaign",
+    "Version currently referred in CloudMode Services": "/api/3/contact/sync, /api/3/tags, /api/3/fields, /api/3/contactTags, /api/3/fieldValues, /api/3/contactLists, /api/3/siteTrackingDomains, /api/3/eventTrackingEvents, https://trackcmp.net/event",
+    "Link to check Versions documentation": "https://developers.activecampaign.com/reference/overview",
+    "Latest Version rolled out": "/3/",
+    "Sunset Date Current Version used in backend": "Not Available (Version 1 still supported, no sunset plans announced)"
+  },
+  {
+    "Destination": "Algolia",
+    "Version currently referred in CloudMode Services": "https://insights.algolia.io/1/events",
+    "Link to check Versions documentation": "https://www.algolia.com/doc/rest-api/insights/#section/Version",
+    "Latest Version rolled out": "/1/",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Amplitude",
+    "Version currently referred in CloudMode Services": "/2/httpapi,/batch,/groupidentify,/usermap,/2/deletions/users",
+    "Link to check Versions documentation": "https://amplitude.com/docs/apis/analytics https://community.amplitude.com/product-updates",
+    "Latest Version rolled out": "/2/httpapi,/batch,/groupidentify,/usermap,/2/deletions/users",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "AppsFlyer",
+    "Version currently referred in CloudMode Services": "https://api2.appsflyer.com/inappevent/, https://api3.appsflyer.com/inappevent/ (v1/inappevent, v2/inappevent)",
+    "Link to check Versions documentation": "https://dev.appsflyer.com/hc/reference/s2s-events-api3-post",
+    "Latest Version rolled out": "api3 (v2/inappevent)",
+    "Sunset Date Current Version used in backend": "Not Mentioned (api2 legacy, api3 current)"
+  },
+  {
+    "Destination": "Attentive",
+    "Version currently referred in CloudMode Services": "/v1/identity-resolution/user-identifiers, /v1/attributes/custom, /v1/subscriptions, /v1/subscriptions/unsubscribe, /v1/events/custom, /v1/events/ecommerce/purchase, /v1/events/ecommerce/add-to-cart, /v1/events/ecommerce/product-view",
+    "Link to check Versions documentation": "https://docs.attentive.com/openapi/reference/overview/ https://docs.attentive.com/openapi/reference-v2/overview/",
+    "Latest Version rolled out": "/v2/",
+    "Sunset Date Current Version used in backend": "Not publicly announced. v2 is available and recommended, but v1 remains supported."
+  },
+  {
+    "Destination": "Bloomreach",
+    "Version currently referred in CloudMode Services": "/track/v2/projects/:projectToken/batch",
+    "Link to check Versions documentation": "https://documentation.bloomreach.com/engagement/reference/welcome",
+    "Latest Version rolled out": "/v2/",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Braze",
+    "Version currently referred in CloudMode Services": "Not versioned (endpoints: /users/track, /users/identify, /users/merge, /users/delete, /users/export/ids, /v2/subscription/status/set)",
+    "Link to check Versions documentation": "https://www.braze.com/docs/api/basics/#endpoints",
+    "Latest Version rolled out": "Not versioned (Braze maintains backward compatibility without versioning)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "CleverTap",
+    "Version currently referred in CloudMode Services": "/1/upload, /1/delete/profiles.json",
+    "Link to check Versions documentation": "https://developer.clevertap.com/docs/upload-events-api",
+    "Latest Version rolled out": "/1/",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Cordial",
+    "Version currently referred in CloudMode Services": "/v2/contacts, /v2/contacts/{contactId}, /v2/contacts/email:{email}, /v2/contactactivities",
+    "Link to check Versions documentation": "https://support.cordial.com/hc/en-us/articles/203885958-Contacts-API",
+    "Latest Version rolled out": "v2",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Criteo Audience",
+    "Version currently referred in CloudMode Services": "/2025-04/audiences/:audienceId/contactlist",
+    "Link to check Versions documentation": "https://developers.criteo.com/marketing-solutions/docs/versioning-policy",
+    "Latest Version rolled out": "v2025-10 (supported until October 2026)",
+    "Sunset Date Current Version used in backend": "April 2026 (12 months after release - version 2025-04 released April 2025)"
+  },
+  {
+    "Destination": "Customer IO",
+    "Version currently referred in CloudMode Services": "/api/v1/customers/:id, /api/v1/customers/:id/events, /api/v1/events, /api/v1/merge_customers, /api/v1/customers/:id/devices, /api/v2/batch",
+    "Link to check Versions documentation": "https://docs.customer.io/api/track/",
+    "Latest Version rolled out": "v2 (for batch operations), v1 (for individual operations)",
+    "Sunset Date Current Version used in backend": "No information provided on sunset date (both v1 and v2 are stable and actively maintained)"
+  },
+  {
+    "Destination": "FB App Events",
+    "Version currently referred in CloudMode Services": "/v24.0/:appID/activities",
+    "Link to check Versions documentation": "https://developers.facebook.com/docs/graph-api/changelog/versions",
+    "Latest Version rolled out": "v24.0",
+    "Sunset Date Current Version used in backend": "@September 24, 2026"
+  },
+  {
+    "Destination": "Facebook Conversions",
+    "Version currently referred in CloudMode Services": "/v24.0/:pixelId/events",
+    "Link to check Versions documentation": "https://developers.facebook.com/docs/marketing-api/marketing-api-changelog",
+    "Latest Version rolled out": "v24.0",
+    "Sunset Date Current Version used in backend": "TBD but they are keeping them for ~11 months or so.\nExpected deprecation time ~ December 2025"
+  },
+  {
+    "Destination": "Facebook Custom Audience",
+    "Version currently referred in CloudMode Services": "/v23.0/:audienceId/users",
+    "Link to check Versions documentation": "https://developers.facebook.com/docs/marketing-api/marketing-api-changelog",
+    "Latest Version rolled out": "v23.0",
+    "Sunset Date Current Version used in backend": "@May 6, 2025"
+  },
+  {
+    "Destination": "Facebook Pixel",
+    "Version currently referred in CloudMode Services": "/v22.0/:PIXEL_ID/events",
+    "Link to check Versions documentation": "https://developers.facebook.com/docs/graph-api/changelog/versions/",
+    "Latest Version rolled out": "v24.0",
+    "Sunset Date Current Version used in backend": "Facebook typically deprecates API versions after ~11 months. v22.0 expected deprecation ~December 2025"
+  },
+  {
+    "Destination": "Fullstory",
+    "Version currently referred in CloudMode Services": "/v2/users, /v2/events",
+    "Link to check Versions documentation": "https://help.fullstory.com/hc/en-us/articles/360041242094-Fullstory-on-a-CDN",
+    "Latest Version rolled out": "v2",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "GAEC",
+    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v20",
+    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+  },
+  {
+    "Destination": "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
+    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates",
+    "Latest Version rolled out": "v20",
+    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+  },
+  {
+    "Destination": "GOOGLE_ADWORDS_REMARKETING_LISTS",
+    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/offlineUserDataJobs, /v19/customers/:customerId/offlineUserDataJobs/:jobId:create, /v19/customers/:customerId/offlineUserDataJobs/:jobId:addOperations",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates\nhttps://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v20",
+    "Sunset Date Current Version used in backend": "v17 @June 4, 2025 v18 September 2025, v19 will be deprecated in February 2026"
+  },
+  {
+    "Destination": "Google Analytics 4 (GA4)",
+    "Version currently referred in CloudMode Services": "/mp/collect, /debug/mp/collect",
+    "Link to check Versions documentation": "https://developers.google.com/analytics/devguides/collection/protocol/ga4/changelog",
+    "Latest Version rolled out": "N/A (No versioning in URL, continuously updated)",
+    "Sunset Date Current Version used in backend": "N/A (No versioned API to sunset)"
+  },
+  {
+    "Destination": "HubSpot",
+    "Version currently referred in CloudMode Services": "/contacts/v1/contact, /contacts/v1/contact/createOrUpdate/email/:contact_email, /contacts/v1/contact/batch/, /properties/v1/contacts/properties, https://track.hubspot.com/v1/event, /crm/v3/objects/contacts/search, /crm/v3/objects/:objectType/search, /crm/v3/objects/contacts, /crm/v3/objects/contacts/:contactId, /crm/v3/objects/contacts/batch/create, /crm/v3/objects/contacts/batch/update, /crm/v3/associations/:fromObjectType/:toObjectType/batch/create, /events/v3/send",
+    "Link to check Versions documentation": "https://developers.hubspot.com/changelog \nAnnounced & Upcoming\n\nAPI docs (there's drop-down to select the version): https://developers.hubspot.com/docs/reference/api/crm/associations/association-details",
+    "Latest Version rolled out": "v4, https://api.hubapi.com//crm/v4",
+    "Sunset Date Current Version used in backend": "v1 Lists API —> April 30, 2026\nhttps://developers.hubspot.com/changelog/upcoming-sunset-v1-lists-api\nLegacy Behavioral Events Tool —> August 1, 2025"
+  },
+  {
+    "Destination": "Impact",
+    "Version currently referred in CloudMode Services": "https://trkapi.impact.com/PageLoad, /Advertisers/:accountSID/Conversions",
+    "Link to check Versions documentation": "https://integrations.impact.com/impact-brand/changelog",
+    "Latest Version rolled out": "v12",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Intercom",
+    "Version currently referred in CloudMode Services": "/contacts/search, /contacts, /contacts/:id, /users, /companies, /contacts/:id/companies, /contacts/:contact_id/companies/:company_id, /events, /tags, /user_delete_requests (Intercom-Version: 1.4 & 2.10)",
+    "Link to check Versions documentation": "https://developers.intercom.com/docs/build-an-integration/learn-more/rest-apis/api-changelog?utm_source=chatgpt.com",
+    "Latest Version rolled out": "2.13 (codebase uses 2.10, latest available is 2.13)",
+    "Sunset Date Current Version used in backend": "Version 1.4 released 2019-09-26, no official sunset date announced. Version 2.13 is latest available. Codebase currently uses 2.10. Recommendation: migrate from 1.4 to 2.x."
+  },
+  {
+    "Destination": "Iterable",
+    "Version currently referred in CloudMode Services": "/api/users/update, /api/users/registerBrowserToken, /api/users/registerDeviceToken, /api/events/track, /api/commerce/trackPurchase, /api/commerce/updateCart, /api/users/updateEmail, /api/users/bulkUpdate, /api/events/trackBulk, /api/users/byUserId/:userId, /api/catalogs/:objectType/items",
+    "Link to check Versions documentation": "https://arc.net/l/quote/lucsbxri",
+    "Latest Version rolled out": "Not applicable (No versioning in API URL)",
+    "Sunset Date Current Version used in backend": "Not applicable"
+  },
+  {
+    "Destination": "June",
+    "Version currently referred in CloudMode Services": "/api/identify, /api/track, /api/group, /api/page",
+    "Link to check Versions documentation": "https://docs.june.so/api-reference",
+    "Latest Version rolled out": "Not applicable (No versioning in API URL)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Klaviyo",
+    "Version currently referred in CloudMode Services": "/api/profiles, /api/profile-import, /api/events, /api/profile-subscription-bulk-create-jobs, /api/profile-subscription-bulk-delete-jobs (revision headers: 2023-02-22, 2024-06-15)",
+    "Link to check Versions documentation": "https://developers.klaviyo.com/en/reference/api_overview",
+    "Latest Version rolled out": "2025-04-15",
+    "Sunset Date Current Version used in backend": "2023-02-22 → till 2025-02-22\n2024-06-15 → till 2026-06-15"
+  },
+  {
+    "Destination": "LaunchDarkly Segment",
+    "Version currently referred in CloudMode Services": "/api/v2/segment-targets/rudderstack",
+    "Link to check Versions documentation": "https://docs.launchdarkly.com/home/account-security/api-access-tokens",
+    "Latest Version rolled out": "v2",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Linkedin Ads",
+    "Version currently referred in CloudMode Services": "/rest/conversionEvents (API version header: 202509)",
+    "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes",
+    "Latest Version rolled out": "202511 (November 2025)",
+    "Sunset Date Current Version used in backend": "September 2026 (version 202509 released September 2025, supported for minimum 12 months)"
+  },
+  {
+    "Destination": "Linkedin Audience",
+    "Version currently referred in CloudMode Services": "/rest/dmpSegments/:audienceId/users (API version header: 202509)",
+    "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes",
+    "Latest Version rolled out": "202511 (November 2025)",
+    "Sunset Date Current Version used in backend": "September 2026 (version 202509 released September 2025, supported for minimum 12 months)"
+  },
+  {
+    "Destination": "Mailchimp",
+    "Version currently referred in CloudMode Services": "/3.0/lists/:audienceId/members/:emailHash, /3.0/lists/:audienceId/members/:emailHash/events",
+    "Link to check Versions documentation": "https://mailchimp.com/developer/marketing/docs/fundamentals/#api-versions",
+    "Latest Version rolled out": "v3.0",
+    "Sunset Date Current Version used in backend": "Not yet announced"
+  },
+  {
+    "Destination": "Mixpanel",
+    "Version currently referred in CloudMode Services": "/import, /track, /engage, /groups, /api/app/data-deletions/v3.0/",
+    "Link to check Versions documentation": "https://developer.mixpanel.com/reference/overview",
+    "Latest Version rolled out": "N/A (No versioning in URL, GDPR API uses v3.0)",
+    "Sunset Date Current Version used in backend": "Not Available (Mixpanel maintains backward compatibility)"
+  },
+  {
+    "Destination": "Movable Ink",
+    "Version currently referred in CloudMode Services": "Custom endpoint from config (collector.movableink-dmz.com/behavioral/{endpoint})",
+    "Link to check Versions documentation": "https://movableink.com/developers/docs",
+    "Latest Version rolled out": "Not applicable (Uses custom configurable endpoint)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "One Signal",
+    "Version currently referred in CloudMode Services": "/api/v1/players, /api/v1/apps/:appId/users/:userId, /apps/:app_id/users (User Model v2)",
+    "Link to check Versions documentation": "https://documentation.onesignal.com/reference/create-user",
+    "Latest Version rolled out": "User Model (v2) as of Oct '24",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Optimizely FullStack",
+    "Version currently referred in CloudMode Services": "/v1/events",
+    "Link to check Versions documentation": "https://docs.developers.optimizely.com/experimentation-data/reference/post_events",
+    "Latest Version rolled out": "v1",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Pinterest Tag",
+    "Version currently referred in CloudMode Services": "/events/v3, /v5/ad_accounts/:adAccountId/events",
+    "Link to check Versions documentation": "https://developers.pinterest.com/docs/api/v5/introduction/",
+    "Latest Version rolled out": "v5",
+    "Sunset Date Current Version used in backend": "Not publicly announced. v5 is current, v3 events endpoint still supported but v5 recommended."
+  },
+  {
+    "Destination": "PostHog",
+    "Version currently referred in CloudMode Services": "/batch",
+    "Link to check Versions documentation": "https://posthog.com/docs/api/post-only-endpoints",
+    "Latest Version rolled out": "Not applicable (No versioning in API)",
+    "Sunset Date Current Version used in backend": "Not Available (No versioned API to sunset)"
+  },
+  {
+    "Destination": "Postscript",
+    "Version currently referred in CloudMode Services": "/api/v2/subscribers, /api/v2/subscribers/:id, /api/v2/custom-events",
+    "Link to check Versions documentation": "https://developers.postscript.io/reference",
+    "Latest Version rolled out": "v2.0",
+    "Sunset Date Current Version used in backend": "No information (v1 API still supported but v2 recommended)"
+  },
+  {
+    "Destination": "Reddit",
+    "Version currently referred in CloudMode Services": "/api/v2.0/conversions/events/:accountId, /api/v3/pixels/:accountId/conversion_events",
+    "Link to check Versions documentation": "https://ads-api.reddit.com/docs/v3/changelog",
+    "Latest Version rolled out": "V3",
+    "Sunset Date Current Version used in backend": "Not publicly announced. v3 is current, v2.0 still supported but v3 recommended."
+  },
+  {
+    "Destination": "Redis",
+    "Version currently referred in CloudMode Services": "v9",
+    "Latest Version rolled out": "v9 (v9.10.0)",
+    "Link to check Versions documentation": "https://pkg.go.dev/github.com/redis/go-redis/v9@v9.7.0?tab=versions",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "S3",
+    "Version currently referred in CloudMode Services": "We are using rudder server",
+    "Latest Version rolled out": "v1.76.0",
+    "Link to check Versions documentation": "https://github.com/aws/aws-sdk-go-v2/tags",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "SFMC",
+    "Version currently referred in CloudMode Services": "/v2/token, /contacts/v1/contacts, /hub/v1/dataevents/key:{externalKey}/rows/{primaryKey}:{value}, /interaction/v1/events",
+    "Link to check Versions documentation": "Contacts: https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_contacts/createContacts.html\nInsert Contact: https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc-data_extension_rows_sync?meta=Upsert%2Ba%2BRowset%2Bby%2BUsing%2Ba%2BData%2BExtension%2BExternal%2BKey\nEvent: https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_interaction/postEvent.html\nAuth: https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_auth?meta=getAccessToken",
+    "Latest Version rolled out": "v1 (REST API)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "SFTP",
+    "Version currently referred in CloudMode Services": "Not applicable (File transfer protocol, not REST API)",
+    "Link to check Versions documentation": "https://tools.ietf.org/html/rfc4253",
+    "Latest Version rolled out": "Not applicable (SFTP protocol version)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Salesforce",
+    "Version currently referred in CloudMode Services": "/services/data/v50.0/sobjects/Lead, /services/data/v50.0/sobjects/Contact, /services/oauth2/token",
+    "Link to check Versions documentation": "https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_lead.htm",
+    "Latest Version rolled out": 64,
+    "Sunset Date Current Version used in backend": "v50.0 is in supported range (31.0-63.0). Versions 21.0-30.0 deprecated Summer '22, retiring Summer '25. Versions 7.0-20.0 already retired."
+  },
+  {
+    "Destination": "Sendinblue",
+    "Version currently referred in CloudMode Services": "/v3/contacts, /v3/contacts/:identifier, /v3/contacts/doubleOptinConfirmation, /v3/contacts/lists/:listId/contacts/remove, /api/v2/trackEvent, /api/v2/trackLink, /api/v2/trackPage",
+    "Link to check Versions documentation": "https://developers.brevo.com/reference/createcontact, https://tracker-doc.brevo.com/reference/trackevent-3",
+    "Latest Version rolled out": "v3 (main API), v2 (tracker API)",
+    "Sunset Date Current Version used in backend": "Not publicly announced. v3 (main API) and v2 (tracker API) are current and actively maintained."
+  },
+  {
+    "Destination": "Slack",
+    "Version currently referred in CloudMode Services": "No API as such as it just uses urls from slack channels as endpoint and schema is same",
+    "Latest Version rolled out": "Not applicable",
+    "Link to check Versions documentation": "https://api.slack.com/messaging/webhooks",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Tiktok Ads",
+    "Version currently referred in CloudMode Services": "/open_api/v1.3/pixel/track/, /open_api/v1.3/pixel/batch/, /open_api/v1.3/event/track/",
+    "Link to check Versions documentation": "https://www.notion.so/00530860bb734f11b35b4c8d751a20bf?pvs=21",
+    "Latest Version rolled out": "Events 2.0 (v1.3 API)",
+    "Sunset Date Current Version used in backend": "Events 1.0: H2 2024 Events 2.0: Not Available"
+  },
+  {
+    "Destination": "Trade Desk",
+    "Version currently referred in CloudMode Services": "/track/realtimeconversion (v3 portal)",
+    "Link to check Versions documentation": "https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external",
+    "Latest Version rolled out": "v3",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Wunderkind",
+    "Version currently referred in CloudMode Services": "Custom endpoint (uses account-specific configuration)",
+    "Link to check Versions documentation": "https://support.wunderkind.com/hc/en-us/articles/360041242094",
+    "Latest Version rolled out": "Not applicable (Uses account-specific endpoint configuration)",
+    "Sunset Date Current Version used in backend": "Not Available"
+  },
+  {
+    "Destination": "Zoho",
+    "Version currently referred in CloudMode Services": "/crm/v6/:module/upsert, /crm/v6/:module (delete)",
+    "Latest Version rolled out": "v8",
+    "Link to check Versions documentation": "https://www.zoho.com/crm/whats-new/release-notes.html?yearOpt=all&labelTag=Developer%20Platform&topicTag=all&DCTag=all&editionTag=all\nhttps://www.zoho.com/crm/developer/docs/api/v7/",
+    "Sunset Date Current Version used in backend": "Not Available"
+  }
+]

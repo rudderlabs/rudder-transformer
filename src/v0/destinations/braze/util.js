@@ -257,13 +257,29 @@ const BrazeDedupUtility = {
             metadata,
           },
         );
-        stats.counter('braze_lookup_failure_count', 1, {
-          http_status: lookUpResponse.status,
-          destination_id: destination.ID,
-        });
-        const { users } = lookUpResponse.response;
 
-        return users;
+        // Track failed lookups and collect failed identifiers for non-2xx responses
+        if (!isHttpStatusSuccess(lookUpResponse.status)) {
+          // Collect failed identifiers (external_ids and alias_names)
+          const failedIdentifiers = [
+            ...externalIdentifiers.map((id) => id.external_id),
+            ...aliasIdentifiers.map((id) => id.alias_name),
+          ];
+          stats.histogram('braze_lookup_failure_identifiers', failedIdentifiers.length, {
+            http_status: lookUpResponse.status,
+            destination_id: destination.ID,
+          });
+          return { users: [], failedIdentifiers };
+        }
+        stats.histogram(
+          'braze_lookup_success_identifiers',
+          externalIdentifiers.length + aliasIdentifiers.length,
+          {
+            destination_id: destination.ID,
+          },
+        );
+        const { users } = lookUpResponse.response;
+        return { users: users || [], failedIdentifiers: [] };
       }),
     );
   },
@@ -273,24 +289,37 @@ const BrazeDedupUtility = {
    * uses the external_id field and the alias_name field to lookup users
    *
    * @param {*} inputs router transform input events array
-   * @returns {Promise<Array>} array of braze user objects
+   * @returns {Promise<{users: Array, failedIdentifiers: Set}>} object containing user objects and failed identifiers
    */
   async doLookup(inputs) {
     const lookupStartTime = new Date();
     const { destination, metadata } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
-    const chunkedUserData = await this.doApiLookup(identfierChunks, { destination, metadata });
+    const chunkedResults = await this.doApiLookup(identfierChunks, { destination, metadata });
+
+    // Collect all users and failed identifiers from all chunks
+    const allUsers = [];
+    const failedIdentifiers = new Set();
+    chunkedResults.forEach((result) => {
+      if (result.users) {
+        allUsers.push(...result.users);
+      }
+      if (result.failedIdentifiers) {
+        result.failedIdentifiers.forEach((id) => failedIdentifiers.add(id));
+      }
+    });
+
     stats.timing('braze_lookup_time', lookupStartTime, {
       destination_id: destination.ID,
     });
-    stats.histogram('braze_lookup_count', chunkedUserData.length, {
+    stats.histogram('braze_lookup_count', chunkedResults.length, {
       destination_id: destination.ID,
     });
     stats.histogram('braze_lookup_user_count', externalIdsToQuery.length + aliasIdsToQuery.length, {
       destination_id: destination.ID,
     });
-    return _.flatMap(chunkedUserData);
+    return { users: allUsers, failedIdentifiers };
   },
 
   /**
@@ -424,9 +453,18 @@ const BrazeDedupUtility = {
  * @param {*} userStore
  * @param {*} payload
  * @param {*} destinationId
+ * @param {Set} failedLookupIdentifiers - Set of identifiers that failed to lookup due to API failure
  * @returns
  */
-const processDeduplication = (userStore, payload, destinationId) => {
+const processDeduplication = (userStore, payload, destinationId, failedLookupIdentifiers) => {
+  // Check if this event's identifier failed to lookup due to API failure
+  const identifier = payload.external_id || payload.user_alias?.alias_name;
+  if (failedLookupIdentifiers && failedLookupIdentifiers.has(identifier)) {
+    stats.increment('braze_dedup_skipped_due_to_lookup_failure_count', {
+      destination_id: destinationId,
+    });
+  }
+
   const dedupedAttributePayload = BrazeDedupUtility.deduplicate(payload, userStore);
   if (
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&

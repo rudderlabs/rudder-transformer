@@ -636,18 +636,6 @@ class Prometheus {
         labelNames: ['identifier_type', 'destination_id'],
       },
       {
-        name: 'braze_lookup_failure_count',
-        help: 'braze look-up failure count',
-        type: 'counter',
-        labelNames: ['http_status', 'destination_id'],
-      },
-      {
-        name: 'braze_lookup_success_count',
-        help: 'Count of events where user look up was successful in Braze destination transformation.',
-        type: 'counter',
-        labelNames: ['http_status', 'destination_id'],
-      },
-      {
         name: 'braze_lookup_time',
         help: 'braze look-up time',
         type: 'histogram',
@@ -671,10 +659,18 @@ class Prometheus {
         ],
       },
       {
-        name: 'braze_dedup_skipped_due_to_lookup_failure_count',
-        help: 'Count of events that skipped deduplication due to lookup API failure',
-        type: 'counter',
+        name: 'braze_lookup_failure_identifiers',
+        help: 'Count of identifiers that failed to lookup due to API failure',
+        type: 'histogram',
+        labelNames: ['destination_id', 'http_status'],
+        buckets: [0, 10, 20, 30, 40, 50],
+      },
+      {
+        name: 'braze_lookup_success_identifiers',
+        help: 'Count of identifiers that successfully looked up due to API failure',
+        type: 'histogram',
         labelNames: ['destination_id'],
+        buckets: [0, 10, 20, 30, 40, 50],
       },
       {
         name: 'fb_custom_audience_event_having_all_null_field_values_for_a_user',

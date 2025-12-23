@@ -265,16 +265,19 @@ const BrazeDedupUtility = {
             ...externalIdentifiers.map((id) => id.external_id),
             ...aliasIdentifiers.map((id) => id.alias_name),
           ];
-          stats.counter('braze_lookup_failure_count', 1, {
+          stats.histogram('braze_lookup_failure_identifiers', failedIdentifiers.length, {
             http_status: lookUpResponse.status,
             destination_id: destination.ID,
           });
           return { users: [], failedIdentifiers };
         }
-        stats.counter('braze_lookup_success_count', 1, {
-          http_status: lookUpResponse.status,
-          destination_id: destination.ID,
-        });
+        stats.histogram(
+          'braze_lookup_success_identifiers',
+          externalIdentifiers.length + aliasIdentifiers.length,
+          {
+            destination_id: destination.ID,
+          },
+        );
         const { users } = lookUpResponse.response;
         return { users: users || [], failedIdentifiers: [] };
       }),

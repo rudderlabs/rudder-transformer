@@ -4,6 +4,7 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
+  warn,
 } = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
 const { httpPOST, handleHttpRequest } = require('../../../../adapters/network');
@@ -288,6 +289,18 @@ const searchContact = async (message, destination, metadata) => {
   ) {
     lookupField = 'external_id';
     lookupFieldValue = message.traits.external_id;
+  }
+  // if lookup field value is not present, we are returning null
+  if (
+    !isDefinedAndNotNull(lookupFieldValue) ||
+    (typeof lookupFieldValue !== 'string' &&
+      typeof lookupFieldValue !== 'number' &&
+      typeof lookupFieldValue !== 'boolean')
+  ) {
+    warn('[INTERCOM] Lookup field value is not defined or not a string, number, or boolean', {
+      lookupField,
+    });
+    return null;
   }
   const data = JSON.stringify({
     query: {

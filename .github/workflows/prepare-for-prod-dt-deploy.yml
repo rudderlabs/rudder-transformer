@@ -75,7 +75,7 @@ jobs:
     name: Build Transformer Docker Image(ECR) - Prod
     # Only merged pull requests from release candidate branches must trigger
     if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
-    needs: [ generate-tag-names ]
+    needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image-ecr.yml
     with:
       build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}

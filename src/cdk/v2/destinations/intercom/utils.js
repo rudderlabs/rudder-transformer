@@ -297,7 +297,7 @@ const searchContact = async (message, destination, metadata) => {
       typeof lookupFieldValue !== 'number' &&
       typeof lookupFieldValue !== 'boolean')
   ) {
-    warn('Lookup field value is not defined or not a string, number, or boolean', {
+    warn('[INTERCOM] Lookup field value is not defined or not a string, number, or boolean', {
       lookupField,
     });
     return null;

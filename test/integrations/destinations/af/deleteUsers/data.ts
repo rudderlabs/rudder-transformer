@@ -28,7 +28,7 @@ const requests = [
             },
           ],
           config: {
-            devKey: 'ef1d42390426e3f7c90ac78272e74344',
+            devKey: 'dummyDevKey',
             apiToken: secret1,
           },
         },
@@ -51,7 +51,7 @@ const requests = [
             },
           ],
           config: {
-            devKey: 'ef1d42390426e3f7c90ac78272e74344',
+            devKey: 'dummyDevKey',
             appleAppId: '123456789',
             statusCallbackUrls:
               'https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks',
@@ -228,7 +228,7 @@ export const data = [
               },
             ],
             config: {
-              devKey: 'ef1d42390426e3f7c90ac78272e74344',
+              devKey: 'dummyDevKey',
               appleAppId: '123456789',
               androidAppId: 'AnAID',
               apiToken: secret1,
@@ -272,7 +272,7 @@ export const data = [
               },
             ],
             config: {
-              devKey: 'ef1d42390426e3f7c90ac78272e74344',
+              devKey: 'dummyDevKey',
               appleAppId: '123456789',
               androidAppId: 'AnAID',
               apiToken: secret1,

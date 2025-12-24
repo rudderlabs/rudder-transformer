@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
               },
             },
@@ -88,7 +88,7 @@ export const data = [
                   },
                   timestamp: '2020-11-04T13:21:09.712Z',
                   event: '$create_alias',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'alias',
                 },
                 XML: {},
@@ -114,7 +114,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: { Config: { teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE' } },
+            destination: { Config: { teamApiKey: 'dummyApiKey' } },
             message: {
               anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               event: 'Product Brought',
@@ -251,7 +251,7 @@ export const data = [
                     win_amount: 0,
                   },
                   timestamp: '2020-11-04T13:21:09.712Z',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'capture',
                 },
                 XML: {},
@@ -279,7 +279,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -448,7 +448,7 @@ export const data = [
                     ],
                   },
                   timestamp: '2020-11-04T13:21:09.712Z',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'capture',
                 },
                 XML: {},
@@ -476,7 +476,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
               },
             },
@@ -614,7 +614,7 @@ export const data = [
                   distinct_id: 'sajal',
                   messageId: '1605215561320-917a2554-87fd-4f9e-881d-9d29e8f30490',
                   event: '$screen',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'screen',
                 },
                 XML: {},
@@ -642,7 +642,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
               },
             },
@@ -777,7 +777,7 @@ export const data = [
                     $app_build: '1',
                   },
                   event: '$identify',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'identify',
                 },
                 XML: {},
@@ -805,7 +805,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -974,7 +974,7 @@ export const data = [
                     ],
                   },
                   timestamp: '2020-11-04T13:21:09.712Z',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'capture',
                 },
                 XML: {},
@@ -1002,7 +1002,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -1171,7 +1171,7 @@ export const data = [
                     ],
                   },
                   timestamp: '2020-11-04T13:21:09.712Z',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'capture',
                 },
                 XML: {},
@@ -1199,7 +1199,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
                 useV2Group: false,
               },
@@ -1311,7 +1311,7 @@ export const data = [
                     $host: 'docs.rudderstack.com',
                   },
                   event: '$groupidentify',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'group',
                 },
                 JSON_ARRAY: {},
@@ -1339,7 +1339,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
                 useV2Group: true,
               },
@@ -1452,7 +1452,7 @@ export const data = [
                   distinct_id: 'sampleusrRudder7',
                   messageId: 'e5034df0-a404-47b4-a463-76df99934fea',
                   event: '$groupidentify',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'group',
                 },
                 JSON_ARRAY: {},
@@ -1480,7 +1480,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com/',
                 useV2Group: true,
               },
@@ -1575,7 +1575,7 @@ export const data = [
                   distinct_id: 'user@1234',
                   messageId: 'e50df0-a404-47b4-a463-76df99934fea',
                   event: '$groupidentify',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'group',
                 },
                 JSON_ARRAY: {},
@@ -1603,7 +1603,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                teamApiKey: 'dummyApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -1705,7 +1705,7 @@ export const data = [
                   },
                   event: 'card checkout',
                   timestamp: '2022-08-12T13:21:09.712Z',
-                  api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  api_key: 'dummyApiKey',
                   type: 'capture',
                 },
                 JSON_ARRAY: {},

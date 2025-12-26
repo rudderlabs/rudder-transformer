@@ -64,15 +64,15 @@ jobs:
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      image_repo: rudderstack/rudder-transformer
+      image_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
       build_type: ut
       use_merge_sha: true
       skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+      is_prod: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

@@ -2296,4 +2296,38 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  // network call where user_fields is returned as a string instead of array
+  {
+    httpReq: {
+      method: 'GET',
+      url: 'https://rudderlabshelp1.zendesk.com/api/v2/user_fields.json',
+    },
+    httpRes: {
+      data: {
+        user_fields: 'invalid_string_response',
+      },
+      status: 200,
+    },
+  },
+  // network call to create or update user with customField when fields API returns string
+  {
+    httpReq: {
+      data: {
+        user: {
+          name: 'abcd124',
+          external_id: 'abcd-124',
+          user_fields: { id: 'abcd-124' },
+        },
+      },
+      headers: {
+        Authorization: authHeader1,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      url: 'https://rudderlabshelp1.zendesk.com/api/v2/users/create_or_update.json',
+    },
+    httpRes: {
+      status: 200,
+    },
+  },
 ];

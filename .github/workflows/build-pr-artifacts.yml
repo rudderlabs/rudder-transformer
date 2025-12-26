@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 1
 
-      # Replace problematic characters in branch name (like '/') with safe characters (like '.')
+      # Use PR number for consistent, clean tag names
       - name: Generate Tag Names
         id: gen_tag_names
         run: |

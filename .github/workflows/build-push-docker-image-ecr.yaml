@@ -30,8 +30,6 @@ on:
         type: boolean
         default: false
         description: if this option is true, we would skip tests while building docker image
-      workflow_url:
-        type: string
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
@@ -114,7 +112,7 @@ jobs:
             fi
           done
           echo "Match Found: $found"
-          echo "::set-output name=should_execute_tests::$found"
+          echo "should_execute_tests=$found" >> $GITHUB_OUTPUT
 
   build-transformer-image-arm64:
     name: Build Transformer Docker Image ARM64

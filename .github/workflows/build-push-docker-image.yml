@@ -3,13 +3,10 @@ name: Build Transformer Docker Image
 on:
   workflow_call:
     inputs:
-      build_tag:
+      image_repo:
         required: true
         type: string
-      push_tags:
-        required: true
-        type: string
-      img_tag:
+      image_tag:
         required: true
         type: string
       dockerfile:
@@ -145,8 +142,9 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
+          ref: ${{ needs.get_sha.outputs.sha }}
           fetch-depth: 1
 
       - name: Setup Docker Buildx
@@ -164,7 +162,7 @@ jobs:
       - name: Run Tests
         if: ${{ inputs.skip_tests != true || needs.get_changed_files.outputs.should_execute_tests == 'true' }}
         env:
-          BUILD_TAG: ${{ inputs.build_tag }}
+          BUILD_TAG: ${{ matrix.build-config.tags }}
         run: |
           echo "Running tests on Docker image: $BUILD_TAG"
           echo "Running JavaScript tests..."
@@ -177,7 +175,7 @@ jobs:
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
-          role-session-name: ${{ github.event.repository.name }}
+          role-session-name: ${{ github.event.repository.name }}-build-push
 
       - name: Login to ECR
         id: login-ecr
@@ -194,17 +192,15 @@ jobs:
           tags: ${{ format('{0}/{1}', steps.login-ecr.outputs.registry, matrix.build-config.tags) }}
           platforms: ${{ matrix.build-config.platform }}
           build-args: |
-            version=${{ inputs.image_tag }}-arm64
+            version=${{ matrix.build-config.image_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}
 
-      # TODO: Remove this step once we have migrated fully to ECR
       - name: Login to DockerHub
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      # TODO: Remove this step once we have migrated fully to ECR
       - name: Build and Push Multi-platform Images to DockerHub
         uses: rudderlabs/build-scan-push-action@d4991410238cec1b416875f1eb0e7a4565ac29aa # v1.8.2
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
@@ -216,7 +212,7 @@ jobs:
           tags: ${{ matrix.build-config.tags }}
           platforms: ${{ matrix.build-config.platform }}
           build-args: |
-            version=${{ inputs.image_tag }}-arm64
+            version=${{ matrix.build-config.image_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}
 
 
@@ -230,12 +226,16 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838  # v5.0.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
-          role-session-name: ${{ github.event.repository.name }}
+          role-session-name: ${{ github.event.repository.name }}-manifest
 
       - name: Login to ECR
         id: login-ecr
@@ -251,9 +251,8 @@ jobs:
         if: ${{ inputs.is_prod == true }}
         run: |
           tag=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:latest $tag-amd64 $tag-arm64
+          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' || 'ut-' }}latest $tag-amd64 $tag-arm64
 
-  # TODO: Remove this job once we have migrated fully to ECR
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
     runs-on: ubuntu-latest

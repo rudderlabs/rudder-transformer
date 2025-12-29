@@ -126,7 +126,7 @@ jobs:
     strategy:
       matrix:
         build-config:
-          - os: [ self-hosted, linux, ARM64, ubuntu-22 ]
+          - os: [self-hosted, linux, ARM64, ubuntu-22]
             tags: ${{ format('{0}:{1}', inputs.image_repo, inputs.image_tag) }}-arm64
             image_tag: ${{ inputs.image_tag }}-arm64
             platform: linux/arm64
@@ -171,7 +171,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838  # v5.0.0
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
@@ -200,7 +200,7 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
       - name: Build and Push Multi-platform Images to DockerHub
         uses: rudderlabs/build-scan-push-action@d4991410238cec1b416875f1eb0e7a4565ac29aa # v1.8.2
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
@@ -215,7 +215,6 @@ jobs:
             version=${{ matrix.build-config.image_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}
 
-
   create-manifest-ecr:
     name: Create multi-arch manifest for ECR
     runs-on: ubuntu-latest
@@ -229,9 +228,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
-
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838  # v5.0.0
+        uses: aws-actions/configure-aws-credentials@a03048d87541d1d9fcf2ecf528a4a65ba9bd7838 # v5.0.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}

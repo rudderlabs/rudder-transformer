@@ -5319,8 +5319,6 @@ export const data = [
         body: [
           {
             destination: overrideDestination(sampleDestination, {
-              serviceAccountUserName: 'rudder.d2a3f1.mp-service-account',
-              serviceAccountSecret: 'jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b',
               projectId: '123456',
               useNewMapping: true,
             }),

@@ -249,7 +249,7 @@ jobs:
         if: ${{ inputs.is_prod == true }}
         run: |
           tag=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' || 'ut-' }}latest $tag-amd64 $tag-arm64
+          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64
 
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
@@ -280,4 +280,4 @@ jobs:
         if: ${{ inputs.is_prod == true }}
         run: |
           tag=${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t ${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' || 'ut-' }}latest $tag-amd64 $tag-arm64
+          docker buildx imagetools create -t ${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64

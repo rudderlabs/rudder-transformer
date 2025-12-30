@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    types:
-      - closed
-    branches:
-      - develop
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider

@@ -172,7 +172,7 @@ const processTrackEvent = (message, Config) => {
       respArray.push(responseBuilder(payload, endpoint, Config));
     }
     if (eventType.includes('action')) {
-      if (!payload.ClickId) {
+      if (!isDefinedAndNotNull(payload.ClickId)) {
         payload.ClickId = message.context?.referrer?.id || message.properties?.clickId;
       }
       respArray.push(responseBuilder(payload, endpoint, Config));

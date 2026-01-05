@@ -586,7 +586,7 @@ export const data = [
               properties: {
                 orderId: '9217374917471',
                 coupon: '10OFF-ROCKET',
-                clickId: 'wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80',
+                click_id: 'wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80',
                 products: [
                   {
                     brand: 'zara',
@@ -638,6 +638,10 @@ export const data = [
                   {
                     from: 'properties.profit',
                     to: 'Money1',
+                  },
+                  {
+                    from: 'properties.click_id',
+                    to: 'ClickId',
                   },
                 ],
                 productsMapping: [

@@ -79,15 +79,7 @@ describe('Salesforce Utils', () => {
       expect(isWorkspaceSupportedForSoql('ws1')).toBe(true);
       expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
       expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(true);
-    });
-
-    it('should return true for undefined workspace ID when environment variable is set to ALL', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
       expect(isWorkspaceSupportedForSoql(undefined)).toBe(true);
-    });
-
-    it('should return true for empty workspace ID when environment variable is set to ALL', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
       expect(isWorkspaceSupportedForSoql('')).toBe(true);
     });
 
@@ -96,15 +88,7 @@ describe('Salesforce Utils', () => {
       expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
       expect(isWorkspaceSupportedForSoql('ws2')).toBe(false);
       expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(false);
-    });
-
-    it('should return false for undefined workspace ID when environment variable is set to NONE', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'NONE';
       expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
-    });
-
-    it('should return false for empty workspace ID when environment variable is set to NONE', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'NONE';
       expect(isWorkspaceSupportedForSoql('')).toBe(false);
     });
   });

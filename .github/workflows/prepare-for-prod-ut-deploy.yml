@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
@@ -30,8 +25,6 @@ jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
-    # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     outputs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
@@ -59,20 +52,18 @@ jobs:
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Prod
-    # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      image_repo: rudderstack/rudder-transformer
+      image_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
       build_type: ut
       use_merge_sha: true
-      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+      skip_tests: true
+      create_latest_tag: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

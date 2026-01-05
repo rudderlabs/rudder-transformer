@@ -15,13 +15,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  report-coverage:
-    name: Report Code Coverage
-    if: github.event_name == 'push'
-    uses: ./.github/workflows/dt-test-and-report-code-coverage.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names

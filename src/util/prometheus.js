@@ -484,21 +484,24 @@ class Prometheus {
 
       {
         name: 'braze_batch_attributes_pack_size',
-        help: 'braze_batch_attributes_pack_size',
-        type: 'gauge',
+        help: 'Distribution of attributes count per batch chunk',
+        type: 'histogram',
         labelNames: ['destination_id'],
+        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75],
       },
       {
         name: 'braze_batch_events_pack_size',
-        help: 'braze_batch_events_pack_size',
-        type: 'gauge',
+        help: 'Distribution of events count per batch chunk',
+        type: 'histogram',
         labelNames: ['destination_id'],
+        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75],
       },
       {
         name: 'braze_batch_purchase_pack_size',
-        help: 'braze_batch_purchase_pack_size',
-        type: 'gauge',
+        help: 'Distribution of purchases count per batch chunk',
+        type: 'histogram',
         labelNames: ['destination_id'],
+        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75],
       },
       {
         name: 'braze_alias_failure_count',

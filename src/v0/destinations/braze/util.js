@@ -597,17 +597,17 @@ const cleanTrackChunk = ({ attributes, events, purchases }) => {
 const addTrackStats = (chunk, destination) => {
   const { attributes, events, purchases } = chunk;
   if (attributes) {
-    stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+    stats.histogram('braze_batch_attributes_pack_size', attributes.length, {
       destination_id: destination.ID,
     });
   }
   if (events) {
-    stats.gauge('braze_batch_events_pack_size', events.length, {
+    stats.histogram('braze_batch_events_pack_size', events.length, {
       destination_id: destination.ID,
     });
   }
   if (purchases) {
-    stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+    stats.histogram('braze_batch_purchase_pack_size', purchases.length, {
       destination_id: destination.ID,
     });
   }

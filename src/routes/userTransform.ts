@@ -3,6 +3,7 @@ import { UserTransformController } from '../controllers/userTransform';
 import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 import { StatsMiddleware } from '../middlewares/stats';
+import { UserTransformerV1Controller } from '../userTransformerV1/userTransformerV1.controller';
 
 const router = new Router();
 
@@ -27,7 +28,7 @@ router.post(
 router.post(
   '/transformation/testRun',
   RouteActivationMiddleware.isUserTransformTestRouteActive,
-  UserTransformController.testRun,
+  UserTransformerV1Controller.testRun,
 );
 router.post(
   '/transformationLibrary/test',

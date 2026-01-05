@@ -59,7 +59,7 @@ jobs:
       build_type: dt
       use_merge_sha: true
       skip_tests: true
-      is_prod: true
+      create_latest_tag: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

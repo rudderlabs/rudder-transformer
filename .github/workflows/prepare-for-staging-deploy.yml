@@ -62,7 +62,7 @@ jobs:
       load_target: development
       push_target: production
       use_merge_sha: true
-      is_prod: false
+      create_latest_tag: false
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -79,7 +79,7 @@ jobs:
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
-      is_prod: false
+      create_latest_tag: false
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

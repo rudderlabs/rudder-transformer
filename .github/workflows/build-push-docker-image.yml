@@ -27,7 +27,7 @@ on:
         type: boolean
         default: false
         description: if this option is true, we would skip tests while building docker image
-      is_prod:
+      create_latest_tag:
         required: true
         type: boolean
     secrets:
@@ -246,7 +246,7 @@ jobs:
 
       - name: Create latest multi-arch manifest for ECR
         # To be triggered only for release/hotfix PR merges
-        if: ${{ inputs.is_prod == true }}
+        if: ${{ inputs.create_latest_tag == true }}
         run: |
           tag=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }}
           docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64
@@ -277,7 +277,7 @@ jobs:
 
       - name: Create latest multi-arch manifest
         # To be triggered only for release/hotfix PR merges
-        if: ${{ inputs.is_prod == true }}
+        if: ${{ inputs.create_latest_tag == true }}
         run: |
           tag=${{ inputs.image_repo }}:${{ inputs.image_tag }}
           docker buildx imagetools create -t ${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64

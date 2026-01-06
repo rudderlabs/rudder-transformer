@@ -533,19 +533,23 @@ const createTrackChunk = () => ({
 const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
   // Collect all items with their types, filtering out null/undefined
   const allItems = [
-    ...attributesArray.filter(Boolean).map((item) => ({
-      data: item,
-      type: 'attributes',
-      externalId: item.external_id,
-    })),
+    ...attributesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'attributes',
+        externalId: item.external_id,
+      })),
     ...eventsArray
-      .filter(Boolean)
+      .filter((item) => isDefinedAndNotNull(item))
       .map((item) => ({ data: item, type: 'events', externalId: item.external_id })),
-    ...purchasesArray.filter(Boolean).map((item) => ({
-      data: item,
-      type: 'purchases',
-      externalId: item.external_id,
-    })),
+    ...purchasesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'purchases',
+        externalId: item.external_id,
+      })),
   ];
 
   const sortedItems = _.sortBy(allItems, 'externalId');

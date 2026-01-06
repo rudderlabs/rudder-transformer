@@ -16,7 +16,6 @@ const {
 } = require('../../util');
 const {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
-  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
   CustomAttributeOperationTypes,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
@@ -532,51 +531,47 @@ const createTrackChunk = () => ({
 });
 
 const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
-  const allItems = [];
-  const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
+  // Collect all items with their types, filtering out null/undefined
+  const allItems = [
+    ...attributesArray.filter(Boolean).map((item) => ({
+      data: item,
+      type: 'attributes',
+      externalId: item.external_id,
+    })),
+    ...eventsArray
+      .filter(Boolean)
+      .map((item) => ({ data: item, type: 'events', externalId: item.external_id })),
+    ...purchasesArray.filter(Boolean).map((item) => ({
+      data: item,
+      type: 'purchases',
+      externalId: item.external_id,
+    })),
+  ];
 
-  const addItem = (item, type) => {
-    if (item) {
-      allItems.push({
-        data: item,
-        type,
-        externalId: item.external_id,
-      });
-    }
-  };
-
-  const canAddToChunk = (item, chunk) => {
-    const { type, externalId } = item;
-    return (
-      (chunk.externalIds.has(externalId) ||
-        chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
-      chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
-    );
-  };
-
-  // eslint-disable-next-line no-plusplus
-  for (let i = 0; i < maxLength; i++) {
-    addItem(attributesArray[i], 'attributes');
-    addItem(eventsArray[i], 'events');
-    addItem(purchasesArray[i], 'purchases');
-  }
   const sortedItems = _.sortBy(allItems, 'externalId');
-  let currentChunk = createTrackChunk();
   const trackChunks = [];
+  let currentChunk = createTrackChunk();
+
+  const getChunkSize = (chunk) =>
+    chunk.attributes.length + chunk.events.length + chunk.purchases.length;
+
+  const addItemToChunk = (item, chunk) => {
+    chunk[item.type].push(item.data);
+    chunk.externalIds.add(item.externalId);
+  };
+
   for (const item of sortedItems) {
-    if (canAddToChunk(item, currentChunk)) {
-      currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId);
-    } else {
+    if (getChunkSize(currentChunk) >= TRACK_BRAZE_MAX_REQ_COUNT) {
       trackChunks.push(currentChunk);
       currentChunk = createTrackChunk();
-      currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId);
     }
+    addItemToChunk(item, currentChunk);
   }
+
   if (currentChunk.externalIds.size > 0) {
     trackChunks.push(currentChunk);
   }
+
   return trackChunks;
 };
 

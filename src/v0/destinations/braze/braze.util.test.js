@@ -1014,7 +1014,7 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25);
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(50);
 
-    // Third batch contains 50 events and 25 purchases groups
+    // Third batch contains 50 events and 25 purchases
     expect(result[0].batchedRequest[2].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[2].body.JSON.events.length).toBe(50);
     expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(25);

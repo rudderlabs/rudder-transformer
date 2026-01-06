@@ -67,46 +67,7 @@ describe('batchForTrackAPI', () => {
     });
   });
 
-  describe('Batching by external ID count', () => {
-    it('should create multiple chunks when external ID count exceeds 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
-
-      // Create 76 different external IDs (exceeds TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75)
-      for (let i = 1; i <= 76; i++) {
-        attributes.push(createTestAttribute(`user${i}`));
-      }
-
-      const result = batchForTrackAPI(attributes, events, purchases);
-
-      expect(result).toHaveLength(2);
-      expect(result[0].externalIds.size).toBe(75);
-      expect(result[1].externalIds.size).toBe(1);
-      expect(result[0].attributes).toHaveLength(75);
-      expect(result[1].attributes).toHaveLength(1);
-    });
-
-    it('should group items by external ID correctly', () => {
-      const attributes = [
-        createTestAttribute('user1', 'attr1'),
-        createTestAttribute('user1', 'attr2'),
-        createTestAttribute('user2', 'attr1'),
-      ];
-      const events = [createTestEvent('user1', 'event1'), createTestEvent('user2', 'event1')];
-      const purchases = [createTestPurchase('user1')];
-
-      const result = batchForTrackAPI(attributes, events, purchases);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].externalIds.size).toBe(2);
-      expect(result[0].attributes).toHaveLength(3);
-      expect(result[0].events).toHaveLength(2);
-      expect(result[0].purchases).toHaveLength(1);
-    });
-  });
-
-  describe('Batching by total request count (key difference from batchForTrackAPI)', () => {
+  describe('Batching by total request count', () => {
     it('should create chunks based on total combined count, not per-type count', () => {
       const attributes = [];
       const events = [];

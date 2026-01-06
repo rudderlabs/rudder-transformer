@@ -37,7 +37,6 @@ describe('batchForTrackAPI', () => {
       expect(result[0].attributes).toHaveLength(1);
       expect(result[0].events).toHaveLength(1);
       expect(result[0].purchases).toHaveLength(1);
-      expect(result[0].externalIds.has('user1')).toBe(true);
     });
 
     it('should handle arrays with different lengths', () => {
@@ -95,10 +94,6 @@ describe('batchForTrackAPI', () => {
       const chunk2Size =
         result[1].attributes.length + result[1].events.length + result[1].purchases.length;
       expect(chunk2Size).toBe(15);
-
-      // Both chunks should have the same user
-      expect(result[0].externalIds.has('user1')).toBe(true);
-      expect(result[1].externalIds.has('user1')).toBe(true);
     });
 
     it('should split when total count exceeds 75 even with mixed types', () => {
@@ -146,7 +141,6 @@ describe('batchForTrackAPI', () => {
       expect(result[0].attributes).toHaveLength(25);
       expect(result[0].events).toHaveLength(25);
       expect(result[0].purchases).toHaveLength(25);
-      expect(result[0].externalIds.size).toBe(1);
     });
 
     it('should create multiple chunks when only attributes exceed 75', () => {

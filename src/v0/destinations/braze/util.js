@@ -557,18 +557,17 @@ const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
 
   const addItemToChunk = (item, chunk) => {
     chunk[item.type].push(item.data);
-    chunk.externalIds.add(item.externalId);
   };
 
   for (const item of sortedItems) {
-    if (getChunkSize(currentChunk) >= TRACK_BRAZE_MAX_REQ_COUNT) {
+    if (getChunkSize(currentChunk) === TRACK_BRAZE_MAX_REQ_COUNT) {
       trackChunks.push(currentChunk);
       currentChunk = createTrackChunk();
     }
     addItemToChunk(item, currentChunk);
   }
 
-  if (currentChunk.externalIds.size > 0) {
+  if (getChunkSize(currentChunk) > 0) {
     trackChunks.push(currentChunk);
   }
 

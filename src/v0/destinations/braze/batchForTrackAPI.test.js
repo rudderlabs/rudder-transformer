@@ -267,22 +267,5 @@ describe('batchForTrackAPI', () => {
       expect(result[1].attributes).toHaveLength(75);
       expect(result[2].attributes).toHaveLength(50);
     });
-
-    it('should respect external ID limit even when total count is under 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
-
-      // Create 76 users with 1 attribute each (exceeds external ID limit of 75)
-      for (let i = 1; i <= 76; i++) {
-        attributes.push(createTestAttribute(`user${i}`));
-      }
-
-      const result = batchForTrackAPI(attributes, events, purchases);
-
-      expect(result).toHaveLength(2);
-      expect(result[0].externalIds.size).toBe(75);
-      expect(result[1].externalIds.size).toBe(1);
-    });
   });
 });

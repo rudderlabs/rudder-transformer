@@ -1003,9 +1003,8 @@ describe('processBatch', () => {
     // Call the processBatch function
     const result = processBatch(transformedEvents);
 
-    // Assert that the response is as expected
-    expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].batchedRequest.length).toBe(10); // Two batched requests
+    expect(result.length).toBe(1);
+    expect(result[0].batchedRequest.length).toBe(10);
     // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75);
@@ -1028,9 +1027,9 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25);
     // Sixth batch contains 25 subscription groups
     expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25);
-    // Seventh batch contains 25 merge_updates
+    // Seventh batch contains 25 subscription groups
     expect(result[0].batchedRequest[6].body.JSON.subscription_groups.length).toBe(25);
-    // Eighth batch contains 25 merge_updates
+    // Eighth batch contains 25 subscription groups
     expect(result[0].batchedRequest[7].body.JSON.subscription_groups.length).toBe(25);
 
     // Ninth batch contains 50 merge_updates

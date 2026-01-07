@@ -24,6 +24,7 @@ const {
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
   BRAZE_PURCHASE_STANDARD_PROPERTIES,
+  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
 } = require('./config');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -531,6 +532,56 @@ const createTrackChunk = () => ({
 });
 
 const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
+  const allItems = [];
+  const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
+
+  const addItem = (item, type) => {
+    if (item) {
+      allItems.push({
+        data: item,
+        type,
+        externalId: item.external_id,
+      });
+    }
+  };
+
+  const canAddToChunk = (item, chunk) => {
+    const { type, externalId } = item;
+    return (
+      (chunk.externalIds.has(externalId) ||
+        chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
+      chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
+    );
+  };
+
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < maxLength; i++) {
+    addItem(attributesArray[i], 'attributes');
+    addItem(eventsArray[i], 'events');
+    addItem(purchasesArray[i], 'purchases');
+  }
+  const sortedItems = _.sortBy(allItems, 'externalId');
+  let currentChunk = createTrackChunk();
+  const trackChunks = [];
+  for (const item of sortedItems) {
+    if (canAddToChunk(item, currentChunk)) {
+      currentChunk[item.type].push(item.data);
+      currentChunk.externalIds.add(item.externalId);
+    } else {
+      trackChunks.push(currentChunk);
+      currentChunk = createTrackChunk();
+      currentChunk[item.type].push(item.data);
+      currentChunk.externalIds.add(item.externalId);
+    }
+  }
+  if (currentChunk.externalIds.size > 0) {
+    trackChunks.push(currentChunk);
+  }
+  return trackChunks;
+};
+
+// braze batching as per new MAU plan
+const batchForTrackAPIV2 = (attributesArray, eventsArray, purchasesArray) => {
   // Collect all items with their types, filtering out null/undefined
   const allItems = [
     ...attributesArray
@@ -611,8 +662,33 @@ const addTrackStats = (chunk, destination) => {
   }
 };
 
+let brazeMauWorkspaceIds = 'NONE';
+if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS)) {
+  if (process.env.DEST_BRAZE_MAU_WORKSPACE_IDS === 'ALL') {
+    brazeMauWorkspaceIds = 'ALL';
+  } else {
+    brazeMauWorkspaceIds = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS?.split(',')?.map?.((s) =>
+      s?.trim?.(),
+    );
+  }
+}
+
+const isWorkspaceOnMauPlan = (workspaceId) => {
+  const environmentVariable = brazeMauWorkspaceIds;
+  switch (environmentVariable) {
+    case 'ALL':
+      return true;
+    case 'NONE':
+      return false;
+    default: {
+      return brazeMauWorkspaceIds?.includes(workspaceId);
+    }
+  }
+};
+
 const processBatch = (transformedEvents) => {
-  const { destination } = transformedEvents[0];
+  const { destination, metadata } = transformedEvents[0];
+  const { workspaceId } = metadata[0];
   const attributesArray = [];
   const eventsArray = [];
   const purchaseArray = [];
@@ -650,7 +726,11 @@ const processBatch = (transformedEvents) => {
       successMetadata.push(...transformedEvent.metadata);
     }
   }
-  const trackChunks = batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
+
+  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
+  const trackChunks = isWorkspaceOnMauPlanFlag
+    ? batchForTrackAPIV2(attributesArray, eventsArray, purchaseArray)
+    : batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
   const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
@@ -955,4 +1035,5 @@ module.exports = {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  batchForTrackAPIV2,
 };

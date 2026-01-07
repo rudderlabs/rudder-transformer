@@ -969,7 +969,7 @@ describe('dedup utility tests', () => {
   });
 });
 
-describe('processBatch', () => {
+describe('processBatch for workspaces on non MAU plan', () => {
   test('processBatch handles more than 75 attributes, events, purchases, subscription_groups and merge users', () => {
     // Create input data with more than 75 attributes, events, and purchases
     const transformedEvents = [];
@@ -1003,39 +1003,23 @@ describe('processBatch', () => {
     // Call the processBatch function
     const result = processBatch(transformedEvents);
 
-    expect(result.length).toBe(1);
-    expect(result[0].batchedRequest.length).toBe(10);
-    // First batch contains 75 attributes
-    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
-    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75);
-
-    // Second batch contains 25 attributes and 50 events
+    // Assert that the response is as expected
+    expect(result.length).toBe(1); // One successful batched request and one failure response
+    expect(result[0].batchedRequest.length).toBe(8); // Two batched requests
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
     expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25);
-    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(50);
-
-    // Third batch contains 50 events and 25 purchases
-    expect(result[0].batchedRequest[2].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[2].body.JSON.events.length).toBe(50);
-    expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(25);
-
-    // Fourth batch contains 75 purchases
-    expect(result[0].batchedRequest[3].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[3].body.JSON.purchases.length).toBe(75);
-
-    // Fifth batch contains 25 subscription groups
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25);
-    // Sixth batch contains 25 subscription groups
-    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25);
-    // Seventh batch contains 25 subscription groups
-    expect(result[0].batchedRequest[6].body.JSON.subscription_groups.length).toBe(25);
-    // Eighth batch contains 25 subscription groups
-    expect(result[0].batchedRequest[7].body.JSON.subscription_groups.length).toBe(25);
-
-    // Ninth batch contains 50 merge_updates
-    expect(result[0].batchedRequest[8].body.JSON.merge_updates.length).toBe(50);
-    // Tenth batch contains 50 merge_updates
-    expect(result[0].batchedRequest[9].body.JSON.merge_updates.length).toBe(50);
+    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
+    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
+    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
+    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -1144,6 +1128,252 @@ describe('processBatch', () => {
     ]);
 
     // Assert that the response is as expected
+    expect(result.length).toBe(1); // One successful batched request and one failure response
+    expect(result[0].metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
+    expect(result[0].batchedRequest.length).toBe(7); // Two batched requests
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
+    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
+    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
+    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
+    expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(20); // Third batch contains 20 subscription group
+    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+  });
+
+  test('check success and failure scenarios both for processBatch', () => {
+    const transformedEvents = [];
+    let successCount = 0;
+    let failureCount = 0;
+    for (let i = 0; i < 100; i++) {
+      const rando = Math.random() * 100;
+      if (rando < 50) {
+        transformedEvents.push({
+          destination: {
+            Config: {
+              restApiKey: 'restApiKey',
+              dataCenter: 'eu',
+            },
+          },
+          statusCode: 200,
+          batchedRequest: {
+            body: {
+              JSON: {
+                attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+                events: [{ id: i, event: 'test', xyz: 'abc' }],
+                purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
+              },
+            },
+          },
+          metadata: [{ job_id: i }],
+        });
+        successCount = successCount + 1;
+      } else {
+        transformedEvents.push({
+          destination: {
+            Config: {
+              restApiKey: 'restApiKey',
+              dataCenter: 'eu',
+            },
+          },
+          statusCode: 400,
+          metadata: [{ job_id: i }],
+          error: 'Random Error',
+        });
+        failureCount = failureCount + 1;
+      }
+    }
+    // Call the processBatch function
+    const result = processBatch(transformedEvents);
+    expect(result.length).toBe(failureCount + 1);
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
+    expect(result[0].metadata.length).toBe(successCount);
+  });
+});
+
+describe('processBatch for workspaces on MAU plan', () => {
+  test('processBatch handles more than 75 attributes, events, purchases, subscription_groups and merge users', () => {
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEvents = [];
+    for (let i = 0; i < 100; i++) {
+      transformedEvents.push({
+        destination: {
+          Config: {
+            restApiKey: 'restApiKey',
+            dataCenter: 'US-03',
+            enableSubscriptionGroupInGroupCall: true,
+          },
+        },
+        statusCode: 200,
+        batchedRequest: {
+          body: {
+            JSON: {
+              attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+              events: [{ id: i, event: 'test', xyz: 'abc' }],
+              purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
+              subscription_groups: [
+                { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+              ],
+              merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
+            },
+          },
+        },
+        metadata: [{ job_id: i, workspaceId: 'workspace-mau' }],
+      });
+    }
+
+    // Call the processBatch function
+    const result = processBatch(transformedEvents);
+
+    expect(result.length).toBe(1);
+    expect(result[0].batchedRequest.length).toBe(10);
+    // First batch contains 75 attributes
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75);
+
+    // Second batch contains 25 attributes and 50 events
+    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25);
+    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(50);
+
+    // Third batch contains 50 events and 25 purchases
+    expect(result[0].batchedRequest[2].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[2].body.JSON.events.length).toBe(50);
+    expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(25);
+
+    // Fourth batch contains 75 purchases
+    expect(result[0].batchedRequest[3].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[3].body.JSON.purchases.length).toBe(75);
+
+    // Fifth batch contains 25 subscription groups
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25);
+    // Sixth batch contains 25 subscription groups
+    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25);
+    // Seventh batch contains 25 subscription groups
+    expect(result[0].batchedRequest[6].body.JSON.subscription_groups.length).toBe(25);
+    // Eighth batch contains 25 subscription groups
+    expect(result[0].batchedRequest[7].body.JSON.subscription_groups.length).toBe(25);
+
+    // Ninth batch contains 50 merge_updates
+    expect(result[0].batchedRequest[8].body.JSON.merge_updates.length).toBe(50);
+    // Tenth batch contains 50 merge_updates
+    expect(result[0].batchedRequest[9].body.JSON.merge_updates.length).toBe(50);
+  });
+
+  test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEventsSet1 = new Array(120).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            events: [{ id: i, event: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: i, workspaceId: 'workspace-mau' }],
+    }));
+
+    const transformedEventsSet2 = new Array(160).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            purchases: [{ id: i, name: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 120 + i, workspaceId: 'workspace-mau' }],
+    }));
+
+    const transformedEventsSet3 = new Array(100).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-mau' }],
+    }));
+
+    const transformedEventsSet4 = new Array(70).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+          enableSubscriptionGroupInGroupCall: true,
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            subscription_groups: [
+              { subscription_group_id: i, group: 'test', subscription_state: 'abc' },
+            ],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-mau' }],
+    }));
+
+    const transformedEventsSet5 = new Array(40).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+          enableSubscriptionGroupInGroupCall: true,
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-mau' }],
+    }));
+
+    // Call the processBatch function
+    const result = processBatch([
+      ...transformedEventsSet1,
+      ...transformedEventsSet2,
+      ...transformedEventsSet3,
+      ...transformedEventsSet4,
+      ...transformedEventsSet5,
+    ]);
+
+    // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched response
     expect(result[0].metadata.length).toBe(490); // Total metadata count: 120 events + 160 purchases + 100 attributes + 70 subscription_groups + 40 merge_updates
     expect(result[0].batchedRequest.length).toBe(10); // 10 batched requests total (6 track API batches + 3 subscription batches + 1 merge batch)
@@ -1207,7 +1437,7 @@ describe('processBatch', () => {
               },
             },
           },
-          metadata: [{ job_id: i }],
+          metadata: [{ job_id: i, workspaceId: 'workspace-mau' }],
         });
         successCount = successCount + 1;
       } else {
@@ -1219,7 +1449,7 @@ describe('processBatch', () => {
             },
           },
           statusCode: 400,
-          metadata: [{ job_id: i }],
+          metadata: [{ job_id: i, workspaceId: 'workspace-mau' }],
           error: 'Random Error',
         });
         failureCount = failureCount + 1;

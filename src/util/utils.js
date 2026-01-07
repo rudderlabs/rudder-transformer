@@ -83,10 +83,16 @@ const parseEnvInt = (value, defaultValue) => {
   return Number.isNaN(parsed) ? defaultValue : parsed;
 };
 
+// Total request timeout (including time waiting for a socket from the pool).
+// Aborts the entire fetch if exceeded, preventing indefinite waits when the socket pool is exhausted.
+// This makes sure that no request can hang indefinitely.
+const FETCH_REQUEST_TIMEOUT_MS = parseEnvInt(process.env.FETCH_REQUEST_TIMEOUT_MS, 60000);
 const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
   process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
+// Socket inactivity timeout. Only starts after a socket is acquired and connected.
+// Resets whenever data flows; does not protect against socket pool exhaustion.
 const SHARED_HTTP_AGENT_TIMEOUT_MS = parseEnvInt(process.env.SHARED_HTTP_AGENT_TIMEOUT_MS, 60000);
-const SHARED_HTTP_AGENT_MAX_SOCKETS = parseEnvInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 200);
+const SHARED_HTTP_AGENT_MAX_SOCKETS = parseEnvInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 1000);
 const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = parseEnvInt(
   process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
   10,
@@ -146,21 +152,30 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
 
-  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
-    fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
-    return await fetch(fetchURL, fetchOptions);
+  const controller = new AbortController();
+  const fetchTimeoutId = setTimeout(() => controller.abort(), FETCH_REQUEST_TIMEOUT_MS);
+
+  try {
+    fetchOptions.signal = controller.signal;
+
+    if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
+      fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
+      return await fetch(fetchURL, fetchOptions);
+    }
+
+    const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
+      stats.timing('fetch_dns_resolve_time', resolveStartTime, {
+        ...transformationTags,
+        ...(error ? { error: 'true' } : { cacheHit }),
+      });
+    };
+
+    fetchOptions.agent =
+      schemeName === 'https' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
+    return await dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
+  } finally {
+    clearTimeout(fetchTimeoutId);
   }
-
-  const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      ...transformationTags,
-      ...(error ? { error: 'true' } : { cacheHit }),
-    });
-  };
-
-  fetchOptions.agent =
-    schemeName === 'https' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
-  return dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
 };
 
 class RespStatusError extends Error {

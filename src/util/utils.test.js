@@ -186,4 +186,51 @@ describe('fetchWithDnsWrapper', () => {
     );
     expect(stats.timing).not.toHaveBeenCalled();
   });
+
+  it('should pass AbortController signal to fetch', async () => {
+    await fetchWithDnsWrapper({}, 'https://example.com/api');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://example.com/api',
+      expect.objectContaining({
+        signal: expect.any(AbortSignal),
+      }),
+    );
+  });
+
+  it('should abort fetch when request timeout is exceeded', async () => {
+    jest.useFakeTimers();
+
+    // Make fetch listen to the abort signal
+    fetch.mockImplementation(
+      (url, options) =>
+        new Promise((resolve, reject) => {
+          if (options?.signal) {
+            options.signal.addEventListener('abort', () => {
+              const error = new Error('The operation was aborted');
+              error.name = 'AbortError';
+              reject(error);
+            });
+          }
+        }),
+    );
+
+    const fetchPromise = fetchWithDnsWrapper({}, 'https://example.com/api');
+
+    // Advance timers past the default timeout (60000ms)
+    jest.advanceTimersByTime(60001);
+
+    await expect(fetchPromise).rejects.toThrow('The operation was aborted');
+
+    jest.useRealTimers();
+  });
+
+  it('should clear timeout after successful fetch', async () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+
+    await fetchWithDnsWrapper({}, 'https://example.com/api');
+
+    expect(clearTimeoutSpy).toHaveBeenCalled();
+    clearTimeoutSpy.mockRestore();
+  });
 });

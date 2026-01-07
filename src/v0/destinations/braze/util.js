@@ -667,9 +667,9 @@ if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS)) {
   if (process.env.DEST_BRAZE_MAU_WORKSPACE_IDS === 'ALL') {
     brazeMauWorkspaceIds = 'ALL';
   } else {
-    brazeMauWorkspaceIds = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS?.split(',')?.map?.((s) =>
-      s?.trim?.(),
-    );
+    brazeMauWorkspaceIds = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
   }
 }
 

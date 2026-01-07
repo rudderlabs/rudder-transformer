@@ -1,26 +1,25 @@
 const { batchForTrackAPI, batchForTrackAPIV2 } = require('./util');
 
+// Helper function to create test data
+const createTestAttribute = (externalId, name = 'test_attr') => ({
+  external_id: externalId,
+  [name]: 'test_value',
+});
+
+const createTestEvent = (externalId, name = 'test_event') => ({
+  external_id: externalId,
+  name,
+  time: '2023-01-01T00:00:00Z',
+});
+
+const createTestPurchase = (externalId, productId = 'test_product') => ({
+  external_id: externalId,
+  product_id: productId,
+  currency: 'USD',
+  price: 10.99,
+  time: '2023-01-01T00:00:00Z',
+});
 describe('batchForTrackAPI', () => {
-  // Helper function to create test data
-  const createTestAttribute = (externalId, name = 'test_attr') => ({
-    external_id: externalId,
-    [name]: 'test_value',
-  });
-
-  const createTestEvent = (externalId, name = 'test_event') => ({
-    external_id: externalId,
-    name,
-    time: '2023-01-01T00:00:00Z',
-  });
-
-  const createTestPurchase = (externalId, productId = 'test_product') => ({
-    external_id: externalId,
-    product_id: productId,
-    currency: 'USD',
-    price: 10.99,
-    time: '2023-01-01T00:00:00Z',
-  });
-
   describe('Basic functionality', () => {
     it('should handle empty arrays', () => {
       const result = batchForTrackAPI([], [], []);
@@ -276,26 +275,6 @@ describe('batchForTrackAPI', () => {
   });
 });
 describe('batchForTrackAPIV2', () => {
-  // Helper function to create test data
-  const createTestAttribute = (externalId, name = 'test_attr') => ({
-    external_id: externalId,
-    [name]: 'test_value',
-  });
-
-  const createTestEvent = (externalId, name = 'test_event') => ({
-    external_id: externalId,
-    name,
-    time: '2023-01-01T00:00:00Z',
-  });
-
-  const createTestPurchase = (externalId, productId = 'test_product') => ({
-    external_id: externalId,
-    product_id: productId,
-    currency: 'USD',
-    price: 10.99,
-    time: '2023-01-01T00:00:00Z',
-  });
-
   describe('Basic functionality', () => {
     it('should handle empty arrays', () => {
       const result = batchForTrackAPIV2([], [], []);

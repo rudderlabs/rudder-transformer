@@ -1,13 +1,12 @@
 name: DT Tests
 on:
-  workflow_call:
-    secrets:
-      SONAR_TOKEN:
-        required: true
-
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
+  push:
+    branches:
+      - main
+      - develop
 permissions:
   contents: read
 

@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    types:
-      - closed
-    branches:
-      - develop
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
@@ -20,18 +15,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  report-coverage:
-    name: Report Code Coverage
-    if: github.event_name == 'push'
-    uses: ./.github/workflows/dt-test-and-report-code-coverage.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
-    # Only merged pull requests must trigger
-    if: github.event.pull_request.merged == true
     outputs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
@@ -59,34 +45,30 @@ jobs:
 
   build-transformer-image:
     name: Build Transformer Docker Image - Dev
-    # Only merged pull requests must trigger
-    if: github.event.pull_request.merged == true
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
+      image_repo: rudderstack/develop-rudder-transformer
+      image_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
       dockerfile: Dockerfile
       load_target: development
       push_target: production
       use_merge_sha: true
+      create_latest_tag: false
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Dev
-    # Only merged pull requests must trigger
-    if: github.event.pull_request.merged == true
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      image_repo: rudderstack/develop-rudder-transformer
+      image_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
+      create_latest_tag: false
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 

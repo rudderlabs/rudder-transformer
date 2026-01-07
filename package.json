@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.118.0",
+  "version": "1.119.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -132,6 +132,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.0",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
+    "@linear/sdk": "^68.0.0",
     "@types/fast-json-stable-stringify": "^2.1.0",
     "@types/jest": "^29.5.1",
     "@types/jsonpath": "^0.2.4",

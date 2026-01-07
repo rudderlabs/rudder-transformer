@@ -73,6 +73,9 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   restart-k8s-deployment:
+    permissions:
+      id-token: write
+      contents: read
     name: Restart K8s Deployment
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
@@ -97,6 +100,9 @@ jobs:
 
   restart-k8s-deployment-dedicated:
     name: Restart K8s Deployment
+    permissions:
+      id-token: write
+      contents: read
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image]
     steps:

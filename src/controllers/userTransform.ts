@@ -1,7 +1,11 @@
 import { Context } from 'koa';
 import { castArray } from 'lodash';
 import { UserTransformService } from '../services/userTransform';
-import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
+import {
+  ProcessorTransformationRequest,
+  TestRunRequestBody,
+  UserTransformationServiceResponse,
+} from '../types/index';
 import {
   extractLibraries,
   setupUserTransformHandler,
@@ -117,6 +121,35 @@ export class UserTransformController {
       ctx.status = 400;
       ctx.body = { error: err.error || err.message };
     }
+    return ctx;
+  }
+
+  public static async testRun(ctx: Context) {
+    const {
+      input,
+      code,
+      language = 'javascript',
+      codeVersion = '1',
+      dependencies,
+    } = ctx.request.body as TestRunRequestBody;
+
+    const events = input;
+    const trRevCode = { code, language, codeVersion };
+    const libraryVersionIDs = dependencies.libraries.map((lib) => lib.versionId);
+    const { credentials } = dependencies;
+
+    const response = await UserTransformService.testTransformRoutine(
+      events,
+      trRevCode,
+      libraryVersionIDs,
+      credentials,
+    );
+    ctx.body = response.body;
+    ControllerUtility.postProcess(ctx, response.status);
+    logger.debug(
+      '(User transform - router:/transformation/testRun ):: Response from transformer',
+      ctx.response.body,
+    );
     return ctx;
   }
 }

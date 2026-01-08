@@ -29,7 +29,6 @@ const {
   getAuthHeader,
   getSalesforceIdForRecord,
   getSalesforceIdForLead,
-  isWorkspaceSupportedForSoql,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 // Basic response builder
@@ -117,7 +116,7 @@ function responseBuilderSimple(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload({ message, destination, metadata }, stateInfo) {
+async function getSalesforceIdFromPayload({ message, destination }, stateInfo) {
   // define default map
   const salesforceMaps = [];
 
@@ -158,8 +157,6 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
         objectType,
         identifierType,
         identifierValue: id,
-        destination,
-        metadata,
         stateInfo,
       });
     }
@@ -185,7 +182,6 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
     const salesforceLeadContactDetails = await getSalesforceIdForLead({
       email,
       destination,
-      metadata,
       stateInfo,
     });
     salesforceMaps.push(salesforceLeadContactDetails);
@@ -194,7 +190,7 @@ async function getSalesforceIdFromPayload({ message, destination, metadata }, st
 }
 
 // Function for handling identify events
-async function processIdentify({ message, destination, metadata }, stateInfo) {
+async function processIdentify({ message, destination }, stateInfo) {
   const { Name } = destination.DestinationDefinition;
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
@@ -216,10 +212,7 @@ async function processIdentify({ message, destination, metadata }, stateInfo) {
   const responseData = [];
 
   // get salesforce object map
-  const salesforceMaps = await getSalesforceIdFromPayload(
-    { message, destination, metadata },
-    stateInfo,
-  );
+  const salesforceMaps = await getSalesforceIdFromPayload({ message, destination }, stateInfo);
 
   const { authInfo } = stateInfo;
   const { authorizationData, authorizationFlow } = authInfo;
@@ -244,11 +237,11 @@ async function processIdentify({ message, destination, metadata }, stateInfo) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage({ message, destination, metadata }, stateInfo) {
+async function processSingleMessage({ message, destination }, stateInfo) {
   let response;
 
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify({ message, destination, metadata }, stateInfo);
+    response = await processIdentify({ message, destination }, stateInfo);
   } else {
     throw new InstrumentationError(`message type ${message.type} is not supported`);
   }
@@ -258,14 +251,12 @@ async function processSingleMessage({ message, destination, metadata }, stateInf
 async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
 
-  let salesforceSdk;
-  if (isWorkspaceSupportedForSoql(event?.metadata?.workspaceId ?? '')) {
-    const { token, instanceUrl } = authInfo.authorizationData;
-    salesforceSdk = new SalesforceSDK.Salesforce({
-      accessToken: token,
-      instanceUrl,
-    });
-  }
+  const { token, instanceUrl } = authInfo.authorizationData;
+  const salesforceSdk = new SalesforceSDK.Salesforce({
+    accessToken: token,
+    instanceUrl,
+  });
+
   const stateInfo = {
     authInfo,
     salesforceSdk,
@@ -291,15 +282,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   try {
-    const metadata = inputs?.[0]?.metadata;
-    if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
-      const { token, instanceUrl } = authInfo.authorizationData;
-
-      salesforceSdk = new SalesforceSDK.Salesforce({
-        accessToken: token,
-        instanceUrl,
-      });
-    }
+    const { token, instanceUrl } = authInfo.authorizationData;
+    salesforceSdk = new SalesforceSDK.Salesforce({
+      accessToken: token,
+      instanceUrl,
+    });
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(

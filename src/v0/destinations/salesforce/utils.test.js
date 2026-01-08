@@ -608,8 +608,6 @@ describe('Salesforce Utils', () => {
   });
 
   describe('getSalesforceIdForRecord', () => {
-    const mockDestination = { ID: 'dest-123' };
-    const mockMetadata = { workspaceId: 'ws1' };
     const mockSalesforceSdk = {
       query: jest.fn(),
     };
@@ -623,11 +621,9 @@ describe('Salesforce Utils', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK to get Salesforce ID', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [{ Id: '0011234567890ABC' }],
@@ -642,25 +638,20 @@ describe('Salesforce Utils', () => {
         objectType: 'Account',
         identifierType: 'External_ID__c',
         identifierValue: 'ext-123',
-        destination: mockDestination,
-        metadata: mockMetadata,
         stateInfo,
       });
 
       expect(result).toBe('0011234567890ABC');
-      expect(mockSalesforceSdk.query).toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
+        "SELECT Id FROM Account WHERE External_ID__c = 'ext-123'",
+      );
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [{ Id: '0011234567890ABC', External_ID__c: 'ext-123' }],
-          },
-          status: 200,
-        },
+    it('should return undefined when no record is found', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 0,
+        records: [],
       });
 
       const stateInfo = {
@@ -672,25 +663,17 @@ describe('Salesforce Utils', () => {
         objectType: 'Account',
         identifierType: 'External_ID__c',
         identifierValue: 'ext-123',
-        destination: mockDestination,
-        metadata: mockMetadata,
         stateInfo,
       });
 
-      expect(result).toBe('0011234567890ABC');
-      expect(handleHttpRequest).toHaveBeenCalled();
-      expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
+      expect(result).toBeUndefined();
+      expect(mockSalesforceSdk.query).toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [{ Id: '0011234567890ABC', External_ID__c: 'ext-123' }],
-          },
-          status: 200,
-        },
+    it('should throw NetworkInstrumentationError when multiple records are found', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 2,
+        records: [{ Id: '0011234567890ABC' }, { Id: '0011234567890XYZ' }],
       });
 
       const stateInfo = {
@@ -698,17 +681,14 @@ describe('Salesforce Utils', () => {
         authInfo: mockAuthInfo,
       };
 
-      const result = await getSalesforceIdForRecord({
-        objectType: 'Account',
-        identifierType: 'External_ID__c',
-        identifierValue: 'ext-123',
-        destination: mockDestination,
-        metadata: { workspaceId: undefined },
-        stateInfo,
-      });
-
-      expect(result).toBe('0011234567890ABC');
-      expect(handleHttpRequest).toHaveBeenCalled();
+      await expect(
+        getSalesforceIdForRecord({
+          objectType: 'Account',
+          identifierType: 'External_ID__c',
+          identifierValue: 'ext-123',
+          stateInfo,
+        }),
+      ).rejects.toThrow("Multiple Account records found with External_ID__c 'ext-123'");
     });
   });
 
@@ -1407,7 +1387,6 @@ describe('Salesforce Utils', () => {
         useContactId: false,
       },
     };
-    const mockMetadata = { workspaceId: 'ws1' };
     const mockSalesforceSdk = {
       query: jest.fn(),
     };
@@ -1421,11 +1400,9 @@ describe('Salesforce Utils', () => {
 
     beforeEach(() => {
       jest.clearAllMocks();
-      isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK to get Lead ID when lead is found and not converted', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [
@@ -1446,7 +1423,6 @@ describe('Salesforce Utils', () => {
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
         destination: mockDestination,
-        metadata: mockMetadata,
         stateInfo,
       });
 
@@ -1454,26 +1430,29 @@ describe('Salesforce Utils', () => {
         salesforceType: 'Lead',
         salesforceId: '00Q1234567890ABC',
       });
-      expect(mockSalesforceSdk.query).toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
+        "SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = 'test@example.com'",
+      );
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [
-              {
-                Id: '00Q1234567890ABC',
-                IsConverted: false,
-                ConvertedContactId: null,
-                IsDeleted: false,
-              },
-            ],
-          },
-          status: 200,
+    it('should return Contact ID when lead is converted and useContactId is true', async () => {
+      const destination = {
+        ...mockDestination,
+        Config: {
+          useContactId: true,
         },
+      };
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [
+          {
+            Id: '00Q1234567890ABC',
+            IsConverted: true,
+            ConvertedContactId: '0031234567890XYZ',
+            IsDeleted: false,
+          },
+        ],
       });
 
       const stateInfo = {
@@ -1483,35 +1462,21 @@ describe('Salesforce Utils', () => {
 
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
-        destination: mockDestination,
-        metadata: mockMetadata,
+        destination,
         stateInfo,
       });
 
       expect(result).toEqual({
-        salesforceType: 'Lead',
-        salesforceId: '00Q1234567890ABC',
+        salesforceType: 'Contact',
+        salesforceId: '0031234567890XYZ',
       });
-      expect(handleHttpRequest).toHaveBeenCalled();
-      expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [
-              {
-                Id: '00Q1234567890ABC',
-                IsConverted: false,
-                ConvertedContactId: null,
-                IsDeleted: false,
-              },
-            ],
-          },
-          status: 200,
-        },
+    it('should return undefined salesforceId when no lead is found', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 0,
+        records: [],
       });
 
       const stateInfo = {
@@ -1522,15 +1487,34 @@ describe('Salesforce Utils', () => {
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
         destination: mockDestination,
-        metadata: { workspaceId: undefined },
         stateInfo,
       });
 
       expect(result).toEqual({
         salesforceType: 'Lead',
-        salesforceId: '00Q1234567890ABC',
+        salesforceId: undefined,
       });
-      expect(handleHttpRequest).toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalled();
+    });
+
+    it('should throw NetworkInstrumentationError when multiple leads are found', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 2,
+        records: [{ Id: '00Q1234567890ABC' }, { Id: '00Q1234567890XYZ' }],
+      });
+
+      const stateInfo = {
+        salesforceSdk: mockSalesforceSdk,
+        authInfo: mockAuthInfo,
+      };
+
+      await expect(
+        getSalesforceIdForLead({
+          email: 'test@example.com',
+          destination: mockDestination,
+          stateInfo,
+        }),
+      ).rejects.toThrow("Multiple lead records found with email 'test@example.com'");
     });
   });
 });

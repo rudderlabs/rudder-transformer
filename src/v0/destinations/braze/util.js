@@ -16,7 +16,6 @@ const {
 } = require('../../util');
 const {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
-  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
   CustomAttributeOperationTypes,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
@@ -25,6 +24,7 @@ const {
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
   BRAZE_PURCHASE_STANDARD_PROPERTIES,
+  TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT,
 } = require('./config');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -580,6 +580,55 @@ const batchForTrackAPI = (attributesArray, eventsArray, purchasesArray) => {
   return trackChunks;
 };
 
+// braze batching as per new MAU plan
+const batchForTrackAPIV2 = (attributesArray, eventsArray, purchasesArray) => {
+  // Collect all items with their types, filtering out null/undefined
+  const allItems = [
+    ...attributesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'attributes',
+        externalId: item.external_id,
+      })),
+    ...eventsArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({ data: item, type: 'events', externalId: item.external_id })),
+    ...purchasesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'purchases',
+        externalId: item.external_id,
+      })),
+  ];
+
+  const sortedItems = _.sortBy(allItems, 'externalId');
+  const trackChunks = [];
+  let currentChunk = createTrackChunk();
+
+  const getChunkSize = (chunk) =>
+    chunk.attributes.length + chunk.events.length + chunk.purchases.length;
+
+  const addItemToChunk = (item, chunk) => {
+    chunk[item.type].push(item.data);
+  };
+
+  for (const item of sortedItems) {
+    if (getChunkSize(currentChunk) === TRACK_BRAZE_MAX_REQ_COUNT) {
+      trackChunks.push(currentChunk);
+      currentChunk = createTrackChunk();
+    }
+    addItemToChunk(item, currentChunk);
+  }
+
+  if (getChunkSize(currentChunk) > 0) {
+    trackChunks.push(currentChunk);
+  }
+
+  return trackChunks;
+};
+
 const cleanTrackChunk = ({ attributes, events, purchases }) => {
   const cleanChunk = {};
   if (attributes.length > 0) {
@@ -613,8 +662,33 @@ const addTrackStats = (chunk, destination) => {
   }
 };
 
+let brazeMauWorkspaceIds = 'NONE';
+if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS)) {
+  if (process.env.DEST_BRAZE_MAU_WORKSPACE_IDS === 'ALL') {
+    brazeMauWorkspaceIds = 'ALL';
+  } else {
+    brazeMauWorkspaceIds = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS.split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }
+}
+
+const isWorkspaceOnMauPlan = (workspaceId) => {
+  const environmentVariable = brazeMauWorkspaceIds;
+  switch (environmentVariable) {
+    case 'ALL':
+      return true;
+    case 'NONE':
+      return false;
+    default: {
+      return brazeMauWorkspaceIds?.includes(workspaceId);
+    }
+  }
+};
+
 const processBatch = (transformedEvents) => {
-  const { destination } = transformedEvents[0];
+  const { destination, metadata } = transformedEvents[0];
+  const { workspaceId } = metadata[0];
   const attributesArray = [];
   const eventsArray = [];
   const purchaseArray = [];
@@ -652,7 +726,11 @@ const processBatch = (transformedEvents) => {
       successMetadata.push(...transformedEvent.metadata);
     }
   }
-  const trackChunks = batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
+
+  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
+  const trackChunks = isWorkspaceOnMauPlanFlag
+    ? batchForTrackAPIV2(attributesArray, eventsArray, purchaseArray)
+    : batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
   const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
@@ -957,4 +1035,5 @@ module.exports = {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  batchForTrackAPIV2,
 };

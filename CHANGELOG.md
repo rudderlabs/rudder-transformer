@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.119.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.118.0...v1.119.0) (2026-01-06)
+
+
+### Features
+
+* add support of ALL and NONE enum for SOQL rollout ([#4885](https://github.com/rudderlabs/rudder-transformer/issues/4885)) ([60631b0](https://github.com/rudderlabs/rudder-transformer/commit/60631b021921239022b0da0c26d2af3d9aca7339))
+* update onesignal header as per request ([#4870](https://github.com/rudderlabs/rudder-transformer/issues/4870)) ([51f0ab1](https://github.com/rudderlabs/rudder-transformer/commit/51f0ab1a9586e73c41e9171b90a2c3055d22ec67))
+
+
+### Bug Fixes
+
+* add mapping support for clickId in Impact ([#4884](https://github.com/rudderlabs/rudder-transformer/issues/4884)) ([ba10c35](https://github.com/rudderlabs/rudder-transformer/commit/ba10c35f39c490f7f554ff4465765d92d9fdda7e))
+* add typecast to the email string before running trim function ([#4829](https://github.com/rudderlabs/rudder-transformer/issues/4829)) ([56203fb](https://github.com/rudderlabs/rudder-transformer/commit/56203fbe3d9f50b79bf9cb1fe25de06b0efb5dd4))
+* add validation of lookupFieldValue before making lookup api call ([#4876](https://github.com/rudderlabs/rudder-transformer/issues/4876)) ([1939ebb](https://github.com/rudderlabs/rudder-transformer/commit/1939ebb991ada8ff989e4bfb6c538406bdf37ed9))
+* unexpected string data type in zendesk field endpoint ([#4877](https://github.com/rudderlabs/rudder-transformer/issues/4877)) ([8eeaae4](https://github.com/rudderlabs/rudder-transformer/commit/8eeaae444540bb39f4a7b19cb41e03d39bbe7641))
+
 ## [1.118.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.117.1...v1.118.0) (2025-12-16)
 
 

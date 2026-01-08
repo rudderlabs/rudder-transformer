@@ -205,6 +205,7 @@ describe('dedup utility tests', () => {
       // Mock the response from handleHttpRequest
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
+          status: 200,
           response: {
             users: [
               {
@@ -272,31 +273,34 @@ describe('dedup utility tests', () => {
       // Call the function
       const users = await BrazeDedupUtility.doApiLookup(identfierChunks, { destination });
 
-      // Check the result
+      // Check the result - now returns object with users and failedIdentifiers
       expect(users).toEqual([
-        [
-          {
-            external_id: 'user1',
-            email: 'user1@example.com',
-            custom_attributes: {
-              key1: 'value1',
+        {
+          users: [
+            {
+              external_id: 'user1',
+              email: 'user1@example.com',
+              custom_attributes: {
+                key1: 'value1',
+              },
             },
-          },
-          {
-            external_id: 'user2',
-            email: 'user2@example.com',
-            custom_attributes: {
-              key2: 'value2',
+            {
+              external_id: 'user2',
+              email: 'user2@example.com',
+              custom_attributes: {
+                key2: 'value2',
+              },
             },
-          },
-          {
-            user_aliases: [{ alias_name: 'user3', alias_label: 'rudder_id' }],
-            email: 'user3@example.com',
-            custom_attributes: {
-              key2: 'value3',
+            {
+              user_aliases: [{ alias_name: 'user3', alias_label: 'rudder_id' }],
+              email: 'user3@example.com',
+              custom_attributes: {
+                key2: 'value3',
+              },
             },
-          },
-        ],
+          ],
+          failedIdentifiers: [],
+        },
       ]);
 
       // Check that handleHttpRequest was called once with the correct arguments
@@ -365,6 +369,7 @@ describe('dedup utility tests', () => {
       // Mock the handleHttpRequest function to return the same data every time it's called
       handleHttpRequest.mockImplementationOnce(() => ({
         processedResponse: {
+          status: 200,
           response: {
             users: Array.from({ length: 50 }, (_, i) =>
               removeUndefinedAndNullAndEmptyValues({
@@ -385,6 +390,7 @@ describe('dedup utility tests', () => {
 
       handleHttpRequest.mockImplementationOnce(() => ({
         processedResponse: {
+          status: 200,
           response: {
             users: Array.from({ length: 50 }, (_, i) =>
               removeUndefinedAndNullAndEmptyValues({
@@ -405,6 +411,7 @@ describe('dedup utility tests', () => {
 
       handleHttpRequest.mockImplementationOnce(() => ({
         processedResponse: {
+          status: 200,
           response: {
             users: Array.from({ length: 10 }, (_, i) =>
               removeUndefinedAndNullAndEmptyValues({
@@ -426,8 +433,10 @@ describe('dedup utility tests', () => {
       const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, {
         destination,
       });
-      const result = _.flatMap(chunkedUserData);
-      expect(result).toHaveLength(110);
+      // Each chunk now returns { users: [...], failedIdentifiers: [] }
+      // So we need to extract users from each chunk and flatten
+      const allUsers = chunkedUserData.flatMap((chunk) => chunk.users);
+      expect(allUsers).toHaveLength(110);
       expect(handleHttpRequest).toHaveBeenCalledTimes(3);
     });
 
@@ -486,14 +495,20 @@ describe('dedup utility tests', () => {
 
       expect(handleHttpRequest).toHaveBeenCalledTimes(2);
       // Assert that the first chunk was successful and the second failed
-      // The failed chunked will be returned as undefined
+      // The failed chunk will return empty users array with failedIdentifiers
       expect(users).toEqual([
-        [
-          { external_id: 'user1', email: 'user1@example.com' },
-          { alias_name: 'alias1', alias_label: 'rudder_id', email: 'alias1@example.com' },
-          { external_id: 'user2', email: 'user2@example.com' },
-        ],
-        undefined,
+        {
+          users: [
+            { external_id: 'user1', email: 'user1@example.com' },
+            { alias_name: 'alias1', alias_label: 'rudder_id', email: 'alias1@example.com' },
+            { external_id: 'user2', email: 'user2@example.com' },
+          ],
+          failedIdentifiers: [],
+        },
+        {
+          users: [],
+          failedIdentifiers: ['user3', 'alias2'],
+        },
       ]);
     });
   });
@@ -515,11 +530,21 @@ describe('dedup utility tests', () => {
           [{ alias_name: 'alias1', alias_label: 'rudder_id' }],
           [{ alias_name: 'alias2', alias_label: 'rudder_id' }],
         ]);
+      // doApiLookup now returns { users: [...], failedIdentifiers: [...] } for each chunk
       const doApiLookupMock = jest.spyOn(BrazeDedupUtility, 'doApiLookup').mockResolvedValue([
-        [{ external_id: '123', custom_attributes: { key1: 'value1' } }],
-        [{ external_id: '456', custom_attributes: { key2: 'value2' } }],
-        undefined, // simulate failed api call
-        [{ alias_name: 'alias2', custom_attributes: { key3: 'value3' } }],
+        {
+          users: [{ external_id: '123', custom_attributes: { key1: 'value1' } }],
+          failedIdentifiers: [],
+        },
+        {
+          users: [{ external_id: '456', custom_attributes: { key2: 'value2' } }],
+          failedIdentifiers: [],
+        },
+        { users: [], failedIdentifiers: ['alias1'] }, // simulate failed api call
+        {
+          users: [{ alias_name: 'alias2', custom_attributes: { key3: 'value3' } }],
+          failedIdentifiers: [],
+        },
       ]);
 
       // create input data for doLookup
@@ -532,12 +557,13 @@ describe('dedup utility tests', () => {
 
       // call doLookup and verify the output
       const result = await BrazeDedupUtility.doLookup(inputs);
-      expect(result).toEqual([
+      // doLookup now returns { users: [...], failedIdentifiers: Set }
+      expect(result.users).toEqual([
         { external_id: '123', custom_attributes: { key1: 'value1' } },
         { external_id: '456', custom_attributes: { key2: 'value2' } },
-        undefined, // response of failed api call
         { alias_name: 'alias2', custom_attributes: { key3: 'value3' } },
       ]);
+      expect(result.failedIdentifiers).toEqual(new Set(['alias1']));
 
       // verify that the mocked functions were called with correct arguments
       expect(prepareInputForDedupMock).toHaveBeenCalledWith(inputs);

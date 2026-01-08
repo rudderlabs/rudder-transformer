@@ -251,6 +251,7 @@ function processTrackWithUserAttributes(
         processParams.userStore,
         payload,
         destination.ID,
+        processParams.failedLookupIdentifiers,
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -300,6 +301,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
         processParams.userStore,
         attributePayload,
         destination.ID,
+        processParams.failedLookupIdentifiers,
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -534,16 +536,20 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const userStore = new Map();
+  let failedLookupIdentifiers = new Set();
   const { destination } = inputs[0];
   if (destination.Config.supportDedup) {
-    let lookedUpUsers;
+    let lookupResult;
     try {
-      lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
+      lookupResult = await BrazeDedupUtility.doLookup(inputs);
     } catch (error) {
       logger.error('Error while fetching user store', error);
     }
 
-    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);
+    if (lookupResult) {
+      BrazeDedupUtility.updateUserStore(userStore, lookupResult.users, destination.ID);
+      failedLookupIdentifiers = lookupResult.failedIdentifiers || new Set();
+    }
   }
   // group events by userId or anonymousId and then call process
   const groupedInputs = lodash.groupBy(
@@ -563,6 +569,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     const respList = await simpleProcessRouterDestFunc(groupedInputs[id], process, reqMetadata, {
       userStore,
       identifyCallsArray,
+      failedLookupIdentifiers,
     });
     return respList;
   });

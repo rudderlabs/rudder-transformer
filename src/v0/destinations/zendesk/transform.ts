@@ -225,7 +225,7 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         },
       };
 
-      await handleHttpRequest('post', url, fieldData, config, {
+      const { processedResponse } = await handleHttpRequest('post', url, fieldData, config, {
         destType: 'zendesk',
         feature: 'transformation',
         endpointPath: '/users/userId/identities',
@@ -233,6 +233,9 @@ async function createUserFields(url, config, newFields, fieldJson, metadata) {
         module: 'router',
         metadata,
       });
+      if (!isHttpStatusSuccess(processedResponse.status)) {
+        logger.error(`${NAME}:: Failed to create user field: ${processedResponse.response.error}`);
+      }
     }),
   );
 }
@@ -258,28 +261,31 @@ async function checkAndCreateUserFields(
     metadata,
   });
 
-  try {
-    const fields = get(response.response, fieldJson);
-    if (response.response && fields) {
-      // get existing user_fields and concatenate them with default fields
-      if (!Array.isArray(fields)) {
-        logger.warn(`${NAME}:: Fields is not an array. It's type is ${typeof fields}`);
-      }
-      let existingKeys = fields.map((field) => field.key);
-      existingKeys = existingKeys.concat(defaultFields[fieldJson]);
-
-      // check for new fields
-      const traitKeys = Object.keys(traits);
-      newFields = traitKeys.filter(
-        (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
-      );
-
-      if (newFields.length > 0) {
-        await createUserFields(url, config, newFields, fieldJson, metadata);
-      }
+  if (!isHttpStatusSuccess(response.status)) {
+    logger.warn(`${NAME}:: Failed to check user fields: ${response.response.error}`);
+    return;
+  }
+  const fields = get(response.response, fieldJson);
+  if (response.response && fields) {
+    // Fields is expected to be an array, but in production we've observed it
+    // being returned as a string for one of the destinations. String type was not
+    // reproducible in local testing.
+    if (typeof fields === 'string') {
+      logger.info(`${NAME}:: Fields is not an array. It's type is ${typeof fields}`);
+      return;
     }
-  } catch (error) {
-    logger.error(`${NAME}:: Error :`, error);
+    // get existing user_fields and concatenate them with default fields
+    let existingKeys = fields.map((field) => field.key);
+    existingKeys = existingKeys.concat(defaultFields[fieldJson]);
+
+    // check for new fields
+    const traitKeys = Object.keys(traits);
+    newFields = traitKeys.filter(
+      (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
+    );
+    if (newFields.length > 0) {
+      await createUserFields(url, config, newFields, fieldJson, metadata);
+    }
   }
 }
 

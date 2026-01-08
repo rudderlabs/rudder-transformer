@@ -247,10 +247,17 @@ const getAuthHeader = (authInfo) => {
 };
 
 const isWorkspaceSupportedForSoql = (workspaceId) => {
-  const soqlSupportedWorkspaceIds = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS?.split(
-    ',',
-  )?.map?.((s) => s?.trim?.());
-  return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
+  const environmentVariable = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
+  switch (environmentVariable) {
+    case 'ALL':
+      return true;
+    case 'NONE':
+      return false;
+    default: {
+      const soqlSupportedWorkspaceIds = environmentVariable?.split(',')?.map?.((s) => s?.trim?.());
+      return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
+    }
+  }
 };
 
 /**

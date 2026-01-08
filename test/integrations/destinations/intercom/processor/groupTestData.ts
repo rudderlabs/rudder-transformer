@@ -518,4 +518,53 @@ export const groupTestData = [
       },
     },
   },
+  {
+    id: 'intercom-group-test-7',
+    name: 'intercom',
+    description:
+      'V2 version : Successful group call to create or update company without lookup field value',
+    scenario: 'Business',
+    successCriteria:
+      'Response status code should be 200 and response should contain create or update company payload without lookup field value',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: v2Destination,
+            message: generateSimplifiedGroupPayload({
+              userId: 'user@7',
+              groupId: 'rudderlabs',
+              context: {
+                traits: { phone: '+91 9999999999' },
+              },
+              traits: group1Traits,
+              timestamp,
+              originalTimestamp,
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              endpoint,
+              headers: v2Headers,
+              JSON: { company_id: 'rudderlabs', ...group1Traits },
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

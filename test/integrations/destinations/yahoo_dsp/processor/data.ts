@@ -71,8 +71,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'EMAIL',
                 accountId: '12444',
                 audienceId: '34893',
@@ -186,8 +186,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'EMAIL',
                 accountId: '12444',
                 audienceId: '34893',
@@ -283,8 +283,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'DEVICE_ID',
                 accountId: '12444',
                 audienceId: '34893',
@@ -400,8 +400,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'IP_ADDRESS',
                 accountId: '12444',
                 audienceId: '34893',
@@ -515,8 +515,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'DEVICE_ID',
                 accountId: '12444',
                 audienceId: '34893',
@@ -609,8 +609,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'DEVICE_ID',
                 accountId: '12444',
                 audienceId: '34893',
@@ -680,8 +680,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'DEVICEID',
                 accountId: '12444',
                 audienceId: '34893',
@@ -779,8 +779,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'EMAIL',
                 accountId: '12444',
                 audienceId: '34893',
@@ -877,8 +877,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'EMAIL',
                 accountId: '12444',
                 audienceId: '34893',
@@ -974,8 +974,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'EMAIL',
                 accountId: '12444',
                 audienceId: '34893',
@@ -1027,8 +1027,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'POINT_OF_INTEREST',
                 accountId: '12444',
                 audienceId: '34893',
@@ -1080,8 +1080,8 @@ export const data = [
             },
             destination: {
               Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
+                clientId: 'dummyClientId',
+                clientSecret: 'dummyClientSecret',
                 audienceType: 'POINT_OF_INTEREST',
                 accountId: '12444',
                 audienceId: '34893',

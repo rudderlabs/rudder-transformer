@@ -41,7 +41,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -96,7 +96,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -165,7 +165,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -234,7 +234,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -303,7 +303,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -372,7 +372,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -439,7 +439,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -508,7 +508,7 @@ const legacyTests = [
           files: {},
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -587,7 +587,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {
@@ -680,7 +680,7 @@ const legacyTests = [
           },
           metadata: {
             destInfo: {
-              authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+              authKey: 'dummyAuthKey',
             },
           },
           params: {

@@ -2953,4 +2953,73 @@ export const data = [
       },
     },
   },
+  {
+    name: 'zendesk',
+    description: 'Test for fields type as string instead of array',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: secret1,
+                domain: 'rudderlabshelp1',
+                email: 'myDummyUserName1',
+              },
+            },
+            message: {
+              anonymousId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
+              context: {
+                traits: { name: 'abcd124' },
+              },
+              type: 'identify',
+              userId: 'abcd-124',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://rudderlabshelp1.zendesk.com/api/v2/users/create_or_update.json',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'X-Zendesk-Marketplace-App-Id': '263241',
+                'X-Zendesk-Marketplace-Name': 'RudderStack',
+                'X-Zendesk-Marketplace-Organization-Id': '3339',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: {
+                    name: 'abcd124',
+                    external_id: 'abcd-124',
+                    user_fields: { id: 'abcd-124' },
+                  },
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

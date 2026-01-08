@@ -3034,7 +3034,7 @@ const recordEventGenerator = (id, action, externalId) => {
   // this function is used to generate record events for testing
   const testRecordEvent = {
     destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+      ID: 'dummyDestinationId',
       Name: 'test_marketo_rc',
       DestinationDefinition: DEST_DEFINITION,
       Config: DEST_CONFIG,

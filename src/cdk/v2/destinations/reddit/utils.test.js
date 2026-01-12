@@ -709,20 +709,30 @@ describe('generateAndValidateTimestamp', () => {
 
   // Accepts timestamp exactly 168 hours old
   it('should accept timestamp exactly 168 hours old', () => {
-    const validOldDate = new Date(Date.now() - 168 * 60 * 60 * 1000).toISOString();
+    const mockNow = 1600000000000; // Fixed timestamp
+    jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+
+    const validOldDate = new Date(mockNow - 168 * 60 * 60 * 1000).toISOString();
     const result = generateAndValidateTimestamp(validOldDate);
 
     expect(typeof result).toBe('number');
     expect(result).toBeGreaterThan(0);
+
+    Date.now.mockRestore();
   });
 
   // Accepts timestamp exactly 5 minutes in the future
   it('should accept timestamp exactly 5 minutes in the future', () => {
-    const validFutureDate = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+    const mockNow = 1600000000000; // Fixed timestamp
+    jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+
+    const validFutureDate = new Date(mockNow + 5 * 60 * 1000).toISOString();
     const result = generateAndValidateTimestamp(validFutureDate);
 
     expect(typeof result).toBe('number');
     expect(result).toBeGreaterThan(0);
+
+    Date.now.mockRestore();
   });
 
   // Accepts timestamp as Unix milliseconds

@@ -218,7 +218,8 @@ jobs:
   create-manifest-ecr:
     name: Create multi-arch manifest for ECR
     runs-on: ubuntu-latest
-    needs: [build-images]
+    needs: [build-images, check_actor]
+    if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
@@ -254,7 +255,8 @@ jobs:
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
     runs-on: ubuntu-latest
-    needs: [build-images]
+    needs: [build-images, check_actor]
+    if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2

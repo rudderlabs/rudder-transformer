@@ -85,6 +85,8 @@ const parseEnvInt = (value, defaultValue) => {
 
 const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
   process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
+// Socket inactivity timeout. Only starts after a socket is acquired and connected.
+// Resets whenever data flows; does not protect against socket pool exhaustion.
 const SHARED_HTTP_AGENT_TIMEOUT_MS = parseEnvInt(process.env.SHARED_HTTP_AGENT_TIMEOUT_MS, 60000);
 const SHARED_HTTP_AGENT_MAX_SOCKETS = parseEnvInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 200);
 const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = parseEnvInt(

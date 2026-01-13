@@ -117,12 +117,14 @@ export class TestEnvironment {
     this.originalEnv = {
       CONFIG_BACKEND_URL: process.env.CONFIG_BACKEND_URL,
       ENABLE_FUNCTIONS: process.env.ENABLE_FUNCTIONS,
+      ALLOW_LOCALHOST_FETCH: process.env.ALLOW_LOCALHOST_FETCH,
     };
 
     // Set environment variables to point to mock servers
     process.env.CONFIG_BACKEND_URL = this.configBackend.getBaseUrl();
     process.env.ENABLE_FUNCTIONS = 'true';
     process.env.MOCK_EXTERNAL_API_URL = this.externalApiServer.getBaseUrl();
+    process.env.ALLOW_LOCALHOST_FETCH = 'true';
 
     console.log(`[TestEnvironment] Setup complete:`);
     console.log(`  - Config Backend: ${this.configBackend.getBaseUrl()}`);

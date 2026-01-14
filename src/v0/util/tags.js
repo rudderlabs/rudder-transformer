@@ -48,7 +48,6 @@ const ERROR_TYPES = {
   THROTTLED: 'throttled',
   RETRYABLE: 'retryable',
   ABORTED: 'aborted',
-  OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
   FILTERED: 'filtered',

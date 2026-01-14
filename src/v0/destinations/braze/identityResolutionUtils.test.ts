@@ -8,7 +8,13 @@ import * as stats from '../../../util/stats';
 import * as tags from '../../util/tags';
 import * as logger from '../../../logger';
 import { processBatchedIdentify, processSingleBatch } from './identityResolutionUtils';
-import { Destination } from '../../../types';
+import type {
+  BrazeDestinationConfig,
+  BrazeDestination,
+  BrazeIdentifyCall,
+  BrazeIdentifyRequestBody,
+  BrazeUserAlias,
+} from './types';
 
 // Mock all dependencies
 jest.mock('../../../adapters/network');
@@ -48,30 +54,7 @@ const mockedLoggerError = logger.error as jest.MockedFunction<typeof logger.erro
 const { mapInBatches } = require('@rudderstack/integrations-lib');
 const mockedMapInBatches = mapInBatches as jest.MockedFunction<any>;
 
-// Test data interfaces
-interface BrazeDestinationConfig {
-  restApiKey: string;
-  dataCenter?: string;
-  [key: string]: unknown;
-}
-
-interface AliasToIdentify {
-  external_id: string;
-  alias_name: string;
-  alias_label: string;
-}
-
-interface IdentifyPayload {
-  aliases_to_identify: AliasToIdentify[];
-  merge_behavior?: string;
-}
-
-interface IdentifyCall {
-  identifyPayload: IdentifyPayload;
-  destination: Destination<BrazeDestinationConfig>;
-  metadata: unknown;
-}
-
+// Test-specific response interfaces
 interface BrazePartialError {
   type?: string;
   input_array?: string;
@@ -90,12 +73,20 @@ interface BrazeResponse {
 // Test fixtures
 const createMockDestination = (
   overrides: Partial<BrazeDestinationConfig> = {},
-): Destination<BrazeDestinationConfig> => ({
+): BrazeDestination => ({
   ID: 'test-destination-id',
   Name: 'Test Braze Destination',
   Config: {
     restApiKey: 'test-api-key',
     dataCenter: 'US-03',
+    enableSubscriptionGroupInGroupCall: false,
+    sendPurchaseEventWithExtraProperties: false,
+    enableNestedArrayOperations: false,
+    supportDedup: false,
+    trackAnonymousUser: false,
+    enableIdentifyForAnonymousUser: false,
+    blacklistedEvents: [],
+    whitelistedEvents: [],
     ...overrides,
   },
   DestinationDefinition: {
@@ -109,24 +100,26 @@ const createMockDestination = (
   WorkspaceID: 'test-workspace-id',
 });
 
-const createMockAliasToIdentify = (overrides: Partial<AliasToIdentify> = {}): AliasToIdentify => ({
-  external_id: 'user123',
-  alias_name: 'anon456',
-  alias_label: 'rudder_id',
-  ...overrides,
+const createMockAliasToIdentify = (
+  external_id?: string,
+  user_alias?: BrazeUserAlias,
+): BrazeIdentifyRequestBody['aliases_to_identify'][0] => ({
+  external_id,
+  user_alias,
 });
 
 const createMockIdentifyCall = (
   aliasCount: number = 1,
   destinationOverrides: Partial<BrazeDestinationConfig> = {},
-): IdentifyCall => ({
+): BrazeIdentifyCall => ({
   identifyPayload: {
     aliases_to_identify: Array.from({ length: aliasCount }, (_, i) =>
-      createMockAliasToIdentify({
-        external_id: `user${i + 1}`,
+      createMockAliasToIdentify(`user${i + 1}`, {
         alias_name: `anon${i + 1}`,
+        alias_label: 'rudder_id',
       }),
     ),
+    merge_behavior: 'merge',
   },
   destination: createMockDestination(destinationOverrides),
   metadata: { jobId: 1, userId: 'test-user' },
@@ -832,14 +825,13 @@ describe('identityResolutionUtils', () => {
   describe('Integration & Edge Case Tests', () => {
     describe('Data Structure Tests', () => {
       it('should handle valid IdentifyCall objects with proper structure', async () => {
-        const validIdentifyCall: IdentifyCall = {
+        const validIdentifyCall: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [
-              {
-                external_id: 'user123',
+              createMockAliasToIdentify('user123', {
                 alias_name: 'anon456',
                 alias_label: 'rudder_id',
-              },
+              }),
             ],
             merge_behavior: 'merge',
           },
@@ -856,13 +848,13 @@ describe('identityResolutionUtils', () => {
       });
 
       it('should handle empty aliases_to_identify array', async () => {
-        const identifyCallWithEmptyAliases: IdentifyCall = {
+        const identifyCallWithEmptyAliases: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [],
           },
           destination: createMockDestination(),
           metadata: {},
-        };
+        } as any;
 
         const mockResponse = createMockBrazeResponse(200);
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
@@ -1080,19 +1072,18 @@ describe('identityResolutionUtils', () => {
   describe('Type Safety & Interface Tests', () => {
     describe('TypeScript Interface Compliance', () => {
       it('should handle AliasToIdentify interface correctly', async () => {
-        const aliasToIdentify: AliasToIdentify = {
-          external_id: 'user123',
+        const aliasToIdentify = createMockAliasToIdentify('user123', {
           alias_name: 'anon456',
           alias_label: 'rudder_id',
-        };
+        });
 
-        const identifyCall: IdentifyCall = {
+        const identifyCall: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [aliasToIdentify],
           },
           destination: createMockDestination(),
           metadata: {},
-        };
+        } as any;
 
         const mockResponse = createMockBrazeResponse(200);
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);
@@ -1103,12 +1094,12 @@ describe('identityResolutionUtils', () => {
       });
 
       it('should handle IdentifyPayload interface with optional merge_behavior', async () => {
-        const identifyPayloadWithMergeBehavior: IdentifyPayload = {
+        const identifyPayloadWithMergeBehavior: BrazeIdentifyRequestBody = {
           aliases_to_identify: [createMockAliasToIdentify()],
-          merge_behavior: 'none',
+          merge_behavior: 'merge',
         };
 
-        const identifyCall: IdentifyCall = {
+        const identifyCall: BrazeIdentifyCall = {
           identifyPayload: identifyPayloadWithMergeBehavior,
           destination: createMockDestination(),
           metadata: {},
@@ -1206,9 +1197,10 @@ describe('identityResolutionUtils', () => {
       });
 
       it('should handle zero aliases gracefully', async () => {
-        const zeroAliasesCall: IdentifyCall = {
+        const zeroAliasesCall: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [],
+            merge_behavior: 'merge',
           },
           destination: createMockDestination(),
           metadata: {},
@@ -1283,9 +1275,10 @@ describe('identityResolutionUtils', () => {
       });
 
       it('should handle null/undefined metadata', async () => {
-        const identifyCallWithNullMetadata: IdentifyCall = {
+        const identifyCallWithNullMetadata: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [createMockAliasToIdentify()],
+            merge_behavior: 'merge',
           },
           destination: createMockDestination(),
           metadata: null,

@@ -1,18 +1,17 @@
 /* eslint-disable no-unused-vars */
-const { NetworkError } = require('@rudderstack/integrations-lib');
-const { isHttpStatusSuccess } = require('../../util/index');
-const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
-const { DESTINATION } = require('./config');
-const tags = require('../../util/tags');
-const stats = require('../../../util/stats');
+import { NetworkError } from '@rudderstack/integrations-lib';
+import { isHttpStatusSuccess } from '../../util/index';
+import { proxyRequest, prepareProxyRequest } from '../../../adapters/network';
+import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { DESTINATION } from './config';
+import tags from '../../util/tags';
+import stats from '../../../util/stats';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const responseHandler = (responseParams) => {
-  const { destinationResponse } = responseParams;
+  const { destinationResponse } = responseParams as {
+    destinationResponse: { response?: unknown; status: number };
+  };
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
   // if the response from destination is not a success case build an explicit error
@@ -30,9 +29,9 @@ const responseHandler = (responseParams) => {
   // Partial errors
   if (
     !!response &&
-    response.message === 'success' &&
-    response.errors &&
-    response.errors.length > 0
+    (response as { message?: string }).message === 'success' &&
+    (response as { errors?: unknown[] }).errors &&
+    (response as { errors: unknown[] }).errors.length > 0
   ) {
     stats.increment('braze_partial_failure');
   }
@@ -40,9 +39,9 @@ const responseHandler = (responseParams) => {
   // application level errors
   if (
     !!response &&
-    response.message !== 'success' &&
-    response.errors &&
-    response.errors.length > 0
+    (response as { message?: string }).message !== 'success' &&
+    (response as { errors?: unknown[] }).errors &&
+    (response as { errors: unknown[] }).errors.length > 0
   ) {
     throw new NetworkError(
       `Request failed for ${DESTINATION} with status: ${status}`,
@@ -60,13 +59,11 @@ const responseHandler = (responseParams) => {
   };
 };
 
-function networkHandler() {
+function networkHandler(this: any) {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 }
 
-module.exports = {
-  networkHandler,
-};
+export { networkHandler };

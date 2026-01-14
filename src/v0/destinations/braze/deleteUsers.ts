@@ -1,17 +1,18 @@
-const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const { httpPOST } = require('../../../adapters/network');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
-const { isHttpStatusSuccess } = require('../../util');
-const { executeCommonValidations } = require('../../util/regulation-api');
-const { DEL_MAX_BATCH_SIZE } = require('./config');
-const { getUserIdBatches } = require('../../util/deleteUserUtils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+import { NetworkError, ConfigurationError } from '@rudderstack/integrations-lib';
+import { httpPOST } from '../../../adapters/network';
+import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import tags from '../../util/tags';
+import { isHttpStatusSuccess } from '../../util';
+import { executeCommonValidations } from '../../util/regulation-api';
+import { DEL_MAX_BATCH_SIZE } from './config';
+import { getUserIdBatches } from '../../util/deleteUserUtils';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import type { BrazeDeleteUserEvent, BrazeDestinationConfig } from './types';
 
-const userDeletionHandler = async (userAttributes, config) => {
+const userDeletionHandler = async (
+  userAttributes: BrazeDeleteUserEvent['userAttributes'],
+  config: BrazeDestinationConfig,
+) => {
   if (!config) {
     throw new ConfigurationError('Config for deletion not present');
   }
@@ -32,7 +33,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
-  const batchEvents = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
+  const batchEvents = getUserIdBatches(userAttributes as { userId: string }[], DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
       const data = { external_ids: batchEvent };
@@ -67,11 +68,11 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   return { statusCode: 200, status: 'successful' };
 };
-const processDeleteUsers = async (event) => {
+const processDeleteUsers = async (event: BrazeDeleteUserEvent) => {
   const { userAttributes, config } = event;
-  executeCommonValidations(userAttributes);
+  executeCommonValidations(userAttributes as { userId: string; email: string; phone: string }[]);
   const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 
-module.exports = { processDeleteUsers };
+export { processDeleteUsers };

@@ -996,7 +996,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
             },
           },
         },
-        metadata: [{ job_id: i }],
+        metadata: [{ job_id: i, workspaceId: 'workspace-non-mau' }],
       });
     }
 
@@ -1039,7 +1039,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
           },
         },
       },
-      metadata: [{ job_id: i }],
+      metadata: [{ job_id: i, workspaceId: 'workspace-non-mau' }],
     }));
 
     const transformedEventsSet2 = new Array(160).fill(0).map((_, i) => ({
@@ -1057,7 +1057,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
           },
         },
       },
-      metadata: [{ job_id: 120 + i }],
+      metadata: [{ job_id: 120 + i, workspaceId: 'workspace-non-mau' }],
     }));
 
     const transformedEventsSet3 = new Array(100).fill(0).map((_, i) => ({
@@ -1075,7 +1075,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
           },
         },
       },
-      metadata: [{ job_id: 280 + i }],
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-non-mau' }],
     }));
 
     const transformedEventsSet4 = new Array(70).fill(0).map((_, i) => ({
@@ -1096,7 +1096,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
           },
         },
       },
-      metadata: [{ job_id: 280 + i }],
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-non-mau' }],
     }));
 
     const transformedEventsSet5 = new Array(40).fill(0).map((_, i) => ({
@@ -1115,7 +1115,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
           },
         },
       },
-      metadata: [{ job_id: 280 + i }],
+      metadata: [{ job_id: 280 + i, workspaceId: 'workspace-non-mau' }],
     }));
 
     // Call the processBatch function
@@ -1170,7 +1170,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
               },
             },
           },
-          metadata: [{ job_id: i }],
+          metadata: [{ job_id: i, workspaceId: 'workspace-non-mau' }],
         });
         successCount = successCount + 1;
       } else {
@@ -1182,7 +1182,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
             },
           },
           statusCode: 400,
-          metadata: [{ job_id: i }],
+          metadata: [{ job_id: i, workspaceId: 'workspace-non-mau' }],
           error: 'Random Error',
         });
         failureCount = failureCount + 1;

@@ -662,26 +662,26 @@ const addTrackStats = (chunk, destination) => {
   }
 };
 
-let brazeMauWorkspaceIds = 'NONE';
-if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS)) {
-  if (process.env.DEST_BRAZE_MAU_WORKSPACE_IDS === 'ALL') {
-    brazeMauWorkspaceIds = 'ALL';
+let brazeMauWorkspaceIdsSkipList = 'ALL';
+if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST)) {
+  if (process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST === 'ALL') {
+    brazeMauWorkspaceIdsSkipList = 'ALL';
   } else {
-    brazeMauWorkspaceIds = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS.split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
+    brazeMauWorkspaceIdsSkipList = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST.split(
+      ',',
+    ).map((s) => s.trim());
   }
 }
 
-const isWorkspaceOnMauPlan = (workspaceId) => {
-  const environmentVariable = brazeMauWorkspaceIds;
+const isWorkspaceOnMauPlanSkipList = (workspaceId) => {
+  const environmentVariable = brazeMauWorkspaceIdsSkipList;
   switch (environmentVariable) {
     case 'ALL':
-      return true;
-    case 'NONE':
       return false;
+    case 'NONE':
+      return true;
     default: {
-      return brazeMauWorkspaceIds?.includes(workspaceId);
+      return !brazeMauWorkspaceIdsSkipList?.includes(workspaceId);
     }
   }
 };
@@ -727,8 +727,8 @@ const processBatch = (transformedEvents) => {
     }
   }
 
-  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
-  const trackChunks = isWorkspaceOnMauPlanFlag
+  const isWorkspaceOnMauPlanSkipListFlag = isWorkspaceOnMauPlanSkipList(workspaceId);
+  const trackChunks = isWorkspaceOnMauPlanSkipListFlag
     ? batchForTrackAPIV2(attributesArray, eventsArray, purchaseArray)
     : batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);

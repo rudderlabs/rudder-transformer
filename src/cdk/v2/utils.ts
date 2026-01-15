@@ -112,7 +112,3 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
 export function isCdkV2Destination(event) {
   return Boolean(event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled);
 }
-
-export function getCdkV2TestThreshold(event) {
-  return event.destination?.DestinationDefinition?.Config?.cdkV2TestThreshold || 0;
-}

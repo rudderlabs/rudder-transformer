@@ -70,6 +70,19 @@ export class SourceController {
     const firstError = response.batch.find(
       (job) => job.statusCode >= HTTP_STATUS_CODES.BAD_REQUEST,
     );
+
+    // Check if any event has a 4xx status code (except 429)
+    const hasPermanentError = response.batch.some(
+      (job) =>
+        job.statusCode >= 400 &&
+        job.statusCode < 500 &&
+        job.statusCode !== HTTP_STATUS_CODES.TOO_MANY_REQUESTS,
+    );
+
+    if (hasPermanentError) {
+      ctx.set('X-Rudder-Permanent-Error', 'true');
+    }
+
     if (firstError) {
       // Since server doesn't handle partial success
       // no need to return events in case of any error

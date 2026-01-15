@@ -343,8 +343,11 @@ describe('Facebook Lead Ads Hydration', () => {
     const result = await hydrate(input);
 
     expect(result.batch).toHaveLength(1);
-    expect(result.batch[0].statusCode).toBe(401);
-    expect(result.batch[0].errorMessage).toBe('Invalid OAuth access token');
+    // Facebook error handler maps code 190 to status 400 (auth errors)
+    expect(result.batch[0].statusCode).toBe(400);
+    expect(result.batch[0].errorMessage).toBe(
+      'Invalid OAuth access token. Facebook responded with error code: 190',
+    );
   });
 
   it('should handle mixed success and failure responses', async () => {
@@ -381,8 +384,9 @@ describe('Facebook Lead Ads Hydration', () => {
     expect(result.batch[0].statusCode).toBe(200);
     expect(result.batch[0].event?.context?.traits?.full_name).toBe('John Doe');
     expect(result.batch[0].errorMessage).toBeUndefined();
-    expect(result.batch[1].statusCode).toBe(404);
-    expect(result.batch[1].errorMessage).toBe('Lead not found');
+    // Unknown error without code mapping defaults to 500 and stringifies the error
+    expect(result.batch[1].statusCode).toBe(500);
+    expect(result.batch[1].errorMessage).toBe('{"message":"Lead not found"}');
   });
 
   describe('Input validation', () => {

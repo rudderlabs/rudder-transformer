@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { BaseError, formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import {
@@ -11,6 +11,7 @@ import {
   SourceHydrationRequest,
 } from '../../types/sourceHydration';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
+import { errorResponseHandler } from '../../v0/util/facebookUtils/networkHandler';
 
 // Complete schema
 const FacebookLeadAdsHydrationInputSchema = SourceHydrationRequestSchema.extend({
@@ -86,10 +87,24 @@ async function fetchLeadData(
       statusCode: HTTP_STATUS_CODES.OK,
     };
   }
-  return {
-    statusCode: processedResponse.status,
-    error: processedResponse.response?.error?.message || 'Unknown error',
-  };
+
+  // Use Facebook's error handler for proper error classification
+  try {
+    errorResponseHandler({
+      response: processedResponse.response,
+      status: processedResponse.status,
+    });
+  } catch (error: unknown) {
+    if (error instanceof BaseError) {
+      return {
+        statusCode: error.status,
+        error: error.message,
+      };
+    }
+    throw new Error(`Unexpected: unknown error type ${error}`);
+  }
+  // This should never be reached since errorResponseHandler always throws for errors
+  throw new Error('Unexpected: errorResponseHandler did not throw for non-OK response');
 }
 
 /**

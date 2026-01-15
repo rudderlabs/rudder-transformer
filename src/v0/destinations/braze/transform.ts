@@ -53,6 +53,7 @@ import {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
+  DESTINATION,
 } from './config';
 
 import logger from '../../../logger';
@@ -534,7 +535,7 @@ async function process(
         adduserIdFromExternalId(message);
       }
 
-      const integrationsObj = getIntegrationsObj(message, 'BRAZE' as unknown as undefined);
+      const integrationsObj = getIntegrationsObj(message, DESTINATION.toUpperCase() as any);
       const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
 
       const brazeExternalID =

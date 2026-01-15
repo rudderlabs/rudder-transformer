@@ -191,7 +191,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret3,
@@ -914,7 +913,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret1,
@@ -1081,7 +1079,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret1,
@@ -1248,7 +1245,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret1,
@@ -1422,7 +1418,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret3,
@@ -1605,7 +1600,6 @@ export const data = [
                     'reactnative',
                   ],
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiToken: secret3,

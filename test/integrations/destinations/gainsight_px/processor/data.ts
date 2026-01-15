@@ -2018,7 +2018,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 accountAttributeMap: [

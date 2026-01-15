@@ -70,8 +70,7 @@
             "transformAt": "router",
             "transformAtV1": "router",
             "cdkV2TestThreshold": 1
-          },
-          "ResponseRules": {}
+          }
         },
         "Config": {
           "apiKey": "apiKey",

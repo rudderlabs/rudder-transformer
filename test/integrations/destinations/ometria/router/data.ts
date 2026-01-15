@@ -102,7 +102,6 @@ export const data = [
                     },
                     secretKeys: ['apiKey'],
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: defaultApiKey,
@@ -206,7 +205,6 @@ export const data = [
                     },
                     secretKeys: ['apiKey'],
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: defaultApiKey,
@@ -312,7 +310,6 @@ export const data = [
                     },
                     secretKeys: ['apiKey'],
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: defaultApiKey,

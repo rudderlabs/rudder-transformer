@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
-const lodash = require('lodash');
-const get = require('get-value');
-const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
-const { FilteredEventsError } = require('../../util/errorTypes');
-const {
+import lodash from 'lodash';
+import get from 'get-value';
+import { InstrumentationError, NetworkError } from '@rudderstack/integrations-lib';
+import { FilteredEventsError } from '../../util/errorTypes';
+import {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   processDeduplication,
@@ -16,11 +16,24 @@ const {
   collectStatsForAliasFailure,
   collectStatsForAliasMissConfigurations,
   handleReservedProperties,
-} = require('./util');
+  getEndpointFromConfig,
+  formatGender,
+} from './util';
+import type {
+  BrazeDestination,
+  BrazeRouterRequest,
+  BrazeProcessParams,
+  BrazeUserAttributes,
+  BrazeIdentifyRequestBody,
+  BrazeEndpointDetails,
+  BrazeIdentifyCall,
+  RudderBrazeMessage,
+  BrazeUser,
+} from './types';
 
-const tags = require('../../util/tags');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
-const {
+import tags from '../../util/tags';
+import { EventType, MappedToDestinationKey } from '../../../constants';
+import {
   adduserIdFromExternalId,
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -32,8 +45,8 @@ const {
   isNewStatusCodesAccepted,
   getDestinationExternalID,
   getIntegrationsObj,
-} = require('../../util');
-const {
+} from '../../util';
+import {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,
@@ -42,16 +55,22 @@ const {
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
-} = require('./config');
+  DESTINATION,
+} from './config';
 
-const logger = require('../../../logger');
-const { getEndpointFromConfig, formatGender } = require('./util');
-const { handleHttpRequest } = require('../../../adapters/network');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { processBatchedIdentify } = require('./identityResolutionUtils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+import logger from '../../../logger';
+import { handleHttpRequest } from '../../../adapters/network';
+import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import { processBatchedIdentify } from './identityResolutionUtils';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import { ProcessorTransformationOutput } from '../../../types';
 
-function buildResponse(message, destination, properties, endpointDetails) {
+function buildResponse(
+  message: RudderBrazeMessage,
+  destination: BrazeDestination,
+  properties: unknown,
+  endpointDetails: BrazeEndpointDetails,
+) {
   const response = defaultRequestConfig();
   response.endpoint = endpointDetails.endpoint;
   response.endpointPath = endpointDetails.path;
@@ -68,18 +87,18 @@ function buildResponse(message, destination, properties, endpointDetails) {
   };
 }
 
-function getIdentifyPayload(message) {
-  let payload = {};
+function getIdentifyPayload(message: RudderBrazeMessage): BrazeIdentifyRequestBody {
+  let payload: Partial<BrazeUserAttributes> = {};
   payload = setAliasObject(payload, message);
   payload = setExternalId(payload, message);
   return { aliases_to_identify: [payload], merge_behavior: 'merge' };
 }
 
 function populateCustomAttributesWithOperation(
-  traits,
-  data,
-  mergeObjectsUpdateOperation,
-  enableNestedArrayOperations,
+  traits: Record<string, Record<string, unknown>>,
+  data: Record<string, unknown>,
+  mergeObjectsUpdateOperation: unknown,
+  enableNestedArrayOperations: unknown,
 ) {
   try {
     // add,update,remove on json attributes
@@ -106,15 +125,19 @@ function populateCustomAttributesWithOperation(
           }
         });
     }
-  } catch (exp) {
+  } catch (exp: any) {
     logger.info('Failure occurred during custom attributes operations', exp);
   }
 }
 
 // Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
-function getUserAttributesObject(message, mappingJson, destination) {
+function getUserAttributesObject(
+  message: RudderBrazeMessage,
+  mappingJson: Record<string, Record<string, unknown>>,
+  destination: BrazeDestination,
+) {
   // blank output object
-  const data = {};
+  const data: Record<string, unknown> = {};
   // get traits from message
   const traits = getFieldValueFromMessage(message, 'traits');
 
@@ -175,7 +198,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
     traits,
     data,
     message.properties?.mergeObjectsUpdateOperation,
-    destination?.Config.enableNestedArrayOperations,
+    destination.Config.enableNestedArrayOperations,
   );
 
   return data;
@@ -189,7 +212,13 @@ function getUserAttributesObject(message, mappingJson, destination) {
  * @param {*} message
  * @param {*} destination
  */
-async function processIdentify({ message, destination, metadata, identifyCallsArray }) {
+async function processIdentify(params: {
+  message: RudderBrazeMessage;
+  destination: BrazeDestination;
+  metadata?: unknown;
+  identifyCallsArray?: unknown[];
+}) {
+  const { message, destination, metadata, identifyCallsArray } = params;
   const identifyPayload = getIdentifyPayload(message);
   if (Array.isArray(identifyCallsArray)) {
     identifyCallsArray.push({
@@ -236,16 +265,16 @@ async function processIdentify({ message, destination, metadata, identifyCallsAr
 }
 
 function processTrackWithUserAttributes(
-  message,
-  destination,
-  mappingJson,
-  processParams,
-  reqMetadata,
+  message: RudderBrazeMessage,
+  destination: BrazeDestination,
+  mappingJson: Record<string, Record<string, unknown>>,
+  processParams: BrazeProcessParams,
+  reqMetadata: Record<string, unknown>,
 ) {
-  let payload = getUserAttributesObject(message, mappingJson);
+  let payload = getUserAttributesObject(message, mappingJson, destination);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
-    const requestJson = { attributes: [payload] };
+    const requestJson: Record<string, unknown> = { attributes: [payload] };
     if (destination.Config.supportDedup) {
       const dedupedAttributePayload = processDeduplication(
         processParams.userStore,
@@ -255,7 +284,7 @@ function processTrackWithUserAttributes(
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
-      } else if (isNewStatusCodesAccepted(reqMetadata)) {
+      } else if (isNewStatusCodesAccepted(reqMetadata as Record<string, unknown> | undefined)) {
         throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );
@@ -275,20 +304,29 @@ function processTrackWithUserAttributes(
   throw new InstrumentationError('No attributes found to update the user profile');
 }
 
-function addMandatoryEventProperties(payload, message) {
-  payload.name = message.event;
-  payload.time = message.timestamp;
+function addMandatoryEventProperties(
+  payload: Record<string, unknown>,
+  message: RudderBrazeMessage,
+) {
+  payload.name = message.event!;
+  payload.time = message.timestamp!;
   return payload;
 }
 
-function processTrackEvent(messageType, message, destination, mappingJson, processParams) {
+function processTrackEvent(
+  messageType: string,
+  message: RudderBrazeMessage,
+  destination: BrazeDestination,
+  mappingJson: Record<string, Record<string, unknown>>,
+  processParams: BrazeProcessParams,
+) {
   const eventName = message.event;
 
   if (!message.properties) {
     message.properties = {};
   }
   let { properties } = message;
-  const requestJson = {
+  const requestJson: Record<string, unknown> = {
     partner: BRAZE_PARTNER_NAME,
   };
 
@@ -329,7 +367,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     );
   }
   properties = handleReservedProperties(properties);
-  let payload = {};
+  let payload: Record<string, unknown> = {};
 
   // mandatory fields
   payload = addMandatoryEventProperties(payload, message);
@@ -354,7 +392,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
 //
 // Ex: If the groupId is 1234, we'll add a attribute to the user object with the
 // key `ab_rudder_group_1234` with the value `true`
-function processGroup(message, destination) {
+function processGroup(message: RudderBrazeMessage, destination: BrazeDestination) {
   const groupId = getFieldValueFromMessage(message, 'groupId');
   if (!groupId) {
     throw new InstrumentationError('Invalid groupId');
@@ -365,7 +403,7 @@ function processGroup(message, destination) {
         'Message should have traits with subscriptionState, email or phone',
       );
     }
-    const subscriptionGroup = {
+    const subscriptionGroup: Record<string, unknown> = {
       subscription_group_id: groupId,
     };
     if (
@@ -405,7 +443,7 @@ function processGroup(message, destination) {
       },
     };
   }
-  const groupAttribute = {};
+  const groupAttribute: Record<string, unknown> = {};
   groupAttribute[`ab_rudder_group_${groupId}`] = true;
   setExternalId(groupAttribute, message);
   return buildResponse(
@@ -419,9 +457,8 @@ function processGroup(message, destination) {
   );
 }
 
-function processAlias(message, destination) {
-  const userId = message?.userId;
-  const previousId = message?.previousId;
+function processAlias(message: RudderBrazeMessage, destination: BrazeDestination) {
+  const { userId, previousId } = message;
 
   if (!userId) {
     throw new InstrumentationError('[BRAZE]: userId is required for alias call');
@@ -454,7 +491,11 @@ function processAlias(message, destination) {
   );
 }
 
-async function process(event, processParams = { userStore: new Map() }, reqMetadata = {}) {
+async function process(
+  event: BrazeRouterRequest,
+  processParams: BrazeProcessParams,
+  reqMetadata: Record<string, unknown> = {},
+): Promise<ProcessorTransformationOutput> {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -498,7 +539,7 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
         adduserIdFromExternalId(message);
       }
 
-      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+      const integrationsObj = getIntegrationsObj(message, DESTINATION.toUpperCase() as any);
       const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
 
       const brazeExternalID =
@@ -534,15 +575,18 @@ async function process(event, processParams = { userStore: new Map() }, reqMetad
   return response;
 }
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const userStore = new Map();
-  let failedLookupIdentifiers = new Set();
+const processRouterDest = async (
+  inputs: BrazeRouterRequest[],
+  reqMetadata: Record<string, unknown>,
+) => {
+  const userStore = new Map<string, BrazeUser>();
+  let failedLookupIdentifiers = new Set<string>();
   const { destination } = inputs[0];
   if (destination.Config.supportDedup) {
-    let lookupResult;
+    let lookupResult: { users: BrazeUser[]; failedIdentifiers: Set<string> } | undefined;
     try {
       lookupResult = await BrazeDedupUtility.doLookup(inputs);
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Error while fetching user store', error);
     }
 
@@ -557,7 +601,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     (input) => input.message.userId || input.message.anonymousId,
   );
 
-  const identifyCallsArray = [];
+  const identifyCallsArray: BrazeIdentifyCall[] = [];
 
   // process each group of events for userId or anonymousId
   // if deduplication is enabled process each group of events for a user (userId or anonymousId)
@@ -584,4 +628,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return processBatch(allTransfomredEvents);
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

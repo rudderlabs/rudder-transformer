@@ -1,19 +1,19 @@
-const { batchForTrackAPI } = require('./util');
+import { batchForTrackAPI } from './util';
 
 describe('batchForTrackAPI', () => {
   // Helper function to create test data
-  const createTestAttribute = (externalId, name = 'test_attr') => ({
+  const createTestAttribute = (externalId: string, name = 'test_attr') => ({
     external_id: externalId,
     [name]: 'test_value',
   });
 
-  const createTestEvent = (externalId, name = 'test_event') => ({
+  const createTestEvent = (externalId: string, name = 'test_event') => ({
     external_id: externalId,
     name,
     time: '2023-01-01T00:00:00Z',
   });
 
-  const createTestPurchase = (externalId, productId = 'test_product') => ({
+  const createTestPurchase = (externalId: string, productId = 'test_product') => ({
     external_id: externalId,
     product_id: productId,
     currency: 'USD',
@@ -44,7 +44,7 @@ describe('batchForTrackAPI', () => {
     it('should handle arrays with different lengths', () => {
       const attributes = [createTestAttribute('user1'), createTestAttribute('user2')];
       const events = [createTestEvent('user1')];
-      const purchases = [];
+      const purchases: unknown[] = [];
 
       const result = batchForTrackAPI(attributes, events, purchases);
 
@@ -70,9 +70,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Batching by external ID count', () => {
     it('should create multiple chunks when external ID count exceeds 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create 76 different external IDs (exceeds TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75)
       for (let i = 1; i <= 76; i++) {
@@ -109,9 +109,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Batching by request count per type', () => {
     it('should create multiple chunks when attributes count exceeds 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create 76 attributes for the same user (exceeds TRACK_BRAZE_MAX_REQ_COUNT = 75)
       for (let i = 1; i <= 76; i++) {
@@ -128,9 +128,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should create multiple chunks when events count exceeds 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create 76 events for the same user
       for (let i = 1; i <= 76; i++) {
@@ -145,9 +145,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should create multiple chunks when purchases count exceeds 75', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create 76 purchases for the same user
       for (let i = 1; i <= 76; i++) {
@@ -164,9 +164,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Complex scenarios', () => {
     it('should handle mixed batching scenarios', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create scenario where request count limit is hit first
       // 38 users with 2 attributes each = 76 attributes (exceeds 75 limit)
@@ -195,22 +195,22 @@ describe('batchForTrackAPI', () => {
         createTestAttribute('user1'),
         createTestAttribute('user2'),
       ];
-      const events = [];
-      const purchases = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       const result = batchForTrackAPI(attributes, events, purchases);
 
       expect(result).toHaveLength(1);
       // Items should be sorted by external ID
-      expect(result[0].attributes[0].external_id).toBe('user1');
-      expect(result[0].attributes[1].external_id).toBe('user2');
-      expect(result[0].attributes[2].external_id).toBe('user3');
+      expect((result[0].attributes[0] as { external_id: string }).external_id).toBe('user1');
+      expect((result[0].attributes[1] as { external_id: string }).external_id).toBe('user2');
+      expect((result[0].attributes[2] as { external_id: string }).external_id).toBe('user3');
     });
 
     it('should handle edge case with exactly 75 external IDs', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create exactly 75 external IDs
       for (let i = 1; i <= 75; i++) {
@@ -225,9 +225,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should handle edge case with exactly 75 items per type', () => {
-      const attributes = [];
-      const events = [];
-      const purchases = [];
+      const attributes: unknown[] = [];
+      const events: unknown[] = [];
+      const purchases: unknown[] = [];
 
       // Create exactly 75 items of each type for the same user
       for (let i = 1; i <= 75; i++) {

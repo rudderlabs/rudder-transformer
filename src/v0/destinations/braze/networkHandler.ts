@@ -1,17 +1,15 @@
 /* eslint-disable no-unused-vars */
-const { NetworkError } = require('@rudderstack/integrations-lib');
-const { isHttpStatusSuccess } = require('../../util/index');
-const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
-const { DESTINATION } = require('./config');
-const tags = require('../../util/tags');
-const stats = require('../../../util/stats');
+import { NetworkError } from '@rudderstack/integrations-lib';
+import { isHttpStatusSuccess } from '../../util/index';
+import { proxyRequest, prepareProxyRequest } from '../../../adapters/network';
+import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/utils/networkUtils';
+import { DESTINATION } from './config';
+import type { BrazeResponseHandlerParams } from './types';
+import tags from '../../util/tags';
+import stats from '../../../util/stats';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const responseHandler = (responseParams) => {
+const responseHandler = (responseParams: BrazeResponseHandlerParams) => {
   const { destinationResponse } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
@@ -28,22 +26,12 @@ const responseHandler = (responseParams) => {
   }
 
   // Partial errors
-  if (
-    !!response &&
-    response.message === 'success' &&
-    response.errors &&
-    response.errors.length > 0
-  ) {
+  if (response?.message === 'success' && response?.errors && response.errors.length > 0) {
     stats.increment('braze_partial_failure');
   }
 
   // application level errors
-  if (
-    !!response &&
-    response.message !== 'success' &&
-    response.errors &&
-    response.errors.length > 0
-  ) {
+  if (response?.message !== 'success' && response?.errors && response.errors.length > 0) {
     throw new NetworkError(
       `Request failed for ${DESTINATION} with status: ${status}`,
       status,
@@ -60,13 +48,16 @@ const responseHandler = (responseParams) => {
   };
 };
 
-function networkHandler() {
+function networkHandler(this: {
+  responseHandler: typeof responseHandler;
+  proxy: typeof proxyRequest;
+  prepareProxy: typeof prepareProxyRequest;
+  processAxiosResponse: typeof processAxiosResponse;
+}) {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 }
 
-module.exports = {
-  networkHandler,
-};
+export { networkHandler };

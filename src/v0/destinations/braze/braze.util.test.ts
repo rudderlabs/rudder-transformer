@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const { handleHttpRequest } = require('../../../adapters/network');
-const {
+import _ from 'lodash';
+import { handleHttpRequest } from '../../../adapters/network';
+import {
   BrazeDedupUtility,
   addAppId,
   formatGender,
@@ -9,16 +9,24 @@ const {
   handleReservedProperties,
   combineSubscriptionGroups,
   getEndpointFromConfig,
-} = require('./util');
-const { processBatch } = require('./util');
-const {
-  removeUndefinedAndNullValues,
-  removeUndefinedAndNullAndEmptyValues,
-} = require('../../util');
-const { generateRandomString } = require('@rudderstack/integrations-lib');
+  processBatch,
+} from './util';
+import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
+import { generateRandomString } from '@rudderstack/integrations-lib';
+import {
+  BrazeDestination,
+  BrazeRouterRequest,
+  BrazeTransformedEvent,
+  BrazeTrackBatchPayload,
+  BrazeSubscriptionBatchPayload,
+  BrazeMergeBatchPayload,
+  BrazeSubscriptionGroup,
+} from './types';
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
+
+const mockedHandleHttpRequest = jest.mocked(handleHttpRequest);
 
 describe('dedup utility tests', () => {
   describe('prepareInputForDedup', () => {
@@ -33,7 +41,7 @@ describe('dedup utility tests', () => {
     });
 
     it('should extract the userIdIdOnly and add it to externalIdsToQuery array', () => {
-      const input = [{ message: { userId: '762123' } }];
+      const input = [{ message: { userId: '762123' } }] as BrazeRouterRequest[];
       const expectedOutput = {
         externalIdsToQuery: ['762123'],
         aliasIdsToQuery: [],
@@ -44,7 +52,9 @@ describe('dedup utility tests', () => {
 
     it('should extract the externalIdOnly and add it to externalIdsToQuery array', () => {
       const input = [
-        { message: { context: { externalId: [{ type: 'brazeExternalId', id: '54321' }] } } },
+        {
+          message: { context: { externalId: [{ type: 'brazeExternalId', id: '54321' }] } },
+        } as unknown as BrazeRouterRequest,
       ];
       const expectedOutput = {
         externalIdsToQuery: ['54321'],
@@ -55,7 +65,7 @@ describe('dedup utility tests', () => {
     });
 
     it('should extract the anonymousId and add it to aliasIdsToQuery array', () => {
-      const input = [{ message: { anonymousId: 'anon123' } }];
+      const input = [{ message: { anonymousId: 'anon123' } }] as BrazeRouterRequest[];
       const expectedOutput = {
         externalIdsToQuery: [],
         aliasIdsToQuery: ['anon123'],
@@ -68,7 +78,7 @@ describe('dedup utility tests', () => {
       const input = [
         { message: { userIdOnly: '123' } },
         { message: { context: { externalId: [{ type: 'brazeExternalId', id: '123' }] } } },
-      ];
+      ] as unknown as BrazeRouterRequest[];
       const expectedOutput = {
         externalIdsToQuery: ['123'],
         aliasIdsToQuery: [],
@@ -82,7 +92,7 @@ describe('dedup utility tests', () => {
         { message: { anonymousId: 'anon123' } },
         { message: { anonymousId: 'anon123' } },
         { message: { anonymousId: 'anon456' } },
-      ];
+      ] as BrazeRouterRequest[];
       const expectedOutput = {
         externalIdsToQuery: [],
         aliasIdsToQuery: ['anon123', 'anon456'],
@@ -198,12 +208,13 @@ describe('dedup utility tests', () => {
   describe('doApiLookup', () => {
     beforeEach(() => {
       // Clear all instances and calls to handleHttpRequest mock function
-      handleHttpRequest.mockClear();
+      mockedHandleHttpRequest.mockClear();
     });
 
     it('should return an array of users', async () => {
       // Mock the response from handleHttpRequest
-      handleHttpRequest.mockResolvedValueOnce({
+      mockedHandleHttpRequest.mockResolvedValueOnce({
+        httpResponse: Promise.resolve({}),
         processedResponse: {
           status: 200,
           response: {
@@ -268,10 +279,13 @@ describe('dedup utility tests', () => {
         WorkspaceID: 'workspaceidvalue',
         Transformations: [],
         IsProcessorEnabled: true,
-      };
+      } as unknown as BrazeDestination;
 
       // Call the function
-      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, { destination });
+      const users = await BrazeDedupUtility.doApiLookup(identfierChunks, {
+        destination,
+        metadata: {},
+      });
 
       // Check the result - now returns object with users and failedIdentifiers
       expect(users).toEqual([
@@ -335,8 +349,8 @@ describe('dedup utility tests', () => {
         {
           destType: 'braze',
           feature: 'transformation',
+          metadata: {},
           endpointPath: '/users/export/ids',
-          feature: 'transformation',
           module: 'router',
           requestMethod: 'POST',
         },
@@ -351,7 +365,7 @@ describe('dedup utility tests', () => {
           restApiKey: generateRandomString(),
           dataCenter: 'EU-01',
         },
-      };
+      } as unknown as BrazeDestination;
 
       // Code randomly generate true or false alsoa with timestamp component
       const randomBoolean = () => Math.random() >= 0.5;
@@ -367,71 +381,81 @@ describe('dedup utility tests', () => {
       const identifierChunks = _.chunk(identifiers, 50);
 
       // Mock the handleHttpRequest function to return the same data every time it's called
-      handleHttpRequest.mockImplementationOnce(() => ({
-        processedResponse: {
-          status: 200,
-          response: {
-            users: Array.from({ length: 50 }, (_, i) =>
-              removeUndefinedAndNullAndEmptyValues({
-                external_id: identifiers[i].external_id,
-                user_aliases: [
-                  removeUndefinedAndNullValues({
-                    alias_name: identifiers[i].alias_name,
-                    alias_label: identifiers[i].alias_label,
-                  }),
-                ],
-                first_name: `Test-${i}`,
-                last_name: 'User',
-              }),
-            ),
+      mockedHandleHttpRequest.mockImplementationOnce(() =>
+        Promise.resolve({
+          httpResponse: Promise.resolve({}),
+          processedResponse: {
+            status: 200,
+            response: {
+              users: Array.from({ length: 50 }, (_, i) =>
+                removeUndefinedAndNullAndEmptyValues({
+                  external_id: identifiers[i].external_id,
+                  user_aliases: [
+                    removeUndefinedAndNullValues({
+                      alias_name: identifiers[i].alias_name,
+                      alias_label: identifiers[i].alias_label,
+                    }),
+                  ],
+                  first_name: `Test-${i}`,
+                  last_name: 'User',
+                }),
+              ),
+            },
           },
-        },
-      }));
+        }),
+      );
 
-      handleHttpRequest.mockImplementationOnce(() => ({
-        processedResponse: {
-          status: 200,
-          response: {
-            users: Array.from({ length: 50 }, (_, i) =>
-              removeUndefinedAndNullAndEmptyValues({
-                external_id: identifiers[i + 50].external_id,
-                user_aliases: [
-                  removeUndefinedAndNullValues({
-                    alias_name: identifiers[i + 50].alias_name,
-                    alias_label: identifiers[i + 50].alias_label,
-                  }),
-                ],
-                first_name: `Test-${i + 50}`,
-                last_name: 'User',
-              }),
-            ),
+      mockedHandleHttpRequest.mockImplementationOnce(() =>
+        Promise.resolve({
+          httpResponse: Promise.resolve({}),
+          processedResponse: {
+            status: 200,
+            response: {
+              users: Array.from({ length: 50 }, (_, i) =>
+                removeUndefinedAndNullAndEmptyValues({
+                  external_id: identifiers[i + 50].external_id,
+                  user_aliases: [
+                    removeUndefinedAndNullValues({
+                      alias_name: identifiers[i + 50].alias_name,
+                      alias_label: identifiers[i + 50].alias_label,
+                    }),
+                  ],
+                  first_name: `Test-${i + 50}`,
+                  last_name: 'User',
+                }),
+              ),
+            },
           },
-        },
-      }));
+        }),
+      );
 
-      handleHttpRequest.mockImplementationOnce(() => ({
-        processedResponse: {
-          status: 200,
-          response: {
-            users: Array.from({ length: 10 }, (_, i) =>
-              removeUndefinedAndNullAndEmptyValues({
-                external_id: identifiers[i + 100].external_id,
-                user_aliases: [
-                  removeUndefinedAndNullValues({
-                    alias_name: identifiers[i + 100].alias_name,
-                    alias_label: identifiers[i + 100].alias_label,
-                  }),
-                ],
-                first_name: `Test-${i + 100}`,
-                last_name: 'User',
-              }),
-            ),
+      mockedHandleHttpRequest.mockImplementationOnce(() =>
+        Promise.resolve({
+          httpResponse: Promise.resolve({}),
+          processedResponse: {
+            status: 200,
+            response: {
+              users: Array.from({ length: 10 }, (_, i) =>
+                removeUndefinedAndNullAndEmptyValues({
+                  external_id: identifiers[i + 100].external_id,
+                  user_aliases: [
+                    removeUndefinedAndNullValues({
+                      alias_name: identifiers[i + 100].alias_name,
+                      alias_label: identifiers[i + 100].alias_label,
+                    }),
+                  ],
+                  first_name: `Test-${i + 100}`,
+                  last_name: 'User',
+                }),
+              ),
+            },
           },
-        },
-      }));
+        }),
+      );
 
       const chunkedUserData = await BrazeDedupUtility.doApiLookup(identifierChunks, {
         destination,
+        metadata: {},
       });
       // Each chunk now returns { users: [...], failedIdentifiers: [] }
       // So we need to extract users from each chunk and flatten
@@ -448,7 +472,7 @@ describe('dedup utility tests', () => {
           restApiKey: 'test_rest_api_key',
           dataCenter: 'EU-01',
         },
-      };
+      } as unknown as BrazeDestination;
       const chunks = [
         [
           { external_id: 'user1' },
@@ -459,39 +483,45 @@ describe('dedup utility tests', () => {
       ];
 
       // Success response for first chunk
-      handleHttpRequest.mockImplementationOnce(() => ({
-        processedResponse: {
-          response: {
-            users: [
-              {
-                external_id: 'user1',
-                email: 'user1@example.com',
-              },
-              {
-                alias_name: 'alias1',
-                alias_label: 'rudder_id',
-                email: 'alias1@example.com',
-              },
-              {
-                external_id: 'user2',
-                email: 'user2@example.com',
-              },
-            ],
+      mockedHandleHttpRequest.mockImplementationOnce(() =>
+        Promise.resolve({
+          httpResponse: Promise.resolve({}),
+          processedResponse: {
+            response: {
+              users: [
+                {
+                  external_id: 'user1',
+                  email: 'user1@example.com',
+                },
+                {
+                  alias_name: 'alias1',
+                  alias_label: 'rudder_id',
+                  email: 'alias1@example.com',
+                },
+                {
+                  external_id: 'user2',
+                  email: 'user2@example.com',
+                },
+              ],
+            },
+            status: 200,
           },
-          status: 200,
-        },
-      }));
+        }),
+      );
       // Failure response for second chunk
-      handleHttpRequest.mockImplementationOnce(() => ({
-        processedResponse: {
-          response: {
-            error: 'Failed to fetch users',
+      mockedHandleHttpRequest.mockImplementationOnce(() =>
+        Promise.resolve({
+          httpResponse: Promise.resolve({}),
+          processedResponse: {
+            response: {
+              error: 'Failed to fetch users',
+            },
+            status: 500,
           },
-          status: 500,
-        },
-      }));
+        }),
+      );
 
-      const users = await BrazeDedupUtility.doApiLookup(chunks, { destination });
+      const users = await BrazeDedupUtility.doApiLookup(chunks, { destination, metadata: {} });
 
       expect(handleHttpRequest).toHaveBeenCalledTimes(2);
       // Assert that the first chunk was successful and the second failed
@@ -553,7 +583,7 @@ describe('dedup utility tests', () => {
         { destination: { Config: { restApiKey: 'xyz' } }, message: { user_id: '456' } },
         { destination: { Config: { restApiKey: 'xyz' } }, message: { anonymousId: 'alias1' } },
         { destination: { Config: { restApiKey: 'xyz' } }, message: { anonymousId: 'alias2' } },
-      ];
+      ] as BrazeRouterRequest[];
 
       // call doLookup and verify the output
       const result = await BrazeDedupUtility.doLookup(inputs);
@@ -972,18 +1002,35 @@ describe('dedup utility tests', () => {
 describe('processBatch', () => {
   test('processBatch handles more than 75 attributes, events, purchases, subscription_groups and merge users', () => {
     // Create input data with more than 75 attributes, events, and purchases
-    const transformedEvents = [];
+    const transformedEvents: BrazeTransformedEvent[] = [];
     for (let i = 0; i < 100; i++) {
       transformedEvents.push({
         destination: {
+          ID: 'braze',
+          Name: 'braze',
+          Enabled: true,
           Config: {
             restApiKey: 'restApiKey',
             dataCenter: 'US-03',
             enableSubscriptionGroupInGroupCall: true,
           },
+          DestinationDefinition: {
+            ID: 'braze',
+            Name: 'braze',
+            DisplayName: '',
+            Config: {},
+          },
+          WorkspaceID: '123',
+          Transformations: [],
         },
         statusCode: 200,
         batchedRequest: {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: '',
+          headers: {},
+          params: {},
           body: {
             JSON: {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1005,34 +1052,92 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].batchedRequest.length).toBe(8); // Two batched requests
-    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
-    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
-    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
-    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
-    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
-    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
-    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
-    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
-    expect(result[0].batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists and is an array
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+
+    if (firstResult.batchedRequest && Array.isArray(firstResult.batchedRequest)) {
+      expect(firstResult.batchedRequest.length).toBe(8); // Two batched requests
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(75); // First batch contains 75 attributes
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(75); // First batch contains 75 events
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // First batch contains 75 purchases
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(25); // Second batch contains remaining 25 attributes
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(25); // Second batch contains remaining 25 events
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(25); // Second batch contains remaining 25 purchases
+      expect(
+        (firstResult.batchedRequest[2].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // First batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[3].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Second batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[4].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Third batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[5].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Fourth batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[6].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(50); // First batch contains 50 merge_updates
+      expect(
+        (firstResult.batchedRequest[7].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(50); // First batch contains 25 merge_updates
+    }
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
-    // Create input data with more than 75 attributes, events, and purchases
-    const transformedEventsSet1 = new Array(120).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
+    const destination: BrazeDestination = {
+      ID: 'braze',
+      Name: 'braze',
+      Enabled: true,
+      Config: {
+        restApiKey: 'restApiKey',
+        dataCenter: 'eu',
       },
+      DestinationDefinition: {
+        ID: 'braze',
+        Name: 'braze',
+        DisplayName: '',
+        Config: {},
+      },
+      WorkspaceID: '123',
+      Transformations: [],
+    };
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEventsSet1: BrazeTransformedEvent[] = new Array(120).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             events: [{ id: i, event: 'test', xyz: 'abc' }],
@@ -1042,15 +1147,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: i }],
     }));
 
-    const transformedEventsSet2 = new Array(160).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
-      },
+    const transformedEventsSet2: BrazeTransformedEvent[] = new Array(160).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             purchases: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1060,15 +1166,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 120 + i }],
     }));
 
-    const transformedEventsSet3 = new Array(100).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
-      },
+    const transformedEventsSet3: BrazeTransformedEvent[] = new Array(100).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1078,16 +1185,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 280 + i }],
     }));
 
-    const transformedEventsSet4 = new Array(70).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true,
-        },
-      },
+    const transformedEventsSet4: BrazeTransformedEvent[] = new Array(70).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             subscription_groups: [
@@ -1099,16 +1206,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 280 + i }],
     }));
 
-    const transformedEventsSet5 = new Array(40).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true,
-        },
-      },
+    const transformedEventsSet5: BrazeTransformedEvent[] = new Array(40).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
@@ -1129,39 +1236,99 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
-    expect(result[0].batchedRequest.length).toBe(7); // Two batched requests
-    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
-    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
-    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
-    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
-    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
-    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
-    expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
-    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
-    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
-    expect(result[0].batchedRequest[5].body.JSON.subscription_groups.length).toBe(20); // Third batch contains 20 subscription group
-    expect(result[0].batchedRequest[6].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists, is an array, and metadata exists
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+    expect(firstResult.metadata).toBeDefined();
+
+    if (
+      firstResult.batchedRequest &&
+      Array.isArray(firstResult.batchedRequest) &&
+      firstResult.metadata
+    ) {
+      expect(firstResult.metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
+      expect(firstResult.batchedRequest.length).toBe(7); // Two batched requests
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(75); // First batch contains 75 attributes
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(75); // First batch contains 75 events
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // First batch contains 75 purchases
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(25); // Second batch contains remaining 25 attributes
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(45); // Second batch contains remaining 45 events
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // Second batch contains remaining 75 purchases
+      expect(
+        (firstResult.batchedRequest[2].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(10); // Third batch contains remaining 10 purchases
+      expect(
+        (firstResult.batchedRequest[3].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // First batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[4].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Second batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[5].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(20); // Third batch contains 20 subscription group
+      expect(
+        (firstResult.batchedRequest[6].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(40); // First batch contains 50 merge_updates
+    }
   });
 
   test('check success and failure scenarios both for processBatch', () => {
-    const transformedEvents = [];
+    const transformedEvents: BrazeTransformedEvent[] = [];
+    const destination: BrazeDestination = {
+      ID: 'braze',
+      Name: 'braze',
+      Enabled: true,
+      Config: {
+        restApiKey: 'restApiKey',
+        dataCenter: 'eu',
+      },
+      DestinationDefinition: {
+        ID: 'braze',
+        Name: 'braze',
+        DisplayName: '',
+        Config: {},
+      },
+      WorkspaceID: '123',
+      Transformations: [],
+    };
     let successCount = 0;
     let failureCount = 0;
     for (let i = 0; i < 100; i++) {
       const rando = Math.random() * 100;
       if (rando < 50) {
         transformedEvents.push({
-          destination: {
-            Config: {
-              restApiKey: 'restApiKey',
-              dataCenter: 'eu',
-            },
-          },
+          destination,
           statusCode: 200,
           batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: '',
+            headers: {},
+            params: {},
             body: {
               JSON: {
                 attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1175,12 +1342,7 @@ describe('processBatch', () => {
         successCount = successCount + 1;
       } else {
         transformedEvents.push({
-          destination: {
-            Config: {
-              restApiKey: 'restApiKey',
-              dataCenter: 'eu',
-            },
-          },
+          destination,
           statusCode: 400,
           metadata: [{ job_id: i }],
           error: 'Random Error',
@@ -1191,11 +1353,32 @@ describe('processBatch', () => {
     // Call the processBatch function
     const result = processBatch(transformedEvents);
     expect(result.length).toBe(failureCount + 1);
-    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(successCount);
-    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(successCount);
-    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
-    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
-    expect(result[0].metadata.length).toBe(successCount);
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists, is an array, and metadata exists
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+    expect(firstResult.metadata).toBeDefined();
+
+    if (
+      firstResult.batchedRequest &&
+      Array.isArray(firstResult.batchedRequest) &&
+      firstResult.metadata
+    ) {
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(successCount);
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(successCount);
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(successCount);
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      );
+      expect(firstResult.metadata.length).toBe(successCount);
+    }
   });
 });
 
@@ -1239,11 +1422,17 @@ describe('addAppId', () => {
 
 describe('getPurchaseObjs', () => {
   test('a single valid product with all required properties', () => {
-    const purchaseObjs = getPurchaseObjs({
-      properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }], currency: 'USD' },
-      timestamp: '2023-08-04T12:34:56Z',
-      anonymousId: 'abc',
-    });
+    const purchaseObjs = getPurchaseObjs(
+      {
+        properties: {
+          products: [{ product_id: '123', price: 10.99, quantity: 2 }],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      },
+      {},
+    );
     expect(purchaseObjs).toEqual([
       {
         product_id: '123',
@@ -1261,17 +1450,20 @@ describe('getPurchaseObjs', () => {
   });
 
   test('multiple valid products with all required properties', () => {
-    const purchaseObjs = getPurchaseObjs({
-      properties: {
-        products: [
-          { product_id: '123', price: 10.99, quantity: 2 },
-          { product_id: '456', price: 5.49, quantity: 1 },
-        ],
-        currency: 'EUR',
+    const purchaseObjs = getPurchaseObjs(
+      {
+        properties: {
+          products: [
+            { product_id: '123', price: 10.99, quantity: 2 },
+            { product_id: '456', price: 5.49, quantity: 1 },
+          ],
+          currency: 'EUR',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
       },
-      timestamp: '2023-08-04T12:34:56Z',
-      anonymousId: 'abc',
-    });
+      {},
+    );
     expect(purchaseObjs).toEqual([
       {
         product_id: '123',
@@ -1302,12 +1494,15 @@ describe('getPurchaseObjs', () => {
 
   test('single product with missing product_id property', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: [{ price: 10.99, quantity: 2 }], currency: 'USD' },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: [{ price: 10.99, quantity: 2 }], currency: 'USD' },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Product Id is missing for product at index: 0',
       );
@@ -1316,12 +1511,15 @@ describe('getPurchaseObjs', () => {
 
   test('single product with missing price property', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: [{ product_id: '123', quantity: 2 }], currency: 'USD' },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: [{ product_id: '123', quantity: 2 }], currency: 'USD' },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Price is missing for product at index: 0',
       );
@@ -1330,12 +1528,15 @@ describe('getPurchaseObjs', () => {
 
   test('single product with missing quantity property', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: [{ product_id: '123', price: 10.99 }], currency: 'USD' },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: [{ product_id: '123', price: 10.99 }], currency: 'USD' },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Quantity is missing for product at index: 0',
       );
@@ -1344,12 +1545,15 @@ describe('getPurchaseObjs', () => {
 
   test('single product with missing currency property', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }] },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }] },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Message properties and product at index: 0 is missing currency',
       );
@@ -1358,14 +1562,17 @@ describe('getPurchaseObjs', () => {
 
   test('single product with missing timestamp property', () => {
     try {
-      getPurchaseObjs({
-        properties: {
-          products: [{ product_id: '123', price: 10.99, quantity: 2 }],
-          currency: 'USD',
+      getPurchaseObjs(
+        {
+          properties: {
+            products: [{ product_id: '123', price: 10.99, quantity: 2 }],
+            currency: 'USD',
+          },
+          anonymousId: 'abc',
         },
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Timestamp is missing in the message',
       );
@@ -1374,15 +1581,18 @@ describe('getPurchaseObjs', () => {
 
   test('single product with NaN price', () => {
     try {
-      getPurchaseObjs({
-        properties: {
-          products: [{ product_id: '123', price: 'abc', quantity: 2 }],
-          currency: 'USD',
+      getPurchaseObjs(
+        {
+          properties: {
+            products: [{ product_id: '123', price: 'abc', quantity: 2 }],
+            currency: 'USD',
+          },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
         },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Price is not a number for product at index: 0',
       );
@@ -1391,15 +1601,18 @@ describe('getPurchaseObjs', () => {
 
   test('single product with NaN quantity', () => {
     try {
-      getPurchaseObjs({
-        properties: {
-          products: [{ product_id: '123', price: 10.99, quantity: 'abc' }],
-          currency: 'USD',
+      getPurchaseObjs(
+        {
+          properties: {
+            products: [{ product_id: '123', price: 10.99, quantity: 'abc' }],
+            currency: 'USD',
+          },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
         },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Quantity is not a number for product at index: 0',
       );
@@ -1408,14 +1621,17 @@ describe('getPurchaseObjs', () => {
 
   // Test case for a single product with valid currency property
   test('single product with valid currency property', () => {
-    const purchaseObjs = getPurchaseObjs({
-      properties: {
-        products: [{ product_id: '123', price: 10.99, quantity: 2 }],
-        currency: 'USD',
+    const purchaseObjs = getPurchaseObjs(
+      {
+        properties: {
+          products: [{ product_id: '123', price: 10.99, quantity: 2 }],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
       },
-      timestamp: '2023-08-04T12:34:56Z',
-      anonymousId: 'abc',
-    });
+      {},
+    );
     expect(purchaseObjs).toEqual([
       {
         product_id: '123',
@@ -1434,36 +1650,45 @@ describe('getPurchaseObjs', () => {
 
   test('products not being an array', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: { product_id: '123', price: 10.99, quantity: 2 } },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: { product_id: '123', price: 10.99, quantity: 2 } },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual('Invalid Order Completed event: Products is not an array');
     }
   });
 
   test('empty products array', () => {
     try {
-      getPurchaseObjs({
-        properties: { products: [], currency: 'USD' },
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: { products: [], currency: 'USD' },
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual('Invalid Order Completed event: Products array is empty');
     }
   });
 
   test('message.properties being undefined', () => {
     try {
-      getPurchaseObjs({
-        properties: undefined,
-        timestamp: '2023-08-04T12:34:56Z',
-        anonymousId: 'abc',
-      });
-    } catch (e) {
+      getPurchaseObjs(
+        {
+          properties: undefined,
+          timestamp: '2023-08-04T12:34:56Z',
+          anonymousId: 'abc',
+        },
+        {},
+      );
+    } catch (e: any) {
       expect(e.message).toEqual(
         'Invalid Order Completed event: Properties object is missing in the message',
       );
@@ -1767,7 +1992,7 @@ describe('handleReservedProperties', () => {
     const props = 'not an object';
     try {
       handleReservedProperties(props);
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).toBe('Invalid event properties');
     }
   });
@@ -1792,27 +2017,27 @@ describe('handleReservedProperties', () => {
 
 describe('combineSubscriptionGroups', () => {
   it('should merge external_ids, emails, and phones for the same subscription_group_id and subscription_state', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1', 'id2'],
         emails: ['email1@example.com', 'email2@example.com'],
         phones: ['+1234567890', '+0987654321'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id2', 'id3'],
         emails: ['email2@example.com', 'email3@example.com'],
         phones: ['+1234567890', '+1122334455'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1', 'id2', 'id3'],
         emails: ['email1@example.com', 'email2@example.com', 'email3@example.com'],
         phones: ['+1234567890', '+0987654321', '+1122334455'],
@@ -1824,28 +2049,28 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should handle groups with missing external_ids, emails, or phones', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         emails: ['email1@example.com'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         phones: ['+1234567890'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
         emails: ['email1@example.com'],
         phones: ['+1234567890'],
@@ -1857,29 +2082,29 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should handle multiple unique subscription groups', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group2',
-        subscription_state: 'Unsubscribed',
+        subscription_state: 'unsubscribed',
         external_ids: ['id2'],
         emails: ['email2@example.com'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group2',
-        subscription_state: 'Unsubscribed',
+        subscription_state: 'unsubscribed',
         external_ids: ['id2'],
         emails: ['email2@example.com'],
       },
@@ -1890,18 +2115,18 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should not include undefined fields in the output', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
     ];
@@ -1912,47 +2137,54 @@ describe('combineSubscriptionGroups', () => {
 });
 
 describe('getEndpointFromConfig', () => {
-  const testCases = [
+  type TestCase = {
+    name: string;
+    input: BrazeDestination;
+    expected?: string;
+    throws?: boolean;
+    errorMessage?: string;
+  };
+  const testCases: TestCase[] = [
     {
       name: 'returns correct EU endpoint',
-      input: { Config: { dataCenter: 'EU-02' } },
+      input: { Config: { dataCenter: 'EU-02' } } as unknown as BrazeDestination,
       expected: 'https://rest.fra-02.braze.eu',
     },
     {
       name: 'returns correct US endpoint',
-      input: { Config: { dataCenter: 'US-03' } },
+      input: { Config: { dataCenter: 'US-03' } } as unknown as BrazeDestination,
       expected: 'https://rest.iad-03.braze.com',
     },
     {
       name: 'returns correct AU endpoint',
-      input: { Config: { dataCenter: 'AU-01' } },
+      input: { Config: { dataCenter: 'AU-01' } } as unknown as BrazeDestination,
       expected: 'https://rest.au-01.braze.com',
     },
     {
       name: 'handles lowercase input correctly',
-      input: { Config: { dataCenter: 'eu-03' } },
+      input: { Config: { dataCenter: 'eu-03' } } as unknown as BrazeDestination,
       expected: 'https://rest.fra-03.braze.eu',
     },
     {
       name: 'handles whitespace in input',
-      input: { Config: { dataCenter: ' US-02 ' } },
+      input: { Config: { dataCenter: ' US-02 ' } } as unknown as BrazeDestination,
       expected: 'https://rest.iad-02.braze.com',
     },
     {
       name: 'throws error for empty dataCenter',
-      input: { Config: {} },
+      input: { Config: {} } as unknown as BrazeDestination,
       throws: true,
       errorMessage: 'Invalid Data Center: valid values are EU, US, AU',
     },
     {
       name: 'throws error for invalid region',
-      input: { Config: { dataCenter: 'INVALID-01' } },
+      input: { Config: { dataCenter: 'INVALID-01' } } as unknown as BrazeDestination,
       throws: true,
       errorMessage: 'Invalid Data Center: INVALID-01, valid values are EU, US, AU',
     },
   ];
 
-  testCases.forEach(({ name, input, expected, throws, errorMessage }) => {
+  testCases.forEach(({ name, input, expected, throws, errorMessage }: TestCase) => {
     test(name, () => {
       if (throws) {
         expect(() => getEndpointFromConfig(input)).toThrow(errorMessage);

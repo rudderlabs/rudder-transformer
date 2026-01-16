@@ -65,6 +65,19 @@ export type BatchRequestOutput<
   destination: TDestination;
 };
 
+export type MultiBatchRequestOutput<
+  TPayload = Record<string, unknown>,
+  THeaders = Record<string, unknown>,
+  TParams = Record<string, unknown>,
+  TDestination = Destination,
+> = {
+  batchedRequest: BatchedRequest<TPayload, THeaders, TParams>[];
+  metadata: Partial<Metadata>[];
+  batched: boolean;
+  statusCode: number;
+  destination: TDestination;
+};
+
 /**
  * Output structure for processor transformations
  */

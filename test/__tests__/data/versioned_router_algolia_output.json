@@ -68,8 +68,7 @@
               "cordova"
             ],
             "transformAt": "router",
-            "transformAtV1": "router",
-            "cdkV2TestThreshold": 1
+            "transformAtV1": "router"
           }
         },
         "Config": {

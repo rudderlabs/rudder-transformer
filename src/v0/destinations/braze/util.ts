@@ -31,7 +31,20 @@ import {
   DESTINATION,
 } from './config';
 import { JSON_MIME_TYPE, HTTP_STATUS_CODES } from '../../util/constant';
-import { BrazeDestination, BrazeRouterRequest } from './types';
+import {
+  BrazeDestination,
+  BrazeRouterRequest,
+  BrazeBatchHeaders,
+  BrazeTransformedEvent,
+  BrazeBatchResponse,
+  BrazeBatchRequest,
+  BrazeSubscriptionGroup,
+  BrazeAliasToIdentify,
+  BrazeUserExportResponse,
+  BrazeUser,
+  BrazeUserAttributes,
+} from './types';
+import type { Metadata } from '../../../types';
 
 const formatGender = (gender: unknown) => {
   if (typeof gender !== 'string') {
@@ -82,57 +95,39 @@ const getEndpointFromConfig = (destination: BrazeDestination) => {
 };
 
 // Merges external_ids, emails, and phones for entries with the same subscription_group_id and subscription_state
-const combineSubscriptionGroups = (subscriptionGroups: unknown[]) => {
-  const uniqueGroups: Record<string, unknown> = {};
+const combineSubscriptionGroups = (subscriptionGroups: BrazeSubscriptionGroup[]) => {
+  const uniqueGroups: Record<string, BrazeSubscriptionGroup> = {};
 
   subscriptionGroups.forEach((group) => {
-    const g = group as {
-      subscription_group_id: string;
-      subscription_state: string;
-      external_ids?: string[];
-      emails?: string[];
-      phones?: string[];
-    };
-    const key = `${g.subscription_group_id}-${g.subscription_state}`;
+    const key = `${group.subscription_group_id}-${group.subscription_state}`;
     if (!uniqueGroups[key]) {
       uniqueGroups[key] = {
-        ...g,
-        external_ids: [...(g.external_ids || [])],
-        emails: [...(g.emails || [])],
-        phones: [...(g.phones || [])],
+        ...group,
+        external_ids: [...(group.external_ids || [])],
+        emails: [...(group.emails || [])],
+        phones: [...(group.phones || [])],
       };
     } else {
-      const ug = uniqueGroups[key] as {
-        external_ids: string[];
-        emails: string[];
-        phones: string[];
-      };
-      ug.external_ids.push(...(g.external_ids || []));
-      ug.emails.push(...(g.emails || []));
-      ug.phones.push(...(g.phones || []));
+      const ug = uniqueGroups[key];
+      ug.external_ids?.push(...(group.external_ids || []));
+      ug.emails?.push(...(group.emails || []));
+      ug.phones?.push(...(group.phones || []));
     }
   });
 
   return Object.values(uniqueGroups).map((group) => {
-    const g = group as {
-      subscription_group_id: string;
-      subscription_state: string;
-      emails?: string[];
-      phones?: string[];
-      external_ids?: string[];
-    };
     const result: Record<string, unknown> = {
-      subscription_group_id: g.subscription_group_id,
-      subscription_state: g.subscription_state,
+      subscription_group_id: group.subscription_group_id,
+      subscription_state: group.subscription_state,
     };
-    if (g.emails?.length) {
-      result.emails = [...new Set(g.emails)];
+    if (group.emails?.length) {
+      result.emails = [...new Set(group.emails)];
     }
-    if (g.phones?.length) {
-      result.phones = [...new Set(g.phones)];
+    if (group.phones?.length) {
+      result.phones = [...new Set(group.phones)];
     }
-    if (g.external_ids?.length) {
-      result.external_ids = [...new Set(g.external_ids)];
+    if (group.external_ids?.length) {
+      result.external_ids = [...new Set(group.external_ids)];
     }
     return result;
   });
@@ -188,10 +183,13 @@ const CustomAttributeOperationUtil = {
       opsResultArray;
   },
 
-  customAttributeAddOperation(key: string, data: Record<string, unknown>, traits: unknown) {
-    const t = traits as Record<string, unknown>;
+  customAttributeAddOperation(
+    key: string,
+    data: Record<string, unknown>,
+    traits: Record<string, unknown>,
+  ) {
     (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.ADD}`] =
-      t[key]?.[CustomAttributeOperationTypes.ADD];
+      traits[key]?.[CustomAttributeOperationTypes.ADD];
   },
 };
 
@@ -220,7 +218,7 @@ const BrazeDedupUtility = {
   },
 
   prepareChunksForDedup(externalIdsToQuery: string[], aliasIdsToQuery: string[]) {
-    const identifiers: Record<string, unknown>[] = [];
+    const identifiers: BrazeAliasToIdentify[] = [];
     if (externalIdsToQuery.length > 0) {
       externalIdsToQuery.forEach((externalId) => {
         identifiers.push({
@@ -257,26 +255,25 @@ const BrazeDedupUtility = {
     ];
   },
   async doApiLookup(
-    identfierChunks: unknown[][],
+    identfierChunks: BrazeAliasToIdentify[][],
     context: { destination: BrazeDestination; metadata: Record<string, unknown> },
-  ) {
+  ): Promise<
+    Array<{
+      users: BrazeUser[];
+      failedIdentifiers: string[];
+    }>
+  > {
     const { destination, metadata } = context;
     return Promise.all(
       identfierChunks.map(async (ids) => {
-        const externalIdentifiers = ids.filter(
-          (id) => (id as { external_id?: string }).external_id,
-        );
-        const aliasIdentifiers = ids.filter(
-          (id) => (id as { alias_name?: string }).alias_name !== undefined,
-        );
+        const externalIdentifiers = ids.filter((id) => id.external_id);
+        const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
         const fieldsToExport = this.getFieldsToExport();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
-            external_ids: externalIdentifiers.map(
-              (extId) => (extId as { external_id: string }).external_id,
-            ),
+            external_ids: externalIdentifiers.map((extId) => extId.external_id),
             user_aliases: aliasIdentifiers,
             fields_to_export: fieldsToExport,
           },
@@ -300,9 +297,9 @@ const BrazeDedupUtility = {
         if (!isHttpStatusSuccess(lookUpResponse.status)) {
           // Collect failed identifiers (external_ids and alias_names)
           const failedIdentifiers = [
-            ...externalIdentifiers.map((id) => (id as { external_id: string }).external_id),
-            ...aliasIdentifiers.map((id) => (id as { alias_name: string }).alias_name),
-          ];
+            ...externalIdentifiers.map((id) => id.external_id),
+            ...aliasIdentifiers.map((id) => id.alias_name),
+          ].filter((id): id is string => id !== undefined);
           stats.histogram('braze_lookup_failure_identifiers', failedIdentifiers.length, {
             http_status: lookUpResponse.status,
             destination_id: destination.ID,
@@ -316,7 +313,7 @@ const BrazeDedupUtility = {
             destination_id: destination.ID,
           },
         );
-        const { users } = lookUpResponse.response as { users?: unknown[] };
+        const { users } = lookUpResponse.response as BrazeUserExportResponse;
         return { users: users || [], failedIdentifiers: [] };
       }),
     );
@@ -329,15 +326,20 @@ const BrazeDedupUtility = {
    * @param {*} inputs router transform input events array
    * @returns {Promise<{users: Array, failedIdentifiers: Set}>} object containing user objects and failed identifiers
    */
-  async doLookup(inputs: BrazeRouterRequest[]) {
+  async doLookup(
+    inputs: BrazeRouterRequest[],
+  ): Promise<{ users: BrazeUser[]; failedIdentifiers: Set<string> }> {
     const lookupStartTime = new Date();
     const { destination, metadata } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
-    const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
+    const identfierChunks: BrazeAliasToIdentify[][] = this.prepareChunksForDedup(
+      externalIdsToQuery,
+      aliasIdsToQuery,
+    );
     const chunkedResults = await this.doApiLookup(identfierChunks, { destination, metadata });
 
     // Collect all users and failed identifiers from all chunks
-    const allUsers: unknown[] = [];
+    const allUsers: BrazeUser[] = [];
     const failedIdentifiers = new Set<string>();
     chunkedResults.forEach((result) => {
       if (result.users) {
@@ -363,25 +365,21 @@ const BrazeDedupUtility = {
   /**
    * Updates the user store with the user objects
    *
-   * @param {*} store
-   * @param {*} users
-   * @param {*} destinationId
+   * @param store - Map storing user data by identifier
+   * @param users - Array of Braze users from API response
+   * @param destinationId - Destination ID for stats tracking
    */
-  updateUserStore(store: Map<string, unknown>, users: unknown, destinationId: string) {
+  updateUserStore(store: Map<string, BrazeUser>, users: BrazeUser[], destinationId: string) {
     if (isDefinedAndNotNull(users) && Array.isArray(users)) {
       users.forEach((user) => {
-        const u = user as {
-          external_id?: string;
-          user_aliases?: { alias_label?: string; alias_name?: string }[];
-        };
-        if (u?.external_id) {
+        if (user?.external_id) {
           stats.counter('braze_user_store_update_count', 1, {
             identifier_type: 'external_id',
             destination_id: destinationId,
           });
-          store.set(u.external_id, user);
-        } else if (u?.user_aliases) {
-          u.user_aliases.forEach((alias) => {
+          store.set(user.external_id, user);
+        } else if (user?.user_aliases) {
+          user.user_aliases.forEach((alias) => {
             if (alias.alias_label === 'rudder_id' && alias.alias_name) {
               store.set(alias.alias_name, user);
             }
@@ -399,9 +397,9 @@ const BrazeDedupUtility = {
    * Returns the user object from the store
    * if the user object is not present in the store, it returns undefined
    *
-   * @param {*} store
-   * @param {*} identifier
-   * @returns {Object | undefined} user object from the store
+   * @param store - Map storing user data by identifier
+   * @param identifier - User identifier (external_id or alias_name)
+   * @returns User object from the store or undefined
    */
   getUserDataFromStore(store: Map<string, unknown>, identifier: unknown) {
     return store.get(identifier as string);
@@ -411,9 +409,9 @@ const BrazeDedupUtility = {
    * Deduplicates the user object with the user object from the store
    * returns original user object if the user object is not present in the store
    *
-   * @param {*} userData
-   * @param {*} store
-   * @returns {Object} user object with deduplicated custom attributes
+   * @param userData - User attributes to deduplicate
+   * @param store - Map storing user data by identifier
+   * @returns Deduplicated user object or null if no changes
    */
   deduplicate(userData: unknown, store: Map<string, unknown>) {
     const excludeKeys = new Set([
@@ -489,7 +487,7 @@ const BrazeDedupUtility = {
     const identifier = external_id || user_alias?.alias_name;
     store.set(identifier as string, { ...(storedUserData as object), ...deduplicatedUserData });
 
-    return removeUndefinedValues(deduplicatedUserData);
+    return removeUndefinedValues(deduplicatedUserData) as BrazeUserAttributes;
   },
 };
 
@@ -498,11 +496,11 @@ const BrazeDedupUtility = {
  * returns original user object if the user object is not present in the store
  * if user is duplicate, it returns null
  *
- * @param {*} userStore
- * @param {*} payload
- * @param {*} destinationId
- * @param {Set} failedLookupIdentifiers - Set of identifiers that failed to lookup due to API failure
- * @returns
+ * @param userStore - Map storing user data by identifier
+ * @param payload - User attributes payload to deduplicate
+ * @param destinationId - Destination ID for stats tracking
+ * @param failedLookupIdentifiers - Set of identifiers that failed to lookup due to API failure
+ * @returns Deduplicated payload or null if duplicate
  */
 const processDeduplication = (
   userStore: Map<string, unknown>,
@@ -562,7 +560,7 @@ function prepareGroupAndAliasBatch(
       const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       response.endpoint = endpoint;
       response.endpointPath = path;
-      const subscription_groups = chunk;
+      const subscription_groups = chunk as BrazeSubscriptionGroup[];
       // maketool transformed event
       logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
 
@@ -626,7 +624,7 @@ const batchForTrackAPI = (
     return (
       (chunk.externalIds.has(externalId) ||
         chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
-      (chunk as unknown as Record<string, unknown[]>)[type].length < TRACK_BRAZE_MAX_REQ_COUNT
+      chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
     );
   };
 
@@ -641,12 +639,12 @@ const batchForTrackAPI = (
   const trackChunks: ReturnType<typeof createTrackChunk>[] = [];
   for (const item of sortedItems) {
     if (canAddToChunk(item, currentChunk)) {
-      (currentChunk as unknown as Record<string, unknown[]>)[item.type].push(item.data);
+      currentChunk[item.type].push(item.data);
       currentChunk.externalIds.add(item.externalId);
     } else {
       trackChunks.push(currentChunk);
       currentChunk = createTrackChunk();
-      (currentChunk as unknown as Record<string, unknown[]>)[item.type].push(item.data);
+      currentChunk[item.type].push(item.data);
       currentChunk.externalIds.add(item.externalId);
     }
   }
@@ -697,36 +695,25 @@ const addTrackStats = (
   }
 };
 
-const processBatch = (transformedEvents: unknown[]) => {
-  const { destination } = transformedEvents[0] as { destination: BrazeDestination };
+const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
+  const { destination } = transformedEvents[0];
   const dest = destination;
   const attributesArray: unknown[] = [];
   const eventsArray: unknown[] = [];
   const purchaseArray: unknown[] = [];
-  const successMetadata: unknown[] = [];
-  const failureResponses: unknown[] = [];
-  const filteredResponses: unknown[] = [];
+  const successMetadata: Partial<Metadata>[] = [];
+  const failureResponses: BrazeTransformedEvent[] = [];
+  const filteredResponses: BrazeTransformedEvent[] = [];
   const subscriptionsArray: unknown[] = [];
   const mergeUsersArray: unknown[] = [];
   for (const transformedEvent of transformedEvents) {
-    const te = transformedEvent as {
-      statusCode?: number;
-      batchedRequest?: { body?: { JSON?: unknown } };
-      metadata?: unknown[];
-    };
-    if (!isHttpStatusSuccess(te?.statusCode)) {
+    if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
       failureResponses.push(transformedEvent);
-    } else if (te?.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+    } else if (transformedEvent.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
       filteredResponses.push(transformedEvent);
-    } else if (te?.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases, subscription_groups, merge_updates } = te
-        .batchedRequest.body.JSON as {
-        attributes?: unknown[];
-        events?: unknown[];
-        purchases?: unknown[];
-        subscription_groups?: unknown[];
-        merge_updates?: unknown[];
-      };
+    } else if (transformedEvent.batchedRequest?.body?.JSON) {
+      const { attributes, events, purchases, subscription_groups, merge_updates } =
+        transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
       }
@@ -745,8 +732,8 @@ const processBatch = (transformedEvents: unknown[]) => {
         mergeUsersArray.push(...merge_updates);
       }
 
-      if (te.metadata) {
-        successMetadata.push(...te.metadata);
+      if (transformedEvent.metadata) {
+        successMetadata.push(...transformedEvent.metadata);
       }
     }
   }
@@ -754,9 +741,9 @@ const processBatch = (transformedEvents: unknown[]) => {
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
   const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
-  const responseArray: unknown[] = [];
-  const finalResponse: unknown[] = [];
-  const headers = {
+  const responseArray: BrazeBatchRequest[] = [];
+  const finalResponse: BrazeBatchResponse[] = [];
+  const headers: BrazeBatchHeaders = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${dest.Config.restApiKey}`,
@@ -765,11 +752,7 @@ const processBatch = (transformedEvents: unknown[]) => {
   const { endpoint, path } = getTrackEndPoint(getEndpointFromConfig(destination));
   for (const chunk of trackChunks) {
     const cleanedChunk = cleanTrackChunk(chunk);
-    const { attributes, events, purchases } = cleanedChunk as {
-      attributes?: unknown[];
-      events?: unknown[];
-      purchases?: unknown[];
-    };
+    const { attributes, events, purchases } = cleanedChunk;
     addTrackStats(chunk, destination);
 
     const response = defaultRequestConfig();

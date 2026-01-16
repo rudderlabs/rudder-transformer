@@ -33,7 +33,7 @@ const userDeletionHandler = async (
   }
 
   // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
-  const batchEvents = getUserIdBatches(userAttributes as { userId: string }[], DEL_MAX_BATCH_SIZE);
+  const batchEvents = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
       const data = { external_ids: batchEvent };
@@ -70,7 +70,7 @@ const userDeletionHandler = async (
 };
 const processDeleteUsers = async (event: BrazeDeleteUserEvent) => {
   const { userAttributes, config } = event;
-  executeCommonValidations(userAttributes as { userId: string; email: string; phone: string }[]);
+  executeCommonValidations(userAttributes);
   const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };

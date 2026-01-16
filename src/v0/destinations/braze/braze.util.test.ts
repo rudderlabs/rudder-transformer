@@ -13,7 +13,15 @@ import {
 } from './util';
 import { removeUndefinedAndNullValues, removeUndefinedAndNullAndEmptyValues } from '../../util';
 import { generateRandomString } from '@rudderstack/integrations-lib';
-import { BrazeDestination, BrazeRouterRequest } from './types';
+import {
+  BrazeDestination,
+  BrazeRouterRequest,
+  BrazeTransformedEvent,
+  BrazeTrackBatchPayload,
+  BrazeSubscriptionBatchPayload,
+  BrazeMergeBatchPayload,
+  BrazeSubscriptionGroup,
+} from './types';
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -47,7 +55,7 @@ describe('dedup utility tests', () => {
         {
           message: { context: { externalId: [{ type: 'brazeExternalId', id: '54321' }] } },
         } as unknown as BrazeRouterRequest,
-      ] as BrazeRouterRequest[];
+      ];
       const expectedOutput = {
         externalIdsToQuery: ['54321'],
         aliasIdsToQuery: [],
@@ -994,18 +1002,35 @@ describe('dedup utility tests', () => {
 describe('processBatch', () => {
   test('processBatch handles more than 75 attributes, events, purchases, subscription_groups and merge users', () => {
     // Create input data with more than 75 attributes, events, and purchases
-    const transformedEvents: unknown[] = [];
+    const transformedEvents: BrazeTransformedEvent[] = [];
     for (let i = 0; i < 100; i++) {
       transformedEvents.push({
         destination: {
+          ID: 'braze',
+          Name: 'braze',
+          Enabled: true,
           Config: {
             restApiKey: 'restApiKey',
             dataCenter: 'US-03',
             enableSubscriptionGroupInGroupCall: true,
           },
+          DestinationDefinition: {
+            ID: 'braze',
+            Name: 'braze',
+            DisplayName: '',
+            Config: {},
+          },
+          WorkspaceID: '123',
+          Transformations: [],
         },
         statusCode: 200,
         batchedRequest: {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: '',
+          headers: {},
+          params: {},
           body: {
             JSON: {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1027,35 +1052,92 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    const firstResult = result[0] as any;
-    expect(firstResult.batchedRequest.length).toBe(8); // Two batched requests
-    expect(firstResult.batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(firstResult.batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
-    expect(firstResult.batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
-    expect(firstResult.batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
-    expect(firstResult.batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(firstResult.batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
-    expect(firstResult.batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
-    expect(firstResult.batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
-    expect(firstResult.batchedRequest[2].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
-    expect(firstResult.batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
-    expect(firstResult.batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Third batch contains 25 subscription group
-    expect(firstResult.batchedRequest[5].body.JSON.subscription_groups.length).toBe(25); // Fourth batch contains 25 subscription group
-    expect(firstResult.batchedRequest[6].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
-    expect(firstResult.batchedRequest[7].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists and is an array
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+
+    if (firstResult.batchedRequest && Array.isArray(firstResult.batchedRequest)) {
+      expect(firstResult.batchedRequest.length).toBe(8); // Two batched requests
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(75); // First batch contains 75 attributes
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(75); // First batch contains 75 events
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // First batch contains 75 purchases
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(25); // Second batch contains remaining 25 attributes
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(25); // Second batch contains remaining 25 events
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(25); // Second batch contains remaining 25 purchases
+      expect(
+        (firstResult.batchedRequest[2].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // First batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[3].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Second batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[4].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Third batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[5].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Fourth batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[6].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(50); // First batch contains 50 merge_updates
+      expect(
+        (firstResult.batchedRequest[7].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(50); // First batch contains 25 merge_updates
+    }
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
-    // Create input data with more than 75 attributes, events, and purchases
-    const transformedEventsSet1 = new Array(120).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
+    const destination: BrazeDestination = {
+      ID: 'braze',
+      Name: 'braze',
+      Enabled: true,
+      Config: {
+        restApiKey: 'restApiKey',
+        dataCenter: 'eu',
       },
+      DestinationDefinition: {
+        ID: 'braze',
+        Name: 'braze',
+        DisplayName: '',
+        Config: {},
+      },
+      WorkspaceID: '123',
+      Transformations: [],
+    };
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEventsSet1: BrazeTransformedEvent[] = new Array(120).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             events: [{ id: i, event: 'test', xyz: 'abc' }],
@@ -1065,15 +1147,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: i }],
     }));
 
-    const transformedEventsSet2 = new Array(160).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
-      },
+    const transformedEventsSet2: BrazeTransformedEvent[] = new Array(160).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             purchases: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1083,15 +1166,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 120 + i }],
     }));
 
-    const transformedEventsSet3 = new Array(100).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-        },
-      },
+    const transformedEventsSet3: BrazeTransformedEvent[] = new Array(100).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1101,16 +1185,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 280 + i }],
     }));
 
-    const transformedEventsSet4 = new Array(70).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true,
-        },
-      },
+    const transformedEventsSet4: BrazeTransformedEvent[] = new Array(70).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             subscription_groups: [
@@ -1122,16 +1206,16 @@ describe('processBatch', () => {
       metadata: [{ job_id: 280 + i }],
     }));
 
-    const transformedEventsSet5 = new Array(40).fill(0).map((_, i) => ({
-      destination: {
-        Config: {
-          restApiKey: 'restApiKey',
-          dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true,
-        },
-      },
+    const transformedEventsSet5: BrazeTransformedEvent[] = new Array(40).fill(0).map((_, i) => ({
+      destination,
       statusCode: 200,
       batchedRequest: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: '',
+        headers: {},
+        params: {},
         body: {
           JSON: {
             merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
@@ -1152,40 +1236,99 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    const firstResult = result[0] as any;
-    expect(firstResult.metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
-    expect(firstResult.batchedRequest.length).toBe(7); // Two batched requests
-    expect(firstResult.batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(firstResult.batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
-    expect(firstResult.batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
-    expect(firstResult.batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
-    expect(firstResult.batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
-    expect(firstResult.batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
-    expect(firstResult.batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
-    expect(firstResult.batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
-    expect(firstResult.batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
-    expect(firstResult.batchedRequest[3].body.JSON.subscription_groups.length).toBe(25); // First batch contains 25 subscription group
-    expect(firstResult.batchedRequest[4].body.JSON.subscription_groups.length).toBe(25); // Second batch contains 25 subscription group
-    expect(firstResult.batchedRequest[5].body.JSON.subscription_groups.length).toBe(20); // Third batch contains 20 subscription group
-    expect(firstResult.batchedRequest[6].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists, is an array, and metadata exists
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+    expect(firstResult.metadata).toBeDefined();
+
+    if (
+      firstResult.batchedRequest &&
+      Array.isArray(firstResult.batchedRequest) &&
+      firstResult.metadata
+    ) {
+      expect(firstResult.metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
+      expect(firstResult.batchedRequest.length).toBe(7); // Two batched requests
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(75); // First batch contains 75 attributes
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(75); // First batch contains 75 events
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // First batch contains 75 purchases
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      ); // Verify partner name
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(25); // Second batch contains remaining 25 attributes
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(45); // Second batch contains remaining 45 events
+      expect(
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(75); // Second batch contains remaining 75 purchases
+      expect(
+        (firstResult.batchedRequest[2].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(10); // Third batch contains remaining 10 purchases
+      expect(
+        (firstResult.batchedRequest[3].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // First batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[4].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(25); // Second batch contains 25 subscription group
+      expect(
+        (firstResult.batchedRequest[5].body.JSON as BrazeSubscriptionBatchPayload)
+          .subscription_groups?.length,
+      ).toBe(20); // Third batch contains 20 subscription group
+      expect(
+        (firstResult.batchedRequest[6].body.JSON as BrazeMergeBatchPayload).merge_updates?.length,
+      ).toBe(40); // First batch contains 50 merge_updates
+    }
   });
 
   test('check success and failure scenarios both for processBatch', () => {
-    const transformedEvents: unknown[] = [];
+    const transformedEvents: BrazeTransformedEvent[] = [];
+    const destination: BrazeDestination = {
+      ID: 'braze',
+      Name: 'braze',
+      Enabled: true,
+      Config: {
+        restApiKey: 'restApiKey',
+        dataCenter: 'eu',
+      },
+      DestinationDefinition: {
+        ID: 'braze',
+        Name: 'braze',
+        DisplayName: '',
+        Config: {},
+      },
+      WorkspaceID: '123',
+      Transformations: [],
+    };
     let successCount = 0;
     let failureCount = 0;
     for (let i = 0; i < 100; i++) {
       const rando = Math.random() * 100;
       if (rando < 50) {
         transformedEvents.push({
-          destination: {
-            Config: {
-              restApiKey: 'restApiKey',
-              dataCenter: 'eu',
-            },
-          },
+          destination,
           statusCode: 200,
           batchedRequest: {
+            version: '1',
+            type: 'REST',
+            method: 'POST',
+            endpoint: '',
+            headers: {},
+            params: {},
             body: {
               JSON: {
                 attributes: [{ id: i, name: 'test', xyz: 'abc' }],
@@ -1195,16 +1338,11 @@ describe('processBatch', () => {
             },
           },
           metadata: [{ job_id: i }],
-        } as unknown);
+        });
         successCount = successCount + 1;
       } else {
         transformedEvents.push({
-          destination: {
-            Config: {
-              restApiKey: 'restApiKey',
-              dataCenter: 'eu',
-            },
-          },
+          destination,
           statusCode: 400,
           metadata: [{ job_id: i }],
           error: 'Random Error',
@@ -1215,12 +1353,32 @@ describe('processBatch', () => {
     // Call the processBatch function
     const result = processBatch(transformedEvents);
     expect(result.length).toBe(failureCount + 1);
-    const firstResult = result[0] as any;
-    expect(firstResult.batchedRequest[0].body.JSON.attributes.length).toBe(successCount);
-    expect(firstResult.batchedRequest[0].body.JSON.events.length).toBe(successCount);
-    expect(firstResult.batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
-    expect(firstResult.batchedRequest[0].body.JSON.partner).toBe('RudderStack');
-    expect(firstResult.metadata.length).toBe(successCount);
+    const firstResult = result[0];
+
+    // Ensure batchedRequest exists, is an array, and metadata exists
+    expect(firstResult.batchedRequest).toBeDefined();
+    expect(Array.isArray(firstResult.batchedRequest)).toBe(true);
+    expect(firstResult.metadata).toBeDefined();
+
+    if (
+      firstResult.batchedRequest &&
+      Array.isArray(firstResult.batchedRequest) &&
+      firstResult.metadata
+    ) {
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+      ).toBe(successCount);
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+      ).toBe(successCount);
+      expect(
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+      ).toBe(successCount);
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+        'RudderStack',
+      );
+      expect(firstResult.metadata.length).toBe(successCount);
+    }
   });
 });
 
@@ -1859,27 +2017,27 @@ describe('handleReservedProperties', () => {
 
 describe('combineSubscriptionGroups', () => {
   it('should merge external_ids, emails, and phones for the same subscription_group_id and subscription_state', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1', 'id2'],
         emails: ['email1@example.com', 'email2@example.com'],
         phones: ['+1234567890', '+0987654321'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id2', 'id3'],
         emails: ['email2@example.com', 'email3@example.com'],
         phones: ['+1234567890', '+1122334455'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1', 'id2', 'id3'],
         emails: ['email1@example.com', 'email2@example.com', 'email3@example.com'],
         phones: ['+1234567890', '+0987654321', '+1122334455'],
@@ -1891,28 +2049,28 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should handle groups with missing external_ids, emails, or phones', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         emails: ['email1@example.com'],
       },
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         phones: ['+1234567890'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
         emails: ['email1@example.com'],
         phones: ['+1234567890'],
@@ -1924,29 +2082,29 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should handle multiple unique subscription groups', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group2',
-        subscription_state: 'Unsubscribed',
+        subscription_state: 'unsubscribed',
         external_ids: ['id2'],
         emails: ['email2@example.com'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
       {
         subscription_group_id: 'group2',
-        subscription_state: 'Unsubscribed',
+        subscription_state: 'unsubscribed',
         external_ids: ['id2'],
         emails: ['email2@example.com'],
       },
@@ -1957,18 +2115,18 @@ describe('combineSubscriptionGroups', () => {
   });
 
   it('should not include undefined fields in the output', () => {
-    const input = [
+    const input: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
     ];
 
-    const expectedOutput = [
+    const expectedOutput: BrazeSubscriptionGroup[] = [
       {
         subscription_group_id: 'group1',
-        subscription_state: 'Subscribed',
+        subscription_state: 'subscribed',
         external_ids: ['id1'],
       },
     ];

@@ -4,14 +4,13 @@ import { isHttpStatusSuccess } from '../../util/index';
 import { proxyRequest, prepareProxyRequest } from '../../../adapters/network';
 import { getDynamicErrorType, processAxiosResponse } from '../../../adapters/utils/networkUtils';
 import { DESTINATION } from './config';
+import type { BrazeResponseHandlerParams } from './types';
 import tags from '../../util/tags';
 import stats from '../../../util/stats';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const responseHandler = (responseParams) => {
-  const { destinationResponse } = responseParams as {
-    destinationResponse: { response?: unknown; status: number };
-  };
+const responseHandler = (responseParams: BrazeResponseHandlerParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
   // if the response from destination is not a success case build an explicit error
@@ -27,22 +26,12 @@ const responseHandler = (responseParams) => {
   }
 
   // Partial errors
-  if (
-    !!response &&
-    (response as { message?: string }).message === 'success' &&
-    (response as { errors?: unknown[] }).errors &&
-    (response as { errors: unknown[] }).errors.length > 0
-  ) {
+  if (response?.message === 'success' && response?.errors && response.errors.length > 0) {
     stats.increment('braze_partial_failure');
   }
 
   // application level errors
-  if (
-    !!response &&
-    (response as { message?: string }).message !== 'success' &&
-    (response as { errors?: unknown[] }).errors &&
-    (response as { errors: unknown[] }).errors.length > 0
-  ) {
+  if (response?.message !== 'success' && response?.errors && response.errors.length > 0) {
     throw new NetworkError(
       `Request failed for ${DESTINATION} with status: ${status}`,
       status,
@@ -59,7 +48,12 @@ const responseHandler = (responseParams) => {
   };
 };
 
-function networkHandler(this: any) {
+function networkHandler(this: {
+  responseHandler: typeof responseHandler;
+  proxy: typeof proxyRequest;
+  prepareProxy: typeof prepareProxyRequest;
+  processAxiosResponse: typeof processAxiosResponse;
+}) {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;

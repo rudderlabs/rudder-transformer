@@ -3,7 +3,6 @@ import lodash from 'lodash';
 import get from 'get-value';
 import { InstrumentationError, NetworkError } from '@rudderstack/integrations-lib';
 import { FilteredEventsError } from '../../util/errorTypes';
-import type { RudderMessage } from '../../../types';
 import {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -27,6 +26,9 @@ import type {
   BrazeUserAttributes,
   BrazeIdentifyRequestBody,
   BrazeEndpointDetails,
+  BrazeIdentifyCall,
+  RudderBrazeMessage,
+  BrazeUser,
 } from './types';
 
 import tags from '../../util/tags';
@@ -61,9 +63,10 @@ import { handleHttpRequest } from '../../../adapters/network';
 import { getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import { processBatchedIdentify } from './identityResolutionUtils';
 import { JSON_MIME_TYPE } from '../../util/constant';
+import { ProcessorTransformationOutput } from '../../../types';
 
 function buildResponse(
-  message: RudderMessage,
+  message: RudderBrazeMessage,
   destination: BrazeDestination,
   properties: unknown,
   endpointDetails: BrazeEndpointDetails,
@@ -84,7 +87,7 @@ function buildResponse(
   };
 }
 
-function getIdentifyPayload(message: RudderMessage): BrazeIdentifyRequestBody {
+function getIdentifyPayload(message: RudderBrazeMessage): BrazeIdentifyRequestBody {
   let payload: Partial<BrazeUserAttributes> = {};
   payload = setAliasObject(payload, message);
   payload = setExternalId(payload, message);
@@ -92,7 +95,7 @@ function getIdentifyPayload(message: RudderMessage): BrazeIdentifyRequestBody {
 }
 
 function populateCustomAttributesWithOperation(
-  traits: Record<string, unknown>,
+  traits: Record<string, Record<string, unknown>>,
   data: Record<string, unknown>,
   mergeObjectsUpdateOperation: unknown,
   enableNestedArrayOperations: unknown,
@@ -106,7 +109,7 @@ function populateCustomAttributesWithOperation(
             traits[key] !== null && typeof traits[key] === 'object' && !Array.isArray(traits[key]),
         )
         .forEach((key) => {
-          if ((traits[key] as Record<string, unknown>)[CustomAttributeOperationTypes.UPDATE]) {
+          if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             CustomAttributeOperationUtil.customAttributeUpdateOperation(
               key,
               data,
@@ -114,10 +117,10 @@ function populateCustomAttributesWithOperation(
               mergeObjectsUpdateOperation,
             );
           }
-          if ((traits[key] as Record<string, unknown>)[CustomAttributeOperationTypes.REMOVE]) {
+          if (traits[key][CustomAttributeOperationTypes.REMOVE]) {
             CustomAttributeOperationUtil.customAttributeRemoveOperation(key, data, traits);
           }
-          if ((traits[key] as Record<string, unknown>)[CustomAttributeOperationTypes.ADD]) {
+          if (traits[key][CustomAttributeOperationTypes.ADD]) {
             CustomAttributeOperationUtil.customAttributeAddOperation(key, data, traits);
           }
         });
@@ -128,7 +131,11 @@ function populateCustomAttributesWithOperation(
 }
 
 // Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
-function getUserAttributesObject(message: unknown, mappingJson: unknown, destination?: unknown) {
+function getUserAttributesObject(
+  message: RudderBrazeMessage,
+  mappingJson: Record<string, Record<string, unknown>>,
+  destination: BrazeDestination,
+) {
   // blank output object
   const data: Record<string, unknown> = {};
   // get traits from message
@@ -136,7 +143,7 @@ function getUserAttributesObject(message: unknown, mappingJson: unknown, destina
 
   // return the traits as-is if message is mapped to destination
   if (get(message, MappedToDestinationKey)) {
-    return traits || {};
+    return traits;
   }
 
   if (!traits) {
@@ -155,10 +162,9 @@ function getUserAttributesObject(message: unknown, mappingJson: unknown, destina
     'phone',
   ];
 
-  const mappingJsonObj = mappingJson as Record<string, unknown>;
   // iterate over the destKeys and set the value if present
-  Object.keys(mappingJsonObj).forEach((destKey) => {
-    let value = get(traits, mappingJsonObj[destKey]);
+  Object.keys(mappingJson).forEach((destKey) => {
+    let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
       switch (destKey) {
         case 'gender':
@@ -179,7 +185,7 @@ function getUserAttributesObject(message: unknown, mappingJson: unknown, destina
   });
 
   // iterate over rest of the traits properties
-  Object.keys(traits as object).forEach((traitKey) => {
+  Object.keys(traits).forEach((traitKey) => {
     // if traitKey is not reserved add the value to final output
     const value = get(traits, traitKey);
     if (!reservedKeys.includes(traitKey) && value !== undefined) {
@@ -191,10 +197,8 @@ function getUserAttributesObject(message: unknown, mappingJson: unknown, destina
   populateCustomAttributesWithOperation(
     traits,
     data,
-    (message as { properties?: { mergeObjectsUpdateOperation?: unknown } }).properties
-      ?.mergeObjectsUpdateOperation,
-    (destination as { Config?: { enableNestedArrayOperations?: unknown } })?.Config
-      ?.enableNestedArrayOperations,
+    message.properties?.mergeObjectsUpdateOperation,
+    destination.Config.enableNestedArrayOperations,
   );
 
   return data;
@@ -209,7 +213,7 @@ function getUserAttributesObject(message: unknown, mappingJson: unknown, destina
  * @param {*} destination
  */
 async function processIdentify(params: {
-  message: RudderMessage;
+  message: RudderBrazeMessage;
   destination: BrazeDestination;
   metadata?: unknown;
   identifyCallsArray?: unknown[];
@@ -261,14 +265,14 @@ async function processIdentify(params: {
 }
 
 function processTrackWithUserAttributes(
-  message: RudderMessage,
+  message: RudderBrazeMessage,
   destination: BrazeDestination,
-  mappingJson: unknown,
+  mappingJson: Record<string, Record<string, unknown>>,
   processParams: BrazeProcessParams,
   reqMetadata: Record<string, unknown>,
 ) {
   let payload = getUserAttributesObject(message, mappingJson, destination);
-  if (payload && Object.keys(payload as object).length > 0) {
+  if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson: Record<string, unknown> = { attributes: [payload] };
     if (destination.Config.supportDedup) {
@@ -300,7 +304,10 @@ function processTrackWithUserAttributes(
   throw new InstrumentationError('No attributes found to update the user profile');
 }
 
-function addMandatoryEventProperties(payload: Record<string, unknown>, message: RudderMessage) {
+function addMandatoryEventProperties(
+  payload: Record<string, unknown>,
+  message: RudderBrazeMessage,
+) {
   payload.name = message.event!;
   payload.time = message.timestamp!;
   return payload;
@@ -308,9 +315,9 @@ function addMandatoryEventProperties(payload: Record<string, unknown>, message: 
 
 function processTrackEvent(
   messageType: string,
-  message: RudderMessage,
+  message: RudderBrazeMessage,
   destination: BrazeDestination,
-  mappingJson: unknown,
+  mappingJson: Record<string, Record<string, unknown>>,
   processParams: BrazeProcessParams,
 ) {
   const eventName = message.event;
@@ -324,7 +331,7 @@ function processTrackEvent(
   };
 
   let attributePayload = getUserAttributesObject(message, mappingJson, destination);
-  if (attributePayload && Object.keys(attributePayload as object).length > 0) {
+  if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
     if (destination.Config.supportDedup) {
@@ -385,16 +392,13 @@ function processTrackEvent(
 //
 // Ex: If the groupId is 1234, we'll add a attribute to the user object with the
 // key `ab_rudder_group_1234` with the value `true`
-function processGroup(message: RudderMessage, destination: BrazeDestination) {
+function processGroup(message: RudderBrazeMessage, destination: BrazeDestination) {
   const groupId = getFieldValueFromMessage(message, 'groupId');
   if (!groupId) {
     throw new InstrumentationError('Invalid groupId');
   }
   if (destination.Config.enableSubscriptionGroupInGroupCall) {
-    const m = message as RudderMessage & {
-      traits?: { phone?: string; email?: string; subscriptionState?: string };
-    };
-    if (!(m.traits && (m.traits.phone || m.traits.email))) {
+    if (!(message.traits && (message.traits.phone || message.traits.email))) {
       throw new InstrumentationError(
         'Message should have traits with subscriptionState, email or phone',
       );
@@ -403,16 +407,16 @@ function processGroup(message: RudderMessage, destination: BrazeDestination) {
       subscription_group_id: groupId,
     };
     if (
-      m.traits.subscriptionState !== 'subscribed' &&
-      m.traits.subscriptionState !== 'unsubscribed'
+      message.traits.subscriptionState !== 'subscribed' &&
+      message.traits.subscriptionState !== 'unsubscribed'
     ) {
       throw new InstrumentationError(
         'you must provide a subscription state in traits and possible values are subscribed and unsubscribed.',
       );
     }
-    subscriptionGroup.subscription_state = m.traits.subscriptionState;
-    if (m.userId) {
-      subscriptionGroup.external_ids = [m.userId];
+    subscriptionGroup.subscription_state = message.traits.subscriptionState;
+    if (message.userId) {
+      subscriptionGroup.external_ids = [message.userId];
     }
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
@@ -453,7 +457,7 @@ function processGroup(message: RudderMessage, destination: BrazeDestination) {
   );
 }
 
-function processAlias(message: RudderMessage, destination: BrazeDestination) {
+function processAlias(message: RudderBrazeMessage, destination: BrazeDestination) {
   const { userId, previousId } = message;
 
   if (!userId) {
@@ -491,7 +495,7 @@ async function process(
   event: BrazeRouterRequest,
   processParams: BrazeProcessParams = { userStore: new Map(), failedLookupIdentifiers: new Set() },
   reqMetadata: Record<string, unknown> = {},
-) {
+): Promise<ProcessorTransformationOutput> {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -503,7 +507,7 @@ async function process(
         messageType,
         message,
         destination,
-        (mappingConfig as Record<string, unknown>)[category.name],
+        mappingConfig[category.name],
         processParams,
       );
       break;
@@ -513,7 +517,7 @@ async function process(
         messageType,
         message,
         destination,
-        (mappingConfig as Record<string, unknown>)[category.name],
+        mappingConfig[category.name],
         processParams,
       );
       break;
@@ -523,7 +527,7 @@ async function process(
         messageType,
         message,
         destination,
-        (mappingConfig as Record<string, unknown>)[category.name],
+        mappingConfig[category.name],
         processParams,
       );
       break;
@@ -552,7 +556,7 @@ async function process(
       response = processTrackWithUserAttributes(
         message,
         destination,
-        (mappingConfig as Record<string, unknown>)[category.name],
+        mappingConfig[category.name],
         processParams,
         reqMetadata,
       );
@@ -575,11 +579,11 @@ const processRouterDest = async (
   inputs: BrazeRouterRequest[],
   reqMetadata: Record<string, unknown>,
 ) => {
-  const userStore = new Map<string, unknown>();
+  const userStore = new Map<string, BrazeUser>();
   let failedLookupIdentifiers = new Set<string>();
   const { destination } = inputs[0];
   if (destination.Config.supportDedup) {
-    let lookupResult;
+    let lookupResult: { users: BrazeUser[]; failedIdentifiers: Set<string> } | undefined;
     try {
       lookupResult = await BrazeDedupUtility.doLookup(inputs);
     } catch (error: any) {
@@ -597,7 +601,7 @@ const processRouterDest = async (
     (input) => input.message.userId || input.message.anonymousId,
   );
 
-  const identifyCallsArray: unknown[] = [];
+  const identifyCallsArray: BrazeIdentifyCall[] = [];
 
   // process each group of events for userId or anonymousId
   // if deduplication is enabled process each group of events for a user (userId or anonymousId)
@@ -617,7 +621,7 @@ const processRouterDest = async (
   const output = await Promise.all(allResps);
 
   if (identifyCallsArray && identifyCallsArray.length > 0) {
-    await processBatchedIdentify(identifyCallsArray as any, destination.ID);
+    await processBatchedIdentify(identifyCallsArray, destination.ID);
   }
 
   const allTransfomredEvents = lodash.flatMap(output);

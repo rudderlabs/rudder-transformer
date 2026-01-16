@@ -38,8 +38,12 @@ function getAliasMergeEndPoint(baseEndpoint: string): BrazeEndpointDetails {
   };
 }
 
-const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-
+const mappingConfig = getMappingConfig(ConfigCategory, __dirname) as Record<
+  string,
+  {
+    [key: string]: Record<string, unknown>;
+  }
+>;
 const BRAZE_PARTNER_NAME = 'RudderStack';
 
 // max requests per batch

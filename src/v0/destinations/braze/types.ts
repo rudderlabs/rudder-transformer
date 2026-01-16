@@ -1,5 +1,14 @@
-import { z } from 'zod';
-import { Destination, RouterTransformationRequestData, RudderMessage } from '../../../types';
+import {
+  Destination,
+  RouterTransformationRequestData,
+  RudderMessage,
+  Metadata,
+} from '../../../types';
+import {
+  BatchedRequest,
+  MultiBatchRequestOutput,
+  ProcessorTransformationOutput,
+} from '../../../types/destinationTransformation';
 
 // Braze User Alias Object
 export interface BrazeUserAlias {
@@ -35,7 +44,7 @@ export interface BrazeUserAttributes {
 
 // Braze Event Object
 // Ref: https://www.braze.com/docs/api/objects_filters/event_object/
-export interface BrazeEvent {
+interface BrazeEvent {
   external_id?: string;
   user_alias?: BrazeUserAlias;
   braze_id?: string;
@@ -115,6 +124,16 @@ export interface BrazeApiResponse {
   aliases_processed?: number;
 }
 
+export interface BrazeResponseHandlerParams {
+  destinationResponse: {
+    response?: {
+      message?: string;
+      errors?: unknown[];
+    };
+    status: number;
+  };
+}
+
 // Braze User Export Response
 export interface BrazeUserExportResponse {
   users: BrazeUser[];
@@ -138,28 +157,40 @@ export interface BrazeUser {
   time_zone?: string;
   created_at?: string;
   custom_attributes?: Record<string, unknown>;
+  // Legacy field for backward compatibility (tests use this)
+  alias_name?: string;
 }
 
-// Braze Configuration Schema using Zod
-export const BrazeDestinationConfigSchema = z
-  .object({
-    restApiKey: z.string(),
-    dataCenter: z.string(),
-    appKey: z.string().optional(),
-    enableSubscriptionGroupInGroupCall: z.boolean().optional().default(false),
-    sendPurchaseEventWithExtraProperties: z.boolean().optional().default(false),
-    enableNestedArrayOperations: z.boolean().optional().default(false),
-    supportDedup: z.boolean().optional().default(false),
-    trackAnonymousUser: z.boolean().optional().default(false),
-    enableIdentifyForAnonymousUser: z.boolean().optional().default(false),
-    blacklistedEvents: z.array(z.string()).optional().default([]),
-    whitelistedEvents: z.array(z.string()).optional().default([]),
-  })
-  .passthrough();
+export interface BrazeDestinationConfig {
+  restApiKey: string;
+  dataCenter: string;
+  appKey?: string;
+  enableSubscriptionGroupInGroupCall?: boolean;
+  sendPurchaseEventWithExtraProperties?: boolean;
+  enableNestedArrayOperations?: boolean;
+  supportDedup?: boolean;
+  trackAnonymousUser?: boolean;
+  enableIdentifyForAnonymousUser?: boolean;
+  blacklistedEvents?: string[];
+  whitelistedEvents?: string[];
+}
 
-export type BrazeDestinationConfig = z.infer<typeof BrazeDestinationConfigSchema>;
+export interface RudderBrazeMessage extends RudderMessage {
+  properties?: {
+    mergeObjectsUpdateOperation?: boolean;
+  };
+  traits?: {
+    phone?: string;
+    email?: string;
+    subscriptionState?: string;
+  };
+}
+
 export type BrazeDestination = Destination<BrazeDestinationConfig>;
-export type BrazeRouterRequest = RouterTransformationRequestData<RudderMessage, BrazeDestination>;
+export type BrazeRouterRequest = RouterTransformationRequestData<
+  RudderBrazeMessage,
+  BrazeDestination
+>;
 
 // Process params for router transformation
 export interface BrazeProcessParams {
@@ -181,21 +212,73 @@ export interface BrazeEndpointDetails {
   path: string;
 }
 
-// Batch response structure
-export interface BrazeBatchResponse {
-  batchedRequest: unknown[];
-  metadata: unknown[];
-  batched: boolean;
-  statusCode: number;
-  destination: BrazeDestination;
+// Braze Track API request body structure
+export interface BrazeTrackBatchPayload {
+  partner?: string;
+  attributes?: unknown[];
+  events?: unknown[];
+  purchases?: unknown[];
 }
+
+// Braze Subscription Group request body structure
+export interface BrazeSubscriptionBatchPayload {
+  subscription_groups?: unknown[];
+}
+
+// Braze Merge Users request body structure
+export interface BrazeMergeBatchPayload {
+  merge_updates?: unknown[];
+}
+
+// Union of all possible Braze batch payload types
+export type BrazeBatchPayload =
+  | BrazeTrackBatchPayload
+  | BrazeSubscriptionBatchPayload
+  | BrazeMergeBatchPayload;
+
+// Headers type for Braze API requests
+export type BrazeBatchHeaders = {
+  'Content-Type': string;
+  Accept: string;
+  Authorization: string;
+};
+
+// Params type for Braze API requests (typically empty)
+export type BrazeBatchParams = Record<string, unknown>;
+
+export type BrazeBatchRequest = BatchedRequest<
+  BrazeBatchPayload,
+  BrazeBatchHeaders,
+  BrazeBatchParams
+>;
+
+export type BrazeTransformedEvent = {
+  statusCode: number;
+  batchedRequest?: ProcessorTransformationOutput;
+  metadata?: Partial<Metadata>[];
+  destination: BrazeDestination;
+  error?: string;
+  statTags?: object;
+  authErrorCategory?: string;
+};
+
+export type BrazeBatchResponse =
+  | MultiBatchRequestOutput<
+      BrazeBatchPayload,
+      BrazeBatchHeaders,
+      BrazeBatchParams,
+      BrazeDestination
+    >
+  | BrazeTransformedEvent;
+
+// Type for individual transformed event that goes into processBatch
 
 // Delete user types
 export interface BrazeDeleteUserEvent {
   userAttributes: Array<{
     userId: string;
-    email?: string;
-    phone?: string;
+    email: string;
+    phone: string;
   }>;
   config: BrazeDestinationConfig;
 }

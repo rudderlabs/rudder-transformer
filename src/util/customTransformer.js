@@ -360,7 +360,7 @@ async function userTransformHandler(
           userTransformedEvents = {
             transformedEvents: result.transformedEvents.map((ev) => {
               if (ev.error) {
-                return { error: ev.error };
+                return { error: ev.error, metadata: ev.metadata };
               }
               return ev.transformedEvent;
             }),

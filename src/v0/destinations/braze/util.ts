@@ -137,12 +137,11 @@ const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(
     key: string,
     data: Record<string, unknown>,
-    traits: unknown,
+    traits: Record<string, unknown>,
     mergeObjectsUpdateOperation: unknown,
   ) {
     data[key] = {};
-    const t = traits as Record<string, unknown>;
-    const updateArray = t[key]?.[CustomAttributeOperationTypes.UPDATE] as unknown[];
+    const updateArray = traits[key]?.[CustomAttributeOperationTypes.UPDATE] as unknown[];
     const opsResultArray: unknown[] = [];
     for (const arrayItem of updateArray) {
       const item = arrayItem as Record<string, unknown>;
@@ -167,9 +166,12 @@ const CustomAttributeOperationUtil = {
       opsResultArray;
   },
 
-  customAttributeRemoveOperation(key: string, data: Record<string, unknown>, traits: unknown) {
-    const t = traits as Record<string, unknown>;
-    const removeArray = t[key]?.[CustomAttributeOperationTypes.REMOVE] as unknown[];
+  customAttributeRemoveOperation(
+    key: string,
+    data: Record<string, unknown>,
+    traits: Record<string, unknown>,
+  ) {
+    const removeArray = traits[key]?.[CustomAttributeOperationTypes.REMOVE] as unknown[];
     const opsResultArray: unknown[] = [];
     for (const arrayItem of removeArray) {
       const item = arrayItem as Record<string, unknown>;

@@ -6,7 +6,7 @@ import { CredentialInput, Dependencies, LibraryCodeInput, LibraryVersionInput } 
 import { runOpenFaasUserTransform } from '../util/customTransformer-faas';
 import { parserForImport } from '../util/parser';
 
-interface PythonDependencies {
+interface PythonTransDependencies {
   libraries: LibraryVersionInput[];
   credentials: CredentialInput[];
 }
@@ -16,12 +16,12 @@ interface PythonTransformationRunInput {
   versionId: string;
   code: string;
   imports?: string[];
-  dependencies: PythonDependencies;
+  dependencies: PythonTransDependencies;
 }
 interface PythonTransformationTestRunInput {
   code: string;
   imports?: string[];
-  dependencies: PythonDependencies;
+  dependencies: PythonTransDependencies;
 }
 
 export interface TestRunRequestBody {
@@ -75,6 +75,7 @@ export class UserTransformerService {
         credentials: CredentialInput[];
       };
     },
+    testMode: boolean = false,
   ) {
     const { code, imports, id, workspaceId, dependencies } = transformation;
 
@@ -94,7 +95,7 @@ export class UserTransformerService {
           libraries,
           credentials: dependencies.credentials,
         },
-        testMode: true,
+        testMode,
       },
       {
         transformationId: id || '',
@@ -140,7 +141,7 @@ export class UserTransformerService {
     const { input: events, code, language = 'javascript', versionId, dependencies } = input;
     const transformation = versionId ? await getTransformationCode(versionId) : { code, language };
     if (language === 'javascript') {
-      return this.runJSTransformation(events, { ...transformation, dependencies });
+      return this.runJSTransformation(events, { ...transformation, dependencies }, testMode);
     }
     const resp = await this.runPythonTransformation(
       events,

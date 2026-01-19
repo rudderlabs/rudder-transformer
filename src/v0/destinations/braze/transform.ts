@@ -284,7 +284,7 @@ function processTrackWithUserAttributes(
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
-      } else if (isNewStatusCodesAccepted(reqMetadata as Record<string, unknown> | undefined)) {
+      } else if (isNewStatusCodesAccepted(reqMetadata)) {
         throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );

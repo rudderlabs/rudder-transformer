@@ -202,7 +202,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Multi-platform Images to DockerHub
-        uses: rudderlabs/build-scan-push-action@d4991410238cec1b416875f1eb0e7a4565ac29aa # v1.8.2
+        uses: rudderlabs/build-scan-push-action@96d7bfca912dd2e8805dbb322dc2540504ecac1e # v2.1.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .

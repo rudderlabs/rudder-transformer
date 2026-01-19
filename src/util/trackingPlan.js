@@ -7,6 +7,7 @@ const stats = require('./stats');
 const tpCache = new NodeCache({ useClones: false });
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
+const USE_TP_CACHE = process.env.USE_TP_CACHE !== 'false';
 
 /**
  * @param {*} tpId
@@ -20,8 +21,10 @@ const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
  * TODO: if version is not given, latest TP may be fetched, extract version and populate node cache
  */
 async function getTrackingPlan(tpId, version, workspaceId) {
-  const trackingPlan = tpCache.get(`${tpId}::${version}`);
-  if (trackingPlan) return trackingPlan;
+  if (USE_TP_CACHE) {
+    const trackingPlan = tpCache.get(`${tpId}::${version}`);
+    if (trackingPlan) return trackingPlan;
+  }
   try {
     const url = `${TRACKING_PLAN_URL}/${workspaceId}/tracking-plans/${tpId}?version=${version}`;
     const startTime = new Date();
@@ -31,7 +34,12 @@ async function getTrackingPlan(tpId, version, workspaceId) {
 
     stats.timing('get_tracking_plan', startTime);
     const myJson = await response.json();
-    tpCache.set(`${tpId}::${version}`, myJson);
+    if (USE_TP_CACHE) {
+      tpCache.set(`${tpId}::${version}`, myJson);
+      const { keys, vsize } = tpCache.getStats();
+      stats.gauge('node_cache_keys', keys, { name: 'tp_cache' });
+      stats.gauge('node_cache_memory_usage_bytes', vsize, { name: 'tp_cache' });
+    }
     return myJson;
   } catch (error) {
     logger.error(`Failed during trackingPlan fetch : ${error}`);

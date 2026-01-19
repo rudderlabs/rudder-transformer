@@ -71,7 +71,7 @@ export class TransformationJavascriptRunner {
       }
     }
     if (!this.transformationType) {
-      throw new Error(`Expected one of ${SUPPORTED_FUNC_NAMES.join(', ')}.`);
+      throw new Error(`Expected one of ${SUPPORTED_FUNC_NAMES.join(', ')}`);
     }
     return this.transformationType;
   }

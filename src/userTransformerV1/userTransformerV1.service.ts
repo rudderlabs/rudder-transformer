@@ -11,6 +11,11 @@ interface PythonTransDependencies {
   credentials: CredentialInput[];
 }
 
+interface JSTransDependencies {
+  libraries: LibraryCodeInput[];
+  credentials: CredentialInput[];
+}
+
 interface PythonTransformationRunInput {
   workspaceId: string;
   versionId: string;
@@ -70,10 +75,7 @@ export class UserTransformerService {
       code: string;
       imports?: string[];
       language: string;
-      dependencies: {
-        libraries: LibraryCodeInput[];
-        credentials: CredentialInput[];
-      };
+      dependencies: JSTransDependencies;
     },
     testMode: boolean = false,
   ) {

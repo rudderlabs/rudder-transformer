@@ -150,13 +150,6 @@ export interface BrazeResponseHandlerParams {
   };
 }
 
-// Braze User Export Response
-export interface BrazeUserExportResponse {
-  users: BrazeUser[];
-  message: string;
-  invalid_user_ids?: string[];
-}
-
 export interface BrazeUser {
   external_id?: string;
   user_aliases?: BrazeUserAlias[];
@@ -175,6 +168,13 @@ export interface BrazeUser {
   custom_attributes?: Record<string, unknown>;
   // Legacy field for backward compatibility (tests use this)
   alias_name?: string;
+}
+
+// Braze /users/export/ids API Response
+export interface BrazeUserExportResponse {
+  users: BrazeUser[];
+  message: string;
+  invalid_user_ids?: string[];
 }
 
 export interface BrazeDestinationConfig {
@@ -295,9 +295,9 @@ export type BrazeBatchResponse =
 // Delete user types
 export interface BrazeDeleteUserEvent {
   userAttributes: Array<{
-    userId: string;
-    email: string;
-    phone: string;
+    userId?: string;
+    email?: string;
+    phone?: string;
   }>;
   config: BrazeDestinationConfig;
 }

@@ -1,3 +1,4 @@
+import { BrazeEvent, BrazePurchase, BrazeUserAttributes } from './types';
 import { batchForTrackAPI } from './util';
 
 describe('batchForTrackAPI', () => {
@@ -44,7 +45,7 @@ describe('batchForTrackAPI', () => {
     it('should handle arrays with different lengths', () => {
       const attributes = [createTestAttribute('user1'), createTestAttribute('user2')];
       const events = [createTestEvent('user1')];
-      const purchases: unknown[] = [];
+      const purchases: BrazePurchase[] = [];
 
       const result = batchForTrackAPI(attributes, events, purchases);
 
@@ -55,9 +56,13 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should handle null/undefined items in arrays', () => {
-      const attributes = [createTestAttribute('user1'), null, undefined];
-      const events = [null, createTestEvent('user2')];
-      const purchases = [undefined];
+      const attributes = [
+        createTestAttribute('user1'),
+        null,
+        undefined,
+      ] as unknown as BrazeUserAttributes[];
+      const events = [null, createTestEvent('user2')] as unknown as BrazeEvent[];
+      const purchases = [undefined] as unknown as BrazePurchase[];
 
       const result = batchForTrackAPI(attributes, events, purchases);
 
@@ -70,9 +75,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Batching by external ID count', () => {
     it('should create multiple chunks when external ID count exceeds 75', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create 76 different external IDs (exceeds TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT = 75)
       for (let i = 1; i <= 76; i++) {
@@ -109,9 +114,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Batching by request count per type', () => {
     it('should create multiple chunks when attributes count exceeds 75', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create 76 attributes for the same user (exceeds TRACK_BRAZE_MAX_REQ_COUNT = 75)
       for (let i = 1; i <= 76; i++) {
@@ -128,9 +133,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should create multiple chunks when events count exceeds 75', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create 76 events for the same user
       for (let i = 1; i <= 76; i++) {
@@ -145,9 +150,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should create multiple chunks when purchases count exceeds 75', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create 76 purchases for the same user
       for (let i = 1; i <= 76; i++) {
@@ -164,9 +169,9 @@ describe('batchForTrackAPI', () => {
 
   describe('Complex scenarios', () => {
     it('should handle mixed batching scenarios', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create scenario where request count limit is hit first
       // 38 users with 2 attributes each = 76 attributes (exceeds 75 limit)
@@ -195,8 +200,8 @@ describe('batchForTrackAPI', () => {
         createTestAttribute('user1'),
         createTestAttribute('user2'),
       ];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       const result = batchForTrackAPI(attributes, events, purchases);
 
@@ -208,9 +213,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should handle edge case with exactly 75 external IDs', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create exactly 75 external IDs
       for (let i = 1; i <= 75; i++) {
@@ -225,9 +230,9 @@ describe('batchForTrackAPI', () => {
     });
 
     it('should handle edge case with exactly 75 items per type', () => {
-      const attributes: unknown[] = [];
-      const events: unknown[] = [];
-      const purchases: unknown[] = [];
+      const attributes: BrazeUserAttributes[] = [];
+      const events: BrazeEvent[] = [];
+      const purchases: BrazePurchase[] = [];
 
       // Create exactly 75 items of each type for the same user
       for (let i = 1; i <= 75; i++) {

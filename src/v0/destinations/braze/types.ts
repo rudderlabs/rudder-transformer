@@ -11,7 +11,7 @@ import {
 } from '../../../types/destinationTransformation';
 
 // Braze User Alias Object
-export interface BrazeUserAlias {
+interface BrazeUserAlias {
   alias_name: string;
   alias_label: string;
 }
@@ -41,33 +41,69 @@ export interface BrazeUserAttributes {
   // Custom attributes
   [key: string]: unknown;
 }
-
-// Braze Event Object
+// Braze Event Object (Complete API specification)
 // Ref: https://www.braze.com/docs/api/objects_filters/event_object/
-interface BrazeEvent {
+export interface BrazeEvent {
+  // User identifiers - at least one is required per Braze API
   external_id?: string;
   user_alias?: BrazeUserAlias;
   braze_id?: string;
+  email?: string;
+  phone?: string;
+
+  // Optional app identifier
   app_id?: string;
-  name: string;
-  time: string;
+
+  // Required fields
+  name: string; // Event name (required)
+  time: string; // ISO 8601 datetime or 'yyyy-MM-dd'T'HH:mm:ss:SSSZ' format (required)
+
+  // Optional event properties
   properties?: Record<string, unknown>;
+
+  // Control flags
+  // When using "user_alias", "Update Only" mode is always true
   _update_existing_only?: boolean;
 }
 
-// Braze Purchase Object
+// Braze Purchase Object (Complete API specification)
 // Ref: https://www.braze.com/docs/api/objects_filters/purchase_object/
+// Revenue from a purchase object is calculated as the product of quantity and price
 export interface BrazePurchase {
+  // User identifiers - at least one is required per Braze API
   external_id?: string;
   user_alias?: BrazeUserAlias;
   braze_id?: string;
+  email?: string;
+  phone?: string;
+
+  // Optional app identifier
+  // Ref: https://www.braze.com/docs/api/identifier_types/#app-identifier
   app_id?: string;
+
+  // Required purchase fields
+  // Identifier for the purchase (e.g., Product Name or Product Category)
   product_id: string;
+
+  // ISO 4217 Alphabetic Currency Code (e.g., USD, EUR, JPY)
   currency: string;
+
+  // Value in the base currency unit (e.g., Dollars for USD, Yen for JPY)
   price: number;
-  quantity: number;
+
+  // Time of purchase in ISO 8601 format
   time: string;
+
+  // Optional: Quantity purchased (defaults to 1, must be <= 100)
+  // Note: Braze treats a quantity X as X separate purchases with quantity 1
+  quantity?: number;
+
+  // Optional purchase properties for additional metadata
   properties?: Record<string, unknown>;
+
+  // Control flags
+  // Setting this flag to true puts the API in "Update Only" mode
+  // When using "user_alias", "Update Only" mode is always true
   _update_existing_only?: boolean;
 }
 
@@ -79,6 +115,10 @@ export interface BrazeTrackRequestBody {
   purchases?: BrazePurchase[];
 }
 
+/**
+ * Alias to identify for user merging
+ * NOTE: At least ONE of external_id, user_alias, or (alias_name + alias_label) is required
+ */
 export interface BrazeAliasToIdentify {
   external_id?: string;
   user_alias?: BrazeUserAlias;
@@ -98,30 +138,6 @@ export interface BrazeSubscriptionGroup {
   external_ids?: string[];
   emails?: string[];
   phones?: string[];
-}
-
-// Braze Alias Merge
-export interface BrazeAliasMerge {
-  identifier_to_merge: {
-    external_id: string;
-  };
-  identifier_to_keep: {
-    external_id: string;
-  };
-}
-
-// Braze API Responses
-export interface BrazeApiResponse {
-  message: string;
-  errors?: Array<{
-    type: string;
-    input_array?: string;
-    index?: number;
-  }>;
-  attributes_processed?: number;
-  events_processed?: number;
-  purchases_processed?: number;
-  aliases_processed?: number;
 }
 
 export interface BrazeResponseHandlerParams {
@@ -153,7 +169,7 @@ export interface BrazeUser {
   home_city?: string;
   language?: string;
   phone?: string;
-  gender?: string;
+  gender?: 'M' | 'F' | 'O' | 'N' | 'P' | null; // ✅ Correct;
   time_zone?: string;
   created_at?: string;
   custom_attributes?: Record<string, unknown>;
@@ -175,14 +191,28 @@ export interface BrazeDestinationConfig {
   whitelistedEvents?: string[];
 }
 
+// Product object structure for e-commerce events
+interface BrazeProduct {
+  product_id?: string;
+  sku?: string;
+  price?: number;
+  quantity?: number;
+  currency?: string;
+  [key: string]: unknown; // Allow additional properties
+}
+
 export interface RudderBrazeMessage extends RudderMessage {
   properties?: {
     mergeObjectsUpdateOperation?: boolean;
+    products?: BrazeProduct[]; // Array of products for e-commerce events
+    currency?: string; // Currency at the order level
+    [key: string]: unknown; // Allow additional properties
   };
   traits?: {
     phone?: string;
     email?: string;
     subscriptionState?: string;
+    [key: string]: unknown; // Allow additional traits
   };
 }
 
@@ -194,7 +224,7 @@ export type BrazeRouterRequest = RouterTransformationRequestData<
 
 // Process params for router transformation
 export interface BrazeProcessParams {
-  userStore: Map<string, BrazeUser>;
+  userStore: Map<string, BrazeUserAttributes>;
   identifyCallsArray?: BrazeIdentifyCall[];
   failedLookupIdentifiers: Set<string>;
 }
@@ -212,14 +242,6 @@ export interface BrazeEndpointDetails {
   path: string;
 }
 
-// Braze Track API request body structure
-export interface BrazeTrackBatchPayload {
-  partner?: string;
-  attributes?: unknown[];
-  events?: unknown[];
-  purchases?: unknown[];
-}
-
 // Braze Subscription Group request body structure
 export interface BrazeSubscriptionBatchPayload {
   subscription_groups?: unknown[];
@@ -232,7 +254,7 @@ export interface BrazeMergeBatchPayload {
 
 // Union of all possible Braze batch payload types
 export type BrazeBatchPayload =
-  | BrazeTrackBatchPayload
+  | BrazeTrackRequestBody
   | BrazeSubscriptionBatchPayload
   | BrazeMergeBatchPayload;
 
@@ -243,8 +265,7 @@ export type BrazeBatchHeaders = {
   Authorization: string;
 };
 
-// Params type for Braze API requests (typically empty)
-export type BrazeBatchParams = Record<string, unknown>;
+type BrazeBatchParams = Record<string, unknown>;
 
 export type BrazeBatchRequest = BatchedRequest<
   BrazeBatchPayload,
@@ -258,7 +279,7 @@ export type BrazeTransformedEvent = {
   metadata?: Partial<Metadata>[];
   destination: BrazeDestination;
   error?: string;
-  statTags?: object;
+  statTags?: Record<string, unknown>;
   authErrorCategory?: string;
 };
 
@@ -270,8 +291,6 @@ export type BrazeBatchResponse =
       BrazeDestination
     >
   | BrazeTransformedEvent;
-
-// Type for individual transformed event that goes into processBatch
 
 // Delete user types
 export interface BrazeDeleteUserEvent {

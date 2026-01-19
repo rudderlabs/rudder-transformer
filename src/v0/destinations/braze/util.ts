@@ -43,8 +43,19 @@ import {
   BrazeUserExportResponse,
   BrazeUser,
   BrazeUserAttributes,
+  BrazeEvent,
+  BrazePurchase,
+  BrazeDestinationConfig,
+  RudderBrazeMessage,
 } from './types';
 import type { Metadata } from '../../../types';
+
+type TrackChunk = {
+  attributes: BrazeUserAttributes[];
+  events: BrazeEvent[];
+  purchases: BrazePurchase[];
+  externalIds: Set<string>;
+};
 
 const formatGender = (gender: unknown) => {
   if (typeof gender !== 'string') {
@@ -141,18 +152,18 @@ const CustomAttributeOperationUtil = {
     mergeObjectsUpdateOperation: unknown,
   ) {
     data[key] = {};
-    const updateArray = traits[key]?.[CustomAttributeOperationTypes.UPDATE] as unknown[];
+    const updateArray = traits[key]?.[CustomAttributeOperationTypes.UPDATE];
     const opsResultArray: unknown[] = [];
     for (const arrayItem of updateArray) {
-      const item = arrayItem as Record<string, unknown>;
+      const item = arrayItem;
       const myObj: Record<string, unknown> = {
         $identifier_key: item.identifier,
-        $identifier_value: item[item.identifier as string],
+        $identifier_value: item[item.identifier],
       };
 
-      delete item[item.identifier as string];
+      delete item[item.identifier];
       delete item.identifier;
-      myObj.$new_object = {};
+      myObj.$new_object = {} as Record<string, unknown>;
       Object.keys(item).forEach((subKey) => {
         (myObj.$new_object as Record<string, unknown>)[subKey] = item[subKey];
       });
@@ -171,13 +182,13 @@ const CustomAttributeOperationUtil = {
     data: Record<string, unknown>,
     traits: Record<string, unknown>,
   ) {
-    const removeArray = traits[key]?.[CustomAttributeOperationTypes.REMOVE] as unknown[];
+    const removeArray = traits[key]?.[CustomAttributeOperationTypes.REMOVE];
     const opsResultArray: unknown[] = [];
     for (const arrayItem of removeArray) {
-      const item = arrayItem as Record<string, unknown>;
+      const item = arrayItem;
       const myObj: Record<string, unknown> = {
         $identifier_key: item.identifier,
-        $identifier_value: item[item.identifier as string],
+        $identifier_value: item[item.identifier],
       };
       opsResultArray.push(myObj);
     }
@@ -403,7 +414,10 @@ const BrazeDedupUtility = {
    * @param identifier - User identifier (external_id or alias_name)
    * @returns User object from the store or undefined
    */
-  getUserDataFromStore(store: Map<string, unknown>, identifier: unknown) {
+  getUserDataFromStore(
+    store: Map<string, BrazeUserAttributes>,
+    identifier: unknown,
+  ): BrazeUserAttributes | undefined {
     return store.get(identifier as string);
   },
 
@@ -415,7 +429,7 @@ const BrazeDedupUtility = {
    * @param store - Map storing user data by identifier
    * @returns Deduplicated user object or null if no changes
    */
-  deduplicate(userData: unknown, store: Map<string, unknown>) {
+  deduplicate(userData: BrazeUserAttributes, store: Map<string, BrazeUserAttributes>) {
     const excludeKeys = new Set([
       'external_id',
       'user_alias',
@@ -423,12 +437,7 @@ const BrazeDedupUtility = {
       'braze_id',
       'custom_events',
     ]);
-    const ud = userData as {
-      external_id?: string;
-      user_alias?: { alias_name?: string };
-      [key: string]: unknown;
-    };
-    const { external_id, user_alias } = ud;
+    const { external_id, user_alias } = userData;
     let storedUserData =
       this.getUserDataFromStore(store, external_id) ||
       this.getUserDataFromStore(store, user_alias?.alias_name);
@@ -437,19 +446,19 @@ const BrazeDedupUtility = {
       store.set((external_id || user_alias) as string, userData);
       return userData;
     }
-    const customAttributes = (storedUserData as { custom_attributes?: unknown }).custom_attributes;
-    storedUserData = { ...(storedUserData as object), ...(customAttributes as object) };
-    delete (storedUserData as { custom_attributes?: unknown }).custom_attributes;
+    const customAttributes = storedUserData.custom_attributes;
+    storedUserData = { ...storedUserData, ...(customAttributes as object) };
+    delete storedUserData.custom_attributes;
     let deduplicatedUserData: Record<string, unknown> = {};
-    const keys = Object.keys(ud)
+    const keys = Object.keys(userData)
       .filter((key) => !excludeKeys.has(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
       .filter((key) => {
-        if (isObject(ud[key])) {
+        if (isObject(userData[key])) {
           return !(
-            Object.keys(ud[key] as object).includes('$add') ||
-            Object.keys(ud[key] as object).includes('$update') ||
-            Object.keys(ud[key] as object).includes('$remove')
+            Object.keys(userData[key] as object).includes('$add') ||
+            Object.keys(userData[key] as object).includes('$update') ||
+            Object.keys(userData[key] as object).includes('$remove')
           );
         }
         return true;
@@ -457,24 +466,24 @@ const BrazeDedupUtility = {
 
     if (keys.length > 0) {
       keys.forEach((key) => {
-        const sud = storedUserData as Record<string, unknown>;
+        const sud = storedUserData;
         // ref: https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/#adding-descriptions
         // null is a valid value in braze for unsetting, so we need to compare the values only if the key is present in the stored user data
         // in case of keys having null values only compare if the key is present in the stored user data
-        if (ud[key] === null) {
+        if (userData[key] === null) {
           if (isDefinedAndNotNull(sud[key])) {
-            deduplicatedUserData[key] = ud[key];
+            deduplicatedUserData[key] = userData[key];
           }
-        } else if (!_.isEqual(ud[key], sud[key])) {
-          deduplicatedUserData[key] = ud[key];
+        } else if (!_.isEqual(userData[key], sud[key])) {
+          deduplicatedUserData[key] = userData[key];
         }
       });
     }
 
     // add non billable attributes back to the deduplicated user object
     BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
-      if (isDefined(ud[key])) {
-        deduplicatedUserData[key] = ud[key];
+      if (isDefined(userData[key])) {
+        deduplicatedUserData[key] = userData[key];
       }
     });
 
@@ -487,7 +496,7 @@ const BrazeDedupUtility = {
       user_alias,
     };
     const identifier = external_id || user_alias?.alias_name;
-    store.set(identifier as string, { ...(storedUserData as object), ...deduplicatedUserData });
+    store.set(identifier as string, { ...storedUserData, ...deduplicatedUserData });
 
     return removeUndefinedValues(deduplicatedUserData) as BrazeUserAttributes;
   },
@@ -505,17 +514,13 @@ const BrazeDedupUtility = {
  * @returns Deduplicated payload or null if duplicate
  */
 const processDeduplication = (
-  userStore: Map<string, unknown>,
-  payload: unknown,
+  userStore: Map<string, BrazeUserAttributes>,
+  payload: BrazeUserAttributes,
   destinationId: string,
   failedLookupIdentifiers: Set<string>,
 ) => {
   // Check if this event's identifier failed to lookup due to API failure
-  const p = payload as {
-    external_id?: string;
-    user_alias?: { alias_name?: string };
-  };
-  const identifier = p.external_id || p.user_alias?.alias_name;
+  const identifier = payload.external_id || payload.user_alias?.alias_name;
   if (failedLookupIdentifiers && identifier && failedLookupIdentifiers.has(identifier)) {
     stats.increment('braze_dedup_skipped_due_to_lookup_failure_count', {
       destination_id: destinationId,
@@ -588,33 +593,39 @@ function prepareGroupAndAliasBatch(
   }
 }
 
-const createTrackChunk = () => ({
-  attributes: [] as unknown[],
-  events: [] as unknown[],
-  purchases: [] as unknown[],
+const createTrackChunk = (): TrackChunk => ({
+  attributes: [],
+  events: [],
+  purchases: [],
   externalIds: new Set<string>(),
 });
 
+type AllItems = {
+  data: BrazeUserAttributes | BrazeEvent | BrazePurchase;
+  type: string;
+  externalId?: string;
+};
+
 const batchForTrackAPI = (
-  attributesArray: unknown[],
-  eventsArray: unknown[],
-  purchasesArray: unknown[],
+  attributesArray: BrazeUserAttributes[],
+  eventsArray: BrazeEvent[],
+  purchasesArray: BrazePurchase[],
 ) => {
-  const allItems: { data: unknown; type: string; externalId: string }[] = [];
+  const allItems: AllItems[] = [];
   const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
 
-  const addItem = (item: unknown, type: string) => {
+  const addItem = (item: BrazeUserAttributes | BrazeEvent | BrazePurchase, type: string) => {
     if (item) {
       allItems.push({
         data: item,
         type,
-        externalId: (item as { external_id: string }).external_id,
+        externalId: item.external_id,
       });
     }
   };
 
   const canAddToChunk = (
-    item: { type: string; externalId: string },
+    item: AllItems,
     chunk: {
       externalIds: Set<string>;
       attributes: unknown[];
@@ -624,7 +635,7 @@ const batchForTrackAPI = (
   ) => {
     const { type, externalId } = item;
     return (
-      (chunk.externalIds.has(externalId) ||
+      ((externalId && chunk.externalIds.has(externalId)) ||
         chunk.externalIds.size < TRACK_BRAZE_MAX_EXTERNAL_ID_COUNT) &&
       chunk[type].length < TRACK_BRAZE_MAX_REQ_COUNT
     );
@@ -642,12 +653,12 @@ const batchForTrackAPI = (
   for (const item of sortedItems) {
     if (canAddToChunk(item, currentChunk)) {
       currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId);
+      currentChunk.externalIds.add(item.externalId!);
     } else {
       trackChunks.push(currentChunk);
       currentChunk = createTrackChunk();
       currentChunk[item.type].push(item.data);
-      currentChunk.externalIds.add(item.externalId);
+      currentChunk.externalIds.add(item.externalId!);
     }
   }
   if (currentChunk.externalIds.size > 0) {
@@ -700,9 +711,9 @@ const addTrackStats = (
 const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
   const { destination } = transformedEvents[0];
   const dest = destination;
-  const attributesArray: unknown[] = [];
-  const eventsArray: unknown[] = [];
-  const purchaseArray: unknown[] = [];
+  const attributesArray: BrazeUserAttributes[] = [];
+  const eventsArray: BrazeEvent[] = [];
+  const purchaseArray: BrazePurchase[] = [];
   const successMetadata: Partial<Metadata>[] = [];
   const failureResponses: BrazeTransformedEvent[] = [];
   const filteredResponses: BrazeTransformedEvent[] = [];
@@ -810,57 +821,54 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
             }
     Ref: https://www.braze.com/docs/api/identifier_types/?tab=app%20ids
  */
-const addAppId = (payload: unknown, message: unknown) => {
+const addAppId = (payload: Record<string, unknown>, message: Record<string, unknown>) => {
   const integrationsObj = getIntegrationsObj(message, DESTINATION.toUpperCase() as any);
   if (integrationsObj?.appId) {
     const { appId: appIdValue } = integrationsObj;
     return {
-      ...(payload as object),
+      ...payload,
       app_id: String(appIdValue),
     };
   }
-  return { ...(payload as object) };
+  return { ...payload };
 };
 
-function setExternalId(payload: unknown, message: unknown) {
-  const p = payload as Record<string, unknown>;
-  const externalId =
-    getDestinationExternalID(message, 'brazeExternalId') || (message as { userId?: string }).userId;
+function setExternalId(payload: Record<string, unknown>, message: Record<string, unknown>) {
+  const externalId = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
   if (externalId) {
-    p.external_id = externalId;
+    payload.external_id = externalId;
   }
-  return p;
+  return payload;
 }
 
-function setAliasObject(payload: unknown, message: unknown) {
-  const p = payload as Record<string, unknown>;
+function setAliasObject(payload: Record<string, unknown>, message: RudderBrazeMessage) {
   const integrationsObj = getIntegrationsObj(message, DESTINATION.toUpperCase() as any);
   if (
     isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
     isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
   ) {
     const { alias_name, alias_label } = integrationsObj.alias;
-    p.user_alias = {
+    payload.user_alias = {
       alias_name,
       alias_label,
     };
-  } else if ((message as { anonymousId?: string }).anonymousId) {
-    p.user_alias = {
-      alias_name: (message as { anonymousId: string }).anonymousId,
+  } else if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
       alias_label: 'rudder_id',
     };
   }
-  return p;
+  return payload;
 }
 
-function setExternalIdOrAliasObject(payload: unknown, message: unknown) {
+function setExternalIdOrAliasObject(payload: Record<string, unknown>, message: RudderBrazeMessage) {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
   if (userId || getDestinationExternalID(message, 'brazeExternalId')) {
     return setExternalId(payload, message);
   }
 
   // eslint-disable-next-line no-underscore-dangle
-  (payload as Record<string, unknown>)._update_existing_only = false;
+  payload._update_existing_only = false;
   return setAliasObject(payload, message);
 }
 
@@ -880,19 +888,18 @@ function addMandatoryPurchaseProperties(
   };
 }
 
-function getPurchaseObjs(message: unknown, config: unknown) {
+function getPurchaseObjs(message: RudderBrazeMessage, config: BrazeDestinationConfig) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
   const validateForPurchaseEvent = () => {
-    const m = message as { properties?: unknown };
-    const { properties } = m;
+    const { properties } = message;
     const timestamp = getFieldValueFromMessage(message, 'timestamp');
     if (!properties) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
-    const { currency: currencyCode } = properties as { currency?: string };
-    let { products } = properties as { products?: unknown[] };
+    const { currency: currencyCode } = properties;
+    let { products } = properties;
     if (!products) {
       throw new InstrumentationError(
         'Invalid Order Completed event: Products array is missing in the message',
@@ -915,15 +922,8 @@ function getPurchaseObjs(message: unknown, config: unknown) {
     }
 
     products.forEach((product) => {
-      const p = product as {
-        product_id?: unknown;
-        sku?: unknown;
-        price?: unknown;
-        quantity?: unknown;
-        currency?: unknown;
-      };
-      const productId = p.product_id || p.sku;
-      const { price, quantity, currency: prodCurrencyCode } = p;
+      const productId = product.product_id || product.sku;
+      const { price, quantity, currency: prodCurrencyCode } = product;
       if (!isDefinedAndNotNull(productId)) {
         throw new InstrumentationError(
           `Invalid Order Completed event: Product Id is missing for product at index: ${products.indexOf(
@@ -970,43 +970,42 @@ function getPurchaseObjs(message: unknown, config: unknown) {
   };
   validateForPurchaseEvent();
 
-  const m = message as { properties: { products: unknown[]; currency?: string } };
-  const { products, currency: currencyCode } = m.properties;
+  // After validation, we know properties exists and has products
+  const { products, currency: currencyCode } = message.properties!;
   const timestamp = getFieldValueFromMessage(message, 'timestamp');
   const purchaseObjs: unknown[] = [];
 
   // we have to make a separate purchase object for each product
-  products.forEach((product) => {
-    const p = product as {
-      product_id?: unknown;
-      sku?: unknown;
-      price: string;
-      quantity: string;
-      currency?: string;
-      [key: string]: unknown;
-    };
-    const productId = p.product_id || p.sku;
-    const { price, quantity, currency: prodCur } = p;
+  // After validation, products is guaranteed to exist and be a non-empty array
+  products!.forEach((product) => {
+    const productId = product.product_id || product.sku;
+    const { price, quantity, currency: prodCur } = product;
+    // Convert to string first to handle any type (number, string, etc.)
+    // then parse to ensure correct type for Braze API
     let purchaseObj: Record<string, unknown> = addMandatoryPurchaseProperties(
       String(productId),
-      Number.parseFloat(price),
-      currencyCode || prodCur || '',
-      Number.parseInt(quantity, 10),
+      Number.parseFloat(String(price)),
+      String(currencyCode || prodCur || ''),
+      Number.parseInt(String(quantity), 10),
       timestamp,
-    ) as Record<string, unknown>;
-    const extraProperties = _.omit(p, BRAZE_PURCHASE_STANDARD_PROPERTIES);
-    const c = config as { sendPurchaseEventWithExtraProperties?: boolean };
-    if (Object.keys(extraProperties).length > 0 && c.sendPurchaseEventWithExtraProperties) {
+    );
+    const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);
+    if (Object.keys(extraProperties).length > 0 && config.sendPurchaseEventWithExtraProperties) {
       purchaseObj = { ...purchaseObj, properties: extraProperties };
     }
-    purchaseObj = setExternalIdOrAliasObject(purchaseObj, message) as Record<string, unknown>;
+    purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
     purchaseObjs.push(purchaseObj);
   });
 
   return purchaseObjs;
 }
 
-const collectStatsForAliasFailure = (brazeResponse: unknown, destinationId: string) => {
+const collectStatsForAliasFailure = (
+  brazeResponse: {
+    aliases_processed?: number;
+  },
+  destinationId: string,
+) => {
   /**
    * Braze Response for Alias failure
    * {
@@ -1034,7 +1033,7 @@ const collectStatsForAliasFailure = (brazeResponse: unknown, destinationId: stri
   if (!isDefinedAndNotNull(brazeResponse)) {
     return;
   }
-  const { aliases_processed: aliasesProcessed } = brazeResponse as { aliases_processed?: number };
+  const { aliases_processed: aliasesProcessed } = brazeResponse;
   if (aliasesProcessed === 0) {
     stats.increment('braze_alias_failure_count', { destination_id: destinationId });
   }
@@ -1044,14 +1043,14 @@ const collectStatsForAliasMissConfigurations = (destinationId: string) => {
   stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
-function handleReservedProperties(props: unknown) {
+function handleReservedProperties(props: unknown): Record<string, unknown> {
   if (typeof props !== 'object') {
     throw new InstrumentationError('Invalid event properties');
   }
   // remove reserved keys from custom event properties
   const reserved = ['time', 'event_name'];
 
-  return _.omit(props, reserved);
+  return _.omit(props as Record<string, unknown>, reserved);
 }
 
 export {

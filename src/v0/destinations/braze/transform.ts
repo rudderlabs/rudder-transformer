@@ -135,7 +135,7 @@ function getUserAttributesObject(
   message: RudderBrazeMessage,
   mappingJson: Record<string, Record<string, unknown>>,
   destination: BrazeDestination,
-) {
+): BrazeUserAttributes {
   // blank output object
   const data: Record<string, unknown> = {};
   // get traits from message

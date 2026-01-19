@@ -1084,10 +1084,11 @@ describe('identityResolutionUtils', () => {
         const identifyCall: BrazeIdentifyCall = {
           identifyPayload: {
             aliases_to_identify: [aliasToIdentify],
+            merge_behavior: 'merge',
           },
           destination: createMockDestination(),
           metadata: {},
-        } as any;
+        };
 
         const mockResponse = createMockBrazeResponse(200);
         mockedHandleHttpRequest.mockResolvedValue(mockResponse);

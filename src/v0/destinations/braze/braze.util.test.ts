@@ -17,10 +17,13 @@ import {
   BrazeDestination,
   BrazeRouterRequest,
   BrazeTransformedEvent,
-  BrazeTrackBatchPayload,
+  BrazeTrackRequestBody,
   BrazeSubscriptionBatchPayload,
   BrazeMergeBatchPayload,
   BrazeSubscriptionGroup,
+  BrazeUserAttributes,
+  BrazeDestinationConfig,
+  RudderBrazeMessage,
 } from './types';
 
 // Mock the handleHttpRequest function
@@ -745,23 +748,23 @@ describe('dedup utility tests', () => {
     });
 
     test('deduplicates user data correctly', () => {
-      const userData = {
+      const userData: BrazeUserAttributes = {
         external_id: '123',
         color: 'green',
         age: 30,
-        gender: 'male',
+        gender: 'M',
         country: 'US',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
       };
       const storeData = {
         external_id: '123',
         country: 'US',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
         custom_attributes: {
           color: 'blue',
@@ -775,32 +778,32 @@ describe('dedup utility tests', () => {
         external_id: '123',
         color: 'green',
         age: 30,
-        gender: 'male',
+        gender: 'M',
         country: 'US',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
       });
     });
 
     test('deduplicates user data correctly 2', () => {
-      const userData = {
+      const userData: BrazeUserAttributes = {
         external_id: '123',
         color: 'green',
         age: 30,
-        gender: 'male',
+        gender: 'M',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
       };
       const storeData = {
         external_id: '123',
         country: 'US',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
         custom_attributes: {
           color: 'blue',
@@ -814,10 +817,10 @@ describe('dedup utility tests', () => {
         external_id: '123',
         color: 'green',
         age: 30,
-        gender: 'male',
+        gender: 'M',
         language: 'en',
-        email_subscribe: true,
-        push_subscribe: false,
+        email_subscribe: 'subscribed',
+        push_subscribe: 'unsubscribed',
         subscription_groups: ['group1', 'group2'],
       });
     });
@@ -1060,29 +1063,29 @@ describe('processBatch', () => {
 
     if (firstResult.batchedRequest && Array.isArray(firstResult.batchedRequest)) {
       expect(firstResult.batchedRequest.length).toBe(8); // Two batched requests
-      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).partner).toBe(
         'RudderStack',
       ); // Verify partner name
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).attributes?.length,
       ).toBe(75); // First batch contains 75 attributes
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).events?.length,
       ).toBe(75); // First batch contains 75 events
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(75); // First batch contains 75 purchases
-      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).partner).toBe(
         'RudderStack',
       ); // Verify partner name
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).attributes?.length,
       ).toBe(25); // Second batch contains remaining 25 attributes
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).events?.length,
       ).toBe(25); // Second batch contains remaining 25 events
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(25); // Second batch contains remaining 25 purchases
       expect(
         (firstResult.batchedRequest[2].body.JSON as BrazeSubscriptionBatchPayload)
@@ -1250,32 +1253,32 @@ describe('processBatch', () => {
     ) {
       expect(firstResult.metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
       expect(firstResult.batchedRequest.length).toBe(7); // Two batched requests
-      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).partner).toBe(
         'RudderStack',
       ); // Verify partner name
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).attributes?.length,
       ).toBe(75); // First batch contains 75 attributes
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).events?.length,
       ).toBe(75); // First batch contains 75 events
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(75); // First batch contains 75 purchases
-      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+      expect((firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).partner).toBe(
         'RudderStack',
       ); // Verify partner name
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).attributes?.length,
       ).toBe(25); // Second batch contains remaining 25 attributes
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).events?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).events?.length,
       ).toBe(45); // Second batch contains remaining 45 events
       expect(
-        (firstResult.batchedRequest[1].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[1].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(75); // Second batch contains remaining 75 purchases
       expect(
-        (firstResult.batchedRequest[2].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[2].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(10); // Third batch contains remaining 10 purchases
       expect(
         (firstResult.batchedRequest[3].body.JSON as BrazeSubscriptionBatchPayload)
@@ -1366,15 +1369,15 @@ describe('processBatch', () => {
       firstResult.metadata
     ) {
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).attributes?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).attributes?.length,
       ).toBe(successCount);
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).events?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).events?.length,
       ).toBe(successCount);
       expect(
-        (firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).purchases?.length,
+        (firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).purchases?.length,
       ).toBe(successCount);
-      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackBatchPayload).partner).toBe(
+      expect((firstResult.batchedRequest[0].body.JSON as BrazeTrackRequestBody).partner).toBe(
         'RudderStack',
       );
       expect(firstResult.metadata.length).toBe(successCount);
@@ -1424,6 +1427,7 @@ describe('getPurchaseObjs', () => {
   test('a single valid product with all required properties', () => {
     const purchaseObjs = getPurchaseObjs(
       {
+        type: 'track',
         properties: {
           products: [{ product_id: '123', price: 10.99, quantity: 2 }],
           currency: 'USD',
@@ -1431,7 +1435,7 @@ describe('getPurchaseObjs', () => {
         timestamp: '2023-08-04T12:34:56Z',
         anonymousId: 'abc',
       },
-      {},
+      {} as unknown as BrazeDestinationConfig,
     );
     expect(purchaseObjs).toEqual([
       {
@@ -1452,6 +1456,7 @@ describe('getPurchaseObjs', () => {
   test('multiple valid products with all required properties', () => {
     const purchaseObjs = getPurchaseObjs(
       {
+        type: 'track',
         properties: {
           products: [
             { product_id: '123', price: 10.99, quantity: 2 },
@@ -1462,7 +1467,7 @@ describe('getPurchaseObjs', () => {
         timestamp: '2023-08-04T12:34:56Z',
         anonymousId: 'abc',
       },
-      {},
+      {} as unknown as BrazeDestinationConfig,
     );
     expect(purchaseObjs).toEqual([
       {
@@ -1496,11 +1501,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: { products: [{ price: 10.99, quantity: 2 }], currency: 'USD' },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1513,11 +1519,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: { products: [{ product_id: '123', quantity: 2 }], currency: 'USD' },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1530,11 +1537,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: { products: [{ product_id: '123', price: 10.99 }], currency: 'USD' },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1547,11 +1555,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }] },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1564,13 +1573,14 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: {
             products: [{ product_id: '123', price: 10.99, quantity: 2 }],
             currency: 'USD',
           },
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1583,14 +1593,15 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: {
             products: [{ product_id: '123', price: 'abc', quantity: 2 }],
             currency: 'USD',
-          },
+          } as unknown as RudderBrazeMessage,
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1603,14 +1614,15 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: {
             products: [{ product_id: '123', price: 10.99, quantity: 'abc' }],
             currency: 'USD',
           },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
-        },
-        {},
+        } as unknown as RudderBrazeMessage,
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1623,6 +1635,7 @@ describe('getPurchaseObjs', () => {
   test('single product with valid currency property', () => {
     const purchaseObjs = getPurchaseObjs(
       {
+        type: 'track',
         properties: {
           products: [{ product_id: '123', price: 10.99, quantity: 2 }],
           currency: 'USD',
@@ -1630,7 +1643,7 @@ describe('getPurchaseObjs', () => {
         timestamp: '2023-08-04T12:34:56Z',
         anonymousId: 'abc',
       },
-      {},
+      {} as unknown as BrazeDestinationConfig,
     );
     expect(purchaseObjs).toEqual([
       {
@@ -1655,8 +1668,8 @@ describe('getPurchaseObjs', () => {
           properties: { products: { product_id: '123', price: 10.99, quantity: 2 } },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
-        },
-        {},
+        } as unknown as RudderBrazeMessage,
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual('Invalid Order Completed event: Products is not an array');
@@ -1667,11 +1680,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: { products: [], currency: 'USD' },
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual('Invalid Order Completed event: Products array is empty');
@@ -1682,11 +1696,12 @@ describe('getPurchaseObjs', () => {
     try {
       getPurchaseObjs(
         {
+          type: 'track',
           properties: undefined,
           timestamp: '2023-08-04T12:34:56Z',
           anonymousId: 'abc',
         },
-        {},
+        {} as unknown as BrazeDestinationConfig,
       );
     } catch (e: any) {
       expect(e.message).toEqual(
@@ -1698,6 +1713,7 @@ describe('getPurchaseObjs', () => {
   test('products having extra properties', () => {
     const output = getPurchaseObjs(
       {
+        type: 'track',
         properties: {
           products: [
             { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
@@ -1718,7 +1734,7 @@ describe('getPurchaseObjs', () => {
       },
       {
         sendPurchaseEventWithExtraProperties: true,
-      },
+      } as unknown as BrazeDestinationConfig,
     );
     expect(output).toEqual([
       {
@@ -1774,6 +1790,7 @@ describe('getPurchaseObjs', () => {
   test('products having extra properties with sendPurchaseEventWithExtraProperties as false', () => {
     const output = getPurchaseObjs(
       {
+        type: 'track',
         properties: {
           products: [
             { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
@@ -1794,7 +1811,7 @@ describe('getPurchaseObjs', () => {
       },
       {
         sendPurchaseEventWithExtraProperties: false,
-      },
+      } as unknown as BrazeDestinationConfig,
     );
     expect(output).toEqual([
       {
@@ -1842,6 +1859,7 @@ describe('setAliasObject function', () => {
   test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
     const payload = {};
     const result = setAliasObject(payload, {
+      type: 'track',
       anonymousId: '12345',
       integrations: {
         BRAZE: {
@@ -1863,7 +1881,8 @@ describe('setAliasObject function', () => {
 
   // Test when integrationsObj is missing alias_name or alias_label
   test('should set user_alias with anonymousId as alias_name and "rudder_id" as alias_label if integrationsObj does not have alias_name or alias_label', () => {
-    const message = {
+    const message: RudderBrazeMessage = {
+      type: 'track',
       anonymousId: '12345',
     };
     const payload = {};
@@ -1879,7 +1898,9 @@ describe('setAliasObject function', () => {
 
   // Test when message has no anonymousId and integrationsObj is missing
   test('should return payload unchanged if message has no anonymousId and integrationsObj is missing', () => {
-    const message = {};
+    const message: RudderBrazeMessage = {
+      type: 'track',
+    };
     const payload = {};
     const result = setAliasObject(payload, message);
 
@@ -1889,6 +1910,7 @@ describe('setAliasObject function', () => {
   test('should set user_alias from integrationsObj if alias_name and alias_label are defined', () => {
     const payload = {};
     const result = setAliasObject(payload, {
+      type: 'track',
       anonymousId: '12345',
       integrations: {
         BRAZE: {
@@ -1911,6 +1933,7 @@ describe('setAliasObject function', () => {
   test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
     const payload = {};
     const result = setAliasObject(payload, {
+      type: 'track',
       anonymousId: '12345',
       integrations: {
         BRAZE: {
@@ -1933,6 +1956,7 @@ describe('setAliasObject function', () => {
   test('should set user_alias from integrationsObj if alias_name and alias_label either is not defined', () => {
     const payload = {};
     const result = setAliasObject(payload, {
+      type: 'track',
       anonymousId: '12345',
       userID: 'user123',
       integrations: {

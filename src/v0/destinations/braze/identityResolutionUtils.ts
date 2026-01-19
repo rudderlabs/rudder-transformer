@@ -22,6 +22,7 @@ interface BrazeResponse {
     message?: string;
     errors?: BrazePartialError[];
     users?: Record<string, unknown>[];
+    aliases_processed?: number;
   };
 }
 

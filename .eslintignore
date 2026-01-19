@@ -32,3 +32,4 @@ Dockerfile*
 *.properties
 *.go
 CODEOWNERS
+loadtest/

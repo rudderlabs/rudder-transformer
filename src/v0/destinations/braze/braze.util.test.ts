@@ -1347,7 +1347,7 @@ describe('processBatch for workspaces on non MAU plan', () => {
         transformedEvents.push({
           destination,
           statusCode: 400,
-          metadata: [{ job_id: i }],
+          metadata: [{ job_id: i, workspaceId: 'workspace-non-mau' }],
           error: 'Random Error',
         });
         failureCount = failureCount + 1;

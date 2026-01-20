@@ -776,29 +776,30 @@ const addTrackStats = (
   }
 };
 
-let brazeMauWorkspaceIdsSkipList: string | string[] = 'ALL';
+let mauWorkspaceIdsSkipList: string | Map<string, boolean> = 'ALL';
 if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST)) {
-  if (
-    process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST === 'ALL' ||
-    process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST === 'NONE'
-  ) {
-    brazeMauWorkspaceIdsSkipList = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST;
-  } else {
-    brazeMauWorkspaceIdsSkipList = process.env
-      .DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST!.split(',')
-      .map((s) => s.trim());
+  const skipList = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST!;
+  switch (skipList) {
+    case 'ALL':
+      mauWorkspaceIdsSkipList = 'ALL';
+      break;
+    case 'NONE':
+      mauWorkspaceIdsSkipList = 'NONE';
+      break;
+    default:
+      mauWorkspaceIdsSkipList = new Map(skipList.split(',').map((s) => [s.trim(), true]));
   }
 }
 
 const isWorkspaceOnMauPlanSkipList = (workspaceId) => {
-  const environmentVariable = brazeMauWorkspaceIdsSkipList;
+  const environmentVariable = mauWorkspaceIdsSkipList;
   switch (environmentVariable) {
     case 'ALL':
       return false;
     case 'NONE':
       return true;
     default: {
-      return !brazeMauWorkspaceIdsSkipList?.includes(workspaceId);
+      return !(mauWorkspaceIdsSkipList as Map<string, boolean>).has(workspaceId);
     }
   }
 };

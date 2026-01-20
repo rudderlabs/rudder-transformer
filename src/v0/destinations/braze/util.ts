@@ -148,7 +148,7 @@ const combineSubscriptionGroups = (subscriptionGroups: BrazeSubscriptionGroup[])
 const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(
     key: string,
-    data: Record<string, Record<string, unknown>>,
+    data: Record<string, unknown>,
     traits: Record<string, unknown>,
     mergeObjectsUpdateOperation: unknown,
   ) {
@@ -171,12 +171,11 @@ const CustomAttributeOperationUtil = {
       opsResultArray.push(myObj);
     }
     // eslint-disable-next-line no-underscore-dangle
-    (data as Record<string, unknown>)._merge_objects = isDefinedAndNotNull(
-      mergeObjectsUpdateOperation,
-    )
+    data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
       ? mergeObjectsUpdateOperation
       : false;
-    data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
+    (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.UPDATE}`] =
+      opsResultArray;
   },
 
   customAttributeRemoveOperation(

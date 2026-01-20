@@ -283,3 +283,4 @@ jobs:
         run: |
           tag=${{ inputs.image_repo }}:${{ inputs.image_tag }}
           docker buildx imagetools create -t ${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64
+                

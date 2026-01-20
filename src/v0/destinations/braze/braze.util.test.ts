@@ -2006,14 +2006,14 @@ describe('handleReservedProperties', () => {
 
   // Input object is null or undefined
   it('should return an empty object when input object is null', () => {
-    const props = null;
+    const props = null as unknown as Record<string, unknown>;
     const result = handleReservedProperties(props);
     expect(result).toEqual({});
   });
 
   // Handles non-object inputs gracefully
   it('should return an empty object when a non-object input is provided', () => {
-    const props = 'not an object';
+    const props = 'not an object' as unknown as Record<string, unknown>;
     try {
       handleReservedProperties(props);
     } catch (e: any) {

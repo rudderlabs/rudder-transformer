@@ -47,6 +47,7 @@ import {
   BrazePurchase,
   BrazeDestinationConfig,
   RudderBrazeMessage,
+  BrazeMergeUpdate,
 } from './types';
 import type { Metadata } from '../../../types';
 
@@ -147,7 +148,7 @@ const combineSubscriptionGroups = (subscriptionGroups: BrazeSubscriptionGroup[])
 const CustomAttributeOperationUtil = {
   customAttributeUpdateOperation(
     key: string,
-    data: Record<string, unknown>,
+    data: Record<string, Record<string, unknown>>,
     traits: Record<string, unknown>,
     mergeObjectsUpdateOperation: unknown,
   ) {
@@ -156,30 +157,31 @@ const CustomAttributeOperationUtil = {
     const opsResultArray: unknown[] = [];
     for (const arrayItem of updateArray) {
       const item = arrayItem;
-      const myObj: Record<string, unknown> = {
+      const myObj: Record<string, Record<string, unknown>> = {
         $identifier_key: item.identifier,
         $identifier_value: item[item.identifier],
       };
 
       delete item[item.identifier];
       delete item.identifier;
-      myObj.$new_object = {} as Record<string, unknown>;
+      myObj.$new_object = {};
       Object.keys(item).forEach((subKey) => {
-        (myObj.$new_object as Record<string, unknown>)[subKey] = item[subKey];
+        myObj.$new_object[subKey] = item[subKey];
       });
       opsResultArray.push(myObj);
     }
     // eslint-disable-next-line no-underscore-dangle
-    data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
+    (data as Record<string, unknown>)._merge_objects = isDefinedAndNotNull(
+      mergeObjectsUpdateOperation,
+    )
       ? mergeObjectsUpdateOperation
       : false;
-    (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.UPDATE}`] =
-      opsResultArray;
+    data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
   },
 
   customAttributeRemoveOperation(
     key: string,
-    data: Record<string, unknown>,
+    data: Record<string, Record<string, unknown>>,
     traits: Record<string, unknown>,
   ) {
     const removeArray = traits[key]?.[CustomAttributeOperationTypes.REMOVE];
@@ -192,16 +194,15 @@ const CustomAttributeOperationUtil = {
       };
       opsResultArray.push(myObj);
     }
-    (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.REMOVE}`] =
-      opsResultArray;
+    data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
   },
 
   customAttributeAddOperation(
     key: string,
-    data: Record<string, unknown>,
+    data: Record<string, Record<string, unknown>>,
     traits: Record<string, unknown>,
   ) {
-    (data[key] as Record<string, unknown>)[`$${CustomAttributeOperationTypes.ADD}`] =
+    data[key][`$${CustomAttributeOperationTypes.ADD}`] =
       traits[key]?.[CustomAttributeOperationTypes.ADD];
   },
 };
@@ -393,7 +394,7 @@ const BrazeDedupUtility = {
           store.set(user.external_id, user);
         } else if (user?.user_aliases) {
           user.user_aliases.forEach((alias) => {
-            if (alias.alias_label === 'rudder_id' && alias.alias_name) {
+            if (alias.alias_label === 'rudder_id') {
               store.set(alias.alias_name, user);
             }
             stats.counter('braze_user_store_update_count', 1, {
@@ -447,7 +448,7 @@ const BrazeDedupUtility = {
       return userData;
     }
     const customAttributes = storedUserData.custom_attributes;
-    storedUserData = { ...storedUserData, ...(customAttributes as object) };
+    storedUserData = { ...storedUserData, ...customAttributes };
     delete storedUserData.custom_attributes;
     let deduplicatedUserData: Record<string, unknown> = {};
     const keys = Object.keys(userData)
@@ -530,7 +531,7 @@ const processDeduplication = (
   const dedupedAttributePayload = BrazeDedupUtility.deduplicate(payload, userStore);
   if (
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
-    Object.keys(dedupedAttributePayload as object).some(
+    Object.keys(dedupedAttributePayload as BrazeUserAttributes).some(
       (key) => !['external_id', 'user_alias'].includes(key),
     )
   ) {
@@ -541,42 +542,64 @@ const processDeduplication = (
   return null;
 };
 
-function prepareGroupAndAliasBatch(
-  arrayChunks: unknown[][],
-  responseArray: unknown[],
-  destination: BrazeDestination,
-  type: string,
-) {
+function prepareGroupAndAliasBatch({
+  arrayChunks,
+  responseArray,
+  destination,
+  type,
+}:
+  | {
+      arrayChunks: BrazeSubscriptionGroup[][];
+      responseArray: unknown[];
+      destination: BrazeDestination;
+      type: 'subscription';
+    }
+  | {
+      arrayChunks: BrazeMergeUpdate[][];
+      responseArray: unknown[];
+      destination: BrazeDestination;
+      type: 'merge';
+    }) {
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
 
-  for (const chunk of arrayChunks) {
-    const response = defaultRequestConfig();
-    if (type === 'merge') {
+  // Type narrowing: Check type BEFORE the loop so TypeScript can narrow arrayChunks
+  if (type === 'merge') {
+    // TypeScript now knows arrayChunks is BrazeMergeUpdate[][]
+    for (const chunk of arrayChunks) {
+      const response = defaultRequestConfig();
       const { endpoint, path } = getAliasMergeEndPoint(getEndpointFromConfig(destination));
       response.endpoint = endpoint;
       response.endpointPath = path;
-      const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
-        merge_updates,
+        merge_updates: chunk,
       });
-    } else if (type === 'subscription') {
+      responseArray.push({
+        ...response,
+        headers,
+      });
+    }
+  } else {
+    // TypeScript now knows arrayChunks is BrazeSubscriptionGroup[][]
+    for (const chunk of arrayChunks) {
+      const response = defaultRequestConfig();
       const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       response.endpoint = endpoint;
       response.endpointPath = path;
-      const subscription_groups = chunk as BrazeSubscriptionGroup[];
-      // maketool transformed event
-      logger.info(`braze subscription chunk ${JSON.stringify(subscription_groups)}`);
 
-      stats.gauge('braze_batch_subscription_size', subscription_groups.length, {
+      // maketool transformed event
+      logger.info(`braze subscription chunk ${JSON.stringify(chunk)}`);
+
+      stats.gauge('braze_batch_subscription_size', chunk.length, {
         destination_id: destination.ID,
       });
 
       // Deduplicate the subscription groups before constructing the response body
-      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(subscription_groups);
+      // No type casting needed - TypeScript knows chunk is BrazeSubscriptionGroup[]
+      const deduplicatedSubscriptionGroups = combineSubscriptionGroups(chunk);
 
       stats.gauge('braze_batch_subscription_combined_size', deduplicatedSubscriptionGroups.length, {
         destination_id: destination.ID,
@@ -585,11 +608,11 @@ function prepareGroupAndAliasBatch(
       response.body.JSON = removeUndefinedAndNullValues({
         subscription_groups: deduplicatedSubscriptionGroups,
       });
+      responseArray.push({
+        ...response,
+        headers,
+      });
     }
-    responseArray.push({
-      ...response,
-      headers,
-    });
   }
 }
 
@@ -614,7 +637,7 @@ const batchForTrackAPI = (
   const allItems: AllItems[] = [];
   const maxLength = Math.max(attributesArray.length, eventsArray.length, purchasesArray.length);
 
-  const addItem = (item: BrazeUserAttributes | BrazeEvent | BrazePurchase, type: string) => {
+  const addItem = (item: AllItems['data'], type: string) => {
     if (item) {
       allItems.push({
         data: item,
@@ -717,8 +740,8 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
   const successMetadata: Partial<Metadata>[] = [];
   const failureResponses: BrazeTransformedEvent[] = [];
   const filteredResponses: BrazeTransformedEvent[] = [];
-  const subscriptionsArray: unknown[] = [];
-  const mergeUsersArray: unknown[] = [];
+  const subscriptionsArray: BrazeSubscriptionGroup[] = [];
+  const mergeUsersArray: BrazeMergeUpdate[] = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent.statusCode)) {
       failureResponses.push(transformedEvent);
@@ -783,8 +806,18 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
     });
   }
 
-  prepareGroupAndAliasBatch(subscriptionArrayChunks, responseArray, destination, 'subscription');
-  prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
+  prepareGroupAndAliasBatch({
+    arrayChunks: subscriptionArrayChunks,
+    responseArray,
+    destination,
+    type: 'subscription',
+  });
+  prepareGroupAndAliasBatch({
+    arrayChunks: mergeUsersArrayChunks,
+    responseArray,
+    destination,
+    type: 'merge',
+  });
 
   if (successMetadata.length > 0) {
     finalResponse.push({
@@ -985,7 +1018,7 @@ function getPurchaseObjs(message: RudderBrazeMessage, config: BrazeDestinationCo
     let purchaseObj: Record<string, unknown> = addMandatoryPurchaseProperties(
       String(productId),
       Number.parseFloat(String(price)),
-      String(currencyCode || prodCur || ''),
+      String(currencyCode || prodCur),
       Number.parseInt(String(quantity), 10),
       timestamp,
     );
@@ -1043,14 +1076,14 @@ const collectStatsForAliasMissConfigurations = (destinationId: string) => {
   stats.increment('braze_alias_missconfigured_count', { destination_id: destinationId });
 };
 
-function handleReservedProperties(props: unknown): Record<string, unknown> {
+function handleReservedProperties(props: Record<string, unknown>): Record<string, unknown> {
   if (typeof props !== 'object') {
     throw new InstrumentationError('Invalid event properties');
   }
   // remove reserved keys from custom event properties
   const reserved = ['time', 'event_name'];
 
-  return _.omit(props as Record<string, unknown>, reserved);
+  return _.omit(props, reserved);
 }
 
 export {

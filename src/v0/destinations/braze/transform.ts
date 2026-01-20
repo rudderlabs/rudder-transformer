@@ -29,6 +29,7 @@ import type {
   BrazeIdentifyCall,
   RudderBrazeMessage,
   BrazeUser,
+  BrazeMergeUpdate,
 } from './types';
 
 import tags from '../../util/tags';
@@ -96,7 +97,7 @@ function getIdentifyPayload(message: RudderBrazeMessage): BrazeIdentifyRequestBo
 
 function populateCustomAttributesWithOperation(
   traits: Record<string, Record<string, unknown>>,
-  data: Record<string, unknown>,
+  data: Record<string, Record<string, unknown>>,
   mergeObjectsUpdateOperation: unknown,
   enableNestedArrayOperations: unknown,
 ) {
@@ -137,7 +138,7 @@ function getUserAttributesObject(
   destination: BrazeDestination,
 ): BrazeUserAttributes {
   // blank output object
-  const data: Record<string, unknown> = {};
+  const data: Record<string, Record<string, unknown>> = {};
   // get traits from message
   const traits = getFieldValueFromMessage(message, 'traits');
 
@@ -468,7 +469,7 @@ function processAlias(message: RudderBrazeMessage, destination: BrazeDestination
     throw new InstrumentationError('[BRAZE]: previousId is required for alias call');
   }
 
-  const mergeUpdates = [
+  const mergeUpdates: BrazeMergeUpdate[] = [
     {
       identifier_to_merge: {
         external_id: previousId,

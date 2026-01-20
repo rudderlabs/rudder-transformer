@@ -38,6 +38,8 @@ export interface BrazeUserAttributes {
   image_url?: string | null;
   gender?: 'M' | 'F' | 'O' | 'N' | 'P' | null;
 
+  custom_attributes?: Record<string, unknown>;
+
   // Custom attributes
   [key: string]: unknown;
 }
@@ -214,6 +216,7 @@ export interface RudderBrazeMessage extends RudderMessage {
     subscriptionState?: string;
     [key: string]: unknown; // Allow additional traits
   };
+  previousId?: string;
 }
 
 export type BrazeDestination = Destination<BrazeDestinationConfig>;
@@ -247,9 +250,19 @@ export interface BrazeSubscriptionBatchPayload {
   subscription_groups?: unknown[];
 }
 
+// Braze Merge Update Object
+export interface BrazeMergeUpdate {
+  identifier_to_merge: {
+    external_id?: string;
+  };
+  identifier_to_keep: {
+    external_id?: string;
+  };
+}
+
 // Braze Merge Users request body structure
 export interface BrazeMergeBatchPayload {
-  merge_updates?: unknown[];
+  merge_updates?: BrazeMergeUpdate[];
 }
 
 // Union of all possible Braze batch payload types

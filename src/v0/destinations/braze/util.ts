@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import get from 'get-value';
 import { InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
-import logger from '../../../logger';
 import stats from '../../../util/stats';
 import { handleHttpRequest } from '../../../adapters/network';
 import {
@@ -585,9 +584,6 @@ function prepareGroupAndAliasBatch({
       const { endpoint, path } = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       response.endpoint = endpoint;
       response.endpointPath = path;
-
-      // maketool transformed event
-      logger.info(`braze subscription chunk ${JSON.stringify(chunk)}`);
 
       stats.gauge('braze_batch_subscription_size', chunk.length, {
         destination_id: destination.ID,

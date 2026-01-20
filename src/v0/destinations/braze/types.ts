@@ -152,24 +152,8 @@ export interface BrazeResponseHandlerParams {
   };
 }
 
-export interface BrazeUser {
-  external_id?: string;
+export interface BrazeUser extends BrazeUserAttributes {
   user_aliases?: BrazeUserAlias[];
-  braze_id?: string;
-  first_name?: string;
-  last_name?: string;
-  email?: string;
-  dob?: string;
-  country?: string;
-  home_city?: string;
-  language?: string;
-  phone?: string;
-  gender?: 'M' | 'F' | 'O' | 'N' | 'P' | null; // ✅ Correct;
-  time_zone?: string;
-  created_at?: string;
-  custom_attributes?: Record<string, unknown>;
-  // Legacy field for backward compatibility (tests use this)
-  alias_name?: string;
 }
 
 // Braze /users/export/ids API Response
@@ -227,7 +211,7 @@ export type BrazeRouterRequest = RouterTransformationRequestData<
 
 // Process params for router transformation
 export interface BrazeProcessParams {
-  userStore: Map<string, BrazeUserAttributes>;
+  userStore: Map<string, BrazeUser>;
   identifyCallsArray?: BrazeIdentifyCall[];
   failedLookupIdentifiers: Set<string>;
 }

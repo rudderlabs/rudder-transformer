@@ -494,7 +494,10 @@ function processAlias(message: RudderBrazeMessage, destination: BrazeDestination
 
 async function process(
   event: BrazeRouterRequest,
-  processParams: BrazeProcessParams,
+  processParams: BrazeProcessParams = {
+    userStore: new Map<string, BrazeUser>(),
+    failedLookupIdentifiers: new Set(),
+  },
   reqMetadata: Record<string, unknown> = {},
 ): Promise<ProcessorTransformationOutput> {
   let response;

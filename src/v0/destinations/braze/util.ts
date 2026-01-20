@@ -415,10 +415,7 @@ const BrazeDedupUtility = {
    * @param identifier - User identifier (external_id or alias_name)
    * @returns User object from the store or undefined
    */
-  getUserDataFromStore(
-    store: Map<string, BrazeUserAttributes>,
-    identifier: unknown,
-  ): BrazeUserAttributes | undefined {
+  getUserDataFromStore(store: Map<string, BrazeUser>, identifier: unknown): BrazeUser | undefined {
     return store.get(identifier as string);
   },
 
@@ -430,7 +427,7 @@ const BrazeDedupUtility = {
    * @param store - Map storing user data by identifier
    * @returns Deduplicated user object or null if no changes
    */
-  deduplicate(userData: BrazeUserAttributes, store: Map<string, BrazeUserAttributes>) {
+  deduplicate(userData: BrazeUserAttributes, store: Map<string, BrazeUser>) {
     const excludeKeys = new Set([
       'external_id',
       'user_alias',
@@ -515,7 +512,7 @@ const BrazeDedupUtility = {
  * @returns Deduplicated payload or null if duplicate
  */
 const processDeduplication = (
-  userStore: Map<string, BrazeUserAttributes>,
+  userStore: Map<string, BrazeUser>,
   payload: BrazeUserAttributes,
   destinationId: string,
   failedLookupIdentifiers: Set<string>,

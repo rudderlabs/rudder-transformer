@@ -1,4 +1,5 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
+import type { BrazeEndpointDetails } from './types';
 
 const ConfigCategory = {
   IDENTIFY: {
@@ -9,36 +10,40 @@ const ConfigCategory = {
   },
 };
 
-function getIdentifyEndpoint(baseEndpoint) {
+function getIdentifyEndpoint(baseEndpoint: string): BrazeEndpointDetails {
   return {
     endpoint: `${baseEndpoint}/users/identify`,
     path: 'users/identify',
   };
 }
 
-function getTrackEndPoint(baseEndpoint) {
+function getTrackEndPoint(baseEndpoint: string): BrazeEndpointDetails {
   return {
     endpoint: `${baseEndpoint}/users/track`,
     path: 'users/track',
   };
 }
 
-function getSubscriptionGroupEndPoint(baseEndpoint) {
+function getSubscriptionGroupEndPoint(baseEndpoint: string): BrazeEndpointDetails {
   return {
     endpoint: `${baseEndpoint}/v2/subscription/status/set`,
     path: 'v2/subscription/status/set',
   };
 }
 
-function getAliasMergeEndPoint(baseEndpoint) {
+function getAliasMergeEndPoint(baseEndpoint: string): BrazeEndpointDetails {
   return {
     endpoint: `${baseEndpoint}/users/merge`,
     path: 'users/merge',
   };
 }
 
-const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
-
+const mappingConfig = getMappingConfig(ConfigCategory, __dirname) as Record<
+  string,
+  {
+    [key: string]: Record<string, unknown>;
+  }
+>;
 const BRAZE_PARTNER_NAME = 'RudderStack';
 
 // max requests per batch
@@ -71,7 +76,7 @@ const BRAZE_NON_BILLABLE_ATTRIBUTES = [
 
 const BRAZE_PURCHASE_STANDARD_PROPERTIES = ['product_id', 'sku', 'price', 'quantity', 'currency'];
 
-module.exports = {
+export {
   ConfigCategory,
   mappingConfig,
   getIdentifyEndpoint,

@@ -682,6 +682,59 @@ const batchForTrackAPI = (
   return trackChunks;
 };
 
+// braze batching as per new MAU plan
+const batchForTrackAPIV2 = (
+  attributesArray: BrazeUserAttributes[],
+  eventsArray: BrazeEvent[],
+  purchasesArray: BrazePurchase[],
+) => {
+  // Collect all items with their types, filtering out null/undefined
+  const allItems: AllItems[] = [
+    ...attributesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'attributes',
+        externalId: item.external_id,
+      })),
+    ...eventsArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({ data: item, type: 'events', externalId: item.external_id })),
+    ...purchasesArray
+      .filter((item) => isDefinedAndNotNull(item))
+      .map((item) => ({
+        data: item,
+        type: 'purchases',
+        externalId: item.external_id,
+      })),
+  ];
+
+  const sortedItems: AllItems[] = _.sortBy(allItems, 'externalId');
+  const trackChunks: ReturnType<typeof createTrackChunk>[] = [];
+  let currentChunk = createTrackChunk();
+
+  const getChunkSize = (chunk: ReturnType<typeof createTrackChunk>) =>
+    chunk.attributes.length + chunk.events.length + chunk.purchases.length;
+
+  const addItemToChunk = (item: AllItems, chunk: ReturnType<typeof createTrackChunk>) => {
+    chunk[item.type].push(item.data);
+  };
+
+  for (const item of sortedItems) {
+    if (getChunkSize(currentChunk) === TRACK_BRAZE_MAX_REQ_COUNT) {
+      trackChunks.push(currentChunk);
+      currentChunk = createTrackChunk();
+    }
+    addItemToChunk(item, currentChunk);
+  }
+
+  if (getChunkSize(currentChunk) > 0) {
+    trackChunks.push(currentChunk);
+  }
+
+  return trackChunks;
+};
+
 const cleanTrackChunk = (chunk: {
   attributes: unknown[];
   events: unknown[];
@@ -723,8 +776,37 @@ const addTrackStats = (
   }
 };
 
+let mauWorkspaceSkipIds: string | Map<string, boolean> = 'ALL';
+if (isDefinedAndNotNull(process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST)) {
+  const skipList = process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST!;
+  switch (skipList) {
+    case 'ALL':
+      mauWorkspaceSkipIds = 'ALL';
+      break;
+    case 'NONE':
+      mauWorkspaceSkipIds = 'NONE';
+      break;
+    default:
+      mauWorkspaceSkipIds = new Map(skipList.split(',').map((s) => [s.trim(), true]));
+  }
+}
+
+const isWorkspaceOnMauPlan = (workspaceId) => {
+  const environmentVariable = mauWorkspaceSkipIds;
+  switch (environmentVariable) {
+    case 'ALL':
+      return false;
+    case 'NONE':
+      return true;
+    default: {
+      return !(mauWorkspaceSkipIds as Map<string, boolean>).has(workspaceId);
+    }
+  }
+};
+
 const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
-  const { destination } = transformedEvents[0];
+  const { destination, metadata } = transformedEvents[0];
+  const workspaceId = metadata?.[0]?.workspaceId || '';
   const dest = destination;
   const attributesArray: BrazeUserAttributes[] = [];
   const eventsArray: BrazeEvent[] = [];
@@ -765,7 +847,10 @@ const processBatch = (transformedEvents: BrazeTransformedEvent[]) => {
       }
     }
   }
-  const trackChunks = batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
+  const isWorkspaceOnMauPlanFlag = isWorkspaceOnMauPlan(workspaceId);
+  const trackChunks = isWorkspaceOnMauPlanFlag
+    ? batchForTrackAPIV2(attributesArray, eventsArray, purchaseArray)
+    : batchForTrackAPI(attributesArray, eventsArray, purchaseArray);
   const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
   const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
@@ -1096,4 +1181,5 @@ export {
   handleReservedProperties,
   combineSubscriptionGroups,
   batchForTrackAPI,
+  batchForTrackAPIV2,
 };

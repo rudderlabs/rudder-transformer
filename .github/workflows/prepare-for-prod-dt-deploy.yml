@@ -62,7 +62,7 @@ jobs:
     needs: [generate-tag-names, build-transformer-image]
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
-      TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
+      TF_IMAGE_REPOSITORY: ${{ vars.AWS_ECR_REGISTRY }}/rudderstack/rudder-transformer
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0

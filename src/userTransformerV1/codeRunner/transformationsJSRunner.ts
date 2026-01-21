@@ -16,10 +16,7 @@ type TestEvent = Record<string, unknown>;
 type Metadata = Record<string, unknown>;
 export type TestEventOutputError = { error: string; metadata: Metadata };
 export type TestEventOutput = { transformedEvent: TestEvent; metadata: Metadata };
-export type TransformationOutput = {
-  transformedEvents: (TestEventOutput | TestEventOutputError)[];
-  logs: string[];
-};
+export type TransformationOutput = (TestEventOutput | TestEventOutputError)[];
 
 interface TransformationCodeRunnerMetadata {
   transformationId?: string;

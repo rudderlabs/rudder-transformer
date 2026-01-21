@@ -154,3 +154,5 @@ allure-report/
 
 # git conflict files
 *.orig
+
+loadtest/results_*.json

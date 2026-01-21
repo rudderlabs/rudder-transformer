@@ -13,7 +13,7 @@ MODE="${MODE:-simple}"
 # Function to kill server on ports
 kill_server() {
   lsof -t -i:9091 | xargs kill -9 2>/dev/null || true
-  lsof -t -i:9190 | xargs kill -9 2>/dev/null || true
+  lsof -t -i:9090 | xargs kill -9 2>/dev/null || true
 }
 
 # Function to run benchmark
@@ -49,8 +49,8 @@ run_benchmark() {
 }
 
 # Run all 3
-run_benchmark "new"
 run_benchmark "legacy"
+run_benchmark "new"
 
 echo ""
 echo "========================================"

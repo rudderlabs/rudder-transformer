@@ -43,6 +43,9 @@ export interface TestRunRequestBody {
 
 export class UserTransformerService {
   private async resolveLibraries(libraries: Dependencies['libraries'], imports?: string[]) {
+    if (!imports?.length || !libraries?.length) {
+      return [];
+    }
     const librariesVersionIds = libraries
       ?.filter((l) => !!(l as LibraryVersionInput).versionId && !(l as LibraryCodeInput).code)
       .map((dependency) => (dependency as LibraryVersionInput).versionId);

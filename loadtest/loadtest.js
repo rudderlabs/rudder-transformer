@@ -226,7 +226,7 @@ export const options = {
 // -----------------------
 
 export function newTest() {
-  const res = http.post('http://localhost:9190/transformation/testRun', JSON.stringify(payload), {
+  const res = http.post('http://localhost:9090/transformation/testRun', JSON.stringify(payload), {
     headers: { 'Content-Type': 'application/json' },
   });
 
@@ -247,7 +247,7 @@ export function legacyTest() {
   };
 
   const res = http.post(
-    'http://localhost:9190/transformation/test',
+    'http://localhost:9090/transformation/test',
     JSON.stringify(requestPayload),
     {
       headers: { 'Content-Type': 'application/json' },

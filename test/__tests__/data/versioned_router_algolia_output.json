@@ -68,10 +68,8 @@
               "cordova"
             ],
             "transformAt": "router",
-            "transformAtV1": "router",
-            "cdkV2TestThreshold": 1
-          },
-          "ResponseRules": {}
+            "transformAtV1": "router"
+          }
         },
         "Config": {
           "apiKey": "apiKey",

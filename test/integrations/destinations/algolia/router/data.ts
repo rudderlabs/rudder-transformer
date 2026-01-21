@@ -106,7 +106,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey',
@@ -210,7 +209,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey-2',
@@ -355,7 +353,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey',
@@ -2047,7 +2044,6 @@ export const data = [
                     saveDestinationResponse: true,
                   },
                   configSchema: {},
-                  responseRules: {},
                   options: null,
                   id: '1xrHTzX8VrnvL6FTGOrBBgT687S',
                   name: 'ALGOLIA',
@@ -2181,7 +2177,6 @@ export const data = [
                   id: '1xrHTzX8VrnvL6FTGOrBBgT687S',
                   name: 'ALGOLIA',
                   options: null,
-                  responseRules: {},
                   updatedAt: '2023-06-13T13:18:08.335Z',
                 },
                 createdAt: '2023-05-26T14:18:01.205Z',

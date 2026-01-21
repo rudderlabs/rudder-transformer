@@ -1,6 +1,6 @@
 # Braze Destination
 
-Implementation in **Javascript**
+Implementation in **TypeScript**
 
 ## Configuration
 
@@ -97,7 +97,7 @@ If you exceed rate limits, Braze will return a `429 Too Many Requests` status co
 - **Batching**: Configurable via `BRAZE_BATCH_IDENTIFY_RESOLUTION` environment variable
 - This functionality merges anonymous users (with anonymousId or alias object) with identified users (with userId/external_id -> brazeExternalId)
 
-```Javascript
+```typescript
 // The condition that leads to intermediate identify call:
 const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
 if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
@@ -123,9 +123,12 @@ if ((message.anonymousId || isAliasPresent) && brazeExternalID) {
   - Improves throughput for high-volume identity resolution scenarios
   - Helps stay within Braze's rate limits (20,000 requests per minute)
 
-```Javascript
+```typescript
 // Batching logic implementation:
-const identifyCallsArrayChunks = lodash.chunk(identifyCallsArray, IDENTIFY_BRAZE_MAX_REQ_COUNT);
+const identifyCallsArrayChunks: BrazeIdentifyCall[][] = lodash.chunk(
+  identifyCallsArray,
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+);
 const allRequests = identifyCallsArrayChunks.map(async (identifyCallsChunk) => {
   const aliasesToIdentify = identifyCallsChunk.flatMap(
     (identifyCall) => identifyCall.identifyPayload.aliases_to_identify,
@@ -145,9 +148,9 @@ const allRequests = identifyCallsArrayChunks.map(async (identifyCallsChunk) => {
     - `alias_name`: The anonymousId value from the event
   - This allows for tracking anonymous users before they are identified
 
-```Javascript
+```typescript
 // Corresponding code
-function setAliasObject(payload, message) {
+function setAliasObject(payload: Record<string, unknown>, message: RudderBrazeMessage) {
   const integrationsObj = getIntegrationsObj(message, 'BRAZE');
   if (
     isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
@@ -191,12 +194,12 @@ function setAliasObject(payload, message) {
 ### Proxy Delivery
 
 - **Supported**: Yes
-- **Source Code Path**: `src/v0/destinations/braze/networkHandler.js`
+- **Source Code Path**: `src/v0/destinations/braze/networkHandler.ts`
 
 ### User Deletion
 
 - **Supported**: Yes
-- **Source Code Path**: `src/v0/destinations/braze/deleteUsers.js`
+- **Source Code Path**: `src/v0/destinations/braze/deleteUsers.ts`
 - Implements the Braze User Delete API to comply with privacy regulations
 
 ### Additional Functionalities
@@ -332,7 +335,7 @@ Despite this time-based ordering, the issue here is, the user attributes can end
    - **Multiplexing**: NO
    - **Conditions for Identity Resolution**:
 
-     ```javascript
+     ```typescript
      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
      const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
      const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;

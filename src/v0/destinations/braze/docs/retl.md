@@ -75,7 +75,7 @@ The Braze destination implements special handling for events that come from RETL
    - For Identify events from RETL sources, the code includes special logic to override the userId with an externalId from the context if present
    - This is implemented in the `adduserIdFromExternalId` function which is only called when `mappedToDestination` is true
 
-```javascript
+```typescript
 // RETL-specific logic for Identify events
 case EventType.IDENTIFY: {
   category = ConfigCategory.IDENTIFY;
@@ -83,6 +83,7 @@ case EventType.IDENTIFY: {
   if (mappedToDestination) {
     adduserIdFromExternalId(message);
   }
+  break;
 }
 ```
 
@@ -90,9 +91,13 @@ case EventType.IDENTIFY: {
    - When processing user attributes, the code checks for the `MappedToDestinationKey` flag
    - If present, it returns the traits as-is without applying the standard mapping logic
 
-```javascript
+```typescript
 // RETL-specific logic for user attributes
-function getUserAttributesObject(message, mappingJson, destination) {
+function getUserAttributesObject(
+  message: RudderBrazeMessage,
+  mappingJson: Record<string, Record<string, unknown>>,
+  destination: BrazeDestination,
+): BrazeUserAttributes {
   const traits = getFieldValueFromMessage(message, 'traits');
 
   // return the traits as-is if message is mapped to destination
@@ -116,27 +121,27 @@ function getUserAttributesObject(message, mappingJson, destination) {
 
 ### Example RETL Event
 
-```javascript
+```typescript
 // Warehouse record transformed to Braze identify event
-{
-  "type": "identify",
-  "userId": "user123",
-  "traits": {
-    "email": "user@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "custom_attribute": "value"
+const retlEvent: RudderBrazeMessage = {
+  type: 'identify',
+  userId: 'user123',
+  traits: {
+    email: 'user@example.com',
+    first_name: 'John',
+    last_name: 'Doe',
+    custom_attribute: 'value',
   },
-  "context": {
-    "mappedToDestination": true,
-    "externalId": [
+  context: {
+    mappedToDestination: true,
+    externalId: [
       {
-        "id": "external_user_123",
-        "type": "brazeExternalId"
-      }
-    ]
-  }
-}
+        id: 'external_user_123',
+        type: 'brazeExternalId',
+      },
+    ],
+  },
+};
 ```
 
 ## Rate Limits and Constraints

@@ -277,8 +277,7 @@
               "supportsVisualMapper": true,
               "transformAt": "processor",
               "transformAtV1": "processor"
-            },
-            "ResponseRules": null
+            }
           },
           "Config": {
             "apiKey": "dummyApiKey",
@@ -632,8 +631,7 @@
               "supportsVisualMapper": true,
               "transformAt": "processor",
               "transformAtV1": "processor"
-            },
-            "ResponseRules": null
+            }
           },
           "Config": {
             "apiKey": "dummyApiKey",
@@ -987,8 +985,7 @@
               "supportsVisualMapper": true,
               "transformAt": "processor",
               "transformAtV1": "processor"
-            },
-            "ResponseRules": null
+            }
           },
           "Config": {
             "apiKey": "dummyApiKey",
@@ -1608,8 +1605,7 @@
             "supportsVisualMapper": true,
             "transformAt": "processor",
             "transformAtV1": "processor"
-          },
-          "ResponseRules": null
+          }
         },
         "Config": {
           "apiKey": "dummyApiKey",

@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
+const { AsyncLocalStorage } = require('node:async_hooks');
 
 const util = require('util');
 const NodeCache = require('node-cache');
@@ -10,6 +11,7 @@ const logger = require('../logger');
 const stats = require('./stats');
 
 const resolver = new Resolver();
+const dnsCallbackStorage = new AsyncLocalStorage();
 
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
@@ -45,16 +47,16 @@ const fetchAddressFromHostName = async (hostname) => {
 };
 
 const staticLookup =
-  (transformationTags, fetchAddress = fetchAddressFromHostName) =>
+  (fetchAddress = fetchAddressFromHostName) =>
   (hostname, options, cb) => {
     const resolveStartTime = new Date();
+    const onDnsResolved = dnsCallbackStorage.getStore();
 
     fetchAddress(hostname)
       .then(({ address, cacheHit }) => {
-        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-          ...transformationTags,
-          cacheHit,
-        });
+        if (onDnsResolved) {
+          onDnsResolved({ resolveStartTime, cacheHit, error: false });
+        }
 
         if (!address) {
           cb(new Error(`resolved empty list of IP address for ${hostname}`), null);
@@ -68,20 +70,54 @@ const staticLookup =
       })
       .catch((error) => {
         logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
-        stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-          ...transformationTags,
-          error: 'true',
-        });
+        if (onDnsResolved) {
+          onDnsResolved({ resolveStartTime, cacheHit: false, error: true });
+        }
         cb(new Error(`unable to resolve IP address for ${hostname}`), null);
       });
   };
 
-const httpAgentWithDnsLookup = (scheme, transformationTags) => {
-  const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(transformationTags) });
+const parseEnvInt = (value, defaultValue) => {
+  if (!value) return defaultValue;
+  const parsed = Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? defaultValue : parsed;
 };
 
+const SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE =
+  process.env.SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE === 'true';
+// Socket inactivity timeout. Only starts after a socket is acquired and connected.
+// Resets whenever data flows; does not protect against socket pool exhaustion.
+const SHARED_HTTP_AGENT_TIMEOUT_MS = parseEnvInt(process.env.SHARED_HTTP_AGENT_TIMEOUT_MS, 60000);
+const SHARED_HTTP_AGENT_MAX_SOCKETS = parseEnvInt(process.env.SHARED_HTTP_AGENT_MAX_SOCKETS, 200);
+const SHARED_HTTP_AGENT_MAX_FREE_SOCKETS = parseEnvInt(
+  process.env.SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
+  10,
+);
+
+const sharedAgentOptions = {
+  keepAlive: !SHARED_HTTP_AGENT_DISABLE_KEEP_ALIVE,
+  timeout: SHARED_HTTP_AGENT_TIMEOUT_MS,
+  maxSockets: SHARED_HTTP_AGENT_MAX_SOCKETS,
+  maxFreeSockets: SHARED_HTTP_AGENT_MAX_FREE_SOCKETS,
+};
+
+const sharedHttpAgent = new http.Agent(sharedAgentOptions);
+const sharedHttpsAgent = new https.Agent(sharedAgentOptions);
+
+const sharedHttpAgentWithLookup = new http.Agent({
+  ...sharedAgentOptions,
+  lookup: staticLookup(),
+});
+
+const sharedHttpsAgentWithLookup = new https.Agent({
+  ...sharedAgentOptions,
+  lookup: staticLookup(),
+});
+
 const blockLocalhostRequests = (url) => {
+  if (process.env.ALLOW_LOCALHOST_FETCH === 'true') {
+    return;
+  }
   try {
     const parseUrl = new URL(url);
     const { hostname } = parseUrl;
@@ -103,10 +139,6 @@ const blockInvalidProtocolRequests = (url) => {
 };
 
 const fetchWithDnsWrapper = async (transformationTags, ...args) => {
-  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
-    return await fetch(...args);
-  }
-
   if (args.length === 0) {
     throw new Error('fetch url is required');
   }
@@ -115,9 +147,22 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
   const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
-  // assign resolved agent to fetch
-  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformationTags);
-  return await fetch(fetchURL, fetchOptions);
+
+  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
+    fetchOptions.agent = schemeName === 'https' ? sharedHttpsAgent : sharedHttpAgent;
+    return await fetch(fetchURL, fetchOptions);
+  }
+
+  const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, {
+      ...transformationTags,
+      ...(error ? { error: 'true' } : { cacheHit }),
+    });
+  };
+
+  fetchOptions.agent =
+    schemeName === 'https' ? sharedHttpsAgentWithLookup : sharedHttpAgentWithLookup;
+  return dnsCallbackStorage.run(onDnsResolved, () => fetch(fetchURL, fetchOptions));
 };
 
 class RespStatusError extends Error {
@@ -254,6 +299,7 @@ module.exports = {
   extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
   staticLookup,
+  dnsCallbackStorage,
   shouldSkipDynamicConfigProcessing,
   shouldGroupByDestinationConfig,
 };

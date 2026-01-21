@@ -333,5 +333,84 @@ describe('Source controller tests', () => {
         });
       });
     });
+
+    describe('X-Rudder-Permanent-Error header', () => {
+      const testCases = [
+        {
+          description: 'should set header when job has 400 status code',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 400, errorMessage: 'Bad Request' }],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should set header when job has 404 status code',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 404, errorMessage: 'Not Found' }],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should set header when one of multiple jobs has 4xx error',
+          hydrationOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 200 },
+              { event: { field: 'value2' }, statusCode: 403, errorMessage: 'Forbidden' },
+            ],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should NOT set header when job has 429 status code',
+          hydrationOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 429, errorMessage: 'Too Many Requests' },
+            ],
+          },
+          expectedHeader: undefined,
+        },
+        {
+          description: 'should NOT set header when all jobs are successful (200)',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 200 }],
+          },
+          expectedHeader: undefined,
+        },
+        {
+          description: 'should NOT set header when job has 500 status code',
+          hydrationOutput: {
+            batch: [
+              {
+                event: { field: 'value1' },
+                statusCode: 500,
+                errorMessage: 'Internal Server Error',
+              },
+            ],
+          },
+          expectedHeader: undefined,
+        },
+      ];
+
+      testCases.forEach(({ description, hydrationOutput, expectedHeader }) => {
+        test(description, async () => {
+          const mockSourceService = new NativeIntegrationSourceService();
+          mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(hydrationOutput);
+
+          const getNativeSourceServiceSpy = jest
+            .spyOn(ServiceSelector, 'getNativeSourceService')
+            .mockImplementation(() => mockSourceService);
+
+          const response = await request(server)
+            .post(`/v2/sources/${sourceType}/hydrate`)
+            .set('Accept', 'application/json')
+            .send({ source: { id: 'sourceId' }, batch: [] });
+
+          expect(response.header['x-rudder-permanent-error']).toEqual(expectedHeader);
+
+          expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+          expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
   });
 });

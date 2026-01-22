@@ -32,6 +32,7 @@ reviews:
     - '!**/test/**'
     - '!**/tests/**'
     - '!docs/**'
+    - '!loadtest/**'
     - '!**/*.json'
     - '!**/*.lock'
   path_instructions:

@@ -1,4 +1,9 @@
-import { secretFailedApiToken, secretApiToken } from '../maskedSecrets';
+import {
+  secretFailedApiToken,
+  secretApiToken,
+  secretNullColumnsApiToken,
+  secretNullGroupsApiToken,
+} from '../maskedSecrets';
 
 export const data = [
   {
@@ -1286,7 +1291,6 @@ export const data = [
     },
   },
   {
-    only: true,
     name: 'monday',
     description: 'check for deleted boards (configured boards are deleted)',
     feature: 'processor',
@@ -1368,6 +1372,181 @@ export const data = [
         body: [
           {
             error: 'The board with boardId 339283934 does not exist',
+            statTags: {
+              destType: 'MONDAY',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'monday',
+    description: 'Board with null columns array should throw ConfigurationError',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: secretNullColumnsApiToken,
+                boardId: '339283933',
+                groupTitle: '',
+                columnToPropertyMapping: [
+                  {
+                    from: 'Status',
+                    to: 'status',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: 'create an item',
+                  },
+                ],
+              },
+            },
+            message: {
+              event: 'create an item',
+              type: 'track',
+              sentAt: '2021-01-03T17:02:53.195Z',
+              userId: 'user@27',
+              channel: 'web',
+              properties: {
+                name: 'Task 1',
+                status: 'Done',
+              },
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                locale: 'en-US',
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+              },
+              rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
+              messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+              anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
+              originalTimestamp: '2021-01-03T17:02:53.193Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'No columns found in the board',
+            statTags: {
+              destType: 'MONDAY',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'monday',
+    description:
+      'Board with null groups array should throw ConfigurationError when groupTitle is provided',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiToken: secretNullGroupsApiToken,
+                boardId: '339283933',
+                groupTitle: 'Next month',
+                columnToPropertyMapping: [],
+                whitelistedEvents: [
+                  {
+                    eventName: 'create an item',
+                  },
+                ],
+              },
+            },
+            message: {
+              event: 'create an item',
+              type: 'track',
+              sentAt: '2021-01-03T17:02:53.195Z',
+              userId: 'user@27',
+              channel: 'web',
+              properties: {
+                name: 'Task 1',
+              },
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.11',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                locale: 'en-US',
+                screen: {
+                  density: 2,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.11',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+              },
+              rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
+              messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+              anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
+              originalTimestamp: '2021-01-03T17:02:53.193Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'No groups found in the board',
             statTags: {
               destType: 'MONDAY',
               errorCategory: 'dataValidation',

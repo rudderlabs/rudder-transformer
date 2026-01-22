@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import { BaseError, formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import {
@@ -11,6 +11,7 @@ import {
   SourceHydrationRequest,
 } from '../../types/sourceHydration';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
+import { errorResponseHandler } from '../../v0/util/facebookUtils/networkHandler';
 
 // Complete schema
 const FacebookLeadAdsHydrationInputSchema = SourceHydrationRequestSchema.extend({
@@ -53,9 +54,14 @@ const FACEBOOK_GRAPH_API_URL = 'https://graph.facebook.com/v24.0';
  * Fetches lead data from Facebook Graph API for a single lead ID
  * @param leadId - The Facebook lead ID to fetch
  * @param accessToken - Facebook access token
+ * @param metadata - Metadata for API call metrics
  * @returns Promise with lead data or error
  */
-async function fetchLeadData(leadId: string, accessToken: string): Promise<APIResponse> {
+async function fetchLeadData(
+  leadId: string,
+  accessToken: string,
+  metadata: Record<string, unknown>,
+): Promise<APIResponse> {
   const url = `${FACEBOOK_GRAPH_API_URL}/${leadId}`;
   const clientResponse = await httpGET(
     url,
@@ -69,6 +75,7 @@ async function fetchLeadData(leadId: string, accessToken: string): Promise<APIRe
       feature: 'hydration',
       endpointPath: '/leadId',
       requestMethod: 'GET',
+      metadata,
     },
   );
 
@@ -80,10 +87,24 @@ async function fetchLeadData(leadId: string, accessToken: string): Promise<APIRe
       statusCode: HTTP_STATUS_CODES.OK,
     };
   }
-  return {
-    statusCode: processedResponse.status,
-    error: processedResponse.response?.error?.message || 'Unknown error',
-  };
+
+  // Use Facebook's error handler for proper error classification
+  try {
+    errorResponseHandler({
+      response: processedResponse.response,
+      status: processedResponse.status,
+    });
+  } catch (error: unknown) {
+    if (error instanceof BaseError) {
+      return {
+        statusCode: error.status,
+        error: error.message,
+      };
+    }
+    throw new Error(`Unexpected: unknown error type ${error}`);
+  }
+  // This should never be reached since errorResponseHandler always throws for errors
+  throw new Error('Unexpected: errorResponseHandler did not throw for non-OK response');
 }
 
 /**
@@ -106,7 +127,10 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
   const results = await Promise.all(
     batch.map(async (job) => {
       const leadgenId = job.event.anonymousId;
-      const result = await fetchLeadData(leadgenId, accessToken);
+      const result = await fetchLeadData(leadgenId, accessToken, {
+        sourceId: source.id,
+        workspaceId: source.workspaceId,
+      });
 
       const updatedJob: SourceHydrationOutput['batch'][number] = {
         ...job,

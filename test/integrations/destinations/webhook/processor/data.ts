@@ -3300,7 +3300,6 @@ export const data = [
                   isAudienceSupported: true,
                 },
                 configSchema: {},
-                responseRules: null,
                 options: null,
                 uiConfig: {},
                 id: '1aIXpUrvpGno4gEuF2GvI3O9dOe',

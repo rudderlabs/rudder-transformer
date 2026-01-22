@@ -93,7 +93,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'standard',
               },
             },
@@ -278,7 +278,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'standard',
               },
             },
@@ -445,7 +445,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'eu',
               },
             },
@@ -1250,7 +1250,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'eu',
               },
             },
@@ -1520,7 +1520,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'eu',
               },
             },
@@ -1641,7 +1641,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'eu',
               },
             },
@@ -1762,7 +1762,7 @@ export const data = [
             destination: {
               Config: {
                 eventApiKey: secret1,
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'standard',
               },
             },
@@ -1896,7 +1896,7 @@ export const data = [
           {
             destination: {
               Config: {
-                usersApiKey: 'b4a29aba5e75duic8a18acd920ec1e2e',
+                usersApiKey: 'dummyUsersApiKey',
                 dataCenter: 'eu',
               },
             },

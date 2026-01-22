@@ -6,6 +6,7 @@ const {
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   isWorkspaceSupportedForSoql,
   getSalesforceIdForRecordUsingHttp,
@@ -71,6 +72,24 @@ describe('Salesforce Utils', () => {
     it('should return false for undefined workspace ID', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
       expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
+    });
+
+    it('should return true for any workspace ID when environment variable is set to ALL', () => {
+      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
+      expect(isWorkspaceSupportedForSoql('ws1')).toBe(true);
+      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
+      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(true);
+      expect(isWorkspaceSupportedForSoql(undefined)).toBe(true);
+      expect(isWorkspaceSupportedForSoql('')).toBe(true);
+    });
+
+    it('should return false for any workspace ID when environment variable is set to NONE', () => {
+      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'NONE';
+      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
+      expect(isWorkspaceSupportedForSoql('ws2')).toBe(false);
+      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(false);
+      expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
+      expect(isWorkspaceSupportedForSoql('')).toBe(false);
     });
   });
 
@@ -333,6 +352,240 @@ describe('Salesforce Utils', () => {
       await expect(
         getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'External_ID__c', 'ext-123'),
       ).rejects.toThrow('Failed to query Salesforce: Query failed');
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "session expired" (lowercase)', async () => {
+      const errorMessage = 'SOQL query failed: session expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('session expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "SESSION EXPIRED" (uppercase)', async () => {
+      const errorMessage = 'SOQL query failed: SESSION EXPIRED or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('SESSION EXPIRED');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "Session Expired" (mixed case)', async () => {
+      const errorMessage = 'SOQL query failed: Session Expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('Session Expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error has no message property', async () => {
+      const error = { name: 'Error' };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: undefined');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is null', async () => {
+      const error = { message: null };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: null');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is undefined', async () => {
+      const error = { message: undefined };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: undefined');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is a number', async () => {
+      const error = { message: 500 };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: 500');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is an object', async () => {
+      const error = { message: { code: 500, detail: 'Internal error' } };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: [object Object]');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is an array', async () => {
+      const error = { message: ['Error 1', 'Error 2'] };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: Error 1,Error 2');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is a boolean', async () => {
+      const error = { message: true };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          'External_ID__c',
+          'ext-123',
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: true');
+      }
     });
 
     it('should handle special characters in identifier value', async () => {
@@ -653,6 +906,230 @@ describe('Salesforce Utils', () => {
       await expect(
         getSalesforceIdForLeadUsingSdk(mockSalesforceSdk, 'test@example.com', mockDestination),
       ).rejects.toThrow('Failed to query Salesforce: Query failed');
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "session expired" (lowercase)', async () => {
+      const errorMessage = 'SOQL query failed: session expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('session expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "SESSION EXPIRED" (uppercase)', async () => {
+      const errorMessage = 'SOQL query failed: SESSION EXPIRED or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('SESSION EXPIRED');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw RetryableError with REFRESH_TOKEN when error message contains "Session Expired" (mixed case)', async () => {
+      const errorMessage = 'SOQL query failed: Session Expired or invalid';
+      const error = new Error(errorMessage);
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        // Verify error type
+        expect(err).toBeInstanceOf(RetryableError);
+        expect(err).not.toBeInstanceOf(NetworkInstrumentationError);
+
+        // Verify exact message format
+        expect(err.message).toBe(
+          `Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${errorMessage}`,
+        );
+        expect(err.message).toContain('Salesforce Request Failed');
+        expect(err.message).toContain('INVALID_SESSION_ID');
+        expect(err.message).toContain('Session Expired');
+        expect(err.message).toContain('Retryable');
+        expect(err.message).toContain(errorMessage);
+
+        // Verify auth error category
+        expect(err.authErrorCategory).toBe(REFRESH_TOKEN);
+        expect(err.authErrorCategory).toBeDefined();
+        expect(err.authErrorCategory).not.toBeNull();
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error has no message property', async () => {
+      const error = { name: 'Error' };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: undefined');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is null', async () => {
+      const error = { message: null };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: null');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is undefined', async () => {
+      const error = { message: undefined };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err).not.toBeInstanceOf(RetryableError);
+        expect(err.message).toBe('Failed to query Salesforce: undefined');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is a number', async () => {
+      const error = { message: 500 };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: 500');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is an object', async () => {
+      const error = { message: { code: 500, detail: 'Internal error' } };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: [object Object]');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is an array', async () => {
+      const error = { message: ['Error 1', 'Error 2'] };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: Error 1,Error 2');
+      }
+    });
+
+    it('should throw NetworkInstrumentationError when error message is a boolean', async () => {
+      const error = { message: true };
+      mockSalesforceSdk.query.mockRejectedValueOnce(error);
+
+      try {
+        await getSalesforceIdForLeadUsingSdk(
+          mockSalesforceSdk,
+          'test@example.com',
+          mockDestination,
+        );
+        expect(true).toBe(false); // Should have thrown an error
+      } catch (err) {
+        expect(err).toBeInstanceOf(NetworkInstrumentationError);
+        expect(err.message).toBe('Failed to query Salesforce: true');
+      }
     });
   });
 

@@ -23,7 +23,7 @@ jobs:
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
         with:
           egress-policy: audit
 
@@ -37,12 +37,12 @@ jobs:
           echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -153,22 +153,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT }}
 
-      - name: Delete Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'release/')
-        with:
-          branches: 'release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
-      - name: Delete Hotfix Release Branch
-        uses: koj-co/delete-merged-action@63a03c35810a8a7d4840d18793c0f68ff8b59450 # master
-        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
-        with:
-          branches: 'hotfix-release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-
       - name: Notify Slack Channel
         id: slack
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
@@ -198,7 +182,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D> <@U021E50QAGY>"
+                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <!subteam^S02AEQL26CT> <!subteam^S03SEKBFX0D>"
                   }
                 }
               ]

@@ -15,7 +15,7 @@ This document outlines the business logic and mappings used in the Braze destina
 
 1. If identity resolution conditions are met:
 
-   ```javascript
+   ```typescript
    const integrationsObj = getIntegrationsObj(message, 'BRAZE');
    const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
    const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
@@ -254,7 +254,7 @@ The Braze destination can generate multiple API calls from a single input event 
    Input: Identify event meeting specific conditions
    Conditions:
 
-   ```javascript
+   ```typescript
    const integrationsObj = getIntegrationsObj(message, 'BRAZE');
    const isAliasPresent = isDefinedAndNotNull(integrationsObj?.alias);
    const brazeExternalID = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
@@ -268,7 +268,7 @@ The Braze destination can generate multiple API calls from a single input event 
 
    - API Call 1: POST /users/identify (merge anonymous and identified users)
    - API Call 2: POST /users/track (send user attributes)
-     Multiplexing: NO (first call is intermediary)
+   - Multiplexing: NO (first call is intermediary)
 
    **Note**: This is not considered true multiplexing as the first call is an intermediary step for identity resolution before the main data delivery. The identify call is only made when either `anonymousId` or a custom alias is present AND either `userId` or `brazeExternalId` is present.
 

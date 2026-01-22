@@ -256,7 +256,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -313,7 +313,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -586,7 +586,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
@@ -636,7 +636,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
@@ -688,7 +688,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,
@@ -723,7 +723,7 @@ export const data: RouterTestData[] = [
                 endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -760,7 +760,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -784,7 +784,7 @@ export const data: RouterTestData[] = [
                 endpointPath: 'users/bulkUpdate',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -823,7 +823,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   mapToSingleEvent: false,
                   trackAllPages: true,
                   trackCategorisedPages: false,
@@ -913,7 +913,7 @@ export const data: RouterTestData[] = [
                 endpointPath: 'commerce/updateCart',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -969,7 +969,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
@@ -994,7 +994,7 @@ export const data: RouterTestData[] = [
                 endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -1031,7 +1031,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: true,
@@ -1056,7 +1056,7 @@ export const data: RouterTestData[] = [
                 endpointPath: 'users/updateEmail',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -1083,7 +1083,7 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '62d12498c37c4fd8a1a546c2d35c2f60',
+                  apiKey: 'dummyApiKey',
                   dataCenter: 'USDC',
                   mapToSingleEvent: false,
                   trackAllPages: false,

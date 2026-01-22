@@ -69,7 +69,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -178,7 +177,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -342,7 +340,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -449,7 +446,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -557,7 +553,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -678,7 +673,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -854,7 +848,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1024,7 +1017,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1202,7 +1194,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1339,7 +1330,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1467,7 +1457,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1636,7 +1625,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1805,7 +1793,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -1932,7 +1919,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'testHandleHttpRequest401',
@@ -2047,7 +2033,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'testHandleHttpRequest429',
@@ -2126,7 +2111,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'testHandleHttpRequest-dns',
@@ -2200,7 +2184,6 @@ export const data = [
                   supportedSourceTypes: [],
                   transformAt: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 clientId: 'testHandleHttpRequest-null',

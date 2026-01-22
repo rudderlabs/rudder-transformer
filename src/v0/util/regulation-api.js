@@ -4,7 +4,7 @@ const RegulationApiUtils = {
   /**
    * Common validations that are part of `deleteUsers` api would be defined here
    *
-   * @param {Array<{ userId:string, email:string, phone:string}>} userAttributes Array of objects with userId, email and phone
+   * @param {Array<{}>} userAttributes Array of objects with userId, email and phone
    */
   executeCommonValidations(userAttributes) {
     if (!Array.isArray(userAttributes)) {

@@ -126,9 +126,9 @@ describe('Source controller tests', () => {
       const testCases: {
         description: string;
         requestBody: SourceHydrationRequest;
-        mockOutput: SourceHydrationOutput;
+        expectedOutput: Record<string, unknown>;
+        hydrationOutput: SourceHydrationOutput;
         expectedStatus: number;
-        expectedBody: (output: { batch: unknown }) => { batch: unknown };
       }[] = [
         {
           description: 'all jobs successful',
@@ -136,14 +136,19 @@ describe('Source controller tests', () => {
             batch: [{ event: { field: 'value1' } }, { event: { field: 'value2' } }],
             source: { id: 'source-1' },
           },
-          mockOutput: {
+          hydrationOutput: {
             batch: [
-              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
-              { event: { field: 'value2' }, statusCode: 200, data: { field: 'value2' } },
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
+              { event: { field: 'value2' }, statusCode: 200, randomData: 'randomData2' },
+            ],
+          },
+          expectedOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
+              { event: { field: 'value2' }, statusCode: 200, randomData: 'randomData2' },
             ],
           },
           expectedStatus: 200,
-          expectedBody: (output) => ({ batch: output.batch }),
         },
         {
           description: 'one job failed - returns first error status code',
@@ -155,15 +160,25 @@ describe('Source controller tests', () => {
             ],
             source: { id: 'source-1' },
           },
-          mockOutput: {
+          hydrationOutput: {
             batch: [
-              { event: { field: 'value1' }, statusCode: 200, data: { field: 'value1' } },
-              { event: { field: 'value2' }, statusCode: 400, error: 'Invalid data' },
-              { event: { field: 'value3' }, statusCode: 200, data: { field: 'value3' } },
+              { event: { field: 'value1' }, statusCode: 200, randomData: 'randomData1' },
+              {
+                event: { field: 'value2' },
+                statusCode: 400,
+                errorMessage: 'Invalid data',
+              },
+              { event: { field: 'value3' }, statusCode: 200, randomData: 'randomData3' },
+            ],
+          },
+          expectedOutput: {
+            batch: [
+              { statusCode: 200, randomData: 'randomData1' },
+              { statusCode: 400, errorMessage: 'Invalid data' },
+              { statusCode: 200, randomData: 'randomData3' },
             ],
           },
           expectedStatus: 400,
-          expectedBody: (output) => ({ batch: output.batch }),
         },
         {
           description: 'empty batch - all jobs successful',
@@ -171,19 +186,21 @@ describe('Source controller tests', () => {
             batch: [],
             source: { id: 'source-1' },
           },
-          mockOutput: {
+          hydrationOutput: {
+            batch: [],
+          },
+          expectedOutput: {
             batch: [],
           },
           expectedStatus: 200,
-          expectedBody: () => ({ batch: [] }),
         },
       ];
 
       testCases.forEach(
-        ({ description, requestBody, mockOutput, expectedStatus, expectedBody }) => {
+        ({ description, requestBody, expectedOutput, hydrationOutput, expectedStatus }) => {
           test(description, async () => {
             const mockSourceService = new NativeIntegrationSourceService();
-            mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(mockOutput);
+            mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(hydrationOutput);
 
             const getNativeSourceServiceSpy = jest
               .spyOn(ServiceSelector, 'getNativeSourceService')
@@ -195,7 +212,7 @@ describe('Source controller tests', () => {
               .send(requestBody);
 
             expect(response.status).toEqual(expectedStatus);
-            expect(response.body).toEqual(expectedBody(mockOutput));
+            expect(response.body).toEqual(expectedOutput);
 
             expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
             expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
@@ -310,6 +327,85 @@ describe('Source controller tests', () => {
 
           expect(response.status).toEqual(expectedStatus);
           expect(response.body).toEqual(expectedBody);
+
+          expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
+          expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
+
+    describe('X-Rudder-Permanent-Error header', () => {
+      const testCases = [
+        {
+          description: 'should set header when job has 400 status code',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 400, errorMessage: 'Bad Request' }],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should set header when job has 404 status code',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 404, errorMessage: 'Not Found' }],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should set header when one of multiple jobs has 4xx error',
+          hydrationOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 200 },
+              { event: { field: 'value2' }, statusCode: 403, errorMessage: 'Forbidden' },
+            ],
+          },
+          expectedHeader: 'true',
+        },
+        {
+          description: 'should NOT set header when job has 429 status code',
+          hydrationOutput: {
+            batch: [
+              { event: { field: 'value1' }, statusCode: 429, errorMessage: 'Too Many Requests' },
+            ],
+          },
+          expectedHeader: undefined,
+        },
+        {
+          description: 'should NOT set header when all jobs are successful (200)',
+          hydrationOutput: {
+            batch: [{ event: { field: 'value1' }, statusCode: 200 }],
+          },
+          expectedHeader: undefined,
+        },
+        {
+          description: 'should NOT set header when job has 500 status code',
+          hydrationOutput: {
+            batch: [
+              {
+                event: { field: 'value1' },
+                statusCode: 500,
+                errorMessage: 'Internal Server Error',
+              },
+            ],
+          },
+          expectedHeader: undefined,
+        },
+      ];
+
+      testCases.forEach(({ description, hydrationOutput, expectedHeader }) => {
+        test(description, async () => {
+          const mockSourceService = new NativeIntegrationSourceService();
+          mockSourceService.sourceHydrateRoutine = jest.fn().mockResolvedValue(hydrationOutput);
+
+          const getNativeSourceServiceSpy = jest
+            .spyOn(ServiceSelector, 'getNativeSourceService')
+            .mockImplementation(() => mockSourceService);
+
+          const response = await request(server)
+            .post(`/v2/sources/${sourceType}/hydrate`)
+            .set('Accept', 'application/json')
+            .send({ source: { id: 'sourceId' }, batch: [] });
+
+          expect(response.header['x-rudder-permanent-error']).toEqual(expectedHeader);
 
           expect(getNativeSourceServiceSpy).toHaveBeenCalledTimes(1);
           expect(mockSourceService.sourceHydrateRoutine).toHaveBeenCalledTimes(1);

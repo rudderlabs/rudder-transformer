@@ -80,9 +80,7 @@
           "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
           "Name": "PINTEREST_TAG",
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           },
           "Config": {
             "tagId": "123456789",
@@ -215,9 +213,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -306,9 +302,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -415,9 +409,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -521,9 +513,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -632,9 +622,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -743,9 +731,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -853,9 +839,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -964,9 +948,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1075,9 +1057,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1156,9 +1136,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1238,9 +1216,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1321,9 +1297,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1403,9 +1377,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -1481,9 +1453,7 @@
           "Enabled": true,
           "Transformations": [],
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       }

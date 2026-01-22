@@ -27,7 +27,7 @@ export type SourceInput = {
 
 export type SourceInputV2 = {
   request: SourceRequestV2;
-  source?: Source;
+  source: Source;
 };
 
 export type SourceTransformationOutput = {

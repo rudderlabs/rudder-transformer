@@ -67,7 +67,6 @@ export const data = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: secret1,
@@ -157,7 +156,6 @@ export const data = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: secret1,

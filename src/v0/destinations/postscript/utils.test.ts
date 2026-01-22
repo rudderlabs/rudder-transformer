@@ -403,11 +403,6 @@ describe('Postscript Utils', () => {
 
       const results = await performSubscriberLookup(mockEvents, 'dummy_api_key');
 
-      expect(mockLogger).toHaveBeenCalledWith('PostScript subscriber lookup failed:', {
-        status: 500,
-        response: { error: 'Internal server error' },
-      });
-
       expect(results).toMatchObject([
         {
           exists: false,

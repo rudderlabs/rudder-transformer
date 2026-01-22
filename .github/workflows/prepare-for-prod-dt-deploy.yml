@@ -4,11 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
 
 permissions:
   id-token: write # allows the JWT to be requested from GitHub's OIDC provider
@@ -20,29 +15,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  report-coverage:
-    name: Report Code Coverage
-    if: github.event_name == 'push'
-    uses: ./.github/workflows/dt-test-and-report-code-coverage.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
-    # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     outputs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 1
 
@@ -55,20 +41,18 @@ jobs:
 
   build-transformer-image:
     name: Build Transformer Docker Image - Prod
-    # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
+      image_repo: rudderstack/rudder-transformer
+      image_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
       dockerfile: Dockerfile
       load_target: development
       push_target: production
       build_type: dt
       use_merge_sha: true
-      skip_tests: ${{startsWith(github.event.pull_request.head.ref, 'hotfix-release/')}}
+      skip_tests: true
+      create_latest_tag: true
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
@@ -78,15 +62,15 @@ jobs:
     needs: [generate-tag-names, build-transformer-image]
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
-      TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
+      TF_IMAGE_REPOSITORY: ${{ vars.AWS_ECR_REGISTRY }}/rudderstack/rudder-transformer
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@f4a75cfd619ee5ce8d5b864b0d183aff3c69b55a # v2.13.1
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 1
 
@@ -179,9 +163,3 @@ jobs:
           git push -u origin dedicated-transformer-$TAG_NAME
 
           gh pr create --fill
-
-  update-ingestion-service:
-    name: Update Ingestion Service with Latest Transformer Version
-    uses: ./.github/workflows/update-ingestion-service.yml
-    secrets:
-      PAT: ${{ secrets.PAT }}

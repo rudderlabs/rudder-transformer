@@ -76,7 +76,6 @@
           "Name": "PINTEREST_TAG",
           "DisplayName": "Pinterest Tag",
           "Config": {
-            "cdkV2TestThreshold": 1,
             "cdkV2Enabled": true,
             "destConfig": {
               "defaultConfig": [
@@ -125,8 +124,7 @@
             ],
             "transformAt": "processor",
             "transformAtV1": "processor"
-          },
-          "ResponseRules": {}
+          }
         },
         "Config": {
           "advertiserId": "549764492980",

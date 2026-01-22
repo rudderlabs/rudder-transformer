@@ -1,9 +1,19 @@
+/**
+ * GAOC (Google Ads Offline Conversions) - Router Tests (Standard Behavior)
+ *
+ * These tests validate the router transformation with batch fetching DISABLED (default).
+ * For tests with batch fetching enabled (GAOC_ENABLE_BATCH_FETCHING=true),
+ * see batch-fetching-data.ts in the same directory.
+ */
+
 import { authHeader1, secret1, secret3 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
+import { newData as batchFetchingData } from './batch-fetching-data';
 
 const API_VERSION = 'v19';
 
 export const data = [
+  ...batchFetchingData,
   {
     name: 'google_adwords_offline_conversions',
     description: 'Test 0',

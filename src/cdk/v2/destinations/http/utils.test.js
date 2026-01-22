@@ -25,9 +25,19 @@ describe('Utils Functions', () => {
   });
 
   describe('prepareEndpoint', () => {
-    test('should replace template variables in API URL', () => {
+    test('should preserve single trailing slash when pathParams is empty array', () => {
       const message = { id: 123 };
       const apiUrl = 'https://api.example.com/resource/';
+      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource/');
+    });
+    test('should normalize multiple trailing slashes to one when pathParams is empty array', () => {
+      const message = { id: 123 };
+      const apiUrl = 'https://api.example.com/resource///';
+      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource/');
+    });
+    test('should not add trailing slash when pathParams is empty array and URL has no slash', () => {
+      const message = { id: 123 };
+      const apiUrl = 'https://api.example.com/resource';
       expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource');
     });
     test('should replace template variables in API URL and add path params', () => {

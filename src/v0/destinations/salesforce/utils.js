@@ -26,8 +26,9 @@ const {
   SALESFORCE_OAUTH_SANDBOX,
   SF_API_VERSION,
 } = require('./config');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
-const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
+const ACCESS_TOKEN_CACHE = new Cache('SALESFORCE_ACCESS_TOKEN', ACCESS_TOKEN_CACHE_TTL);
 
 /**
  * Extracts and returns the error message from a response object.
@@ -246,10 +247,17 @@ const getAuthHeader = (authInfo) => {
 };
 
 const isWorkspaceSupportedForSoql = (workspaceId) => {
-  const soqlSupportedWorkspaceIds = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS?.split(
-    ',',
-  )?.map?.((s) => s?.trim?.());
-  return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
+  const environmentVariable = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
+  switch (environmentVariable) {
+    case 'ALL':
+      return true;
+    case 'NONE':
+      return false;
+    default: {
+      const soqlSupportedWorkspaceIds = environmentVariable?.split(',')?.map?.((s) => s?.trim?.());
+      return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
+    }
+  }
 };
 
 /**
@@ -324,6 +332,25 @@ async function getSalesforceIdForRecordUsingSdk(
       `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${identifierValue}'`,
     );
   } catch (error) {
+    // check if the error message contains 'session expired'
+    if (
+      typeof error.message === 'string' &&
+      error.message.toLowerCase().includes('session expired')
+    ) {
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${error.message}`,
+        500,
+        {
+          message: error.message,
+          status: 401,
+          response: {
+            errorCode: 'INVALID_SESSION_ID',
+            message: error.message,
+          },
+        },
+        REFRESH_TOKEN,
+      );
+    }
     throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
   }
 
@@ -394,6 +421,25 @@ async function getSalesforceIdForLeadUsingSdk(salesforceSdk, email, destination)
       `SELECT Id, IsConverted, ConvertedContactId, IsDeleted FROM Lead WHERE Email = '${email}'`,
     );
   } catch (error) {
+    // check if the error message contains 'session expired'
+    if (
+      typeof error.message === 'string' &&
+      error.message.toLowerCase().includes('session expired')
+    ) {
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${error.message}`,
+        500,
+        {
+          message: error.message,
+          status: 401,
+          response: {
+            errorCode: 'INVALID_SESSION_ID',
+            message: error.message,
+          },
+        },
+        REFRESH_TOKEN,
+      );
+    }
     throw new NetworkInstrumentationError(`Failed to query Salesforce: ${error.message}`);
   }
   if (queryResponse.totalSize === 0) {

@@ -69,7 +69,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -105,7 +109,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -209,7 +217,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -246,7 +258,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -283,7 +299,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -389,7 +409,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -494,7 +518,11 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://onesignal.com/api/v1/players',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -599,7 +627,11 @@ export const data = [
               type: 'REST',
               method: 'PUT',
               endpoint: 'https://onesignal.com/api/v1/players/external-player-id',
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               params: {},
               body: {
                 JSON: {
@@ -700,7 +732,11 @@ export const data = [
               files: {},
               method: 'PUT',
               params: {},
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               version: '1',
               endpoint:
                 'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
@@ -787,7 +823,11 @@ export const data = [
               files: {},
               method: 'PUT',
               params: {},
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               version: '1',
               endpoint:
                 'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
@@ -868,7 +908,11 @@ export const data = [
               files: {},
               method: 'PUT',
               params: {},
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               version: '1',
               endpoint:
                 'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
@@ -943,7 +987,11 @@ export const data = [
               files: {},
               method: 'PUT',
               params: {},
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               version: '1',
               endpoint:
                 'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
@@ -1023,7 +1071,11 @@ export const data = [
               files: {},
               method: 'PUT',
               params: {},
-              headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+              headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'OneSignal-Usage': 'Rudderstack | Partner Integration',
+              },
               version: '1',
               endpoint:
                 'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',

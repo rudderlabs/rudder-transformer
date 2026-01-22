@@ -11,19 +11,30 @@ const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
-} = require('../../util');
-const { getConversionActionId } = require('./utils');
-const Cache = require('../../util/cache');
-const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM, destType } = require('./config');
-const { getDeveloperToken } = require('../../util/googleUtils');
+  isEmptyObject,
+} = require('../../../v0/util');
+const {
+  getConversionActionId,
+  isClickCallBatchingEnabled,
+} = require('../../../v0/destinations/google_adwords_offline_conversions/utils');
+const Cache = require('../../../v0/util/cache');
+const {
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+  SEARCH_STREAM,
+  destType,
+} = require('../../../v0/destinations/google_adwords_offline_conversions/config');
+const { getDeveloperToken, getAuthErrCategory } = require('../../../v0/util/googleUtils');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
-const { getAuthErrCategory } = require('../../util/googleUtils');
+const tags = require('../../../v0/util/tags');
+const { CommonUtils } = require('../../../util/common');
 
-const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
+const conversionCustomVariableCache = new Cache(
+  'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS_CUSTOM_VARIABLE',
+  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL,
+);
 
 const createJob = async ({ endpoint, headers, payload, metadata }) => {
   const endPoint = `${endpoint}:create`;
@@ -172,9 +183,10 @@ const getConversionCustomVariable = async ({ headers, params, metadata }) => {
 const getConversionCustomVariableHashMap = (arrays) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
-    arrays.forEach((array) => {
-      hashMap[array.conversionCustomVariable.name] = array.conversionCustomVariable.resourceName;
-    });
+    for (const element of arrays) {
+      hashMap[element.conversionCustomVariable.name] =
+        element.conversionCustomVariable.resourceName;
+    }
   }
   return hashMap;
 };
@@ -207,6 +219,7 @@ const ProxyRequest = async (request) => {
 
   headers['developer-token'] = getDeveloperToken();
 
+  const shouldBatchClickCallConversionEvents = isClickCallBatchingEnabled();
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
@@ -216,12 +229,15 @@ const ProxyRequest = async (request) => {
     });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    const conversionId = await getConversionActionId({ headers, params, metadata });
-    if (Array.isArray(addPayload.operations)) {
-      addPayload.operations.forEach((operation) => {
-        set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-      });
+    if (!shouldBatchClickCallConversionEvents) {
+      const conversionId = await getConversionActionId({ headers, params, metadata });
+      if (Array.isArray(addPayload.operations)) {
+        for (const operation of addPayload.operations) {
+          set(operation, 'create.transaction_attribute.conversion_action', conversionId);
+        }
+      }
     }
+
     await addConversionToJob({
       endpoint,
       headers,
@@ -240,39 +256,41 @@ const ProxyRequest = async (request) => {
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
-  if (params?.event) {
-    const conversionActionId = await getConversionActionId({ headers, params, metadata });
-    set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
-  }
-  // customVariables would be undefined in case of Store Conversions
-  if (isValidCustomVariables(params.customVariables)) {
-    // fetch all conversion custom variable in google ads
-    let conversionCustomVariable = await getConversionCustomVariable({
-      headers,
-      params,
-      metadata,
-    });
+  if (!shouldBatchClickCallConversionEvents) {
+    if (params?.event) {
+      const conversionActionId = await getConversionActionId({ headers, params, metadata });
+      set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
+    }
+    // customVariables would be undefined in case of Store Conversions
+    if (isValidCustomVariables(params.customVariables)) {
+      // fetch all conversion custom variable in google ads
+      let conversionCustomVariable = await getConversionCustomVariable({
+        headers,
+        params,
+        metadata,
+      });
 
-    // convert it into hashMap
-    conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
+      // convert it into hashMap
+      conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
 
-    const { properties } = params;
-    let { customVariables } = params;
-    const resultantCustomVariables = [];
-    customVariables = getHashFromArray(customVariables, 'from', 'to', false);
-    Object.keys(customVariables).forEach((key) => {
-      if (properties[key] && conversionCustomVariable[customVariables[key]]) {
-        // 1. set custom variable name
-        // 2. set custom variable value
-        resultantCustomVariables.push({
-          conversionCustomVariable: conversionCustomVariable[customVariables[key]],
-          value: String(properties[key]),
-        });
+      const { properties } = params;
+      let { customVariables } = params;
+      const resultantCustomVariables = [];
+      customVariables = getHashFromArray(customVariables, 'from', 'to', false);
+      for (const key of Object.keys(customVariables)) {
+        if (properties[key] && conversionCustomVariable[customVariables[key]]) {
+          // 1. set custom variable name
+          // 2. set custom variable value
+          resultantCustomVariables.push({
+            conversionCustomVariable: conversionCustomVariable[customVariables[key]],
+            value: String(properties[key]),
+          });
+        }
       }
-    });
 
-    if (resultantCustomVariables) {
-      set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
+      if (resultantCustomVariables) {
+        set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
+      }
     }
   }
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
@@ -293,30 +311,56 @@ const ProxyRequest = async (request) => {
 };
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse } = responseParams;
+  const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[Google Ads Offline Conversions Response Handler] - Request processed successfully`;
   const { status } = destinationResponse;
-  if (isHttpStatusSuccess(status)) {
+  const { partialFailureError, results } = destinationResponse.response;
+  const metaDataArray = CommonUtils.toArray(rudderJobMetadata);
+  if (isHttpStatusSuccess(status) && (!partialFailureError || partialFailureError.code === 0)) {
     // for google ads offline conversions the partialFailureError returns with status 200
-    const { partialFailureError } = destinationResponse.response;
-    // non-zero code signifies partialFailure
-    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
-    if (partialFailureError && partialFailureError.code !== 0) {
-      throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
-        400,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
-        },
-        partialFailureError,
-      );
-    }
-
     return {
       status,
       message,
       destinationResponse,
+      response: metaDataArray.map((metadata) => ({
+        statusCode: status,
+        metadata,
+        error: 'success',
+      })),
     };
+  }
+
+  // non-zero code signifies partialFailure
+  // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+  if (partialFailureError && partialFailureError.code !== 0) {
+    const errorMessage = partialFailureError.message || 'unknown error format';
+    const responseWithIndividualEvents = metaDataArray.map((metadata, i) => {
+      const eventResponse = results?.[i] ?? {};
+      const isEventFailed = isEmptyObject(eventResponse);
+      return {
+        statusCode: isEventFailed ? 400 : 200,
+        metadata,
+        error: isEventFailed ? errorMessage : 'success',
+      };
+    });
+
+    const data = {
+      status: 400,
+      message: `[Google Ads Offline Conversions]:: ${errorMessage}`,
+      destinationResponse,
+      statTags: {
+        errorCategory: 'network',
+        errorType: 'aborted',
+        destType: destType && typeof destType === 'string' ? destType.toUpperCase() : '',
+        module: 'destination',
+        implementation: 'native',
+        feature: 'dataDelivery',
+        destinationId: metaDataArray[0]?.destinationId || '',
+        workspaceId: metaDataArray[0]?.workspaceId || '',
+      },
+      response: responseWithIndividualEvents,
+    };
+    return data;
   }
 
   // the response from destination is not a success case build an explicit error

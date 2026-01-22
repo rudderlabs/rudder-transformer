@@ -15,8 +15,7 @@ const oldV0TestCases = [
           endpoint: 'https://api.clevertap.com/1/upload/test1',
           headers: {
             'X-CleverTap-Account-Id': '476550467',
-            'X-CleverTap-Passcode':
-              'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+            'X-CleverTap-Passcode': 'dummyPassCode',
             'Content-Type': 'application/json',
           },
           body: {
@@ -190,8 +189,7 @@ const oldV0TestCases = [
           method: 'POST',
           headers: {
             'X-CleverTap-Account-Id': '476550467',
-            'X-CleverTap-Passcode':
-              'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+            'X-CleverTap-Passcode': 'dummyPassCode',
             'Content-Type': 'application/json',
           },
           version: '1',

@@ -82,7 +82,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 clientId: 'marketo_client_id_success',
@@ -1706,7 +1705,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 clientId: 'marketo_client_id_success',

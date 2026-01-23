@@ -28,9 +28,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 accountId: 'test_account_id',
@@ -94,9 +93,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -161,9 +159,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -227,9 +224,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -293,9 +289,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -363,9 +358,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -442,9 +436,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -509,9 +502,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -574,9 +566,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/wrong_cdn.json',
@@ -654,9 +645,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -739,9 +729,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -879,9 +868,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -996,9 +984,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -1140,9 +1127,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
               },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
@@ -1226,7 +1212,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1343,7 +1332,10 @@ export const data = [
               integrations: { All: true, optimizely_fullstack: { variationId: '123' } },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1437,7 +1429,10 @@ export const data = [
               integrations: { All: true },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1561,7 +1556,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1674,7 +1672,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1784,7 +1785,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1891,7 +1895,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -1998,7 +2005,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',
@@ -2104,7 +2114,10 @@ export const data = [
               },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'OPTIMIZELY_FULLSTACK',
+                Config: {},
+              },
               Config: {
                 dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                 accountId: 'test_account_id',

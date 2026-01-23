@@ -67,11 +67,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -158,11 +156,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -256,11 +252,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -351,11 +345,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -439,11 +431,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -527,11 +517,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secretStaging1,
@@ -616,11 +604,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiUrl: 'https://in.accoil.com/segment',
@@ -689,11 +675,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -763,11 +747,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -836,11 +818,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -910,11 +890,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -983,11 +961,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1057,11 +1033,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1130,11 +1104,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1203,11 +1175,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1277,11 +1247,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1350,11 +1318,9 @@ export const data: ProcessorTestData[] = [
               Name: 'Default Destination',
               DestinationDefinition: {
                 ID: 'default-dest-def-id',
-                Name: 'Default Destination Definition',
+                Name: 'ACCOIL_ANALYTICS',
                 DisplayName: 'Default Display Name',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 apiKey: secret1,

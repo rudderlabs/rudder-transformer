@@ -17,8 +17,8 @@ const sampleDestination: Destination = {
   DestinationDefinition: {
     ID: '123',
     DisplayName: 'Trade Desk',
-    Name: 'TRADE_DESK',
-    Config: { cdkV2Enabled: true },
+    Name: 'THE_TRADE_DESK_REAL_TIME_CONVERSIONS',
+    Config: {},
   },
 };
 

@@ -43,9 +43,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -148,9 +147,8 @@ export const data = [
                 hashEmail: false,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -253,9 +251,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -334,9 +331,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -415,9 +411,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -481,9 +476,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -548,9 +542,8 @@ export const data = [
                 hashEmail: true,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -640,9 +633,8 @@ export const data = [
                 hashEmail: false,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
             },
             metadata: {
@@ -779,9 +771,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
               Config: {
                 customerAccountId: '89236978',
@@ -873,9 +864,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
               Config: {
                 customerAccountId: '89236978',
@@ -984,9 +974,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
               Config: {
                 customerAccountId: '89236978',
@@ -1106,9 +1095,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
               },
               Config: {
                 customerAccountId: '89236978',

@@ -14,9 +14,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -132,9 +130,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -250,9 +246,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -375,9 +369,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -478,9 +470,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -587,9 +577,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -714,9 +702,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -841,9 +827,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -971,9 +955,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',
@@ -1096,9 +1078,7 @@ export const data = [
                 appId: '<app id>',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
                 Name: 'HEAP',

@@ -24,9 +24,8 @@ export const accountTestData = [
               },
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ZOHO',
+                  Config: {},
                 },
                 deliveryAccount: {
                   accountDefinition: {},
@@ -86,9 +85,8 @@ export const accountTestData = [
               destination: {
                 Config: {},
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ZOHO',
+                  Config: {},
                 },
                 deliveryAccount: {
                   accountDefinition: {},
@@ -136,9 +134,8 @@ export const accountTestData = [
               },
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ZOHO',
+                  Config: {},
                 },
                 deliveryAccount: {
                   options: {
@@ -201,9 +198,8 @@ export const accountTestData = [
                   region: 'US',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ZOHO',
+                  Config: {},
                 },
                 deliveryAccount: {
                   options: {
@@ -250,9 +246,8 @@ export const accountTestData = [
               },
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ZOHO',
+                  Config: {},
                 },
                 deliveryAccount: {
                   options: {

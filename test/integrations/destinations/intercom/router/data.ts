@@ -8,11 +8,9 @@ const destination1: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,
@@ -32,11 +30,9 @@ const destination2: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,
@@ -56,11 +52,9 @@ const destination3: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,
@@ -79,11 +73,9 @@ const destination4: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,
@@ -103,11 +95,9 @@ const destination5: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,
@@ -126,7 +116,7 @@ const destination6: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
     Config: {},
   },
@@ -148,7 +138,7 @@ const destination7: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
     Config: {},
   },

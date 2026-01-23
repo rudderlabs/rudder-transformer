@@ -15,9 +15,8 @@ export const data = [
                 apiKeyVitally: secret1,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VITALLY',
+                Config: {},
               },
             },
             message: {
@@ -96,9 +95,8 @@ export const data = [
                 apiKeyVitally: secret1,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VITALLY',
+                Config: {},
               },
             },
             message: {
@@ -175,9 +173,8 @@ export const data = [
                 apiKeyVitally: secret1,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VITALLY',
+                Config: {},
               },
             },
             message: {
@@ -251,9 +248,8 @@ export const data = [
                 apiKeyVitally: secret1,
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VITALLY',
+                Config: {},
               },
             },
             message: {

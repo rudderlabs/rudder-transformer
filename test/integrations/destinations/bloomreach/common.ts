@@ -18,7 +18,7 @@ const destination: Destination = {
     DisplayName: displayName,
     ID: '123',
     Name: destTypeInUpperCase,
-    Config: { cdkV2Enabled: true },
+    Config: {},
   },
   Enabled: true,
   ID: '123',

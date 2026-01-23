@@ -43,7 +43,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -87,7 +87,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -140,7 +140,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -189,7 +189,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -237,7 +237,7 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -262,7 +262,7 @@ export const data = [
               error: 'message Type is not present. Aborting message.',
               batched: false,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -377,7 +377,7 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -508,7 +508,7 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -603,7 +603,7 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -686,7 +686,7 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,

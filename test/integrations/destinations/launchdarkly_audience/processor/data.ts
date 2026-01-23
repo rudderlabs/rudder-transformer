@@ -42,7 +42,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -108,7 +111,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -176,7 +182,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -244,7 +253,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -318,7 +330,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -398,7 +413,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -503,7 +521,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',
@@ -613,7 +634,10 @@ export const data = [
                 accessToken: 'test-accessToken',
                 clientSideId: 'test-clientSideId',
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: {
+                Name: 'LAUNCHDARKLY_AUDIENCE',
+                Config: {},
+              },
             },
             metadata: {
               destinationId: 'destId',

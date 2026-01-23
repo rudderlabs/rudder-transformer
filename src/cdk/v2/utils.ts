@@ -6,6 +6,7 @@ import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';
 import { CatchErr } from '../../types';
+import { cdkV2DestinationsMap } from './constants/cdkV2DestinationsMap';
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -109,9 +110,34 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
   return generateErrorObject(new PlatformError(message), defTags);
 }
 
-export function isCdkV2Destination(event) {
-  if (Array.isArray(event) && event.length > 0) {
-    return Boolean(event[0]?.destination?.DestinationDefinition?.Config?.cdkV2Enabled);
+export function shouldUseCdkV2(destType: string, workspaceId: string) {
+  const destTypeUpper = destType.toUpperCase();
+
+  // Check if the destination type is in the CDK v2 enabled map
+  if (!cdkV2DestinationsMap[destTypeUpper]) {
+    return false;
   }
-  return Boolean(event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled);
+
+  // Check if the destination type is disabled for the environment variable
+  // DISABLE_<DESTINATION_TYPE>_CDK_V2
+  const envValue = process.env[`DISABLE_${destTypeUpper}_CDK_V2`];
+  if (!envValue) {
+    return true;
+  }
+
+  const normalized = envValue.trim();
+  switch (normalized) {
+    case 'ALL':
+      return false;
+    case 'NONE':
+      return true;
+    default:
+      // Comma-separated allow/deny list of workspaceIds.
+      // If the workspaceId is listed, CDK v2 is disabled for it.
+      return !normalized
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .includes(workspaceId);
+  }
 }

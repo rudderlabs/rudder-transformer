@@ -276,7 +276,8 @@ export const accountTestData = [
           output: [
             {
               batched: false,
-              error: 'Datacentre Region is not present. Aborting',
+              error:
+                'Datacentre Region is not present. Aborting: Workflow: rtWorkflow, Step: validateConfig, ChildStep: undefined, OriginalError: Datacentre Region is not present. Aborting',
               metadata: [
                 {
                   jobId: 2,

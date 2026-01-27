@@ -376,7 +376,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkV2Enabled: false,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -441,13 +441,14 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'invalid message type for heap',
+            error:
+              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
             statTags: {
               destType: 'HEAP',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -478,7 +479,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkV2Enabled: false,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -549,7 +550,8 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'message type page not supported for heap',
+            error:
+              'message type page is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type page is not supported',
             statTags: {
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -557,7 +559,7 @@ export const data = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,

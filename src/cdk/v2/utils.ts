@@ -110,5 +110,8 @@ export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
 }
 
 export function isCdkV2Destination(event) {
+  if (Array.isArray(event) && event.length > 0) {
+    return Boolean(event[0]?.destination?.DestinationDefinition?.Config?.cdkV2Enabled);
+  }
   return Boolean(event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled);
 }

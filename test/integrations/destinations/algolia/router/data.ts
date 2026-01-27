@@ -105,6 +105,7 @@ export const data = [
                     ],
                     transformAt: 'router',
                     transformAtV1: 'router',
+                    cdkV2Enabled: true,
                   },
                 },
                 Config: {
@@ -352,6 +353,7 @@ export const data = [
                     ],
                     transformAt: 'router',
                     transformAtV1: 'router',
+                    cdkV2Enabled: true,
                   },
                 },
                 Config: {
@@ -385,7 +387,7 @@ export const data = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'native',
+                implementation: 'cdkV2',
                 module: 'destination',
               },
               statusCode: 400,

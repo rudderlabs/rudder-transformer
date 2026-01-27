@@ -1,9 +1,7 @@
-import { nativeData } from './data-native';
-
-const cdkData = [
+export const nativeData = [
   {
     name: 'tiktok_audience',
-    description: 'Test 1: Containing SHA256 traits only',
+    description: 'Native Test 1: Containing SHA256 traits only',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -57,6 +55,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -129,6 +128,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -182,6 +182,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -195,7 +196,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 2: Containing SHA256 and MD5 traits',
+    description: 'Native Test 2: Containing SHA256 and MD5 traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -255,6 +256,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -339,6 +341,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -404,6 +407,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -417,7 +421,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 3: Containing all possible traits',
+    description: 'Native Test 3: Containing all possible traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -468,6 +472,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -575,6 +580,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -588,7 +594,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 4: Considering some null values',
+    description: 'Native Test 4: Considering some null values',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -635,6 +641,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -730,6 +737,7 @@ const cdkData = [
             },
             metadata: {
               jobId: 1,
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -741,441 +749,4 @@ const cdkData = [
       },
     },
   },
-  {
-    name: 'tiktok_audience',
-    description: 'Test 5: message type missing',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              userId: 'user 1',
-              properties: {
-                listData: {
-                  add: [{ EMAIL_SHA256: 'alex@email.com' }],
-                },
-              },
-              context: {
-                externalId: [
-                  { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
-                ],
-                destinationFields: 'EMAIL_SHA256',
-              },
-              timestamp: '2020-02-02T00:23:09.544Z',
-            },
-            metadata: {
-              jobId: 101,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            destination: {
-              DestinationDefinition: {
-                Name: 'TIKTOK_AUDIENCE',
-                Config: {},
-              },
-              Config: {
-                isHashRequired: true,
-              },
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
-            metadata: {
-              jobId: 101,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            statTags: {
-              destType: 'TIKTOK_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'tiktok_audience',
-    description: 'Test 6: unsupported message type',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              userId: 'user 1',
-              type: 'identify',
-              properties: {
-                listData: {
-                  add: [{ EMAIL_SHA256: 'alex@email.com' }],
-                },
-              },
-              context: {
-                externalId: [
-                  { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
-                ],
-                destinationFields: 'EMAIL_SHA256',
-              },
-              timestamp: '2020-02-02T00:23:09.544Z',
-            },
-            metadata: {
-              jobId: 102,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            destination: {
-              DestinationDefinition: {
-                Name: 'TIKTOK_AUDIENCE',
-                Config: {},
-              },
-              Config: {
-                isHashRequired: true,
-              },
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'Event type identify is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type identify is not supported. Aborting message.',
-            metadata: {
-              jobId: 102,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            statTags: {
-              destType: 'TIKTOK_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'tiktok_audience',
-    description: 'Test 7: properties missing',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              userId: 'user 1',
-              type: 'audiencelist',
-              context: {
-                externalId: [
-                  { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
-                ],
-                destinationFields: 'EMAIL_SHA256',
-              },
-              timestamp: '2020-02-02T00:23:09.544Z',
-            },
-            metadata: {
-              jobId: 103,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            destination: {
-              DestinationDefinition: {
-                Name: 'TIKTOK_AUDIENCE',
-                Config: {},
-              },
-              Config: {
-                isHashRequired: true,
-              },
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'Message properties is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Message properties is not present. Aborting message.',
-            metadata: {
-              jobId: 103,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            statTags: {
-              destType: 'TIKTOK_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'tiktok_audience',
-    description: 'Test 8: listData missing',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              userId: 'user 1',
-              type: 'audiencelist',
-              properties: {},
-              context: {
-                externalId: [
-                  { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
-                ],
-                destinationFields: 'EMAIL_SHA256',
-              },
-              timestamp: '2020-02-02T00:23:09.544Z',
-            },
-            metadata: {
-              jobId: 104,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            destination: {
-              DestinationDefinition: {
-                Name: 'TIKTOK_AUDIENCE',
-                Config: {},
-              },
-              Config: {
-                isHashRequired: true,
-              },
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'listData is not present inside properties. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: listData is not present inside properties. Aborting message.',
-            metadata: {
-              jobId: 104,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            statTags: {
-              destType: 'TIKTOK_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'tiktok_audience',
-    description: 'Test 9: unsupported action key in listData',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              userId: 'user 1',
-              type: 'audiencelist',
-              properties: {
-                listData: {
-                  update: [{ EMAIL_SHA256: 'alex@email.com' }],
-                },
-              },
-              context: {
-                externalId: [
-                  { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
-                ],
-                destinationFields: 'EMAIL_SHA256',
-              },
-              timestamp: '2020-02-02T00:23:09.544Z',
-            },
-            metadata: {
-              jobId: 105,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            destination: {
-              DestinationDefinition: {
-                Name: 'TIKTOK_AUDIENCE',
-                Config: {},
-              },
-              Config: {
-                isHashRequired: true,
-              },
-            },
-          },
-        ],
-        method: 'POST',
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error:
-              'unsupported action type. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: unsupported action type. Aborting message.',
-            metadata: {
-              jobId: 105,
-              attemptNum: 1,
-              userId: 'u1',
-              sourceId: 'default-sourceId',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              secret: {
-                accessToken: 'dummyAccessToken',
-                advertiserIds: ['dummyAdverTiserID'],
-              },
-              dontBatch: false,
-            },
-            statTags: {
-              destType: 'TIKTOK_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
 ];
-
-export const data = [...cdkData, ...nativeData];

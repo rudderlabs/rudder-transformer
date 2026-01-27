@@ -25,9 +25,12 @@ interface Dependencies {
 
 interface TestRunRequestBody {
   input: { message: Record<string, unknown>; metadata?: Record<string, unknown> }[];
-  code: string;
-  language: string;
-  codeVersion?: string;
+  codeRevision: {
+    code: string;
+    language: string;
+    versionId: string;
+    codeVersion?: string;
+  };
   dependencies?: Dependencies;
 }
 
@@ -91,21 +94,11 @@ export class UserTransformController {
    * @param ctx - The Koa request/response context object.
    */
   public static async testRun(ctx: Context) {
-    const {
-      input,
-      code,
-      dependencies,
-      language,
-      codeVersion = '1',
-    } = ctx.request.body as TestRunRequestBody;
+    const { input, codeRevision, dependencies } = ctx.request.body as TestRunRequestBody;
 
     const response = await UserTransformService.testTransformRoutine(
       input,
-      {
-        code,
-        language,
-        codeVersion,
-      },
+      { ...codeRevision, codeVersion: codeRevision.codeVersion || '1' },
       (dependencies?.libraries ?? []).map((library) => library.versionId),
       dependencies?.credentials ?? [],
       true,

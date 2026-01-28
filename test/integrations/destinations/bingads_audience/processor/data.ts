@@ -1140,4 +1140,244 @@ export const data = [
       },
     },
   },
+  {
+    name: 'bingads_audience',
+    description: 'some emails are null',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      email: 'alex@email.com',
+                    },
+                    {
+                      email: null,
+                    },
+                    {
+                      email: 'amy@abc.com',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                customerAccountId: '89236978',
+                customerId: '78678678',
+                audienceId: '564567',
+                hashEmail: true,
+              },
+              DestinationDefinition: {
+                Name: 'BINGADS_AUDIENCE',
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 1234,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 1234,
+            },
+            statusCode: 400,
+            error:
+              'email is null or empty. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: email is null or empty. Aborting message.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BINGADS_AUDIENCE',
+              module: 'destination',
+              implementation: 'cdkV2',
+              destinationId: 1234,
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'bingads_audience',
+    description: 'some emails are empty',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      email: 'alex@email.com',
+                    },
+                    {
+                      email: '',
+                    },
+                    {
+                      email: 'amy@abc.com',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                customerAccountId: '89236978',
+                customerId: '78678678',
+                audienceId: '564567',
+                hashEmail: true,
+              },
+              DestinationDefinition: {
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
+              },
+            },
+            metadata: {
+              destinationId: 1234,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 1234,
+            },
+            statusCode: 400,
+            error:
+              'email is null or empty. Aborting message.: Workflow: procWorkflow, Step: prepareIdentifiersList, ChildStep: undefined, OriginalError: email is null or empty. Aborting message.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BINGADS_AUDIENCE',
+              module: 'destination',
+              implementation: 'cdkV2',
+              destinationId: 1234,
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'bingads_audience',
+    description: 'some emails are undefined',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      email: 'alex@email.com',
+                    },
+                    {},
+                    {
+                      email: 'amy@abc.com',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                customerAccountId: '89236978',
+                customerId: '78678678',
+                audienceId: '564567',
+                hashEmail: true,
+              },
+              DestinationDefinition: {
+                Name: 'BINGADS_AUDIENCE',
+                Config: {},
+              },
+            },
+            metadata: {
+              destinationId: 1234,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 1234,
+            },
+            statusCode: 400,
+            error:
+              'email is null or empty. Aborting message.: Workflow: procWorkflow, Step: prepareIdentifiersList, ChildStep: undefined, OriginalError: email is null or empty. Aborting message.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'BINGADS_AUDIENCE',
+              module: 'destination',
+              implementation: 'cdkV2',
+              destinationId: 1234,
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

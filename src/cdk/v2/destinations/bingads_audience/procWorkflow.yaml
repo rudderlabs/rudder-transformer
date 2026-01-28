@@ -23,6 +23,17 @@ steps:
     description: |
       Populate list of identifiers to be updated
     template: |
+      const listData = .message.properties.listData;
+      const actions = Object.keys(listData);
+      actions@action.(
+        listData[action]@row.(
+          $.assert(
+            row.email && row.email.toString().trim().length > 0,
+            "email is null or empty. Aborting message."
+          );
+        )[]
+      )[];
+
       const hashEmails = function(emails) {
         const hashEmail = ^.destination.Config.hashEmail;
         emails.({
@@ -35,7 +46,6 @@ steps:
           remove: "Remove",
           update: "Replace"
       };
-      const listData = .message.properties.listData
       Object.keys(listData).map(function(action) {
           {
               list: hashEmails(listData[action]),

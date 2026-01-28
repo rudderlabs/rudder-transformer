@@ -14,7 +14,7 @@ import {
   getPlatformBindingsPaths,
   getRootPathForDestination,
   getWorkflowPath,
-  isCdkV2Destination,
+  shouldUseCdkV2,
 } from './utils';
 
 import logger from '../../logger';
@@ -93,7 +93,8 @@ export async function processCdkV2Workflow(
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
     return await executeWorkflow(workflowEngine, parsedEvent, requestMetadata);
   } catch (error) {
-    throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
+    const workspaceId = parsedEvent.metadata?.workspaceId ?? '';
+    throw getErrorInfo(error, shouldUseCdkV2(destType, workspaceId), defTags);
   }
 }
 

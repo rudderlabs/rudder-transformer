@@ -8,9 +8,7 @@ export const destination: Destination = {
     ID: '123',
     Name: 'USERPILOT',
     DisplayName: 'userpilot',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,

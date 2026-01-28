@@ -3,9 +3,8 @@ export const destination = {
   ID: 'random_id',
   Name: 'clicksend',
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Name: 'CLICKSEND',
+    Config: {},
   },
   Config: {
     clicksendUsername: secret1,

@@ -25,9 +25,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -94,9 +93,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -162,9 +160,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -238,9 +235,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -329,9 +325,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -417,9 +412,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -496,9 +490,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -577,9 +570,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -669,9 +661,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,
@@ -754,9 +745,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'GLADLY',
+                Config: {},
               },
               Config: {
                 apiToken: secret2,

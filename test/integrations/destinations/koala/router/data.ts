@@ -15,9 +15,8 @@ export const data = [
                   publicKey: 'kkooaallaa321',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'KOALA',
+                  Config: {},
                 },
               },
               message: {
@@ -53,9 +52,8 @@ export const data = [
                   publicKey: 'kkooaallaa321',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'KOALA',
+                  Config: {},
                 },
               },
               message: {
@@ -140,9 +138,8 @@ export const data = [
                   publicKey: 'kkooaallaa321',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'KOALA',
+                  Config: {},
                 },
               },
             },
@@ -190,9 +187,8 @@ export const data = [
                   publicKey: 'kkooaallaa321',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'KOALA',
+                  Config: {},
                 },
               },
             },

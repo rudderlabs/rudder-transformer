@@ -13,9 +13,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -214,9 +213,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -378,9 +376,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -537,9 +534,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -700,9 +696,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -863,9 +858,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -1079,9 +1073,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -1291,9 +1284,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',
@@ -1461,9 +1453,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ORTTO',
+                Config: {},
               },
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'ORTTO',

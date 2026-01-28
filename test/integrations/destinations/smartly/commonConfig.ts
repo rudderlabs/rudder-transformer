@@ -2,9 +2,8 @@ export const destination = {
   ID: 'random_id',
   Name: 'smartly',
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Name: 'SMARTLY',
+    Config: {},
   },
   Config: {
     apiToken: 'testAuthToken',

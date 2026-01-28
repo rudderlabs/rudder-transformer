@@ -25,11 +25,9 @@ const COMMON_DESTINATION = {
     ],
   },
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
     ID: '123',
-    Name: 'reddit',
+    Name: 'REDDIT',
     DisplayName: 'Reddit',
   },
   ID: '',
@@ -797,7 +795,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -855,7 +853,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -901,7 +899,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -966,7 +964,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -1025,7 +1023,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -1177,7 +1175,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
             },
             {
@@ -1244,7 +1242,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
             },
             {
@@ -1315,7 +1313,7 @@ export const data = [
                   hashData: true,
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
             },
           ],
@@ -1380,7 +1378,7 @@ export const data = [
                   accountId: 'a2_fsddXXXfsfd',
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               metadata: {
                 destinationId: 'destId',
@@ -1415,7 +1413,7 @@ export const data = [
                   accountId: 'a2_fsddXXXfsfd',
                   eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'REDDIT', Config: {} },
               },
               batched: false,
               statusCode: 400,

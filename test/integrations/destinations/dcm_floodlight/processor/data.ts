@@ -46,9 +46,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -213,9 +212,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -378,9 +376,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -545,9 +542,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -734,9 +730,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -947,9 +942,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -1147,9 +1141,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -1346,9 +1339,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -1550,9 +1542,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -1753,9 +1744,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -1948,9 +1938,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -2143,9 +2132,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -2345,9 +2333,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -2528,9 +2515,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -2713,9 +2699,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -2894,9 +2879,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3071,9 +3055,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3256,9 +3239,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3431,9 +3413,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3606,9 +3587,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3781,9 +3761,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -3956,9 +3935,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -4130,9 +4108,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -4283,9 +4260,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -4472,9 +4448,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -4679,9 +4654,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {
@@ -4867,9 +4841,8 @@ export const data = [
                 groupTag: '',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'DCM_FLOODLIGHT',
+                Config: {},
               },
             },
             message: {

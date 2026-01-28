@@ -38,11 +38,9 @@ const commonDestination = {
   Name: 'sample-destination',
   DestinationDefinition: {
     ID: '123',
-    Name: 'emarsys',
+    Name: 'EMARSYS',
     DisplayName: 'Emarsys',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   WorkspaceID: '123',
   Transformations: [],

@@ -46,7 +46,7 @@ export const data = [
                 audienceId: '564567',
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -146,7 +146,7 @@ export const data = [
                 audienceId: '564567',
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -223,7 +223,7 @@ export const data = [
                 audienceId: '564567',
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -307,7 +307,7 @@ export const data = [
                 audienceId: '564567',
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -406,7 +406,7 @@ export const data = [
                 audienceId: '564567',
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'ELOQUA', Config: {} },
             },
             metadata: {
               destinationId: 'destId',

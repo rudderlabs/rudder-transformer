@@ -30,7 +30,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -59,7 +59,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -86,7 +86,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -139,7 +139,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
@@ -176,7 +176,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
@@ -211,7 +211,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
@@ -252,7 +252,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -282,7 +282,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -311,7 +311,7 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
                 Config: {
                   apiToken: secret2,
                   userName: secret1,
@@ -363,7 +363,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
@@ -399,7 +399,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
@@ -434,7 +434,7 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: secret1,
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'GLADLY', Config: {} },
               },
               metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,

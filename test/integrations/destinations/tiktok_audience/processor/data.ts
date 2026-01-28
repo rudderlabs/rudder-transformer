@@ -62,9 +62,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'TIKTOK_AUDIENCE',
+                Config: {},
               },
               Config: {
                 isHashRequired: true,
@@ -261,9 +260,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'TIKTOK_AUDIENCE',
+                Config: {},
               },
               Config: {
                 isHashRequired: true,
@@ -475,9 +473,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'TIKTOK_AUDIENCE',
+                Config: {},
               },
               Config: {
                 isHashRequired: true,
@@ -643,9 +640,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'TIKTOK_AUDIENCE',
+                Config: {},
               },
               Config: {
                 isHashRequired: true,

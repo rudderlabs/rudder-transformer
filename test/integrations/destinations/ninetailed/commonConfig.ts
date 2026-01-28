@@ -2,9 +2,8 @@ export const destination = {
   ID: 'random_id',
   Name: 'ninetailed',
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Name: 'NINETAILED',
+    Config: {},
   },
   Config: {
     organisationId: 'dummyOrganisationId',

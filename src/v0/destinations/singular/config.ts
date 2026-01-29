@@ -45,7 +45,7 @@ const SUPPORTED_PLATFORM: Record<SingularPlatform, SingularPlatformMapping> = {
   metaquest: 'unity',
 };
 
-const SUPPORTED_UNTIY_SUBPLATFORMS: readonly SingularPlatform[] = [
+const SUPPORTED_UNTIY_SUBPLATFORMS: SingularPlatform[] = [
   'pc',
   'xbox',
   'playstation',

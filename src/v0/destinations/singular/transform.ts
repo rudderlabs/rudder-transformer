@@ -53,7 +53,10 @@ const responseBuilderSimple = (
   return response;
 };
 
-const processEvent = (message: SingularMessage, destination: SingularDestination) => {
+const processEvent = (
+  message: SingularMessage,
+  destination: SingularDestination,
+): SingularBatchRequest | SingularBatchRequest[] => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -72,7 +75,7 @@ const processRouterDest = async (
   inputs: SingularRouterRequest[],
   reqMetadata: Record<string, unknown>,
 ) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, undefined);
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, {});
   return respList;
 };
 

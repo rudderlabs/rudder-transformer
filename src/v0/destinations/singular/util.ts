@@ -122,12 +122,15 @@ const buildBasePayload = (
   message: SingularMessage,
   platform: SingularPlatform,
   eventType: SingularEventType,
-): Record<string, any> => {
+): Record<string, unknown> => {
   const configKey = SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)
     ? CONFIG_CATEGORIES[`${eventType}_UNITY`].name
     : CONFIG_CATEGORIES[`${eventType}_${SUPPORTED_PLATFORM[platform]}`].name;
 
-  const basePayload = constructPayload(message, MAPPING_CONFIG[configKey]);
+  const basePayload: Record<string, unknown> | null = constructPayload(
+    message,
+    MAPPING_CONFIG[configKey],
+  ) as Record<string, unknown> | null;
 
   if (!basePayload) {
     throw new TransformationError(`Failed to Create ${platform} ${eventType} Payload`);
@@ -176,7 +179,11 @@ const createSessionPayload = (
   platform: SingularPlatform,
   Config: SingularDestinationConfig,
 ): SingularSessionParams => {
-  const payload = buildBasePayload(message, platform, 'SESSION') as SingularSessionParams;
+  const payload = buildBasePayload(
+    message,
+    platform,
+    'SESSION',
+  ) as unknown as SingularSessionParams;
 
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
     // context.device.adTrackingEnabled = true implies Singular's do not track (dnt) to be 0 and vice-versa.
@@ -212,7 +219,7 @@ const createEventPayload = (
   platform: SingularPlatform,
   Config: SingularDestinationConfig,
 ): { payload: SingularEventParams; eventAttributes?: Record<string, unknown> } => {
-  const payload = buildBasePayload(message, platform, 'EVENT') as SingularEventParams;
+  const payload = buildBasePayload(message, platform, 'EVENT') as unknown as SingularEventParams;
   let eventAttributes: Record<string, unknown> | undefined;
 
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
@@ -255,14 +262,14 @@ const platformWisePayloadGenerator = (
   Config: SingularDestinationConfig,
 ): SingularPayload => {
   const clonedMessage: SingularMessage = { ...message };
-  let platform = getValueFromMessage(clonedMessage, 'context.os.name');
+  let contextOsName = getValueFromMessage(clonedMessage, 'context.os.name');
 
-  if (!platform) {
+  if (!contextOsName) {
     throw new InstrumentationError('Platform name is missing from context.os.name');
   }
 
   // checking if the os is one of ios, ipados, watchos, tvos
-  if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
+  if (typeof contextOsName === 'string' && isAppleFamily(contextOsName.toLowerCase())) {
     if (!clonedMessage.context) {
       clonedMessage.context = {};
     }
@@ -270,10 +277,10 @@ const platformWisePayloadGenerator = (
       clonedMessage.context.os = {};
     }
     clonedMessage.context.os.name = 'iOS';
-    platform = 'iOS';
+    contextOsName = 'iOS';
   }
 
-  platform = platform.toLowerCase();
+  const platform = contextOsName.toLowerCase() as SingularPlatform;
   if (!SUPPORTED_PLATFORM[platform] && !SUPPORTED_UNTIY_SUBPLATFORMS[platform]) {
     throw new InstrumentationError(`Platform ${platform} is not supported`);
   }

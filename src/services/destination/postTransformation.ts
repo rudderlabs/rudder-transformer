@@ -235,6 +235,11 @@ export class DestinationPostTransformationService {
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
+    logger.error('User deletion failed', {
+      errorMessage: errObj.message,
+      destinationId: metaTo.errorDetails.destinationId,
+      destType: metaTo.errorDetails.destType,
+    });
 
     stats.increment('regulation_worker_user_deletion_failure', {
       destType: metaTo.errorDetails.destType,
@@ -252,7 +257,7 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
+    // ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 }

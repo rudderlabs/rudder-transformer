@@ -92,13 +92,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      # In order to make a commit, we need to initialize a user.
-      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
-      - name: Initialize Mandatory Git Config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "noreply@github.com"
-
       - name: Print Docker Image Tags
         run: |
           echo "User Transformer: $UT_TAG_NAME"
@@ -120,6 +113,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b shared-user-transformer-$UT_TAG_NAME
 
           cd helm-charts/shared-services/per-az/environment/production
@@ -151,6 +146,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b hosted-user-transformer-$UT_TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
@@ -169,6 +166,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b dedicated-user-transformer-$TAG_NAME
 
           cd customer-objects

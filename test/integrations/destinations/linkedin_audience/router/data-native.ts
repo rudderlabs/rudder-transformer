@@ -1,11 +1,10 @@
 import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
-import { nativeData } from './data-native';
 
-const cdkData = [
+export const nativeData = [
   {
     name: 'linkedin_audience',
-    description: 'Test 0',
+    description: 'Native Test 0',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -27,7 +26,7 @@ const cdkData = [
                 },
                 action: 'insert',
               }),
-              metadata: generateMetadata(1),
+              metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -90,7 +89,7 @@ const cdkData = [
                 },
                 action: 'insert',
               }),
-              metadata: generateMetadata(2),
+              metadata: generateMetadata(2, 'default-userId', 'workspace-disable-cdkv2'),
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -158,7 +157,7 @@ const cdkData = [
                 },
                 action: 'insert',
               }),
-              metadata: generateMetadata(3),
+              metadata: generateMetadata(3, 'default-userId', 'workspace-disable-cdkv2'),
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -306,7 +305,7 @@ const cdkData = [
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-disable-cdkv2',
                 },
                 {
                   attemptNum: 1,
@@ -318,7 +317,7 @@ const cdkData = [
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-disable-cdkv2',
                 },
               ],
               statusCode: 200,
@@ -354,7 +353,7 @@ const cdkData = [
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-disable-cdkv2',
                 },
               ],
               statTags: {
@@ -362,9 +361,9 @@ const cdkData = [
                 destinationId: 'default-destinationId',
                 errorCategory: 'transformation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-disable-cdkv2',
               },
               statusCode: 500,
             },
@@ -374,5 +373,3 @@ const cdkData = [
     },
   },
 ];
-
-export const data = [...cdkData, ...nativeData];

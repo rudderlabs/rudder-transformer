@@ -62,7 +62,7 @@ jobs:
           git config --global user.email "noreply@github.com"
 
       # Calculate the next release version based on conventional semantic release
-      - name: Create Release Branch
+      - name: Calculate Release Version
         id: create-release
         env:
           HUSKY: 0
@@ -86,8 +86,6 @@ jobs:
           echo "Release type is $release_type"
           echo "New version is $new_version"
           echo "New release branch name is $branch_name"
-          git checkout -b "$branch_name"
-          git push --set-upstream origin "$branch_name"
 
           echo "source_branch_name=$source_branch_name" >> $GITHUB_OUTPUT
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
@@ -95,15 +93,35 @@ jobs:
           echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
           echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
 
+      - name: Create Release Branch
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          git checkout -b "${{ steps.create-release.outputs.branch_name }}"
+          git push --set-upstream origin "${{ steps.create-release.outputs.branch_name }}"
+
       - name: Update Changelog & Bump Version
         id: finish-release
+        env:
+          HUSKY: 0
         run: |
           echo "Current version: $CURRENT_VERSION_VALUE"
           echo "New version: $NEW_VERSION_VALUE"
           npx replace $CURRENT_VERSION_VALUE $NEW_VERSION_VALUE sonar-project.properties
-          git add sonar-project.properties
-          npm run release -- -a --skip.tag --no-verify
-          git push
+          npm run release -- --skip.commit --skip.tag --no-verify
+
+      - name: Create verified commit via API
+        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          branch-name: ${{ steps.create-release.outputs.branch_name }}
+          commit-message: 'chore(release): v${{ steps.create-release.outputs.new_version }}'
+          files: |
+            CHANGELOG.md
+            package.json
+            package-lock.json
+            sonar-project.properties
 
       - name: Create Pull Request
         run: |

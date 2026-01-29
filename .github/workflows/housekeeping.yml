@@ -26,7 +26,7 @@ jobs:
 
       - uses: actions/stale@997185467fa4f803885201cee163a9f38240193d # v10.1.1
         with:
-          repo-token: ${{ secrets.PAT }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           operations-per-run: 200
           stale-pr-message: 'This PR is considered to be stale. It has been open for 20 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the PR.'
           stale-issue-message: 'This issue is considered to be stale. It has been open for 30 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the issue.'
@@ -56,7 +56,7 @@ jobs:
       - name: Delete Old Branches
         uses: beatlabs/delete-old-branches-action@4eeeb8740ff8b3cb310296ddd6b43c3387734588 # v0.0.11
         with:
-          repo_token: ${{ secrets.PAT }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           date: '3 months ago'
           dry_run: false
           delete_tags: false

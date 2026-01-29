@@ -3,21 +3,21 @@ name: Draft New Release
 on: workflow_dispatch
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   validate-actor:
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
-    secrets:
-      PAT: ${{ secrets.PAT }}
 
   draft-new-release:
     name: Draft New Release
     runs-on: ubuntu-latest
     needs: validate-actor
+
+    permissions:
+      contents: read
 
     # Only allow release stakeholders to initiate releases
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/'))
@@ -27,10 +27,20 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits, tags, and push branches
+          permission-pull-requests: write # to create and update PRs
+
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Setup Node
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
@@ -103,4 +113,4 @@ jobs:
             --title "chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main" \
             --body ":crown: *An automated PR*"
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}

@@ -2,11 +2,11 @@ import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 
-export const validationCDKTestData: ProcessorTestData[] = [
+export const validationNativeTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-1',
     name: 'linkedin_audience',
-    description: 'Record call : event is valid with all required elements',
+    description: 'Native Record call : event is valid with all required elements',
     scenario: 'Validation',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -147,7 +147,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-2',
     name: 'linkedin_audience',
-    description: 'Record call : event is not valid with all required elements',
+    description: 'Native Record call : event is not valid with all required elements',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and error message',
     feature: 'processor',
@@ -255,7 +255,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-3',
     name: 'linkedin_audience',
-    description: 'Record call : isHashRequired is not provided',
+    description: 'Native Record call : isHashRequired is not provided',
     scenario: 'Validation',
     successCriteria:
       'should succeed with 200 status code and transformed message with provided values of identifiers',
@@ -394,7 +394,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-4',
     name: 'linkedin_audience',
-    description: 'Record call : Access Token is missing in metadata secret',
+    description: 'Native Record call : Access Token is missing in metadata secret',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and configuration error message',
     feature: 'processor',
@@ -488,7 +488,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-5',
     name: 'linkedin_audience',
-    description: 'Record call : audienceType is missing in config',
+    description: 'Native Record call : audienceType is missing in config',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and configuration error message',
     feature: 'processor',
@@ -575,7 +575,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-6',
     name: 'linkedin_audience',
-    description: 'Record call : Message type is missing',
+    description: 'Native Record call : Message type is missing',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and instrumentation error message',
     feature: 'processor',
@@ -659,7 +659,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-7',
     name: 'linkedin_audience',
-    description: 'Record call : Unsupported message type',
+    description: 'Native Record call : Unsupported message type',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and instrumentation error message',
     feature: 'processor',
@@ -743,7 +743,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-8',
     name: 'linkedin_audience',
-    description: 'Record call : fields is missing',
+    description: 'Native Record call : fields is missing',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and instrumentation error message',
     feature: 'processor',
@@ -827,7 +827,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-9',
     name: 'linkedin_audience',
-    description: 'Record call : identifiers is missing',
+    description: 'Native Record call : identifiers is missing',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and instrumentation error message',
     feature: 'processor',
@@ -911,7 +911,7 @@ export const validationCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-validation-test-10',
     name: 'linkedin_audience',
-    description: 'Record call : action type is unsupported',
+    description: 'Native Record call : action type is unsupported',
     scenario: 'Validation',
     successCriteria: 'should fail with 400 status code and instrumentation error message',
     feature: 'processor',

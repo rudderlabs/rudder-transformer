@@ -236,7 +236,12 @@ const marketoResponseHandler = (
   if (response.errors.length > 0 && response.errors[0].message) {
     message += ` -> ${response.errors[0].message}`;
   }
-  // Marketo sent us some failure which is not handled
+  logger.error('Marketo sent us some failure which is not handled', {
+    status,
+    responseErrors: JSON.stringify(response.errors),
+    responseSuccess: response.success,
+    errorMessage: message,
+  });
   throw new UnhandledStatusCodeError(message, destResponse);
 };
 

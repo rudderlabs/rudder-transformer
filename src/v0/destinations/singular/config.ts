@@ -1,4 +1,5 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
+import type { SingularPlatform, SingularPlatformMapping } from './types';
 
 const BASE_URL = 'https://s2s.singular.net/api/v1';
 
@@ -32,9 +33,9 @@ const CONFIG_CATEGORIES = {
   PRODUCT_PROPERTY: {
     name: 'SINGULAREventProductConfig',
   },
-};
+} as const;
 
-const SUPPORTED_PLATFORM = {
+const SUPPORTED_PLATFORM: Record<SingularPlatform, SingularPlatformMapping> = {
   android: 'ANDROID',
   ios: 'IOS',
   pc: 'unity',
@@ -44,9 +45,15 @@ const SUPPORTED_PLATFORM = {
   metaquest: 'unity',
 };
 
-const SUPPORTED_UNTIY_SUBPLATFORMS = ['pc', 'xbox', 'playstation', 'nintendo', 'metaquest'];
+const SUPPORTED_UNTIY_SUBPLATFORMS: readonly SingularPlatform[] = [
+  'pc',
+  'xbox',
+  'playstation',
+  'nintendo',
+  'metaquest',
+] as const;
 
-const SINGULAR_SESSION_ANDROID_EXCLUSION = [
+const SINGULAR_SESSION_ANDROID_EXCLUSION: string[] = [
   'referring_application',
   'asid',
   'url',
@@ -55,7 +62,7 @@ const SINGULAR_SESSION_ANDROID_EXCLUSION = [
   'install',
 ];
 
-const SINGULAR_SESSION_IOS_EXCLUSION = [
+const SINGULAR_SESSION_IOS_EXCLUSION: string[] = [
   'install_receipt',
   'url',
   'userAgent',
@@ -67,7 +74,7 @@ const SINGULAR_SESSION_IOS_EXCLUSION = [
   'install',
 ];
 
-const SINGULAR_EVENT_ANDROID_EXCLUSION = [
+const SINGULAR_EVENT_ANDROID_EXCLUSION: string[] = [
   'price',
   'quantity',
   'currency',
@@ -81,7 +88,7 @@ const SINGULAR_EVENT_ANDROID_EXCLUSION = [
   'products',
 ];
 
-const SINGULAR_EVENT_IOS_EXCLUSION = [
+const SINGULAR_EVENT_IOS_EXCLUSION: string[] = [
   'price',
   'quantity',
   'currency',
@@ -96,10 +103,14 @@ const SINGULAR_EVENT_IOS_EXCLUSION = [
   'products',
 ];
 
-const SESSIONEVENTS = ['application installed', 'application updated', 'application opened'];
+const SESSIONEVENTS: readonly string[] = [
+  'application installed',
+  'application updated',
+  'application opened',
+] as const;
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-module.exports = {
+export {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   SESSIONEVENTS,

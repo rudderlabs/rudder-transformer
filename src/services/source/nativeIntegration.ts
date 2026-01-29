@@ -63,20 +63,17 @@ export class NativeIntegrationSourceService implements SourceService {
           stats.increment('source_transform_errors', {
             source: sourceType,
           });
-          logger.debug(`Error during source Transform: ${error}`, {
+          logger.error(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
-          // log the payload schema here
-          const duplicateSourceEvent: any = sourceEvent;
+          let requestBody = sourceEvent.request.body;
           try {
-            duplicateSourceEvent.output.request.body = getBodyFromV2SpecPayload(
-              duplicateSourceEvent?.output,
-            );
+            requestBody = JSON.parse(requestBody);
           } catch (e) {
             /* empty */
           }
           logger.error(
-            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(duplicateSourceEvent))}`,
+            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(requestBody))}`,
           );
 
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);

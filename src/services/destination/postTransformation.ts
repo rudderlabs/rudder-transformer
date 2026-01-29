@@ -257,7 +257,7 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    // ErrorReportingService.reportError(error, metaTo.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 }

@@ -5,21 +5,19 @@ on:
     workflows: ['Publish New GitHub Release']
     types:
       - completed
-  workflow_call:
-    secrets:
-      PAT:
-        description: 'Personal Access Token for repository access'
-        required: true
+  workflow_call: {}
   workflow_dispatch: {}
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   update-ingestion-service:
     name: Update Ingestion Service with Latest Transformer Version
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
     # Only run if the workflow_run was successful (doesn't apply to manual triggers)
     if: >
       github.event_name == 'workflow_dispatch' ||
@@ -30,6 +28,16 @@ jobs:
         uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
         with:
           egress-policy: audit
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits, tags, and push branches
+          permission-pull-requests: write # to create and update PRs
+          repositories: rudder-ingestion-svc # to access cross-repo
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -45,7 +53,7 @@ jobs:
       - name: Get Latest Transformer Release Version
         id: get_latest_version
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Get the latest release tag from GitHub API
           latest_tag=$(gh api repos/rudderlabs/rudder-transformer/releases/latest --jq '.tag_name')
@@ -66,7 +74,7 @@ jobs:
       - name: Check and Create Go Module Tag
         id: create_go_tag
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           VERSION: ${{ steps.get_latest_version.outputs.version }}
           GO_TAG: ${{ steps.get_latest_version.outputs.go_tag }}
         run: |
@@ -92,7 +100,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           repository: rudderlabs/rudder-ingestion-svc
-          token: ${{ secrets.PAT }}
+          token: ${{ steps.generate-token.outputs.token }}
           path: rudder-ingestion-svc
           fetch-depth: 1
 
@@ -158,7 +166,7 @@ jobs:
       - name: Create Pull Request
         if: steps.update.outputs.has_changes == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           LATEST_TAG: ${{ steps.get_latest_version.outputs.latest_tag }}
         run: |
           cd rudder-ingestion-svc

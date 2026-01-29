@@ -8,20 +8,21 @@ on:
         required: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate-actor:
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
-    secrets:
-      PAT: ${{ secrets.PAT }}
 
   create-branch:
     name: Create New Hotfix Branch
     runs-on: ubuntu-latest
     needs: validate-actor
+
+    permissions:
+      contents: read
 
     # Only allow these users to create new hotfix branch from 'main'
     if: github.ref == 'refs/heads/main'
@@ -31,9 +32,17 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create branches
+
       - name: Create Branch
         uses: peterjgrainger/action-create-branch@10c7d268152480ae859347db45dc69086cef1d9c
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           branch: 'hotfix/${{ inputs.hotfix_name }}'

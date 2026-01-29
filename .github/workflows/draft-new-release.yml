@@ -54,13 +54,6 @@ jobs:
         run: |
           npm ci
 
-      # In order to make a commit, we need to initialize a user.
-      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
-      - name: Initialize Mandatory Git Config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "noreply@github.com"
-
       # Calculate the next release version based on conventional semantic release
       - name: Calculate Release Version
         id: create-release
@@ -93,12 +86,15 @@ jobs:
           echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
           echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
 
-      - name: Create Release Branch
+      - name: Create Release Branch via GitHub API
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git checkout -b "${{ steps.create-release.outputs.branch_name }}"
-          git push --set-upstream origin "${{ steps.create-release.outputs.branch_name }}"
+          BASE_SHA=$(git rev-parse origin/main)
+          gh api repos/${{ github.repository }}/git/refs \
+            --method POST \
+            -f ref="refs/heads/${{ steps.create-release.outputs.branch_name }}" \
+            -f sha="$BASE_SHA"
 
       - name: Update Changelog & Bump Version
         id: finish-release

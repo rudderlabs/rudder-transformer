@@ -46,13 +46,6 @@ jobs:
           echo "tag_name=$version" >> $GITHUB_OUTPUT
           echo "Target Version: $tag_name"
 
-      # In order to make a commit, we need to initialize a user.
-      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
-      - name: Initialize Mandatory Git Config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "noreply@github.com"
-
       - name: Clone Devops Repo
         run: |
           git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
@@ -62,6 +55,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b shared-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           cd helm-charts/shared-services/per-az
@@ -92,6 +87,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           cd customer-objects
@@ -134,6 +131,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudderstack-operator
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           cd operator-helm/valuefiles

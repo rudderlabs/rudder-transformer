@@ -33,7 +33,7 @@ const CONFIG_CATEGORIES = {
   PRODUCT_PROPERTY: {
     name: 'SINGULAREventProductConfig',
   },
-} as const;
+};
 
 const SUPPORTED_PLATFORM: Record<SingularPlatform, SingularPlatformMapping> = {
   android: 'ANDROID',
@@ -45,13 +45,13 @@ const SUPPORTED_PLATFORM: Record<SingularPlatform, SingularPlatformMapping> = {
   metaquest: 'unity',
 };
 
-const SUPPORTED_UNTIY_SUBPLATFORMS: SingularPlatform[] = [
+const SUPPORTED_UNTIY_SUBPLATFORMS: ReadonlyArray<SingularPlatform> = [
   'pc',
   'xbox',
   'playstation',
   'nintendo',
   'metaquest',
-] as const;
+];
 
 const SINGULAR_SESSION_ANDROID_EXCLUSION: string[] = [
   'referring_application',
@@ -107,7 +107,7 @@ const SESSIONEVENTS: readonly string[] = [
   'application installed',
   'application updated',
   'application opened',
-] as const;
+];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 export {

@@ -2,32 +2,37 @@ import { Destination, RouterTransformationRequestData, RudderMessage } from '../
 import { BatchedRequest } from '../../../types/destinationTransformation';
 
 /**
- * Session Event configuration in destination config
+ * Custom session event configuration from destination settings
+ * Used to determine if an event should be treated as a session event
  */
 interface SingularSessionEvent {
   sessionEventName: string;
 }
 
+/**
+ * Singular destination configuration
+ */
 export interface SingularDestinationConfig {
   /**
-   * Singular API Key (required)
+   * Singular SDK Key for API authentication (required)
    */
   apiKey: string;
 
   /**
-   * List of custom session events to track
+   * List of custom session events
+   * Combined with default session events: Application Installed, Application Updated, Application Opened
    */
   sessionEventList?: SingularSessionEvent[];
 
   /**
-   * Match ID type for Unity platforms
-   * Can be 'advertisingId' or custom match_id from properties
+   * Match ID source for Unity platforms
+   * Values: 'advertisingId' or custom identifier
    */
   match_id?: 'advertisingId' | string;
 }
 
 /**
- * Product object for e-commerce events
+ * Product object for e-commerce revenue events
  */
 export interface SingularProduct {
   product_id?: string;
@@ -45,11 +50,11 @@ export interface SingularProduct {
 }
 
 /**
- * Extended RudderMessage with Singular-specific properties
+ * RudderStack message extended with Singular-specific properties
  */
 export interface SingularMessage extends RudderMessage {
   properties?: {
-    // E-commerce fields
+    // E-commerce revenue fields
     products?: SingularProduct[];
     currency?: string;
     price?: number;
@@ -67,14 +72,14 @@ export interface SingularMessage extends RudderMessage {
     build?: string;
     install?: string;
 
-    // Event fields
+    // Event revenue validation fields
     purchase_receipt?: string;
     product_id?: string;
     sku?: string;
     purchase_transaction_id?: string;
     receipt_signature?: string;
 
-    // iOS-specific fields
+    // iOS-specific attribution fields
     userAgent?: string;
     attribution_token?: string;
     skan_conversion_value?: string;
@@ -101,18 +106,11 @@ export interface SingularMessage extends RudderMessage {
 }
 
 /**
- * Common parameters for all Singular API endpoints
+ * Common parameters shared by both SESSION and EVENT endpoints
  *
- * These types document the Singular API based on official docs and mapping configs.
- * The mapping configs (*.json files) enforce required fields via constructPayload(),
- * which generates payloads conforming to these interfaces.
- *
- * Note: Runtime uses Record<string, unknown> due to TypeScript union type limitations
- * when conditionally adding properties (e.g., dnt only for SESSION, is_revenue_event only for EVENT).
- * The generated payloads structurally match these interfaces.
- *
- * Ref: https://support.singular.net/hc/en-us/articles/31496864868635 (EVENT)
- * Ref: https://support.singular.net/hc/en-us/articles/31394799175963 (SESSION)
+ * Based on Singular S2S API documentation:
+ * - EVENT: https://support.singular.net/hc/en-us/articles/31496864868635
+ * - SESSION: https://support.singular.net/hc/en-us/articles/31394799175963
  */
 interface SingularCommonParams {
   // ==================== API Authentication (Required) ====================
@@ -219,12 +217,12 @@ interface SingularCommonParams {
   /** JSON URL-encoded object with custom key-value pairs. Max 5 pairs, 200 chars per key/value */
   global_properties?: string;
 
-  // ==================== Network Connection (Common to both SESSION and EVENT) ====================
-  /** Network connection type: wifi or carrier. Added by implementation for both SESSION and EVENT. */
+  // ==================== Network Connection ====================
+  /** Network connection type: wifi or carrier */
   c?: 'wifi' | 'carrier';
 
   // ==================== Unity Platforms ====================
-  /** Match ID for Unity platforms. Used for both SESSION and EVENT. */
+  /** Match ID for Unity platforms */
   match_id?: string;
 }
 
@@ -248,7 +246,7 @@ export interface SingularSessionParams extends SingularCommonParams {
   update_time?: number;
 
   // ==================== Fraud Prevention Parameters ====================
-  /** Install source package name or store identifier (Android, PC) */
+  /** Install source package name or store identifier (Android only) */
   install_source?: string;
 
   /** Base64-encoded iOS install receipt for fraud validation */
@@ -289,7 +287,7 @@ export interface SingularSessionParams extends SingularCommonParams {
   fcm?: string;
 
   // ==================== Data Privacy ====================
-  /** Do Not Track status. 1=enabled, 0=disabled */
+  /** Do Not Track status. 1=enabled (tracking disabled), 0=disabled (tracking enabled) */
   dnt?: 0 | 1;
 
   /** Indicates if Do Not Track is OFF. 0=DNT enabled, 1=DNT disabled */
@@ -308,8 +306,6 @@ export interface SingularSessionParams extends SingularCommonParams {
 
   /** Session notification name */
   sessionNotificationName?: string;
-
-  [key: string]: unknown;
 }
 
 /**
@@ -364,58 +360,15 @@ export interface SingularEventParams extends SingularCommonParams {
 }
 
 /**
- * Union type representing all Singular API request parameters
+ * Union type representing Singular S2S API request parameters
  *
- * Payloads generated by constructPayload() structurally conform to one of these types:
- * - SingularSessionParams: for /api/v1/launch (SESSION) endpoint
- * - SingularEventParams: for /api/v1/evt (EVENT) endpoint
- *
- * The mapping configs (SINGULAR*Config.json) enforce required fields that match these interfaces.
- *
- * Note: Due to TypeScript union type restrictions with conditional property assignment,
- * the runtime code uses Record<string, unknown>. However, the generated payloads are
- * guaranteed to conform to these interfaces structurally via constructPayload() and
- * the mapping configs.
- *
- * Use this type for:
- * - Documentation of the complete API surface
- * - Type reference when understanding payload structure
- * - Validation utilities (with type guards/narrowing)
+ * - SingularSessionParams: GET /api/v1/launch (SESSION events)
+ * - SingularEventParams: GET /api/v1/evt (EVENT events)
  */
 export type SingularRequestParams = SingularSessionParams | SingularEventParams;
 
 /**
- * Singular processor output (GET request with params)
- * Always uses EVENT endpoint parameters since processor creates event requests (not session requests)
- */
-export interface SingularProcessorOutput {
-  version: string;
-  type: string;
-  method: string;
-  endpoint: string;
-  params: SingularEventParams;
-  headers?: Record<string, unknown>;
-  body?: Record<string, unknown>;
-  files?: Record<string, unknown>;
-}
-
-/**
- * Union type for Singular transformation response
- * Can be a single output or an array of outputs (for products)
- */
-export type SingularTransformationOutput = SingularProcessorOutput | SingularProcessorOutput[];
-
-/**
- * Payload structure returned by platformWisePayloadGenerator
- *
- * The payload is generated by constructPayload() using mapping configs (*.json) that enforce
- * required fields, then additional properties are conditionally added based on event type:
- * - SESSION events: adds dnt, openuri, install_source, c
- * - EVENT events: adds is_revenue_event, e (event attributes)
- *
- * Uses SingularRequestParams to maintain type safety - the function overloads ensure
- * the correct type (SingularSessionParams or SingularEventParams) is returned based on
- * the sessionEvent boolean parameter.
+ * Payload structure for Singular transformation
  */
 export interface SingularPayload {
   payload: SingularRequestParams;
@@ -423,7 +376,7 @@ export interface SingularPayload {
 }
 
 /**
- * Platform type (lowercase for internal use)
+ * Supported platform types (lowercase)
  */
 export type SingularPlatform =
   | 'android'
@@ -435,28 +388,28 @@ export type SingularPlatform =
   | 'metaquest';
 
 /**
- * Platform mapping values (uppercase for config)
+ * Platform mapping categories
+ * - ANDROID: Android devices
+ * - IOS: iOS/iPadOS/watchOS/tvOS devices
+ * - unity: Unity platforms (PC, Xbox, PlayStation, Nintendo, MetaQuest)
  */
 export type SingularPlatformMapping = 'ANDROID' | 'IOS' | 'unity';
 
 /**
  * Event type enumeration
+ * - SESSION: /api/v1/launch endpoint
+ * - EVENT: /api/v1/evt endpoint
  */
 export type SingularEventType = 'SESSION' | 'EVENT';
 
 /**
- * Exclusion list type for extracting custom fields
- */
-export type SingularExclusionList = string[];
-
-/**
- * Strongly typed Destination with Singular config
+ * Destination type with Singular configuration
  */
 export type SingularDestination = Destination<SingularDestinationConfig>;
 
 /**
- * Batch request type with properly typed params
- * Params are typed as SingularRequestParams (union of SingularSessionParams | SingularEventParams)
+ * Batch request for Singular transformation
+ * GET request with query parameters
  */
 export type SingularBatchRequest = BatchedRequest<
   Record<string, unknown>,
@@ -465,7 +418,7 @@ export type SingularBatchRequest = BatchedRequest<
 >;
 
 /**
- * Router transformation request with Singular-specific types
+ * Router transformation request
  */
 export type SingularRouterRequest = RouterTransformationRequestData<
   SingularMessage,

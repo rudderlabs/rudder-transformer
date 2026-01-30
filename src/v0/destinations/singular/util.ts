@@ -281,7 +281,7 @@ const platformWisePayloadGenerator = (
   }
 
   const platform = contextOsName.toLowerCase() as SingularPlatform;
-  if (!SUPPORTED_PLATFORM[platform] && !SUPPORTED_UNTIY_SUBPLATFORMS[platform]) {
+  if (!SUPPORTED_PLATFORM[platform]) {
     throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 

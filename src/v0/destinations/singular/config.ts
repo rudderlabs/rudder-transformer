@@ -35,7 +35,7 @@ const CONFIG_CATEGORIES = {
   },
 };
 
-const SUPPORTED_PLATFORM: Record<SingularPlatform, SingularPlatformMapping> = {
+const SUPPORTED_PLATFORM: Readonly<Record<SingularPlatform, SingularPlatformMapping>> = {
   android: 'ANDROID',
   ios: 'IOS',
   pc: 'unity',

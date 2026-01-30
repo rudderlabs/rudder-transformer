@@ -72,33 +72,43 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
 
-      - name: Tag & Create GitHub Release
+      - name: Check if tag exists
+        id: check_tag
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          RELEASE_VERSION: ${{ steps.extract-version.outputs.release_version }}
+        run: |
+          echo "🏷️ Checking if tag v$RELEASE_VERSION exists..."
+          git fetch --tags origin
+          if git rev-parse --verify "v$RELEASE_VERSION" >/dev/null 2>&1; then
+            echo "✅ Tag v$RELEASE_VERSION already exists, skipping tag creation"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "🏷️ Tag v$RELEASE_VERSION does not exist, will create"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create verified tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          branch-name: main
+          tag: 'v${{ steps.extract-version.outputs.release_version }}'
+          files: ''
+          tag-only-if-file-changes: false
+
+      - name: Create GitHub Release
         id: create_release
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          echo "🏷️ Checking and creating tag v${{ steps.extract-version.outputs.release_version }}..."
-          git fetch --tags origin
-
-          # Check if tag already exists
-          if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
-            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} already exists, skipping tag creation"
-          else
-            echo "🏷️ Creating new tag v${{ steps.extract-version.outputs.release_version }}..."
-            git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
-            git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
-            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} created and pushed successfully"
-          fi
-
           echo "🚀 Creating GitHub release with conventional commit notes..."
-          # Make the script executable
           chmod +x scripts/create-github-release.js
-
-          # Create release using our modern script with Angular conventional commit style notes
           node scripts/create-github-release.js
-
           echo "✅ Release process completed successfully!"
           echo "DATE=$(date)" >> $GITHUB_ENV
 

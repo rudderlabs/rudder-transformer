@@ -41,9 +41,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -139,9 +138,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -237,9 +235,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -335,9 +332,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -423,9 +419,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -511,9 +506,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -599,9 +593,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',
@@ -697,9 +690,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'YANDEX_METRICA_OFFLINE_EVENTS',
+                Config: {},
               },
               Config: {
                 counterId: '574342423',

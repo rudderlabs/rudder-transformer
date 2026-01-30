@@ -154,8 +154,10 @@ const fetchWithDnsWrapper = async (transformationTags, ...args) => {
   }
 
   const onDnsResolved = ({ resolveStartTime, cacheHit, error }) => {
+    // Destructure to exclude isSuccess which is not part of fetch_dns_resolve_time labelset
+    const { isSuccess, ...dnsMetricTags } = transformationTags;
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
-      ...transformationTags,
+      ...dnsMetricTags,
       ...(error ? { error: 'true' } : { cacheHit }),
     });
   };

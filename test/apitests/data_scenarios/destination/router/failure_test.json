@@ -140,7 +140,6 @@
             "Name": "PINTEREST_TAG",
             "DisplayName": "Pinterest Tag",
             "Config": {
-              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -375,7 +374,6 @@
             "Name": "PINTEREST_TAG",
             "DisplayName": "Pinterest Tag",
             "Config": {
-              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -610,7 +608,6 @@
             "Name": "PINTEREST_TAG",
             "DisplayName": "Pinterest Tag",
             "Config": {
-              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -992,7 +989,6 @@
             "Name": "PINTEREST_TAG",
             "DisplayName": "Pinterest Tag",
             "Config": {
-              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",
@@ -1205,7 +1201,6 @@
             "Name": "PINTEREST_TAG",
             "DisplayName": "Pinterest Tag",
             "Config": {
-              "cdkV2Enabled": true,
               "destConfig": {
                 "defaultConfig": [
                   "tagId",

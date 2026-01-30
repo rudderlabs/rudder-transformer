@@ -12,7 +12,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -158,7 +158,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -244,7 +244,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -356,7 +356,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -479,7 +479,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -607,7 +607,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -731,7 +731,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -859,7 +859,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -974,7 +974,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1087,7 +1087,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1198,7 +1198,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1313,7 +1313,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',
@@ -1428,7 +1428,7 @@ export const data = [
             destination: {
               Config: { apiKey: '<kochava guid goes here>' },
               DestinationDefinition: {
-                Config: { cdkV2Enabled: true },
+                Config: {},
                 DisplayName: 'Kochava',
                 ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
                 Name: 'KOCHAVA',

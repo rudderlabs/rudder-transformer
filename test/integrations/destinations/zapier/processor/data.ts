@@ -47,9 +47,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -177,9 +176,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -316,9 +314,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -464,9 +461,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -612,9 +608,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -786,9 +781,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',
@@ -891,9 +885,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'ZAPIER',
+                Config: {},
               },
               Config: {
                 zapUrl: 'abcd.zap-hook',

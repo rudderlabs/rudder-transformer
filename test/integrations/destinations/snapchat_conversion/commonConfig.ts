@@ -9,9 +9,7 @@ export const destination: Destination = {
     ID: '123',
     Name: 'SNAPCHAT_CONVERSION',
     DisplayName: 'Snapchat Conversion',
-    Config: {
-      cdkV2Enabled: false,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,

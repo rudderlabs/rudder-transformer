@@ -69,8 +69,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -221,8 +221,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -362,8 +362,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -478,8 +478,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -604,8 +604,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -734,8 +734,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -883,8 +883,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1014,8 +1014,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1145,8 +1145,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1259,8 +1259,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1379,8 +1379,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1495,8 +1495,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1586,8 +1586,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1731,8 +1731,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1906,8 +1906,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -2082,8 +2082,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -2239,8 +2239,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -2392,8 +2392,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -2514,8 +2514,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'ALGOLIA',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },

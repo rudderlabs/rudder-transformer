@@ -76,7 +76,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -169,7 +169,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -243,7 +243,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 3, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -336,7 +336,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 4, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -429,7 +429,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -522,7 +522,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 6, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -601,7 +601,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 7, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -974,7 +974,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1016,7 +1016,7 @@ export const data = [
               statusCode: 400,
               error: 'message type identify is not supported',
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1125,7 +1125,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 8, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1220,7 +1220,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 9, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1315,7 +1315,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 10, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1573,7 +1573,7 @@ export const data = [
               batched: true,
               statusCode: 200,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1683,7 +1683,7 @@ export const data = [
               },
               metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 5, userId: 'u1' },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,
@@ -1736,7 +1736,7 @@ export const data = [
                 errorType: 'instrumentation',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'PINTEREST_TAG', Config: {} },
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'PINTEREST_TAG',
                 hasDynamicConfig: false,

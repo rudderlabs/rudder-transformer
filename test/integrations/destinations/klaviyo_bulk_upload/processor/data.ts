@@ -43,9 +43,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'KLAVIYO_BULK_UPLOAD',
+                Config: {},
               },
               Config: {
                 privateApiKey: 'pk_dummy_123',
@@ -171,9 +170,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'KLAVIYO_BULK_UPLOAD',
+                Config: {},
               },
               Config: {
                 privateApiKey: 'pk_dummy_123',
@@ -295,9 +293,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'KLAVIYO_BULK_UPLOAD',
+                Config: {},
               },
               Config: {
                 privateApiKey: 'pk_dummy_123',
@@ -410,9 +407,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'KLAVIYO_BULK_UPLOAD',
+                Config: {},
               },
               Config: {
                 privateApiKey: 'pk_dummy_123',

@@ -38,10 +38,9 @@ const commonDeletionDestConfig: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -73,10 +72,9 @@ const commonDeletionDestConfig2: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -200,10 +198,9 @@ const commonUpsertDestConfig: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -235,10 +232,9 @@ const commonUpsertDestConfig2: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -270,10 +266,9 @@ const commonUpsertDestConfig2CustomModule: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -305,10 +300,9 @@ const commonUpsertDestConfig3: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },

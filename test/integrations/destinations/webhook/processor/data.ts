@@ -116,9 +116,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -368,9 +367,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -609,9 +607,8 @@ export const data = [
                 webhookUrl: 'https://6b0e6a60.ngrok.io/n',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -849,9 +846,8 @@ export const data = [
                 webhookUrl: 'https://6b0e6a60.',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1047,9 +1043,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1154,9 +1149,8 @@ export const data = [
                 webhookMethod: 'GET',
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1298,9 +1292,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1511,9 +1504,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1702,9 +1694,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -1867,9 +1858,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2018,9 +2008,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2167,9 +2156,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2317,9 +2305,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2467,9 +2454,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2630,9 +2616,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -2878,9 +2863,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -3053,9 +3037,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -3160,9 +3143,8 @@ export const data = [
                 ],
               },
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'WEBHOOK',
+                Config: {},
               },
             },
             metadata: {
@@ -3291,11 +3273,12 @@ export const data = [
                 eventDeliveryTS: 1720497286192,
               },
               DestinationDefinition: {
+                Name: 'WEBHOOK',
                 Config: {
                   secretKeys: ['headers.to'],
                   excludeKeys: [],
                   includeKeys: ['consentManagement'],
-                  cdkV2Enabled: true,
+
                   transformAtV1: 'processor',
                   isAudienceSupported: true,
                 },

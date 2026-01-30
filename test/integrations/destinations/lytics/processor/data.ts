@@ -114,7 +114,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -267,7 +267,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -382,7 +382,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -490,7 +490,7 @@ export const data = [
             },
             destination: {
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -597,7 +597,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -704,7 +704,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -811,7 +811,7 @@ export const data = [
             },
             metadata: { destinationID: 'ewksfdgDFSdvzsdmwsdfvcxj' },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -898,7 +898,7 @@ export const data = [
             },
             metadata: { destinationID: 'ewksfdgDFSdvzsdmwsdfvcxj' },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -1044,7 +1044,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -1188,7 +1188,7 @@ export const data = [
               destination_props: { AF: { af_uid: 'afUid' } },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -1288,7 +1288,7 @@ export const data = [
               destination_props: { AF: { af_uid: 'afUid' } },
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -1398,7 +1398,7 @@ export const data = [
               userId: 'rudder123',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],
@@ -1508,7 +1508,7 @@ export const data = [
               type: 'identify',
             },
             destination: {
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'LYTICS', Config: {} },
               Config: { apiKey: defaultApiKey, stream: 'default' },
               Enabled: true,
               Transformations: [],

@@ -139,13 +139,13 @@
         "destinationDefinitionId": ""
       },
       "statusCode": 400,
-      "error": "Invalid URL in destination config",
+      "error": "Invalid URL in destination config: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Invalid URL in destination config",
       "statTags": {
         "errorCategory": "dataValidation",
         "errorType": "configuration",
         "destType": "WEBHOOK",
         "module": "destination",
-        "implementation": "native",
+        "implementation": "cdkV2",
         "feature": "processor",
         "destinationId": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
         "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"

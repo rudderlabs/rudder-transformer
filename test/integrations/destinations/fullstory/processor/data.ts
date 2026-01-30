@@ -81,9 +81,8 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Fullstory',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'FULLSTORY',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -218,9 +217,8 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Fullstory',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'FULLSTORY',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -305,9 +303,8 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Fullstory',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'FULLSTORY',
+                Config: {},
               },
               Config: {
                 apiKey: secret2,
@@ -399,9 +396,8 @@ export const data = [
               ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
               Name: 'Fullstory',
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'FULLSTORY',
+                Config: {},
               },
               Config: {
                 apiKey: secret2,

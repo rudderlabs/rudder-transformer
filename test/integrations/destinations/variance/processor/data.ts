@@ -105,9 +105,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VARIANCE',
+                Config: {},
               },
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
@@ -351,9 +350,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VARIANCE',
+                Config: {},
               },
               Config: {
                 webhookUrl: 'https://6b0e6a60.ngrok.io/n',
@@ -595,9 +593,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VARIANCE',
+                Config: {},
               },
               Config: {
                 webhookUrl: 'https://6b0e6a60.',
@@ -820,9 +817,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'VARIANCE',
+                Config: {},
               },
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',

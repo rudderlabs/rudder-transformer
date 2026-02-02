@@ -204,8 +204,8 @@ interface SingularCommonParams {
   country?: string;
 
   // ==================== Data Privacy ====================
-  /** JSON URL-encoded end-user consent for data sharing */
-  data_sharing_options?: string;
+  /** End-user consent for data sharing (object passed directly; serialization handled by other services) */
+  data_sharing_options?: { limit_data_sharing: boolean };
 
   // ==================== Cross-Device Support ====================
   /** Your internal user ID for cross-device tracking */

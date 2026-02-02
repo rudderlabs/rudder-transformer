@@ -17,6 +17,7 @@ import {
   defaultGetRequestConfig,
   removeUndefinedAndNullValues,
   extractCustomFields,
+  getIntegrationsObj,
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily,

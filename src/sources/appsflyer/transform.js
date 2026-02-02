@@ -23,7 +23,7 @@ function createBaseMessage(eventName) {
 
 function processEvent(event) {
   if (!event.event_name) {
-    throw new TransformationError('Unknwon event type from Appsflyer');
+    throw new TransformationError('Unknown event type from Appsflyer');
   }
 
   const message = createBaseMessage(event.event_name);

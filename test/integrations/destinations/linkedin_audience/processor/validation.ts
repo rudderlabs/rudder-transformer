@@ -391,4 +391,609 @@ export const validationTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'linkedin_audience-validation-test-4',
+    name: 'linkedin_audience',
+    description: 'Record call : Access Token is missing in metadata secret',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and configuration error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateRecordPayload({
+              fields: {
+                firstName: 'Test',
+                lastName: 'User',
+              },
+              identifiers: {
+                sha256Email: 'random@rudderstack.com',
+              },
+              action: 'insert',
+            }),
+            metadata: {
+              ...generateMetadata(1),
+              secret: {},
+            },
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
+            metadata: {
+              ...generateMetadata(1),
+              secret: {},
+            },
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-5',
+    name: 'linkedin_audience',
+    description: 'Record call : audienceType is missing in config',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and configuration error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateRecordPayload({
+              fields: {
+                firstName: 'Test',
+                lastName: 'User',
+              },
+              identifiers: {
+                sha256Email: 'random@rudderstack.com',
+              },
+              action: 'insert',
+            }),
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'audienceType is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: audienceType is not present. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-6',
+    name: 'linkedin_audience',
+    description: 'Record call : Message type is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              action: 'insert',
+              fields: { firstName: 'Test' },
+              identifiers: { sha256Email: 'random@rudderstack.com' },
+              // type missing
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Message Type is not present. Aborting message.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-7',
+    name: 'linkedin_audience',
+    description: 'Record call : Unsupported message type',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              action: 'insert',
+              fields: { firstName: 'Test' },
+              identifiers: { sha256Email: 'random@rudderstack.com' },
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Event type track is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type track is not supported. Aborting message.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-8',
+    name: 'linkedin_audience',
+    description: 'Record call : fields is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'record',
+              action: 'insert',
+              // fields missing
+              identifiers: { sha256Email: 'random@rudderstack.com' },
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '`fields` is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: `fields` is not present. Aborting message.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-9',
+    name: 'linkedin_audience',
+    description: 'Record call : identifiers is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'record',
+              action: 'insert',
+              fields: { firstName: 'Test' },
+              // identifiers missing
+            },
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '`identifiers` is not present inside properties. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: `identifiers` is not present inside properties. Aborting message.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-10',
+    name: 'linkedin_audience',
+    description: 'Record call : action type is unsupported',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateRecordPayload({
+              fields: {
+                firstName: 'Test',
+                lastName: 'User',
+              },
+              identifiers: {
+                sha256Email: 'random@rudderstack.com',
+              },
+              action: 'unknown',
+            }),
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  audienceType: 'user',
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Unsupported action type. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Unsupported action type. Aborting message.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -66,14 +66,17 @@ export class NativeIntegrationSourceService implements SourceService {
           logger.error(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
-          let requestBody = sourceEvent.request.body;
+          let requestCopy = {
+            // Spreading to avoid mutation of the original object
+            ...sourceEvent.request,
+          };
           try {
-            requestBody = JSON.parse(requestBody);
+            requestCopy.body = JSON.parse(requestCopy.body);
           } catch (e) {
             /* empty */
           }
           logger.error(
-            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(requestBody))}`,
+            `Request schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(requestCopy))}`,
           );
 
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);

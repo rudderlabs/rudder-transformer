@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.121.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.120.0...v1.121.0) (2026-01-29)
+
+
+### Features
+
+* cdk v2 migration support ([#4927](https://github.com/rudderlabs/rudder-transformer/issues/4927)) ([ce4b5b0](https://github.com/rudderlabs/rudder-transformer/commit/ce4b5b0208886d7f31e2a7fdaafc2b377138deaf))
+* new testRun endpoint ([a5d248c](https://github.com/rudderlabs/rudder-transformer/commit/a5d248cd439b4801232b3d3efffe3100ab4570ae))
+* new testRun endpoint ([#4926](https://github.com/rudderlabs/rudder-transformer/issues/4926)) ([d1239ad](https://github.com/rudderlabs/rudder-transformer/commit/d1239ada7d5fa5e38de99d77a8aa0cc60ee0424f))
+
+
+### Bug Fixes
+
+* remove isSuccess label ([#4928](https://github.com/rudderlabs/rudder-transformer/issues/4928)) ([914c65f](https://github.com/rudderlabs/rudder-transformer/commit/914c65f4d4dfd5f3cbd22afacb1e8e6c177102ba))
+
 ## [1.120.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.119.0...v1.120.0) (2026-01-20)
 
 

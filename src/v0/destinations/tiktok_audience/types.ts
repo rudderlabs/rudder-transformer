@@ -3,12 +3,12 @@ import { RouterTransformationRequestData, Destination, Connection, Metadata } fr
 
 export const TiktokAudienceDestinationConfigSchema = z
   .object({
-    isHashRequired: z.boolean().optional(),
+    isHashRequired: z.boolean(),
   })
   .passthrough();
 export const TiktokAudienceMessageSchema = z
   .object({
-    type: z.literal('audiencelist').optional(),
+    type: z.string().optional(),
     anonymousId: z.string().optional(),
     properties: z
       .object({

@@ -3,27 +3,29 @@ import { hashToSha256, InstrumentationError } from '@rudderstack/integrations-li
 import type { RouterTransformationResponse } from '../../../types';
 import type { TiktokAudienceMessage, TiktokAudienceRequest } from './types';
 import { SHA256_TRAITS, ACTION_MAP, ENDPOINT } from './config';
-import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
+import {
+  defaultRequestConfig,
+  getDestinationExternalIDInfoForRetl,
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
+} from '../../util';
+import { validateAudienceListMessageType } from '../../util/validate';
 
 function validateInput(message: TiktokAudienceMessage) {
-  const messageType = message.type;
-  if (!messageType) {
-    throw new InstrumentationError('message Type is not present. Aborting message.');
-  }
-  if (messageType.toLowerCase() !== 'audiencelist') {
-    throw new InstrumentationError(
-      `Event type ${messageType.toLowerCase()} is not supported. Aborting message.`,
-    );
-  }
-  if (!message?.properties) {
+  const { type, properties } = message;
+
+  validateAudienceListMessageType(type);
+
+  if (!properties) {
     throw new InstrumentationError('Message properties is not present. Aborting message.');
   }
-  if (!message?.properties?.listData) {
+
+  const { listData } = properties;
+  if (!listData) {
     throw new InstrumentationError('listData is not present inside properties. Aborting message.');
   }
 
-  const keys = Object.keys(message.properties.listData);
-  for (const key of keys) {
+  for (const key of Object.keys(listData)) {
     if (!ACTION_MAP[key]) {
       throw new InstrumentationError(`unsupported action type ${key}. Aborting message.`);
     }
@@ -38,7 +40,7 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
       ?.split(',')
       .map((s) => s.trim())
       .filter(Boolean) ?? [];
-  const audienceId = message?.context?.externalId?.[0]?.type?.split('-')[1] ?? '';
+  const audienceId = getDestinationExternalIDInfoForRetl(message, 'TIKTOK_AUDIENCE').objectType;
   const isHashRequired = Boolean(destination?.Config?.isHashRequired);
   const advertiserIds = metadata?.secret?.advertiserIds;
   const hashIdentifier = (destinationField: string, trait: string) => {
@@ -53,10 +55,10 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
 
   const hashTraits = (traits: Record<string, string>[]) =>
     traits.map((trait) =>
-      destinationFields.map((field) =>
-        trait[field]
+      destinationFields.map((destinationField) =>
+        trait[destinationField]
           ? {
-              id: hashIdentifier(field, trait[field]),
+              id: hashIdentifier(destinationField, trait[destinationField]),
               audience_ids: [audienceId],
             }
           : {},

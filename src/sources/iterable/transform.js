@@ -12,7 +12,7 @@ function process(payload) {
   const event = getBodyFromV2SpecPayload(payload);
   // throw an error if (email, eventName) are not present
   if (!(event.email && event.eventName)) {
-    throw new TransformationError('Unknwon event type from Iterable');
+    throw new TransformationError('Unknown event type from Iterable');
   }
   const message = new Message(`Iterable`);
 

@@ -29,7 +29,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -93,7 +93,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             output: {
               body: {
                 FORM: {},
@@ -170,7 +170,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -233,18 +233,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'Audience Id is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Audience Id is not present. Aborting',
-            metadata: generateMetadata(1),
+            error: 'Audience Id is not present. Aborting',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -279,7 +278,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -342,7 +341,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             output: {
               body: {
                 FORM: {},
@@ -415,7 +414,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               action: 'insert',
             }),
             metadata: {
-              ...generateMetadata(1),
+              ...generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
               secret: {},
             },
             destination: {
@@ -464,9 +463,9 @@ export const validationNativeTestData: ProcessorTestData[] = [
         body: [
           {
             error:
-              'Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
+              'Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
             metadata: {
-              ...generateMetadata(1),
+              ...generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
               secret: {},
             },
             statTags: {
@@ -475,9 +474,9 @@ export const validationNativeTestData: ProcessorTestData[] = [
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -508,7 +507,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -553,18 +552,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'audienceType is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: audienceType is not present. Aborting',
-            metadata: generateMetadata(1),
+            error: 'audienceType is not present. Aborting',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -591,7 +589,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               identifiers: { sha256Email: 'random@rudderstack.com' },
               // type missing
             },
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -637,18 +635,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'Message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Message Type is not present. Aborting message.',
-            metadata: generateMetadata(1),
+            error: 'Message Type is not present. Aborting message.',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -675,7 +672,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               fields: { firstName: 'Test' },
               identifiers: { sha256Email: 'random@rudderstack.com' },
             },
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -721,18 +718,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'Event type track is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type track is not supported. Aborting message.',
-            metadata: generateMetadata(1),
+            error: 'Event type track is not supported. Aborting message.',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -759,7 +755,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               // fields missing
               identifiers: { sha256Email: 'random@rudderstack.com' },
             },
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -805,18 +801,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '`fields` is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: `fields` is not present. Aborting message.',
-            metadata: generateMetadata(1),
+            error: '`fields` is not present. Aborting message.',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -843,7 +838,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               fields: { firstName: 'Test' },
               // identifiers missing
             },
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -889,18 +884,17 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              '`identifiers` is not present inside properties. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: `identifiers` is not present inside properties. Aborting message.',
-            metadata: generateMetadata(1),
+            error: '`identifiers` is not present inside properties. Aborting message.',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -931,7 +925,7 @@ export const validationNativeTestData: ProcessorTestData[] = [
               },
               action: 'unknown',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -977,18 +971,104 @@ export const validationNativeTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'Unsupported action type. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Unsupported action type. Aborting message.',
-            metadata: generateMetadata(1),
+            error: 'Unsupported action type. Aborting message.',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
               destType: 'LINKEDIN_AUDIENCE',
               destinationId: 'default-destinationId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-11',
+    name: 'linkedin_audience',
+    description: 'Native Record call : audienceType is unknown',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and configuration error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateRecordPayload({
+              fields: {
+                firstName: 'Test',
+                lastName: 'User',
+              },
+              identifiers: {
+                sha256Email: 'random@rudderstack.com',
+              },
+              action: 'insert',
+            }),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                  audienceType: 'unknown',
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Unsupported audience type unknown. Aborting',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },

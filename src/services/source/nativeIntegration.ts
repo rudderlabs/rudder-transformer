@@ -21,7 +21,6 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
-import { getBodyFromV2SpecPayload } from '../../v0/util';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
 
 const SUPPORTED_HYDRATION_SOURCE_TYPES = ['facebook_lead_ads_native'];
@@ -66,7 +65,7 @@ export class NativeIntegrationSourceService implements SourceService {
           logger.error(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
-          let requestCopy = {
+          const requestCopy = {
             // Spreading to avoid mutation of the original object
             ...sourceEvent.request,
           };

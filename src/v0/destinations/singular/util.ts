@@ -1,12 +1,15 @@
 import { TransformationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import {
+  BASE_URL,
+  BASE_URL_V2,
   CONFIG_CATEGORIES,
+  CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
+  MAPPING_CONFIG_V2,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
   SINGULAR_EVENT_IOS_EXCLUSION,
-  BASE_URL,
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
@@ -21,6 +24,7 @@ import {
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily,
+  isEmptyObject,
 } from '../../util';
 import type {
   SingularMessage,
@@ -54,14 +58,16 @@ const extractExtraFields = (
  * @param payload - Common payload for each revenue event
  * @param Config - Destination configuration
  * @param eventAttributes - Optional custom event attributes
+ * @param eventEndpoint - Endpoint for event requests (caller passes BASE_URL/evt or BASE_URL_V2/evt)
  * @returns Array of revenue event batch requests
  */
 const generateRevenuePayloadArray = (
   products: SingularProduct[],
   payload: SingularRequestParams,
   Config: SingularDestinationConfig,
-  eventAttributes?: Record<string, unknown>,
-) => {
+  eventAttributes: Record<string, unknown> | undefined,
+  eventEndpoint: string,
+): SingularBatchRequest[] => {
   const responseArray: SingularBatchRequest[] = [];
   products.forEach((product) => {
     const productDetails = constructPayload(
@@ -72,17 +78,16 @@ const generateRevenuePayloadArray = (
       ...payload,
       ...productDetails,
       a: Config.apiKey,
-      // is_revenue_event will be true as here payload for a REVENUE event is being generated
       is_revenue_event: true,
     }) as SingularEventParams;
 
     const response: SingularBatchRequest = {
       ...defaultRequestConfig(),
-      endpoint: `${BASE_URL}/evt`,
+      endpoint: eventEndpoint,
       params: finalPayload,
       method: defaultGetRequestConfig.requestMethod,
     };
-    if (eventAttributes) {
+    if (!isEmptyObject(eventAttributes)) {
       response.params = { ...response.params, e: eventAttributes };
     }
     responseArray.push(response);
@@ -96,6 +101,28 @@ const exclusionList: Record<string, readonly string[]> = {
   ANDROID_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_ANDROID_EXCLUSION,
   IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION,
 };
+
+/** V2 API: exclude singularDeviceId from event attributes (e) to avoid duplicating sdid query param */
+const SINGULAR_V2_EVENT_ATTRIBUTE_EXCLUSION_EXTRA = ['singularDeviceId'];
+
+/**
+ * Reads integrations.Singular.singularDeviceId from the message.
+ * Used for V2 event API version selection and sdid query param.
+ */
+const getSingularDeviceIdFromMessage = (message: SingularMessage): string | undefined => {
+  const integrationsObj = getIntegrationsObj(message, 'singular' as any);
+  const singularDeviceId = integrationsObj?.singularDeviceId;
+  return typeof singularDeviceId === 'string' && singularDeviceId.length > 0
+    ? singularDeviceId
+    : undefined;
+};
+
+/**
+ * True when the customer sends integrations.Singular.singularDeviceId (use V2 event API).
+ * Used only for non-session events; session events always use V1 launch.
+ */
+const shouldUseV2EventApi = (message: SingularMessage): boolean =>
+  getSingularDeviceIdFromMessage(message) != null;
 
 /**
  * Determines if the event is a session event
@@ -223,4 +250,24 @@ const platformWisePayloadGenerator = (
   return { payload, eventAttributes };
 };
 
-export { generateRevenuePayloadArray, isSessionEvent, platformWisePayloadGenerator };
+/**
+ * Returns the Singular API endpoint for the given request type.
+ * Session events use V1 launch; non-session events use V2 evt when singularDeviceId is present, otherwise V1 evt.
+ */
+const getEndpoint = (sessionEvent: boolean, useV2EventApi: boolean): string => {
+  if (sessionEvent) {
+    return `${BASE_URL}/launch`;
+  }
+  if (useV2EventApi) {
+    return `${BASE_URL_V2}/evt`;
+  }
+  return `${BASE_URL}/evt`;
+};
+
+export {
+  generateRevenuePayloadArray,
+  getEndpoint,
+  isSessionEvent,
+  platformWisePayloadGenerator,
+  shouldUseV2EventApi,
+};

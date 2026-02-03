@@ -1,6 +1,10 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { BASE_URL } from './config';
-import { defaultRequestConfig, defaultGetRequestConfig, simpleProcessRouterDest } from '../../util';
+import {
+  defaultRequestConfig,
+  defaultGetRequestConfig,
+  simpleProcessRouterDest,
+  isEmptyObject,
+} from '../../util';
 import type {
   SingularMessage,
   SingularDestination,
@@ -9,7 +13,13 @@ import type {
   SingularProcessorRequest,
 } from './types';
 
-import { platformWisePayloadGenerator, generateRevenuePayloadArray, isSessionEvent } from './util';
+import {
+  platformWisePayloadGenerator,
+  generateRevenuePayloadArray,
+  getEndpoint,
+  isSessionEvent,
+  shouldUseV2EventApi,
+} from './util';
 
 const responseBuilderSimple = (
   message: SingularMessage,
@@ -23,7 +33,8 @@ const responseBuilderSimple = (
 
   const sessionEvent = isSessionEvent(Config, eventName);
   const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
-  const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
+  const useV2EventApi = !sessionEvent && shouldUseV2EventApi(message);
+  const endpoint = getEndpoint(sessionEvent, useV2EventApi);
 
   // If we have an event where we have an array of Products, example Order Completed
   // We will convert the event to revenue events
@@ -33,6 +44,7 @@ const responseBuilderSimple = (
       payload,
       Config,
       eventAttributes,
+      endpoint,
     );
   }
 
@@ -46,7 +58,7 @@ const responseBuilderSimple = (
     method: defaultGetRequestConfig.requestMethod,
   };
 
-  if (eventAttributes) {
+  if (!isEmptyObject(eventAttributes)) {
     // Add event attributes for EVENT requests
     response.params = { ...response.params, e: eventAttributes };
   }

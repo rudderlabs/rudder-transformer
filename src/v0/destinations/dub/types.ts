@@ -67,17 +67,6 @@ export interface TrackLeadRequestBody {
   metadata?: Record<string, unknown> | null;
 }
 
-export interface TrackLeadResponse {
-  click: {
-    id: string;
-  };
-  customer: {
-    name: string;
-    email: string;
-    avatar: string;
-    externalId: string;
-  };
-}
 // Refer link for type definition: https://dub.co/docs/api-reference/endpoint/track-sale
 export interface TrackSaleRequestBody {
   /**
@@ -157,24 +146,6 @@ export interface TrackSaleRequestBody {
    * [For sale tracking without a pre-existing lead event]: The avatar URL of the customer.
    */
   customerAvatar?: string | null;
-}
-
-export interface TrackSaleResponse {
-  eventName: string;
-  customer: {
-    id: string;
-    name: string;
-    email: string;
-    avatar: string;
-    externalId: string;
-  } | null;
-  sale: {
-    amount: number;
-    currency: string;
-    paymentProcessor: string;
-    invoiceId: string;
-    metadata: Record<string, any>;
-  } | null;
 }
 
 // DubIO specific configuration types

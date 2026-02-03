@@ -113,24 +113,24 @@
   },
   {
     "Destination": "GAEC",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/release-notes",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/uploadClickConversions, /v22/customers/:customerId/uploadCallConversions, /v22/customers/:customerId/googleAds:searchStream, /v22/customers/:customerId/offlineUserDataJobs (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/uploadClickConversions, /v22/customers/:customerId/uploadCallConversions, /v22/customers/:customerId/googleAds:searchStream, /v22/customers/:customerId/offlineUserDataJobs (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "GOOGLE_ADWORDS_REMARKETING_LISTS",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/offlineUserDataJobs, /v19/customers/:customerId/offlineUserDataJobs/:jobId:create, /v19/customers/:customerId/offlineUserDataJobs/:jobId:addOperations",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates\nhttps://developers.google.com/google-ads/api/docs/release-notes",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v17 @June 4, 2025 v18 September 2025, v19 will be deprecated in February 2026"
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/offlineUserDataJobs, /v22/customers/:customerId/offlineUserDataJobs/:jobId:create, /v22/customers/:customerId/offlineUserDataJobs/:jobId:addOperations (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "Google Analytics 4 (GA4)",

@@ -55,9 +55,9 @@ function validateInput(event: LinkedinAudienceRequest) {
 function getConfigs(event: LinkedinAudienceRequest): LinkedinAudienceConfigs {
   const config = event.connection?.config?.destination;
   return {
-    audienceType: config?.audienceType ?? '',
-    audienceId: config?.audienceId ?? '',
-    accessToken: event.metadata?.secret?.accessToken ?? '',
+    audienceType: config!.audienceType!,
+    audienceId: config!.audienceId!,
+    accessToken: event.metadata!.secret!.accessToken!,
     isHashRequired: Boolean(config?.isHashRequired),
   };
 }
@@ -66,40 +66,31 @@ function prepareUserTypeBasePayload(
   event: LinkedinAudienceRequest,
   configs: LinkedinAudienceConfigs,
 ) {
-  if (configs.audienceType === 'user') {
-    const identifiers = configs.isHashRequired
-      ? hashIdentifiers(event.message.identifiers!)
-      : event.message.identifiers!;
-    const userIds = prepareUserIds(identifiers);
-    return {
-      elements: [
-        {
-          action: generateActionType(event.message.action!),
-          userIds,
-          ...event.message.fields!,
-        },
-      ],
-    };
-  }
-  return undefined;
+  const identifiers = configs.isHashRequired
+    ? hashIdentifiers(event.message.identifiers!)
+    : event.message.identifiers!;
+  const userIds = prepareUserIds(identifiers);
+  return {
+    elements: [
+      {
+        action: generateActionType(event.message.action!),
+        userIds,
+        ...event.message.fields!,
+      },
+    ],
+  };
 }
 
-function prepareCompanyTypeBasePayload(
-  event: LinkedinAudienceRequest,
-  configs: LinkedinAudienceConfigs,
-) {
-  if (configs.audienceType === 'company') {
-    return {
-      elements: [
-        {
-          action: generateActionType(event.message.action!),
-          ...event.message.identifiers!,
-          ...event.message.fields!,
-        },
-      ],
-    };
-  }
-  return undefined;
+function prepareCompanyTypeBasePayload(event: LinkedinAudienceRequest) {
+  return {
+    elements: [
+      {
+        action: generateActionType(event.message.action!),
+        ...event.message.identifiers!,
+        ...event.message.fields!,
+      },
+    ],
+  };
 }
 
 function buildResponseForProcessTransformation(
@@ -123,12 +114,19 @@ function process(event: LinkedinAudienceRequest) {
   validateInput(event);
 
   const configs = getConfigs(event);
-  const payload =
-    configs.audienceType === 'company'
-      ? prepareCompanyTypeBasePayload(event, configs)
-      : prepareUserTypeBasePayload(event, configs);
+  const preparePayload = () => {
+    switch (configs.audienceType) {
+      case 'user':
+        return prepareUserTypeBasePayload(event, configs);
+      case 'company':
+        return prepareCompanyTypeBasePayload(event);
+      default:
+        throw new ConfigurationError(`Unsupported audience type ${configs.audienceType}. Aborting`);
+    }
+  };
 
-  return buildResponseForProcessTransformation(configs, payload!);
+  const payload = preparePayload();
+  return buildResponseForProcessTransformation(configs, payload);
 }
 
 const processRouterDest = async (

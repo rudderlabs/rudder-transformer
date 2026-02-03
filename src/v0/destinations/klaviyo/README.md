@@ -74,15 +74,16 @@ Klaviyo uses a fixed-window rate limiting algorithm with burst (1-second) and st
 
 #### Endpoint-Specific Rate Limits
 
-| Endpoint                                          | Purpose                        | Burst | Steady | Docs Reference                                                                                    |
-| ------------------------------------------------- | ------------------------------ | ----- | ------ | ------------------------------------------------------------------------------------------------- |
-| `POST /api/profiles`                              | Create profile                 | 75/s  | 700/m  | [Create Profile](https://developers.klaviyo.com/en/reference/create_profile)                      |
-| `PATCH /api/profiles/{id}`                        | Update profile                 | 75/s  | 700/m  | [Update Profile](https://developers.klaviyo.com/en/reference/update_profile)                      |
-| `POST /api/profile-bulk-import-jobs`              | Bulk import profiles (V2)      | 10/s  | 150/m  | [Bulk Import Profiles](https://developers.klaviyo.com/en/reference/spawn_bulk_profile_import_job) |
-| `POST /api/events`                                | Create event                   | 350/s | 3500/m | [Create Event](https://developers.klaviyo.com/en/reference/create_event)                          |
-| `GET /api/events`                                 | Get events                     | 350/s | 3500/m | [Get Events](https://developers.klaviyo.com/en/reference/get_events)                              |
-| `POST /api/profile-subscription-bulk-create-jobs` | Subscribe profiles to list     | 75/s  | 700/m  | [Bulk Subscribe](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles)             |
-| `POST /api/profile-subscription-bulk-delete-jobs` | Unsubscribe profiles from list | 75/s  | 700/m  | [Bulk Unsubscribe](https://developers.klaviyo.com/en/reference/bulk_unsubscribe_profiles)         |
+The following endpoints are used by the Klaviyo transformer:
+
+| Endpoint                                          | Purpose                        | Burst  | Steady  | Docs Reference                                                                                            |
+| ------------------------------------------------- | ------------------------------ | ------ | ------- | --------------------------------------------------------------------------------------------------------- |
+| `POST /api/profiles`                              | Create profile (V1)            | 75/s   | 700/m   | [Create Profile](https://developers.klaviyo.com/en/reference/create_profile)                              |
+| `PATCH /api/profiles/{id}`                        | Update profile (V1)            | 75/s   | 700/m   | [Update Profile](https://developers.klaviyo.com/en/reference/update_profile)                              |
+| `POST /api/profile-import`                        | Create/Update profile (V2)     | 75/s   | 700/m   | [Create or Update Profile](https://developers.klaviyo.com/en/reference/create_or_update_profile)          |
+| `POST /api/events`                                | Create event                   | 350/s  | 3500/m  | [Create Event](https://developers.klaviyo.com/en/reference/create_event)                                  |
+| `POST /api/profile-subscription-bulk-create-jobs` | Subscribe profiles to list     | 75/s   | 700/m   | [Bulk Subscribe](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles)                     |
+| `POST /api/profile-subscription-bulk-delete-jobs` | Unsubscribe profiles from list | 75/s   | 700/m   | [Bulk Unsubscribe](https://developers.klaviyo.com/en/reference/bulk_unsubscribe_profiles)                 |
 
 #### Rate Limit Headers
 

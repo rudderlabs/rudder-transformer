@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 const OFFLINE_USER_DATA_JOBS_ENDPOINT = 'offlineUserDataJobs';
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers`;

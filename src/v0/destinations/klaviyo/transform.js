@@ -246,6 +246,7 @@ const trackRequestHandler = (message, category, destination) => {
   payload.data.attributes = attributes;
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.endpointPath = category.apiUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,

@@ -129,6 +129,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
   const identifyResponse = defaultRequestConfig();
   updatedPayload.data.id = profileId;
   identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
+  identifyResponse.endpointPath = category.apiUrl;
   identifyResponse.method = defaultPatchRequestConfig.requestMethod;
   identifyResponse.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
@@ -190,6 +191,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = targetUrl;
+  response.endpointPath = '/api/profile-subscription-bulk-create-jobs';
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -261,6 +263,7 @@ const generateBatchedPaylaodForArray = (events) => {
   const BATCH_ENDPOINT = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
 
   batchEventResponse.batchedRequest[0].endpoint = BATCH_ENDPOINT;
+  batchEventResponse.batchedRequest[0].endpointPath = '/api/profile-subscription-bulk-create-jobs';
 
   batchEventResponse.batchedRequest[0].headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
@@ -340,6 +343,7 @@ const buildRequest = (payload, destination, category) => {
   const response = defaultRequestConfig();
 
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.endpointPath = category.apiUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
@@ -584,7 +588,9 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
   const { privateApiKey } = destination.Config;
-  response.endpoint = `${BASE_ENDPOINT}${CONFIG_CATEGORIES[subscription.operation.toUpperCase()].apiUrl}`;
+  const {apiUrl} = CONFIG_CATEGORIES[subscription.operation.toUpperCase()];
+  response.endpoint = `${BASE_ENDPOINT}${apiUrl}`;
+  response.endpointPath = apiUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,

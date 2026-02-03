@@ -996,4 +996,92 @@ export const validationCDKTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'linkedin_audience-validation-test-11',
+    name: 'linkedin_audience',
+    description: 'Record call : audienceType is unknown',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateRecordPayload({
+              fields: {
+                firstName: 'Test',
+                lastName: 'User',
+              },
+              identifiers: {
+                sha256Email: 'random@rudderstack.com',
+              },
+              action: 'insert',
+            }),
+            metadata: generateMetadata(1),
+            destination: {
+              ID: '123',
+              Name: 'Linkedin Audience',
+              DestinationDefinition: {
+                ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                Name: 'LINKEDIN_AUDIENCE',
+                DisplayName: 'Linkedin Audience',
+                Config: {},
+              },
+              Config: {
+                connectionMode: 'cloud',
+                rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+              },
+              Enabled: true,
+              WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+              Transformations: [],
+            },
+            connection: {
+              sourceId: 'randomSourceId',
+              destinationId: 'randomDestinationId',
+              enabled: true,
+              config: {
+                destination: {
+                  accountId: 512315509,
+                  audienceId: 32589526,
+                  createAudience: 'no',
+                  eventType: 'record',
+                  fieldMappings: [],
+                  identifierMappings: [],
+                  isHashRequired: true,
+                  audienceType: 'unknown',
+                },
+                source: {},
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Unsupported audience type unknown. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Unsupported audience type unknown. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              destType: 'LINKEDIN_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

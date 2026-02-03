@@ -7,9 +7,7 @@ const {
   getCallConversionPayload,
   getAddConversionPayload,
 } = require('./utils');
-const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
-
-const API_VERSION = 'v22';
+const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH, API_VERSION } = require('./config');
 
 const getTestMessage = () => {
   let message = {

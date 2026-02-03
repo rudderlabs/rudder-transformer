@@ -302,6 +302,7 @@ export const nativeData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -344,6 +345,7 @@ export const nativeData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -410,6 +412,7 @@ export const nativeData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -464,6 +467,7 @@ export const nativeData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -541,6 +545,7 @@ export const nativeData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -637,6 +642,7 @@ export const nativeData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {

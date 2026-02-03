@@ -2,7 +2,7 @@ import md5 from 'md5';
 import { hashToSha256, InstrumentationError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
 import type { TiktokAudienceMessage, TiktokAudienceRequest } from './types';
-import { SHA256_TRAITS, ACTION_MAP, ENDPOINT } from './config';
+import { SHA256_TRAITS, ACTION_MAP, ENDPOINT, ENDPOINT_PATH } from './config';
 import {
   defaultRequestConfig,
   getDestinationExternalIDInfoForRetl,
@@ -76,15 +76,19 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
   }));
 }
 
-function buildResponseForProcessTransformation(bodies: any[], event: TiktokAudienceRequest) {
+function buildResponseForProcessTransformation(
+  identifiersList: any[],
+  event: TiktokAudienceRequest,
+) {
   const accessToken = event.metadata?.secret?.accessToken;
   const anonymousId = event.message?.anonymousId;
 
-  const responses = bodies.map((body) => {
+  const responses = identifiersList.map((identifierList) => {
     const response = defaultRequestConfig();
-    response.body.JSON = body;
+    response.body.JSON = identifierList;
     response.userId = anonymousId;
     response.endpoint = ENDPOINT;
+    response.endpointPath = ENDPOINT_PATH;
     response.headers = {
       'Access-Token': accessToken,
       'Content-Type': 'application/json',
@@ -113,9 +117,9 @@ const processRouterDest = async (
 
   for (const request of requests) {
     try {
-      const out = process(request);
+      const response = process(request);
       successResponseList.push(
-        getSuccessRespEvents(out, [request.metadata], request.destination, true),
+        getSuccessRespEvents(response, [request.metadata], request.destination, true),
       );
     } catch (error) {
       failedResponseList.push(handleRtTfSingleEventError(request, error, {}));

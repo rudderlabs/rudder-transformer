@@ -39,15 +39,15 @@ const CONFIG_CATEGORIES = {
 // V2 event API: mapping configs in data/ (no platform device ids; sdid set in code from integration options)
 const CONFIG_CATEGORIES_V2 = {
   EVENT_ANDROID_V2: {
-    name: 'v2/SINGULARAndroidEventConfigV2',
+    name: 'v2/SINGULARAndroidEventConfig',
     type: 'track',
   },
   EVENT_IOS_V2: {
-    name: 'v2/SINGULARIosEventConfigV2',
+    name: 'v2/SINGULARIosEventConfig',
     type: 'track',
   },
   EVENT_UNITY_V2: {
-    name: 'v2/SINGULARUnityEventConfigV2',
+    name: 'v2/SINGULARUnityEventConfig',
     type: 'track',
   },
 };

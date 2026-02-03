@@ -173,6 +173,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'PATCH',
                 endpoint: 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX',
+                endpointPath: '/api/profiles',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

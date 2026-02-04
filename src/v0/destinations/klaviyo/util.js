@@ -588,7 +588,7 @@ const getSubscriptionPayload = (listId, profiles, operation) => ({
 const buildSubscriptionOrUnsubscriptionPayload = (subscription, destination) => {
   const response = defaultRequestConfig();
   const { privateApiKey } = destination.Config;
-  const {apiUrl} = CONFIG_CATEGORIES[subscription.operation.toUpperCase()];
+  const { apiUrl } = CONFIG_CATEGORIES[subscription.operation.toUpperCase()];
   response.endpoint = `${BASE_ENDPOINT}${apiUrl}`;
   response.endpointPath = apiUrl;
   response.method = defaultPostRequestConfig.requestMethod;

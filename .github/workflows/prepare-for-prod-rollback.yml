@@ -48,7 +48,7 @@ jobs:
 
       - name: Clone Devops Repo
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
 
       - name: Update Helm Charts and Raise Pull Request
         env:
@@ -124,7 +124,7 @@ jobs:
 
       - name: Clone Operator Repo
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudderstack-operator.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:

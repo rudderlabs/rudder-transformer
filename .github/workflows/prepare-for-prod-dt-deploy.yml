@@ -100,7 +100,7 @@ jobs:
 
       - name: Clone Devops Repo
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
 
       - name: Extract branch name
         id: extract_branch_name
@@ -133,6 +133,13 @@ jobs:
           cd ../../../../config-be-rudder-transformer/environment/prod
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
           git add base.yaml
+
+      - name: Push shared transformers branch to remote
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          cd rudder-devops
+          git push -u origin shared-transformer-$TAG_NAME
 
       - name: Create verified commit for shared transformers
         uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
@@ -167,6 +174,13 @@ jobs:
           yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
+      - name: Push hosted transformer branch to remote
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          cd rudder-devops
+          git push -u origin hosted-transformer-$TAG_NAME
+
       - name: Create verified commit for hosted transformer
         uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
         env:
@@ -187,7 +201,7 @@ jobs:
 
       - name: Clone Operator Repo
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudderstack-operator.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:
@@ -200,6 +214,13 @@ jobs:
           yq eval -i ".transformer.image.version=\"$TAG_NAME\"" values.yaml
           yq eval -i ".transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.yaml
           git add values.yaml
+
+      - name: Push dedicated transformer branch to remote
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          cd rudderstack-operator
+          git push -u origin dedicated-transformer-$TAG_NAME
 
       - name: Create verified commit for dedicated transformer
         uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0

@@ -9,6 +9,8 @@ on:
     secrets:
       DOCKERHUB_TOKEN:
         required: true
+      RELEASE_PRIVATE_KEY:
+        required: true
 
 permissions:
   contents: read

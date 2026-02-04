@@ -98,7 +98,7 @@ jobs:
 
       - name: Clone Devops Repo
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
 
       - name: Extract branch name
         id: extract_branch_name

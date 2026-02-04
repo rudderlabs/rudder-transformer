@@ -124,7 +124,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git clone https://${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"

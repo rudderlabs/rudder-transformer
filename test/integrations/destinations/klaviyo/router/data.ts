@@ -50,6 +50,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -88,6 +89,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -122,6 +124,7 @@ export const data: RouterTestData[] = [
                   type: 'REST',
                   method: 'PATCH',
                   endpoint: 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX',
+                  endpointPath: '/api/profiles',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -170,6 +173,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'PATCH',
                 endpoint: 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX',
+                endpointPath: '/api/profiles',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

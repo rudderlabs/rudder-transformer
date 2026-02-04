@@ -1,8 +1,9 @@
 const {
-  NetworkError,
   ConfigurationError,
+  NetworkError,
   forEachInBatches,
 } = require('@rudderstack/integrations-lib');
+const { DeleteUsersError } = require('../../util/errorTypes');
 const { httpDELETE } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
@@ -73,13 +74,17 @@ const userDeletionHandler = async (userAttributes, config) => {
   );
 
   if (failedUserDeletions.length > 0) {
-    throw new NetworkError(
+    const networkError = new NetworkError(
       `User deletion request failed for userIds : ${JSON.stringify(failedUserDeletions)}`,
       400,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
       },
       failedUserDeletions,
+    );
+    throw new DeleteUsersError(
+      networkError,
+      `User deletion request failed. Reasons: ${failedUserDeletions.map((item) => item.Reason).join(', ')}`,
     );
   }
 

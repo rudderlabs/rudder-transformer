@@ -5,7 +5,10 @@ on:
     workflows: ['Publish New GitHub Release']
     types:
       - completed
-  workflow_call: {}
+  workflow_call:
+    secrets:
+      RELEASE_PRIVATE_KEY:
+        required: true
   workflow_dispatch: {}
 
 permissions:
@@ -37,7 +40,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
           permission-contents: write # to create commits, tags, and push branches
           permission-pull-requests: write # to create and update PRs
-          repositories: rudder-ingestion-svc # to access cross-repo
+          repositories: rudder-transformer,rudder-ingestion-svc # to access cross-repo
 
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

@@ -49,6 +49,13 @@
     "Sunset Date Current Version used in backend": "Not Available"
   },
   {
+    "Destination": "Campaign Manager",
+    "Version currently referred in CloudMode Services": "/dfareporting/v5/userprofiles/:profileId/conversions/batchinsert, /dfareporting/v5/userprofiles/:profileId/conversions/batchupdate",
+    "Link to check Versions documentation": "https://developers.google.com/doubleclick-advertisers/rest/v5/ https://developers.google.com/doubleclick-advertisers/deprecation",
+    "Latest Version rolled out": "v5",
+    "Sunset Date Current Version used in backend": "v4 is deprecated and sunsets on Feb 26, 2026. v5 is current (no sunset announced)."
+  },
+  {
     "Destination": "CleverTap",
     "Version currently referred in CloudMode Services": "/1/upload, /1/delete/profiles.json",
     "Link to check Versions documentation": "https://developer.clevertap.com/docs/upload-events-api",

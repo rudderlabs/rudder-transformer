@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_URL = 'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles';
+const BASE_URL = 'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles';
 
 const ConfigCategories = {
   TRACK: {

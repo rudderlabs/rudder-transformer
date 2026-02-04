@@ -270,7 +270,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                  'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/437689/conversions/batchinsert',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -336,7 +336,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
+                  'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/437689/conversions/batchupdate',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -586,7 +586,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                  'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/437689/conversions/batchinsert',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -842,7 +842,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
+                  'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/437689/conversions/batchupdate',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',
@@ -920,7 +920,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                  'https://dfareporting.googleapis.com/dfareporting/v5/userprofiles/437689/conversions/batchinsert',
                 headers: {
                   Authorization: authHeader1,
                   'Content-Type': 'application/json',

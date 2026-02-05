@@ -1,14 +1,14 @@
-const {
+import {
   getRequestData,
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
   isIterable,
-} = require('./util');
-const { primaryToSecondaryFields } = require('./config');
+} from './util';
+import { primaryToSecondaryFields } from './config';
 
-const propertyMap = {
+const propertyMap: Record<string, string> = {
   firstName: 'string',
   lstName: 'string',
   age: 'number',
@@ -43,8 +43,8 @@ describe('Validate payload data types utility function test cases', () => {
     try {
       const output = validatePayloadDataTypes(propertyMap, 'age', 'Twenty', 'userAge');
       expect(output).toEqual('');
-    } catch (error) {
-      expect(error.message).toEqual(expectedOutput);
+    } catch (error: unknown) {
+      expect((error as Error).message).toEqual(expectedOutput);
     }
   });
 });
@@ -107,8 +107,8 @@ describe('getObjectAndIdentifierType utility test cases', () => {
     };
     try {
       getObjectAndIdentifierType(firstMessage);
-    } catch (err) {
-      expect(err.message).toBe('rETL - external Id not found.');
+    } catch (err: unknown) {
+      expect((err as Error).message).toBe('rETL - external Id not found.');
     }
   });
 });
@@ -199,7 +199,7 @@ describe('extractUniqueValues utility test cases', () => {
   });
 
   it('Should return an empty array when the input is empty', () => {
-    const inputs = [];
+    const inputs: { message: Record<string, unknown> }[] = [];
     const result = extractIDsForSearchAPI(inputs);
     expect(result).toEqual([]);
   });

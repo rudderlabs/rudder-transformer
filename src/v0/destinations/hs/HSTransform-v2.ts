@@ -1,13 +1,13 @@
-const get = require('get-value');
-const lodash = require('lodash');
-const {
+import get from 'get-value';
+import lodash from 'lodash';
+import {
   TransformationError,
   ConfigurationError,
   InstrumentationError,
-} = require('@rudderstack/integrations-lib');
-const validator = require('validator');
-const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
-const {
+} from '@rudderstack/integrations-lib';
+import validator from 'validator';
+import { MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
+import {
   defaultPostRequestConfig,
   defaultRequestConfig,
   defaultPatchRequestConfig,
@@ -21,9 +21,9 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   sortBatchesByMinJobId,
-} = require('../../util');
-const stats = require('../../../util/stats');
-const {
+} from '../../util';
+import stats from '../../../util/stats';
+import {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
@@ -37,8 +37,8 @@ const {
   CRM_ASSOCIATION_V3,
   RETL_CREATE_ASSOCIATION_OPERATION,
   RETL_SOURCE,
-} = require('./config');
-const {
+} from './config';
+import {
   getTransformedJSON,
   searchContacts,
   getEventAndPropertiesFromConfig,
@@ -46,15 +46,26 @@ const {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
-} = require('./util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+} from './util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import type { Metadata } from '../../../types';
+import type {
+  HubSpotDestination,
+  HubSpotPropertyMap,
+  HubSpotEventInput,
+  HubSpotExternalIdObject,
+  HubSpotExternalIdInfo,
+} from './types';
 
-const addHsAuthentication = (response, Config) => {
+const addHsAuthentication = (
+  response: Record<string, unknown>,
+  Config: HubSpotDestination['Config'],
+): Record<string, unknown> => {
   // choosing API Type
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     response.headers = {
-      ...response.headers,
+      ...(response.headers as Record<string, unknown>),
       Authorization: `Bearer ${Config.accessToken}`,
     };
   } else {
@@ -72,7 +83,14 @@ const addHsAuthentication = (response, Config) => {
  * @param {*} propertyMap
  * @returns
  */
-const processIdentify = async ({ message, destination, metadata }, propertyMap) => {
+const processIdentify = async (
+  {
+    message,
+    destination,
+    metadata,
+  }: { message: Record<string, unknown>; destination: HubSpotDestination; metadata: Metadata },
+  propertyMap?: HubSpotPropertyMap,
+): Promise<Record<string, unknown>> => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   // since hubspot does not allow invalid emails, we need to
@@ -83,23 +101,29 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
-  const { objectType } = getDestinationExternalIDInfoForRetl(message, 'HS');
+  const externalIdInfo = getDestinationExternalIDInfoForRetl(
+    message,
+    'HS',
+  ) as HubSpotExternalIdInfo | null;
+  const objectType = externalIdInfo?.objectType;
   // build response
-  let endpoint;
+  let endpoint: string | undefined;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
 
   // Handle hubspot association events sent from retl source
   if (
     objectType &&
-    objectType.toLowerCase() === 'association' &&
+    String(objectType).toLowerCase() === 'association' &&
     mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString())
+    GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
+    externalIdObj
   ) {
-    const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
+    const { associationTypeId, fromObjectType, toObjectType } =
+      externalIdObj as HubSpotExternalIdObject;
+    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType || '').replace(
       ':toObjectType',
-      toObjectType,
+      toObjectType || '',
     );
     response.body.JSON = {
       ...traits,
@@ -173,7 +197,9 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
-  response.endpoint = endpoint;
+  if (endpoint) {
+    response.endpoint = endpoint;
+  }
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -199,17 +225,27 @@ const processIdentify = async ({ message, destination, metadata }, propertyMap) 
  * @param {*} destination
  * @returns
  */
-const processTrack = async ({ message, destination }) => {
+const processTrack = async ({
+  message,
+  destination,
+}: {
+  message: Record<string, unknown>;
+  destination: HubSpotDestination;
+}): Promise<Record<string, unknown>> => {
   const { Config } = destination;
 
-  let payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+  let payload: Record<string, unknown> =
+    (constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]) as Record<
+      string,
+      unknown
+    >) || {};
 
   // fetch event name and its properties from config (webapp) and put it in final payload
   payload = getEventAndPropertiesFromConfig(message, destination, payload);
 
   // append track mapping.json along with properties fetched from webapp
   payload.properties = {
-    ...payload.properties,
+    ...(payload.properties as Record<string, unknown>),
     ...constructPayload(message, mappingConfig[ConfigCategory.TRACK_PROPERTIES.name]),
   };
 
@@ -245,12 +281,16 @@ const processTrack = async ({ message, destination }) => {
   return response;
 };
 
-const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation) => {
+const batchIdentify = (
+  arrayChunksIdentify: HubSpotEventInput[][],
+  batchedResponseList: unknown[],
+  batchOperation: string,
+): unknown[] => {
   // list of chunks [ [..], [..] ]
-  const { destinationId } = arrayChunksIdentify[0][0].destination;
+  const destinationId = arrayChunksIdentify[0][0].destination.ID;
   arrayChunksIdentify.forEach((chunk) => {
-    const identifyResponseList = [];
-    const metadata = [];
+    const identifyResponseList: Record<string, unknown>[] = [];
+    const metadata: Metadata[] = [];
     // add metric for batch size
     stats.gauge('hs_batch_size', chunk.length, {
       destination_id: destinationId,
@@ -266,19 +306,21 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
 
       // create operation
       chunk.forEach((ev) => {
-        identifyResponseList.push({ ...ev.message.body.JSON });
+        identifyResponseList.push({
+          ...(ev.message.body as Record<string, unknown>).JSON as Record<string, unknown>,
+        });
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === 'updateObject') {
-      batchEventResponse.batchedRequest.endpoint = `${message.endpoint.substr(
+      batchEventResponse.batchedRequest.endpoint = `${(message.endpoint as string).substr(
         0,
-        message.endpoint.lastIndexOf('/'),
+        (message.endpoint as string).lastIndexOf('/'),
       )}/batch/update`;
       // update operation
       chunk.forEach((ev) => {
-        const updateEndpoint = ev.message.endpoint;
+        const updateEndpoint = ev.message.endpoint as string;
         identifyResponseList.push({
-          ...ev.message.body.JSON,
+          ...(ev.message.body as Record<string, unknown>).JSON as Record<string, unknown>,
           id: updateEndpoint.split('/').pop(),
         });
 
@@ -291,17 +333,23 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
         // updating the existing one to avoid duplicate
         // as same event can fire in batch one of the reason
         // can be due to network lag or processor being busy
+        const bodyJSON = (ev.message.body as Record<string, unknown>).JSON as Record<
+          string,
+          unknown
+        >;
+        const bodyProps = bodyJSON?.properties as Record<string, unknown> | undefined;
         const isDuplicate = identifyResponseList.find(
-          (data) => data.properties.email === ev.message.body.JSON.properties.email,
+          (data) =>
+            (data.properties as Record<string, unknown> | undefined)?.email === bodyProps?.email,
         );
-        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate) && isDuplicate) {
           // array is being shallow copied hence changes are affecting the original reference
           // basically rewriting the same value to avoid duplicate entry
-          isDuplicate.properties = ev.message.body.JSON.properties;
+          isDuplicate.properties = bodyJSON.properties;
         } else {
           // appending unique events
           identifyResponseList.push({
-            properties: ev.message.body.JSON.properties,
+            properties: bodyJSON.properties,
           });
         }
         metadata.push(ev.metadata);
@@ -311,29 +359,35 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
       chunk.forEach((ev) => {
         // update has contactId and properties
         // extract contactId from the end of the endpoint
-        const id = ev.message.endpoint.split('/').pop();
+        const id = (ev.message.endpoint as string).split('/').pop();
+        const bodyJSON = (ev.message.body as Record<string, unknown>).JSON as Record<
+          string,
+          unknown
+        >;
 
         // duplicate contactId is not allowed in batch
         // updating the existing one to avoid duplicate
         // as same event can fire in batch one of the reason
         // can be due to network lag or processor being busy
         const isDuplicate = identifyResponseList.find((data) => data.id === id);
-        if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
+        if (isDefinedAndNotNullAndNotEmpty(isDuplicate) && isDuplicate) {
           // rewriting the same value to avoid duplicate entry
-          isDuplicate.properties = ev.message.body.JSON.properties;
+          isDuplicate.properties = bodyJSON.properties;
         } else {
           // appending unique events
           identifyResponseList.push({
             id,
-            properties: ev.message.body.JSON.properties,
+            properties: bodyJSON.properties,
           });
         }
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
-        batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
-        identifyResponseList.push(ev.message.body.JSON);
+        batchEventResponse.batchedRequest.endpoint = ev.message.endpoint as string;
+        identifyResponseList.push(
+          (ev.message.body as Record<string, unknown>).JSON as Record<string, unknown>,
+        );
         metadata.push(ev.metadata);
       });
     } else {
@@ -350,8 +404,8 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
     }
 
-    batchEventResponse.batchedRequest.headers = message.headers;
-    batchEventResponse.batchedRequest.params = message.params;
+    batchEventResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
+    batchEventResponse.batchedRequest.params = message.params as Record<string, unknown>;
 
     batchEventResponse = {
       ...batchEventResponse,
@@ -370,18 +424,18 @@ const batchIdentify = (arrayChunksIdentify, batchedResponseList, batchOperation)
   return batchedResponseList;
 };
 
-const batchEvents = (destEvents) => {
-  let batchedResponseList = [];
-  const trackResponseList = [];
+const batchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
+  let batchedResponseList: unknown[] = [];
+  const trackResponseList: unknown[] = [];
   // create contact chunck
-  const createContactEventsChunk = [];
+  const createContactEventsChunk: HubSpotEventInput[] = [];
   // update contact chunk
-  const updateContactEventsChunk = [];
+  const updateContactEventsChunk: HubSpotEventInput[] = [];
   // rETL specific chunk
-  const createAllObjectsEventChunk = [];
-  const updateAllObjectsEventChunk = [];
-  const associationObjectsEventChunk = [];
-  let maxBatchSize;
+  const createAllObjectsEventChunk: HubSpotEventInput[] = [];
+  const updateAllObjectsEventChunk: HubSpotEventInput[] = [];
+  const associationObjectsEventChunk: HubSpotEventInput[] = [];
+  let maxBatchSize: number = MAX_BATCH_SIZE_CRM_OBJECT;
 
   destEvents.forEach((event) => {
     // handler for track call
@@ -392,10 +446,15 @@ const batchEvents = (destEvents) => {
       const endpoint = get(message, 'endpoint');
 
       const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers;
-      batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = message.body;
-      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
+      batchedResponse.batchedRequest.endpoint = endpoint as string;
+      batchedResponse.batchedRequest.body = message.body as {
+        JSON: Record<string, unknown>;
+        JSON_ARRAY: Record<string, unknown>;
+        XML: Record<string, unknown>;
+        FORM: Record<string, unknown>;
+      };
+      batchedResponse.batchedRequest.params = message.params as Record<string, unknown>;
       batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
@@ -409,7 +468,7 @@ const batchEvents = (destEvents) => {
       );
     } else if (source && source === 'rETL') {
       const { endpoint } = event.message;
-      maxBatchSize = endpoint.includes('contact')
+      maxBatchSize = (endpoint as string).includes('contact')
         ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
       if (operation) {
@@ -504,4 +563,4 @@ const batchEvents = (destEvents) => {
   return sortBatchesByMinJobId(batchedResponseList.concat(trackResponseList));
 };
 
-module.exports = { processIdentify, processTrack, batchEvents };
+export { processIdentify, processTrack, batchEvents };

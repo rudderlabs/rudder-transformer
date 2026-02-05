@@ -45,7 +45,7 @@ const SUPPORTED_PLATFORM: Readonly<Record<SingularPlatform, SingularPlatformMapp
   metaquest: 'unity',
 };
 
-const SUPPORTED_UNTIY_SUBPLATFORMS: ReadonlyArray<SingularPlatform> = [
+const SUPPORTED_UNTIY_SUBPLATFORMS: readonly SingularPlatform[] = [
   'pc',
   'xbox',
   'playstation',
@@ -53,7 +53,7 @@ const SUPPORTED_UNTIY_SUBPLATFORMS: ReadonlyArray<SingularPlatform> = [
   'metaquest',
 ];
 
-const SINGULAR_SESSION_ANDROID_EXCLUSION: string[] = [
+const SINGULAR_SESSION_ANDROID_EXCLUSION: readonly string[] = [
   'referring_application',
   'asid',
   'url',
@@ -62,7 +62,7 @@ const SINGULAR_SESSION_ANDROID_EXCLUSION: string[] = [
   'install',
 ];
 
-const SINGULAR_SESSION_IOS_EXCLUSION: string[] = [
+const SINGULAR_SESSION_IOS_EXCLUSION: readonly string[] = [
   'install_receipt',
   'url',
   'userAgent',
@@ -74,7 +74,7 @@ const SINGULAR_SESSION_IOS_EXCLUSION: string[] = [
   'install',
 ];
 
-const SINGULAR_EVENT_ANDROID_EXCLUSION: string[] = [
+const SINGULAR_EVENT_ANDROID_EXCLUSION: readonly string[] = [
   'price',
   'quantity',
   'currency',
@@ -88,7 +88,7 @@ const SINGULAR_EVENT_ANDROID_EXCLUSION: string[] = [
   'products',
 ];
 
-const SINGULAR_EVENT_IOS_EXCLUSION: string[] = [
+const SINGULAR_EVENT_IOS_EXCLUSION: readonly string[] = [
   'price',
   'quantity',
   'currency',

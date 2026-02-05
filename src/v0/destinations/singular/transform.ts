@@ -6,6 +6,7 @@ import type {
   SingularDestination,
   SingularRouterRequest,
   SingularBatchRequest,
+  SingularProcessorRequest,
 } from './types';
 
 import { platformWisePayloadGenerator, generateRevenuePayloadArray, isSessionEvent } from './util';
@@ -69,7 +70,7 @@ const processEvent = (
   throw new InstrumentationError(`Event type ${messageType} is not supported`);
 };
 
-const process = (event: SingularRouterRequest) => processEvent(event.message, event.destination);
+const process = (event: SingularProcessorRequest) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (
   inputs: SingularRouterRequest[],

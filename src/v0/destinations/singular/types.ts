@@ -1,5 +1,13 @@
-import { Destination, RouterTransformationRequestData, RudderMessage } from '../../../types';
-import { BatchedRequest } from '../../../types/destinationTransformation';
+import {
+  Destination,
+  Metadata,
+  RouterTransformationRequestData,
+  RudderMessage,
+} from '../../../types';
+import {
+  BatchedRequest,
+  ProcessorTransformationRequest,
+} from '../../../types/destinationTransformation';
 
 /**
  * Custom session event configuration from destination settings
@@ -418,9 +426,19 @@ export type SingularBatchRequest = BatchedRequest<
 >;
 
 /**
+ * Processor transformation request
+ */
+export type SingularProcessorRequest = ProcessorTransformationRequest<
+  SingularMessage,
+  Metadata,
+  SingularDestination
+>;
+
+/**
  * Router transformation request
  */
 export type SingularRouterRequest = RouterTransformationRequestData<
   SingularMessage,
+  Metadata,
   SingularDestination
 >;

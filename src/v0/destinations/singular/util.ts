@@ -43,7 +43,7 @@ import type {
  */
 const extractExtraFields = (
   message: SingularMessage,
-  EXCLUSION_FIELDS: string[],
+  EXCLUSION_FIELDS: readonly string[],
 ): Record<string, unknown> => {
   const eventAttributes: Record<string, unknown> = {};
   extractCustomFields(message, eventAttributes, ['properties'], EXCLUSION_FIELDS);
@@ -92,7 +92,7 @@ const generateRevenuePayloadArray = (
   return responseArray;
 };
 
-const exclusionList: Record<string, string[]> = {
+const exclusionList: Record<string, readonly string[]> = {
   ANDROID_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_ANDROID_EXCLUSION,
   IOS_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_IOS_EXCLUSION,
   ANDROID_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_ANDROID_EXCLUSION,

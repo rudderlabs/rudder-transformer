@@ -4,9 +4,9 @@ import {
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
-  isIterable,
 } from './util';
 import { primaryToSecondaryFields } from './config';
+import { HubspotRudderMessage } from './types';
 
 const propertyMap: Record<string, string> = {
   firstName: 'string',
@@ -76,7 +76,7 @@ describe('getObjectAndIdentifierType utility test cases', () => {
         mappedToDestination: 'true',
       },
     };
-    const result = getObjectAndIdentifierType(firstMessage);
+    const result = getObjectAndIdentifierType(firstMessage as unknown as HubspotRudderMessage);
     expect(result).toEqual({ objectType: 'association', identifierType: 'id' });
   });
 
@@ -106,7 +106,7 @@ describe('getObjectAndIdentifierType utility test cases', () => {
       },
     };
     try {
-      getObjectAndIdentifierType(firstMessage);
+      getObjectAndIdentifierType(firstMessage as unknown as HubspotRudderMessage);
     } catch (err: unknown) {
       expect((err as Error).message).toBe('rETL - external Id not found.');
     }
@@ -188,7 +188,7 @@ describe('extractUniqueValues utility test cases', () => {
       },
     ];
 
-    const result = extractIDsForSearchAPI(inputs);
+    const result = extractIDsForSearchAPI(inputs as unknown as { message: HubspotRudderMessage }[]);
 
     expect(result).toEqual([
       'testhubspot2@email.com',
@@ -199,7 +199,7 @@ describe('extractUniqueValues utility test cases', () => {
   });
 
   it('Should return an empty array when the input is empty', () => {
-    const inputs: { message: Record<string, unknown> }[] = [];
+    const inputs: { message: HubspotRudderMessage }[] = [];
     const result = extractIDsForSearchAPI(inputs);
     expect(result).toEqual([]);
   });
@@ -238,24 +238,6 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
 
     const requestData = getRequestData(identifierType, chunk);
     expect(requestData).toEqual(expectedRequestData);
-  });
-});
-
-describe('isIterable utility test cases', () => {
-  it('should return true when the input is an array', () => {
-    const input = [1, 2, 3];
-    const result = isIterable(input);
-    expect(result).toBe(true);
-  });
-  it('should return false when the input is null', () => {
-    const input = null;
-    const result = isIterable(input);
-    expect(result).toBe(false);
-  });
-  it('should return false when the input is undefined', () => {
-    const input = undefined;
-    const result = isIterable(input);
-    expect(result).toBe(false);
   });
 });
 

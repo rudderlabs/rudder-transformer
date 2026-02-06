@@ -62,7 +62,7 @@ const SEARCH_LIMIT_VALUE = 100;
 const API_VERSION = {
   v1: 'legacyApi',
   v3: 'newApi',
-} as const;
+};
 
 const MAX_CONTACTS_PER_REQUEST = 100;
 
@@ -76,7 +76,7 @@ const ConfigCategory = {
   TRACK_PROPERTIES: {
     name: 'HSTrackPropertiesConfig',
   },
-} as const;
+};
 
 const RETL_CREATE_ASSOCIATION_OPERATION = 'createAssociation';
 const RETL_SOURCE = 'rETL';

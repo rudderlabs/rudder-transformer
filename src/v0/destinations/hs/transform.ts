@@ -17,22 +17,22 @@ import {
   validateDestinationConfig,
   convertToResponseFormat,
 } from './util';
-import type { Metadata, ProcessorTransformationRequest } from '../../../types';
 import type {
-  HubSpotDestination,
   HubSpotPropertyMap,
-  HubSpotEventInput,
+  // HubSpotEventInput,
   HubSpotExternalIdInfo,
+  HubSpotBatchRouterResult,
+  HubSpotRouterTransformationOutput,
+  HubspotRouterRequest,
+  HubspotProcessorTransformationOutput,
+  HubspotProcessorTransformationRequest as HubspotProcessorRequest,
+  HubSpotBatchProcessingItem,
 } from './types';
 
 const processSingleMessage = async (
-  {
-    message,
-    destination,
-    metadata,
-  }: { message: Record<string, unknown>; destination: HubSpotDestination; metadata: Metadata },
+  { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
-): Promise<Record<string, unknown> | Record<string, unknown>[]> => {
+): Promise<HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[]> => {
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
@@ -40,7 +40,7 @@ const processSingleMessage = async (
   // Config Validation
   validateDestinationConfig(destination);
 
-  let response: Record<string, unknown> | Record<string, unknown>[] | undefined;
+  let response: HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[];
   switch (message.type) {
     case EventType.IDENTIFY: {
       response = [];
@@ -48,15 +48,13 @@ const processSingleMessage = async (
         response.push(await processIdentify({ message, destination, metadata }, propertyMap));
       } else {
         // Legacy API
-        response.push(
-          await processLegacyIdentify({ message, destination, metadata }, propertyMap),
-        );
+        response.push(await processLegacyIdentify({ message, destination, metadata }, propertyMap));
       }
       break;
     }
     case EventType.TRACK:
       if (destination.Config.apiVersion === API_VERSION.v3) {
-        response = await processTrack({ message, destination });
+        response = await processTrack({ message, destination, metadata });
       } else {
         response = await processLegacyTrack({ message, destination, metadata }, propertyMap);
       }
@@ -70,14 +68,12 @@ const processSingleMessage = async (
 
 // has been deprecated - using routerTransform for both the versions
 const process = async (
-  event: ProcessorTransformationRequest,
-): Promise<Record<string, unknown> | Record<string, unknown>[]> => {
+  event: HubspotProcessorRequest,
+): Promise<HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[]> => {
   const { destination, message, metadata } = event;
-  const hsDestination = destination as unknown as HubSpotDestination;
+  const hsDestination = destination;
   const mappedToDestination = get(message, MappedToDestinationKey);
-  let events: { message: Record<string, unknown> }[] = [
-    { message: message as Record<string, unknown> },
-  ];
+  let events: HubspotProcessorRequest[] = [event];
   if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     // get info about existing objects and splitting accordingly.
     events = await splitEventsForCreateUpdate(events, hsDestination, metadata);
@@ -90,13 +86,9 @@ const process = async (
 };
 
 const processBatchRouter = async (
-  inputs: HubSpotEventInput[],
-  reqMetadata: Record<string, unknown>,
-): Promise<{
-  batchedResponseList: unknown[];
-  errorRespList: unknown[];
-  dontBatchEvents: unknown[];
-}> => {
+  inputs: HubspotRouterRequest[],
+  reqMetadata: NonNullable<unknown>,
+): Promise<HubSpotBatchRouterResult> => {
   let tempInputs = inputs;
   // using the first destination config for transforming the batch
   const { destination, metadata } = tempInputs[0];
@@ -107,10 +99,10 @@ const processBatchRouter = async (
     'HS',
   ) as HubSpotExternalIdInfo | null;
   const objectType = externalIdInfo?.objectType;
-  const successRespList: HubSpotEventInput[] = [];
-  const errorRespList: unknown[] = [];
+  const successRespList: HubSpotBatchProcessingItem[] = [];
+  const errorRespList: HubSpotRouterTransformationOutput[] = [];
   // batch implementation
-  let batchedResponseList: unknown[] = [];
+  let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   try {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
@@ -149,7 +141,7 @@ const processBatchRouter = async (
         if (input.message.statusCode) {
           // already transformed event
           successRespList.push({
-            message: input.message,
+            message: input.message as unknown as HubspotProcessorTransformationOutput,
             metadata: input.metadata,
             destination,
           });
@@ -181,8 +173,8 @@ const processBatchRouter = async (
     }),
   );
 
-  const dontBatchTrueResponses: HubSpotEventInput[] = [];
-  const dontBatchFalseOrUndefinedResponses: HubSpotEventInput[] = [];
+  const dontBatchTrueResponses: HubSpotBatchProcessingItem[] = [];
+  const dontBatchFalseOrUndefinedResponses: HubSpotBatchProcessingItem[] = [];
   // segregating successRepList depending on dontbatch value
   successRespList.forEach((successResp) => {
     if (successResp.metadata?.dontBatch) {
@@ -210,13 +202,13 @@ const processBatchRouter = async (
 
 // we are batching by default at routerTransform
 const processRouterDest = async (
-  inputs: HubSpotEventInput[],
-  reqMetadata: Record<string, unknown>,
-): Promise<unknown[]> => {
-  const tempNewInputs = batchEventsInOrder(inputs);
-  const batchedResponseList: unknown[] = [];
-  const errorRespList: unknown[] = [];
-  const dontBatchEvents: unknown[] = [];
+  inputs: HubspotRouterRequest[],
+  reqMetadata: NonNullable<unknown>,
+): Promise<HubSpotRouterTransformationOutput[]> => {
+  const tempNewInputs: HubspotRouterRequest[][] = batchEventsInOrder(inputs);
+  const batchedResponseList: HubSpotRouterTransformationOutput[] = [];
+  const errorRespList: HubSpotRouterTransformationOutput[] = [];
+  const dontBatchEvents: HubSpotRouterTransformationOutput[] = [];
   const promises = tempNewInputs.map(async (inputEvents) => {
     const response = await processBatchRouter(inputEvents, reqMetadata);
     return response;

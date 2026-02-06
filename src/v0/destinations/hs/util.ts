@@ -10,6 +10,7 @@ import {
   NetworkError,
   isDefinedNotNullNotEmpty,
 } from '@rudderstack/integrations-lib';
+import { AxiosRequestConfig } from 'axios';
 import { httpGET, httpPOST } from '../../../adapters/network';
 import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import {
@@ -48,6 +49,15 @@ import type {
   HubSpotLookupFieldInfo,
   HubSpotEventMapping,
   HubSpotLegacyIdentifyProperty,
+  HubSpotSearchRequest,
+  HubSpotSearchResponse,
+  HubSpotSearchResult,
+  HubSpotRouterTransformationOutput,
+  HubspotRouterRequest,
+  HubspotProcessorTransformationOutput,
+  HubspotRudderMessage,
+  HubSpotExternalIdObject,
+  HubSpotTrackEventRequest,
 } from './types';
 
 /**
@@ -90,7 +100,7 @@ const formatKey = (key: string): string => {
  * @returns
  */
 const fetchFinalSetOfTraits = (
-  message: Record<string, unknown>,
+  message: HubspotRudderMessage,
 ): Record<string, unknown> | undefined => {
   // get from traits or properties
   let traits = getFieldValueFromMessage(message, 'traits');
@@ -238,7 +248,7 @@ const getTransformedJSON = async (
     message,
     destination,
     metadata,
-  }: { message: Record<string, unknown>; destination: HubSpotDestination; metadata: Metadata },
+  }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
 ): Promise<Record<string, unknown>> => {
   let rawPayload: Record<string, unknown> = {};
@@ -479,10 +489,10 @@ const searchContacts = async (
  * @returns
  */
 const getEventAndPropertiesFromConfig = (
-  message: Record<string, unknown>,
+  message: HubspotRudderMessage,
   destination: HubSpotDestination,
-  payload: Record<string, unknown>,
-): Record<string, unknown> => {
+  payload: HubSpotTrackEventRequest,
+): HubSpotTrackEventRequest => {
   const { hubspotEvents } = destination.Config;
 
   let event = get(message, 'event');
@@ -495,25 +505,24 @@ const getEventAndPropertiesFromConfig = (
   validateEventName(event);
   event = String(event).trim().toLowerCase();
   let eventName: string | undefined;
-  let eventProperties: unknown;
+  let eventProperties: { from: string; to: string }[] | undefined;
   const properties: Record<string, unknown> = {};
 
   // 1. fetch event name from webapp config
   // some will traverse through all the indexes of the array and find the event
   const hubspotEventFound = (hubspotEvents as HubSpotEventMapping[]).some((hubspotEvent) => {
-      if (
-        hubspotEvent &&
-        hubspotEvent.rsEventName &&
-        hubspotEvent.rsEventName.trim().toLowerCase() === event &&
-        !isEmpty(hubspotEvent.hubspotEventName)
-      ) {
-        eventName = hubspotEvent.hubspotEventName?.trim();
-        eventProperties = hubspotEvent.eventProperties;
-        return true;
-      }
-      return false;
-    },
-  );
+    if (
+      hubspotEvent &&
+      hubspotEvent.rsEventName &&
+      hubspotEvent.rsEventName.trim().toLowerCase() === event &&
+      !isEmpty(hubspotEvent.hubspotEventName)
+    ) {
+      eventName = hubspotEvent.hubspotEventName?.trim();
+      eventProperties = hubspotEvent.eventProperties;
+      return true;
+    }
+    return false;
+  });
 
   if (!hubspotEventFound) {
     throw new ConfigurationError(
@@ -522,17 +531,15 @@ const getEventAndPropertiesFromConfig = (
   }
 
   // 2. fetch event properties from webapp config
-  eventProperties = getHashFromArray(
-    eventProperties as { from?: string; to?: string }[],
-    'from',
-    'to',
-    false,
-  );
+  eventProperties = getHashFromArray(eventProperties, 'from', 'to', false) as {
+    from: string;
+    to: string;
+  }[];
 
-  Object.keys(eventProperties as Record<string, string>).forEach((key) => {
+  Object.keys(eventProperties).forEach((key) => {
     const value = get(message, `properties.${key}`);
     if (isDefinedNotNullNotEmpty(value)) {
-      properties[(eventProperties as Record<string, string>)[key]] = value;
+      properties[eventProperties?.[key]] = value;
     }
   });
 
@@ -547,12 +554,12 @@ const getEventAndPropertiesFromConfig = (
  * @returns
  */
 const getObjectAndIdentifierType = (
-  firstMessage: Record<string, unknown>,
+  firstMessage: HubspotRudderMessage,
 ): { objectType: string; identifierType: string } => {
   const externalIdInfo = getDestinationExternalIDInfoForRetl(
     firstMessage,
     DESTINATION,
-  ) as HubSpotExternalIdInfo | null;
+  ) as HubSpotExternalIdInfo;
   const { objectType, identifierType } = externalIdInfo || {};
   if (!objectType || !identifierType) {
     throw new InstrumentationError('rETL - external Id not found.');
@@ -565,18 +572,18 @@ const getObjectAndIdentifierType = (
  * @param {*} inputs
  * @returns
  */
-const extractIDsForSearchAPI = (inputs: { message: Record<string, unknown> }[]): string[] => {
+const extractIDsForSearchAPI = (inputs: { message: HubspotRudderMessage }[]): string[] => {
   const values = inputs.map((input) => {
     const { message } = input;
     const externalIdInfo = getDestinationExternalIDInfoForRetl(
       message,
       DESTINATION,
-    ) as HubSpotExternalIdInfo | null;
+    ) as HubSpotExternalIdInfo;
     const destExternalId = externalIdInfo?.destinationExternalId;
-    return destExternalId ? String(destExternalId).toLowerCase() : '';
+    return destExternalId ? destExternalId.toLowerCase() : '';
   });
 
-  return Array.from(new Set(values.filter(Boolean)));
+  return Array.from(new Set(values));
 };
 
 /**
@@ -590,8 +597,8 @@ const extractIDsForSearchAPI = (inputs: { message: Record<string, unknown> }[]):
  * @returns
  */
 const performHubSpotSearch = async (
-  reqdata: Record<string, unknown>,
-  reqOptions: Record<string, unknown>,
+  reqdata: HubSpotSearchRequest,
+  reqOptions: AxiosRequestConfig,
   objectType: string,
   identifierType: string,
   destination: HubSpotDestination,
@@ -618,7 +625,7 @@ const performHubSpotSearch = async (
    * */
 
   while (checkAfter) {
-    const searchResponse = await httpPOST(url, requestData, requestOptions, {
+    const httpResponse = await httpPOST(url, requestData, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
       endpointPath,
@@ -627,7 +634,7 @@ const performHubSpotSearch = async (
       metadata,
     });
 
-    const processedResponse = processAxiosResponse(searchResponse);
+    const processedResponse = processAxiosResponse(httpResponse);
 
     if (processedResponse.status !== 200) {
       throw new NetworkError(
@@ -642,18 +649,18 @@ const performHubSpotSearch = async (
       );
     }
 
-    const after = processedResponse.response?.paging?.next?.after || 0;
-    requestData.after = after; // assigning to the new value of after
+    const searchApiResponse = processedResponse.response as HubSpotSearchResponse;
+    const after = searchApiResponse?.paging?.next?.after || 0;
+    requestData.after = Number(after); // assigning to the new value of after
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
-    const results = processedResponse.response?.results;
+    const results = searchApiResponse?.results;
     const extraProp = primaryToSecondaryFields[identifierType];
     if (results) {
       searchResults.push(
-        ...results.map((result: { id: string; properties: Record<string, unknown> }) => {
-          const contact: { id: string; property: unknown; [key: string]: unknown } = {
+        ...results.map((result: HubSpotSearchResult) => {
+          const contact: HubSpotContactRecord = {
             id: result.id,
-            property: result.properties[identifierType],
+            property: String(result.properties[identifierType] || ''),
           };
           // Following maps the extra property to the contact object which
           // help us to know if the contact was found using secondary property
@@ -680,13 +687,8 @@ const performHubSpotSearch = async (
  * @param {*} chunkValue
  * @returns
  */
-const getRequestData = (identifierType: string, chunkValue: string[]): Record<string, unknown> => {
-  const requestData: {
-    filterGroups: { filters: { propertyName: string; values: string[]; operator: string }[] }[];
-    properties: string[];
-    limit: number;
-    after: number;
-  } = {
+const getRequestData = (identifierType: string, chunkValue: string[]): HubSpotSearchRequest => {
+  const requestData: HubSpotSearchRequest = {
     filterGroups: [
       {
         filters: [
@@ -719,7 +721,7 @@ const getRequestData = (identifierType: string, chunkValue: string[]): Record<st
         },
       ],
     });
-    requestData.properties.push(secondaryProp);
+    requestData.properties?.push(secondaryProp);
   }
   return requestData;
 };
@@ -730,7 +732,7 @@ const getRequestData = (identifierType: string, chunkValue: string[]): Record<st
  * @param {*} destination
  */
 const getExistingContactsData = async (
-  inputs: { message: Record<string, unknown> }[],
+  inputs: { message: HubspotRudderMessage }[],
   destination: HubSpotDestination,
   metadata: Metadata,
 ): Promise<HubSpotContactRecord[]> => {
@@ -776,14 +778,14 @@ const getExistingContactsData = async (
  * @returns
  */
 const setHsSearchId = (
-  input: { message: Record<string, unknown> },
+  input: { message: HubspotRudderMessage },
   id: string,
   useSecondaryProp = false,
-): Record<string, unknown>[] => {
+): HubSpotExternalIdObject[] => {
   const { message } = input;
-  const resultExternalId: Record<string, unknown>[] = [];
-  const context = message.context as Record<string, unknown> | undefined;
-  const externalIdArray = context?.externalId as Record<string, unknown>[] | undefined;
+  const resultExternalId: HubSpotExternalIdObject[] = [];
+  const context = message.context as { externalId: HubSpotExternalIdObject[] };
+  const externalIdArray = context?.externalId;
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
@@ -812,10 +814,10 @@ const setHsSearchId = (
  * */
 
 const splitEventsForCreateUpdate = async (
-  inputs: { message: Record<string, unknown> }[],
+  inputs: HubspotRouterRequest[],
   destination: HubSpotDestination,
   metadata: Metadata,
-): Promise<{ message: Record<string, unknown> }[]> => {
+): Promise<HubspotRouterRequest[]> => {
   // get all the id and properties of already existing objects needed for update.
   const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination, metadata);
 
@@ -832,11 +834,10 @@ const splitEventsForCreateUpdate = async (
     const filteredInfo = hsIdsToBeUpdated.filter(
       (update) =>
         destinationExternalId &&
-        (update.property as string).toString().toLowerCase() ===
-          String(destinationExternalId).toLowerCase(), // second condition is for secondary property for identifier type
+        update.property.toString().toLowerCase() === String(destinationExternalId).toLowerCase(), // second condition is for secondary property for identifier type
     );
 
-    const context = message.context as Record<string, unknown>;
+    const { context } = message;
     if (filteredInfo.length > 0) {
       inputParam.message.context = {
         ...context,
@@ -855,7 +856,7 @@ const splitEventsForCreateUpdate = async (
        and then checking if array includes  destinationExternalId
        */
       const filteredInfoForSecondaryProp = hsIdsToBeUpdated.filter((update) =>
-        (update[secondaryProp] as string | undefined)
+        update[secondaryProp]
           ?.toString()
           .toLowerCase()
           .split(';')
@@ -881,16 +882,16 @@ const splitEventsForCreateUpdate = async (
   return resultInput;
 };
 
-const getHsSearchId = (message: Record<string, unknown>): { hsSearchId: string | null } => {
-  const context = message.context as Record<string, unknown> | undefined;
-  const externalIdArray = context?.externalId as Record<string, unknown>[] | undefined;
+const getHsSearchId = (message: HubspotRudderMessage): { hsSearchId: string | null } => {
+  const { context } = message;
+  const externalIdArray = context?.externalId;
   let hsSearchId: string | null = null;
 
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
       if ((type as string).includes(DESTINATION)) {
-        hsSearchId = extIdObj.hsSearchId as string | null;
+        hsSearchId = extIdObj.hsSearchId || null;
       }
     });
   }
@@ -927,9 +928,9 @@ const populateTraits = async (
   return populatedTraits;
 };
 
-const addExternalIdToHSTraits = (message: Record<string, unknown>): void => {
-  const context = message.context as Record<string, unknown> | undefined;
-  const externalIdArray = context?.externalId as Record<string, unknown>[] | undefined;
+const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
+  const { context } = message;
+  const externalIdArray = context?.externalId;
   const externalIdObj = externalIdArray?.[0];
   if (externalIdObj?.useSecondaryObject) {
     /* this condition help us to NOT override the primary key value with the secondary key value
@@ -941,19 +942,19 @@ const addExternalIdToHSTraits = (message: Record<string, unknown>): void => {
   }
   set(
     getFieldValueFromMessage(message, 'traits'),
-    externalIdObj?.identifierType as string,
+    externalIdObj?.identifierType,
     externalIdObj?.id,
   );
 };
 
 const convertToResponseFormat = (
   successRespListWithDontBatchTrue: {
-    message: Record<string, unknown>;
+    message: HubspotProcessorTransformationOutput;
     metadata: Partial<Metadata>;
     destination: HubSpotDestination;
   }[],
-): unknown[] => {
-  const response: unknown[] = [];
+): HubSpotRouterTransformationOutput[] => {
+  const response: HubSpotRouterTransformationOutput[] = [];
   if (Array.isArray(successRespListWithDontBatchTrue)) {
     successRespListWithDontBatchTrue.forEach((event) => {
       const { message, metadata, destination } = event;
@@ -985,14 +986,6 @@ const convertToResponseFormat = (
   return response;
 };
 
-const isIterable = (obj: unknown): boolean => {
-  // checks for null and undefined
-  if (obj == null) {
-    return false;
-  }
-  return typeof (obj as Record<symbol, unknown>)[Symbol.iterator] === 'function';
-};
-
 // remove system fields from the properties because they are not allowed to be updated
 const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
   omit(properties, HUBSPOT_SYSTEM_FIELDS);
@@ -1017,6 +1010,5 @@ export {
   extractIDsForSearchAPI,
   getRequestData,
   convertToResponseFormat,
-  isIterable,
   removeHubSpotSystemField,
 };

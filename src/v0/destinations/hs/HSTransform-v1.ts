@@ -41,10 +41,12 @@ import {
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
 import type {
-  HubSpotDestination,
   HubSpotPropertyMap,
-  HubSpotEventInput,
-  HubSpotExternalIdInfo,
+  HubSpotLegacyTrackParams,
+  HubSpotRouterTransformationOutput,
+  HubspotRouterRequest,
+  HubspotProcessorTransformationOutput,
+  HubSpotBatchProcessingItem,
 } from './types';
 
 /**
@@ -61,13 +63,9 @@ import type {
  * @returns
  */
 const processLegacyIdentify = async (
-  {
-    message,
-    destination,
-    metadata,
-  }: { message: Record<string, unknown>; destination: HubSpotDestination; metadata: Metadata },
+  { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
-): Promise<Record<string, unknown>> => {
+): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
   let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -83,10 +81,7 @@ const processLegacyIdentify = async (
     operation
   ) {
     addExternalIdToTraits(message);
-    const externalIdInfo = getDestinationExternalIDInfoForRetl(
-      message,
-      'HS',
-    ) as HubSpotExternalIdInfo | null;
+    const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
     const { objectType } = externalIdInfo || {};
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
@@ -159,20 +154,16 @@ const processLegacyIdentify = async (
  * @returns
  */
 const processLegacyTrack = async (
-  {
-    message,
-    destination,
-    metadata,
-  }: { message: Record<string, unknown>; destination: HubSpotDestination; metadata: Metadata },
+  { message, destination, metadata }: HubspotRouterRequest,
   propertyMap?: HubSpotPropertyMap,
-): Promise<Record<string, unknown>> => {
+): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
 
   if (!Config.hubID) {
     throw new ConfigurationError('Invalid hub id value provided in the destination configuration');
   }
 
-  const parameters = {
+  const parameters: HubSpotLegacyTrackParams = {
     _a: Config.hubID,
     _n: message.event,
     _m:
@@ -209,10 +200,10 @@ const processLegacyTrack = async (
 
 // Seggregating update and create calls for retl sources
 const batchIdentifyForrETL = (
-  arrayChunksIdentify: HubSpotEventInput[][],
-  batchedResponseList: unknown[],
+  arrayChunksIdentify: HubSpotBatchProcessingItem[][],
+  batchedResponseList: HubSpotRouterTransformationOutput[],
   batchOperation: string,
-): unknown[] => {
+): HubSpotRouterTransformationOutput[] => {
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach((chunk) => {
     const identifyResponseList: Record<string, unknown>[] = [];
@@ -228,7 +219,9 @@ const batchIdentifyForrETL = (
       // create operation
       chunk.forEach((ev) => {
         // if source is of rETL
-        identifyResponseList.push({ ...(ev.message.body as Record<string, unknown>).JSON as Record<string, unknown> });
+        identifyResponseList.push({
+          ...(ev.message.body.JSON as Record<string, unknown>),
+        });
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
 
         metadata.push(ev.metadata);
@@ -236,9 +229,9 @@ const batchIdentifyForrETL = (
     } else if (batchOperation === 'updateObject') {
       // update operation
       chunk.forEach((ev) => {
-        const updateEndpoint = ev.message.endpoint as string;
+        const updateEndpoint = ev.message.endpoint;
         identifyResponseList.push({
-          ...(ev.message.body as Record<string, unknown>).JSON as Record<string, unknown>,
+          ...(ev.message.body.JSON as Record<string, unknown>),
           id: updateEndpoint.split('/').pop(),
         });
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
@@ -276,12 +269,14 @@ const batchIdentifyForrETL = (
   return batchedResponseList;
 };
 
-const legacyBatchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
-  let batchedResponseList: unknown[] = [];
-  const trackResponseList: unknown[] = [];
-  const eventsChunk: HubSpotEventInput[] = [];
-  const createAllObjectsEventChunk: HubSpotEventInput[] = [];
-  const updateAllObjectsEventChunk: HubSpotEventInput[] = [];
+const legacyBatchEvents = (
+  destEvents: HubSpotBatchProcessingItem[],
+): HubSpotRouterTransformationOutput[] => {
+  let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
+  const trackResponseList: HubSpotRouterTransformationOutput[] = [];
+  const eventsChunk: HubSpotBatchProcessingItem[] = [];
+  const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
+  const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   let maxBatchSize: number = MAX_BATCH_SIZE_CRM_OBJECT;
   destEvents.forEach((event) => {
     // handler for track call
@@ -291,7 +286,7 @@ const legacyBatchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
 
       const batchedResponse = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
-      batchedResponse.batchedRequest.endpoint = endpoint as string;
+      batchedResponse.batchedRequest.endpoint = endpoint;
       batchedResponse.batchedRequest.body = message.body as {
         JSON: Record<string, unknown>;
         JSON_ARRAY: Record<string, unknown>;
@@ -312,7 +307,7 @@ const legacyBatchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
       );
     } else if (event.message.source && event.message.source === 'rETL') {
       const { endpoint } = event.message;
-      maxBatchSize = (endpoint as string).includes('contact')
+      maxBatchSize = endpoint.includes('contact')
         ? MAX_BATCH_SIZE_CRM_CONTACT
         : MAX_BATCH_SIZE_CRM_OBJECT;
       const { operation } = event.message;
@@ -370,7 +365,7 @@ const legacyBatchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
       // if source is of rETL
       if (ev.message.source === 'rETL') {
         identifyResponseList.push({
-          ...((ev.message.body as Record<string, unknown>).JSON as Record<string, unknown>),
+          ...(ev.message.body.JSON as Record<string, unknown>),
         });
         batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList,
@@ -378,10 +373,7 @@ const legacyBatchEvents = (destEvents: HubSpotEventInput[]): unknown[] => {
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         metadata.push(ev.metadata);
       } else {
-        const bodyJSON = (ev.message.body as Record<string, unknown>).JSON as Record<
-          string,
-          unknown
-        >;
+        const bodyJSON = ev.message.body.JSON as Record<string, unknown>;
         const { email, updatedProperties } = getEmailAndUpdatedProps(
           bodyJSON?.properties as { property: string; value: unknown }[],
         );

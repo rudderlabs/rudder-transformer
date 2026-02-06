@@ -47,7 +47,6 @@ import type {
   HubSpotContactRecord,
   HubSpotExternalIdInfo,
   HubSpotLookupFieldInfo,
-  HubSpotEventMapping,
   HubSpotLegacyIdentifyProperty,
   HubSpotSearchRequest,
   HubSpotSearchResponse,
@@ -341,7 +340,7 @@ const getEmailAndUpdatedProps = (
 const getMappingFieldValueFormMessage = (
   message: Record<string, unknown>,
   sourceKey: string,
-  lookupField: string,
+  lookupField: string | undefined,
 ): unknown => {
   const baseObject = get(message, `${sourceKey}`);
   const lookupValue = baseObject ? baseObject[`${lookupField}`] : null;
@@ -357,7 +356,7 @@ const getMappingFieldValueFormMessage = (
  */
 const getLookupFieldValue = (
   message: Record<string, unknown>,
-  lookupField: string,
+  lookupField: string | undefined,
 ): HubSpotLookupFieldInfo | null => {
   const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
   let value = getValueFromMessage(message, `${lookupField}`);
@@ -368,7 +367,7 @@ const getLookupFieldValue = (
       return !!value;
     });
   }
-  const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
+  const lookupValueInfo = value && lookupField ? { fieldName: lookupField, value } : null;
   return lookupValueInfo;
 };
 
@@ -510,7 +509,7 @@ const getEventAndPropertiesFromConfig = (
 
   // 1. fetch event name from webapp config
   // some will traverse through all the indexes of the array and find the event
-  const hubspotEventFound = (hubspotEvents as HubSpotEventMapping[]).some((hubspotEvent) => {
+  const hubspotEventFound = hubspotEvents.some((hubspotEvent) => {
     if (
       hubspotEvent &&
       hubspotEvent.rsEventName &&
@@ -531,15 +530,15 @@ const getEventAndPropertiesFromConfig = (
   }
 
   // 2. fetch event properties from webapp config
-  eventProperties = getHashFromArray(eventProperties, 'from', 'to', false) as {
+  const eventPropertiesHash = getHashFromArray(eventProperties, 'from', 'to', false) as {
     from: string;
     to: string;
-  }[];
+  };
 
-  Object.keys(eventProperties).forEach((key) => {
+  Object.keys(eventPropertiesHash).forEach((key) => {
     const value = get(message, `properties.${key}`);
     if (isDefinedNotNullNotEmpty(value)) {
-      properties[eventProperties?.[key]] = value;
+      properties[eventPropertiesHash?.[key]] = value;
     }
   });
 

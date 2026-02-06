@@ -7,8 +7,9 @@ const {
   getCallConversionPayload,
   getAddConversionPayload,
 } = require('./utils');
-const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH, API_VERSION } = require('./config');
+const { CLICK_CONVERSION_ENDPOINT_PATH, CALL_CONVERSION_ENDPOINT_PATH } = require('./config');
 
+const API_VERSION = 'v19';
 
 const getTestMessage = () => {
   let message = {
@@ -326,7 +327,7 @@ describe('getCallConversionPayload', () => {
     });
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
@@ -358,7 +359,7 @@ describe('getCallConversionPayload', () => {
     });
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {
@@ -387,7 +388,7 @@ describe('getCallConversionPayload', () => {
     const result = getCallConversionPayload(message, '9625812972', {});
     expect(result).toEqual({
       endpointDetails: {
-        endpoint: 'https://googleads.googleapis.com/v22/customers/9625812972:uploadCallConversions',
+        endpoint: 'https://googleads.googleapis.com/v19/customers/9625812972:uploadCallConversions',
         path: CALL_CONVERSION_ENDPOINT_PATH,
       },
       payload: {

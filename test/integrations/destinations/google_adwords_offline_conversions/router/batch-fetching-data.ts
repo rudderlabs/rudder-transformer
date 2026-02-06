@@ -23,7 +23,7 @@
 import { authHeader1, secret1, secret3, secret401Test } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 
-const API_VERSION = 'v22';
+const API_VERSION = 'v19';
 
 export const newData = [
   {
@@ -1039,7 +1039,7 @@ export const newData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v22/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v19/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer google_adwords_offline_conversions1',
                     'Content-Type': 'application/json',
@@ -1155,7 +1155,7 @@ export const newData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v22/customers/7693729833:uploadCallConversions',
+                    'https://googleads.googleapis.com/v19/customers/7693729833:uploadCallConversions',
                   headers: {
                     Authorization: 'Bearer google_adwords_offline_conversions1',
                     'Content-Type': 'application/json',

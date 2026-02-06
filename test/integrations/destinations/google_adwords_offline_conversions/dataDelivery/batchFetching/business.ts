@@ -21,7 +21,7 @@ import {
   generateProxyV1Payload,
 } from '../../../../testUtils';
 
-const API_VERSION = 'v22';
+const API_VERSION = 'v19';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',

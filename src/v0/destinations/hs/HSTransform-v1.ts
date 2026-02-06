@@ -72,7 +72,7 @@ const processLegacyIdentify = async (
   const operation = get(message, 'context.hubspotOperation');
   // if mappedToDestination is set true, then add externalId to traits
   // rETL source
-  let endpoint: string | undefined;
+  let endpoint: string = '';
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   if (
@@ -82,7 +82,7 @@ const processLegacyIdentify = async (
   ) {
     addExternalIdToTraits(message);
     const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
-    const { objectType } = externalIdInfo || {};
+    const { objectType } = externalIdInfo;
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
     }
@@ -123,9 +123,7 @@ const processLegacyIdentify = async (
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
-  if (endpoint) {
-    response.endpoint = endpoint;
-  }
+  response.endpoint = endpoint;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -220,7 +218,7 @@ const batchIdentifyForrETL = (
       chunk.forEach((ev) => {
         // if source is of rETL
         identifyResponseList.push({
-          ...(ev.message.body.JSON as Record<string, unknown>),
+          ...ev.message.body.JSON,
         });
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
 
@@ -231,7 +229,7 @@ const batchIdentifyForrETL = (
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
         identifyResponseList.push({
-          ...(ev.message.body.JSON as Record<string, unknown>),
+          ...ev.message.body.JSON,
           id: updateEndpoint.split('/').pop(),
         });
         batchEventResponse.batchedRequest.endpoint = `${updateEndpoint.substr(
@@ -277,7 +275,7 @@ const legacyBatchEvents = (
   const eventsChunk: HubSpotBatchProcessingItem[] = [];
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
-  let maxBatchSize: number = MAX_BATCH_SIZE_CRM_OBJECT;
+  let maxBatchSize: number | undefined;
   destEvents.forEach((event) => {
     // handler for track call
     if (event.message.messageType === 'track') {
@@ -365,7 +363,7 @@ const legacyBatchEvents = (
       // if source is of rETL
       if (ev.message.source === 'rETL') {
         identifyResponseList.push({
-          ...(ev.message.body.JSON as Record<string, unknown>),
+          ...ev.message.body.JSON,
         });
         batchEventResponse.batchedRequest.body.JSON = {
           inputs: identifyResponseList,

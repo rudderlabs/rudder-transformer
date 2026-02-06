@@ -64,7 +64,7 @@ import type {
  * validate destination config and check for existence of data
  * @param {*} param0
  */
-const validateDestinationConfig = ({ Config }: HubSpotDestination): Error | void => {
+const validateDestinationConfig = ({ Config }: HubSpotDestination): ConfigurationError | void => {
   if (Config.authorizationType === 'newPrivateAppApi') {
     // NEW API
     if (!Config.accessToken) {
@@ -790,7 +790,7 @@ const setHsSearchId = (
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
       const extIdObjParam = extIdObj;
-      if ((type as string).includes(DESTINATION)) {
+      if (type && type.includes(DESTINATION)) {
         extIdObjParam.hsSearchId = id;
       }
       if (useSecondaryProp) {

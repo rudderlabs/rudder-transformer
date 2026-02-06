@@ -1,9 +1,7 @@
-import { nativeData } from './data-native';
-
-const cdkData = [
+export const nativeData = [
   {
     name: 'tiktok_audience',
-    description: 'Multiple jobs with different metadata',
+    description: 'Native Multiple jobs with different metadata',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -41,6 +39,7 @@ const cdkData = [
               },
               metadata: {
                 jobId: 1,
+                workspaceId: 'workspace-disable-cdkv2',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
@@ -85,6 +84,7 @@ const cdkData = [
               },
               metadata: {
                 jobId: 2,
+                workspaceId: 'workspace-disable-cdkv2',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
@@ -138,6 +138,7 @@ const cdkData = [
               },
               metadata: {
                 jobId: 3,
+                workspaceId: 'workspace-disable-cdkv2',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
@@ -187,6 +188,7 @@ const cdkData = [
               },
               metadata: {
                 jobId: 4,
+                workspaceId: 'workspace-disable-cdkv2',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
@@ -235,6 +237,7 @@ const cdkData = [
               },
               metadata: {
                 jobId: 1524545,
+                workspaceId: 'workspace-disable-cdkv2',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
@@ -276,6 +279,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 1524545,
+                  workspaceId: 'workspace-disable-cdkv2',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -285,8 +289,9 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
               },
               statusCode: 400,
             },
@@ -297,6 +302,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -339,6 +345,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -393,6 +400,7 @@ const cdkData = [
                   jobId: 1,
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
+                  workspaceId: 'workspace-disable-cdkv2',
                 },
               ],
               statusCode: 200,
@@ -404,6 +412,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -458,6 +467,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -522,6 +532,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 2,
+                  workspaceId: 'workspace-disable-cdkv2',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -534,6 +545,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -617,6 +629,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 3,
+                  workspaceId: 'workspace-disable-cdkv2',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -629,6 +642,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -700,6 +714,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 4,
+                  workspaceId: 'workspace-disable-cdkv2',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -712,5 +727,3 @@ const cdkData = [
     },
   },
 ];
-
-export const data = [...cdkData, ...nativeData];

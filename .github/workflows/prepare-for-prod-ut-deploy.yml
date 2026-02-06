@@ -67,7 +67,6 @@ jobs:
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
-      TF_IMAGE_REPOSITORY: ${{ vars.AWS_ECR_REGISTRY }}/rudderstack/rudder-transformer
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
@@ -111,15 +110,12 @@ jobs:
 
           cd helm-charts/shared-services/per-az/environment/production
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" production.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
           git add production.yaml
 
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" enterprise/enterprise.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
           git add enterprise/enterprise.yaml
 
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           git add multi-tenant/multi-tenant.yaml
 
           cd -
@@ -142,7 +138,6 @@ jobs:
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
@@ -178,7 +173,6 @@ jobs:
           # bump up the customers version and repository information
           for customer in "${enabled_ut_customers[@]}"; do
             yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $customer
-            yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
             git add $customer
           done
 

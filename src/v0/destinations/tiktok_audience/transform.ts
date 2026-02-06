@@ -34,6 +34,7 @@ function validateInput(message: TiktokAudienceMessage) {
 
 function prepareIdentifiersList(event: TiktokAudienceRequest) {
   const { message, destination, metadata } = event;
+  const { isHashRequired } = destination.Config;
 
   const destinationFields =
     message.context?.destinationFields
@@ -41,7 +42,6 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
       .map((s) => s.trim())
       .filter(Boolean) ?? [];
   const audienceId = getDestinationExternalIDInfoForRetl(message, 'TIKTOK_AUDIENCE').objectType;
-  const isHashRequired = Boolean(destination?.Config?.isHashRequired);
   const advertiserIds = metadata?.secret?.advertiserIds;
   const hashIdentifier = (destinationField: string, trait: string) => {
     if (isHashRequired) {

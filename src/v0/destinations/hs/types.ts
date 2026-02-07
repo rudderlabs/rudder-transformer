@@ -308,7 +308,9 @@ export function hasPropertiesRecord(
 ): json is { properties: Record<string, unknown> } {
   if (!json || Array.isArray(json)) return false;
   const obj = json as Record<string, unknown>;
-  return 'properties' in obj && typeof obj.properties === 'object' && !Array.isArray(obj.properties);
+  return (
+    'properties' in obj && typeof obj.properties === 'object' && !Array.isArray(obj.properties)
+  );
 }
 
 /**
@@ -326,9 +328,7 @@ export function hasAssociationShape(
  * Type guard: value is valid for date conversion
  */
 export function isDateLike(value: unknown): value is string | number | Date {
-  return (
-    typeof value === 'string' || typeof value === 'number' || value instanceof Date
-  );
+  return typeof value === 'string' || typeof value === 'number' || value instanceof Date;
 }
 
 /**

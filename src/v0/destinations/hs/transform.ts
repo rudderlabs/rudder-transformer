@@ -4,7 +4,7 @@ import { EventType } from '../../../constants';
 import {
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl,
-  groupEventsByType as batchEventsInOrder,
+  groupEventsByType,
 } from '../../util';
 import { API_VERSION } from './config';
 import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './HSTransform-v1';
@@ -19,15 +19,14 @@ import {
 } from './util';
 import type {
   HubSpotPropertyMap,
-  // HubSpotEventInput,
-  HubSpotExternalIdInfo,
   HubSpotBatchRouterResult,
   HubSpotRouterTransformationOutput,
   HubspotRouterRequest,
   HubspotProcessorTransformationOutput,
-  HubspotProcessorTransformationRequest as HubspotProcessorRequest,
+  HubspotProcessorRequest,
   HubSpotBatchProcessingItem,
 } from './types';
+import { isProcessorOutput } from './types';
 
 const processSingleMessage = async (
   { message, destination, metadata }: HubspotRouterRequest,
@@ -94,10 +93,7 @@ const processBatchRouter = async (
   const { destination, metadata } = tempInputs[0];
   let propertyMap: HubSpotPropertyMap | undefined;
   const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
-  const externalIdInfo = getDestinationExternalIDInfoForRetl(
-    tempInputs[0].message,
-    'HS',
-  ) as HubSpotExternalIdInfo | null;
+  const externalIdInfo = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
   const objectType = externalIdInfo?.objectType;
   const successRespList: HubSpotBatchProcessingItem[] = [];
   const errorRespList: HubSpotRouterTransformationOutput[] = [];
@@ -109,11 +105,7 @@ const processBatchRouter = async (
       if (!objectType || String(objectType).toLowerCase() !== 'association') {
         propertyMap = await getProperties(destination, metadata);
         // get info about existing objects and splitting accordingly.
-        tempInputs = (await splitEventsForCreateUpdate(
-          tempInputs,
-          destination,
-          metadata,
-        )) as typeof tempInputs;
+        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination, metadata);
       }
     } else {
       // reduce the no. of calls for properties endpoint
@@ -138,10 +130,10 @@ const processBatchRouter = async (
   await Promise.all(
     inputs.map(async (input) => {
       try {
-        if (input.message.statusCode) {
+        if (input.message.statusCode && isProcessorOutput(input.message)) {
           // already transformed event
           successRespList.push({
-            message: input.message as unknown as HubspotProcessorTransformationOutput,
+            message: input.message,
             metadata: input.metadata,
             destination,
           });
@@ -205,7 +197,7 @@ const processRouterDest = async (
   inputs: HubspotRouterRequest[],
   reqMetadata: NonNullable<unknown>,
 ): Promise<HubSpotRouterTransformationOutput[]> => {
-  const tempNewInputs: HubspotRouterRequest[][] = batchEventsInOrder(inputs);
+  const tempNewInputs: HubspotRouterRequest[][] = groupEventsByType(inputs);
   const batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   const errorRespList: HubSpotRouterTransformationOutput[] = [];
   const dontBatchEvents: HubSpotRouterTransformationOutput[] = [];

@@ -5,6 +5,7 @@ import type {
   RouterTransformationRequestData,
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
+  BatchedRequest,
 } from '../../../types/destinationTransformation';
 
 // ============================================================================
@@ -254,6 +255,16 @@ export type HubSpotRequestBodyJSON =
  * HubSpot specific BatchedRequestBody with typed JSON
  */
 export type HubSpotBatchedRequestBody = BatchedRequestBody<HubSpotRequestBodyJSON>;
+export interface HubSpotBatchRequestOutput {
+  batchedRequest: BatchedRequest<
+    HubSpotRequestBodyJSON,
+    Record<string, unknown>, // headers
+    Record<string, unknown> // params
+  >;
+  // These are the only fields we actually set before passing to getSuccessRespEvents
+  metadata?: Partial<Metadata>[];
+  destination?: HubSpotDestination;
+}
 export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'event'> {
   context: {
     externalId: HubSpotExternalIdObject[];
@@ -263,9 +274,93 @@ export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'e
 }
 
 /**
+ * Router input where message may be raw (HubspotRudderMessage) or already transformed (statusCode set)
+ */
+export type HubspotRouterInput =
+  | { message: HubspotRudderMessage; metadata: Metadata; destination: HubSpotDestination }
+  | {
+      message: HubspotProcessorTransformationOutput;
+      metadata: Metadata;
+      destination: HubSpotDestination;
+    };
+
+/**
+ * Type guard: message has already been transformed (processor output shape)
+ */
+export function isProcessorOutput(
+  msg: HubspotRudderMessage | HubspotProcessorTransformationOutput,
+): msg is HubspotProcessorTransformationOutput {
+  return (
+    typeof msg === 'object' &&
+    msg !== null &&
+    'statusCode' in msg &&
+    'body' in msg &&
+    typeof (msg as Record<string, unknown>).statusCode === 'number' &&
+    (msg as Record<string, unknown>).body !== undefined
+  );
+}
+
+/**
+ * Type guard: JSON payload has properties as Record (not array) - for create/update contact
+ */
+export function hasPropertiesRecord(
+  json: unknown,
+): json is { properties: Record<string, unknown> } {
+  if (!json || Array.isArray(json)) return false;
+  const obj = json as Record<string, unknown>;
+  return 'properties' in obj && typeof obj.properties === 'object' && !Array.isArray(obj.properties);
+}
+
+/**
+ * Type guard: JSON payload is association shape (from, to, type)
+ */
+export function hasAssociationShape(
+  json: unknown,
+): json is { from: { id: string }; to: { id: string }; type: string } {
+  if (!json || Array.isArray(json)) return false;
+  const obj = json as Record<string, unknown>;
+  return 'from' in obj && 'to' in obj && 'type' in obj;
+}
+
+/**
+ * Type guard: value is valid for date conversion
+ */
+export function isDateLike(value: unknown): value is string | number | Date {
+  return (
+    typeof value === 'string' || typeof value === 'number' || value instanceof Date
+  );
+}
+
+/**
+ * Type guard: valid record (object, not array, not null)
+ */
+export function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Type guard: value is HubSpotExternalIdInfo shape
+ */
+export function isHubSpotExternalIdInfo(value: unknown): value is HubSpotExternalIdInfo {
+  return (
+    isRecord(value) &&
+    'destinationExternalId' in value &&
+    'objectType' in value &&
+    'identifierType' in value
+  );
+}
+
+/**
+ * Type guard: value is HubSpotSearchResponse shape
+ */
+export function isHubSpotSearchResponse(value: unknown): value is HubSpotSearchResponse {
+  return isRecord(value) && ('results' in value || 'total' in value || 'paging' in value);
+}
+
+/**
  * HubSpot Transformed Message (internal)
  */
-export type HubspotProcessorTransformationRequest = ProcessorTransformationRequest<
+export type HubspotProcessorRequest = ProcessorTransformationRequest<
   HubspotRudderMessage,
   Metadata,
   HubSpotDestination,

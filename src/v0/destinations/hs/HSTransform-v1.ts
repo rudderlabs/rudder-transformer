@@ -47,6 +47,7 @@ import type {
   HubspotRouterRequest,
   HubspotProcessorTransformationOutput,
   HubSpotBatchProcessingItem,
+  HubSpotBatchRequestOutput,
 } from './types';
 
 /**
@@ -247,8 +248,8 @@ const batchIdentifyForrETL = (
       inputs: identifyResponseList,
     };
 
-    batchEventResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
-    batchEventResponse.batchedRequest.params = message.params as Record<string, unknown>;
+    batchEventResponse.batchedRequest.headers = message.headers!;
+    batchEventResponse.batchedRequest.params = message.params!;
 
     batchEventResponse = {
       ...batchEventResponse,
@@ -282,16 +283,11 @@ const legacyBatchEvents = (
       const { message, metadata, destination } = event;
       const endpoint = get(message, 'endpoint');
 
-      const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
+      const batchedResponse: HubSpotBatchRequestOutput = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = message.body as {
-        JSON: Record<string, unknown>;
-        JSON_ARRAY: Record<string, unknown>;
-        XML: Record<string, unknown>;
-        FORM: Record<string, unknown>;
-      };
-      batchedResponse.batchedRequest.params = message.params as Record<string, unknown>;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params!;
       batchedResponse.batchedRequest.method = defaultGetRequestConfig.requestMethod;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
@@ -371,10 +367,20 @@ const legacyBatchEvents = (
         batchEventResponse.batchedRequest.endpoint = `${ev.message.endpoint}/batch/create`;
         metadata.push(ev.metadata);
       } else {
-        const bodyJSON = ev.message.body.JSON as Record<string, unknown>;
-        const { email, updatedProperties } = getEmailAndUpdatedProps(
-          bodyJSON?.properties as { property: string; value: unknown }[],
-        );
+        const bodyJSON = ev.message.body.JSON;
+
+        if (
+          !bodyJSON ||
+          Array.isArray(bodyJSON) ||
+          !('properties' in bodyJSON) ||
+          !Array.isArray(bodyJSON.properties)
+        ) {
+          throw new TransformationError(
+            'Legacy identify batch: invalid payload (expected object with properties array)',
+          );
+        }
+
+        const { email, updatedProperties } = getEmailAndUpdatedProps(bodyJSON.properties);
         // eslint-disable-next-line no-param-reassign
         bodyJSON.properties = updatedProperties;
         identifyResponseList.push({

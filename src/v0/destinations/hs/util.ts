@@ -58,6 +58,12 @@ import type {
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
 } from './types';
+import {
+  isRecord,
+  isDateLike,
+  isHubSpotExternalIdInfo,
+  isHubSpotSearchResponse,
+} from './types';
 
 /**
  * validate destination config and check for existence of data
@@ -260,7 +266,8 @@ const getTransformedJSON = async (
       // fetch HS properties
       propMap = await getProperties(destination, metadata);
     }
-    rawPayload = (constructPayload(message, hsCommonConfigJson) as Record<string, unknown>) || {};
+    const constructed = constructPayload(message, hsCommonConfigJson);
+    rawPayload = isRecord(constructed) ? constructed : {};
 
     // if there is any extra/custom property in hubspot, that has not already
     // been mapped but exists in the traits, we will include those values to the final payload
@@ -271,8 +278,8 @@ const getTransformedJSON = async (
         // HS accepts empty string to remove the property from contact
         // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
         let propValue: unknown = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
-        if (propMap[hsSupportedKey] === 'date') {
-          propValue = getUTCMidnightTimeStampValue(propValue as string | number | Date);
+        if (propMap[hsSupportedKey] === 'date' && isDateLike(propValue)) {
+          propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
@@ -389,7 +396,7 @@ const searchContacts = async (
     throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
   const lookupFieldInfo =
-    getLookupFieldValue(message, Config.lookupField as string) ||
+    getLookupFieldValue(message, Config.lookupField) ||
     getLookupFieldValue(message, 'email');
   if (!lookupFieldInfo?.value) {
     throw new InstrumentationError(
@@ -529,11 +536,14 @@ const getEventAndPropertiesFromConfig = (
     );
   }
 
-  // 2. fetch event properties from webapp config
-  const eventPropertiesHash = getHashFromArray(eventProperties, 'from', 'to', false) as {
-    from: string;
-    to: string;
-  };
+  // 2. fetch event properties from webapp config (maps source prop -> dest prop)
+  const hashResult = getHashFromArray(eventProperties, 'from', 'to', false);
+  const eventPropertiesHash: Record<string, string> = isRecord(hashResult)
+    ? Object.entries(hashResult).reduce<Record<string, string>>((acc, [k, v]) => {
+        if (typeof k === 'string' && typeof v === 'string') acc[k] = v;
+        return acc;
+      }, {})
+    : {};
 
   Object.keys(eventPropertiesHash).forEach((key) => {
     const value = get(message, `properties.${key}`);
@@ -555,10 +565,8 @@ const getEventAndPropertiesFromConfig = (
 const getObjectAndIdentifierType = (
   firstMessage: HubspotRudderMessage,
 ): { objectType: string; identifierType: string } => {
-  const externalIdInfo = getDestinationExternalIDInfoForRetl(
-    firstMessage,
-    DESTINATION,
-  ) as HubSpotExternalIdInfo;
+  const rawInfo = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION);
+  const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
   const { objectType, identifierType } = externalIdInfo || {};
   if (!objectType || !identifierType) {
     throw new InstrumentationError('rETL - external Id not found.');
@@ -574,12 +582,10 @@ const getObjectAndIdentifierType = (
 const extractIDsForSearchAPI = (inputs: { message: HubspotRudderMessage }[]): string[] => {
   const values = inputs.map((input) => {
     const { message } = input;
-    const externalIdInfo = getDestinationExternalIDInfoForRetl(
-      message,
-      DESTINATION,
-    ) as HubSpotExternalIdInfo;
+    const rawInfo = getDestinationExternalIDInfoForRetl(message, DESTINATION);
+    const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
     const destExternalId = externalIdInfo?.destinationExternalId;
-    return destExternalId ? destExternalId.toLowerCase() : '';
+    return String(destExternalId ?? '').toLowerCase();
   });
 
   return Array.from(new Set(values));
@@ -648,7 +654,10 @@ const performHubSpotSearch = async (
       );
     }
 
-    const searchApiResponse = processedResponse.response as HubSpotSearchResponse;
+    const rawResponse = processedResponse.response;
+    const searchApiResponse: HubSpotSearchResponse = isHubSpotSearchResponse(rawResponse)
+      ? rawResponse
+      : { results: [] };
     const after = searchApiResponse?.paging?.next?.after || 0;
     requestData.after = Number(after); // assigning to the new value of after
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
@@ -783,8 +792,7 @@ const setHsSearchId = (
 ): HubSpotExternalIdObject[] => {
   const { message } = input;
   const resultExternalId: HubSpotExternalIdObject[] = [];
-  const context = message.context as { externalId: HubSpotExternalIdObject[] };
-  const externalIdArray = context?.externalId;
+  const externalIdArray = message.context?.externalId;
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
@@ -823,10 +831,13 @@ const splitEventsForCreateUpdate = async (
   const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
-    const externalIdInfo = getDestinationExternalIDInfoForRetl(
-      message,
-      DESTINATION,
-    ) as HubSpotExternalIdInfo | null;
+    const rawInfo = getDestinationExternalIDInfoForRetl(message, DESTINATION);
+    const externalIdInfo: HubSpotExternalIdInfo | null =
+      rawInfo === null || rawInfo === undefined
+        ? null
+        : isHubSpotExternalIdInfo(rawInfo)
+          ? rawInfo
+          : null;
     const destinationExternalId = externalIdInfo?.destinationExternalId;
     const identifierType = externalIdInfo?.identifierType;
 
@@ -889,7 +900,7 @@ const getHsSearchId = (message: HubspotRudderMessage): { hsSearchId: string | nu
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
-      if ((type as string).includes(DESTINATION)) {
+      if (typeof type === 'string' && type.includes(DESTINATION)) {
         hsSearchId = extIdObj.hsSearchId || null;
       }
     });
@@ -919,8 +930,8 @@ const populateTraits = async (
   const keys = Object.keys(populatedTraits);
   keys.forEach((key) => {
     const value = populatedTraits[key];
-    if (propertyToTypeMap && propertyToTypeMap[key] === 'date') {
-      populatedTraits[key] = getUTCMidnightTimeStampValue(value as string | number | Date);
+    if (propertyToTypeMap && propertyToTypeMap[key] === 'date' && isDateLike(value)) {
+      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
     }
   });
 
@@ -957,19 +968,21 @@ const convertToResponseFormat = (
   if (Array.isArray(successRespListWithDontBatchTrue)) {
     successRespListWithDontBatchTrue.forEach((event) => {
       const { message, metadata, destination } = event;
-      const endpoint = get(message, 'endpoint');
+      const endpoint =
+        typeof message.endpoint === 'string'
+          ? message.endpoint
+          : String(get(message, 'endpoint') ?? '');
 
       const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers as Record<string, unknown>;
-      batchedResponse.batchedRequest.endpoint = endpoint as string;
-      batchedResponse.batchedRequest.body = message.body as {
-        JSON: Record<string, unknown>;
-        JSON_ARRAY: Record<string, unknown>;
-        XML: Record<string, unknown>;
-        FORM: Record<string, unknown>;
-      };
-      batchedResponse.batchedRequest.params = message.params as Record<string, unknown>;
-      batchedResponse.batchedRequest.method = message.method as string;
+      batchedResponse.batchedRequest.headers = message.headers ?? {};
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      const msgBody = message.body;
+      batchedResponse.batchedRequest.body = isRecord(msgBody)
+        ? { ...batchedResponse.batchedRequest.body, ...msgBody }
+        : batchedResponse.batchedRequest.body;
+      batchedResponse.batchedRequest.params = message.params ?? {};
+      batchedResponse.batchedRequest.method =
+        typeof message.method === 'string' ? message.method : 'POST';
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 

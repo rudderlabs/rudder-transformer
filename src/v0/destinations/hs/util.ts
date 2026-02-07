@@ -45,7 +45,6 @@ import type {
   HubSpotPropertyMap,
   HubSpotProperty,
   HubSpotContactRecord,
-  HubSpotExternalIdInfo,
   HubSpotLookupFieldInfo,
   HubSpotLegacyIdentifyProperty,
   HubSpotSearchRequest,
@@ -58,12 +57,7 @@ import type {
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
 } from './types';
-import {
-  isRecord,
-  isDateLike,
-  isHubSpotExternalIdInfo,
-  isHubSpotSearchResponse,
-} from './types';
+import { isRecord, isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
 /**
  * validate destination config and check for existence of data
@@ -396,8 +390,7 @@ const searchContacts = async (
     throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
   const lookupFieldInfo =
-    getLookupFieldValue(message, Config.lookupField) ||
-    getLookupFieldValue(message, 'email');
+    getLookupFieldValue(message, Config.lookupField) || getLookupFieldValue(message, 'email');
   if (!lookupFieldInfo?.value) {
     throw new InstrumentationError(
       'Identify:: email i.e a default lookup field for contact lookup not found in traits',
@@ -832,12 +825,7 @@ const splitEventsForCreateUpdate = async (
     const { message } = input;
     const inputParam = input;
     const rawInfo = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    const externalIdInfo: HubSpotExternalIdInfo | null =
-      rawInfo === null || rawInfo === undefined
-        ? null
-        : isHubSpotExternalIdInfo(rawInfo)
-          ? rawInfo
-          : null;
+    const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
     const destinationExternalId = externalIdInfo?.destinationExternalId;
     const identifierType = externalIdInfo?.identifierType;
 
@@ -950,11 +938,13 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
      */
     return;
   }
-  set(
-    getFieldValueFromMessage(message, 'traits'),
-    externalIdObj?.identifierType,
-    externalIdObj?.id,
-  );
+  if (externalIdObj?.identifierType && externalIdObj?.id) {
+    set(
+      getFieldValueFromMessage(message, 'traits'),
+      externalIdObj.identifierType,
+      externalIdObj.id,
+    );
+  }
 };
 
 const convertToResponseFormat = (

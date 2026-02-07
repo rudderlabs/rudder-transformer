@@ -70,16 +70,15 @@ const process = async (
   event: HubspotProcessorRequest,
 ): Promise<HubspotProcessorTransformationOutput | HubspotProcessorTransformationOutput[]> => {
   const { destination, message, metadata } = event;
-  const hsDestination = destination;
   const mappedToDestination = get(message, MappedToDestinationKey);
   let events: HubspotProcessorRequest[] = [event];
   if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     // get info about existing objects and splitting accordingly.
-    events = await splitEventsForCreateUpdate(events, hsDestination, metadata);
+    events = await splitEventsForCreateUpdate(events, destination, metadata);
   }
   return processSingleMessage({
     message: events[0].message,
-    destination: hsDestination,
+    destination,
     metadata,
   });
 };

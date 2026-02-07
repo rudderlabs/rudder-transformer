@@ -123,9 +123,9 @@ const processIdentify = async (
     externalIdObj
   ) {
     const { associationTypeId, fromObjectType, toObjectType } = externalIdObj;
-    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType || '').replace(
+    response.endpoint = CRM_ASSOCIATION_V3.replace(':fromObjectType', fromObjectType).replace(
       ':toObjectType',
-      toObjectType || '',
+      toObjectType,
     );
     response.body.JSON = {
       ...traits,
@@ -199,9 +199,7 @@ const processIdentify = async (
     response.body.JSON = removeUndefinedAndNullValues(payload);
   }
 
-  if (endpoint) {
-    response.endpoint = endpoint;
-  }
+  response.endpoint = endpoint!;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
   };
@@ -233,8 +231,10 @@ const processTrack = async ({
 }: HubspotRouterRequest): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
 
-  let payload: HubSpotTrackEventRequest =
-    constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]) || {};
+  let payload: HubSpotTrackEventRequest = constructPayload(
+    message,
+    mappingConfig[ConfigCategory.TRACK.name],
+  )!;
 
   // fetch event name and its properties from config (webapp) and put it in final payload
   payload = getEventAndPropertiesFromConfig(message, destination, payload);
@@ -245,11 +245,8 @@ const processTrack = async ({
     ...constructPayload(message, mappingConfig[ConfigCategory.TRACK_PROPERTIES.name]),
   };
 
-  // Cast to HubSpotTrackEventRequest for type-safe validation
-  const trackPayload = payload;
-
   // either of email or utk or objectId (Could be a 'contact id' or a 'visitor id') should be present
-  if (!trackPayload.email && !trackPayload.utk && !trackPayload.objectId) {
+  if (!payload.email && !payload.utk && !payload.objectId) {
     throw new InstrumentationError(
       'Either of email, utk or objectId is required for custom behavioral events',
     );
@@ -326,23 +323,15 @@ const batchIdentify = (
       // update operation
       chunk.forEach((ev) => {
         const updateEndpoint = ev.message.endpoint;
-        const json = ev.message.body.JSON;
-
-        if (!hasPropertiesRecord(json)) {
-          throw new TransformationError('rETL - Invalid payload for updateObject batch');
-        }
-
-        const { properties = {} } = json;
-
         identifyResponseList.push({
+          ...ev.message.body.JSON,
           id: updateEndpoint.split('/').pop(),
-          properties,
         });
 
         metadata.push(ev.metadata);
       });
     } else if (batchOperation === 'createContacts') {
-      // create operation - use typed array for proper narrowing in find
+      // create operation
       const contactItems: HubSpotBatchInputItem[] = [];
       chunk.forEach((ev) => {
         // duplicate email can cause issue with create in batch
@@ -397,17 +386,10 @@ const batchIdentify = (
     } else if (batchOperation === 'createAssociations') {
       chunk.forEach((ev) => {
         batchEventResponse.batchedRequest.endpoint = ev.message.endpoint;
-        const json = ev.message.body.JSON;
-
-        if (!hasAssociationShape(json)) {
+        if (!hasAssociationShape(ev.message.body.JSON)) {
           throw new TransformationError('rETL - Invalid payload for createAssociations batch');
         }
-
-        identifyResponseList.push({
-          from: json.from,
-          to: json.to,
-          type: json.type,
-        });
+        identifyResponseList.push(ev.message.body.JSON);
         metadata.push(ev.metadata);
       });
     } else {

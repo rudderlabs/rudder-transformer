@@ -266,7 +266,7 @@ export interface HubSpotBatchRequestOutput {
   destination?: HubSpotDestination;
 }
 export interface HubspotRudderMessage extends Omit<RudderMessage, 'context' | 'event'> {
-  context: {
+  context: RudderMessage['context'] & {
     externalId: HubSpotExternalIdObject[];
     hubspotOperation: 'createObject' | 'updateObject';
   };
@@ -309,7 +309,10 @@ export function hasPropertiesRecord(
   if (!json || Array.isArray(json)) return false;
   const obj = json as Record<string, unknown>;
   return (
-    'properties' in obj && typeof obj.properties === 'object' && !Array.isArray(obj.properties)
+    'properties' in obj &&
+    obj.properties !== null &&
+    typeof obj.properties === 'object' &&
+    !Array.isArray(obj.properties)
   );
 }
 

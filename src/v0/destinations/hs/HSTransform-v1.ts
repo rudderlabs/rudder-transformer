@@ -83,7 +83,7 @@ const processLegacyIdentify = async (
   ) {
     addExternalIdToTraits(message);
     const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'HS');
-    const { objectType } = externalIdInfo;
+    const objectType = externalIdInfo?.objectType;
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
     }

@@ -1,21 +1,19 @@
 /* eslint-disable no-await-in-loop */
-const chunk = require('lodash/chunk');
-const omit = require('lodash/omit');
-const set = require('set-value');
-const get = require('get-value');
-const {
+import chunk from 'lodash/chunk';
+import omit from 'lodash/omit';
+import set from 'set-value';
+import get from 'get-value';
+import {
   NetworkInstrumentationError,
   InstrumentationError,
   ConfigurationError,
   NetworkError,
   isDefinedNotNullNotEmpty,
-} = require('@rudderstack/integrations-lib');
-const { httpGET, httpPOST } = require('../../../adapters/network');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const {
+} from '@rudderstack/integrations-lib';
+import { AxiosRequestConfig } from 'axios';
+import { httpGET, httpPOST } from '../../../adapters/network';
+import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import {
   getFieldValueFromMessage,
   constructPayload,
   isEmpty,
@@ -26,8 +24,8 @@ const {
   validateEventName,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-} = require('../../util');
-const {
+} from '../../util';
+import {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
@@ -37,16 +35,35 @@ const {
   DESTINATION,
   MAX_CONTACTS_PER_REQUEST,
   HUBSPOT_SYSTEM_FIELDS,
-} = require('./config');
+} from './config';
 
-const tags = require('../../util/tags');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+import tags from '../../util/tags';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import type { Metadata } from '../../../types';
+import type {
+  HubSpotDestination,
+  HubSpotPropertyMap,
+  HubSpotProperty,
+  HubSpotContactRecord,
+  HubSpotLookupFieldInfo,
+  HubSpotLegacyIdentifyProperty,
+  HubSpotSearchRequest,
+  HubSpotSearchResponse,
+  HubSpotSearchResult,
+  HubSpotRouterTransformationOutput,
+  HubspotRouterRequest,
+  HubspotProcessorTransformationOutput,
+  HubspotRudderMessage,
+  HubSpotExternalIdObject,
+  HubSpotTrackEventRequest,
+} from './types';
+import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
 /**
  * validate destination config and check for existence of data
  * @param {*} param0
  */
-const validateDestinationConfig = ({ Config }) => {
+const validateDestinationConfig = ({ Config }: HubSpotDestination): ConfigurationError | void => {
   if (Config.authorizationType === 'newPrivateAppApi') {
     // NEW API
     if (!Config.accessToken) {
@@ -68,7 +85,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} key
  * @returns
  */
-const formatKey = (key) => {
+const formatKey = (key: string): string => {
   // lowercase and replace spaces and . with _
   let modifiedKey = key.toLowerCase();
   modifiedKey = modifiedKey.replace(/\s+/g, '_');
@@ -81,7 +98,9 @@ const formatKey = (key) => {
  * @param {*} message
  * @returns
  */
-const fetchFinalSetOfTraits = (message) => {
+const fetchFinalSetOfTraits = (
+  message: HubspotRudderMessage,
+): Record<string, unknown> | undefined => {
   // get from traits or properties
   let traits = getFieldValueFromMessage(message, 'traits');
   if (!traits || Object.keys(traits).length === 0) {
@@ -95,8 +114,11 @@ const fetchFinalSetOfTraits = (message) => {
  * @param {*} destination
  * @returns
  */
-const getProperties = async (destination, metadata) => {
-  let hubspotPropertyMap = {};
+const getProperties = async (
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<HubSpotPropertyMap> => {
+  let hubspotPropertyMap: HubSpotPropertyMap = {};
   let hubspotPropertyMapResponse;
   const { Config } = destination;
 
@@ -147,9 +169,9 @@ const getProperties = async (destination, metadata) => {
     );
   }
 
-  const propertyMap = {};
+  const propertyMap: HubSpotPropertyMap = {};
   if (hubspotPropertyMapResponse.response && Array.isArray(hubspotPropertyMapResponse.response)) {
-    hubspotPropertyMapResponse.response.forEach((element) => {
+    hubspotPropertyMapResponse.response.forEach((element: HubSpotProperty) => {
       propertyMap[element.name] = element.type;
     });
   }
@@ -165,14 +187,19 @@ const getProperties = async (destination, metadata) => {
  * @param {*} value
  * @param {*} traitsKey
  */
-const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey) => {
+const validatePayloadDataTypes = (
+  propertyMap: HubSpotPropertyMap,
+  hsSupportedKey: string,
+  value: unknown,
+  traitsKey: string,
+): unknown => {
   let propValue = value;
   // Hub spot data type validations
   if (propertyMap[hsSupportedKey] === 'string' && typeof propValue !== 'string') {
     if (typeof propValue === 'object') {
       propValue = JSON.stringify(propValue);
     } else {
-      propValue = propValue.toString();
+      propValue = String(propValue);
     }
   }
 
@@ -200,7 +227,7 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
  * @param {*} propValue
  * @returns
  */
-const getUTCMidnightTimeStampValue = (propValue) => {
+const getUTCMidnightTimeStampValue = (propValue: string | number | Date): number => {
   const time = propValue;
   const date = new Date(time);
   date.setUTCHours(0, 0, 0, 0);
@@ -215,34 +242,41 @@ const getUTCMidnightTimeStampValue = (propValue) => {
  * @param {*} propertyMap
  * @returns
  */
-const getTransformedJSON = async ({ message, destination, metadata }, propertyMap) => {
-  let rawPayload = {};
+const getTransformedJSON = async (
+  {
+    message,
+    destination,
+    metadata,
+  }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
+  propertyMap?: HubSpotPropertyMap,
+): Promise<Record<string, unknown>> => {
+  let rawPayload: Record<string, unknown> = {};
   const traits = fetchFinalSetOfTraits(message);
 
   if (traits) {
     const traitsKeys = Object.keys(traits);
-    if (!propertyMap) {
+    let propMap = propertyMap;
+    if (!propMap) {
       // fetch HS properties
-      // eslint-disable-next-line no-param-reassign
-      propertyMap = await getProperties(destination, metadata);
+      propMap = await getProperties(destination, metadata);
     }
-    rawPayload = constructPayload(message, hsCommonConfigJson);
+    rawPayload = constructPayload(message, hsCommonConfigJson) as Record<string, unknown>;
 
     // if there is any extra/custom property in hubspot, that has not already
     // been mapped but exists in the traits, we will include those values to the final payload
     traitsKeys.forEach((traitsKey) => {
       // lowercase and replace ' ' & '.' with '_'
       const hsSupportedKey = formatKey(traitsKey);
-      if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
+      if (!rawPayload[traitsKey] && propMap && propMap[hsSupportedKey]) {
         // HS accepts empty string to remove the property from contact
         // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
-        let propValue = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
-        if (propertyMap[hsSupportedKey] === 'date') {
+        let propValue: unknown = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
+        if (propMap[hsSupportedKey] === 'date' && isDateLike(propValue)) {
           propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
-          propertyMap,
+          propMap,
           hsSupportedKey,
           propValue,
           traitsKey,
@@ -274,7 +308,9 @@ const getTransformedJSON = async ({ message, destination, metadata }, propertyMa
  * @param {*} propMap
  * @returns
  */
-const formatPropertyValueForIdentify = (propMap) =>
+const formatPropertyValueForIdentify = (
+  propMap: Record<string, unknown>,
+): HubSpotLegacyIdentifyProperty[] =>
   Object.keys(propMap).map((key) => ({ property: key, value: propMap[key] }));
 
 /**
@@ -283,7 +319,9 @@ const formatPropertyValueForIdentify = (propMap) =>
  * @param {*} properties
  * @returns
  */
-const getEmailAndUpdatedProps = (properties) => {
+const getEmailAndUpdatedProps = (
+  properties: HubSpotLegacyIdentifyProperty[],
+): { email: unknown; updatedProperties: HubSpotLegacyIdentifyProperty[] } => {
   const index = properties.findIndex((prop) => prop.property === 'email');
   return {
     email: properties[index].value,
@@ -299,7 +337,11 @@ const getEmailAndUpdatedProps = (properties) => {
  * @param {*} lookupField destination.Config.lookupField or email
  * @returns returns the lookup value
  */
-const getMappingFieldValueFormMessage = (message, sourceKey, lookupField) => {
+const getMappingFieldValueFormMessage = (
+  message: Record<string, unknown>,
+  sourceKey: string,
+  lookupField: string | undefined,
+): unknown => {
   const baseObject = get(message, `${sourceKey}`);
   const lookupValue = baseObject ? baseObject[`${lookupField}`] : null;
   return lookupValue;
@@ -312,7 +354,10 @@ const getMappingFieldValueFormMessage = (message, sourceKey, lookupField) => {
  * @param {*} lookupField either destination.Config.lookupField or email
  * @returns object containing the name of the lookupField and the lookup value
  */
-const getLookupFieldValue = (message, lookupField) => {
+const getLookupFieldValue = (
+  message: Record<string, unknown>,
+  lookupField: string | undefined,
+): HubSpotLookupFieldInfo | null => {
   const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
   let value = getValueFromMessage(message, `${lookupField}`);
   if (!value) {
@@ -322,7 +367,7 @@ const getLookupFieldValue = (message, lookupField) => {
       return !!value;
     });
   }
-  const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
+  const lookupValueInfo = value && lookupField ? { fieldName: lookupField, value } : null;
   return lookupValueInfo;
 };
 
@@ -332,10 +377,14 @@ const getLookupFieldValue = (message, lookupField) => {
  * @param {*} destination
  * @returns
  */
-const searchContacts = async (message, destination, metadata) => {
+const searchContacts = async (
+  message: Record<string, unknown>,
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<string | null> => {
   const { Config } = destination;
   let searchContactsResponse;
-  let contactId;
+  let contactId: string | null;
   if (!getFieldValueFromMessage(message, 'traits') && !message.properties) {
     throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
@@ -437,7 +486,11 @@ const searchContacts = async (message, destination, metadata) => {
  * @param {*} payload
  * @returns
  */
-const getEventAndPropertiesFromConfig = (message, destination, payload) => {
+const getEventAndPropertiesFromConfig = (
+  message: HubspotRudderMessage,
+  destination: HubSpotDestination,
+  payload: HubSpotTrackEventRequest,
+): HubSpotTrackEventRequest => {
   const { hubspotEvents } = destination.Config;
 
   let event = get(message, 'event');
@@ -448,10 +501,10 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
     throw new InstrumentationError('Event and property mappings are required for track call');
   }
   validateEventName(event);
-  event = event.trim().toLowerCase();
-  let eventName;
-  let eventProperties;
-  const properties = {};
+  event = String(event).trim().toLowerCase();
+  let eventName: string | undefined;
+  let eventProperties: { from: string; to: string }[] | undefined;
+  const properties: Record<string, unknown> = {};
 
   // 1. fetch event name from webapp config
   // some will traverse through all the indexes of the array and find the event
@@ -462,7 +515,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
       hubspotEvent.rsEventName.trim().toLowerCase() === event &&
       !isEmpty(hubspotEvent.hubspotEventName)
     ) {
-      eventName = hubspotEvent.hubspotEventName.trim();
+      eventName = hubspotEvent.hubspotEventName?.trim();
       eventProperties = hubspotEvent.eventProperties;
       return true;
     }
@@ -476,18 +529,21 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   }
 
   // 2. fetch event properties from webapp config
-  eventProperties = getHashFromArray(eventProperties, ...Array(2), false);
+  eventProperties = getHashFromArray(eventProperties, 'from', 'to', false) as {
+    from: string;
+    to: string;
+  }[];
 
   Object.keys(eventProperties).forEach((key) => {
     const value = get(message, `properties.${key}`);
     if (isDefinedNotNullNotEmpty(value)) {
-      properties[eventProperties[key]] = value;
+      properties[eventProperties?.[key]] = value;
     }
   });
 
   // eslint-disable-next-line no-param-reassign
-  payload = { ...payload, eventName, properties };
-  return payload;
+  const result = { ...payload, eventName, properties };
+  return result;
 };
 
 /**
@@ -495,11 +551,12 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
  * @param {*} firstMessage
  * @returns
  */
-const getObjectAndIdentifierType = (firstMessage) => {
-  const { objectType, identifierType } = getDestinationExternalIDInfoForRetl(
-    firstMessage,
-    DESTINATION,
-  );
+const getObjectAndIdentifierType = (
+  firstMessage: HubspotRudderMessage,
+): { objectType: string; identifierType: string } => {
+  const rawInfo = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION);
+  const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
+  const { objectType, identifierType } = externalIdInfo || {};
   if (!objectType || !identifierType) {
     throw new InstrumentationError('rETL - external Id not found.');
   }
@@ -511,11 +568,13 @@ const getObjectAndIdentifierType = (firstMessage) => {
  * @param {*} inputs
  * @returns
  */
-const extractIDsForSearchAPI = (inputs) => {
+const extractIDsForSearchAPI = (inputs: { message: HubspotRudderMessage }[]): string[] => {
   const values = inputs.map((input) => {
     const { message } = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    return destinationExternalId.toString().toLowerCase();
+    const rawInfo = getDestinationExternalIDInfoForRetl(message, DESTINATION);
+    const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
+    const destExternalId = externalIdInfo?.destinationExternalId;
+    return String(destExternalId ?? '').toLowerCase();
   });
 
   return Array.from(new Set(values));
@@ -532,15 +591,15 @@ const extractIDsForSearchAPI = (inputs) => {
  * @returns
  */
 const performHubSpotSearch = async (
-  reqdata,
-  reqOptions,
-  objectType,
-  identifierType,
-  destination,
-  metadata,
-) => {
-  let checkAfter = 1;
-  const searchResults = [];
+  reqdata: HubSpotSearchRequest,
+  reqOptions: AxiosRequestConfig,
+  objectType: string,
+  identifierType: string,
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<HubSpotContactRecord[]> => {
+  let checkAfter: number | string = 1;
+  const searchResults: HubSpotContactRecord[] = [];
   const requestData = reqdata;
   const { Config } = destination;
 
@@ -560,7 +619,7 @@ const performHubSpotSearch = async (
    * */
 
   while (checkAfter) {
-    const searchResponse = await httpPOST(url, requestData, requestOptions, {
+    const httpResponse = await httpPOST(url, requestData, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
       endpointPath,
@@ -569,7 +628,7 @@ const performHubSpotSearch = async (
       metadata,
     });
 
-    const processedResponse = processAxiosResponse(searchResponse);
+    const processedResponse = processAxiosResponse(httpResponse);
 
     if (processedResponse.status !== 200) {
       throw new NetworkError(
@@ -584,18 +643,21 @@ const performHubSpotSearch = async (
       );
     }
 
-    const after = processedResponse.response?.paging?.next?.after || 0;
-    requestData.after = after; // assigning to the new value of after
+    const rawResponse = processedResponse.response;
+    const searchApiResponse: HubSpotSearchResponse = isHubSpotSearchResponse(rawResponse)
+      ? rawResponse
+      : { results: [] };
+    const after = searchApiResponse?.paging?.next?.after || 0;
+    requestData.after = Number(after); // assigning to the new value of after
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
-    const results = processedResponse.response?.results;
+    const results = searchApiResponse?.results;
     const extraProp = primaryToSecondaryFields[identifierType];
     if (results) {
       searchResults.push(
-        ...results.map((result) => {
-          const contact = {
+        ...results.map((result: HubSpotSearchResult) => {
+          const contact: HubSpotContactRecord = {
             id: result.id,
-            property: result.properties[identifierType],
+            property: String(result.properties[identifierType] || ''),
           };
           // Following maps the extra property to the contact object which
           // help us to know if the contact was found using secondary property
@@ -622,8 +684,8 @@ const performHubSpotSearch = async (
  * @param {*} chunkValue
  * @returns
  */
-const getRequestData = (identifierType, chunkValue) => {
-  const requestData = {
+const getRequestData = (identifierType: string, chunkValue: string[]): HubSpotSearchRequest => {
+  const requestData: HubSpotSearchRequest = {
     filterGroups: [
       {
         filters: [
@@ -656,7 +718,7 @@ const getRequestData = (identifierType, chunkValue) => {
         },
       ],
     });
-    requestData.properties.push(secondaryProp);
+    requestData.properties?.push(secondaryProp);
   }
   return requestData;
 };
@@ -666,9 +728,13 @@ const getRequestData = (identifierType, chunkValue) => {
  * @param {*} inputs
  * @param {*} destination
  */
-const getExistingContactsData = async (inputs, destination, metadata) => {
+const getExistingContactsData = async (
+  inputs: { message: HubspotRudderMessage }[],
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<HubSpotContactRecord[]> => {
   const { Config } = destination;
-  const hsIdsToBeUpdated = [];
+  const hsIdsToBeUpdated: HubSpotContactRecord[] = [];
   const firstMessage = inputs[0].message;
 
   if (!firstMessage) {
@@ -708,15 +774,19 @@ const getExistingContactsData = async (inputs, destination, metadata) => {
  * @param {*} useSecondaryProp -> Let us know if that id was found using secondary property and not primnary
  * @returns
  */
-const setHsSearchId = (input, id, useSecondaryProp = false) => {
+const setHsSearchId = (
+  input: { message: HubspotRudderMessage },
+  id: string,
+  useSecondaryProp = false,
+): HubSpotExternalIdObject[] => {
   const { message } = input;
-  const resultExternalId = [];
+  const resultExternalId: HubSpotExternalIdObject[] = [];
   const externalIdArray = message.context?.externalId;
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
       const extIdObjParam = extIdObj;
-      if (type.includes(DESTINATION)) {
+      if (type && type.includes(DESTINATION)) {
         extIdObjParam.hsSearchId = id;
       }
       if (useSecondaryProp) {
@@ -739,30 +809,39 @@ const setHsSearchId = (input, id, useSecondaryProp = false) => {
  * For email as primary key we use `hs_additional_emails` as well property to search existing contacts
  * */
 
-const splitEventsForCreateUpdate = async (inputs, destination, metadata) => {
+const splitEventsForCreateUpdate = async (
+  inputs: HubspotRouterRequest[],
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<HubspotRouterRequest[]> => {
   // get all the id and properties of already existing objects needed for update.
   const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination, metadata);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
-    const { destinationExternalId, identifierType } = getDestinationExternalIDInfoForRetl(
-      message,
-      DESTINATION,
-    );
+    const rawInfo = getDestinationExternalIDInfoForRetl(message, DESTINATION);
+    const externalIdInfo = isHubSpotExternalIdInfo(rawInfo) ? rawInfo : null;
+    const destinationExternalId = externalIdInfo?.destinationExternalId;
+    const identifierType = externalIdInfo?.identifierType;
 
     const filteredInfo = hsIdsToBeUpdated.filter(
       (update) =>
-        update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(), // second condition is for secondary property for identifier type
+        destinationExternalId &&
+        update.property.toString().toLowerCase() === String(destinationExternalId).toLowerCase(), // second condition is for secondary property for identifier type
     );
 
+    const { context } = message;
     if (filteredInfo.length > 0) {
-      inputParam.message.context.externalId = setHsSearchId(input, filteredInfo[0].id);
-      inputParam.message.context.hubspotOperation = 'updateObject';
+      inputParam.message.context = {
+        ...context,
+        externalId: setHsSearchId(input, filteredInfo[0].id),
+        hubspotOperation: 'updateObject',
+      };
       return inputParam;
     }
-    const secondaryProp = primaryToSecondaryFields[identifierType];
-    if (secondaryProp) {
+    const secondaryProp = identifierType ? primaryToSecondaryFields[identifierType] : undefined;
+    if (secondaryProp && destinationExternalId) {
       /* second condition is for secondary property for identifier type
        For example:
        update[secondaryProp] = "abc@e.com;cd@e.com;k@w.com"
@@ -775,35 +854,38 @@ const splitEventsForCreateUpdate = async (inputs, destination, metadata) => {
           ?.toString()
           .toLowerCase()
           .split(';')
-          .includes(destinationExternalId.toString().toLowerCase()),
+          .includes(String(destinationExternalId).toLowerCase()),
       );
       if (filteredInfoForSecondaryProp.length > 0) {
-        inputParam.message.context.externalId = setHsSearchId(
-          input,
-          filteredInfoForSecondaryProp[0].id,
-          true,
-        );
-        inputParam.message.context.hubspotOperation = 'updateObject';
+        inputParam.message.context = {
+          ...context,
+          externalId: setHsSearchId(input, filteredInfoForSecondaryProp[0].id, true),
+          hubspotOperation: 'updateObject',
+        };
         return inputParam;
       }
     }
     // if not found in the existing contacts, then it's a new contact
-    inputParam.message.context.hubspotOperation = 'createObject';
+    inputParam.message.context = {
+      ...context,
+      hubspotOperation: 'createObject',
+    };
     return inputParam;
   });
 
   return resultInput;
 };
 
-const getHsSearchId = (message) => {
-  const externalIdArray = message.context?.externalId;
-  let hsSearchId = null;
+const getHsSearchId = (message: HubspotRudderMessage): { hsSearchId: string | null } => {
+  const { context } = message;
+  const externalIdArray = context?.externalId;
+  let hsSearchId: string | null = null;
 
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
-      if (type.includes(DESTINATION)) {
-        hsSearchId = extIdObj.hsSearchId;
+      if (typeof type === 'string' && type.includes(DESTINATION)) {
+        hsSearchId = extIdObj.hsSearchId || null;
       }
     });
   }
@@ -816,7 +898,12 @@ const getHsSearchId = (message) => {
  * @param {*} traits
  * @param {*} destination
  */
-const populateTraits = async (propertyMap, traits, destination, metadata) => {
+const populateTraits = async (
+  propertyMap: HubSpotPropertyMap | undefined,
+  traits: Record<string, unknown>,
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<Record<string, unknown>> => {
   const populatedTraits = traits;
   let propertyToTypeMap = propertyMap;
   if (!propertyToTypeMap) {
@@ -827,7 +914,7 @@ const populateTraits = async (propertyMap, traits, destination, metadata) => {
   const keys = Object.keys(populatedTraits);
   keys.forEach((key) => {
     const value = populatedTraits[key];
-    if (propertyToTypeMap[key] === 'date') {
+    if (propertyToTypeMap && propertyToTypeMap[key] === 'date' && isDateLike(value)) {
       populatedTraits[key] = getUTCMidnightTimeStampValue(value);
     }
   });
@@ -835,9 +922,11 @@ const populateTraits = async (propertyMap, traits, destination, metadata) => {
   return populatedTraits;
 };
 
-const addExternalIdToHSTraits = (message) => {
-  const externalIdObj = message.context?.externalId?.[0];
-  if (externalIdObj.useSecondaryObject) {
+const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
+  const { context } = message;
+  const externalIdArray = context?.externalId;
+  const externalIdObj = externalIdArray?.[0];
+  if (externalIdObj?.useSecondaryObject) {
     /* this condition help us to NOT override the primary key value with the secondary key value
      example:
      for `email` as primary key and `hs_additonal_emails` as secondary key we don't want to override `email` with `hs_additional_emails`.
@@ -848,19 +937,31 @@ const addExternalIdToHSTraits = (message) => {
   set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
 };
 
-const convertToResponseFormat = (successRespListWithDontBatchTrue) => {
-  const response = [];
+const convertToResponseFormat = (
+  successRespListWithDontBatchTrue: {
+    message: HubspotProcessorTransformationOutput;
+    metadata: Partial<Metadata>;
+    destination: HubSpotDestination;
+  }[],
+): HubSpotRouterTransformationOutput[] => {
+  const response: HubSpotRouterTransformationOutput[] = [];
   if (Array.isArray(successRespListWithDontBatchTrue)) {
     successRespListWithDontBatchTrue.forEach((event) => {
       const { message, metadata, destination } = event;
-      const endpoint = get(message, 'endpoint');
+      const endpoint =
+        typeof message.endpoint === 'string'
+          ? message.endpoint
+          : String(get(message, 'endpoint') ?? '');
 
       const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = message.body;
-      batchedResponse.batchedRequest.params = message.params;
-      batchedResponse.batchedRequest.method = message.method;
+      batchedResponse.batchedRequest.body = {
+        ...batchedResponse.batchedRequest.body,
+        ...message.body,
+      };
+      batchedResponse.batchedRequest.params = message.params!;
+      batchedResponse.batchedRequest.method = message.method!;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 
@@ -876,18 +977,11 @@ const convertToResponseFormat = (successRespListWithDontBatchTrue) => {
   return response;
 };
 
-const isIterable = (obj) => {
-  // checks for null and undefined
-  if (obj == null) {
-    return false;
-  }
-  return typeof obj[Symbol.iterator] === 'function';
-};
-
 // remove system fields from the properties because they are not allowed to be updated
-const removeHubSpotSystemField = (properties) => omit(properties, HUBSPOT_SYSTEM_FIELDS);
+const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
+  omit(properties, HUBSPOT_SYSTEM_FIELDS);
 
-module.exports = {
+export {
   validateDestinationConfig,
   addExternalIdToHSTraits,
   formatKey,
@@ -907,6 +1001,5 @@ module.exports = {
   extractIDsForSearchAPI,
   getRequestData,
   convertToResponseFormat,
-  isIterable,
   removeHubSpotSystemField,
 };

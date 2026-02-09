@@ -110,11 +110,18 @@ export const createMockQuery = () => {
  * This should be called in afterEach hooks to restore the mock after jest.resetAllMocks()
  */
 export const restoreSalesforceSDKMock = () => {
-  const mockedLib = jest.requireMock('@rudderstack/integrations-lib');
-  if (mockedLib.SalesforceSDK?.Salesforce) {
-    // Reapply the mock implementation if it was reset
-    mockedLib.SalesforceSDK.Salesforce.mockImplementation(({ accessToken, instanceUrl }) => {
-      return { query: createMockQuery() };
-    });
+  // Patch the runtime integrations-lib module directly so the mock
+  // survives Jest's resetAllMocks/clearAllMocks calls.
+  // eslint-disable-next-line global-require
+  const lib = require('@rudderstack/integrations-lib');
+
+  if (!lib.SalesforceSDK) {
+    // eslint-disable-next-line no-param-reassign
+    lib.SalesforceSDK = {};
   }
+
+  // eslint-disable-next-line no-param-reassign
+  lib.SalesforceSDK.Salesforce = function SalesforceMock() {
+    return { query: createMockQuery() };
+  };
 };

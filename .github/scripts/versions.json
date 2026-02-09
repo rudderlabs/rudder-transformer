@@ -112,7 +112,7 @@
     "Sunset Date Current Version used in backend": "Not Available"
   },
   {
-    "Destination": "GAEC",
+    "Destination": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
     "Version currently referred in CloudMode Services": "/v22/customers/:customerId/uploadClickConversions, /v22/customers/:customerId/uploadCallConversions, /v22/customers/:customerId/googleAds:searchStream, /v22/customers/:customerId/offlineUserDataJobs (currently used: v22)",
     "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
     "Latest Version rolled out": "v23 (released Jan 28, 2026)",

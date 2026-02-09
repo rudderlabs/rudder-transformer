@@ -8,7 +8,7 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
-  isWorkspaceSupportedForSoql,
+  isDestTypeSupportedForSoql,
   getSalesforceIdForRecordUsingHttp,
   getSalesforceIdForRecordUsingSdk,
   getSalesforceIdForRecord,
@@ -31,65 +31,27 @@ describe('Salesforce Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
-    delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
   });
 
   afterEach(() => {
     process.env = originalEnv;
   });
 
-  describe('isWorkspaceSupportedForSoql', () => {
-    it('should return true when workspace ID is in the supported list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
+  describe('isDestTypeSupportedForSoql', () => {
+    it('should return true when destination definition name is exactly SALESFORCE_OAUTH', () => {
+      expect(isDestTypeSupportedForSoql('SALESFORCE_OAUTH')).toBe(true);
     });
 
-    it('should return false when workspace ID is not in the supported list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceSupportedForSoql('ws4')).toBe(false);
+    it('should be case-insensitive for SALESFORCE_OAUTH', () => {
+      expect(isDestTypeSupportedForSoql('salesforce_oauth')).toBe(true);
+      expect(isDestTypeSupportedForSoql('Salesforce_OAuth')).toBe(true);
     });
 
-    it('should return false when environment variable is not set', () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
-    });
-
-    it('should return false when environment variable is empty', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = '';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
-    });
-
-    it('should handle workspace IDs with spaces in the list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1, ws2 , ws3';
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
-    });
-
-    it('should return false for empty workspace ID', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceSupportedForSoql('')).toBe(false);
-    });
-
-    it('should return false for undefined workspace ID', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
-    });
-
-    it('should return true for any workspace ID when environment variable is set to ALL', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(true);
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
-      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(true);
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(true);
-      expect(isWorkspaceSupportedForSoql('')).toBe(true);
-    });
-
-    it('should return false for any workspace ID when environment variable is set to NONE', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'NONE';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(false);
-      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(false);
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
-      expect(isWorkspaceSupportedForSoql('')).toBe(false);
+    it('should return false for other destination definition names', () => {
+      expect(isDestTypeSupportedForSoql('SALESFORCE')).toBe(false);
+      expect(isDestTypeSupportedForSoql('SALESFORCE_OAUTH_SANDBOX')).toBe(false);
+      expect(isDestTypeSupportedForSoql('')).toBe(false);
+      expect(isDestTypeSupportedForSoql(undefined)).toBe(false);
     });
   });
 
@@ -608,7 +570,14 @@ describe('Salesforce Utils', () => {
   });
 
   describe('getSalesforceIdForRecord', () => {
-    const mockDestination = { ID: 'dest-123' };
+    const mockOauthDestination = {
+      ID: 'dest-123',
+      DestinationDefinition: { Name: 'SALESFORCE_OAUTH' },
+    };
+    const mockLegacyDestination = {
+      ID: 'dest-456',
+      DestinationDefinition: { Name: 'SALESFORCE' },
+    };
     const mockMetadata = { workspaceId: 'ws1' };
     const mockSalesforceSdk = {
       query: jest.fn(),
@@ -626,8 +595,7 @@ describe('Salesforce Utils', () => {
       isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK when destination definition is SALESFORCE_OAUTH', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [{ Id: '0011234567890ABC' }],
@@ -642,7 +610,7 @@ describe('Salesforce Utils', () => {
         objectType: 'Account',
         identifierType: 'External_ID__c',
         identifierValue: 'ext-123',
-        destination: mockDestination,
+        destination: mockOauthDestination,
         metadata: mockMetadata,
         stateInfo,
       });
@@ -652,8 +620,7 @@ describe('Salesforce Utils', () => {
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
+    it('should use HTTP when destination definition is not SALESFORCE_OAUTH', async () => {
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -672,7 +639,7 @@ describe('Salesforce Utils', () => {
         objectType: 'Account',
         identifierType: 'External_ID__c',
         identifierValue: 'ext-123',
-        destination: mockDestination,
+        destination: mockLegacyDestination,
         metadata: mockMetadata,
         stateInfo,
       });
@@ -682,8 +649,7 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
+    it('should use HTTP when destination definition is not SALESFORCE_OAUTH even if workspace ID is undefined', async () => {
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -702,7 +668,7 @@ describe('Salesforce Utils', () => {
         objectType: 'Account',
         identifierType: 'External_ID__c',
         identifierValue: 'ext-123',
-        destination: mockDestination,
+        destination: mockLegacyDestination,
         metadata: { workspaceId: undefined },
         stateInfo,
       });
@@ -1401,11 +1367,19 @@ describe('Salesforce Utils', () => {
   });
 
   describe('getSalesforceIdForLead', () => {
-    const mockDestination = {
+    const mockOauthDestination = {
       ID: 'dest-123',
       Config: {
         useContactId: false,
       },
+      DestinationDefinition: { Name: 'SALESFORCE_OAUTH' },
+    };
+    const mockLegacyDestination = {
+      ID: 'dest-456',
+      Config: {
+        useContactId: false,
+      },
+      DestinationDefinition: { Name: 'SALESFORCE' },
     };
     const mockMetadata = { workspaceId: 'ws1' };
     const mockSalesforceSdk = {
@@ -1424,8 +1398,7 @@ describe('Salesforce Utils', () => {
       isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK when destination definition is SALESFORCE_OAUTH', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [
@@ -1445,7 +1418,7 @@ describe('Salesforce Utils', () => {
 
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
-        destination: mockDestination,
+        destination: mockOauthDestination,
         metadata: mockMetadata,
         stateInfo,
       });
@@ -1458,8 +1431,7 @@ describe('Salesforce Utils', () => {
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
+    it('should use HTTP when destination definition is not SALESFORCE_OAUTH', async () => {
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -1483,7 +1455,7 @@ describe('Salesforce Utils', () => {
 
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
-        destination: mockDestination,
+        destination: mockLegacyDestination,
         metadata: mockMetadata,
         stateInfo,
       });
@@ -1496,8 +1468,7 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
+    it('should use HTTP when destination definition is not SALESFORCE_OAUTH even if workspace ID is undefined', async () => {
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -1521,7 +1492,7 @@ describe('Salesforce Utils', () => {
 
       const result = await getSalesforceIdForLead({
         email: 'test@example.com',
-        destination: mockDestination,
+        destination: mockLegacyDestination,
         metadata: { workspaceId: undefined },
         stateInfo,
       });

@@ -508,7 +508,7 @@ class Prometheus {
         help: 'Distribution of total count per batch chunk',
         type: 'histogram',
         labelNames: ['destination_id'],
-        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75],
+        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75, 100, 125, 150, 175, 200, 225],
       },
       {
         name: 'braze_alias_failure_count',

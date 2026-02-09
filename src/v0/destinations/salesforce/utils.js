@@ -246,18 +246,9 @@ const getAuthHeader = (authInfo) => {
     : { Authorization: authorizationData.token };
 };
 
-const isWorkspaceSupportedForSoql = (workspaceId) => {
-  const environmentVariable = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-  switch (environmentVariable) {
-    case 'ALL':
-      return true;
-    case 'NONE':
-      return false;
-    default: {
-      const soqlSupportedWorkspaceIds = environmentVariable?.split(',')?.map?.((s) => s?.trim?.());
-      return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
-    }
-  }
+const isDestTypeSupportedForSoql = (destinationDefinitionName = '') => {
+  const upperCaseName = destinationDefinitionName?.toUpperCase?.() ?? '';
+  return upperCaseName === 'SALESFORCE_OAUTH';
 };
 
 /**
@@ -384,10 +375,13 @@ async function getSalesforceIdForRecord({
   metadata,
   stateInfo,
 }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+  const workspaceId = metadata?.workspaceId ?? '';
+  const destinationDefinitionName = destination?.DestinationDefinition?.Name ?? '';
+
+  if (isDestTypeSupportedForSoql(destinationDefinitionName)) {
     stats.increment('salesforce_soql_lookup_count', {
       method: 'getSalesforceIdForRecordUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
+      workspaceId,
       objectType,
     });
     return getSalesforceIdForRecordUsingSdk(
@@ -554,10 +548,13 @@ async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, met
  * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
  */
 async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+  const workspaceId = metadata?.workspaceId ?? '';
+  const destinationDefinitionName = destination?.DestinationDefinition?.Name ?? '';
+
+  if (isDestTypeSupportedForSoql(destinationDefinitionName)) {
     stats.increment('salesforce_soql_lookup_count', {
       method: 'getSalesforceIdForLeadUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
+      workspaceId,
       objectType: 'Lead',
     });
     return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
@@ -577,5 +574,5 @@ module.exports = {
   getSalesforceIdForLead,
   getSalesforceIdForLeadUsingHttp,
   getSalesforceIdForLeadUsingSdk,
-  isWorkspaceSupportedForSoql,
+  isDestTypeSupportedForSoql,
 };

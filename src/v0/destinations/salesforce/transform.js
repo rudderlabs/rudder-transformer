@@ -29,7 +29,7 @@ const {
   getAuthHeader,
   getSalesforceIdForRecord,
   getSalesforceIdForLead,
-  isWorkspaceSupportedForSoql,
+  isDestTypeSupportedForSoql,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 // Basic response builder
@@ -259,7 +259,8 @@ async function process(event) {
   const authInfo = await collectAuthorizationInfo(event);
 
   let salesforceSdk;
-  if (isWorkspaceSupportedForSoql(event?.metadata?.workspaceId ?? '')) {
+  const destinationDefinitionName = event?.destination?.DestinationDefinition?.Name ?? '';
+  if (isDestTypeSupportedForSoql(destinationDefinitionName)) {
     const { token, instanceUrl } = authInfo.authorizationData;
     salesforceSdk = new SalesforceSDK.Salesforce({
       accessToken: token,
@@ -291,8 +292,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   try {
-    const metadata = inputs?.[0]?.metadata;
-    if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+    const destinationDefinitionName = inputs?.[0]?.destination?.DestinationDefinition?.Name ?? '';
+    if (isDestTypeSupportedForSoql(destinationDefinitionName)) {
       const { token, instanceUrl } = authInfo.authorizationData;
 
       salesforceSdk = new SalesforceSDK.Salesforce({

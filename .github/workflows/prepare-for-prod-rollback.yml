@@ -11,6 +11,8 @@ jobs:
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations'
+    secrets:
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
   create-rollback-pr:
     name: Update Helm Charts For Production and Create Pull Request

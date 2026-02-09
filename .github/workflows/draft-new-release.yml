@@ -10,6 +10,8 @@ jobs:
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
+    secrets:
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
   draft-new-release:
     name: Draft New Release

@@ -25,6 +25,7 @@ const {
   OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
   SF_API_VERSION,
+  SALESFORCE_OAUTH,
 } = require('./config');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
@@ -248,7 +249,7 @@ const getAuthHeader = (authInfo) => {
 
 const isDestTypeSupportedForSoql = (destinationDefinitionName = '') => {
   const upperCaseName = destinationDefinitionName?.toUpperCase?.() ?? '';
-  return upperCaseName === 'SALESFORCE_OAUTH';
+  return upperCaseName === SALESFORCE_OAUTH;
 };
 
 /**

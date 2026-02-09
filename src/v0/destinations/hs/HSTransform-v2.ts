@@ -302,16 +302,8 @@ const batchIdentify = (
 
       // create operation
       chunk.forEach((ev) => {
-        const json = ev.message.body.JSON;
-
-        if (!hasPropertiesRecord(json)) {
-          throw new TransformationError('rETL - Invalid payload for createObject batch');
-        }
-
-        const { properties = {} } = json;
-
         identifyResponseList.push({
-          properties,
+          ...ev.message.body.JSON,
         });
         metadata.push(ev.metadata);
       });
@@ -332,7 +324,6 @@ const batchIdentify = (
       });
     } else if (batchOperation === 'createContacts') {
       // create operation
-      const contactItems: HubSpotBatchInputItem[] = [];
       chunk.forEach((ev) => {
         // duplicate email can cause issue with create in batch
         // updating the existing one to avoid duplicate
@@ -345,17 +336,16 @@ const batchIdentify = (
         }
 
         const { properties } = bodyJSON;
-        const isDuplicate = contactItems.find(
-          (data) => data.properties?.email === properties?.email,
+        const isDuplicate = identifyResponseList.find(
+          (data) => (data.properties as { email?: string })?.email === properties?.email,
         );
         if (isDefinedAndNotNullAndNotEmpty(isDuplicate) && isDuplicate) {
           isDuplicate.properties = properties;
         } else {
-          contactItems.push({ properties });
+          identifyResponseList.push({ properties });
         }
         metadata.push(ev.metadata);
       });
-      identifyResponseList.push(...contactItems);
     } else if (batchOperation === 'updateContacts') {
       // update operation
       chunk.forEach((ev) => {
@@ -370,14 +360,14 @@ const batchIdentify = (
         // can be due to network lag or processor being busy
         const isDuplicate = identifyResponseList.find((data) => data.id === id);
         if (hasPropertiesRecord(bodyJSON)) {
-          if (isDefinedAndNotNullAndNotEmpty(isDuplicate) && isDuplicate) {
+          if (isDefinedAndNotNullAndNotEmpty(isDuplicate)) {
             // rewriting the same value to avoid duplicate entry
-            isDuplicate.properties = bodyJSON.properties || {};
+            isDuplicate!.properties = bodyJSON.properties;
           } else {
             // appending unique events
             identifyResponseList.push({
               id,
-              properties: bodyJSON.properties || {},
+              properties: bodyJSON.properties,
             });
           }
         }

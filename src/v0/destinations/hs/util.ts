@@ -57,7 +57,7 @@ import type {
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
 } from './types';
-import { isRecord, isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
+import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
 /**
  * validate destination config and check for existence of data
@@ -260,8 +260,7 @@ const getTransformedJSON = async (
       // fetch HS properties
       propMap = await getProperties(destination, metadata);
     }
-    const constructed = constructPayload(message, hsCommonConfigJson);
-    rawPayload = isRecord(constructed) ? constructed : {};
+    rawPayload = constructPayload(message, hsCommonConfigJson) as Record<string, unknown>;
 
     // if there is any extra/custom property in hubspot, that has not already
     // been mapped but exists in the traits, we will include those values to the final payload
@@ -529,19 +528,16 @@ const getEventAndPropertiesFromConfig = (
     );
   }
 
-  // 2. fetch event properties from webapp config (maps source prop -> dest prop)
-  const hashResult = getHashFromArray(eventProperties, 'from', 'to', false);
-  const eventPropertiesHash: Record<string, string> = isRecord(hashResult)
-    ? Object.entries(hashResult).reduce<Record<string, string>>((acc, [k, v]) => {
-        if (typeof k === 'string' && typeof v === 'string') acc[k] = v;
-        return acc;
-      }, {})
-    : {};
+  // 2. fetch event properties from webapp config
+  eventProperties = getHashFromArray(eventProperties, 'from', 'to', false) as {
+    from: string;
+    to: string;
+  }[];
 
-  Object.keys(eventPropertiesHash).forEach((key) => {
+  Object.keys(eventProperties).forEach((key) => {
     const value = get(message, `properties.${key}`);
     if (isDefinedNotNullNotEmpty(value)) {
-      properties[eventPropertiesHash?.[key]] = value;
+      properties[eventProperties?.[key]] = value;
     }
   });
 
@@ -938,13 +934,7 @@ const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {
      */
     return;
   }
-  if (externalIdObj?.identifierType && externalIdObj?.id) {
-    set(
-      getFieldValueFromMessage(message, 'traits'),
-      externalIdObj.identifierType,
-      externalIdObj.id,
-    );
-  }
+  set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
 };
 
 const convertToResponseFormat = (
@@ -964,15 +954,14 @@ const convertToResponseFormat = (
           : String(get(message, 'endpoint') ?? '');
 
       const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers ?? {};
+      batchedResponse.batchedRequest.headers = message.headers!;
       batchedResponse.batchedRequest.endpoint = endpoint;
-      const msgBody = message.body;
-      batchedResponse.batchedRequest.body = isRecord(msgBody)
-        ? { ...batchedResponse.batchedRequest.body, ...msgBody }
-        : batchedResponse.batchedRequest.body;
-      batchedResponse.batchedRequest.params = message.params ?? {};
-      batchedResponse.batchedRequest.method =
-        typeof message.method === 'string' ? message.method : 'POST';
+      batchedResponse.batchedRequest.body = {
+        ...batchedResponse.batchedRequest.body,
+        ...message.body,
+      };
+      batchedResponse.batchedRequest.params = message.params!;
+      batchedResponse.batchedRequest.method = message.method!;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 

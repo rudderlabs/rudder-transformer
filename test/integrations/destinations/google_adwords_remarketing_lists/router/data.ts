@@ -9,7 +9,7 @@ import {
   rETLRecordRouterRequestForVDMV2Flow,
 } from './record';
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 export const data = [
   {

@@ -1,158 +1,164 @@
-import { ConfigurationError, InstrumentationError } from '@rudderstack/integrations-lib';
-import type { RouterTransformationResponse } from '../../../types';
-import { defaultRequestConfig, handleRtTfSingleEventError } from '../../util';
-import { SUPPORTED_EVENT_TYPE, ACTION_TYPES } from './config';
-import type { LinkedinAudienceRequest, LinkedinAudienceConfigs } from './types';
 import {
-  prepareUserIds,
-  hashIdentifiers,
-  generateActionType,
-  generateEndpoint,
-  batchResponseBuilder,
-} from './utils';
+  ConfigurationError,
+  InstrumentationError,
+  formatZodError,
+} from '@rudderstack/integrations-lib';
+import type { RouterTransformationResponse } from '../../../types';
+import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
+import {
+  LinkedinAudienceRecordRequest,
+  LinkedinAudienceRouterRequestSchema,
+  LinkedinAudienceUserPayload,
+  LinkedinAudienceCompanyPayload,
+  LinkedinAudienceConfigParams,
+  LinkedinAudiencePayload,
+} from './types';
+import { prepareUserIds, hashIdentifiers, generateEndpoint, prepareNonNullRecord } from './utils';
+import { ACTION_RECORD_MAP, API_PROTOCOL_VERSION, API_VERSION } from './config';
 
-function validateInput(event: LinkedinAudienceRequest) {
-  const { connection, metadata, message } = event;
-
-  const config = connection?.config?.destination;
-  const secret = metadata?.secret;
-  const messageType = message?.type;
-
-  if (!config?.audienceId) {
-    throw new ConfigurationError('Audience Id is not present. Aborting');
+function validateLinkedinAudienceEvent(event: unknown): LinkedinAudienceRecordRequest {
+  const result = LinkedinAudienceRouterRequestSchema.safeParse(event);
+  if (!result.success) {
+    throw new InstrumentationError(formatZodError(result.error));
   }
-  if (!secret?.accessToken) {
-    throw new ConfigurationError(
-      'Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
-    );
-  }
-  if (!config?.audienceType) {
-    throw new ConfigurationError('audienceType is not present. Aborting');
-  }
-
-  if (!messageType) {
-    throw new InstrumentationError('Message Type is not present. Aborting message.');
-  }
-  if (messageType.toLowerCase() !== SUPPORTED_EVENT_TYPE) {
-    throw new InstrumentationError(
-      `Event type ${messageType.toLowerCase()} is not supported. Aborting message.`,
-    );
-  }
-
-  if (!message?.fields) {
-    throw new InstrumentationError('`fields` is not present. Aborting message.');
-  }
-  if (!message?.identifiers) {
-    throw new InstrumentationError(
-      '`identifiers` is not present inside properties. Aborting message.',
-    );
-  }
-  if (!ACTION_TYPES.includes(message?.action ?? '')) {
-    throw new InstrumentationError(`Unsupported action type. Aborting message.`);
-  }
+  return result.data;
 }
 
-function getConfigs(event: LinkedinAudienceRequest): LinkedinAudienceConfigs {
-  const config = event.connection?.config?.destination;
-  return {
-    audienceType: config!.audienceType!,
-    audienceId: config!.audienceId!,
-    accessToken: event.metadata!.secret!.accessToken!,
-    isHashRequired: Boolean(config?.isHashRequired),
+function prepareUserTypePayload(event: LinkedinAudienceRecordRequest): LinkedinAudienceUserPayload {
+  const { isHashRequired } = event.connection.config.destination;
+  const { action, identifiers, fields } = event.message;
+  const hashedIdentifiers = isHashRequired ? hashIdentifiers(identifiers) : identifiers;
+  const userIds = prepareUserIds(hashedIdentifiers);
+  const nonNullFields = prepareNonNullRecord(fields);
+  const payload: LinkedinAudienceUserPayload = {
+    action: ACTION_RECORD_MAP[action],
+    userIds,
+    ...nonNullFields,
   };
+  return payload;
 }
 
-function prepareUserTypeBasePayload(
-  event: LinkedinAudienceRequest,
-  configs: LinkedinAudienceConfigs,
-) {
-  const identifiers = configs.isHashRequired
-    ? hashIdentifiers(event.message.identifiers!)
-    : event.message.identifiers!;
-  const userIds = prepareUserIds(identifiers);
-  return {
-    elements: [
-      {
-        action: generateActionType(event.message.action!),
-        userIds,
-        ...event.message.fields!,
-      },
-    ],
+function prepareCompanyTypePayload(
+  event: LinkedinAudienceRecordRequest,
+): LinkedinAudienceCompanyPayload {
+  const { action, identifiers, fields } = event.message;
+  const nonNullFields = prepareNonNullRecord(fields);
+  const nonNullIdentifiers = prepareNonNullRecord(identifiers);
+  const payload: LinkedinAudienceCompanyPayload = {
+    action: ACTION_RECORD_MAP[action],
+    ...nonNullIdentifiers,
+    ...nonNullFields,
   };
+  return payload;
 }
 
-function prepareCompanyTypeBasePayload(event: LinkedinAudienceRequest) {
-  return {
-    elements: [
-      {
-        action: generateActionType(event.message.action!),
-        ...event.message.identifiers!,
-        ...event.message.fields!,
-      },
-    ],
-  };
-}
-
-function buildResponseForProcessTransformation(
-  configs: LinkedinAudienceConfigs,
+function preparePayloadForProcessTransformation(
   payload: Record<string, any>,
+  configParams: LinkedinAudienceConfigParams,
 ) {
+  const { endpoint, endpointPath } = generateEndpoint(
+    configParams.audienceType,
+    configParams.audienceId,
+  );
+
   const response = defaultRequestConfig();
   response.body.JSON = payload;
-  response.endpoint = generateEndpoint(configs.audienceType, configs.audienceId);
+  response.endpoint = endpoint;
+  response.endpointPath = endpointPath;
   response.headers = {
-    Authorization: `Bearer ${configs.accessToken}`,
+    Authorization: `Bearer ${configParams.accessToken}`,
     'Content-Type': 'application/json',
     'X-RestLi-Method': 'BATCH_CREATE',
-    'X-Restli-Protocol-Version': '2.0.0',
-    'LinkedIn-Version': '202509',
+    'X-Restli-Protocol-Version': API_PROTOCOL_VERSION,
+    'LinkedIn-Version': API_VERSION,
   };
   return response;
 }
 
-function process(event: LinkedinAudienceRequest) {
-  validateInput(event);
-
-  const configs = getConfigs(event);
-  const preparePayload = () => {
-    switch (configs.audienceType) {
-      case 'user':
-        return prepareUserTypeBasePayload(event, configs);
-      case 'company':
-        return prepareCompanyTypeBasePayload(event);
-      default:
-        throw new ConfigurationError(`Unsupported audience type ${configs.audienceType}. Aborting`);
+function processLinkedinAudienceRecord(
+  event: LinkedinAudienceRecordRequest,
+): LinkedinAudiencePayload {
+  const { audienceType } = event.connection.config.destination;
+  switch (audienceType) {
+    case 'user': {
+      const userPayload = prepareUserTypePayload(event);
+      return {
+        payload: userPayload,
+        event,
+      };
     }
-  };
-
-  const payload = preparePayload();
-  return buildResponseForProcessTransformation(configs, payload);
+    case 'company': {
+      const companyPayload = prepareCompanyTypePayload(event);
+      return {
+        payload: companyPayload,
+        event,
+      };
+    }
+    default:
+      throw new ConfigurationError(`Unsupported audience type ${audienceType}. Aborting`);
+  }
 }
 
 const processRouterDest = async (
-  requests: LinkedinAudienceRequest[],
+  events: LinkedinAudienceRecordRequest[],
 ): Promise<RouterTransformationResponse[]> => {
-  if (requests?.length === 0) return [];
+  if (!events || events.length === 0) return [];
 
-  const successResponseList: any[] = [];
-  const failedResponseList: RouterTransformationResponse[] = [];
+  const failedResponses: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
 
-  for (const request of requests) {
+  const groupedPayloads: {
+    action: string;
+    configParams: LinkedinAudienceConfigParams;
+    payloads: LinkedinAudiencePayload[];
+  }[] = [];
+
+  for (const event of events) {
     try {
-      const response = process(request);
-      successResponseList.push({
-        message: [response],
-        destination: request.destination,
-        metadata: request.metadata,
-      });
+      const recordEvent = validateLinkedinAudienceEvent(event);
+      const linkedinAudiencePayload = processLinkedinAudienceRecord(recordEvent);
+
+      const existingGroup = groupedPayloads.find(
+        (group) => group.action === linkedinAudiencePayload.payload.action,
+      );
+
+      if (existingGroup) {
+        existingGroup.payloads.push(linkedinAudiencePayload);
+      } else {
+        const configParams: LinkedinAudienceConfigParams = {
+          audienceType: event.connection.config.destination.audienceType,
+          audienceId: event.connection.config.destination.audienceId,
+          accessToken: event.metadata.secret.accessToken,
+          isHashRequired: event.connection.config.destination.isHashRequired,
+        };
+        groupedPayloads.push({
+          action: linkedinAudiencePayload.payload.action,
+          configParams,
+          payloads: [linkedinAudiencePayload],
+        });
+      }
     } catch (error) {
-      failedResponseList.push(handleRtTfSingleEventError(request, error, {}));
+      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
+  for (const group of groupedPayloads) {
+    try {
+      const elementsPayload = {
+        elements: group.payloads.map((payload) => payload.payload),
+      };
+      const metadataList = group.payloads.map((payload) => payload.event.metadata);
+      const response = preparePayloadForProcessTransformation(elementsPayload, group.configParams);
 
-  const batchedSuccessResponseList = batchResponseBuilder(successResponseList);
-
-  return [...batchedSuccessResponseList, ...failedResponseList];
+      successfulResponses.push(
+        getSuccessRespEvents(response, metadataList, group.payloads[0].event.destination, true),
+      );
+    } catch (error) {
+      failedResponses.push(
+        ...group.payloads.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
+      );
+    }
+  }
+  return [...successfulResponses, ...failedResponses];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

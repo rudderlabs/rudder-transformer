@@ -1,10 +1,7 @@
-import { defaultAccessToken, defaultAccessTokenAuthHeader } from '../../../common/secrets';
-import { generateMetadata, generateRecordPayload } from '../../../testUtils';
-
 export const nativeData = [
   {
     name: 'linkedin_audience',
-    description: 'Native Test 0',
+    description: 'Test 0',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -13,20 +10,46 @@ export const nativeData = [
         body: {
           input: [
             {
-              message: generateRecordPayload({
+              message: {
+                type: 'record',
+                action: 'insert',
                 fields: {
                   firstName: 'Test',
                   lastName: 'User',
                   country: 'Dhaka',
                   company: 'Rudderlabs',
                 },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
                 identifiers: {
                   sha256Email: 'random@rudderstack.com',
                   sha512Email: 'random@rudderstack.com',
                 },
-                action: 'insert',
-              }),
-              metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -41,7 +64,7 @@ export const nativeData = [
                   rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
                 },
                 Enabled: true,
-                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                WorkspaceID: 'workspace-disable-cdkv2',
                 Transformations: [],
               },
               connection: {
@@ -51,7 +74,7 @@ export const nativeData = [
                 config: {
                   destination: {
                     accountId: 512315509,
-                    audienceId: 32589526,
+                    audienceId: '32589526',
                     audienceType: 'user',
                     createAudience: 'no',
                     eventType: 'record',
@@ -82,14 +105,40 @@ export const nativeData = [
               },
             },
             {
-              message: generateRecordPayload({
+              message: {
+                type: 'record',
+                action: 'insert',
                 fields: {},
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
                 identifiers: {
                   sha256Email: 'random@rudderstack.com',
                 },
-                action: 'insert',
-              }),
-              metadata: generateMetadata(2, 'default-userId', 'workspace-disable-cdkv2'),
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -104,7 +153,7 @@ export const nativeData = [
                   rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
                 },
                 Enabled: true,
-                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                WorkspaceID: 'workspace-disable-cdkv2',
                 Transformations: [],
               },
               connection: {
@@ -114,7 +163,7 @@ export const nativeData = [
                 config: {
                   destination: {
                     accountId: 512315509,
-                    audienceId: 32589526,
+                    audienceId: '32589526',
                     audienceType: 'user',
                     createAudience: 'no',
                     eventType: 'record',
@@ -145,19 +194,45 @@ export const nativeData = [
               },
             },
             {
-              message: generateRecordPayload({
+              message: {
+                type: 'record',
+                action: 'insert',
                 fields: {
                   firstName: 'Test',
                   lastName: 'User',
                   country: 'Dhaka',
                   company: 'Rudderlabs',
                 },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
                 identifiers: {
                   sha256Email: 12345,
                 },
-                action: 'insert',
-              }),
-              metadata: generateMetadata(3, 'default-userId', 'workspace-disable-cdkv2'),
+              },
+              metadata: {
+                jobId: 3,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
               destination: {
                 ID: '123',
                 Name: 'Linkedin Audience',
@@ -172,7 +247,7 @@ export const nativeData = [
                   rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
                 },
                 Enabled: true,
-                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                WorkspaceID: 'workspace-disable-cdkv2',
                 Transformations: [],
               },
               connection: {
@@ -182,7 +257,7 @@ export const nativeData = [
                 config: {
                   destination: {
                     accountId: 512315509,
-                    audienceId: 32589526,
+                    audienceId: '32589526',
                     audienceType: 'user',
                     createAudience: 'no',
                     eventType: 'record',
@@ -264,9 +339,10 @@ export const nativeData = [
                   XML: {},
                 },
                 endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
                 files: {},
                 headers: {
-                  Authorization: defaultAccessTokenAuthHeader,
+                  Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
                   'LinkedIn-Version': '202509',
                   'X-RestLi-Method': 'BATCH_CREATE',
@@ -292,7 +368,7 @@ export const nativeData = [
                 ID: '123',
                 Name: 'Linkedin Audience',
                 Transformations: [],
-                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                WorkspaceID: 'workspace-disable-cdkv2',
               },
               metadata: [
                 {
@@ -301,7 +377,7 @@ export const nativeData = [
                   dontBatch: false,
                   jobId: 1,
                   secret: {
-                    accessToken: defaultAccessToken,
+                    accessToken: 'commonAccessToken',
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -313,7 +389,7 @@ export const nativeData = [
                   dontBatch: false,
                   jobId: 2,
                   secret: {
-                    accessToken: defaultAccessToken,
+                    accessToken: 'commonAccessToken',
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -339,9 +415,9 @@ export const nativeData = [
                 ID: '123',
                 Name: 'Linkedin Audience',
                 Transformations: [],
-                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                WorkspaceID: 'workspace-disable-cdkv2',
               },
-              error: 'The "string" argument must be of type string. Received type number (12345)',
+              error: 'message.identifiers.sha256Email: Expected string, received number',
               metadata: [
                 {
                   attemptNum: 1,
@@ -349,7 +425,7 @@ export const nativeData = [
                   dontBatch: false,
                   jobId: 3,
                   secret: {
-                    accessToken: defaultAccessToken,
+                    accessToken: 'commonAccessToken',
                   },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
@@ -359,13 +435,2271 @@ export const nativeData = [
               statTags: {
                 destType: 'LINKEDIN_AUDIENCE',
                 destinationId: 'default-destinationId',
-                errorCategory: 'transformation',
+                errorCategory: 'dataValidation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+                errorType: 'instrumentation',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-business-test-1',
+    name: 'linkedin_audience',
+    description: 'Record call : non string values provided as email',
+    scenario: 'Business',
+    successCriteria: 'should fail with 400 status code and error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                  country: 'Dhaka',
+                  company: 'Rudderlabs',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 12345,
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'name',
+                        to: 'firstName',
+                      },
+                      {
+                        from: 'name',
+                        to: 'lastName',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'email',
+                        to: 'sha256Email',
+                      },
+                      {
+                        from: 'email',
+                        to: 'sha512Email',
+                      },
+                    ],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error: 'message.identifiers.sha256Email: Expected string, received number',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                feature: 'router',
+                implementation: 'native',
+                errorType: 'instrumentation',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-business-test-2',
+    name: 'linkedin_audience',
+    description: 'Record call : Valid event with action type insert without any field mappings',
+    scenario: 'Business',
+    successCriteria: 'should pass with 200 status code and transformed message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'name',
+                        to: 'firstName',
+                      },
+                      {
+                        from: 'name',
+                        to: 'lastName',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'email',
+                        to: 'sha256Email',
+                      },
+                      {
+                        from: 'email',
+                        to: 'sha512Email',
+                      },
+                    ],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202509',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-business-test-2',
+    name: 'linkedin_audience',
+    description:
+      'Record call : customer provided hashed value, isHashRequired is false and action type is update',
+    scenario: 'Business',
+    successCriteria: 'should pass with 200 status code and transformed message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                fields: {},
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                  sha512Email:
+                    '631372c5eafe80f3fe1b5d067f6a1870f1f04a0f0c0d9298eeaa20b9e54224da9588e3164d2ec6e2a5545a5299ed7df563e4a60315e6782dfa7db4de6b1c5326',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'name',
+                        to: 'firstName',
+                      },
+                      {
+                        from: 'name',
+                        to: 'lastName',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'email',
+                        to: 'sha256Email',
+                      },
+                      {
+                        from: 'email',
+                        to: 'sha512Email',
+                      },
+                    ],
+                    isHashRequired: false,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                          {
+                            idType: 'SHA512_EMAIL',
+                            idValue:
+                              '631372c5eafe80f3fe1b5d067f6a1870f1f04a0f0c0d9298eeaa20b9e54224da9588e3164d2ec6e2a5545a5299ed7df563e4a60315e6782dfa7db4de6b1c5326',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202509',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-business-test-2',
+    name: 'linkedin_audience',
+    description: 'Record call : event with company audience details',
+    scenario: 'Business',
+    successCriteria: 'should pass with 200 status code and transformed message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  city: 'Dhaka',
+                  state: 'Dhaka',
+                  industries: 'Information Technology',
+                  postalCode: '123456',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  companyName: 'Rudderstack',
+                  organizationUrn: 'urn:li:organization:456',
+                  companyWebsiteDomain: 'rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'company',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'city',
+                        to: 'city',
+                      },
+                      {
+                        from: 'state',
+                        to: 'state',
+                      },
+                      {
+                        from: 'domain',
+                        to: 'industries',
+                      },
+                      {
+                        from: 'psCode',
+                        to: 'postalCode',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'name',
+                        to: 'companyName',
+                      },
+                      {
+                        from: 'urn',
+                        to: 'organizationUrn',
+                      },
+                      {
+                        from: 'Website Domain',
+                        to: 'companyWebsiteDomain',
+                      },
+                    ],
+                    isHashRequired: false,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        city: 'Dhaka',
+                        companyName: 'Rudderstack',
+                        companyWebsiteDomain: 'rudderstack.com',
+                        industries: 'Information Technology',
+                        organizationUrn: 'urn:li:organization:456',
+                        postalCode: '123456',
+                        state: 'Dhaka',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/companies',
+                endpointPath: '/dmpSegments/<audienceId>/companies',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202509',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-1',
+    name: 'linkedin_audience',
+    description: 'Record call : event is valid with all required elements',
+    scenario: 'Validation',
+    successCriteria: 'should pass with 200 status code and transformed message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                  country: 'Dhaka',
+                  company: 'Rudderlabs',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                  sha512Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'name',
+                        to: 'firstName',
+                      },
+                      {
+                        from: 'name',
+                        to: 'lastName',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'email',
+                        to: 'sha256Email',
+                      },
+                      {
+                        from: 'email',
+                        to: 'sha512Email',
+                      },
+                    ],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        company: 'Rudderlabs',
+                        country: 'Dhaka',
+                        firstName: 'Test',
+                        lastName: 'User',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                          {
+                            idType: 'SHA512_EMAIL',
+                            idValue:
+                              '631372c5eafe80f3fe1b5d067f6a1870f1f04a0f0c0d9298eeaa20b9e54224da9588e3164d2ec6e2a5545a5299ed7df563e4a60315e6782dfa7db4de6b1c5326',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202509',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-2',
+    name: 'linkedin_audience',
+    description: 'Record call : event is not valid with all required elements',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                  country: 'Dhaka',
+                  company: 'Rudderlabs',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                  sha512Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [
+                      {
+                        from: 'name',
+                        to: 'firstName',
+                      },
+                      {
+                        from: 'name',
+                        to: 'lastName',
+                      },
+                    ],
+                    identifierMappings: [
+                      {
+                        from: 'email',
+                        to: 'sha256Email',
+                      },
+                      {
+                        from: 'email',
+                        to: 'sha512Email',
+                      },
+                    ],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error:
+                'connection.config.destination.audienceId: audienceId is not present. Aborting',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',
                 workspaceId: 'workspace-disable-cdkv2',
               },
-              statusCode: 500,
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-4',
+    name: 'linkedin_audience',
+    description: 'Record call : Access Token is missing in metadata secret',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and configuration error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {},
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error:
+                'metadata.secret.accessToken: Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {},
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-5',
+    name: 'linkedin_audience',
+    description: 'Record call : audienceType is missing in config',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and configuration error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error:
+                'connection.config.destination.audienceType: audienceType is not present. Aborting',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-6',
+    name: 'linkedin_audience',
+    description: 'Record call : Message type is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                },
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error: 'message.type: message Type is not present. Aborting message.',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-7',
+    name: 'linkedin_audience',
+    description: 'Record call : Unsupported message type',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                },
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error: "message.type: Invalid enum value. Expected 'record', received 'track'",
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-8',
+    name: 'linkedin_audience',
+    description: 'Record call : fields is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error: 'message.fields: fields is not present. Aborting message.',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-9',
+    name: 'linkedin_audience',
+    description: 'Record call : identifiers is missing',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error: 'message.identifiers: identifiers is not present. Aborting message.',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-10',
+    name: 'linkedin_audience',
+    description: 'Record call : action type is unsupported',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'unknown',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error:
+                "message.action: Invalid enum value. Expected 'insert' | 'delete' | 'update', received 'unknown'",
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    id: 'linkedin_audience-validation-test-11',
+    name: 'linkedin_audience',
+    description: 'Record call : audienceType is unknown',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: '32589526',
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                    audienceType: 'unknown',
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              error:
+                "connection.config.destination.audienceType: Invalid enum value. Expected 'user' | 'company', received 'unknown'",
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
             },
           ],
         },

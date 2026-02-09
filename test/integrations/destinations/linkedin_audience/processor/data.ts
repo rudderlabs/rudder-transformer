@@ -1,10 +1,3 @@
-import { businessCDKTestData } from './business';
-import { businessNativeTestData } from './business-native';
-import { validationCDKTestData } from './validation';
-import { validationNativeTestData } from './validation-native';
-export const data = [
-  ...validationCDKTestData,
-  ...businessCDKTestData,
-  ...businessNativeTestData,
-  ...validationNativeTestData,
-];
+import { businessTestData } from './business';
+import { validationTestData } from './validation';
+export const data = [...validationTestData, ...businessTestData];

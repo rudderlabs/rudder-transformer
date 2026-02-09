@@ -2,7 +2,7 @@ import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
-export const businessCDKTestData: ProcessorTestData[] = [
+export const businessTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-1',
     name: 'linkedin_audience',

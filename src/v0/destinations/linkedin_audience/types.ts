@@ -1,52 +1,82 @@
 import { z } from 'zod';
-import type {
-  Connection,
-  Destination,
-  Metadata,
-  RouterTransformationRequestData,
-  DestinationConnectionConfig,
-} from '../../../types';
 
-export const LinkedinAudienceMessageSchema = z
+const LinkedinAudienceConnectionSchema = z
   .object({
-    type: z.string().optional(),
-    action: z.string().optional(),
-    fields: z.record(z.string()).optional(),
-    identifiers: z.record(z.string()).optional(),
+    config: z
+      .object({
+        destination: z
+          .object({
+            audienceId: z.string({
+              required_error: 'audienceId is not present. Aborting',
+            }),
+            audienceType: z.enum(['user', 'company'], {
+              required_error: 'audienceType is not present. Aborting',
+            }),
+            isHashRequired: z.boolean(),
+          })
+          .passthrough(),
+      })
+      .passthrough(),
   })
   .passthrough();
-export type LinkedinAudienceMessage = z.infer<typeof LinkedinAudienceMessageSchema>;
 
-export type LinkedinAudienceMetadata = Metadata & {
-  secret?: {
-    accessToken?: string;
-  };
+const LinkedinAudienceMessageSchema = z
+  .object({
+    type: z.enum(['record'], {
+      required_error: 'message Type is not present. Aborting message.',
+    }),
+    action: z.enum(['insert', 'delete', 'update'], {
+      required_error: 'action is not present. Aborting message.',
+    }),
+    identifiers: z.record(z.string(), z.string().nullable(), {
+      required_error: 'identifiers is not present. Aborting message.',
+    }),
+    fields: z.record(z.string(), z.string().nullable(), {
+      required_error: 'fields is not present. Aborting message.',
+    }),
+  })
+  .passthrough();
+
+const LinkedinAudienceMetadataSchema = z
+  .object({
+    secret: z
+      .object({
+        accessToken: z.string({
+          required_error:
+            'Access Token is not present. This might be a platform issue. Please contact RudderStack support for assistance.',
+        }),
+      })
+      .passthrough(),
+  })
+  .passthrough();
+
+export const LinkedinAudienceRouterRequestSchema = z
+  .object({
+    message: LinkedinAudienceMessageSchema,
+    connection: LinkedinAudienceConnectionSchema,
+    metadata: LinkedinAudienceMetadataSchema,
+  })
+  .passthrough();
+
+export type LinkedinAudienceRecordRequest = z.infer<typeof LinkedinAudienceRouterRequestSchema>;
+
+export type LinkedinAudienceUserPayload = {
+  action: string;
+  userIds: { idType: string; idValue: string }[];
 };
 
-export const LinkedinAudienceConnectionConfigSchema = z
-  .object({
-    audienceId: z.string().optional(),
-    audienceType: z.string().optional(),
-    isHashRequired: z.boolean(),
-  })
-  .passthrough();
-export type LinkedinAudienceConnectionConfig = z.infer<
-  typeof LinkedinAudienceConnectionConfigSchema
->;
-export type LinkedinAudienceConnection = Connection<
-  DestinationConnectionConfig<LinkedinAudienceConnectionConfig>
->;
+export type LinkedinAudienceCompanyPayload = {
+  action: string;
+};
 
-export type LinkedinAudienceConfigs = {
+export type LinkedinAudiencePayload = {
+  payload: LinkedinAudienceUserPayload | LinkedinAudienceCompanyPayload;
+  event: LinkedinAudienceRecordRequest;
+};
+
+export type LinkedinAudienceConfigParams = {
   audienceType: string;
   audienceId: string;
   accessToken: string;
   isHashRequired: boolean;
 };
-
-export type LinkedinAudienceRequest = RouterTransformationRequestData<
-  LinkedinAudienceMessage,
-  Destination,
-  LinkedinAudienceConnection,
-  LinkedinAudienceMetadata
->;

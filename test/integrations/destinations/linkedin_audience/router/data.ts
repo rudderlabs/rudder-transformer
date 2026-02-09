@@ -373,6 +373,155 @@ const cdkData = [
       },
     },
   },
+  {
+    id: 'linkedin_audience-validation-test-1',
+    name: 'linkedin_audience',
+    description: 'Record call : audienceType is unknown',
+    scenario: 'Validation',
+    successCriteria: 'should fail with 400 status code and instrumentation error message',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  firstName: 'Test',
+                  lastName: 'User',
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: 'randomJobId',
+                    version: 'local',
+                    job_run_id: 'jobRunId',
+                    task_run_id: 'taskRunId',
+                  },
+                },
+                recordId: '3',
+                rudderId: 'randomRudderId',
+                messageId: 'randomMessageId',
+                receivedAt: '2024-11-08T10:30:41.618+05:30',
+                request_ip: '[::1]',
+                identifiers: {
+                  sha256Email: 'random@rudderstack.com',
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+                secret: {
+                  accessToken: 'commonAccessToken',
+                },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    accountId: 512315509,
+                    audienceId: 32589526,
+                    createAudience: 'no',
+                    eventType: 'record',
+                    fieldMappings: [],
+                    identifierMappings: [],
+                    isHashRequired: true,
+                    audienceType: 'unknown',
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: {
+                  connectionMode: 'cloud',
+                  rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
+                },
+                Enabled: true,
+                WorkspaceID: '2lepjs3uWK6ac2WLukJjOrbcTfC',
+                Transformations: [],
+              },
+              error: 'Unsupported audience type unknown. Aborting',
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  secret: {
+                    accessToken: 'commonAccessToken',
+                  },
+                  dontBatch: false,
+                },
+              ],
+              statTags: {
+                destType: 'LINKEDIN_AUDIENCE',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];
 
 export const data = [...cdkData, ...nativeData];

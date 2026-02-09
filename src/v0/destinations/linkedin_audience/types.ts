@@ -9,8 +9,8 @@ import type {
 
 export const LinkedinAudienceMessageSchema = z
   .object({
-    type: z.string().optional(),
-    action: z.string().optional(),
+    type: z.string(),
+    action: z.string(),
     fields: z.record(z.string()).optional(),
     identifiers: z.record(z.string()).optional(),
   })
@@ -18,7 +18,7 @@ export const LinkedinAudienceMessageSchema = z
 export type LinkedinAudienceMessage = z.infer<typeof LinkedinAudienceMessageSchema>;
 
 export type LinkedinAudienceMetadata = Metadata & {
-  secret?: {
+  secret: {
     accessToken?: string;
   };
 };

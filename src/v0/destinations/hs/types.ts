@@ -385,6 +385,7 @@ export interface HubspotProcessorTransformationOutput
     | 'updateObject'
     | 'createContacts'
     | 'updateContacts'
+    | 'upsertContacts'
     | 'createAssociation';
   messageType?: 'track' | 'identify';
   source?: string;

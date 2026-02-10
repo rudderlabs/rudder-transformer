@@ -1,5 +1,107 @@
-import { authHeader1, authHeader2, authHeader3, authHeader4, secret5 } from './maskedSecrets';
+import {
+  authHeader1,
+  authHeader2,
+  authHeader3,
+  authHeader4,
+  authHeader5,
+  secret5,
+} from './maskedSecrets';
+
+const UPSERT_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert';
+
 export const networkCallsData = [
+  // 207 Multi-Status response mocks for upsert endpoint
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader5,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'success@example.com',
+            idProperty: 'email',
+            properties: { email: 'success@example.com', firstname: 'Success' },
+            objectWriteTraceId: '5001',
+          },
+          {
+            id: 'failure@example.com',
+            idProperty: 'email',
+            properties: { email: 'failure@example.com', firstname: 'Failure' },
+            objectWriteTraceId: '5002',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        results: [
+          {
+            id: '12345',
+            properties: { email: 'success@example.com', firstname: 'Success' },
+          },
+        ],
+        errors: [
+          {
+            status: 'error',
+            category: 'VALIDATION_ERROR',
+            message: 'Property value is invalid',
+            context: {
+              objectWriteTraceId: ['5002'],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'allsuccess1@example.com',
+            idProperty: 'email',
+            properties: { email: 'allsuccess1@example.com', firstname: 'User1' },
+            objectWriteTraceId: '6001',
+          },
+          {
+            id: 'allsuccess2@example.com',
+            idProperty: 'email',
+            properties: { email: 'allsuccess2@example.com', firstname: 'User2' },
+            objectWriteTraceId: '6002',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 'COMPLETE',
+        results: [
+          {
+            id: '12346',
+            properties: { email: 'allsuccess1@example.com', firstname: 'User1' },
+          },
+          {
+            id: '12347',
+            properties: { email: 'allsuccess2@example.com', firstname: 'User2' },
+          },
+        ],
+        startedAt: '2024-01-15T10:00:00.000Z',
+        completedAt: '2024-01-15T10:00:00.100Z',
+      },
+    },
+  },
   {
     httpReq: {
       url: 'https://api.hubapi.com/properties/v1/contacts/properties?hapikey=dummy-apikey',
@@ -1107,6 +1209,288 @@ export const networkCallsData = [
         ],
       },
       status: 200,
+    },
+  },
+  // ==================== 207 Multi-Status Upsert Response Mocks ====================
+  // All success - 207 response with all contacts upserted successfully
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'user1@test.com',
+            idProperty: 'email',
+            properties: {
+              email: 'user1@test.com',
+              firstname: 'John',
+              lastname: 'Doe',
+            },
+            objectWriteTraceId: '1',
+          },
+          {
+            id: 'user2@test.com',
+            idProperty: 'email',
+            properties: {
+              email: 'user2@test.com',
+              firstname: 'Jane',
+              lastname: 'Smith',
+            },
+            objectWriteTraceId: '2',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        results: [
+          {
+            id: '44188066994',
+            properties: {
+              email: 'user1@test.com',
+              firstname: 'John',
+              lastname: 'Doe',
+              createdate: '2024-07-31T03:21:03.176Z',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+            },
+          },
+          {
+            id: '44188066995',
+            properties: {
+              email: 'user2@test.com',
+              firstname: 'Jane',
+              lastname: 'Smith',
+              createdate: '2024-07-31T03:21:03.176Z',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+            },
+          },
+        ],
+        errors: [],
+      },
+    },
+  },
+  // All failure - 207 response with all contacts failed to upsert
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'invalid-email',
+            idProperty: 'email',
+            properties: {
+              email: 'invalid-email',
+              firstname: 'Invalid',
+            },
+            objectWriteTraceId: '3',
+          },
+          {
+            id: 'another-invalid',
+            idProperty: 'email',
+            properties: {
+              email: 'another-invalid',
+              firstname: 'Also Invalid',
+            },
+            objectWriteTraceId: '4',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        results: [],
+        errors: [
+          {
+            status: 'error',
+            category: 'VALIDATION_ERROR',
+            message: 'Property value "invalid-email" is not a valid email',
+            context: {
+              objectWriteTraceId: ['3'],
+            },
+          },
+          {
+            status: 'error',
+            category: 'VALIDATION_ERROR',
+            message: 'Property value "another-invalid" is not a valid email',
+            context: {
+              objectWriteTraceId: ['4'],
+            },
+          },
+        ],
+      },
+    },
+  },
+  // Mixed results - 207 response with partial success
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'valid@test.com',
+            idProperty: 'email',
+            properties: {
+              email: 'valid@test.com',
+              firstname: 'Valid',
+              lastname: 'User',
+            },
+            objectWriteTraceId: '5',
+          },
+          {
+            id: 'invalid-format',
+            idProperty: 'email',
+            properties: {
+              email: 'invalid-format',
+              firstname: 'Invalid',
+            },
+            objectWriteTraceId: '6',
+          },
+          {
+            id: 'another-valid@test.com',
+            idProperty: 'email',
+            properties: {
+              email: 'another-valid@test.com',
+              firstname: 'Another Valid',
+            },
+            objectWriteTraceId: '7',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        results: [
+          {
+            id: '44188066996',
+            properties: {
+              email: 'valid@test.com',
+              firstname: 'Valid',
+              lastname: 'User',
+              createdate: '2024-07-31T03:21:03.176Z',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+            },
+          },
+          {
+            id: '44188066997',
+            properties: {
+              email: 'another-valid@test.com',
+              firstname: 'Another Valid',
+              createdate: '2024-07-31T03:21:03.176Z',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+            },
+          },
+        ],
+        errors: [
+          {
+            status: 'error',
+            category: 'VALIDATION_ERROR',
+            message: 'Property value "invalid-format" is not a valid email',
+            context: {
+              objectWriteTraceId: ['6'],
+            },
+          },
+        ],
+      },
+    },
+  },
+  // Custom lookup field - 207 response with hs_object_id as idProperty
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: '12345',
+            idProperty: 'hs_object_id',
+            properties: {
+              firstname: 'John',
+              lastname: 'Doe',
+            },
+            objectWriteTraceId: '8',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        results: [
+          {
+            id: '12345',
+            properties: {
+              firstname: 'John',
+              lastname: 'Doe',
+              createdate: '2024-07-31T03:21:03.176Z',
+              lastmodifieddate: '2024-07-31T03:21:03.176Z',
+            },
+          },
+        ],
+        errors: [],
+      },
+    },
+  },
+  // Unmatched trace ID - 207 response with no matching objectWriteTraceId
+  {
+    httpReq: {
+      url: UPSERT_ENDPOINT,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'user@test.com',
+            idProperty: 'email',
+            properties: {
+              email: 'user@test.com',
+              firstname: 'Test',
+            },
+            objectWriteTraceId: '9',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: {
+        // No matching trace ID - this tests the fallback handling
+        results: [
+          {
+            id: '44188066998',
+            properties: {
+              email: 'user@test.com',
+              firstname: 'Test',
+            },
+            objectWriteTraceId: 'different-trace-id', // Different from jobId '9'
+          },
+        ],
+        errors: [],
+      },
     },
   },
 ];

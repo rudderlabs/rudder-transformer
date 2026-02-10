@@ -981,6 +981,76 @@ const convertToResponseFormat = (
 const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
   omit(properties, HUBSPOT_SYSTEM_FIELDS);
 
+/**
+ * Determines if the upsert feature is enabled for a given workspace.
+ * Uses a skip list (denylist) that takes priority over the allowlist.
+ *
+ * Logic order:
+ * 1. If workspaceId in DISABLED list -> return false (skip list takes priority)
+ * 2. If ENABLED = "ALL" -> return true
+ * 3. If workspaceId in ENABLED list -> return true
+ * 4. Default -> return false
+ *
+ * @param workspaceId - The workspace ID to check
+ * @returns Whether upsert is enabled for this workspace
+ */
+const isUpsertEnabled = (workspaceId?: string): boolean => {
+  const disabledWorkspaces = process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES || '';
+  const enabledWorkspaces = process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES || '';
+
+  // Skip list (denylist) takes priority
+  if (disabledWorkspaces && workspaceId) {
+    const disabledList = disabledWorkspaces.split(',').map((ws) => ws.trim());
+    if (disabledList.includes(workspaceId)) {
+      return false;
+    }
+  }
+
+  // Check if enabled for all workspaces
+  if (enabledWorkspaces.trim().toUpperCase() === 'ALL') {
+    return true;
+  }
+
+  // Check if workspace is in the enabled list
+  if (enabledWorkspaces && workspaceId) {
+    const enabledList = enabledWorkspaces.split(',').map((ws) => ws.trim());
+    return enabledList.includes(workspaceId);
+  }
+
+  // Default: upsert not enabled
+  return false;
+};
+
+/**
+ * Gets the lookup field info for upsert payload construction.
+ * Returns the idProperty and id value for the upsert request.
+ *
+ * @param message - The message object
+ * @param lookupField - The configured lookup field
+ * @returns Object with idProperty and id, or null if not found
+ */
+const getUpsertLookupInfo = (
+  message: HubspotRudderMessage,
+  lookupField: string,
+): { idProperty: string; id: string } | null => {
+  // Try configured lookupField first
+  let lookupInfo = getLookupFieldValue(message, lookupField);
+
+  // Fallback to email if lookupField not found
+  if (!lookupInfo && lookupField !== 'email') {
+    lookupInfo = getLookupFieldValue(message, 'email');
+    if (lookupInfo) {
+      return { idProperty: 'email', id: String(lookupInfo.value) };
+    }
+  }
+
+  if (lookupInfo) {
+    return { idProperty: lookupInfo.fieldName, id: String(lookupInfo.value) };
+  }
+
+  return null;
+};
+
 export {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -1002,4 +1072,7 @@ export {
   getRequestData,
   convertToResponseFormat,
   removeHubSpotSystemField,
+  isUpsertEnabled,
+  getUpsertLookupInfo,
+  getLookupFieldValue,
 };

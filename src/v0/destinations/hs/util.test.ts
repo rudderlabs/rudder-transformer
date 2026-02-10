@@ -4,6 +4,7 @@ import {
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
+  isUpsertEnabled,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
@@ -283,5 +284,78 @@ describe('removeHubSpotSystemField utility test cases', () => {
 
     const result = removeHubSpotSystemField(properties);
     expect(result).toEqual(expectedOutput);
+  });
+});
+
+describe('isUpsertEnabled utility test cases', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    // Reset environment variables before each test
+    jest.resetModules();
+    process.env = { ...originalEnv };
+    delete process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES;
+    delete process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES;
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+  });
+
+  it('should return false when workspace is in disabled list (skip list takes priority)', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'ALL';
+    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace123,workspace456';
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(false);
+  });
+
+  it('should return true when enabled is ALL and workspace is not in disabled list', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'ALL';
+    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace456';
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(true);
+  });
+
+  it('should return true when enabled is all (case insensitive)', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'all';
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(true);
+  });
+
+  it('should return true when workspace is in enabled list', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456,workspace789';
+    const result = isUpsertEnabled('workspace456');
+    expect(result).toBe(true);
+  });
+
+  it('should return false when workspace is not in enabled list', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456';
+    const result = isUpsertEnabled('workspace999');
+    expect(result).toBe(false);
+  });
+
+  it('should return false when enabled workspaces env is not set', () => {
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(false);
+  });
+
+  it('should return false when enabled workspaces env is empty string', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = '';
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(false);
+  });
+
+  it('should handle disabled list taking priority over specific enabled workspace', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456';
+    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace123';
+    const result = isUpsertEnabled('workspace123');
+    expect(result).toBe(false);
+  });
+
+  it('should return true for enabled workspace when another workspace is disabled', () => {
+    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456';
+    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace789';
+    const result = isUpsertEnabled('workspace456');
+    expect(result).toBe(true);
   });
 });

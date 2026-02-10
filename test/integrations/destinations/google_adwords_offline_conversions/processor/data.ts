@@ -10,7 +10,7 @@ import { authHeader1, secret1 } from '../maskedSecrets';
 import { timestampMock } from '../mocks';
 import { newData as batchFetchingData } from './batch-fetching-data';
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 export const data = [
   ...batchFetchingData,

@@ -1,5 +1,5 @@
 import { authHeader1, authHeader2, authHeader401Test, secret3 } from './maskedSecrets';
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 const commonResponse = {
   status: 401,

@@ -348,7 +348,6 @@ describe('isUpsertEnabled utility test cases', () => {
     const result = isUpsertEnabled('workspace123');
     expect(result).toBe(false);
   });
-
 });
 
 describe('isLookupFieldUnique utility test cases', () => {
@@ -378,11 +377,7 @@ describe('isLookupFieldUnique utility test cases', () => {
     const propertiesMap = { email: true, hs_object_id: true };
     mockCacheGet.mockResolvedValue(propertiesMap);
 
-    const result = await isLookupFieldUnique(
-      mockDestination as any,
-      'email',
-      mockMetadata as any,
-    );
+    const result = await isLookupFieldUnique(mockDestination as any, 'email', mockMetadata as any);
 
     expect(result).toBe(true);
     expect(mockCacheGet).toHaveBeenCalledWith('dest-123');
@@ -393,20 +388,14 @@ describe('isLookupFieldUnique utility test cases', () => {
     const propertiesMap = { email: false, custom_field: false };
     mockCacheGet.mockResolvedValue(propertiesMap);
 
-    const result = await isLookupFieldUnique(
-      mockDestination as any,
-      'email',
-      mockMetadata as any,
-    );
+    const result = await isLookupFieldUnique(mockDestination as any, 'email', mockMetadata as any);
 
     expect(result).toBe(false);
   });
 
-  it('should return false when lookup field is not in cached properties', async () => {
+  it('should return false when lookup field is not in cached properties and make API call to fetch the properties', async () => {
     const propertiesMap = { email: true };
-    mockCacheGet
-      .mockResolvedValueOnce(propertiesMap)
-      .mockResolvedValueOnce({ email: true, new_custom_field: true });
+    mockCacheGet.mockResolvedValueOnce(propertiesMap);
 
     (httpGET as jest.Mock).mockResolvedValue(
       createV3ApiResponse([
@@ -441,11 +430,7 @@ describe('isLookupFieldUnique utility test cases', () => {
       ]),
     );
 
-    const result = await isLookupFieldUnique(
-      mockDestination as any,
-      'email',
-      mockMetadata as any,
-    );
+    const result = await isLookupFieldUnique(mockDestination as any, 'email', mockMetadata as any);
 
     expect(result).toBe(true);
     expect(httpGET).toHaveBeenCalled();

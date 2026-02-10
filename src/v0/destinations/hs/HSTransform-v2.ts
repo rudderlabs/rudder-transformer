@@ -458,7 +458,12 @@ const batchIdentify = (
       // { id, idProperty, properties, objectWriteTraceId }
       chunk.forEach((ev) => {
         const bodyJSON = ev.message.body.JSON as
-          | { id: string; idProperty: string; properties: Record<string, unknown>; objectWriteTraceId?: string }
+          | {
+              id: string;
+              idProperty: string;
+              properties: Record<string, unknown>;
+              objectWriteTraceId?: string;
+            }
           | undefined;
         if (!bodyJSON || !bodyJSON.id || !bodyJSON.idProperty || !bodyJSON.properties) {
           throw new TransformationError('rETL - Invalid payload for upsertContacts batch');
@@ -471,7 +476,12 @@ const batchIdentify = (
             (data as Record<string, unknown>).id === id &&
             (data as Record<string, unknown>).idProperty === idProperty,
         ) as
-          | { id: string; idProperty: string; properties: Record<string, unknown>; objectWriteTraceId?: string }
+          | {
+              id: string;
+              idProperty: string;
+              properties: Record<string, unknown>;
+              objectWriteTraceId?: string;
+            }
           | undefined;
         if (isDefinedAndNotNullAndNotEmpty(existing)) {
           // Merge latest properties with existing properties

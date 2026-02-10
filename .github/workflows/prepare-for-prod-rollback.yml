@@ -3,14 +3,15 @@ name: Prepare for Rollback in Production Environment
 on:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   validate-actor:
+    permissions:
+      contents: read
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations'
+    secrets:
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
   create-rollback-pr:
     name: Update Helm Charts For Production and Create Pull Request
@@ -44,7 +45,7 @@ jobs:
         run: |
           version=${{ github.ref_name }}
           echo "tag_name=$version" >> $GITHUB_OUTPUT
-          echo "Target Version: $tag_name"
+          echo "Target Version: $version"
 
       - name: Clone Devops Repo
         run: |

@@ -8,9 +8,6 @@ on:
       - reopened
       - synchronize
 
-permissions:
-  pull-requests: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -19,6 +16,8 @@ jobs:
   check-pr-title:
     name: Check PR Title
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0

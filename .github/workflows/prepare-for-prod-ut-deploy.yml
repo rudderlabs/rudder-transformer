@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -17,6 +13,8 @@ jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
+    permissions:
+      contents: read
     outputs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
@@ -44,6 +42,9 @@ jobs:
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Prod
+    permissions:
+      id-token: write
+      contents: read
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:

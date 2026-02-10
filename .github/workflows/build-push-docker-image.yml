@@ -34,10 +34,6 @@ on:
       DOCKERHUB_TOKEN:
         required: true
 
-permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: read # This is required for actions/checkout
-
 env:
   DOCKERHUB_USERNAME: rudderlabs
 
@@ -45,6 +41,8 @@ jobs:
   check_actor:
     runs-on: ubuntu-latest
     name: Check if actor is dependabot
+    permissions:
+      contents: read
     outputs:
       is_dependabot: ${{ steps.check.outputs.is_dependabot }}
     steps:
@@ -67,6 +65,8 @@ jobs:
   get_sha:
     runs-on: ubuntu-latest
     name: Get SHA information
+    permissions:
+      contents: read
     outputs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
@@ -89,6 +89,8 @@ jobs:
   get_changed_files:
     runs-on: ubuntu-latest
     name: Get Changed files
+    permissions:
+      contents: read
     outputs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
@@ -122,6 +124,9 @@ jobs:
 
   build-images:
     name: Build Docker Images
+    permissions:
+      id-token: write
+      contents: read
     needs: [check_actor, get_sha, get_changed_files]
     strategy:
       matrix:
@@ -218,6 +223,9 @@ jobs:
   create-manifest-ecr:
     name: Create multi-arch manifest for ECR
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
@@ -255,6 +263,8 @@ jobs:
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:

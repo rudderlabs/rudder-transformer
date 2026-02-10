@@ -11,9 +11,6 @@ on:
         required: true
   workflow_dispatch: {}
 
-permissions:
-  contents: read
-
 jobs:
   update-ingestion-service:
     name: Update Ingestion Service with Latest Transformer Version
@@ -45,12 +42,13 @@ jobs:
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
           permission-contents: write # to create commits, tags, and push branches
           permission-pull-requests: write # to create and update PRs
-          repositories: rudder-transformer,rudder-ingestion-svc # to access cross-repo
+          repositories: rudder-transformer,rudder-ingestion-svc # include current repo for tag push
 
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 1
+          token: ${{ steps.generate-token.outputs.token }}
 
       # In order to make a commit, we need to initialize a user.
       - name: Initialize Mandatory Git Config

@@ -4,6 +4,8 @@ const BASE_ENDPOINT = 'https://api.hubapi.com';
 
 // For fetching properties from HubSpot
 const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
+// Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
+const CRM_V3_CONTACT_PROPERTIES_ENDPOINT = `${BASE_ENDPOINT}/crm/v3/properties/contacts`;
 
 /*
  * Legacy API
@@ -94,10 +96,12 @@ const primaryToSecondaryFields: Record<string, string> = {
 const HUBSPOT_SYSTEM_FIELDS = ['hs_object_id'];
 
 const DESTINATION = 'HS';
+const CONTACT_PROPERTIES_CACHE_TTL = 60 * 60; // 1 hour
 
 export {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,
+  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
@@ -127,4 +131,5 @@ export {
   primaryToSecondaryFields,
   DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
+  CONTACT_PROPERTIES_CACHE_TTL,
 };

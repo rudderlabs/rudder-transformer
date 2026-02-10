@@ -1,3 +1,14 @@
+const mockCacheGet = jest.fn();
+const mockCacheSet = jest.fn();
+
+jest.mock('../../../adapters/network');
+jest.mock('../../util/cache', () =>
+  jest.fn().mockImplementation(() => ({
+    get: mockCacheGet,
+    set: mockCacheSet,
+  })),
+);
+
 import {
   getRequestData,
   extractIDsForSearchAPI,
@@ -5,9 +16,11 @@ import {
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
   isUpsertEnabled,
+  isLookupFieldUnique,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
+import { httpGET } from '../../../adapters/network';
 
 const propertyMap: Record<string, string> = {
   firstName: 'string',
@@ -295,23 +308,14 @@ describe('isUpsertEnabled utility test cases', () => {
     jest.resetModules();
     process.env = { ...originalEnv };
     delete process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES;
-    delete process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES;
   });
 
   afterAll(() => {
     process.env = originalEnv;
   });
 
-  it('should return false when workspace is in disabled list (skip list takes priority)', () => {
+  it('should return true when enabled is ALL', () => {
     process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'ALL';
-    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace123,workspace456';
-    const result = isUpsertEnabled('workspace123');
-    expect(result).toBe(false);
-  });
-
-  it('should return true when enabled is ALL and workspace is not in disabled list', () => {
-    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'ALL';
-    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace456';
     const result = isUpsertEnabled('workspace123');
     expect(result).toBe(true);
   });
@@ -345,17 +349,126 @@ describe('isUpsertEnabled utility test cases', () => {
     expect(result).toBe(false);
   });
 
-  it('should handle disabled list taking priority over specific enabled workspace', () => {
-    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456';
-    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace123';
-    const result = isUpsertEnabled('workspace123');
+});
+
+describe('isLookupFieldUnique utility test cases', () => {
+  const mockDestination = {
+    ID: 'dest-123',
+    Config: {
+      authorizationType: 'newPrivateAppApi' as const,
+      accessToken: 'test-token',
+    },
+  };
+  const mockMetadata = { jobId: 1 };
+
+  const createV3ApiResponse = (properties: Array<{ name: string; hasUniqueValue?: boolean }>) => ({
+    success: true,
+    response: {
+      data: { results: properties },
+      status: 200,
+      headers: {},
+    },
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should return true when lookup field has hasUniqueValue', async () => {
+    const propertiesMap = { email: true, hs_object_id: true };
+    mockCacheGet.mockResolvedValue(propertiesMap);
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'email',
+      mockMetadata as any,
+    );
+
+    expect(result).toBe(true);
+    expect(mockCacheGet).toHaveBeenCalledWith('dest-123');
+    expect(httpGET).not.toHaveBeenCalled();
+  });
+
+  it('should return false when lookup field does not have hasUniqueValue', async () => {
+    const propertiesMap = { email: false, custom_field: false };
+    mockCacheGet.mockResolvedValue(propertiesMap);
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'email',
+      mockMetadata as any,
+    );
+
     expect(result).toBe(false);
   });
 
-  it('should return true for enabled workspace when another workspace is disabled', () => {
-    process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES = 'workspace123,workspace456';
-    process.env.HUBSPOT_UPSERT_DISABLED_WORKSPACES = 'workspace789';
-    const result = isUpsertEnabled('workspace456');
+  it('should return false when lookup field is not in cached properties', async () => {
+    const propertiesMap = { email: true };
+    mockCacheGet
+      .mockResolvedValueOnce(propertiesMap)
+      .mockResolvedValueOnce({ email: true, new_custom_field: true });
+
+    (httpGET as jest.Mock).mockResolvedValue(
+      createV3ApiResponse([
+        { name: 'email', hasUniqueValue: true },
+        { name: 'new_custom_field', hasUniqueValue: true },
+      ]),
+    );
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'new_custom_field',
+      mockMetadata as any,
+    );
+
     expect(result).toBe(true);
+    expect(httpGET).toHaveBeenCalled();
+    expect(mockCacheSet).toHaveBeenCalledWith(
+      'dest-123',
+      expect.objectContaining({ email: true, new_custom_field: true }),
+    );
+  });
+
+  it('should fetch from API on cache miss and cache the result', async () => {
+    mockCacheGet.mockReset();
+    mockCacheGet.mockResolvedValue(undefined);
+
+    (httpGET as jest.Mock).mockReset();
+    (httpGET as jest.Mock).mockResolvedValue(
+      createV3ApiResponse([
+        { name: 'email', hasUniqueValue: true },
+        { name: 'hs_object_id', hasUniqueValue: true },
+      ]),
+    );
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'email',
+      mockMetadata as any,
+    );
+
+    expect(result).toBe(true);
+    expect(httpGET).toHaveBeenCalled();
+    expect((httpGET as jest.Mock).mock.calls[0][0]).toContain('/crm/v3/properties/contacts');
+    expect(mockCacheSet).toHaveBeenCalledWith(
+      'dest-123',
+      expect.objectContaining({ email: true, hs_object_id: true }),
+    );
+  });
+
+  it('should return false when lookup field not found after API fetch', async () => {
+    mockCacheGet.mockResolvedValue(undefined);
+
+    (httpGET as jest.Mock).mockResolvedValue(
+      createV3ApiResponse([{ name: 'email', hasUniqueValue: true }]),
+    );
+
+    const result = await isLookupFieldUnique(
+      mockDestination as any,
+      'nonexistent_field',
+      mockMetadata as any,
+    );
+
+    expect(result).toBe(false);
   });
 });

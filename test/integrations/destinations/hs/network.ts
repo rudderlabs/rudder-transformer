@@ -8,8 +8,34 @@ import {
 } from './maskedSecrets';
 
 const UPSERT_ENDPOINT = 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert';
+const CRM_V3_PROPERTIES_ENDPOINT = 'https://api.hubapi.com/crm/v3/properties/contacts';
+
+// CRM V3 properties API response for isLookupFieldUnique (hasUniqueValue check for upsert)
+const crmV3PropertiesResponse = {
+  results: [
+    { name: 'email', hasUniqueValue: true },
+    { name: 'hs_object_id', hasUniqueValue: true },
+    { name: 'user_id', hasUniqueValue: true },
+    { name: 'custom_field_not_present', hasUniqueValue: true },
+  ],
+};
 
 export const networkCallsData = [
+  // CRM V3 properties API mocks for upsert flow (isLookupFieldUnique)
+  ...Array.from({ length: 6 }, () => ({
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: crmV3PropertiesResponse,
+    },
+  })),
   // 207 Multi-Status response mocks for upsert endpoint
   {
     httpReq: {

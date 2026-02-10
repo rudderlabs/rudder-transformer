@@ -49,6 +49,7 @@ import {
   removeHubSpotSystemField,
   isUpsertEnabled,
   getUpsertLookupInfo,
+  isLookupFieldUnique,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -231,9 +232,13 @@ const processIdentify = async (
 
     let contactId = getDestinationExternalID(message, 'hsContactId');
 
-    // If no contactId provided and upsert is enabled, use upsert flow
+    // If no contactId provided and upsert is enabled and lookup field is unique, use upsert flow
     // This skips the searchContacts call and uses the batch upsert endpoint
-    if (!contactId && isUpsertEnabled(metadata?.workspaceId)) {
+    if (
+      !contactId &&
+      isUpsertEnabled(metadata?.workspaceId) &&
+      (await isLookupFieldUnique(destination, Config.lookupField!, metadata))
+    ) {
       return processUpsertIdentify({ message, destination, metadata }, propertyMap);
     }
 
@@ -355,7 +360,6 @@ const batchIdentify = (
     // add metric for batch size
     stats.gauge('hs_batch_size', chunk.length, {
       destination_id: destinationId,
-      operation: batchOperation,
     });
     // extracting message, destination value
     // from the first event in a batch

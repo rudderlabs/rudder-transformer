@@ -232,6 +232,13 @@ export interface HubSpotSearchResponse {
   };
 }
 
+export interface HubSpotUpsertPayload {
+  id: string;
+  idProperty: string;
+  properties: Record<string, unknown>;
+  objectWriteTraceId?: string;
+}
+
 // ============================================================================
 // Transformer Internal Types
 // ============================================================================
@@ -249,7 +256,9 @@ export type HubSpotRequestBodyJSON =
   | HubSpotTrackEventRequest
   | HubSpotTrackEventRequest[]
   | HubSpotAssociationPayload
-  | HubSpotAssociationPayload[];
+  | HubSpotAssociationPayload[]
+  | HubSpotUpsertPayload
+  | HubSpotUpsertPayload[];
 
 /**
  * HubSpot specific BatchedRequestBody with typed JSON
@@ -325,6 +334,22 @@ export function hasAssociationShape(
   if (!json || Array.isArray(json)) return false;
   const obj = json as Record<string, unknown>;
   return 'from' in obj && 'to' in obj && 'type' in obj;
+}
+
+/**
+ * Type guard: JSON payload is HubSpotUpsertPayload shape
+ */
+export function hasUpsertPayloadShape(json: unknown): json is HubSpotUpsertPayload {
+  if (!json || Array.isArray(json)) return false;
+  const obj = json as Record<string, unknown>;
+  return (
+    typeof obj.id === 'string' &&
+    typeof obj.idProperty === 'string' &&
+    obj.properties !== undefined &&
+    obj.properties !== null &&
+    typeof obj.properties === 'object' &&
+    !Array.isArray(obj.properties)
+  );
 }
 
 /**

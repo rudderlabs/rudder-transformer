@@ -64,8 +64,9 @@ import type {
   HubSpotBatchProcessingItem,
   HubspotRudderMessage,
   HubSpotBatchRequestOutput,
+  HubSpotUpsertPayload,
 } from './types';
-import { hasPropertiesRecord, hasAssociationShape } from './types';
+import { hasPropertiesRecord, hasAssociationShape, hasUpsertPayloadShape } from './types';
 
 const addHsAuthentication = (
   response: HubspotProcessorTransformationOutput,
@@ -103,7 +104,7 @@ const processUpsertIdentify = async (
     metadata,
   }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
   propertyMap?: HubSpotPropertyMap,
-) => {
+): Promise<HubspotProcessorTransformationOutput> => {
   const { Config } = destination;
 
   // Get lookup info for upsert (id and idProperty)
@@ -457,46 +458,30 @@ const batchIdentify = (
       // Each event already has the complete upsert payload structure
       // { id, idProperty, properties, objectWriteTraceId }
       chunk.forEach((ev) => {
-        const bodyJSON = ev.message.body.JSON as
-          | {
-              id: string;
-              idProperty: string;
-              properties: Record<string, unknown>;
-              objectWriteTraceId?: string;
-            }
-          | undefined;
-        if (!bodyJSON || !bodyJSON.id || !bodyJSON.idProperty || !bodyJSON.properties) {
+        const json = ev.message.body.JSON;
+
+        if (!hasUpsertPayloadShape(json)) {
           throw new TransformationError('rETL - Invalid payload for upsertContacts batch');
         }
-        const { id, idProperty, properties, objectWriteTraceId } = bodyJSON;
+        const { id, idProperty, properties, objectWriteTraceId } = json;
 
         // Deduplicate by id (lookup value) - keep the latest properties
         const existing = identifyResponseList.find(
-          (data) =>
-            (data as Record<string, unknown>).id === id &&
-            (data as Record<string, unknown>).idProperty === idProperty,
-        ) as
-          | {
-              id: string;
-              idProperty: string;
-              properties: Record<string, unknown>;
-              objectWriteTraceId?: string;
-            }
-          | undefined;
-        if (isDefinedAndNotNullAndNotEmpty(existing)) {
+          (data): data is HubSpotUpsertPayload =>
+            hasUpsertPayloadShape(data) && data.id === id && data.idProperty === idProperty,
+        );
+        if (existing) {
           // Merge latest properties with existing properties
-          existing!.properties = { ...existing!.properties, ...properties };
+          existing.properties = { ...existing.properties, ...properties };
           // Track duplicate objectWriteTraceId for monitoring
           stats.increment('hs_upsert_duplicate_trace_id', {
             destination_id: destinationId,
-            original_trace_id: String(existing!.objectWriteTraceId ?? ''),
-            duplicate_trace_id: String(objectWriteTraceId ?? ''),
           });
           // Update objectWriteTraceId to the latest one
-          existing!.objectWriteTraceId = objectWriteTraceId;
+          existing.objectWriteTraceId = objectWriteTraceId;
         } else {
           // Add new entry with full upsert payload
-          identifyResponseList.push(bodyJSON);
+          identifyResponseList.push(json);
         }
         metadata.push(ev.metadata);
       });

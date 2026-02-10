@@ -59,6 +59,8 @@ import type {
   HubspotRudderMessage,
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
+  HubSpotPropertyV3,
+  HubSpotPropertiesV3Response,
 } from './types';
 import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
@@ -993,16 +995,6 @@ const contactPropertiesV3Cache = new Cache(
     destType: DESTINATION,
   },
 );
-
-type HubSpotPropertyV3 = {
-  name: string;
-  hasUniqueValue?: boolean;
-  [key: string]: unknown;
-};
-
-type HubSpotPropertiesV3Response = {
-  results?: HubSpotPropertyV3[];
-};
 
 /**
  * Fetches contact properties from HubSpot CRM V3 API.

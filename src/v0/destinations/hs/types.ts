@@ -413,3 +413,13 @@ export interface HubSpotBatchRouterResult {
   errorRespList: HubSpotRouterTransformationOutput[];
   dontBatchEvents: HubSpotRouterTransformationOutput[];
 }
+
+export type HubSpotPropertyV3 = {
+  name: string;
+  hasUniqueValue?: boolean;
+  [key: string]: unknown;
+};
+
+export type HubSpotPropertiesV3Response = {
+  results?: HubSpotPropertyV3[];
+};

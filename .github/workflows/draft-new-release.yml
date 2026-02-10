@@ -5,7 +5,7 @@ on: workflow_dispatch
 jobs:
   validate-actor:
     permissions:
-      contents: read
+      contents: read # to call reusable workflow (validate-actor.yml)
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
@@ -18,7 +18,7 @@ jobs:
     needs: validate-actor
 
     permissions:
-      contents: read
+      contents: read # to checkout repository code; writes use app token (create-github-app-token)
 
     # Only allow release stakeholders to initiate releases
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/'))

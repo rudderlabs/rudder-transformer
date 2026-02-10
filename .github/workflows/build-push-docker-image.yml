@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Check if actor is dependabot
     permissions:
-      contents: read
+      contents: read # minimum required permission for job execution
     outputs:
       is_dependabot: ${{ steps.check.outputs.is_dependabot }}
     steps:
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Get SHA information
     permissions:
-      contents: read
+      contents: read # minimum required permission for job execution
     outputs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Get Changed files
     permissions:
-      contents: read
+      contents: read # to checkout repository code and list changed files (actions/checkout, Ana06/get-changed-files)
     outputs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
@@ -125,8 +125,8 @@ jobs:
   build-images:
     name: Build Docker Images
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # for AWS OIDC authentication (aws-actions/configure-aws-credentials)
+      contents: read # to checkout repository code (actions/checkout)
     needs: [check_actor, get_sha, get_changed_files]
     strategy:
       matrix:
@@ -224,8 +224,8 @@ jobs:
     name: Create multi-arch manifest for ECR
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # for AWS OIDC authentication (aws-actions/configure-aws-credentials)
+      contents: read # minimum required permission for job execution
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
@@ -264,7 +264,7 @@ jobs:
     name: Create multi-arch manifest for DockerHub
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # minimum required permission for job execution
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:

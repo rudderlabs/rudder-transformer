@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      pull-requests: write
-      issues: write
+      pull-requests: write # to label and close stale PRs (actions/stale)
+      issues: write # to label and close stale issues (actions/stale)
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
+      contents: write # to delete stale branches (beatlabs/delete-old-branches-action)
 
     steps:
       - name: Harden the runner (Audit all outbound calls)

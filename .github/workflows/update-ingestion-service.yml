@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: read # to checkout repository code; tag pushes and cross-repo writes use app token (create-github-app-token)
     # Only run if the workflow_run was successful (doesn't apply to manual triggers)
     if: >
       github.event_name == 'workflow_dispatch' ||

@@ -16,7 +16,7 @@ jobs:
     name: UT Tests
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # to checkout repository code (actions/checkout)
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0

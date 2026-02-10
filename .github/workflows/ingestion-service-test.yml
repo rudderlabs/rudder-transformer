@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+      contents: read # to checkout repository code (actions/checkout)
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TRANSFORMER_IMAGE_NAME_FOR_TEST: ${{ inputs.build_tag }}

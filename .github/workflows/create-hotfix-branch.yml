@@ -10,7 +10,7 @@ on:
 jobs:
   validate-actor:
     permissions:
-      contents: read
+      contents: read # to call reusable workflow (validate-actor.yml)
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
@@ -23,7 +23,7 @@ jobs:
     needs: validate-actor
 
     permissions:
-      contents: read
+      contents: read # to read repo metadata; branch creation uses app token (create-github-app-token)
 
     # Only allow these users to create new hotfix branch from 'main'
     if: github.ref == 'refs/heads/main'

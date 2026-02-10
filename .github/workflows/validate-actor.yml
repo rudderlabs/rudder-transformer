@@ -15,7 +15,7 @@ jobs:
   validate-actor:
     runs-on: [self-hosted, Linux, X64]
     permissions:
-      contents: read
+      contents: read # minimum required permission; org team membership check uses app token (create-github-app-token)
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
@@ -28,7 +28,7 @@ jobs:
         with:
           app-id: ${{ vars.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
-          permission-members: read
+          permission-members: read # to check org team membership
 
       - name: Validate if actor is allowed to trigger the workflow
         env:

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Tag Names
     permissions:
-      contents: read
+      contents: read # to checkout repository code and read package.json (actions/checkout)
     outputs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
@@ -39,8 +39,8 @@ jobs:
   build-transformer-image:
     name: Build Transformer Docker Image - Prod
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
@@ -62,7 +62,7 @@ jobs:
     needs: [generate-tag-names, build-transformer-image]
 
     permissions:
-      contents: read
+      contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)
 
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}

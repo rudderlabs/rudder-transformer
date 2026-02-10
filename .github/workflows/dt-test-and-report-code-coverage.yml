@@ -15,7 +15,7 @@ jobs:
   get_workflow_url:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # minimum required permission for job execution
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
@@ -33,7 +33,7 @@ jobs:
     name: Code Coverage
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # to checkout repository code with full history (actions/checkout)
     needs: [get_workflow_url]
     outputs:
       tests_run_outcome: ${{steps.run_tests.outcome}}
@@ -100,7 +100,7 @@ jobs:
   notify:
     name: slack notification on failure
     permissions:
-      contents: read
+      contents: read # to call reusable workflow (slack-notify.yml)
     needs: [get_workflow_url, coverage]
     if: needs.coverage.outputs.tests_run_outcome == 'failure' || failure()
     uses: ./.github/workflows/slack-notify.yml

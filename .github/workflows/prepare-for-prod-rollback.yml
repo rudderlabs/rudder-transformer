@@ -6,7 +6,7 @@ on:
 jobs:
   validate-actor:
     permissions:
-      contents: read
+      contents: read # to call reusable workflow (validate-actor.yml)
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations'
@@ -19,7 +19,7 @@ jobs:
     needs: validate-actor
 
     permissions:
-      contents: read
+      contents: read # to read repo metadata; cross-repo writes use app token (create-github-app-token)
 
     # Only allow to be deployed from tags and main branch
     if: (startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/main'))

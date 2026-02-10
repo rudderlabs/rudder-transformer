@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Tag Names
     permissions:
-      contents: read
+      contents: read # to checkout repository code and read package.json (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     outputs:
@@ -49,8 +49,8 @@ jobs:
   build-transformer-image:
     name: Build Transformer Docker Image - Staging
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     needs: [generate-tag-names]
@@ -69,8 +69,8 @@ jobs:
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Staging
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
 
@@ -92,7 +92,7 @@ jobs:
     needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
 
     permissions:
-      contents: read
+      contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)
 
     env:
       TF_IMAGE_REPOSITORY: ${{ vars.AWS_ECR_REGISTRY }}/rudderstack/rudder-transformer

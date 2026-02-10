@@ -12,7 +12,7 @@ jobs:
   check-health:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: read # to checkout repository code (actions/checkout)
 
     steps:
       - name: Harden the runner (Audit all outbound calls)

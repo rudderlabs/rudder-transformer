@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Tag Names
     permissions:
-      contents: read
+      contents: read # to checkout repository code (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     outputs:
@@ -48,8 +48,8 @@ jobs:
   build-transformer-image:
     name: Build Transformer Docker Image - PR
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     # Skip main to develop sync pull requests
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
@@ -68,8 +68,8 @@ jobs:
   build-user-transformer-image:
     name: Build User Transformer Docker Image - PR
     permissions:
-      id-token: write
-      contents: read
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     needs: [generate-tag-names]
@@ -87,7 +87,7 @@ jobs:
   run-ingestion-service-test:
     name: Run Ingestion Service Test
     permissions:
-      contents: read
+      contents: read # to call reusable workflow (ingestion-service-test.yml)
     needs: [build-transformer-image, generate-tag-names]
     uses: ./.github/workflows/ingestion-service-test.yml
     with:

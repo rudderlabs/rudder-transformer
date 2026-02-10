@@ -2,14 +2,15 @@ name: Draft New Release
 
 on: workflow_dispatch
 
-permissions:
-  contents: read
-
 jobs:
   validate-actor:
+    permissions:
+      contents: read
     uses: ./.github/workflows/validate-actor.yml
     with:
       team_names: 'integrations,data-management'
+    secrets:
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}
 
   draft-new-release:
     name: Draft New Release

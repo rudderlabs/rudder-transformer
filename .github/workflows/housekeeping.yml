@@ -6,9 +6,6 @@ on:
     - cron: '0 1 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: read
-
 jobs:
   prs:
     name: Clean Up Stale PRs and Issues

@@ -4,9 +4,6 @@ on:
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -14,6 +11,8 @@ concurrency:
 jobs:
   check-health:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Harden the runner (Audit all outbound calls)

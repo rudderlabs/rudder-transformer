@@ -3,10 +3,6 @@ name: Verify
 on:
   pull_request:
 
-permissions:
-  contents: read
-  pull-requests: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -15,6 +11,9 @@ jobs:
   formatting-lint:
     name: Check for formatting & lint errors
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
 
     steps:
       - name: Harden the runner (Audit all outbound calls)

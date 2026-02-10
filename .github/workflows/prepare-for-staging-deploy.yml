@@ -9,10 +9,6 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -21,6 +17,8 @@ jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
+    permissions:
+      contents: read
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     outputs:
@@ -50,6 +48,9 @@ jobs:
 
   build-transformer-image:
     name: Build Transformer Docker Image - Staging
+    permissions:
+      id-token: write
+      contents: read
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     needs: [generate-tag-names]
@@ -67,6 +68,9 @@ jobs:
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Staging
+    permissions:
+      id-token: write
+      contents: read
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
 

@@ -96,7 +96,7 @@ const primaryToSecondaryFields: Record<string, string> = {
 const HUBSPOT_SYSTEM_FIELDS = ['hs_object_id'];
 
 const DESTINATION = 'HS';
-const CONTACT_PROPERTIES_CACHE_TTL = 60 * 60; // 1 hour
+const CONTACT_PROPERTIES_CACHE_TTL = 60 * 60 * 24; // 24 hours
 
 export {
   BASE_ENDPOINT,

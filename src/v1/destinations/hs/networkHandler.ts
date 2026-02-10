@@ -80,7 +80,6 @@ type UpsertError = {
   message?: string;
   context?: {
     objectWriteTraceId?: string[];
-    [key: string]: unknown;
   };
 };
 
@@ -127,7 +126,7 @@ const handle207MultiStatus = (
       responseWithIndividualEvents.push({
         statusCode: 400,
         metadata,
-        error: failedJobsMap.get(jobId) || 'Unknown error from HubSpot',
+        error: failedJobsMap.get(jobId) ?? 'Unknown error from HubSpot',
       });
     } else {
       responseWithIndividualEvents.push({
@@ -147,7 +146,7 @@ const handle207MultiStatus = (
 
 const responseHandler = (responseParams: {
   rudderJobMetadata: ProxyMetdata[];
-  destinationResponse: { response: any; status: number };
+  destinationResponse: { response: Response; status: number };
   destinationRequest: ProxyV1Request;
 }) => {
   const { destinationResponse, rudderJobMetadata, destinationRequest } = responseParams;
@@ -164,7 +163,7 @@ const responseHandler = (responseParams: {
 
   if (isHttpStatusSuccess(status)) {
     // populate different response for each event
-    const destResponse = response as Response;
+    const destResponse = response;
     let proxyOutputObj: DeliveryJobState;
     const featureAndVersion = findFeatureandVersion(
       destResponse,

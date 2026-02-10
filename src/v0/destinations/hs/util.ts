@@ -24,6 +24,7 @@ import {
   validateEventName,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
+  isHttpStatusSuccess,
 } from '../../util';
 import {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -635,7 +636,7 @@ const performHubSpotSearch = async (
 
     const processedResponse = processAxiosResponse(httpResponse);
 
-    if (processedResponse.status !== 200) {
+    if (!isHttpStatusSuccess(processedResponse.status)) {
       throw new NetworkError(
         `rETL - Error during searching object record. ${JSON.stringify(
           processedResponse.response?.message,
@@ -988,7 +989,7 @@ const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<s
 
 // Cache for HubSpot contact properties (V3 API) - stores hasUniqueValue per property
 // TTL: 1 hour - property definitions rarely change
-const contactPropertiesV3Cache = new Cache(
+const uniqueContactPropertiesCache = new Cache(
   'HS_CONTACT_PROPERTIES_V3',
   CONTACT_PROPERTIES_CACHE_TTL,
   {
@@ -1009,7 +1010,14 @@ const fetchContactPropertiesV3 = async (
   metadata: Metadata,
 ): Promise<Record<string, boolean>> => {
   const { Config } = destination;
-
+  const statTags = {
+    destType: DESTINATION,
+    feature: 'transformation',
+    endpointPath: '/crm/v3/properties/contacts',
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  };
   let response;
   if (Config.authorizationType === 'newPrivateAppApi') {
     const requestOptions = {
@@ -1018,28 +1026,10 @@ const fetchContactPropertiesV3 = async (
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, requestOptions, {
-      destType: DESTINATION,
-      feature: 'transformation',
-      endpointPath: '/crm/v3/properties/contacts',
-      requestMethod: 'GET',
-      module: 'router',
-      metadata,
-    });
+    response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, requestOptions, statTags);
   } else {
     const url = `${CRM_V3_CONTACT_PROPERTIES_ENDPOINT}?hapikey=${Config.apiKey}`;
-    response = await httpGET(
-      url,
-      {},
-      {
-        destType: DESTINATION,
-        feature: 'transformation',
-        endpointPath: '/crm/v3/properties/contacts',
-        requestMethod: 'GET',
-        module: 'router',
-        metadata,
-      },
-    );
+    response = await httpGET(url, {}, statTags);
   }
 
   const processedResponse = processAxiosResponse(response);
@@ -1079,17 +1069,17 @@ const isLookupFieldUnique = async (
   lookupField: string,
   metadata: Metadata,
 ): Promise<boolean> => {
-  const cacheKey = `${destination.ID}`;
+  const cacheKey = destination.ID;
 
   const isFieldInMap = (map: Record<string, boolean>) => lookupField in map;
 
-  let propertiesMap = await contactPropertiesV3Cache.get(cacheKey);
+  let propertiesMap = await uniqueContactPropertiesCache.get(cacheKey);
 
   // Refetch if cache miss OR lookup field not in cached data (e.g. new custom field added)
   if (!propertiesMap || !isFieldInMap(propertiesMap)) {
     propertiesMap = await fetchContactPropertiesV3(destination, metadata);
     if (propertiesMap) {
-      contactPropertiesV3Cache.set(cacheKey, propertiesMap);
+      uniqueContactPropertiesCache.set(cacheKey, propertiesMap);
     }
   }
 
@@ -1108,7 +1098,7 @@ const isLookupFieldUnique = async (
  * @param workspaceId - The workspace ID to check
  * @returns Whether upsert is enabled for this workspace
  */
-const isUpsertEnabled = (workspaceId?: string): boolean => {
+const isUpsertEnabled = (workspaceId: string): boolean => {
   const enabledWorkspaces = process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES || '';
 
   // Check if enabled for all workspaces

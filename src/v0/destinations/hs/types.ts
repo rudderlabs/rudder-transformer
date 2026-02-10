@@ -442,7 +442,6 @@ export interface HubSpotBatchRouterResult {
 export type HubSpotPropertyV3 = {
   name: string;
   hasUniqueValue?: boolean;
-  [key: string]: unknown;
 };
 
 export type HubSpotPropertiesV3Response = {

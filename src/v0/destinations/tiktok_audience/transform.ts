@@ -1,7 +1,8 @@
 import md5 from 'md5';
-import { hashToSha256, InstrumentationError } from '@rudderstack/integrations-lib';
+import { hashToSha256, InstrumentationError , formatZodError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
-import type { TiktokAudienceMessage, TiktokAudienceRequest } from './types';
+import type { TiktokAudienceRequest } from './types';
+import { TiktokAudienceRouterRequestSchema } from './types';
 import { SHA256_TRAITS, ACTION_MAP, ENDPOINT, ENDPOINT_PATH } from './config';
 import {
   defaultRequestConfig,
@@ -9,28 +10,6 @@ import {
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } from '../../util';
-import { validateAudienceListMessageType } from '../../util/validate';
-
-function validateInput(message: TiktokAudienceMessage) {
-  const { type, properties } = message;
-
-  validateAudienceListMessageType(type);
-
-  if (!properties) {
-    throw new InstrumentationError('Message properties is not present. Aborting message.');
-  }
-
-  const { listData } = properties;
-  if (!listData) {
-    throw new InstrumentationError('listData is not present inside properties. Aborting message.');
-  }
-
-  for (const key of Object.keys(listData)) {
-    if (!ACTION_MAP[key]) {
-      throw new InstrumentationError(`unsupported action type ${key}. Aborting message.`);
-    }
-  }
-}
 
 function prepareIdentifiersList(event: TiktokAudienceRequest) {
   const { message, destination, metadata } = event;
@@ -102,8 +81,13 @@ function buildResponseForProcessTransformation(
 }
 
 function process(event: TiktokAudienceRequest) {
-  validateInput(event.message);
-  const identifierLists = prepareIdentifiersList(event);
+  const validationResult = TiktokAudienceRouterRequestSchema.safeParse(event);
+
+  if (!validationResult.success) {
+    throw new InstrumentationError(formatZodError(validationResult.error));
+  }
+
+  const identifierLists = prepareIdentifiersList(validationResult.data);
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 

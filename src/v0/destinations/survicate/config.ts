@@ -11,17 +11,17 @@ const contentType = 'application/json';
 
 const ENDPOINT_CONFIG = {
   IDENTIFY: {
-    url: `${BASE_URL}/endpoint/rudder_stack/identify`,
+    url: `${BASE_URL}/endpoint/rudder-stack/identify`,
     method: 'POST',
     contentType
   },
   GROUP: {
-    url: `${BASE_URL}/endpoint/rudder_stack/group`,
+    url: `${BASE_URL}/endpoint/rudder-stack/group`,
     method: 'POST',
     contentType
   },
   TRACK: {
-    url: `${BASE_URL}/endpoint/rudder_stack/track`,
+    url: `${BASE_URL}/endpoint/rudder-stack/track`,
     method: 'POST',
     contentType
   },

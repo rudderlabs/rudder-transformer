@@ -21,7 +21,7 @@ import { ENDPOINT_CONFIG } from './config';
  * Process identify event
  * Sends user identification data to Survicate
  *
- * Endpoint: POST /endpoint/rudder_stack/identify
+ * Endpoint: POST /endpoint/rudder-stack/identify
  *
  * @param message - The RudderStack message
  * @param destinationConfig - The destination configuration
@@ -67,7 +67,7 @@ const processIdentifyEvent = (
   response.method = ENDPOINT_CONFIG.IDENTIFY.method;
   response.headers = {
     'Content-Type': ENDPOINT_CONFIG.IDENTIFY.contentType,
-    'X-API-Key': destinationConfig.destinationKey,
+    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
   };
   response.body.JSON = payload;
 
@@ -79,7 +79,7 @@ const processIdentifyEvent = (
  * Process group event
  * Associates a user with a group in Survicate
  *
- * Endpoint: POST /endpoint/rudder_stack/group
+ * Endpoint: POST /endpoint/rudder-stack/group
  *
  * @param message - The RudderStack message
  * @param destinationConfig - The destination configuration
@@ -133,7 +133,7 @@ const processGroupEvent = (
   response.method = ENDPOINT_CONFIG.GROUP.method;
   response.headers = {
     'Content-Type': ENDPOINT_CONFIG.GROUP.contentType,
-    'X-API-Key': destinationConfig.destinationKey,
+    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
   };
   response.body.JSON = payload;
 
@@ -144,7 +144,7 @@ const processGroupEvent = (
  * Process track event
  * Tracks user events in Survicate
  *
- * Endpoint: POST /endpoint/rudder_stack/track
+ * Endpoint: POST /endpoint/rudder-stack/track
  *
  * @param message - The RudderStack message
  * @param destinationConfig - The destination configuration
@@ -181,7 +181,7 @@ const processTrackEvent = (
   response.method = ENDPOINT_CONFIG.TRACK.method;
   response.headers = {
     'Content-Type': ENDPOINT_CONFIG.TRACK.contentType,
-    'X-API-Key': destinationConfig.destinationKey,
+    'Authorization': `Bearer ${destinationConfig.destinationKey}`,
   };
   response.body.JSON = payload;
 
@@ -197,7 +197,7 @@ const processTrackEvent = (
  * @throws ConfigurationError if destination key is missing
  * @throws InstrumentationError if event type is not supported or required fields are missing
  */
-const processEvent = (event: SurvicateRouterRequest) => {
+const process = (event: SurvicateRouterRequest) => {
   const { message, destination } = event;
   const { destinationKey } = destination.Config;
 
@@ -233,8 +233,8 @@ const processRouterDest = async (
   inputs: SurvicateRouterRequest[],
   reqMetadata: Record<string, unknown>,
 ) => {
-  const respList = await simpleProcessRouterDest(inputs, processEvent, reqMetadata, {});
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, {});
   return respList;
 };
 
-export { processEvent, processRouterDest };
+export { process, processRouterDest };

@@ -294,7 +294,7 @@ export const data: RouterTestData[] = [
               endpoint: 'https://api.survicate.com/v1/users/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-key',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},
@@ -328,7 +328,7 @@ export const data: RouterTestData[] = [
               endpoint: 'https://api.survicate.com/v1/events/track',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-key',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},

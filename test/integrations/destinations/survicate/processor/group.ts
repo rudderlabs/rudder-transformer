@@ -107,10 +107,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://integrations.survicate.com/endpoint/rudder_stack/group',
+              endpoint: 'https://integrations.survicate.com/endpoint/rudder-stack/group',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-destination-key-12345',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},

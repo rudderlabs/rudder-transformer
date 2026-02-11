@@ -139,10 +139,10 @@ export const data: ProcessorTestData[] = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://integrations.survicate.com/endpoint/rudder_stack/track',
+              endpoint: 'https://integrations.survicate.com/endpoint/rudder-stack/track',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-destination-key-12345',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},
@@ -353,7 +353,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://api.survicate.com/v1/events/track',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-key',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},

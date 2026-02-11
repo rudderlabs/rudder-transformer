@@ -126,7 +126,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://api.survicate.com/v1/users/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-destination-key-12345',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},
@@ -220,7 +220,7 @@ export const data: ProcessorTestData[] = [
               endpoint: 'https://api.survicate.com/v1/users/identify',
               headers: {
                 'Content-Type': 'application/json',
-                'X-API-Key': 'test-key',
+                'Authorization': 'Bearer <destination-key>',
               },
               params: {},
               files: {},

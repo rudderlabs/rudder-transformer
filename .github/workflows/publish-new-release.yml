@@ -10,14 +10,13 @@ on:
     branches:
       - main
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   release:
     name: Publish New GitHub Release
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read # to checkout repository code; releases and tags use app token (create-github-app-token)
 
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true # only merged pull requests must trigger this job
 
@@ -26,6 +25,15 @@ jobs:
         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
         with:
           egress-policy: audit
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits, tags, and releases
+          permission-pull-requests: write # to create and update PRs
 
       - name: Extract Version
         id: extract-version
@@ -40,6 +48,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: Setup Node
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
@@ -60,40 +69,50 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
 
-      - name: Tag & Create GitHub Release
+      - name: Check if tag exists
+        id: check_tag
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          RELEASE_VERSION: ${{ steps.extract-version.outputs.release_version }}
+        run: |
+          echo "🏷️ Checking if tag v$RELEASE_VERSION exists..."
+          git fetch --tags origin
+          if git rev-parse --verify "v$RELEASE_VERSION" >/dev/null 2>&1; then
+            echo "✅ Tag v$RELEASE_VERSION already exists, skipping tag creation"
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "🏷️ Tag v$RELEASE_VERSION does not exist, will create"
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create verified tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          branch-name: main
+          tag: 'v${{ steps.extract-version.outputs.release_version }}'
+          files: ''
+          tag-only-if-file-changes: false
+
+      - name: Create GitHub Release
         id: create_release
         env:
           HUSKY: 0
-          GITHUB_TOKEN: ${{ secrets.PAT }}
-          GH_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          echo "🏷️ Checking and creating tag v${{ steps.extract-version.outputs.release_version }}..."
-          git fetch --tags origin
-
-          # Check if tag already exists
-          if git rev-parse --verify "v${{ steps.extract-version.outputs.release_version }}" >/dev/null 2>&1; then
-            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} already exists, skipping tag creation"
-          else
-            echo "🏷️ Creating new tag v${{ steps.extract-version.outputs.release_version }}..."
-            git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
-            git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
-            echo "✅ Tag v${{ steps.extract-version.outputs.release_version }} created and pushed successfully"
-          fi
-
           echo "🚀 Creating GitHub release with conventional commit notes..."
-          # Make the script executable
           chmod +x scripts/create-github-release.js
-
-          # Create release using our modern script with Angular conventional commit style notes
           node scripts/create-github-release.js
-
           echo "✅ Release process completed successfully!"
           echo "DATE=$(date)" >> $GITHUB_ENV
 
       - name: Verify Release Creation
         id: verify_release
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           echo "🔍 Verifying that release v${{ steps.extract-version.outputs.release_version }} exists..."
 
@@ -151,7 +170,7 @@ jobs:
             --title "chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}" \
             --body ":crown: *An automated PR*"
         env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Notify Slack Channel
         id: slack

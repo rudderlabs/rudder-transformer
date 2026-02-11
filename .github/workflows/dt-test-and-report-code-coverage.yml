@@ -7,9 +7,6 @@ on:
     branches:
       - main
       - develop
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -17,6 +14,8 @@ concurrency:
 jobs:
   get_workflow_url:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # minimum required permission for job execution
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
@@ -33,6 +32,8 @@ jobs:
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to checkout repository code with full history (actions/checkout)
     needs: [get_workflow_url]
     outputs:
       tests_run_outcome: ${{steps.run_tests.outcome}}
@@ -93,11 +94,13 @@ jobs:
         if: always()
         uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9 # v7.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   notify:
     name: slack notification on failure
+    permissions:
+      contents: read # to call reusable workflow (slack-notify.yml)
     needs: [get_workflow_url, coverage]
     if: needs.coverage.outputs.tests_run_outcome == 'failure' || failure()
     uses: ./.github/workflows/slack-notify.yml

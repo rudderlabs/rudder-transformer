@@ -27,7 +27,6 @@ export const networkCallsData = [
       url: CRM_V3_PROPERTIES_ENDPOINT,
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: authHeader1,
       },
     },

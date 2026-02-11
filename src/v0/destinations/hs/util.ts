@@ -9,7 +9,6 @@ import {
   ConfigurationError,
   NetworkError,
   isDefinedNotNullNotEmpty,
-  isDefinedAndNotNullAndNotEmpty,
 } from '@rudderstack/integrations-lib';
 import { AxiosRequestConfig } from 'axios';
 import { httpGET, httpPOST } from '../../../adapters/network';
@@ -1049,25 +1048,11 @@ const fetchContactPropertiesV3 = async (
     module: 'router',
     metadata,
   };
-  let response;
-  const authenticationInfo = addHsAuthentication({ headers: {}, params: {} }, Config);
-  if (isDefinedAndNotNullAndNotEmpty(authenticationInfo.headers)) {
-    response = await httpGET(
-      CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
-      {
-        headers: { ...authenticationInfo.headers, 'Content-Type': JSON_MIME_TYPE },
-      },
-      statTags,
-    );
-  } else {
-    response = await httpGET(
-      CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
-      {
-        params: authenticationInfo.params,
-      },
-      statTags,
-    );
-  }
+  const authenticationInfo = addHsAuthentication<{
+    headers?: Record<string, unknown>;
+    params?: Record<string, unknown>;
+  }>({}, Config);
+  const response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, authenticationInfo, statTags);
 
   const processedResponse = processAxiosResponse(response);
   if (processedResponse.status !== 200) {

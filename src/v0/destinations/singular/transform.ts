@@ -5,6 +5,8 @@ import {
   simpleProcessRouterDest,
   isEmptyObject,
 } from '../../util';
+
+import { PARTNER_OBJECT } from './config';
 import type {
   SingularMessage,
   SingularDestination,
@@ -12,7 +14,6 @@ import type {
   SingularBatchRequest,
   SingularProcessorRequest,
 } from './types';
-
 import {
   platformWisePayloadGenerator,
   generateRevenuePayloadArray,
@@ -49,7 +50,7 @@ const responseBuilderSimple = (
   }
 
   // Build params with API key
-  const params = { ...payload, a: Config.apiKey, partner: 'rudderstack' };
+  const params = { ...payload, a: Config.apiKey, ...PARTNER_OBJECT };
 
   const response: SingularBatchRequest = {
     ...defaultRequestConfig(),

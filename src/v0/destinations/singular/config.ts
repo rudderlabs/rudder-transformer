@@ -4,6 +4,8 @@ import type { SingularPlatform, SingularPlatformMapping } from './types';
 const BASE_URL = 'https://s2s.singular.net/api/v1';
 const BASE_URL_V2 = 'https://s2s.singular.net/api/v2';
 
+const PARTNER_OBJECT = { partner: 'rudderstack' };
+
 // Supported events in Singular: SessionNotification, EventNotification
 // ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
 const CONFIG_CATEGORIES = {
@@ -143,4 +145,5 @@ export {
   SUPPORTED_UNTIY_SUBPLATFORMS,
   BASE_URL,
   BASE_URL_V2,
+  PARTNER_OBJECT,
 };

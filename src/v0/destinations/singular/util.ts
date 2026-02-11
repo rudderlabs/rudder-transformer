@@ -13,6 +13,7 @@ import {
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
+  PARTNER_OBJECT,
 } from './config';
 import {
   constructPayload,
@@ -82,7 +83,7 @@ const generateRevenuePayloadArray = (
       ...productDetails,
       a: Config.apiKey,
       is_revenue_event: true,
-      partner: 'rudderstack',
+      ...PARTNER_OBJECT,
     }) as SingularEventParams;
 
     const response: SingularBatchRequest = {

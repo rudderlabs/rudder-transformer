@@ -49,7 +49,7 @@ const responseBuilderSimple = (
   }
 
   // Build params with API key
-  const params = { ...payload, a: Config.apiKey };
+  const params = { ...payload, a: Config.apiKey, partner: 'rudderstack' };
 
   const response: SingularBatchRequest = {
     ...defaultRequestConfig(),

@@ -82,6 +82,7 @@ const generateRevenuePayloadArray = (
       ...productDetails,
       a: Config.apiKey,
       is_revenue_event: true,
+      partner: 'rudderstack',
     }) as SingularEventParams;
 
     const response: SingularBatchRequest = {

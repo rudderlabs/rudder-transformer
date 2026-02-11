@@ -1,10 +1,5 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import {
-  defaultRequestConfig,
-  defaultGetRequestConfig,
-  simpleProcessRouterDest,
-  isEmptyObject,
-} from '../../util';
+import { defaultRequestConfig, defaultGetRequestConfig, simpleProcessRouterDest } from '../../util';
 import type {
   SingularMessage,
   SingularDestination,
@@ -32,20 +27,14 @@ const responseBuilderSimple = (
   }
 
   const sessionEvent = isSessionEvent(Config, eventName);
-  const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
+  const payload = platformWisePayloadGenerator(message, sessionEvent, Config);
   const useV2EventApi = !sessionEvent && shouldUseV2EventApi(message);
   const endpoint = getEndpoint(sessionEvent, useV2EventApi);
 
   // If we have an event where we have an array of Products, example Order Completed
   // We will convert the event to revenue events
   if (!sessionEvent && Array.isArray(message?.properties?.products)) {
-    return generateRevenuePayloadArray(
-      message.properties.products,
-      payload,
-      Config,
-      eventAttributes,
-      endpoint,
-    );
+    return generateRevenuePayloadArray(message.properties.products, payload, Config, endpoint);
   }
 
   // Build params with API key
@@ -57,11 +46,6 @@ const responseBuilderSimple = (
     params,
     method: defaultGetRequestConfig.requestMethod,
   };
-
-  if (!isEmptyObject(eventAttributes)) {
-    // Add event attributes for EVENT requests
-    response.params = { ...response.params, e: eventAttributes };
-  }
 
   return response;
 };

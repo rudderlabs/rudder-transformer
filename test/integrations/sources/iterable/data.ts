@@ -105,7 +105,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Unknwon event type from Iterable',
+            error: 'Unknown event type from Iterable',
             statTags: {
               destinationId: 'Non determinable',
               errorCategory: 'transformation',
@@ -155,7 +155,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Unknwon event type from Iterable',
+            error: 'Unknown event type from Iterable',
             statTags: {
               destinationId: 'Non determinable',
               errorCategory: 'transformation',

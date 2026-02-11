@@ -1,4 +1,4 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
 const BASE_ENDPOINT = 'https://api.hubapi.com';
 
@@ -84,14 +84,16 @@ const RETL_SOURCE = 'rETL';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
 
-const primaryToSecondaryFields = {
+const primaryToSecondaryFields: Record<string, string> = {
   email: 'hs_additional_emails',
 };
 
 // list of fields that hubspot maintains for each record of object
 const HUBSPOT_SYSTEM_FIELDS = ['hs_object_id'];
 
-module.exports = {
+const DESTINATION = 'HS';
+
+export {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,
   TRACK_ENDPOINT,
@@ -120,6 +122,6 @@ module.exports = {
   RETL_CREATE_ASSOCIATION_OPERATION,
   MAX_CONTACTS_PER_REQUEST,
   primaryToSecondaryFields,
-  DESTINATION: 'HS',
+  DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
 };

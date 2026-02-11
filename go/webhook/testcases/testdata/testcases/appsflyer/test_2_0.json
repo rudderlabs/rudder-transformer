@@ -17,7 +17,7 @@
   "output": {
     "response": {
       "status": 400,
-      "body": "Unknwon event type from Appsflyer\n"
+      "body": "Unknown event type from Appsflyer\n"
     },
     "queue": [],
     "errQueue": [

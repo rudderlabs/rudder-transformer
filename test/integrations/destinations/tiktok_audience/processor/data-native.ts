@@ -1,9 +1,7 @@
-import { nativeData } from './data-native';
-
-const cdkData = [
+export const nativeData = [
   {
     name: 'tiktok_audience',
-    description: 'Test 1: Containing SHA256 traits only',
+    description: 'Native Test 1: Containing SHA256 traits only',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -195,7 +193,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 2: Containing SHA256 and MD5 traits',
+    description: 'Native Test 2: Containing SHA256 and MD5 traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -417,7 +415,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 3: Containing all possible traits',
+    description: 'Native Test 3: Containing all possible traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -588,7 +586,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 4: Considering some null values',
+    description: 'Native Test 4: Considering some null values',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -743,7 +741,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 5: message type missing',
+    description: 'Native Test 5: message type missing',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -772,7 +770,7 @@ const cdkData = [
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -798,15 +796,14 @@ const cdkData = [
         status: 200,
         body: [
           {
-            error:
-              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
+            error: 'message Type is not present. Aborting message.',
             metadata: {
               jobId: 101,
               attemptNum: 1,
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -819,9 +816,9 @@ const cdkData = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -831,7 +828,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 6: unsupported message type',
+    description: 'Native Test 6: unsupported message type',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -861,7 +858,7 @@ const cdkData = [
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -887,15 +884,14 @@ const cdkData = [
         status: 200,
         body: [
           {
-            error:
-              'Event type identify is not supported. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event type identify is not supported. Aborting message.',
+            error: 'Event type identify is not supported. Aborting message.',
             metadata: {
               jobId: 102,
               attemptNum: 1,
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -908,9 +904,9 @@ const cdkData = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -920,7 +916,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 7: properties missing',
+    description: 'Native Test 7: properties missing',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -945,7 +941,7 @@ const cdkData = [
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -971,15 +967,14 @@ const cdkData = [
         status: 200,
         body: [
           {
-            error:
-              'Message properties is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Message properties is not present. Aborting message.',
+            error: 'Message properties is not present. Aborting message.',
             metadata: {
               jobId: 103,
               attemptNum: 1,
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -992,9 +987,9 @@ const cdkData = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -1004,7 +999,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 8: listData missing',
+    description: 'Native Test 8: listData missing',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1030,7 +1025,7 @@ const cdkData = [
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -1056,15 +1051,14 @@ const cdkData = [
         status: 200,
         body: [
           {
-            error:
-              'listData is not present inside properties. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: listData is not present inside properties. Aborting message.',
+            error: 'listData is not present inside properties. Aborting message.',
             metadata: {
               jobId: 104,
               attemptNum: 1,
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -1077,9 +1071,9 @@ const cdkData = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -1089,7 +1083,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 9: unsupported action key in listData',
+    description: 'Native Test 9: unsupported action key in listData',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1119,7 +1113,7 @@ const cdkData = [
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -1145,15 +1139,14 @@ const cdkData = [
         status: 200,
         body: [
           {
-            error:
-              'unsupported action type. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: unsupported action type. Aborting message.',
+            error: 'unsupported action type update. Aborting message.',
             metadata: {
               jobId: 105,
               attemptNum: 1,
               userId: 'u1',
               sourceId: 'default-sourceId',
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
               secret: {
                 accessToken: 'dummyAccessToken',
                 advertiserIds: ['dummyAdverTiserID'],
@@ -1166,9 +1159,9 @@ const cdkData = [
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'cdkV2',
+              implementation: 'native',
               module: 'destination',
-              workspaceId: 'default-workspaceId',
+              workspaceId: 'workspace-disable-cdkv2',
             },
             statusCode: 400,
           },
@@ -1177,5 +1170,3 @@ const cdkData = [
     },
   },
 ];
-
-export const data = [...cdkData, ...nativeData];

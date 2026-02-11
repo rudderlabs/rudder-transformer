@@ -23,12 +23,12 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
 
@@ -67,15 +67,14 @@ jobs:
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
-      TF_IMAGE_REPOSITORY: ${{ vars.AWS_ECR_REGISTRY }}/rudderstack/rudder-transformer
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        uses: step-security/harden-runner@e3f713f2d8f53843e71c69a996d56f51aa9adfb9 # v2.14.1
         with:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
 
@@ -111,15 +110,12 @@ jobs:
 
           cd helm-charts/shared-services/per-az/environment/production
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" production.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
           git add production.yaml
 
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" enterprise/enterprise.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
           git add enterprise/enterprise.yaml
 
           yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           git add multi-tenant/multi-tenant.yaml
 
           cd -
@@ -142,7 +138,6 @@ jobs:
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
@@ -178,7 +173,6 @@ jobs:
           # bump up the customers version and repository information
           for customer in "${enabled_ut_customers[@]}"; do
             yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $customer
-            yq eval -i ".spec.user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" $customer
             git add $customer
           done
 

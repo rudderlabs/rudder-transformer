@@ -598,6 +598,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/events/custom',
+              endpointPath: '/events/custom',
               headers: headers,
               params: {},
               body: {
@@ -703,6 +704,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/events/ecommerce/product-view',
+              endpointPath: '/events/ecommerce/product-view',
               headers: headers,
               params: {},
               body: {
@@ -806,6 +808,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/events/custom',
+              endpointPath: '/events/custom',
               headers: headers,
               params: {},
               body: {
@@ -910,6 +913,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
+              endpointPath: '/subscriptions',
               headers: headers,
               params: {},
               body: {
@@ -935,6 +939,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              endpointPath: '/subscriptions/unsubscribe',
               headers: headers,
               params: {},
               body: {
@@ -1033,6 +1038,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
+              endpointPath: '/subscriptions',
               headers: headers,
               params: {},
               body: {
@@ -1141,6 +1147,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              endpointPath: '/subscriptions/unsubscribe',
               headers: headers,
               params: {},
               body: {
@@ -1255,6 +1262,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              endpointPath: '/subscriptions/unsubscribe',
               headers: headers,
               params: {},
               body: {
@@ -1354,6 +1362,7 @@ export const trackTestData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              endpointPath: '/subscriptions/unsubscribe',
               headers: headers,
               params: {},
               body: {

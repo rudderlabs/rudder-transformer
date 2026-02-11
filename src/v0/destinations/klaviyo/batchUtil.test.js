@@ -107,6 +107,7 @@ describe('generateBatchedSubscriptionRequest', () => {
       type: 'REST',
       method: 'POST',
       endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+      endpointPath: '/api/profile-subscription-bulk-create-jobs',
       headers: {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',
@@ -158,6 +159,7 @@ describe('generateBatchedSubscriptionRequest', () => {
       type: 'REST',
       method: 'POST',
       endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+      endpointPath: '/api/profile-subscription-bulk-create-jobs',
       headers: {
         Authorization: 'Klaviyo-API-Key test-api-key',
         'Content-Type': 'application/json',

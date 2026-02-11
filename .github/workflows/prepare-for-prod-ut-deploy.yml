@@ -161,8 +161,8 @@ jobs:
           for directory in "${sub_directories[@]}"; do
             for f in "./$directory"/*; do
               [[ -f $f ]] || continue
-              yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $customer
-              git add $customer
+              yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $f
+              git add $f
             done
           done
 

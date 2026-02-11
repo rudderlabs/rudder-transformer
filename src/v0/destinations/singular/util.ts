@@ -17,6 +17,7 @@ import {
   defaultGetRequestConfig,
   removeUndefinedAndNullValues,
   extractCustomFields,
+  getIntegrationsObj,
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily,
@@ -108,6 +109,23 @@ const isSessionEvent = (Config: SingularDestinationConfig, eventName: string): b
 };
 
 /**
+ * Reads integrations.Singular.limitDataSharing and returns data_sharing_options when it is a boolean.
+ * Used for both /launch and /evt API requests.
+ * @param message - RudderStack message
+ * @returns data_sharing_options object when limitDataSharing is boolean, otherwise undefined
+ */
+const getDataSharingOptionsFromMessage = (
+  message: SingularMessage,
+): { limit_data_sharing: boolean } | undefined => {
+  const integrationsObj = getIntegrationsObj(message, 'singular' as any);
+  const limitDataSharing = integrationsObj?.limitDataSharing;
+  if (typeof limitDataSharing === 'boolean') {
+    return { limit_data_sharing: limitDataSharing };
+  }
+  return undefined;
+};
+
+/**
  * Based on platform of device this function generates payload for singular API
  * @param {*} message
  * @param {*} sessionEvent
@@ -194,6 +212,13 @@ const platformWisePayloadGenerator = (
     payload.match_id = clonedMessage?.context?.device?.advertisingId;
   } else if (message.properties?.match_id) {
     payload.match_id = message.properties.match_id;
+  }
+  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
+  if (dataSharingOptions) {
+    payload = {
+      ...payload,
+      data_sharing_options: dataSharingOptions,
+    };
   }
   return { payload, eventAttributes };
 };

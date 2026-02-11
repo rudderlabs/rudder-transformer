@@ -109,7 +109,7 @@ const handle207MultiStatus = (
   errors.forEach((error: UpsertError) => {
     // objectWriteTraceId is in error.context as an array
     const traceIds = error.context?.objectWriteTraceId || [];
-    const errorMessage = error.message || 'Unknown error from HubSpot';
+    const errorMessage = error.message!;
 
     traceIds.forEach((traceId: string) => {
       if (traceId) {

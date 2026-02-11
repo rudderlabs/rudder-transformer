@@ -48,8 +48,8 @@ import {
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
   isUpsertEnabled,
-  getUpsertLookupInfo,
   isLookupFieldUnique,
+  getLookupFieldValue,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -108,8 +108,8 @@ const processUpsertIdentify = async (
   const { Config } = destination;
 
   // Get lookup info for upsert (id and idProperty)
-  const lookupInfo = getUpsertLookupInfo(message, Config.lookupField!);
-  if (!lookupInfo) {
+  const lookupFieldInfo = getLookupFieldValue(message, Config.lookupField!);
+  if (!lookupFieldInfo) {
     throw new InstrumentationError(
       `Identify:: lookupField "${Config.lookupField}" value not found in traits. Email fallback also not available.`,
     );
@@ -122,8 +122,8 @@ const processUpsertIdentify = async (
   // Build upsert payload
   // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
   const upsertPayload = {
-    id: lookupInfo.id,
-    idProperty: lookupInfo.idProperty,
+    id: lookupFieldInfo.value,
+    idProperty: lookupFieldInfo.fieldName,
     properties,
     // objectWriteTraceId is used to correlate results in 207 multi-status responses
     objectWriteTraceId: metadata?.jobId?.toString(),

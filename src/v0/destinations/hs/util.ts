@@ -365,16 +365,22 @@ const getLookupFieldValue = (
   lookupField: string | undefined,
 ): HubSpotLookupFieldInfo | null => {
   const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
-  let value = getValueFromMessage(message, `${lookupField}`);
-  if (!value) {
-    // Check in free-flowing object level
-    SOURCE_KEYS.some((sourceKey) => {
-      value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
-      return !!value;
-    });
+  const lookUpFields = [lookupField, 'email'];
+  const results: (HubSpotLookupFieldInfo | null)[] = [];
+  for (const lookUpField of lookUpFields) {
+    let value = getValueFromMessage(message, lookUpField);
+    if (!value) {
+      // Check in free-flowing object level
+      SOURCE_KEYS.some((sourceKey) => {
+        value = getMappingFieldValueFormMessage(message, sourceKey, lookUpField);
+        return !!value;
+      });
+    }
+    const lookupValueInfo = value && lookUpField ? { fieldName: lookUpField, value } : null;
+    results.push(lookupValueInfo);
   }
-  const lookupValueInfo = value && lookupField ? { fieldName: lookupField, value } : null;
-  return lookupValueInfo;
+
+  return results[0] ?? results[1];
 };
 
 /**
@@ -394,8 +400,7 @@ const searchContacts = async (
   if (!getFieldValueFromMessage(message, 'traits') && !message.properties) {
     throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
-  const lookupFieldInfo =
-    getLookupFieldValue(message, Config.lookupField) || getLookupFieldValue(message, 'email');
+  const lookupFieldInfo = getLookupFieldValue(message, Config.lookupField);
   if (!lookupFieldInfo?.value) {
     throw new InstrumentationError(
       'Identify:: email i.e a default lookup field for contact lookup not found in traits',
@@ -1073,7 +1078,9 @@ const isLookupFieldUnique = async (
 
   const isFieldInMap = (map: Record<string, boolean>) => lookupField in map;
 
-  let propertiesMap = await uniqueContactPropertiesCache.get(cacheKey);
+  let propertiesMap = (await uniqueContactPropertiesCache.get(cacheKey)) as
+    | Record<string, boolean>
+    | undefined;
 
   // Refetch if cache miss OR lookup field not in cached data (e.g. new custom field added)
   if (!propertiesMap || !isFieldInMap(propertiesMap)) {
@@ -1116,36 +1123,6 @@ const isUpsertEnabled = (workspaceId: string): boolean => {
   return false;
 };
 
-/**
- * Gets the lookup field info for upsert payload construction.
- * Returns the idProperty and id value for the upsert request.
- *
- * @param message - The message object
- * @param lookupField - The configured lookup field
- * @returns Object with idProperty and id, or null if not found
- */
-const getUpsertLookupInfo = (
-  message: HubspotRudderMessage,
-  lookupField: string,
-): { idProperty: string; id: string } | null => {
-  // Try configured lookupField first
-  let lookupInfo = getLookupFieldValue(message, lookupField);
-
-  // Fallback to email if lookupField not found
-  if (!lookupInfo && lookupField !== 'email') {
-    lookupInfo = getLookupFieldValue(message, 'email');
-    if (lookupInfo) {
-      return { idProperty: 'email', id: String(lookupInfo.value) };
-    }
-  }
-
-  if (lookupInfo) {
-    return { idProperty: lookupInfo.fieldName, id: String(lookupInfo.value) };
-  }
-
-  return null;
-};
-
 export {
   validateDestinationConfig,
   addExternalIdToHSTraits,
@@ -1168,7 +1145,6 @@ export {
   convertToResponseFormat,
   removeHubSpotSystemField,
   isUpsertEnabled,
-  getUpsertLookupInfo,
   getLookupFieldValue,
   isLookupFieldUnique,
 };

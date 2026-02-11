@@ -9,6 +9,7 @@ import {
   ConfigurationError,
   NetworkError,
   isDefinedNotNullNotEmpty,
+  isDefinedAndNotNullAndNotEmpty,
 } from '@rudderstack/integrations-lib';
 import { AxiosRequestConfig } from 'axios';
 import { httpGET, httpPOST } from '../../../adapters/network';
@@ -84,6 +85,32 @@ const validateDestinationConfig = ({ Config }: HubSpotDestination): Configuratio
       throw new ConfigurationError('API Key not found. Aborting');
     }
   }
+};
+
+/**
+ * Adds HubSpot authentication details (headers/params) to a response-like object.
+ * Works for both Private Apps (access token) and legacy API key auth.
+ */
+const addHsAuthentication = <
+  T extends { headers?: Record<string, unknown>; params?: Record<string, unknown> },
+>(
+  response: T,
+  Config: HubSpotDestination['Config'],
+): T => {
+  if (Config.authorizationType === 'newPrivateAppApi') {
+    // Private Apps
+    response.headers = {
+      ...(response.headers || {}),
+      Authorization: `Bearer ${Config.accessToken}`,
+    };
+  } else {
+    // Legacy API Key
+    response.params = {
+      ...(response.params || {}),
+      hapikey: Config.apiKey,
+    };
+  }
+  return response;
 };
 
 /**
@@ -1023,17 +1050,23 @@ const fetchContactPropertiesV3 = async (
     metadata,
   };
   let response;
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    const requestOptions = {
-      headers: {
-        'Content-Type': JSON_MIME_TYPE,
-        Authorization: `Bearer ${Config.accessToken}`,
+  const authenticationInfo = addHsAuthentication({ headers: {}, params: {} }, Config);
+  if (isDefinedAndNotNullAndNotEmpty(authenticationInfo.headers)) {
+    response = await httpGET(
+      CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
+      {
+        headers: { ...authenticationInfo.headers, 'Content-Type': JSON_MIME_TYPE },
       },
-    };
-    response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, requestOptions, statTags);
+      statTags,
+    );
   } else {
-    const url = `${CRM_V3_CONTACT_PROPERTIES_ENDPOINT}?hapikey=${Config.apiKey}`;
-    response = await httpGET(url, {}, statTags);
+    response = await httpGET(
+      CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
+      {
+        params: authenticationInfo.params,
+      },
+      statTags,
+    );
   }
 
   const processedResponse = processAxiosResponse(response);
@@ -1124,6 +1157,7 @@ const isUpsertEnabled = (workspaceId: string): boolean => {
 
 export {
   validateDestinationConfig,
+  addHsAuthentication,
   addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,

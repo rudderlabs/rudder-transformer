@@ -50,6 +50,7 @@ import {
   isUpsertEnabled,
   isLookupFieldUnique,
   getLookupFieldValue,
+  addHsAuthentication,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -67,24 +68,6 @@ import type {
   HubSpotUpsertPayload,
 } from './types';
 import { hasPropertiesRecord, hasAssociationShape, hasUpsertPayloadShape } from './types';
-
-const addHsAuthentication = (
-  response: HubspotProcessorTransformationOutput,
-  Config: HubSpotDestination['Config'],
-): HubspotProcessorTransformationOutput => {
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-  return response;
-};
 
 /**
  * Process identify event for HubSpot V3 Upsert API.
@@ -275,18 +258,7 @@ const processIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 /**
@@ -483,6 +455,7 @@ const batchIdentify = (
         }
         metadata.push(ev.metadata);
       });
+      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -495,8 +468,6 @@ const batchIdentify = (
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT;
     } else if (batchOperation === 'updateContacts') {
       batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPDATE_CONTACT;
-    } else if (batchOperation === 'upsertContacts') {
-      batchEventResponse.batchedRequest.endpoint = BATCH_IDENTIFY_CRM_UPSERT_CONTACT;
     }
 
     batchEventResponse.batchedRequest.headers = message.headers!;

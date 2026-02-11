@@ -1,6 +1,5 @@
-const lodash = require('lodash');
-const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const {
+import { TransformationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
@@ -11,8 +10,8 @@ const {
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
-} = require('./config');
-const {
+} from './config';
+import {
   constructPayload,
   defaultRequestConfig,
   defaultGetRequestConfig,
@@ -21,49 +20,76 @@ const {
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily,
-} = require('../../util');
+} from '../../util';
+import type {
+  SingularMessage,
+  SingularDestinationConfig,
+  SingularProduct,
+  SingularBatchRequest,
+  SingularRequestParams,
+  SingularEventParams,
+  SingularPayload,
+} from './types';
 
-/*
-  All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes
-*/
-const extractExtraFields = (message, EXCLUSION_FIELDS) => {
-  const eventAttributes = {};
+/**
+ * Extracts custom event attributes from message properties
+ * All fields in properties not directly mapped will be sent as custom event attributes
+ * @param message - RudderStack message
+ * @param EXCLUSION_FIELDS - Fields to exclude from extraction
+ * @returns Custom event attributes
+ */
+const extractExtraFields = (
+  message: SingularMessage,
+  EXCLUSION_FIELDS: readonly string[],
+): Record<string, unknown> => {
+  const eventAttributes: Record<string, unknown> = {};
   extractCustomFields(message, eventAttributes, ['properties'], EXCLUSION_FIELDS);
   return eventAttributes;
 };
 
 /**
- * This function is used to generate the array of individual response for each of the products.
- * @param {*} products contains different products
- * @param {*} payload contains the common payload for each revenue event
- * @param {*} Config destination config
- * @param {*} eventAttributes custom attributes
- * @returns list of revenue event responses
+ * Generates an array of individual responses for each product in a revenue event
+ * @param products - Array of products
+ * @param payload - Common payload for each revenue event
+ * @param Config - Destination configuration
+ * @param eventAttributes - Optional custom event attributes
+ * @returns Array of revenue event batch requests
  */
-const generateRevenuePayloadArray = (products, payload, Config, eventAttributes) => {
-  const responseArray = [];
+const generateRevenuePayloadArray = (
+  products: SingularProduct[],
+  payload: SingularRequestParams,
+  Config: SingularDestinationConfig,
+  eventAttributes?: Record<string, unknown>,
+) => {
+  const responseArray: SingularBatchRequest[] = [];
   products.forEach((product) => {
     const productDetails = constructPayload(
       product,
       MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name],
     );
-    let finalpayload = { ...payload, ...productDetails };
-    // is_revenue_event will be true as here payload for a REVENUE event is being generated
-    finalpayload.is_revenue_event = true;
-    finalpayload = removeUndefinedAndNullValues(finalpayload);
-    const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}/evt`;
-    response.params = { ...finalpayload, a: Config.apiKey };
+    const finalPayload = removeUndefinedAndNullValues({
+      ...payload,
+      ...productDetails,
+      a: Config.apiKey,
+      // is_revenue_event will be true as here payload for a REVENUE event is being generated
+      is_revenue_event: true,
+    }) as SingularEventParams;
+
+    const response: SingularBatchRequest = {
+      ...defaultRequestConfig(),
+      endpoint: `${BASE_URL}/evt`,
+      params: finalPayload,
+      method: defaultGetRequestConfig.requestMethod,
+    };
     if (eventAttributes) {
       response.params = { ...response.params, e: eventAttributes };
     }
-    response.method = defaultGetRequestConfig.requestMethod;
     responseArray.push(response);
   });
   return responseArray;
 };
 
-const exclusionList = {
+const exclusionList: Record<string, readonly string[]> = {
   ANDROID_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_ANDROID_EXCLUSION,
   IOS_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_IOS_EXCLUSION,
   ANDROID_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_ANDROID_EXCLUSION,
@@ -71,12 +97,13 @@ const exclusionList = {
 };
 
 /**
- * Determines if the event is a session event or not
- * @param {*} Config
- * @param {*} eventName
+ * Determines if the event is a session event
+ * @param Config - Destination configuration
+ * @param eventName - Event name to check
+ * @returns True if event is a session event, false otherwise
  */
-const isSessionEvent = (Config, eventName) => {
-  const mappedSessionEvents = lodash.map(Config.sessionEventList, 'sessionEventName');
+const isSessionEvent = (Config: SingularDestinationConfig, eventName: string): boolean => {
+  const mappedSessionEvents = Config.sessionEventList?.map((item) => item.sessionEventName) ?? [];
   return mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName.toLowerCase());
 };
 
@@ -86,21 +113,25 @@ const isSessionEvent = (Config, eventName) => {
  * @param {*} sessionEvent
  * @returns
  */
-const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
+const platformWisePayloadGenerator = (
+  message: SingularMessage,
+  sessionEvent: boolean,
+  Config: SingularDestinationConfig,
+): SingularPayload => {
   let eventAttributes;
-  const clonedMessage = { ...message };
+  const clonedMessage: SingularMessage = { ...message };
   let platform = getValueFromMessage(clonedMessage, 'context.os.name');
-  const typeOfEvent = sessionEvent ? 'SESSION' : 'EVENT';
   if (!platform) {
     throw new InstrumentationError('Platform name is missing from context.os.name');
   }
+  const typeOfEvent = sessionEvent ? 'SESSION' : 'EVENT';
   // checking if the os is one of ios, ipados, watchos, tvos
   if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
-    clonedMessage.context.os.name = 'iOS';
+    clonedMessage.context!.os!.name = 'iOS';
     platform = 'iOS';
   }
   platform = platform.toLowerCase();
-  if (!SUPPORTED_PLATFORM[platform] && !SUPPORTED_UNTIY_SUBPLATFORMS[platform]) {
+  if (!SUPPORTED_PLATFORM[platform]) {
     throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
   let payload;
@@ -119,6 +150,7 @@ const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
   if (!payload) {
     throw new TransformationError(`Failed to Create ${platform} ${typeOfEvent} Payload`);
   }
+
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
     if (sessionEvent) {
       // context.device.adTrackingEnabled = true implies Singular's do not track (dnt)
@@ -133,9 +165,9 @@ const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
         payload.dnt = 1;
       }
       // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
-      payload.openuri = clonedMessage.properties.url || '';
+      payload.openuri = clonedMessage.properties?.url || '';
       if (platform === 'android' || platform === 'Android') {
-        payload.install_source = clonedMessage.properties.referring_application || '';
+        payload.install_source = clonedMessage.properties?.referring_application || '';
       }
     } else {
       // Custom Attribues is not supported by session events
@@ -160,14 +192,10 @@ const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
     }
   } else if (Config.match_id === 'advertisingId') {
     payload.match_id = clonedMessage?.context?.device?.advertisingId;
-  } else if (message.properties.match_id) {
+  } else if (message.properties?.match_id) {
     payload.match_id = message.properties.match_id;
   }
   return { payload, eventAttributes };
 };
 
-module.exports = {
-  generateRevenuePayloadArray,
-  isSessionEvent,
-  platformWisePayloadGenerator,
-};
+export { generateRevenuePayloadArray, isSessionEvent, platformWisePayloadGenerator };

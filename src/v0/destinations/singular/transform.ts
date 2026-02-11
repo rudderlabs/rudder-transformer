@@ -1,18 +1,20 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { BASE_URL } = require('./config');
-const {
-  defaultRequestConfig,
-  defaultGetRequestConfig,
-  simpleProcessRouterDest,
-} = require('../../util');
+import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { BASE_URL } from './config';
+import { defaultRequestConfig, defaultGetRequestConfig, simpleProcessRouterDest } from '../../util';
+import type {
+  SingularMessage,
+  SingularDestination,
+  SingularRouterRequest,
+  SingularBatchRequest,
+  SingularProcessorRequest,
+} from './types';
 
-const {
-  platformWisePayloadGenerator,
-  generateRevenuePayloadArray,
-  isSessionEvent,
-} = require('./util');
+import { platformWisePayloadGenerator, generateRevenuePayloadArray, isSessionEvent } from './util';
 
-const responseBuilderSimple = (message, { Config }) => {
+const responseBuilderSimple = (
+  message: SingularMessage,
+  { Config }: SingularDestination,
+): SingularBatchRequest | SingularBatchRequest[] => {
   const eventName = message.event;
 
   if (!eventName) {
@@ -34,19 +36,28 @@ const responseBuilderSimple = (message, { Config }) => {
     );
   }
 
-  const response = {
+  // Build params with API key
+  const params = { ...payload, a: Config.apiKey };
+
+  const response: SingularBatchRequest = {
     ...defaultRequestConfig(),
     endpoint,
-    params: { ...payload, a: Config.apiKey },
+    params,
     method: defaultGetRequestConfig.requestMethod,
   };
+
   if (eventAttributes) {
+    // Add event attributes for EVENT requests
     response.params = { ...response.params, e: eventAttributes };
   }
+
   return response;
 };
 
-const processEvent = (message, destination) => {
+const processEvent = (
+  message: SingularMessage,
+  destination: SingularDestination,
+): SingularBatchRequest | SingularBatchRequest[] => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -59,11 +70,14 @@ const processEvent = (message, destination) => {
   throw new InstrumentationError(`Event type ${messageType} is not supported`);
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event: SingularProcessorRequest) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+const processRouterDest = async (
+  inputs: SingularRouterRequest[],
+  reqMetadata: Record<string, unknown>,
+) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, {});
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

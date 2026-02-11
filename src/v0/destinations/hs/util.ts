@@ -366,21 +366,20 @@ const getLookupFieldValue = (
 ): HubSpotLookupFieldInfo | null => {
   const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
   const lookUpFields = [lookupField, 'email'];
-  const results: (HubSpotLookupFieldInfo | null)[] = [];
   for (const lookUpField of lookUpFields) {
     let value = getValueFromMessage(message, lookUpField);
-    if (!value) {
+    if (!isDefinedNotNullNotEmpty(value)) {
       // Check in free-flowing object level
       SOURCE_KEYS.some((sourceKey) => {
         value = getMappingFieldValueFormMessage(message, sourceKey, lookUpField);
-        return !!value;
+        return isDefinedNotNullNotEmpty(value);
       });
     }
-    const lookupValueInfo = value && lookUpField ? { fieldName: lookUpField, value } : null;
-    results.push(lookupValueInfo);
+    if (isDefinedNotNullNotEmpty(value)) {
+      return { fieldName: lookUpField!, value };
+    }
   }
-
-  return results[0] ?? results[1];
+  return null;
 };
 
 /**

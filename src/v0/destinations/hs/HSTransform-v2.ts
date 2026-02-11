@@ -233,7 +233,7 @@ const processIdentify = async (
 
     let contactId = getDestinationExternalID(message, 'hsContactId');
 
-    // If no contactId provided and upsert is enabled and lookup field is unique, use upsert flow
+    // We can't use contactId for upsert, as it is a non-unique field.
     // This skips the searchContacts call and uses the batch upsert endpoint
     if (
       !contactId &&
@@ -461,11 +461,11 @@ const batchIdentify = (
         const json = ev.message.body.JSON;
 
         if (!hasUpsertPayloadShape(json)) {
-          throw new TransformationError('rETL - Invalid payload for upsertContacts batch');
+          throw new TransformationError('Invalid payload for upsertContacts batch');
         }
-        const { id, idProperty, properties, objectWriteTraceId } = json;
+        const { id, idProperty, properties } = json;
 
-        // Deduplicate by id (lookup value) - keep the latest properties
+        // Deduplicate by id (lookup value) - If we don't deduplicate, hubspot will fail the batch upsert request
         const existing = identifyResponseList.find(
           (data): data is HubSpotUpsertPayload =>
             hasUpsertPayloadShape(data) && data.id === id && data.idProperty === idProperty,
@@ -477,8 +477,6 @@ const batchIdentify = (
           stats.increment('hs_upsert_duplicate_trace_id', {
             destination_id: destinationId,
           });
-          // Update objectWriteTraceId to the latest one
-          existing.objectWriteTraceId = objectWriteTraceId;
         } else {
           // Add new entry with full upsert payload
           identifyResponseList.push(json);

@@ -661,7 +661,7 @@ export const upsertData = [
                           firstname: 'Updated',
                           lastname: 'Version',
                         },
-                        objectWriteTraceId: '4002',
+                        objectWriteTraceId: '4001',
                       },
                     ],
                   },

@@ -2,6 +2,7 @@ import { getMappingConfig } from '../../util';
 import type { SingularPlatform, SingularPlatformMapping } from './types';
 
 const BASE_URL = 'https://s2s.singular.net/api/v1';
+const BASE_URL_V2 = 'https://s2s.singular.net/api/v2';
 
 // Supported events in Singular: SessionNotification, EventNotification
 // ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
@@ -32,6 +33,22 @@ const CONFIG_CATEGORIES = {
   },
   PRODUCT_PROPERTY: {
     name: 'SINGULAREventProductConfig',
+  },
+};
+
+// V2 event API: mapping configs in data/ (no platform device ids; sdid set in code from integration options)
+const CONFIG_CATEGORIES_V2 = {
+  EVENT_ANDROID_V2: {
+    name: 'v2/SINGULARAndroidEventConfig',
+    type: 'track',
+  },
+  EVENT_IOS_V2: {
+    name: 'v2/SINGULARIosEventConfig',
+    type: 'track',
+  },
+  EVENT_UNITY_V2: {
+    name: 'v2/SINGULARUnityEventConfig',
+    type: 'track',
   },
 };
 
@@ -110,9 +127,13 @@ const SESSIONEVENTS: readonly string[] = [
 ];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const MAPPING_CONFIG_V2 = getMappingConfig(CONFIG_CATEGORIES_V2, __dirname);
+
 export {
   CONFIG_CATEGORIES,
+  CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
+  MAPPING_CONFIG_V2,
   SESSIONEVENTS,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
@@ -121,4 +142,5 @@ export {
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   BASE_URL,
+  BASE_URL_V2,
 };

@@ -232,6 +232,13 @@ export interface HubSpotSearchResponse {
   };
 }
 
+export interface HubSpotUpsertPayload {
+  id: string;
+  idProperty: string;
+  properties: Record<string, unknown>;
+  objectWriteTraceId?: string;
+}
+
 // ============================================================================
 // Transformer Internal Types
 // ============================================================================
@@ -249,7 +256,9 @@ export type HubSpotRequestBodyJSON =
   | HubSpotTrackEventRequest
   | HubSpotTrackEventRequest[]
   | HubSpotAssociationPayload
-  | HubSpotAssociationPayload[];
+  | HubSpotAssociationPayload[]
+  | HubSpotUpsertPayload
+  | HubSpotUpsertPayload[];
 
 /**
  * HubSpot specific BatchedRequestBody with typed JSON
@@ -328,6 +337,22 @@ export function hasAssociationShape(
 }
 
 /**
+ * Type guard: JSON payload is HubSpotUpsertPayload shape
+ */
+export function hasUpsertPayloadShape(json: unknown): json is HubSpotUpsertPayload {
+  if (!json || Array.isArray(json)) return false;
+  const obj = json as Record<string, unknown>;
+  return (
+    typeof obj.id === 'string' &&
+    typeof obj.idProperty === 'string' &&
+    obj.properties !== undefined &&
+    obj.properties !== null &&
+    typeof obj.properties === 'object' &&
+    !Array.isArray(obj.properties)
+  );
+}
+
+/**
  * Type guard: value is valid for date conversion
  */
 export function isDateLike(value: unknown): value is string | number | Date {
@@ -385,6 +410,7 @@ export interface HubspotProcessorTransformationOutput
     | 'updateObject'
     | 'createContacts'
     | 'updateContacts'
+    | 'upsertContacts'
     | 'createAssociation';
   messageType?: 'track' | 'identify';
   source?: string;
@@ -412,3 +438,12 @@ export interface HubSpotBatchRouterResult {
   errorRespList: HubSpotRouterTransformationOutput[];
   dontBatchEvents: HubSpotRouterTransformationOutput[];
 }
+
+export type HubSpotPropertyV3 = {
+  name: string;
+  hasUniqueValue?: boolean;
+};
+
+export type HubSpotPropertiesV3Response = {
+  results?: HubSpotPropertyV3[];
+};

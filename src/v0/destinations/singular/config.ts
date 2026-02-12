@@ -1,8 +1,9 @@
 import { getMappingConfig } from '../../util';
 import type { SingularPlatform, SingularPlatformMapping } from './types';
 
-const BASE_URL = 'https://s2s.singular.net/api/v1';
-const BASE_URL_V2 = 'https://s2s.singular.net/api/v2';
+const BASE_URL = 'https://s2s.singular.net/api';
+const BASE_URL_V1 = `${BASE_URL}/v1`;
+const BASE_URL_V2 = `${BASE_URL}/v2`;
 
 // Supported events in Singular: SessionNotification, EventNotification
 // ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
@@ -145,6 +146,6 @@ export {
   SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
-  BASE_URL,
+  BASE_URL_V1,
   BASE_URL_V2,
 };

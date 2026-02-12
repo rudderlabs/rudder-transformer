@@ -1,6 +1,6 @@
 import { TransformationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BASE_URL,
+  BASE_URL_V1,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
@@ -62,7 +62,7 @@ const extractExtraFields = (
  * @param payload - Common payload for each revenue event
  * @param Config - Destination configuration
  * @param eventAttributes - Optional custom event attributes
- * @param eventEndpoint - Endpoint for event requests (caller passes BASE_URL/evt or BASE_URL_V2/evt)
+ * @param eventEndpoint - Endpoint for event requests (caller passes BASE_URL_V1/evt or BASE_URL_V2/evt)
  * @returns Array of revenue event batch requests
  */
 const generateRevenuePayloadArray = (
@@ -399,9 +399,9 @@ const platformWisePayloadGenerator = (
  */
 const getEndpoint = (message: SingularMessage, sessionEvent: boolean): string => {
   if (sessionEvent) {
-    return `${BASE_URL}/launch`;
+    return `${BASE_URL_V1}/launch`;
   }
-  return shouldUseV2EventApi(message) ? `${BASE_URL_V2}/evt` : `${BASE_URL}/evt`;
+  return shouldUseV2EventApi(message) ? `${BASE_URL_V2}/evt` : `${BASE_URL_V1}/evt`;
 };
 
 export { generateRevenuePayloadArray, getEndpoint, isSessionEvent, platformWisePayloadGenerator };

@@ -13,6 +13,7 @@ import {
   CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG_V2,
   BASE_URL_V2,
+  SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
 } from './config';
 import {
   constructPayload,
@@ -105,9 +106,6 @@ const exclusionList: Record<string, readonly string[]> = {
   IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION,
 };
 
-/** V2 API: exclude singularDeviceId from event attributes (e) to avoid duplicating sdid query param */
-const SINGULAR_V2_EVENT_ATTRIBUTE_EXCLUSION_EXTRA = ['singularDeviceId'];
-
 /**
  * Reads integrations.Singular.singularDeviceId from the message.
  * Used for V2 event API version selection and sdid query param.
@@ -125,7 +123,7 @@ const getSingularDeviceIdFromMessage = (message: SingularMessage): string | unde
  * Used only for non-session events; session events always use V1 launch.
  */
 const shouldUseV2EventApi = (message: SingularMessage): boolean =>
-  getSingularDeviceIdFromMessage(message) != null;
+  getSingularDeviceIdFromMessage(message) !== undefined;
 
 /**
  * Determines if the event is a session event
@@ -175,8 +173,8 @@ const buildBasePayloadV2 = (
   platform: SingularPlatform,
 ): Record<string, unknown> => {
   const configKey = SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)
-    ? CONFIG_CATEGORIES_V2.EVENT_UNITY_V2.name
-    : CONFIG_CATEGORIES_V2[`EVENT_${SUPPORTED_PLATFORM[platform]}_V2`].name;
+    ? CONFIG_CATEGORIES_V2.EVENT_UNITY.name
+    : CONFIG_CATEGORIES_V2[`EVENT_${SUPPORTED_PLATFORM[platform]}`].name;
 
   const basePayload: Record<string, unknown> | null = constructPayload(
     message,
@@ -333,7 +331,7 @@ const createV2EventPayload = (
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
     const v2Exclusion = [
       ...exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`],
-      ...SINGULAR_V2_EVENT_ATTRIBUTE_EXCLUSION_EXTRA,
+      ...SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
     ];
     eventAttributes = removeUndefinedAndNullValues(extractExtraFields(message, v2Exclusion));
 
@@ -399,20 +397,11 @@ const platformWisePayloadGenerator = (
 /**
  * Returns the Singular API endpoint for the given request type.
  */
-const getEndpoint = (sessionEvent: boolean, useV2EventApi: boolean): string => {
+const getEndpoint = (message: SingularMessage, sessionEvent: boolean): string => {
   if (sessionEvent) {
     return `${BASE_URL}/launch`;
   }
-  if (useV2EventApi) {
-    return `${BASE_URL_V2}/evt`;
-  }
-  return `${BASE_URL}/evt`;
+  return shouldUseV2EventApi(message) ? `${BASE_URL_V2}/evt` : `${BASE_URL}/evt`;
 };
 
-export {
-  generateRevenuePayloadArray,
-  getEndpoint,
-  isSessionEvent,
-  platformWisePayloadGenerator,
-  shouldUseV2EventApi,
-};
+export { generateRevenuePayloadArray, getEndpoint, isSessionEvent, platformWisePayloadGenerator };

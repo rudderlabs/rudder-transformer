@@ -12,7 +12,6 @@ import {
   platformWisePayloadGenerator,
   generateRevenuePayloadArray,
   isSessionEvent,
-  shouldUseV2EventApi,
   getEndpoint,
 } from './util';
 
@@ -28,8 +27,7 @@ const responseBuilderSimple = (
 
   const sessionEvent = isSessionEvent(Config, eventName);
   const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
-  const useV2EventApi = !sessionEvent && shouldUseV2EventApi(message);
-  const endpoint = getEndpoint(sessionEvent, useV2EventApi);
+  const endpoint = getEndpoint(message, sessionEvent);
 
   // If we have an event where we have an array of Products, example Order Completed
   // We will convert the event to revenue events

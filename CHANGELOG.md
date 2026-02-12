@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.122.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.121.1...v1.122.0) (2026-02-10)
+
+
+### Features
+
+* tiktok typescript migration ([#4937](https://github.com/rudderlabs/rudder-transformer/issues/4937)) ([d8d3f37](https://github.com/rudderlabs/rudder-transformer/commit/d8d3f37021b83180e000587c5285a84a269b2bae))
+
+
+### Bug Fixes
+
+* endpoint label missing for attentive tag destination ([#4951](https://github.com/rudderlabs/rudder-transformer/issues/4951)) ([62b0617](https://github.com/rudderlabs/rudder-transformer/commit/62b06179a2f7542913c38105adc46b22a98a0378))
+* typo ([#4948](https://github.com/rudderlabs/rudder-transformer/issues/4948)) ([8a5fd0a](https://github.com/rudderlabs/rudder-transformer/commit/8a5fd0a3babe1f774c79cbced29c0bd5be149ee6))
+
 ### [1.121.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.121.0...v1.121.1) (2026-02-09)
 
 ## [1.121.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.120.0...v1.121.0) (2026-01-29)

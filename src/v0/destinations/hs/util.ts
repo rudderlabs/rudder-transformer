@@ -1048,10 +1048,7 @@ const fetchContactPropertiesV3 = async (
     module: 'router',
     metadata,
   };
-  const authenticationInfo = addHsAuthentication<{
-    headers?: Record<string, unknown>;
-    params?: Record<string, unknown>;
-  }>({}, Config);
+  const authenticationInfo = addHsAuthentication({}, Config);
   const response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, authenticationInfo, statTags);
 
   const processedResponse = processAxiosResponse(response);

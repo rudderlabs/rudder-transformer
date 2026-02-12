@@ -7,9 +7,7 @@ import {
   BASE_URL,
   BASE_URL_V2,
   CONFIG_CATEGORIES,
-  CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
-  MAPPING_CONFIG_V2,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
@@ -98,9 +96,6 @@ const exclusionList: Record<string, readonly string[]> = {
   IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION,
 };
 
-/** V2 API: exclude singularDeviceId from event attributes (e) to avoid duplicating sdid query param */
-const SINGULAR_V2_EVENT_ATTRIBUTE_EXCLUSION_EXTRA = ['singularDeviceId'];
-
 /**
  * Reads integrations.Singular.singularDeviceId from the message.
  * Used for V2 event API version selection and sdid query param.
@@ -172,33 +167,6 @@ const buildBasePayload = (
 
   if (!basePayload) {
     throw new TransformationError(`Failed to Create ${platform} ${eventType} Payload`);
-  }
-
-  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
-  return {
-    ...basePayload,
-    ...(dataSharingOptions && { data_sharing_options: dataSharingOptions }),
-  };
-};
-
-/**
- * Builds base payload for V2 event API using data/v2 mapping configs (no platform device ids; sdid from integration options).
- */
-const buildBasePayloadV2 = (
-  message: SingularMessage,
-  platform: SingularPlatform,
-): Record<string, unknown> => {
-  const configKey = SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)
-    ? CONFIG_CATEGORIES_V2.EVENT_UNITY_V2.name
-    : CONFIG_CATEGORIES_V2[`EVENT_${SUPPORTED_PLATFORM[platform]}_V2`].name;
-
-  const basePayload: Record<string, unknown> | null = constructPayload(
-    message,
-    MAPPING_CONFIG_V2[configKey],
-  ) as Record<string, unknown> | null;
-
-  if (!basePayload) {
-    throw new TransformationError(`Failed to Create ${platform} V2 EVENT Payload`);
   }
 
   const dataSharingOptions = getDataSharingOptionsFromMessage(message);
@@ -303,36 +271,6 @@ const createEventPayload = (
 };
 
 /**
- * Creates a V2 EVENT payload using data/v2 mapping (no platform device ids; sdid from integration options).
- * Event attributes (e) exclude singularDeviceId. match_id is preserved for Unity platforms (same as V1).
- */
-const createV2EventPayload = (
-  message: SingularMessage,
-  platform: SingularPlatform,
-  Config: SingularDestinationConfig,
-): SingularEventParams => {
-  const basePayload = buildBasePayloadV2(message, platform);
-  const sdid = getSingularDeviceIdFromMessage(message);
-  const payload = { ...basePayload, ...(sdid && { sdid }) } as unknown as SingularEventParams;
-
-  if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
-    const platformExclusion = exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`];
-    const v2Exclusion = [...platformExclusion, ...SINGULAR_V2_EVENT_ATTRIBUTE_EXCLUSION_EXTRA];
-    const eventAttributes = removeUndefinedAndNullValues(extractExtraFields(message, v2Exclusion));
-
-    return {
-      ...payload,
-      c: getConnectionType(message),
-      ...(!isDefinedAndNotNull(payload.is_revenue_event) &&
-        payload.amt && { is_revenue_event: true }),
-      ...(!isEmptyObject(eventAttributes) && { e: eventAttributes }),
-    };
-  }
-  const matchObject = getMatchObject(message, Config);
-  return { ...payload, ...matchObject };
-};
-
-/**
  * Generates platform-specific payload for Singular API
  * Handles both SESSION and EVENT payloads with appropriate parameters
  * @param message - RudderStack message
@@ -346,42 +284,26 @@ const platformWisePayloadGenerator = (
   sessionEvent: boolean,
   Config: SingularDestinationConfig,
 ): SingularEventParams | SingularSessionParams => {
-  const contextOsName = getValueFromMessage(message, 'context.os.name');
-  if (!contextOsName || typeof contextOsName !== 'string') {
+  const clonedMessage: SingularMessage = { ...message };
+  let platform = getValueFromMessage(clonedMessage, 'context.os.name');
+  if (!platform) {
     throw new InstrumentationError('Platform name is missing from context.os.name');
   }
-
   // checking if the os is one of ios, ipados, watchos, tvos
-  const isAppleOs = isAppleFamily(contextOsName.toLowerCase());
-  const normalizedOsName = isAppleOs ? 'iOS' : contextOsName;
-
-  const normalizedMessage: SingularMessage = isAppleOs
-    ? {
-        ...message,
-        context: {
-          ...message.context,
-          os: {
-            ...message.context!.os,
-            name: 'iOS',
-          },
-        },
-      }
-    : message;
-
-  const platform = normalizedOsName.toLowerCase() as SingularPlatform;
+  if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
+    clonedMessage.context!.os!.name = 'iOS';
+    platform = 'iOS';
+  }
+  platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {
     throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 
   if (sessionEvent) {
-    return createSessionPayload(normalizedMessage, platform, Config);
+    return createSessionPayload(clonedMessage, platform, Config);
   }
 
-  if (shouldUseV2EventApi(normalizedMessage)) {
-    return createV2EventPayload(normalizedMessage, platform, Config);
-  }
-
-  return createEventPayload(normalizedMessage, platform, Config);
+  return createEventPayload(clonedMessage, platform, Config);
 };
 
 /**

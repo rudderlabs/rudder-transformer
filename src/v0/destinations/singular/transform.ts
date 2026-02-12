@@ -33,6 +33,7 @@ const responseBuilderSimple = (
       payload,
       Config,
       eventAttributes,
+      endpoint,
     );
   }
 

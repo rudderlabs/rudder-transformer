@@ -3,26 +3,19 @@ import { ACTION_MAP } from './config';
 
 export const TiktokAudienceDestinationSchema = z
   .object({
-    Config: z.object({
-      isHashRequired: z.boolean(),
-    }),
+    Config: z
+      .object({
+        isHashRequired: z.boolean(),
+      })
+      .passthrough(),
   })
   .passthrough();
 
 export const TiktokAudienceMessageSchema = z
   .object({
-    type: z
-      .string({
-        required_error: 'message Type is not present. Aborting message.',
-      })
-      .superRefine((val, ctx) => {
-        if (val.toLowerCase() !== 'audiencelist') {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `Event type ${val.toLowerCase()} is not supported. Aborting message.`,
-          });
-        }
-      }),
+    type: z.enum(['audiencelist'], {
+      required_error: 'message Type is not present. Aborting message.',
+    }),
     anonymousId: z.string().optional(),
     properties: z
       .object({
@@ -66,14 +59,16 @@ export const TiktokAudienceMessageSchema = z
   })
   .passthrough();
 
-export const TiktokAudienceMetadataSchema = z.object({
-  secret: z
-    .object({
-      advertiserIds: z.array(z.string()),
-      accessToken: z.string(),
-    })
-    .passthrough(),
-});
+export const TiktokAudienceMetadataSchema = z
+  .object({
+    secret: z
+      .object({
+        advertiserIds: z.array(z.string()),
+        accessToken: z.string(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
 
 export const TiktokAudienceRouterRequestSchema = z
   .object({

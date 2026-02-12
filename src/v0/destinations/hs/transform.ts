@@ -1,6 +1,6 @@
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { EventType , MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
+import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import {
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl,

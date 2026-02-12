@@ -884,7 +884,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'message.type: Event type identify is not supported. Aborting message.',
+            error: "message.type: Invalid enum value. Expected 'audiencelist', received 'identify'",
             metadata: {
               jobId: 102,
               attemptNum: 1,

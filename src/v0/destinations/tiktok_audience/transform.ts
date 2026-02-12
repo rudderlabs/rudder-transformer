@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import { hashToSha256, InstrumentationError , formatZodError } from '@rudderstack/integrations-lib';
+import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
 import type { TiktokAudienceRequest } from './types';
 import { TiktokAudienceRouterRequestSchema } from './types';
@@ -80,20 +80,25 @@ function buildResponseForProcessTransformation(
   return responses;
 }
 
-function process(event: TiktokAudienceRequest) {
+function validateTiktokAudienceRequest(event: unknown) {
   const validationResult = TiktokAudienceRouterRequestSchema.safeParse(event);
-
   if (!validationResult.success) {
     throw new InstrumentationError(formatZodError(validationResult.error));
   }
+  return validationResult.data;
+}
 
-  const identifierLists = prepareIdentifiersList(validationResult.data);
+function processTiktokAudience(event: TiktokAudienceRequest) {
+  const identifierLists = prepareIdentifiersList(event);
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 
-const processRouterDest = async (
-  requests: TiktokAudienceRequest[],
-): Promise<RouterTransformationResponse[]> => {
+function process(event: unknown) {
+  const tiktokAudienceRequest = validateTiktokAudienceRequest(event);
+  return processTiktokAudience(tiktokAudienceRequest);
+}
+
+const processRouterDest = async (requests: unknown[]): Promise<RouterTransformationResponse[]> => {
   if (requests?.length === 0) return [];
 
   const successResponseList: RouterTransformationResponse[] = [];
@@ -101,9 +106,15 @@ const processRouterDest = async (
 
   for (const request of requests) {
     try {
-      const response = process(request);
+      const tiktokAudienceRequest = validateTiktokAudienceRequest(request);
+      const response = processTiktokAudience(tiktokAudienceRequest);
       successResponseList.push(
-        getSuccessRespEvents(response, [request.metadata], request.destination, true),
+        getSuccessRespEvents(
+          response,
+          [tiktokAudienceRequest.metadata],
+          tiktokAudienceRequest.destination,
+          true,
+        ),
       );
     } catch (error) {
       failedResponseList.push(handleRtTfSingleEventError(request, error, {}));

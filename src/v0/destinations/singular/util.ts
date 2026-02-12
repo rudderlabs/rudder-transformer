@@ -308,7 +308,6 @@ const platformWisePayloadGenerator = (
 
 /**
  * Returns the Singular API endpoint for the given request type.
- * Session events use V1 launch; non-session events use V2 evt when singularDeviceId is present, otherwise V1 evt.
  */
 const getEndpoint = (sessionEvent: boolean): string => {
   if (sessionEvent) {

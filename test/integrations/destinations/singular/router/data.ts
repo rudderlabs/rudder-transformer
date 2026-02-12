@@ -689,7 +689,6 @@ export const data = [
                   idfv: 'cc06ff5e-838b-4e33-9d90-4ab5a6068bec',
                   c: 'wifi',
                   a: 'apiKey',
-                  e: {},
                 },
                 body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},

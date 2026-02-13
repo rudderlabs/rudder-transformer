@@ -5,6 +5,8 @@ const BASE_URL = 'https://s2s.singular.net/api';
 const BASE_URL_V1 = `${BASE_URL}/v1`;
 const BASE_URL_V2 = `${BASE_URL}/v2`;
 
+const PARTNER_OBJECT = { partner: 'rudderstack' };
+
 // Supported events in Singular: SessionNotification, EventNotification
 // ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
 const CONFIG_CATEGORIES = {
@@ -148,4 +150,5 @@ export {
   SUPPORTED_UNTIY_SUBPLATFORMS,
   BASE_URL_V1,
   BASE_URL_V2,
+  PARTNER_OBJECT,
 };

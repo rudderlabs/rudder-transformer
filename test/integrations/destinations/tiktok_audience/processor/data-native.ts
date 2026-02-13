@@ -796,7 +796,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'message Type is not present. Aborting message.',
+            error: 'message.type: message Type is not present. Aborting message.',
             metadata: {
               jobId: 101,
               attemptNum: 1,
@@ -884,7 +884,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'Event type identify is not supported. Aborting message.',
+            error: "message.type: Invalid enum value. Expected 'audiencelist', received 'identify'",
             metadata: {
               jobId: 102,
               attemptNum: 1,
@@ -967,7 +967,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'Message properties is not present. Aborting message.',
+            error: 'message.properties: Message properties is not present. Aborting message.',
             metadata: {
               jobId: 103,
               attemptNum: 1,
@@ -1051,7 +1051,8 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'listData is not present inside properties. Aborting message.',
+            error:
+              'message.properties.listData: listData is not present inside properties. Aborting message.',
             metadata: {
               jobId: 104,
               attemptNum: 1,
@@ -1139,7 +1140,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: 'unsupported action type update. Aborting message.',
+            error: 'message.properties.listData: unsupported action type update. Aborting message.',
             metadata: {
               jobId: 105,
               attemptNum: 1,

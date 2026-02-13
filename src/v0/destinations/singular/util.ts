@@ -18,6 +18,7 @@ import {
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
   SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
+  PARTNER_OBJECT,
 } from './config';
 import {
   constructPayload,
@@ -81,6 +82,7 @@ const generateRevenuePayloadArray = (
     const finalPayload = removeUndefinedAndNullValues({
       ...payload,
       ...productDetails,
+      ...PARTNER_OBJECT,
       a: Config.apiKey,
       is_revenue_event: true,
     }) as SingularEventParams;

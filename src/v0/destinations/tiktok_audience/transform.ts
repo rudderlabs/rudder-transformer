@@ -80,12 +80,12 @@ function buildResponseForProcessTransformation(
   return responses;
 }
 
-function validateTiktokAudienceRequest(event: unknown) {
-  const validationResult = TiktokAudienceRouterRequestSchema.safeParse(event);
-  if (!validationResult.success) {
-    throw new InstrumentationError(formatZodError(validationResult.error));
+function validateEvent(event: unknown) {
+  const result = TiktokAudienceRouterRequestSchema.safeParse(event);
+  if (!result.success) {
+    throw new InstrumentationError(formatZodError(result.error));
   }
-  return validationResult.data;
+  return result.data;
 }
 
 function processTiktokAudience(event: TiktokAudienceRequest) {
@@ -94,33 +94,27 @@ function processTiktokAudience(event: TiktokAudienceRequest) {
 }
 
 function process(event: unknown) {
-  const tiktokAudienceRequest = validateTiktokAudienceRequest(event);
-  return processTiktokAudience(tiktokAudienceRequest);
+  return processTiktokAudience(validateEvent(event));
 }
 
-const processRouterDest = async (requests: unknown[]): Promise<RouterTransformationResponse[]> => {
-  if (requests?.length === 0) return [];
+const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
+  if (!events || events.length === 0) return [];
 
-  const successResponseList: RouterTransformationResponse[] = [];
-  const failedResponseList: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
+  const failedResponses: RouterTransformationResponse[] = [];
 
-  for (const request of requests) {
+  for (const event of events) {
     try {
-      const tiktokAudienceRequest = validateTiktokAudienceRequest(request);
-      const response = processTiktokAudience(tiktokAudienceRequest);
-      successResponseList.push(
-        getSuccessRespEvents(
-          response,
-          [tiktokAudienceRequest.metadata],
-          tiktokAudienceRequest.destination,
-          true,
-        ),
+      const tiktokEvent = validateEvent(event);
+      const response = processTiktokAudience(tiktokEvent);
+      successfulResponses.push(
+        getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
       );
     } catch (error) {
-      failedResponseList.push(handleRtTfSingleEventError(request, error, {}));
+      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
-  return [...failedResponseList, ...successResponseList];
+  return [...failedResponses, ...successfulResponses];
 };
 
 export { process, processRouterDest };

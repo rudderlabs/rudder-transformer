@@ -2,11 +2,11 @@ import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, generateRecordPayload } from '../../../testUtils';
 import { defaultAccessTokenAuthHeader } from '../../../common/secrets';
 
-export const businessCDKTestData: ProcessorTestData[] = [
+export const businessNativeTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-1',
     name: 'linkedin_audience',
-    description: 'Record call : non string values provided as email',
+    description: 'Native Record call : non string values provided as email',
     scenario: 'Business',
     successCriteria: 'should fail with 400 status code and error message',
     feature: 'processor',
@@ -28,7 +28,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -92,17 +92,10 @@ export const businessCDKTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            error:
-              'The "string" argument must be of type string. Received type number (12345): Workflow: procWorkflow, Step: prepareUserTypeBasePayload, ChildStep: prepareUserIds, OriginalError: The "string" argument must be of type string. Received type number (12345)',
-            metadata: generateMetadata(1),
+            error: 'The "string" argument must be of type string. Received type number (12345)',
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             statTags: {
-              destType: 'LINKEDIN_AUDIENCE',
-              destinationId: 'default-destinationId',
               errorCategory: 'transformation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
             },
             statusCode: 500,
           },
@@ -113,7 +106,8 @@ export const businessCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-2',
     name: 'linkedin_audience',
-    description: 'Record call : Valid event with action type insert without any field mappings',
+    description:
+      'Native Record call : Valid event with action type insert without any field mappings',
     scenario: 'Business',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -130,7 +124,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -194,7 +188,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             output: {
               body: {
                 FORM: {},
@@ -240,7 +234,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
     id: 'linkedin_audience-business-test-2',
     name: 'linkedin_audience',
     description:
-      'Record call : customer provided hashed value, isHashRequired is false and action type is update',
+      'Native Record call : customer provided hashed value, isHashRequired is false and action type is update',
     scenario: 'Business',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -259,7 +253,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
               },
               action: 'update',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -323,7 +317,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             output: {
               body: {
                 FORM: {},
@@ -373,7 +367,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_audience-business-test-2',
     name: 'linkedin_audience',
-    description: 'Record call : event with company audience details',
+    description: 'Native Record call : event with company audience details',
     scenario: 'Business',
     successCriteria: 'should pass with 200 status code and transformed message',
     feature: 'processor',
@@ -397,7 +391,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
               },
               action: 'insert',
             }),
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             destination: {
               ID: '123',
               Name: 'Linkedin Audience',
@@ -473,7 +467,7 @@ export const businessCDKTestData: ProcessorTestData[] = [
         status: 200,
         body: [
           {
-            metadata: generateMetadata(1),
+            metadata: generateMetadata(1, 'default-userId', 'workspace-disable-cdkv2'),
             output: {
               body: {
                 FORM: {},

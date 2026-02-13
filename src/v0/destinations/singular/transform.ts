@@ -1,5 +1,4 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { BASE_URL } from './config';
 import { defaultRequestConfig, defaultGetRequestConfig, simpleProcessRouterDest } from '../../util';
 import type {
   SingularMessage,
@@ -9,7 +8,12 @@ import type {
   SingularProcessorRequest,
 } from './types';
 
-import { platformWisePayloadGenerator, generateRevenuePayloadArray, isSessionEvent } from './util';
+import {
+  platformWisePayloadGenerator,
+  generateRevenuePayloadArray,
+  isSessionEvent,
+  getEndpoint,
+} from './util';
 
 const responseBuilderSimple = (
   message: SingularMessage,
@@ -23,7 +27,7 @@ const responseBuilderSimple = (
 
   const sessionEvent = isSessionEvent(Config, eventName);
   const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent, Config);
-  const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
+  const endpoint = getEndpoint(message, sessionEvent);
 
   // If we have an event where we have an array of Products, example Order Completed
   // We will convert the event to revenue events

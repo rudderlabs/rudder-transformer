@@ -1,6 +1,6 @@
 import { TransformationError, InstrumentationError } from '@rudderstack/integrations-lib';
 import {
-  BASE_URL,
+  BASE_URL_V1,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
@@ -10,6 +10,10 @@ import {
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
+  CONFIG_CATEGORIES_V2,
+  MAPPING_CONFIG_V2,
+  BASE_URL_V2,
+  SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
 } from './config';
 import {
   constructPayload,
@@ -58,7 +62,7 @@ const extractExtraFields = (
  * @param payload - Common payload for each revenue event
  * @param Config - Destination configuration
  * @param eventAttributes - Optional custom event attributes
- * @param eventEndpoint - Endpoint for event requests (caller passes BASE_URL/evt or BASE_URL_V2/evt)
+ * @param eventEndpoint - Endpoint for event requests (caller passes BASE_URL_V1/evt or BASE_URL_V2/evt)
  * @returns Array of revenue event batch requests
  */
 const generateRevenuePayloadArray = (
@@ -103,6 +107,25 @@ const exclusionList: Record<string, readonly string[]> = {
 };
 
 /**
+ * Reads integrations.Singular.singularDeviceId from the message.
+ * Used for V2 event API version selection and sdid query param.
+ */
+const getSingularDeviceIdFromMessage = (message: SingularMessage): string | undefined => {
+  const integrationsObj = getIntegrationsObj(message, 'singular' as any);
+  const singularDeviceId = integrationsObj?.singularDeviceId;
+  return typeof singularDeviceId === 'string' && singularDeviceId.length > 0
+    ? singularDeviceId
+    : undefined;
+};
+
+/**
+ * True when the customer sends integrations.Singular.singularDeviceId (use V2 event API).
+ * Used only for non-session events; session events always use V1 launch.
+ */
+const shouldUseV2EventApi = (message: SingularMessage): boolean =>
+  getSingularDeviceIdFromMessage(message) !== undefined;
+
+/**
  * Determines if the event is a session event
  * @param Config - Destination configuration
  * @param eventName - Event name to check
@@ -137,6 +160,29 @@ const buildBasePayload = (
 
   if (!basePayload) {
     throw new TransformationError(`Failed to Create ${platform} ${eventType} Payload`);
+  }
+
+  return basePayload;
+};
+
+/**
+ * Builds base payload for V2 event API using data/v2 mapping configs (no platform device ids; sdid from integration options).
+ */
+const buildBasePayloadV2 = (
+  message: SingularMessage,
+  platform: SingularPlatform,
+): Record<string, unknown> => {
+  const configKey = SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)
+    ? CONFIG_CATEGORIES_V2.EVENT_UNITY.name
+    : CONFIG_CATEGORIES_V2[`EVENT_${SUPPORTED_PLATFORM[platform]}`].name;
+
+  const basePayload: Record<string, unknown> | null = constructPayload(
+    message,
+    MAPPING_CONFIG_V2[configKey],
+  ) as Record<string, unknown> | null;
+
+  if (!basePayload) {
+    throw new TransformationError(`Failed to Create ${platform} V2 EVENT Payload`);
   }
 
   return basePayload;
@@ -268,6 +314,46 @@ const createEventPayload = (
 };
 
 /**
+ * Creates a V2 EVENT payload using data/v2 mapping (no platform device ids; sdid from integration options).
+ * Event attributes (e) exclude singularDeviceId. match_id is preserved for Unity platforms (same as V1).
+ */
+const createV2EventPayload = (
+  message: SingularMessage,
+  platform: SingularPlatform,
+  Config: SingularDestinationConfig,
+): { payload: SingularEventParams; eventAttributes?: Record<string, unknown> } => {
+  const basePayload = buildBasePayloadV2(message, platform);
+  const sdid = getSingularDeviceIdFromMessage(message);
+  const payload = { ...basePayload, ...(sdid && { sdid }) } as unknown as SingularEventParams;
+
+  let eventAttributes: Record<string, unknown> | undefined;
+
+  if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
+    const v2Exclusion = [
+      ...exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`],
+      ...SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
+    ];
+    eventAttributes = removeUndefinedAndNullValues(extractExtraFields(message, v2Exclusion));
+
+    if (!isDefinedAndNotNull(payload.is_revenue_event) && payload.amt) {
+      payload.is_revenue_event = true;
+    }
+    payload.c = getConnectionType(message);
+  } else {
+    const matchId = getMatchId(message, Config);
+    if (matchId) {
+      payload.match_id = matchId;
+    }
+  }
+
+  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
+  if (dataSharingOptions) {
+    payload.data_sharing_options = dataSharingOptions;
+  }
+  return { payload, eventAttributes };
+};
+
+/**
  * Generates platform-specific payload for Singular API
  * Handles both SESSION and EVENT payloads with appropriate parameters
  * @param message - RudderStack message
@@ -301,19 +387,21 @@ const platformWisePayloadGenerator = (
     return { payload, eventAttributes: undefined };
   }
 
-  const { payload, eventAttributes } = createEventPayload(clonedMessage, platform, Config);
+  if (shouldUseV2EventApi(clonedMessage)) {
+    return createV2EventPayload(clonedMessage, platform, Config);
+  }
 
-  return { payload, eventAttributes };
+  return createEventPayload(clonedMessage, platform, Config);
 };
 
 /**
  * Returns the Singular API endpoint for the given request type.
  */
-const getEndpoint = (sessionEvent: boolean): string => {
+const getEndpoint = (message: SingularMessage, sessionEvent: boolean): string => {
   if (sessionEvent) {
-    return `${BASE_URL}/launch`;
+    return `${BASE_URL_V1}/launch`;
   }
-  return `${BASE_URL}/evt`;
+  return shouldUseV2EventApi(message) ? `${BASE_URL_V2}/evt` : `${BASE_URL_V1}/evt`;
 };
 
 export { generateRevenuePayloadArray, getEndpoint, isSessionEvent, platformWisePayloadGenerator };

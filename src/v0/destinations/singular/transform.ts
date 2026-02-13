@@ -1,5 +1,7 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { defaultRequestConfig, defaultGetRequestConfig, simpleProcessRouterDest } from '../../util';
+
+import { PARTNER_OBJECT } from './config';
 import type {
   SingularMessage,
   SingularDestination,
@@ -36,7 +38,7 @@ const responseBuilderSimple = (
   }
 
   // Build params with API key
-  const params = { ...payload, a: Config.apiKey };
+  const params = { ...payload, a: Config.apiKey, ...PARTNER_OBJECT };
 
   const response: SingularBatchRequest = {
     ...defaultRequestConfig(),

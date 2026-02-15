@@ -1,8 +1,15 @@
-import { TransformationError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  TransformationError,
+  InstrumentationError,
+  isEmptyObject,
+} from '@rudderstack/integrations-lib';
 import {
   BASE_URL_V1,
+  BASE_URL_V2,
   CONFIG_CATEGORIES,
+  CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
+  MAPPING_CONFIG_V2,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
@@ -10,10 +17,8 @@ import {
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
   SESSIONEVENTS,
-  CONFIG_CATEGORIES_V2,
-  MAPPING_CONFIG_V2,
-  BASE_URL_V2,
   SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
+  PARTNER_OBJECT,
 } from './config';
 import {
   constructPayload,
@@ -25,7 +30,6 @@ import {
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily,
-  isEmptyObject,
 } from '../../util';
 import type {
   SingularMessage,
@@ -34,7 +38,6 @@ import type {
   SingularEventType,
   SingularPlatform,
   SingularBatchRequest,
-  SingularPayload,
   SingularRequestParams,
   SingularSessionParams,
   SingularEventParams,
@@ -69,11 +72,9 @@ const generateRevenuePayloadArray = (
   products: SingularProduct[],
   payload: SingularRequestParams,
   Config: SingularDestinationConfig,
-  eventAttributes: Record<string, unknown> | undefined,
   eventEndpoint: string,
-): SingularBatchRequest[] => {
-  const responseArray: SingularBatchRequest[] = [];
-  products.forEach((product) => {
+): SingularBatchRequest[] =>
+  products.map((product) => {
     const productDetails = constructPayload(
       product,
       MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name],
@@ -81,23 +82,17 @@ const generateRevenuePayloadArray = (
     const finalPayload = removeUndefinedAndNullValues({
       ...payload,
       ...productDetails,
+      ...PARTNER_OBJECT,
       a: Config.apiKey,
       is_revenue_event: true,
     }) as SingularEventParams;
-
-    const response: SingularBatchRequest = {
+    return {
       ...defaultRequestConfig(),
       endpoint: eventEndpoint,
       params: finalPayload,
       method: defaultGetRequestConfig.requestMethod,
     };
-    if (!isEmptyObject(eventAttributes)) {
-      response.params = { ...response.params, e: eventAttributes };
-    }
-    responseArray.push(response);
   });
-  return responseArray;
-};
 
 const exclusionList: Record<string, readonly string[]> = {
   ANDROID_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_ANDROID_EXCLUSION,
@@ -137,6 +132,23 @@ const isSessionEvent = (Config: SingularDestinationConfig, eventName: string): b
 };
 
 /**
+ * Reads integrations.Singular.limitDataSharing and returns data_sharing_options when it is a boolean.
+ * Used for both /launch and /evt API requests.
+ * @param message - RudderStack message
+ * @returns data_sharing_options object when limitDataSharing is boolean, otherwise undefined
+ */
+const getDataSharingOptionsFromMessage = (
+  message: SingularMessage,
+): { limit_data_sharing: boolean } | undefined => {
+  const integrationsObj = getIntegrationsObj(message, 'singular' as any);
+  const limitDataSharing = integrationsObj?.limitDataSharing;
+  if (typeof limitDataSharing === 'boolean') {
+    return { limit_data_sharing: limitDataSharing };
+  }
+  return undefined;
+};
+
+/**
  * Builds base payload using platform-specific mapping configuration
  * @param message - RudderStack message
  * @param platform - Platform identifier (lowercased)
@@ -162,7 +174,11 @@ const buildBasePayload = (
     throw new TransformationError(`Failed to Create ${platform} ${eventType} Payload`);
   }
 
-  return basePayload;
+  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
+  return {
+    ...basePayload,
+    ...(dataSharingOptions && { data_sharing_options: dataSharingOptions }),
+  };
 };
 
 /**
@@ -185,7 +201,11 @@ const buildBasePayloadV2 = (
     throw new TransformationError(`Failed to Create ${platform} V2 EVENT Payload`);
   }
 
-  return basePayload;
+  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
+  return {
+    ...basePayload,
+    ...(dataSharingOptions && { data_sharing_options: dataSharingOptions }),
+  };
 };
 
 /**
@@ -195,15 +215,15 @@ const buildBasePayloadV2 = (
  * @param Config - Destination configuration
  * @returns match_id value or undefined
  */
-const getMatchId = (
+const getMatchObject = (
   message: SingularMessage,
   Config: SingularDestinationConfig,
-): string | undefined => {
-  if (Config.match_id === 'advertisingId') {
-    return message?.context?.device?.advertisingId;
+): { match_id: string } | undefined => {
+  if (Config.match_id === 'advertisingId' && message?.context?.device?.advertisingId) {
+    return { match_id: message?.context?.device?.advertisingId };
   }
   if (message.properties?.match_id) {
-    return message.properties.match_id;
+    return { match_id: message.properties.match_id };
   }
   return undefined;
 };
@@ -215,23 +235,6 @@ const getMatchId = (
  */
 const getConnectionType = (message: SingularMessage): 'wifi' | 'carrier' =>
   message.context?.network?.wifi ? 'wifi' : 'carrier';
-
-/**
- * Reads integrations.Singular.limitDataSharing and returns data_sharing_options when it is a boolean.
- * Used for both /launch and /evt API requests.
- * @param message - RudderStack message
- * @returns data_sharing_options object when limitDataSharing is boolean, otherwise undefined
- */
-const getDataSharingOptionsFromMessage = (
-  message: SingularMessage,
-): { limit_data_sharing: boolean } | undefined => {
-  const integrationsObj = getIntegrationsObj(message, 'singular' as any);
-  const limitDataSharing = integrationsObj?.limitDataSharing;
-  if (typeof limitDataSharing === 'boolean') {
-    return { limit_data_sharing: limitDataSharing };
-  }
-  return undefined;
-};
 
 /**
  * Creates a SESSION payload with session-specific parameters
@@ -254,27 +257,20 @@ const createSessionPayload = (
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
     // context.device.adTrackingEnabled = true implies Singular's do not track (dnt) to be 0 and vice-versa.
     const adTrackingEnabled = getValueFromMessage(message, 'context.device.adTrackingEnabled');
-    payload.dnt = adTrackingEnabled === true ? 0 : 1;
 
-    // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
-    payload.openuri = message.properties?.url || '';
-    if (platform === 'android') {
-      payload.install_source = message.properties?.referring_application || '';
-    }
-
-    payload.c = getConnectionType(message);
-  } else {
-    const matchId = getMatchId(message, Config);
-    if (matchId) {
-      payload.match_id = matchId;
-    }
+    return {
+      ...payload,
+      ...(platform === 'android' && {
+        install_source: message.properties?.referring_application || '',
+      }),
+      dnt: adTrackingEnabled === true ? 0 : 1,
+      openuri: message.properties?.url || '',
+      c: getConnectionType(message),
+    };
   }
 
-  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
-  if (dataSharingOptions) {
-    payload.data_sharing_options = dataSharingOptions;
-  }
-  return payload;
+  const matchObject = getMatchObject(message, Config);
+  return { ...payload, ...matchObject };
 };
 
 /**
@@ -284,33 +280,26 @@ const createEventPayload = (
   message: SingularMessage,
   platform: SingularPlatform,
   Config: SingularDestinationConfig,
-): { payload: SingularEventParams; eventAttributes?: Record<string, unknown> } => {
+): SingularEventParams => {
   const payload = buildBasePayload(message, platform, 'EVENT') as unknown as SingularEventParams;
-  let eventAttributes: Record<string, unknown> | undefined;
 
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
-    eventAttributes = extractExtraFields(
-      message,
-      exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`],
+    const eventAttributes = removeUndefinedAndNullValues(
+      extractExtraFields(
+        message,
+        exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`],
+      ),
     );
-    eventAttributes = removeUndefinedAndNullValues(eventAttributes);
-
-    if (!isDefinedAndNotNull(payload.is_revenue_event) && payload.amt) {
-      payload.is_revenue_event = true;
-    }
-    payload.c = getConnectionType(message);
-  } else {
-    const matchId = getMatchId(message, Config);
-    if (matchId) {
-      payload.match_id = matchId;
-    }
+    return {
+      ...payload,
+      c: getConnectionType(message),
+      ...(!isDefinedAndNotNull(payload.is_revenue_event) &&
+        payload.amt && { is_revenue_event: true }),
+      ...(!isEmptyObject(eventAttributes) && { e: eventAttributes }),
+    };
   }
-
-  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
-  if (dataSharingOptions) {
-    payload.data_sharing_options = dataSharingOptions;
-  }
-  return { payload, eventAttributes };
+  const matchObject = getMatchObject(message, Config);
+  return { ...payload, ...matchObject };
 };
 
 /**
@@ -321,36 +310,28 @@ const createV2EventPayload = (
   message: SingularMessage,
   platform: SingularPlatform,
   Config: SingularDestinationConfig,
-): { payload: SingularEventParams; eventAttributes?: Record<string, unknown> } => {
+): SingularEventParams => {
   const basePayload = buildBasePayloadV2(message, platform);
   const sdid = getSingularDeviceIdFromMessage(message);
   const payload = { ...basePayload, ...(sdid && { sdid }) } as unknown as SingularEventParams;
-
-  let eventAttributes: Record<string, unknown> | undefined;
 
   if (!SUPPORTED_UNTIY_SUBPLATFORMS.includes(platform)) {
     const v2Exclusion = [
       ...exclusionList[`${SUPPORTED_PLATFORM[platform]}_EVENT_EXCLUSION_LIST`],
       ...SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
     ];
-    eventAttributes = removeUndefinedAndNullValues(extractExtraFields(message, v2Exclusion));
+    const eventAttributes = removeUndefinedAndNullValues(extractExtraFields(message, v2Exclusion));
 
-    if (!isDefinedAndNotNull(payload.is_revenue_event) && payload.amt) {
-      payload.is_revenue_event = true;
-    }
-    payload.c = getConnectionType(message);
-  } else {
-    const matchId = getMatchId(message, Config);
-    if (matchId) {
-      payload.match_id = matchId;
-    }
+    return {
+      ...payload,
+      c: getConnectionType(message),
+      ...(!isDefinedAndNotNull(payload.is_revenue_event) &&
+        payload.amt && { is_revenue_event: true }),
+      ...(!isEmptyObject(eventAttributes) && { e: eventAttributes }),
+    };
   }
-
-  const dataSharingOptions = getDataSharingOptionsFromMessage(message);
-  if (dataSharingOptions) {
-    payload.data_sharing_options = dataSharingOptions;
-  }
-  return { payload, eventAttributes };
+  const matchObject = getMatchObject(message, Config);
+  return { ...payload, ...matchObject };
 };
 
 /**
@@ -366,25 +347,26 @@ const platformWisePayloadGenerator = (
   message: SingularMessage,
   sessionEvent: boolean,
   Config: SingularDestinationConfig,
-): SingularPayload => {
+): SingularEventParams | SingularSessionParams => {
   const clonedMessage: SingularMessage = { ...message };
-  let platform = getValueFromMessage(clonedMessage, 'context.os.name');
-  if (!platform) {
+  const contextOsName = getValueFromMessage(message, 'context.os.name');
+  if (!contextOsName || typeof contextOsName !== 'string') {
     throw new InstrumentationError('Platform name is missing from context.os.name');
   }
+
   // checking if the os is one of ios, ipados, watchos, tvos
-  if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
-    clonedMessage.context!.os!.name = 'iOS';
-    platform = 'iOS';
-  }
-  platform = platform.toLowerCase();
+  const isAppleOs = isAppleFamily(contextOsName.toLowerCase());
+  const normalizedOsName = isAppleOs ? 'iOS' : contextOsName;
+
+  clonedMessage.context!.os!.name = normalizedOsName;
+
+  const platform = normalizedOsName.toLowerCase() as SingularPlatform;
   if (!SUPPORTED_PLATFORM[platform]) {
     throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 
   if (sessionEvent) {
-    const payload = createSessionPayload(clonedMessage, platform, Config);
-    return { payload, eventAttributes: undefined };
+    return createSessionPayload(clonedMessage, platform, Config);
   }
 
   if (shouldUseV2EventApi(clonedMessage)) {

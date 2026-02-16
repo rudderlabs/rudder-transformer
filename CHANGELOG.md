@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.123.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.122.0...v1.123.0) (2026-02-16)
+
+
+### Features
+
+* **hs:** add support for HubSpot V3 batch upsert endpoint ([#4953](https://github.com/rudderlabs/rudder-transformer/issues/4953)) ([e7daa9c](https://github.com/rudderlabs/rudder-transformer/commit/e7daa9c2614fe5a625578be4a34b80151fd12cad))
+* **singular:** add data_sharing_options mapping for /launch and /evt ([#4947](https://github.com/rudderlabs/rudder-transformer/issues/4947)) ([e0b9a6a](https://github.com/rudderlabs/rudder-transformer/commit/e0b9a6a27c5cf10ff6f6ffd6efef190e9a582c66))
+* **singular:** add V2 event API with SDID-based device identification ([#4976](https://github.com/rudderlabs/rudder-transformer/issues/4976)) ([6d03fc3](https://github.com/rudderlabs/rudder-transformer/commit/6d03fc3336a4ecafee9ab8dc946dc026aec1dc0f))
+* tiktok audience zod validations ([#4971](https://github.com/rudderlabs/rudder-transformer/issues/4971)) ([5750f49](https://github.com/rudderlabs/rudder-transformer/commit/5750f499af799451523129a7738a8dd64f5b9a98))
+
+## [1.122.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.121.1...v1.122.0) (2026-02-10)
+
+
+### Features
+
+* tiktok typescript migration ([#4937](https://github.com/rudderlabs/rudder-transformer/issues/4937)) ([d8d3f37](https://github.com/rudderlabs/rudder-transformer/commit/d8d3f37021b83180e000587c5285a84a269b2bae))
+
+
+### Bug Fixes
+
+* endpoint label missing for attentive tag destination ([#4951](https://github.com/rudderlabs/rudder-transformer/issues/4951)) ([62b0617](https://github.com/rudderlabs/rudder-transformer/commit/62b06179a2f7542913c38105adc46b22a98a0378))
+* typo ([#4948](https://github.com/rudderlabs/rudder-transformer/issues/4948)) ([8a5fd0a](https://github.com/rudderlabs/rudder-transformer/commit/8a5fd0a3babe1f774c79cbced29c0bd5be149ee6))
+
 ### [1.121.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.121.0...v1.121.1) (2026-02-09)
 
 ## [1.121.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.120.0...v1.121.0) (2026-01-29)

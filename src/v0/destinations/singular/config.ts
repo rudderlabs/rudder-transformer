@@ -1,7 +1,11 @@
 import { getMappingConfig } from '../../util';
 import type { SingularPlatform, SingularPlatformMapping } from './types';
 
-const BASE_URL = 'https://s2s.singular.net/api/v1';
+const BASE_URL = 'https://s2s.singular.net/api';
+const BASE_URL_V1 = `${BASE_URL}/v1`;
+const BASE_URL_V2 = `${BASE_URL}/v2`;
+
+const PARTNER_OBJECT = { partner: 'rudderstack' };
 
 // Supported events in Singular: SessionNotification, EventNotification
 // ref: https://support.singular.net/hc/en-us/articles/360048588672-Server-to-Server-S2S-API-Endpoint-Reference
@@ -32,6 +36,22 @@ const CONFIG_CATEGORIES = {
   },
   PRODUCT_PROPERTY: {
     name: 'SINGULAREventProductConfig',
+  },
+};
+
+// V2 event API: mapping configs in data/ (no platform device ids; sdid set in code from integration options)
+const CONFIG_CATEGORIES_V2 = {
+  EVENT_ANDROID: {
+    name: 'v2/SINGULARAndroidEventConfig',
+    type: 'track',
+  },
+  EVENT_IOS: {
+    name: 'v2/SINGULARIosEventConfig',
+    type: 'track',
+  },
+  EVENT_UNITY: {
+    name: 'v2/SINGULARUnityEventConfig',
+    type: 'track',
   },
 };
 
@@ -109,16 +129,26 @@ const SESSIONEVENTS: readonly string[] = [
   'application opened',
 ];
 
+/** V2 API: exclude singularDeviceId from event attributes (e) to avoid duplicating sdid query param */
+const SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS: readonly string[] = ['singularDeviceId'];
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const MAPPING_CONFIG_V2 = getMappingConfig(CONFIG_CATEGORIES_V2, __dirname);
+
 export {
   CONFIG_CATEGORIES,
+  CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
+  MAPPING_CONFIG_V2,
   SESSIONEVENTS,
   SINGULAR_SESSION_ANDROID_EXCLUSION,
   SINGULAR_SESSION_IOS_EXCLUSION,
   SINGULAR_EVENT_ANDROID_EXCLUSION,
   SINGULAR_EVENT_IOS_EXCLUSION,
+  SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
-  BASE_URL,
+  BASE_URL_V1,
+  BASE_URL_V2,
+  PARTNER_OBJECT,
 };

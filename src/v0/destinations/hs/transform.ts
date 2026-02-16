@@ -1,6 +1,6 @@
 import get from 'get-value';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { EventType } from '../../../constants';
+import { EventType, MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import {
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl,
@@ -8,7 +8,6 @@ import {
 } from '../../util';
 import { API_VERSION } from './config';
 import { processLegacyIdentify, processLegacyTrack, legacyBatchEvents } from './HSTransform-v1';
-import { MappedToDestinationKey, GENERIC_TRUE_VALUES } from '../../../constants';
 import { processIdentify, processTrack, batchEvents } from './HSTransform-v2';
 import {
   splitEventsForCreateUpdate,

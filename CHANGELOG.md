@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.123.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.122.0...v1.123.0) (2026-02-16)
+
+
+### Features
+
+* **hs:** add support for HubSpot V3 batch upsert endpoint ([#4953](https://github.com/rudderlabs/rudder-transformer/issues/4953)) ([e7daa9c](https://github.com/rudderlabs/rudder-transformer/commit/e7daa9c2614fe5a625578be4a34b80151fd12cad))
+* **singular:** add data_sharing_options mapping for /launch and /evt ([#4947](https://github.com/rudderlabs/rudder-transformer/issues/4947)) ([e0b9a6a](https://github.com/rudderlabs/rudder-transformer/commit/e0b9a6a27c5cf10ff6f6ffd6efef190e9a582c66))
+* **singular:** add V2 event API with SDID-based device identification ([#4976](https://github.com/rudderlabs/rudder-transformer/issues/4976)) ([6d03fc3](https://github.com/rudderlabs/rudder-transformer/commit/6d03fc3336a4ecafee9ab8dc946dc026aec1dc0f))
+* tiktok audience zod validations ([#4971](https://github.com/rudderlabs/rudder-transformer/issues/4971)) ([5750f49](https://github.com/rudderlabs/rudder-transformer/commit/5750f499af799451523129a7738a8dd64f5b9a98))
+
 ## [1.122.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.121.1...v1.122.0) (2026-02-10)
 
 

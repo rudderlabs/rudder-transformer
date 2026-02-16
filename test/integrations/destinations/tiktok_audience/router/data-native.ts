@@ -264,7 +264,7 @@ export const nativeData = [
         body: {
           output: [
             {
-              error: 'message Type is not present. Aborting message.',
+              error: 'message.type: message Type is not present. Aborting message.',
               batched: false,
               destination: {
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },

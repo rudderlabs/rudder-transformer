@@ -107,7 +107,7 @@ export const batchResponseBuilder = (
   connection: CustomerIOConnection,
 ): CustomerIOBatchResponse[] => {
   const segmentId = getSegmentId(connection);
-  const baseEndpoint = getBaseEndpoint(destination);
+  const baseEndpoint = getBaseEndpoint(destination.Config?.region);
 
   const insertResponses = processBatch(
     insertOrUpdateRespList,

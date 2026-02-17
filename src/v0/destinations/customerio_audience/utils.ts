@@ -5,7 +5,7 @@ import {
   InstrumentationError,
 } from '@rudderstack/integrations-lib';
 import { BatchUtils } from '@rudderstack/workflow-engine';
-import { BASE_ENDPOINT, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
+import { getBaseEndpoint, DEFAULT_ID_TYPE, MAX_ITEMS } from './config';
 import {
   CustomerIOConnection,
   CustomerIODestination,
@@ -107,17 +107,18 @@ export const batchResponseBuilder = (
   connection: CustomerIOConnection,
 ): CustomerIOBatchResponse[] => {
   const segmentId = getSegmentId(connection);
+  const baseEndpoint = getBaseEndpoint(destination);
 
   const insertResponses = processBatch(
     insertOrUpdateRespList,
-    `${BASE_ENDPOINT}/${segmentId}/add_customers`,
+    `${baseEndpoint}/${segmentId}/add_customers`,
     destination,
     connection,
   );
 
   const deleteResponses = processBatch(
     deleteRespList,
-    `${BASE_ENDPOINT}/${segmentId}/remove_customers`,
+    `${baseEndpoint}/${segmentId}/remove_customers`,
     destination,
     connection,
   );

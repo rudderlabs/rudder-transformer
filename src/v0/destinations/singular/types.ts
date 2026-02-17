@@ -410,6 +410,11 @@ export type SingularPlatformMapping = 'ANDROID' | 'IOS' | 'unity';
  */
 export type SingularEventType = 'SESSION' | 'EVENT';
 
+export type SingularEndpointObject = {
+  endpoint: string;
+  endpointPath: string;
+};
+
 /**
  * Destination type with Singular configuration
  */

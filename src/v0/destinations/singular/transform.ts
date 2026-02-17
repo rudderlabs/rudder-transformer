@@ -29,12 +29,15 @@ const responseBuilderSimple = (
 
   const sessionEvent = isSessionEvent(Config, eventName);
   const payload = platformWisePayloadGenerator(message, sessionEvent, Config);
-  const endpoint = getEndpoint(message, sessionEvent);
+  const { endpoint, endpointPath } = getEndpoint(message, sessionEvent);
 
   // If we have an event where we have an array of Products, example Order Completed
   // We will convert the event to revenue events
   if (!sessionEvent && Array.isArray(message?.properties?.products)) {
-    return generateRevenuePayloadArray(message.properties.products, payload, Config, endpoint);
+    return generateRevenuePayloadArray(message.properties.products, payload, Config, {
+      endpoint,
+      endpointPath,
+    });
   }
 
   // Build params with API key
@@ -43,6 +46,7 @@ const responseBuilderSimple = (
   const response: SingularBatchRequest = {
     ...defaultRequestConfig(),
     endpoint,
+    endpointPath,
     params,
     method: defaultGetRequestConfig.requestMethod,
   };

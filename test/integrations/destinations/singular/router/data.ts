@@ -114,6 +114,7 @@ export const data = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
+                endpointPath: '/v1/launch',
                 headers: {},
                 params: {
                   p: 'Android',
@@ -280,6 +281,7 @@ export const data = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
+                endpointPath: '/v1/launch',
                 headers: {},
                 params: {
                   p: 'Android',
@@ -446,6 +448,7 @@ export const data = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
+                endpointPath: '/v1/launch',
                 headers: {},
                 params: {
                   p: 'Android',
@@ -678,6 +681,7 @@ export const data = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/evt',
+                endpointPath: '/v1/evt',
                 headers: {},
                 params: {
                   n: 'Application Backgrounded',

@@ -2,8 +2,9 @@ import { getMappingConfig } from '../../util';
 import type { SingularPlatform, SingularPlatformMapping } from './types';
 
 const BASE_URL = 'https://s2s.singular.net/api';
-const BASE_URL_V1 = `${BASE_URL}/v1`;
-const BASE_URL_V2 = `${BASE_URL}/v2`;
+const SESSION_ENDPOINT_PATH_V1 = '/v1/launch';
+const EVENT_ENDPOINT_PATH_V1 = '/v1/evt';
+const EVENT_ENDPOINT_PATH_V2 = '/v2/evt';
 
 const PARTNER_OBJECT = { partner: 'rudderstack' };
 
@@ -148,7 +149,9 @@ export {
   SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
   SUPPORTED_PLATFORM,
   SUPPORTED_UNTIY_SUBPLATFORMS,
-  BASE_URL_V1,
-  BASE_URL_V2,
+  BASE_URL,
+  SESSION_ENDPOINT_PATH_V1,
+  EVENT_ENDPOINT_PATH_V1,
+  EVENT_ENDPOINT_PATH_V2,
   PARTNER_OBJECT,
 };

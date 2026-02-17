@@ -464,8 +464,17 @@ The Singular destination transforms RudderStack track events into Singular S2S A
 5. **Special Handling**: Revenue events, products array, DNT, connection type
 6. **Request Delivery**: HTTP GET with query parameters
 
-Key differentiators by platform:
+Key differentiators by platform and API version:
+
+**V1 API** (default, platform device IDs):
 
 - **Android**: Uses AIFA, ASID, ANDI identifiers
 - **iOS**: Uses IDFA, IDFV, ATT status, SKAdNetwork parameters
-- **Unity/PC/Console**: Uses SDID or match_id
+- **Unity/PC/Console**: Uses `match_id` (from `context.device.advertisingId` or `properties.match_id`)
+
+**V2 API** (when `integrations.Singular.singularDeviceId` is provided):
+
+- **All platforms**: Uses `sdid` (Singular Device ID) instead of platform-specific device IDs
+- **Unity/PC/Console**: Also includes `match_id` in addition to `sdid`
+
+[PC & Console Game Integration Guide](https://support.singular.net/hc/en-us/articles/19147380039579-PC-Console-Game-Integration-Guide)

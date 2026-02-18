@@ -812,4 +812,105 @@ export const data: RouterTestData[] = [
     },
     mockFns: defaultMockFns,
   },
+  /**
+   * Test Case: EU region base URL
+   *
+   * Purpose: Verifies that when destination.Config.region is 'eu', the router
+   * uses the EU base URL (track-eu.customer.io) for add_customers and remove_customers.
+   *
+   * Expected Behavior:
+   * - Batched requests use https://track-eu.customer.io/api/v1/segments/... endpoints
+   */
+  {
+    id: 'customerio-audience-router-eu-region-test',
+    name: destType,
+    description: 'Router test to verify EU region uses track-eu.customer.io base URL',
+    scenario: 'Business',
+    successCriteria: 'Output endpoints must use track-eu.customer.io for region eu',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: generateRecordPayload({
+                identifiers: { id: 'eu-user-1' },
+                action: 'insert',
+              }),
+              metadata: generateMetadata(1),
+              destination: { ...destination, Config: { ...destination.Config, region: 'EU' } },
+              connection,
+            },
+            {
+              message: generateRecordPayload({
+                identifiers: { id: 'eu-user-2' },
+                action: 'delete',
+              }),
+              metadata: generateMetadata(2),
+              destination: { ...destination, Config: { ...destination.Config, region: 'EU' } },
+              connection,
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://track-eu.customer.io/api/v1/segments/test-segment-id/add_customers',
+                headers,
+                params,
+                body: {
+                  JSON: { ids: ['eu-user-1'] },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(1)],
+              batched: true,
+              statusCode: 200,
+              destination: { ...destination, Config: { ...destination.Config, region: 'EU' } },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://track-eu.customer.io/api/v1/segments/test-segment-id/remove_customers',
+                headers,
+                params,
+                body: {
+                  JSON: { ids: ['eu-user-2'] },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [generateMetadata(2)],
+              batched: true,
+              statusCode: 200,
+              destination: { ...destination, Config: { ...destination.Config, region: 'EU' } },
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

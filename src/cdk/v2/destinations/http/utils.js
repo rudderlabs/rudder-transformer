@@ -67,6 +67,13 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
+const validateQueryParams = (params) => {
+  if (!params || typeof params !== 'object') {
+    return {}; // Return an empty object if input is null, undefined, or not an object
+  }
+  return params;
+};
+
 const getPathValueFromJsonpath = (message, path) => {
   let finalPath = path;
   if (path.includes('/')) {
@@ -241,6 +248,7 @@ module.exports = {
   getAuthHeaders,
   enhanceMappings,
   getCustomMappings,
+  validateQueryParams,
   prepareEndpoint,
   metadataHeaders,
   prepareBody,

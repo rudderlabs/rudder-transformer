@@ -46,7 +46,7 @@ steps:
 
   - name: prepareParams
     template: |
-      $.context.params = $.getCustomMappings(.message, .destination.Config.queryParams);
+      $.context.params = $.validateQueryParams($.getCustomMappings(.message, .destination.Config.queryParams));
 
   - name: deduceEndPoint
     template: |

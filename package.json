@@ -80,7 +80,7 @@
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
     "crypto-js": "^4.2.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^17.3.1",
     "fast-json-stable-stringify": "^2.1.0",
     "fast-xml-parser": "^4.5.1",
     "flat": "^5.0.2",

@@ -68,10 +68,11 @@ const getCustomMappings = (message, mapping) => {
 };
 
 const validateQueryParams = (params) => {
-  if (!params || typeof params !== 'object') {
+  if (!params || typeof params !== 'object' || Array.isArray(params)) {
     return {}; // Return an empty object if input is null, undefined, or not an object
   }
-  return params;
+  const filteredKeys = Object.keys(params).filter((key) => params[key] !== undefined);
+  return Object.fromEntries(filteredKeys.map((key) => [key, params[key]]));
 };
 
 const getPathValueFromJsonpath = (message, path) => {

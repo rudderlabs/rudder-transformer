@@ -68,19 +68,7 @@ This document outlines the business logic and mappings used in the Singular dest
 
 ### Session Event Detection
 
-```typescript
-const isSessionEvent = (Config: SingularDestinationConfig, eventName: string): boolean => {
-  // Custom session events from config (CASE-SENSITIVE match)
-  const mappedSessionEvents = Config.sessionEventList?.map((item) => item.sessionEventName) ?? [];
-
-  // Default session events stored in lowercase
-  const SESSIONEVENTS = ['application installed', 'application updated', 'application opened'];
-
-  // Custom events: exact case-sensitive match
-  // Default events: case-insensitive match (eventName is lowercased before comparison)
-  return mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName.toLowerCase());
-};
-```
+See `util.ts` lines 130–134 (`isSessionEvent`). Default session event names are defined in `config.ts` (`SESSIONEVENTS`).
 
 **Case Sensitivity**:
 
@@ -89,56 +77,11 @@ const isSessionEvent = (Config: SingularDestinationConfig, eventName: string): b
 
 ### Platform Detection and Normalization
 
-```typescript
-const platformWisePayloadGenerator = (message, sessionEvent, Config) => {
-  const contextOsName = getValueFromMessage(message, 'context.os.name');
-
-  // Normalize Apple family OS names to iOS
-  const isAppleOs = isAppleFamily(contextOsName.toLowerCase());
-  const normalizedOsName = isAppleOs ? 'iOS' : contextOsName;
-
-  // Map to supported platforms
-  const SUPPORTED_PLATFORM = {
-    android: 'ANDROID',
-    ios: 'IOS',
-    pc: 'unity',
-    xbox: 'unity',
-    playstation: 'unity',
-    nintendo: 'unity',
-    metaquest: 'unity',
-  };
-
-  // ...
-};
-```
+See `util.ts` lines 346–376 (`platformWisePayloadGenerator`). Supported platform mapping is in `config.ts` lines 58–66 (`SUPPORTED_PLATFORM`).
 
 ### API Version Selection
 
-```typescript
-const getEndpoint = (message, sessionEvent) => {
-  // Session events always use V1 launch endpoint
-  if (sessionEvent) {
-    return {
-      endpoint: 'https://s2s.singular.net/api/v1/launch',
-      endpointPath: '/v1/launch',
-    };
-  }
-
-  // V2 event API if singularDeviceId is present
-  if (shouldUseV2EventApi(message)) {
-    return {
-      endpoint: 'https://s2s.singular.net/api/v2/evt',
-      endpointPath: '/v2/evt',
-    };
-  }
-
-  // Default V1 event API
-  return {
-    endpoint: 'https://s2s.singular.net/api/v1/evt',
-    endpointPath: '/v1/evt',
-  };
-};
-```
+See `util.ts` lines 381–396 (`getEndpoint`). V2 is chosen when `integrations.Singular.singularDeviceId` is present; see `shouldUseV2EventApi` at lines 122–123.
 
 ## Mapping Configurations
 
@@ -284,16 +227,7 @@ Used for revenue events with `properties.products` array:
 
 ### Revenue Events with Products Array
 
-When a non-session event contains `properties.products` array, each product generates a separate revenue event:
-
-```typescript
-if (!sessionEvent && Array.isArray(message?.properties?.products)) {
-  return generateRevenuePayloadArray(message.properties.products, payload, Config, {
-    endpoint,
-    endpointPath,
-  });
-}
-```
+When a non-session event contains `properties.products` array, each product generates a separate revenue event. See `transform.ts` lines 36–40 for the condition and call; see `util.ts` lines 72–97 (`generateRevenuePayloadArray`) for per-product payload construction.
 
 Each product in the array results in:
 
@@ -304,94 +238,27 @@ Each product in the array results in:
 
 ### Do Not Track (DNT) Handling
 
-For session events on Android/iOS platforms:
-
-```typescript
-// context.device.adTrackingEnabled = true implies dnt = 0 (tracking allowed)
-// context.device.adTrackingEnabled = false implies dnt = 1 (do not track)
-const adTrackingEnabled = getValueFromMessage(message, 'context.device.adTrackingEnabled');
-return {
-  ...payload,
-  dnt: adTrackingEnabled === true ? 0 : 1,
-};
-```
+For session events on Android/iOS platforms, `context.device.adTrackingEnabled === true` implies `dnt = 0` (tracking allowed); otherwise `dnt = 1`. See `util.ts` lines 259–270 (`createSessionPayload`).
 
 ### Connection Type Detection
 
-```typescript
-const getConnectionType = (message): 'wifi' | 'carrier' =>
-  message.context?.network?.wifi ? 'wifi' : 'carrier';
-```
+See `util.ts` lines 238–239 (`getConnectionType`).
 
 ### Match ID for Unity Platforms
 
-For PC/Xbox/PlayStation/Nintendo/MetaQuest platforms:
-
-```typescript
-const getMatchObject = (message, Config) => {
-  // Use advertisingId if configured
-  if (Config.match_id === 'advertisingId' && message?.context?.device?.advertisingId) {
-    return { match_id: message?.context?.device?.advertisingId };
-  }
-  // Otherwise use properties.match_id
-  if (message.properties?.match_id) {
-    return { match_id: message.properties.match_id };
-  }
-  return undefined;
-};
-```
+For PC/Xbox/PlayStation/Nintendo/MetaQuest platforms, `match_id` is taken from `context.device.advertisingId` when `Config.match_id === 'advertisingId'`, otherwise from `properties.match_id`. See `util.ts` lines 220–231 (`getMatchObject`).
 
 ### Data Sharing Options
 
-Privacy consent handling via integrations object:
-
-```typescript
-const getDataSharingOptionsFromMessage = (message) => {
-  const integrationsObj = getIntegrationsObj(message, 'singular');
-  const limitDataSharing = integrationsObj?.limitDataSharing;
-  if (typeof limitDataSharing === 'boolean') {
-    return { limit_data_sharing: limitDataSharing };
-  }
-  return undefined;
-};
-```
+Privacy consent is read from `integrations.Singular.limitDataSharing` and passed as `data_sharing_options`. See `util.ts` lines 141–150 (`getDataSharingOptionsFromMessage`).
 
 ### Custom Event Attributes
 
-Non-mapped properties are extracted and sent as custom event attributes in the `e` parameter:
-
-```typescript
-const extractExtraFields = (message, EXCLUSION_FIELDS) => {
-  const eventAttributes = {};
-  extractCustomFields(message, eventAttributes, ['properties'], EXCLUSION_FIELDS);
-  return eventAttributes;
-};
-
-// For V2 API, singularDeviceId is excluded from attributes
-const SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS = ['singularDeviceId'];
-```
+Non-mapped properties are extracted and sent as custom event attributes in the `e` parameter. See `util.ts` lines 55–61 (`extractExtraFields`). For V2 API, `singularDeviceId` is excluded from attributes; see `config.ts` (`SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS`) and `util.ts` lines 321–324.
 
 ## Revenue Amount Calculation
 
-The revenue amount (`amt`) is calculated from multiple sources with fallback:
-
-```json
-{
-  "destKey": "amt",
-  "sourceKeys": [
-    "properties.total",
-    "properties.value",
-    "properties.revenue",
-    {
-      "operation": "multiplication",
-      "args": [
-        { "sourceKeys": "properties.price" },
-        { "sourceKeys": "properties.quantity", "default": 1 }
-      ]
-    }
-  ]
-}
-```
+The revenue amount (`amt`) is calculated from multiple sources with fallback. See `data/SINGULARAndroidEventConfig.json` (and equivalent iOS/Unity configs) for the `amt` mapping.
 
 Priority:
 
@@ -402,29 +269,11 @@ Priority:
 
 ## Timestamp Handling
 
-Timestamps are converted to Unix epoch seconds:
-
-```json
-{
-  "destKey": "utime",
-  "sourceKeys": "timestamp",
-  "sourceFromGenericMap": true,
-  "metadata": {
-    "type": "secondTimestamp"
-  }
-}
-```
+Timestamps are converted to Unix epoch seconds via the `utime` mapping with `type: "secondTimestamp"`. See the platform event/session configs in `data/` (e.g. `SINGULARAndroidEventConfig.json`).
 
 ## Partner Identification
 
-All requests include RudderStack partner identification:
-
-```typescript
-const PARTNER_OBJECT = { partner: 'rudderstack' };
-
-// Added to every payload
-const params = { ...payload, a: Config.apiKey, ...PARTNER_OBJECT };
-```
+All requests include RudderStack partner identification (`partner: 'rudderstack'`). See `config.ts` line 9 (`PARTNER_OBJECT`) and `util.ts` (e.g. lines 84–86, 296–298) where it is merged into payloads.
 
 ## Error Handling
 
@@ -441,17 +290,7 @@ const params = { ...payload, a: Config.apiKey, ...PARTNER_OBJECT };
 
 ## Request Format
 
-All requests are sent as HTTP GET with URL query parameters:
-
-```typescript
-const response = {
-  ...defaultRequestConfig(),
-  endpoint: 'https://s2s.singular.net/api/v1/evt',
-  endpointPath: '/v1/evt',
-  params: payload,
-  method: 'GET',
-};
-```
+All requests are sent as HTTP GET with URL query parameters. See `transform.ts` lines 42–51 (single-event response) and `util.ts` lines 90–96 (batch response for products array).
 
 ## Summary
 

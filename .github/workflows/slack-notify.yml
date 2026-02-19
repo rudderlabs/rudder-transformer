@@ -10,12 +10,11 @@ on:
         type: string
         required: true
 
-permissions:
-  contents: read
-
 jobs:
   notify:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to checkout repository code (actions/checkout)
     if: ${{ inputs.should_notify }}
     steps:
       - name: Harden the runner (Audit all outbound calls)

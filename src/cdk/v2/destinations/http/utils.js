@@ -67,18 +67,6 @@ const getCustomMappings = (message, mapping) => {
   }
 };
 
-const encodeParamsObject = (params) => {
-  if (!params || typeof params !== 'object') {
-    return {}; // Return an empty object if input is null, undefined, or not an object
-  }
-  return Object.keys(params)
-    .filter((key) => params[key] !== undefined)
-    .reduce((acc, key) => {
-      acc[encodeURIComponent(key)] = encodeURIComponent(params[key]);
-      return acc;
-    }, {});
-};
-
 const getPathValueFromJsonpath = (message, path) => {
   let finalPath = path;
   if (path.includes('/')) {
@@ -253,7 +241,6 @@ module.exports = {
   getAuthHeaders,
   enhanceMappings,
   getCustomMappings,
-  encodeParamsObject,
   prepareEndpoint,
   metadataHeaders,
   prepareBody,

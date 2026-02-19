@@ -4,8 +4,7 @@ import {
   isEmptyObject,
 } from '@rudderstack/integrations-lib';
 import {
-  BASE_URL_V1,
-  BASE_URL_V2,
+  BASE_URL,
   CONFIG_CATEGORIES,
   CONFIG_CATEGORIES_V2,
   MAPPING_CONFIG,
@@ -19,6 +18,9 @@ import {
   SESSIONEVENTS,
   SINGULAR_V2_EVENT_ATTRIBUTES_EXCLUDED_KEYS,
   PARTNER_OBJECT,
+  SESSION_ENDPOINT_PATH_V1,
+  EVENT_ENDPOINT_PATH_V2,
+  EVENT_ENDPOINT_PATH_V1,
 } from './config';
 import {
   constructPayload,
@@ -41,6 +43,7 @@ import type {
   SingularRequestParams,
   SingularSessionParams,
   SingularEventParams,
+  SingularEndpointObject,
 } from './types';
 
 /**
@@ -72,7 +75,7 @@ const generateRevenuePayloadArray = (
   products: SingularProduct[],
   payload: SingularRequestParams,
   Config: SingularDestinationConfig,
-  eventEndpoint: string,
+  { endpoint, endpointPath }: SingularEndpointObject,
 ): SingularBatchRequest[] =>
   products.map((product) => {
     const productDetails = constructPayload(
@@ -88,7 +91,8 @@ const generateRevenuePayloadArray = (
     }) as SingularEventParams;
     return {
       ...defaultRequestConfig(),
-      endpoint: eventEndpoint,
+      endpoint,
+      endpointPath,
       params: finalPayload,
       method: defaultGetRequestConfig.requestMethod,
     };
@@ -379,11 +383,22 @@ const platformWisePayloadGenerator = (
 /**
  * Returns the Singular API endpoint for the given request type.
  */
-const getEndpoint = (message: SingularMessage, sessionEvent: boolean): string => {
+const getEndpoint = (message: SingularMessage, sessionEvent: boolean): SingularEndpointObject => {
   if (sessionEvent) {
-    return `${BASE_URL_V1}/launch`;
+    return {
+      endpoint: `${BASE_URL}${SESSION_ENDPOINT_PATH_V1}`,
+      endpointPath: SESSION_ENDPOINT_PATH_V1,
+    };
   }
-  return shouldUseV2EventApi(message) ? `${BASE_URL_V2}/evt` : `${BASE_URL_V1}/evt`;
+  return shouldUseV2EventApi(message)
+    ? {
+        endpoint: `${BASE_URL}${EVENT_ENDPOINT_PATH_V2}`,
+        endpointPath: EVENT_ENDPOINT_PATH_V2,
+      }
+    : {
+        endpoint: `${BASE_URL}${EVENT_ENDPOINT_PATH_V1}`,
+        endpointPath: EVENT_ENDPOINT_PATH_V1,
+      };
 };
 
 export { generateRevenuePayloadArray, getEndpoint, isSessionEvent, platformWisePayloadGenerator };

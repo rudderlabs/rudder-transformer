@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.124.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.123.0...v1.124.0) (2026-02-19)
+
+
+### Features
+
+* add support of region on CustomerIo Audience ([#4982](https://github.com/rudderlabs/rudder-transformer/issues/4982)) ([0ac91c9](https://github.com/rudderlabs/rudder-transformer/commit/0ac91c92c0d1261f4ed0cd856ca5eaf8d79446bc))
+
+
+### Bug Fixes
+
+* remove redundant url encoding of query params ([#4985](https://github.com/rudderlabs/rudder-transformer/issues/4985)) ([e4b47bc](https://github.com/rudderlabs/rudder-transformer/commit/e4b47bc16ca3d34ef9275795ab0c3e95404e7a31))
+
 ## [1.123.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.122.0...v1.123.0) (2026-02-16)
 
 

@@ -79,6 +79,7 @@ const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = [
   'postscript',
   'attentive_tag',
   'dub',
+  'survicate',
 ];
 
 const STREAMING_DEST_WITH_UPDATED_TEST_STRUCTURE = [

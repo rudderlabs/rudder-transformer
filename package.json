@@ -177,7 +177,7 @@
     "standard-version": "^9.5.0",
     "supertest": "^7.1.4",
     "swagger-cli": "^4.0.4",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.0.4"
   },
   "overrides": {

@@ -8388,4 +8388,69 @@ export const data = [
       },
     },
   },
+  {
+    name: 'mp',
+    description:
+      'should throw instrumentation error when both timestamp and originalTimestamp are invalid',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: sampleDestination,
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
+                locale: 'en-GB',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+              },
+              integrations: { All: true },
+              messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
+              originalTimestamp: 'invalid-time',
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              sentAt: '2020-01-24T06:29:02.359Z',
+              timestamp: 'invalid-time',
+              event: 'Order Completed',
+              properties: { revenue: 99.99 },
+              type: 'track',
+              userId: 'test-user-123',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Invalid timestamp',
+            statTags: {
+              destType: 'MP',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

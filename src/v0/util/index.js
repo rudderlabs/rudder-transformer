@@ -75,11 +75,15 @@ const removeUndefinedAndNullRecurse = (obj) => {
 };
 
 const getEventTime = (message) => {
-  try {
-    return new Date(message.timestamp).toISOString();
-  } catch (err) {
-    return new Date(message.originalTimestamp).toISOString();
+  const timestamp = new Date(message.timestamp);
+  if (!Number.isNaN(timestamp.getTime())) {
+    return timestamp.toISOString();
   }
+  const originalTimestamp = new Date(message.originalTimestamp);
+  if (!Number.isNaN(originalTimestamp.getTime())) {
+    return originalTimestamp.toISOString();
+  }
+  throw new InstrumentationError('Invalid timestamp');
 };
 
 const base64Convertor = (string) => Buffer.from(string).toString('base64');

@@ -2,11 +2,11 @@ const BASE_URL = 'https://graph.facebook.com/v23.0';
 
 const ENDPOINT_PATH = 'users';
 
-function getEndPoint(audienceId) {
+function getEndPoint(audienceId: string): string {
   return `${BASE_URL}/${audienceId}/${ENDPOINT_PATH}`;
 }
 
-const schemaFields = [
+const schemaFields: readonly string[] = [
   'EXTERN_ID',
   'EMAIL',
   'PHONE',
@@ -25,7 +25,7 @@ const schemaFields = [
   'LOOKALIKE_VALUE',
 ];
 
-const typeFields = [
+const typeFields: readonly string[] = [
   'UNKNOWN',
   'FILE_IMPORTED',
   'EVENT_BASED',
@@ -36,7 +36,7 @@ const typeFields = [
   'HOUSEHOLD_AUDIENCE',
 ];
 
-const subTypeFields = [
+const subTypeFields: readonly string[] = [
   'ANYTHING',
   'NOTHING',
   'HASHES',
@@ -101,7 +101,8 @@ const MAX_USER_COUNT = 10000;
 and error method we found that 65000 bytes is the maximum payload allowed size but we are 60000 just to be sure batching is done properly
 */
 const maxPayloadSize = 60000; // bytes
-module.exports = {
+
+export {
   ENDPOINT_PATH,
   getEndPoint,
   schemaFields,

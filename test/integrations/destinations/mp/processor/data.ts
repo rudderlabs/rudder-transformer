@@ -8438,7 +8438,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Invalid timestamp',
+            error: 'Neither timestamp nor originalTimestamp is a valid date.',
             statTags: {
               destType: 'MP',
               errorCategory: 'dataValidation',

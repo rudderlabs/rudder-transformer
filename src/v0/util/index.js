@@ -83,7 +83,7 @@ const getEventTime = (message) => {
   if (!Number.isNaN(originalTimestamp.getTime())) {
     return originalTimestamp.toISOString();
   }
-  throw new InstrumentationError('Invalid timestamp');
+  throw new InstrumentationError('Neither timestamp nor originalTimestamp is a valid date.');
 };
 
 const base64Convertor = (string) => Buffer.from(string).toString('base64');

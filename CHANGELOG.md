@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.124.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.0...v1.124.1) (2026-02-24)
+
+
+### Bug Fixes
+
+* **mp:** 500 error for invalid timestamp ([#4994](https://github.com/rudderlabs/rudder-transformer/issues/4994)) ([28310b9](https://github.com/rudderlabs/rudder-transformer/commit/28310b91fbd8058517ad18cbaef2856af765e6ef))
+
 ## [1.124.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.123.0...v1.124.0) (2026-02-19)
 
 

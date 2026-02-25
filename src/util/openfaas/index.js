@@ -340,7 +340,7 @@ function buildOpenfaasFn(name, code, versionId, libraryVersionIDs, testMode, trM
     'com.openfaas.scale.type': FAAS_SCALE_TYPE,
     transformationId: trMetadata.transformationId,
     workspaceId: trMetadata.workspaceId,
-    team: 'data-management',
+    team: 'pipelines',
     service: 'openfaas-fn',
     customer: 'shared',
     'customer-tier': CUSTOMER_TIER,

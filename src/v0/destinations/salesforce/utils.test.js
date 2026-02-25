@@ -8,7 +8,7 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
-  isWorkspaceSupportedForSoql,
+  isWorkspaceAndDestTypeSupportedForSoql,
   getSalesforceIdForRecordUsingHttp,
   getSalesforceIdForRecordUsingSdk,
   getSalesforceIdForRecord,
@@ -38,58 +38,51 @@ describe('Salesforce Utils', () => {
     process.env = originalEnv;
   });
 
-  describe('isWorkspaceSupportedForSoql', () => {
+  describe('isWorkspaceAndDestTypeSupportedForSoql', () => {
     it('should return true when workspace ID is in the supported list', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
     });
 
     it('should return false when workspace ID is not in the supported list', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceSupportedForSoql('ws4')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws4')).toBe(false);
     });
 
     it('should return false when environment variable is not set', () => {
       delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
     });
 
     it('should return false when environment variable is empty', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = '';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
     });
 
     it('should handle workspace IDs with spaces in the list', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1, ws2 , ws3';
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
     });
 
     it('should return false for empty workspace ID', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceSupportedForSoql('')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(false);
     });
 
     it('should return false for undefined workspace ID', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', undefined)).toBe(false);
     });
 
     it('should return true for any workspace ID when environment variable is set to ALL', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(true);
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(true);
-      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(true);
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(true);
-      expect(isWorkspaceSupportedForSoql('')).toBe(true);
-    });
-
-    it('should return false for any workspace ID when environment variable is set to NONE', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'NONE';
-      expect(isWorkspaceSupportedForSoql('ws1')).toBe(false);
-      expect(isWorkspaceSupportedForSoql('ws2')).toBe(false);
-      expect(isWorkspaceSupportedForSoql('any-workspace')).toBe(false);
-      expect(isWorkspaceSupportedForSoql(undefined)).toBe(false);
-      expect(isWorkspaceSupportedForSoql('')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(true);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'any-workspace')).toBe(
+        true,
+      );
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', undefined)).toBe(true);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(true);
     });
   });
 
@@ -608,7 +601,12 @@ describe('Salesforce Utils', () => {
   });
 
   describe('getSalesforceIdForRecord', () => {
-    const mockDestination = { ID: 'dest-123' };
+    const mockDestination = {
+      ID: 'dest-123',
+      DestinationDefinition: {
+        Name: 'SALESFORCE_OAUTH',
+      },
+    };
     const mockMetadata = { workspaceId: 'ws1' };
     const mockSalesforceSdk = {
       query: jest.fn(),
@@ -1405,6 +1403,9 @@ describe('Salesforce Utils', () => {
       ID: 'dest-123',
       Config: {
         useContactId: false,
+      },
+      DestinationDefinition: {
+        Name: 'SALESFORCE_OAUTH',
       },
     };
     const mockMetadata = { workspaceId: 'ws1' };

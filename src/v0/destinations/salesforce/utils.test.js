@@ -84,6 +84,40 @@ describe('Salesforce Utils', () => {
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', undefined)).toBe(true);
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(true);
     });
+
+    describe('skip list (DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS)', () => {
+      it('should return false when workspaceId is in the skip list', () => {
+        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1,ws2';
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(false);
+      });
+
+      it('should trim spaces in skip list entries', () => {
+        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1, ws2 , ws3';
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(false);
+      });
+
+      it('skip list takes priority over the enable list', () => {
+        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
+        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
+      });
+
+      it('skip list takes priority over the ALL flag', () => {
+        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
+        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
+      });
+
+      it('should not affect workspaceIds not in the skip list', () => {
+        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
+        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2,ws3';
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
+        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws3')).toBe(true);
+      });
+    });
   });
 
   describe('getSalesforceIdForRecordUsingHttp', () => {

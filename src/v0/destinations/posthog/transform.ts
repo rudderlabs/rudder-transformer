@@ -46,9 +46,10 @@ const generatePropertyDefination = (message: PostHogMessage) => {
   // }
 
   const constructedData = constructPayload(message, propertyJson);
-  if (constructedData) {
-    Object.assign(data, constructedData);
+  if (!constructedData) {
+    throw new TransformationError('Failed to construct properties payload');
   }
+  Object.assign(data, constructedData);
 
   // This logic ensures to get browser info only for payload generated from web.
   if (message.channel === 'web' && message.context && message.context.userAgent) {
@@ -157,8 +158,10 @@ const responseBuilderSimple = (
   return response;
 };
 
-const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>
-  key in CONFIG_CATEGORIES;
+type ValidCategoryKey = Exclude<keyof typeof CONFIG_CATEGORIES, 'PROPERTY'>;
+
+const isValidCategoryKey = (key: string): key is ValidCategoryKey =>
+  key in CONFIG_CATEGORIES && key !== 'PROPERTY';
 
 const processEvent = (message: RudderMessage, destination: PostHogDestination) => {
   if (!message.type) {
@@ -170,21 +173,18 @@ const processEvent = (message: RudderMessage, destination: PostHogDestination) =
     throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
 
-  const category = CONFIG_CATEGORIES[key];
-  if (!('type' in category)) {
-    throw new InstrumentationError(`Event type ${message.type} is not supported`);
-  }
-
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(message, CONFIG_CATEGORIES[key], destination);
 };
 
 const process = (event: PostHogProcessorRequest) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (
   inputs: PostHogRouterRequest[],
-  reqMetadata: NonNullable<unknown>,
+  reqMetadata: Record<string, unknown>,
 ) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, {});
+  // @ts-expect-error: simpleProcessRouterDest is a JS function with an optional 4th param (processParams);
+  // posthog does not use processParams, so we intentionally omit it to match the original JS call.
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -341,7 +341,7 @@ describe('Salesforce Utils', () => {
 
       expect(result).toBe('0011234567890ABC');
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
-        "SELECT Id FROM Account WHERE External_ID__c = 'ext-123'",
+        'SELECT Id FROM Account WHERE External_ID__c = ext-123',
       );
     });
 
@@ -625,11 +625,11 @@ describe('Salesforce Utils', () => {
         mockSalesforceSdk,
         'Account',
         'External_ID__c',
-        "test'value",
+        'test value',
       );
 
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
-        "SELECT Id FROM Account WHERE External_ID__c = 'test'value'",
+        'SELECT Id FROM Account WHERE External_ID__c = test value',
       );
     });
   });

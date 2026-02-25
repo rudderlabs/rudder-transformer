@@ -340,7 +340,7 @@ async function getSalesforceIdForRecordUsingSdk(
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
-      `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${identifierValue}'`,
+      `SELECT Id FROM ${objectType} WHERE ${identifierType} = ${identifierValue}`,
     );
   } catch (error) {
     // check if the error message contains 'session expired'

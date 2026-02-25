@@ -9,11 +9,6 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: write
-  pull-requests: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -22,6 +17,8 @@ jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
     name: Generate Tag Names
+    permissions:
+      contents: read # to checkout repository code and read package.json (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     outputs:
@@ -51,6 +48,9 @@ jobs:
 
   build-transformer-image:
     name: Build Transformer Docker Image - Staging
+    permissions:
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     needs: [generate-tag-names]
@@ -68,6 +68,9 @@ jobs:
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Staging
+    permissions:
+      id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
+      contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
 
@@ -87,6 +90,10 @@ jobs:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
+
+    permissions:
+      contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)
+
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
@@ -96,17 +103,20 @@ jobs:
         with:
           egress-policy: audit
 
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits and push branches
+          permission-pull-requests: write # to create and update PRs
+          repositories: rudder-devops # to access cross-repo
+
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 1
-
-      # In order to make a commit, we need to initialize a user.
-      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
-      - name: Initialize Mandatory Git Config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "noreply@github.com"
 
       - name: Print Docker Image Tags
         run: |
@@ -115,10 +125,12 @@ jobs:
 
       - name: Update Helm Charts and Raise Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
           BRANCH_NAME="shared-transformer-$TAG_NAME"
           echo $BRANCH_NAME
           if [ -n "$(git ls-remote --heads origin $BRANCH_NAME 2>/dev/null)" ]

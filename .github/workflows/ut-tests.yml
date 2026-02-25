@@ -7,9 +7,6 @@ on:
       - reopened
       - synchronize
 
-permissions:
-  contents: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -18,6 +15,8 @@ jobs:
   ut_tests:
     name: UT Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to checkout repository code (actions/checkout)
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2

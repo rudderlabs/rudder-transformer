@@ -1,5 +1,7 @@
 import get from 'get-value';
 import { InstrumentationError, TransformationError } from '@rudderstack/integrations-lib';
+import { readFileSync } from 'fs';
+import path from 'path';
 import { EventType } from '../../../constants';
 import { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG } from './config';
 import {
@@ -22,16 +24,15 @@ import type {
   PostHogMessage,
   PostHogPayload,
   PostHogProcessorRequest,
-  PostHogProperties,
   PostHogResponseBody,
   PostHogRouterRequest,
 } from './types';
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = (message: PostHogMessage) => {
-  const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
-  const propertyJson = MAPPING_CONFIG[PHPropertyJson];
-  let data: PostHogProperties = {};
+  const propertyJson = JSON.parse(
+    readFileSync(path.resolve(__dirname, './data/PHPropertiesConfig.json'), 'utf8'),
+  );
 
   // Filter out property specific to mobile or web. isMobile key takes care of it.
   // Array Filter() will map propeerty on basis of given condition and filters it.
@@ -45,11 +46,7 @@ const generatePropertyDefination = (message: PostHogMessage) => {
   //   });
   // }
 
-  const constructedData = constructPayload(message, propertyJson);
-  if (!constructedData) {
-    throw new TransformationError('Failed to construct properties payload');
-  }
-  Object.assign(data, constructedData);
+  let data = constructPayload(message, propertyJson)!;
 
   // This logic ensures to get browser info only for payload generated from web.
   if (message.channel === 'web' && message.context && message.context.userAgent) {
@@ -158,10 +155,8 @@ const responseBuilderSimple = (
   return response;
 };
 
-type ValidCategoryKey = Exclude<keyof typeof CONFIG_CATEGORIES, 'PROPERTY'>;
-
-const isValidCategoryKey = (key: string): key is ValidCategoryKey =>
-  key in CONFIG_CATEGORIES && key !== 'PROPERTY';
+const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>
+  key in CONFIG_CATEGORIES;
 
 const processEvent = (message: RudderMessage, destination: PostHogDestination) => {
   if (!message.type) {
@@ -182,9 +177,7 @@ const processRouterDest = async (
   inputs: PostHogRouterRequest[],
   reqMetadata: Record<string, unknown>,
 ) => {
-  // @ts-expect-error: simpleProcessRouterDest is a JS function with an optional 4th param (processParams);
-  // posthog does not use processParams, so we intentionally omit it to match the original JS call.
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, undefined);
   return respList;
 };
 

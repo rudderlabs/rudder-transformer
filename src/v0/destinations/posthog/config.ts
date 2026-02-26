@@ -34,9 +34,6 @@ const CONFIG_CATEGORIES = {
     type: 'screen',
     event: '$screen',
   },
-  PROPERTY: {
-    name: 'PHPropertiesConfig',
-  },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

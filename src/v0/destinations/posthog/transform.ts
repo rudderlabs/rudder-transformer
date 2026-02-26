@@ -122,10 +122,10 @@ const responseBuilderSimple = (
   }
 
   // Convert the distinct_id to string as that is the needed type in destinations.
-  if (payload.distinct_id != null) {
+  if (isDefinedAndNotNull(payload.distinct_id)) {
     payload.distinct_id = payload.distinct_id.toString();
   }
-  if (payload.properties && payload.properties.distinct_id != null) {
+  if (payload.properties && isDefinedAndNotNull(payload.properties.distinct_id)) {
     payload.properties.distinct_id = payload.properties.distinct_id.toString();
   }
 

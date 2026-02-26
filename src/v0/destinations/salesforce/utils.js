@@ -5,6 +5,7 @@ const {
   OAuthSecretError,
   isDefinedAndNotNullAndNotEmpty,
   NetworkInstrumentationError,
+  InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -256,15 +257,21 @@ const isWorkspaceAndDestTypeSupportedForSoql = (
     return false;
   }
 
-  const parseIdList = (envVar) => envVar?.split(',')?.map((s) => s?.trim()) ?? [];
+  const parseIdList = (envVar) =>
+    envVar
+      ?.split(',')
+      ?.map((s) => s?.trim())
+      ?.filter((s) => s) ?? [];
+
+  const normalizedWorkspaceId = workspaceId?.trim();
 
   const skipList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS);
-  if (skipList.includes(workspaceId)) {
+  if (skipList.includes(normalizedWorkspaceId)) {
     return false;
   }
 
   const enableList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS);
-  if (enableList.includes(workspaceId)) {
+  if (enableList.includes(normalizedWorkspaceId)) {
     return true;
   }
 
@@ -323,6 +330,25 @@ async function getSalesforceIdForRecordUsingHttp(
   return searchRecord?.Id;
 }
 
+const SOQL_FIELD_NAME_REGEX = /^[A-Z_a-z]\w*$/;
+
+/**
+ * Escapes a value for safe interpolation into a SOQL query string.
+ * Numeric values are returned as-is; all other values are wrapped in single quotes
+ * with internal single quotes escaped.
+ * @param {*} value
+ * @returns {string|number}
+ */
+function soqlEscapeValue(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value !== '' && Number.isFinite(Number(value))) {
+    return value;
+  }
+  return `'${String(value).replace(/'/g, "\\'")}'`;
+}
+
 /**
  * Get the Salesforce ID for a record using the Salesforce SDK
  * @param {SalesforceSDK} salesforceSdk The Salesforce SDK instance.
@@ -337,10 +363,13 @@ async function getSalesforceIdForRecordUsingSdk(
   identifierType,
   identifierValue,
 ) {
+  if (!SOQL_FIELD_NAME_REGEX.test(identifierType)) {
+    throw new InstrumentationError(`Invalid identifierType for SOQL query: ${identifierType}`);
+  }
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
-      `SELECT Id FROM ${objectType} WHERE ${identifierType} = ${identifierValue}`,
+      `SELECT Id FROM ${objectType} WHERE ${identifierType} = ${soqlEscapeValue(identifierValue)}`,
     );
   } catch (error) {
     // check if the error message contains 'session expired'

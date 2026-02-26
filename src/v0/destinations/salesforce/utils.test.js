@@ -3,6 +3,7 @@ const {
   RetryableError,
   ThrottledError,
   AbortedError,
+  InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
@@ -57,6 +58,7 @@ describe('Salesforce Utils', () => {
     it('should return false when environment variable is empty', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = '';
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(false);
     });
 
     it('should handle workspace IDs with spaces in the list', () => {
@@ -341,7 +343,7 @@ describe('Salesforce Utils', () => {
 
       expect(result).toBe('0011234567890ABC');
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
-        'SELECT Id FROM Account WHERE External_ID__c = ext-123',
+        "SELECT Id FROM Account WHERE External_ID__c = 'ext-123'",
       );
     });
 
@@ -629,7 +631,44 @@ describe('Salesforce Utils', () => {
       );
 
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
-        'SELECT Id FROM Account WHERE External_ID__c = test value',
+        "SELECT Id FROM Account WHERE External_ID__c = 'test value'",
+      );
+    });
+
+    it('should throw InstrumentationError for invalid identifierType', async () => {
+      await expect(
+        getSalesforceIdForRecordUsingSdk(
+          mockSalesforceSdk,
+          'Account',
+          "Field'; DROP TABLE Account--",
+          'value',
+        ),
+      ).rejects.toThrow(InstrumentationError);
+    });
+
+    it('should not quote numeric identifierValue', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [{ Id: '0011234567890ABC' }],
+      });
+
+      await getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'Count__c', '42');
+
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
+        'SELECT Id FROM Account WHERE Count__c = 42',
+      );
+    });
+
+    it('should escape single quotes in string identifierValue', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [{ Id: '0011234567890ABC' }],
+      });
+
+      await getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'Name', "O'Brien");
+
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
+        "SELECT Id FROM Account WHERE Name = 'O\\'Brien'",
       );
     });
   });

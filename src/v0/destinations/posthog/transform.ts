@@ -1,6 +1,9 @@
 import get from 'get-value';
-import { InstrumentationError, TransformationError, isDefinedAndNotNull } from '@rudderstack/integrations-lib';
-import { getMappingConfig } from '../../util';
+import {
+  InstrumentationError,
+  TransformationError,
+  isDefinedAndNotNull,
+} from '@rudderstack/integrations-lib';
 import { EventType } from '../../../constants';
 import { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG } from './config';
 import {
@@ -29,7 +32,7 @@ import type {
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = (message: PostHogMessage) => {
-  const propertyJson = getMappingConfig({ Property: { name: 'PHPropertiesConfig' } }, __dirname)['PHPropertiesConfig'];
+  const propertyJson = MAPPING_CONFIG.PHPropertiesConfig;
   // Filter out property specific to mobile or web. isMobile key takes care of it.
   // Array Filter() will map propeerty on basis of given condition and filters it.
   // if (message.channel === "mobile") {
@@ -140,8 +143,9 @@ const responseBuilderSimple = (
     type: category.type,
   };
   const response = defaultRequestConfig();
-  response.endpoint = `${stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
-    }/batch`;
+  response.endpoint = `${
+    stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
+  }/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,

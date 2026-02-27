@@ -36,6 +36,10 @@ const CONFIG_CATEGORIES = {
   },
 };
 
-const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
+const PROPERTY = {
+  name: 'PHPropertiesConfig',
+};
+
+const MAPPING_CONFIG = getMappingConfig({ ...CONFIG_CATEGORIES, PROPERTY }, __dirname);
 
 export { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG };

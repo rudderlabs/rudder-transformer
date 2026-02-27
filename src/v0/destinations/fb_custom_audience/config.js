@@ -111,7 +111,7 @@ const DEFAULT_MAX_PAYLOAD_SIZE = 60000; // bytes
  */
 function getMaxPayloadSize(workspaceId) {
   if (workspaceId) {
-    const workspaceVal = parseInt(
+    const workspaceVal = Number.parseInt(
       process.env[`FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE_${workspaceId}`],
       10,
     );
@@ -119,7 +119,7 @@ function getMaxPayloadSize(workspaceId) {
       return workspaceVal;
     }
   }
-  const globalVal = parseInt(process.env.FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE, 10);
+  const globalVal = Number.parseInt(process.env.FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE, 10);
   if (!Number.isNaN(globalVal) && globalVal > 0) {
     return globalVal;
   }

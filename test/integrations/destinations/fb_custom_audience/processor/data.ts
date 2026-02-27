@@ -1,4 +1,4 @@
-import config from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import * as config from '../../../../../src/v0/destinations/fb_custom_audience/config';
 import { mockFns } from '../mocks';
 export const data = [
   {

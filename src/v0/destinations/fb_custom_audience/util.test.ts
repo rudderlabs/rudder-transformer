@@ -1,5 +1,6 @@
-const { getDataSource, responseBuilderSimple, getUpdatedDataElement } = require('./util');
-const { getEndPoint, ENDPOINT_PATH } = require('./config');
+import { getDataSource, responseBuilderSimple, getUpdatedDataElement } from './util';
+import { getEndPoint, ENDPOINT_PATH } from './config';
+import type { WrappedResponse } from './types';
 
 const basePayload = {
   responseField: {
@@ -14,6 +15,7 @@ const basePayload = {
       ],
     },
   },
+  operationCategory: '',
 };
 
 const baseResponse = {
@@ -41,6 +43,7 @@ const baseResponse = {
     FORM: {},
   },
   files: {},
+  method: '',
 };
 
 describe('FB_custom_audience utils test', () => {
@@ -79,11 +82,12 @@ describe('FB_custom_audience utils test', () => {
     });
 
     it('Should throw error if payload is empty', () => {
+      let emptyPayload: WrappedResponse | undefined;
+      expect.assertions(1);
       try {
-        const response = responseBuilderSimple(payload, '');
-        expect(response).toEqual();
-      } catch (error) {
-        expect(error.message).toEqual(`payload is not defined`);
+        responseBuilderSimple(emptyPayload, '');
+      } catch (error: any) {
+        expect(error.message).toEqual('Payload could not be constructed');
       }
     });
   });

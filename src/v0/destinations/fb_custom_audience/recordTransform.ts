@@ -1,25 +1,34 @@
 /* eslint-disable no-const-assign */
-const lodash = require('lodash');
-const {
+import lodash from 'lodash';
+import {
   InstrumentationError,
   ConfigurationError,
   groupByInBatches,
   forEachInBatches,
   mapInBatches,
-} = require('@rudderstack/integrations-lib');
-const { schemaFields, MAX_USER_COUNT } = require('./config');
-const stats = require('../../../util/stats');
-const {
+} from '@rudderstack/integrations-lib';
+import type { Metadata } from '../../../types';
+import type {
+  FbCustomAudienceDestination,
+  FbCustomAudiencePayload,
+  PrepareParams,
+  WrappedResponse,
+  RecordPrepareConfig,
+  FbRecordEvent,
+} from './types';
+import { schemaFields, MAX_USER_COUNT } from './config';
+import stats from '../../../util/stats';
+import {
   getDestinationExternalIDInfoForRetl,
-  isDefinedAndNotNullAndNotEmpty,
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
   isEventSentByVDMV2Flow,
   isEventSentByVDMV1Flow,
-} = require('../../util');
-const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
-const {
+  isDefinedAndNotNullAndNotEmpty,
+} from '../../util';
+import { getErrorResponse, createFinalResponse } from '../../util/recordUtils';
+import {
   ensureApplicableFormat,
   getUpdatedDataElement,
   getSchemaForEventMappedToDest,
@@ -27,7 +36,7 @@ const {
   responseBuilderSimple,
   getDataSource,
   generateAppSecretProof,
-} = require('./util');
+} from './util';
 
 /**
  * Processes a single record and updates the data element.
@@ -37,14 +46,19 @@ const {
  * @param {boolean} disableFormat - Whether formatting is disabled.
  * @returns {Object} - The processed data element and metadata.
  */
-const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
-  const { fields } = record.message;
-  let dataElement = [];
+const processRecord = (
+  record: FbRecordEvent,
+  userSchema: string[],
+  isHashRequired: boolean,
+  disableFormat: boolean | undefined,
+): { dataElement: unknown[]; metadata: Metadata } => {
+  const fields = record.message.fields!;
+  let dataElement: unknown[] = [];
   let nullUserData = true;
 
   userSchema.forEach((eachProperty) => {
     const userProperty = fields[eachProperty];
-    let updatedProperty = userProperty;
+    let updatedProperty: unknown = userProperty;
 
     if (isHashRequired && !disableFormat) {
       updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
@@ -77,15 +91,15 @@ const processRecord = (record, userSchema, isHashRequired, disableFormat) => {
  * @returns {Array} - The response events to send.
  */
 const processRecordEventArray = async (
-  recordChunksArray,
-  config,
-  destination,
-  operation,
-  audienceId,
+  recordChunksArray: FbRecordEvent[][],
+  config: RecordPrepareConfig,
+  destination: FbCustomAudienceDestination,
+  operation: string,
+  audienceId: string,
 ) => {
   const { userSchema, isHashRequired, disableFormat, paramsPayload, prepareParams } = config;
-  const toSendEvents = [];
-  const metadata = [];
+  const toSendEvents: unknown[] = [];
+  const metadata: Metadata[] = [];
 
   await forEachInBatches(recordChunksArray, async (recordArray) => {
     const data = await mapInBatches(recordArray, async (input) => {
@@ -110,7 +124,7 @@ const processRecordEventArray = async (
         payload: payloadBatch,
       };
 
-      const wrappedResponse = {
+      const wrappedResponse: WrappedResponse = {
         responseField: response,
         operationCategory: operation,
       };
@@ -129,7 +143,19 @@ const processRecordEventArray = async (
  * @param {Object} config - The configuration object.
  * @returns {Array} - The final response payload.
  */
-async function preparePayload(events, config) {
+async function preparePayload(
+  events: FbRecordEvent[],
+  config: {
+    audienceId: string | null | undefined;
+    userSchema: string[];
+    isRaw?: boolean;
+    type?: string;
+    subType?: string;
+    isHashRequired: boolean;
+    disableFormat?: boolean;
+    isValueBasedAudience?: boolean;
+  },
+) {
   const {
     audienceId,
     userSchema,
@@ -142,14 +168,14 @@ async function preparePayload(events, config) {
   } = config;
   const { destination } = events[0];
   const { accessToken, appSecret } = destination.Config;
-  const prepareParams = {
+  const prepareParams: PrepareParams = {
     access_token: accessToken,
   };
 
   if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
     const dateNow = Date.now();
     prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
-    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret!, dateNow);
   }
 
   const cleanUserSchema = userSchema.map((field) => field.trim());
@@ -166,7 +192,7 @@ async function preparePayload(events, config) {
     );
   }
 
-  const paramsPayload = {};
+  const paramsPayload: FbCustomAudiencePayload = {};
 
   if (isRaw) {
     paramsPayload.is_raw = isRaw;
@@ -178,10 +204,10 @@ async function preparePayload(events, config) {
   }
 
   const groupedRecordsByAction = await groupByInBatches(events, (record) =>
-    record.message.action?.toLowerCase(),
+    (record.message.action ?? '').toLowerCase(),
   );
 
-  const processAction = async (action, operation) => {
+  const processAction = async (action: string, operation: string) => {
     if (groupedRecordsByAction[action]) {
       if (
         isValueBasedAudience &&
@@ -207,7 +233,7 @@ async function preparePayload(events, config) {
         },
         destination,
         operation,
-        audienceId,
+        audienceId!,
       );
     }
     return null;
@@ -238,14 +264,14 @@ async function preparePayload(events, config) {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-async function processRecordInputsV1(groupedRecordInputs) {
+async function processRecordInputsV1(groupedRecordInputs: FbRecordEvent[]) {
   const { destination } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, userSchema } =
     destination.Config;
 
-  let operationAudienceId = audienceId;
-  let updatedUserSchema = userSchema;
+  let operationAudienceId: string | null = audienceId;
+  let updatedUserSchema = userSchema as string[];
   if (isEventSentByVDMV1Flow(groupedRecordInputs[0])) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
     operationAudienceId = objectType;
@@ -268,16 +294,16 @@ async function processRecordInputsV1(groupedRecordInputs) {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-const processRecordInputsV2 = async (groupedRecordInputs) => {
+const processRecordInputsV2 = async (groupedRecordInputs: FbRecordEvent[]) => {
   const { connection, message } = groupedRecordInputs[0];
   const { isHashRequired, disableFormat, type, subType, isRaw, audienceId, isValueBasedAudience } =
-    connection.config.destination;
+    connection!.config.destination;
   const identifiers = message?.identifiers;
-  let userSchema;
+  let userSchema: string[] | undefined;
   if (identifiers) {
     userSchema = Object.keys(identifiers);
   }
-  const events = groupedRecordInputs.map((record) => ({
+  const events: FbRecordEvent[] = groupedRecordInputs.map((record) => ({
     ...record,
     message: {
       ...record.message,
@@ -286,7 +312,7 @@ const processRecordInputsV2 = async (groupedRecordInputs) => {
   }));
   return preparePayload(events, {
     audienceId,
-    userSchema,
+    userSchema: userSchema!,
     isRaw,
     type,
     subType,
@@ -301,7 +327,7 @@ const processRecordInputsV2 = async (groupedRecordInputs) => {
  * @param {Array} groupedRecordInputs - The grouped record inputs.
  * @returns {Array} - The processed payload.
  */
-async function processRecordInputs(groupedRecordInputs) {
+async function processRecordInputs(groupedRecordInputs: FbRecordEvent[]) {
   const event = groupedRecordInputs[0];
   // First check for rETL flow and second check for ES flow
   if (isEventSentByVDMV1Flow(event) || !isEventSentByVDMV2Flow(event)) {
@@ -310,6 +336,4 @@ async function processRecordInputs(groupedRecordInputs) {
   return processRecordInputsV2(groupedRecordInputs);
 }
 
-module.exports = {
-  processRecordInputs,
-};
+export { processRecordInputs };

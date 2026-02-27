@@ -1,23 +1,28 @@
-const lodash = require('lodash');
-const sha256 = require('sha256');
-const crypto = require('crypto');
-const jsonSize = require('json-size');
-const {
+import lodash from 'lodash';
+import sha256 from 'sha256';
+import crypto from 'crypto';
+import jsonSize from 'json-size';
+import {
   InstrumentationError,
   ConfigurationError,
   isDefinedAndNotNull,
   convertToString,
-} = require('@rudderstack/integrations-lib');
-const { TransformationError } = require('@rudderstack/integrations-lib');
-const { typeFields, subTypeFields, getEndPoint } = require('./config');
-const {
+  TransformationError,
+} from '@rudderstack/integrations-lib';
+import type {
+  DataSource,
+  FbCustomAudiencePayload,
+  FbRecordMessage,
+  WrappedResponse,
+} from './types';
+import { typeFields, subTypeFields, getEndPoint } from './config';
+import {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
-} = require('../../util');
-const stats = require('../../../util/stats');
-
-const config = require('./config');
+} from '../../util';
+import stats from '../../../util/stats';
+import * as config from './config';
 
 /**
  * Example payload ={
@@ -36,22 +41,23 @@ const config = require('./config');
               ]
             ]
 } */
-const batchingWithPayloadSize = (payload) => {
+const batchingWithPayloadSize = (payload: FbCustomAudiencePayload): FbCustomAudiencePayload[] => {
   const payloadSize = jsonSize(payload);
   if (payloadSize > config.maxPayloadSize) {
-    const revisedPayloadArray = [];
+    const revisedPayloadArray: FbCustomAudiencePayload[] = [];
     const noOfBatches = Math.ceil(payloadSize / config.maxPayloadSize);
-    const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
-    const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
-    revisedDataArray.forEach((data) => {
-      revisedPayloadArray.push({ ...payload, data });
+    const data = payload.data!;
+    const revisedRecordsPerPayload = Math.floor(data.length / noOfBatches);
+    const revisedDataArray = lodash.chunk(data, revisedRecordsPerPayload);
+    revisedDataArray.forEach((chunk) => {
+      revisedPayloadArray.push({ ...payload, data: chunk });
     });
     return revisedPayloadArray;
   }
   return [payload];
 };
 
-const getSchemaForEventMappedToDest = (message) => {
+const getSchemaForEventMappedToDest = (message: FbRecordMessage): string[] => {
   const mappedSchema = message?.context?.destinationFields;
   if (!mappedSchema) {
     throw new InstrumentationError(
@@ -59,15 +65,17 @@ const getSchemaForEventMappedToDest = (message) => {
     );
   }
   // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
-  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(',');
+  let userSchema = Array.isArray(mappedSchema)
+    ? mappedSchema
+    : (mappedSchema as unknown as string).split(',');
   userSchema = userSchema.map((field) => field.trim());
   return userSchema;
 };
 
 // function responsible to ensure the user inputs are passed according to the allowed format
-const ensureApplicableFormat = (userProperty, userInformation) => {
-  let updatedProperty;
-  let userInformationTrimmed;
+const ensureApplicableFormat = (userProperty: string, userInformation: unknown): unknown => {
+  let updatedProperty: unknown;
+  let userInformationTrimmed: string;
   if (isDefinedAndNotNull(userInformation)) {
     const stringifiedUserInformation = convertToString(userInformation);
     switch (userProperty) {
@@ -75,10 +83,8 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
         updatedProperty = stringifiedUserInformation.trim().toLowerCase();
         break;
       case 'PHONE':
-        // remove all non-numerical characters
-        updatedProperty = stringifiedUserInformation.replace(/\D/g, '');
-        // remove all leading zeros
-        updatedProperty = updatedProperty.replace(/^0+/g, '');
+        // remove all non-numerical characters, then remove all leading zeros
+        updatedProperty = stringifiedUserInformation.replace(/\D/g, '').replace(/^0+/g, '');
         break;
       case 'GEN':
         updatedProperty =
@@ -140,7 +146,12 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   return updatedProperty;
 };
 
-const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, propertyValue) => {
+const getUpdatedDataElement = (
+  dataElement: unknown[],
+  isHashRequired: boolean,
+  propertyName: string,
+  propertyValue: unknown,
+): unknown[] => {
   // Normalize undefined/null to empty string
   const normalizedValue = propertyValue ?? '';
 
@@ -176,22 +187,22 @@ const getUpdatedDataElement = (dataElement, isHashRequired, propertyName, proper
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
 const prepareDataField = (
-  userSchema,
-  userUpdateList,
-  isHashRequired,
-  disableFormat,
-  destinationId,
-) => {
-  const data = [];
+  userSchema: string[],
+  userUpdateList: Record<string, unknown>[],
+  isHashRequired: boolean,
+  disableFormat: boolean,
+  destinationId: string,
+): unknown[][] => {
+  const data: unknown[][] = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
 
   userUpdateList.forEach((eachUser) => {
-    let dataElement = [];
+    let dataElement: unknown[] = [];
     let nullUserData = true; // flag to check for bad event (all properties are null for a user)
 
     userSchema.forEach((eachProperty) => {
       const userProperty = eachUser[eachProperty];
-      let updatedProperty = userProperty;
+      let updatedProperty: unknown = userProperty;
 
       if (isHashRequired && !disableFormat) {
         updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
@@ -230,7 +241,11 @@ const prepareDataField = (
 };
 
 // ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
-const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
+const generateAppSecretProof = (
+  accessToken: string,
+  appSecret: string,
+  dateNow: number,
+): string => {
   const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
   const data = `${accessToken}|${currentTime}`;
 
@@ -242,8 +257,8 @@ const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
   return appsecretProof;
 };
 
-const getDataSource = (type, subType) => {
-  const dataSource = {};
+const getDataSource = (type: string | undefined, subType: string | undefined): DataSource => {
+  const dataSource: DataSource = {};
   if (type && type !== 'NA' && typeFields.includes(type)) {
     dataSource.type = type;
   }
@@ -253,7 +268,7 @@ const getDataSource = (type, subType) => {
   return dataSource;
 };
 
-const responseBuilderSimple = (payload, audienceId) => {
+const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId: string) => {
   if (payload) {
     const responseParams = payload.responseField;
     const response = defaultRequestConfig();
@@ -274,7 +289,7 @@ const responseBuilderSimple = (payload, audienceId) => {
   throw new TransformationError(`Payload could not be constructed`);
 };
 
-module.exports = {
+export {
   prepareDataField,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,

@@ -1,4 +1,4 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
 const DEFAULT_BASE_ENDPOINT = 'https://app.posthog.com';
 
@@ -34,15 +34,12 @@ const CONFIG_CATEGORIES = {
     type: 'screen',
     event: '$screen',
   },
-  PROPERTY: {
-    name: 'PHPropertiesConfig',
-  },
 };
 
-const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-
-module.exports = {
-  DEFAULT_BASE_ENDPOINT,
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
+const PROPERTY = {
+  name: 'PHPropertiesConfig',
 };
+
+const MAPPING_CONFIG = getMappingConfig({ ...CONFIG_CATEGORIES, PROPERTY }, __dirname);
+
+export { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY };

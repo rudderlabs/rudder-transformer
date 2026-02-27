@@ -36,11 +36,12 @@ const config = require('./config');
               ]
             ]
 } */
-const batchingWithPayloadSize = (payload) => {
+const batchingWithPayloadSize = (payload, workspaceId) => {
+  const maxPayloadSize = config.getMaxPayloadSize(workspaceId);
   const payloadSize = jsonSize(payload);
-  if (payloadSize > config.maxPayloadSize) {
+  if (payloadSize > maxPayloadSize) {
     const revisedPayloadArray = [];
-    const noOfBatches = Math.ceil(payloadSize / config.maxPayloadSize);
+    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
     const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
     revisedDataArray.forEach((data) => {

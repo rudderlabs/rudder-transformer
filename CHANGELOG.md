@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.124.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.1...v1.124.2) (2026-02-27)
+
+
+### Bug Fixes
+
+* **fb_custom_audience:** make max payload size configurable ([#5003](https://github.com/rudderlabs/rudder-transformer/issues/5003)) ([0d02f16](https://github.com/rudderlabs/rudder-transformer/commit/0d02f16a6eddbf9b53931ac0be49bbaa0508d51d))
+
 ### [1.124.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.0...v1.124.1) (2026-02-24)
 
 

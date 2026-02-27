@@ -5,6 +5,7 @@ const {
   OAuthSecretError,
   isDefinedAndNotNullAndNotEmpty,
   NetworkInstrumentationError,
+  InstrumentationError,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
@@ -25,6 +26,7 @@ const {
   OAUTH,
   SALESFORCE_OAUTH_SANDBOX,
   SF_API_VERSION,
+  SALESFORCE_OAUTH,
 } = require('./config');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
@@ -246,18 +248,34 @@ const getAuthHeader = (authInfo) => {
     : { Authorization: authorizationData.token };
 };
 
-const isWorkspaceSupportedForSoql = (workspaceId) => {
-  const environmentVariable = process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-  switch (environmentVariable) {
-    case 'ALL':
-      return true;
-    case 'NONE':
-      return false;
-    default: {
-      const soqlSupportedWorkspaceIds = environmentVariable?.split(',')?.map?.((s) => s?.trim?.());
-      return soqlSupportedWorkspaceIds?.includes(workspaceId) ?? false;
-    }
+const isWorkspaceAndDestTypeSupportedForSoql = (
+  destinationDefinitionName = '',
+  workspaceId = '',
+) => {
+  const upperCaseName = destinationDefinitionName?.toUpperCase?.() ?? '';
+  if (upperCaseName !== SALESFORCE_OAUTH) {
+    return false;
   }
+
+  const parseIdList = (envVar) =>
+    envVar
+      ?.split(',')
+      ?.map((s) => s?.trim())
+      ?.filter((s) => s) ?? [];
+
+  const normalizedWorkspaceId = workspaceId?.trim();
+
+  const skipList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS);
+  if (skipList.includes(normalizedWorkspaceId)) {
+    return false;
+  }
+
+  const enableList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS);
+  if (enableList.includes(normalizedWorkspaceId)) {
+    return true;
+  }
+
+  return process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS === 'ALL';
 };
 
 /**
@@ -312,6 +330,25 @@ async function getSalesforceIdForRecordUsingHttp(
   return searchRecord?.Id;
 }
 
+const SOQL_FIELD_NAME_REGEX = /^[A-Z_a-z]\w*$/;
+
+/**
+ * Escapes a value for safe interpolation into a SOQL query string.
+ * Numeric values are returned as-is; all other values are wrapped in single quotes
+ * with internal single quotes escaped.
+ * @param {*} value
+ * @returns {string|number}
+ */
+function soqlEscapeValue(value) {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === 'string' && value !== '' && Number.isFinite(Number(value))) {
+    return value;
+  }
+  return `'${String(value).replace(/'/g, "\\'")}'`;
+}
+
 /**
  * Get the Salesforce ID for a record using the Salesforce SDK
  * @param {SalesforceSDK} salesforceSdk The Salesforce SDK instance.
@@ -326,10 +363,13 @@ async function getSalesforceIdForRecordUsingSdk(
   identifierType,
   identifierValue,
 ) {
+  if (!SOQL_FIELD_NAME_REGEX.test(identifierType)) {
+    throw new InstrumentationError(`Invalid identifierType for SOQL query: ${identifierType}`);
+  }
   let queryResponse;
   try {
     queryResponse = await salesforceSdk.query(
-      `SELECT Id FROM ${objectType} WHERE ${identifierType} = '${identifierValue}'`,
+      `SELECT Id FROM ${objectType} WHERE ${identifierType} = ${soqlEscapeValue(identifierValue)}`,
     );
   } catch (error) {
     // check if the error message contains 'session expired'
@@ -384,7 +424,12 @@ async function getSalesforceIdForRecord({
   metadata,
   stateInfo,
 }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+  if (
+    isWorkspaceAndDestTypeSupportedForSoql(
+      destination.DestinationDefinition?.Name ?? '',
+      metadata?.workspaceId ?? '',
+    )
+  ) {
     stats.increment('salesforce_soql_lookup_count', {
       method: 'getSalesforceIdForRecordUsingSdk',
       workspaceId: metadata?.workspaceId ?? '',
@@ -554,7 +599,12 @@ async function getSalesforceIdForLeadUsingHttp(email, destination, authInfo, met
  * @returns {Promise<{ salesforceType: string, salesforceId: string }>} The Salesforce type and ID for the lead.
  */
 async function getSalesforceIdForLead({ email, destination, metadata, stateInfo }) {
-  if (isWorkspaceSupportedForSoql(metadata?.workspaceId ?? '')) {
+  if (
+    isWorkspaceAndDestTypeSupportedForSoql(
+      destination?.DestinationDefinition?.Name ?? '',
+      metadata?.workspaceId ?? '',
+    )
+  ) {
     stats.increment('salesforce_soql_lookup_count', {
       method: 'getSalesforceIdForLeadUsingSdk',
       workspaceId: metadata?.workspaceId ?? '',
@@ -577,5 +627,5 @@ module.exports = {
   getSalesforceIdForLead,
   getSalesforceIdForLeadUsingHttp,
   getSalesforceIdForLeadUsingSdk,
-  isWorkspaceSupportedForSoql,
+  isWorkspaceAndDestTypeSupportedForSoql,
 };

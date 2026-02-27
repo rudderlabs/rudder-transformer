@@ -102,7 +102,8 @@ const processRecordEventArray = async (
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
     prepareFinalPayload.schema = userSchema;
     prepareFinalPayload.data = data;
-    const payloadBatches = batchingWithPayloadSize(prepareFinalPayload);
+    const workspaceId = recordChunksArray[0]?.[0]?.metadata?.workspaceId;
+    const payloadBatches = batchingWithPayloadSize(prepareFinalPayload, workspaceId);
 
     payloadBatches.forEach((payloadBatch) => {
       const response = {

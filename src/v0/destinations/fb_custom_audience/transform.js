@@ -42,6 +42,7 @@ const preparePayload = (
   isHashRequired,
   disableFormat,
   destinationId,
+  workspaceId,
 ) => {
   const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
@@ -57,7 +58,7 @@ const preparePayload = (
     disableFormat,
     destinationId,
   );
-  return batchingWithPayloadSize(prepareFinalPayload);
+  return batchingWithPayloadSize(prepareFinalPayload, workspaceId);
 };
 
 // Function responsible for building the parameters for each event calls
@@ -67,6 +68,7 @@ const prepareResponse = (
   destination,
   allowedAudienceArray,
   userSchema,
+  workspaceId,
   isHashRequired = true,
 ) => {
   const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
@@ -100,6 +102,7 @@ const prepareResponse = (
     isHashRequired,
     disableFormat,
     destination.ID,
+    workspaceId,
   );
 
   const respList = [];
@@ -126,6 +129,7 @@ const prepareToSendEvents = (
   userSchema,
   isHashRequired,
   operation,
+  workspaceId,
 ) => {
   const toSendEvents = [];
   audienceChunksArray.forEach((allowedAudienceArray) => {
@@ -134,6 +138,7 @@ const prepareToSendEvents = (
       destination,
       allowedAudienceArray,
       userSchema,
+      workspaceId,
       isHashRequired,
     );
     responseArray.forEach((response) => {
@@ -146,7 +151,7 @@ const prepareToSendEvents = (
   });
   return toSendEvents;
 };
-const processEvent = (message, destination) => {
+const processEvent = (message, destination, workspaceId) => {
   const respList = [];
   let toSendEvents = [];
   let { userSchema } = destination.Config;
@@ -184,6 +189,7 @@ const processEvent = (message, destination) => {
       userSchema,
       isHashRequired,
       USER_DELETE,
+      workspaceId,
     );
   }
 
@@ -198,6 +204,7 @@ const processEvent = (message, destination) => {
         userSchema,
         isHashRequired,
         USER_ADD,
+        workspaceId,
       ),
     );
   }
@@ -214,7 +221,8 @@ const processEvent = (message, destination) => {
   return respList;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event) =>
+  processEvent(event.message, event.destination, event.metadata?.workspaceId);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = [];

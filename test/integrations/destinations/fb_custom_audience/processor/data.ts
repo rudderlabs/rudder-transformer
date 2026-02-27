@@ -2480,7 +2480,7 @@ export const data = [
     },
     mockFns: () => {
       jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
-      jest.replaceProperty(config, 'maxPayloadSize', 400 as typeof config.maxPayloadSize);
+      jest.spyOn(config, 'getMaxPayloadSize').mockReturnValue(400);
     },
   },
   {

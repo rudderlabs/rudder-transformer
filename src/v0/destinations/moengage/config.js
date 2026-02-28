@@ -28,6 +28,12 @@ const endpoints = {
     device: `https://api-03.moengage.com/v1/${endpointPaths.device}/`,
     alias: `https://api-03.moengage.com/v1/${endpointPaths.alias}?app_id=`,
   },
+  DC_04: {
+    identify: `https://api-04.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-04.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-04.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-04.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
 };
 
 // moengage supports object types, we added a new mapping for identify, track and device to support object data type

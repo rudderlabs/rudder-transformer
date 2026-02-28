@@ -108,6 +108,30 @@ describe('getCommonDestinationEndpoint', () => {
       expectedEndpoint: endpoints.IND.alias + 'testApiId',
       expectedPath: endpointPaths.alias,
     },
+    {
+      description: 'should return DC_04 endpoint for identify',
+      input: { apiId: 'testApiId', region: 'DC_04', category: { type: 'identify' } },
+      expectedEndpoint: endpoints.DC_04.identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return DC_04 endpoint for track',
+      input: { apiId: 'testApiId', region: 'DC_04', category: { type: 'track' } },
+      expectedEndpoint: endpoints.DC_04.track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return DC_04 endpoint for device',
+      input: { apiId: 'testApiId', region: 'DC_04', category: { type: 'device' } },
+      expectedEndpoint: endpoints.DC_04.device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return DC_04 endpoint for alias',
+      input: { apiId: 'testApiId', region: 'DC_04', category: { type: 'alias' } },
+      expectedEndpoint: endpoints.DC_04.alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
   ])('$description', ({ input, expectedEndpoint, expectedPath }) => {
     const result = getCommonDestinationEndpoint(input);
     expect(result.endpoint).toBe(expectedEndpoint);

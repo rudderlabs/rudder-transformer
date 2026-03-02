@@ -71,10 +71,10 @@
   },
   {
     "Destination": "Criteo Audience",
-    "Version currently referred in CloudMode Services": "/2025-04/audiences/:audienceId/contactlist",
+    "Version currently referred in CloudMode Services": "/2025-10/audiences/:audienceId/contactlist",
     "Link to check Versions documentation": "https://developers.criteo.com/marketing-solutions/docs/versioning-policy",
     "Latest Version rolled out": "v2025-10 (supported until October 2026)",
-    "Sunset Date Current Version used in backend": "April 2026 (12 months after release - version 2025-04 released April 2025)"
+    "Sunset Date Current Version used in backend": "October 2026 (12 months after release - version 2025-10 released October 2025)"
   },
   {
     "Destination": "Customer IO",

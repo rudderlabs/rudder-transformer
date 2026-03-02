@@ -14,7 +14,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -58,7 +58,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -102,7 +102,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -155,7 +155,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [

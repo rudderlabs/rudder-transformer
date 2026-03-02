@@ -13,7 +13,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -205,7 +205,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -427,7 +427,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -598,7 +598,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -930,7 +930,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               context: {
                 externalId: [
                   { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
@@ -1014,7 +1014,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {},
               context: {
                 externalId: [
@@ -1099,7 +1099,7 @@ const cdkData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   update: [{ EMAIL_SHA256: 'alex@email.com' }],

@@ -13,7 +13,7 @@ export const TiktokAudienceDestinationSchema = z
 
 export const TiktokAudienceMessageSchema = z
   .object({
-    type: z.enum(['audiencelist'], {
+    type: z.enum(['audienceList'], {
       required_error: 'message Type is not present. Aborting message.',
     }),
     anonymousId: z.string().optional(),

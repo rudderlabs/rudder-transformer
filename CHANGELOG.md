@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.124.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.2...v1.124.3) (2026-03-02)
+
+
+### Bug Fixes
+
+* tiktok audience list message type ([#5011](https://github.com/rudderlabs/rudder-transformer/issues/5011)) ([89ce201](https://github.com/rudderlabs/rudder-transformer/commit/89ce201f1731c83cd3ca71da1332f88d7aebeaad)), closes [/github.com/rudderlabs/rudder-transformer/pull/4971/changes/6a0ec7da38342d9f48548d04c16b634ba490220b#diff-abed566c996f7d32111260dfa5b8d1cddb2025c236fb3f4c998e598a00597b8aL14-L25](https://github.com/rudderlabs//github.com/rudderlabs/rudder-transformer/pull/4971/changes/6a0ec7da38342d9f48548d04c16b634ba490220b/issues/diff-abed566c996f7d32111260dfa5b8d1cddb2025c236fb3f4c998e598a00597b8aL14-L25)
+
 ### [1.124.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.1...v1.124.2) (2026-02-27)
 
 

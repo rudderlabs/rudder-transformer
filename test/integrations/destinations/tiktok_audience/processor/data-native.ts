@@ -11,7 +11,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -203,7 +203,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -425,7 +425,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -596,7 +596,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   add: [
@@ -884,7 +884,7 @@ export const nativeData = [
         status: 200,
         body: [
           {
-            error: "message.type: Invalid enum value. Expected 'audiencelist', received 'identify'",
+            error: "message.type: Invalid enum value. Expected 'audienceList', received 'identify'",
             metadata: {
               jobId: 102,
               attemptNum: 1,
@@ -926,7 +926,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               context: {
                 externalId: [
                   { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
@@ -1009,7 +1009,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {},
               context: {
                 externalId: [
@@ -1094,7 +1094,7 @@ export const nativeData = [
           {
             message: {
               userId: 'user 1',
-              type: 'audiencelist',
+              type: 'audienceList',
               properties: {
                 listData: {
                   update: [{ EMAIL_SHA256: 'alex@email.com' }],

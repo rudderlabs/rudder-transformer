@@ -335,7 +335,7 @@ const SOQL_FIELD_NAME_REGEX = /^[A-Z_a-z]\w*$/;
 /**
  * Escapes a value for safe interpolation into a SOQL query string.
  * Numeric values are returned as-is; all other values are wrapped in single quotes
- * with internal single quotes escaped.
+ * with internal backslashes and single quotes escaped.
  * @param {*} value
  * @returns {string|number}
  */
@@ -346,7 +346,10 @@ function soqlEscapeValue(value) {
   if (typeof value === 'string' && value !== '' && Number.isFinite(Number(value))) {
     return value;
   }
-  return `'${String(value).replace(/'/g, "\\'")}'`;
+  const escaped = String(value)
+    .replaceAll('\\', String.raw`\\`)
+    .replaceAll("'", String.raw`\'`);
+  return `'${escaped}'`;
 }
 
 /**

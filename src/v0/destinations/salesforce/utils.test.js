@@ -33,6 +33,7 @@ describe('Salesforce Utils', () => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
     delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
+    delete process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS;
   });
 
   afterEach(() => {
@@ -40,6 +41,13 @@ describe('Salesforce Utils', () => {
   });
 
   describe('isWorkspaceAndDestTypeSupportedForSoql', () => {
+    it('should return false for non-SALESFORCE_OAUTH destination types regardless of env settings', () => {
+      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE', 'ws1')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE', '')).toBe(false);
+      expect(isWorkspaceAndDestTypeSupportedForSoql(undefined, 'ws1')).toBe(false);
+    });
+
     it('should return true when workspace ID is in the supported list', () => {
       process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);

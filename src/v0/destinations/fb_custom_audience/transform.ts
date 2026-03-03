@@ -54,7 +54,7 @@ const preparePayload = (
   isHashRequired: boolean,
   disableFormat: boolean,
   destinationId: string,
-  workspaceId?: string,
+  workspaceId: string,
 ): FbCustomAudiencePayload[] => {
   const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
@@ -80,7 +80,7 @@ const prepareResponse = (
   destination: FbCustomAudienceDestination,
   allowedAudienceArray: Record<string, unknown>[],
   userSchema: string[],
-  workspaceId?: string,
+  workspaceId: string,
   isHashRequired = true,
 ): FbCustomAudienceRequestParams[] => {
   const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
@@ -141,7 +141,7 @@ const prepareToSendEvents = (
   userSchema: string[],
   isHashRequired: boolean,
   operation: string,
-  workspaceId?: string,
+  workspaceId: string,
 ): WrappedResponse[] => {
   const toSendEvents: WrappedResponse[] = [];
   audienceChunksArray.forEach((allowedAudienceArray) => {
@@ -167,7 +167,7 @@ const prepareToSendEvents = (
 const processEvent = (
   message: RudderMessage,
   destination: FbCustomAudienceDestination,
-  workspaceId?: string,
+  workspaceId: string,
 ) => {
   const respList: unknown[] = [];
   let toSendEvents: WrappedResponse[] = [];
@@ -242,8 +242,8 @@ const processEvent = (
 const process = (event: {
   message: RudderMessage;
   destination: FbCustomAudienceDestination;
-  metadata?: { workspaceId?: string };
-}) => processEvent(event.message, event.destination, event.metadata?.workspaceId);
+  metadata: { workspaceId: string };
+}) => processEvent(event.message, event.destination, event.metadata?.workspaceId!);
 
 const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
   const respList: unknown[] = [];

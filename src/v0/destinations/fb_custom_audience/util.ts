@@ -43,7 +43,7 @@ import * as config from './config';
 } */
 const batchingWithPayloadSize = (
   payload: FbCustomAudiencePayload,
-  workspaceId?: string,
+  workspaceId: string,
 ): FbCustomAudiencePayload[] => {
   const maxPayloadSize = config.getMaxPayloadSize(workspaceId);
   const payloadSize = jsonSize(payload);

@@ -107,7 +107,7 @@ const DEFAULT_MAX_PAYLOAD_SIZE = 60000; // bytes
  * Can be overridden per workspace via env var FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE_<WORKSPACE_ID>,
  * or globally via FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE. Defaults to 60000.
  */
-function getMaxPayloadSize(workspaceId?: string): number {
+function getMaxPayloadSize(workspaceId: string): number {
   if (workspaceId) {
     const workspaceVal = Number.parseInt(
       process.env[`FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE_${workspaceId}`] ?? '',

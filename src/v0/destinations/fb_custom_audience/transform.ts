@@ -243,7 +243,7 @@ const process = (event: {
   message: RudderMessage;
   destination: FbCustomAudienceDestination;
   metadata: { workspaceId: string };
-}) => processEvent(event.message, event.destination, event.metadata?.workspaceId!);
+}) => processEvent(event.message, event.destination, event.metadata?.workspaceId as string);
 
 const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
   const respList: unknown[] = [];

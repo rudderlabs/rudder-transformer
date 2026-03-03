@@ -12,7 +12,7 @@ export const nativeData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -57,7 +57,7 @@ export const nativeData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -102,7 +102,7 @@ export const nativeData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -156,7 +156,7 @@ export const nativeData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [

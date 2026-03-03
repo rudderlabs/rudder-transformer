@@ -32,7 +32,6 @@ describe('Salesforce Utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
-    delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
     delete process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS;
   });
 
@@ -41,58 +40,28 @@ describe('Salesforce Utils', () => {
   });
 
   describe('isWorkspaceAndDestTypeSupportedForSoql', () => {
-    it('should return false for non-SALESFORCE_OAUTH destination types regardless of env settings', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
+    it('should return false for non-SALESFORCE_OAUTH destination types', () => {
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE', 'ws1')).toBe(false);
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE', '')).toBe(false);
       expect(isWorkspaceAndDestTypeSupportedForSoql(undefined, 'ws1')).toBe(false);
     });
 
-    it('should return true when workspace ID is in the supported list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
-    });
-
-    it('should return false when workspace ID is not in the supported list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2,ws3';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws4')).toBe(false);
-    });
-
-    it('should return false when environment variable is not set', () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
-    });
-
-    it('should return false when environment variable is empty', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = '';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(false);
-    });
-
-    it('should handle workspace IDs with spaces in the list', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1, ws2 , ws3';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
-    });
-
-    it('should return false for empty workspace ID', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(false);
-    });
-
-    it('should return false for undefined workspace ID', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', undefined)).toBe(false);
-    });
-
-    it('should return true for any workspace ID when environment variable is set to ALL', () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
+    it('should return true for SALESFORCE_OAUTH workspaces by default', () => {
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(true);
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
       expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'any-workspace')).toBe(
         true,
       );
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', undefined)).toBe(true);
-      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', '')).toBe(true);
+    });
+
+    it('should return true when skip list is not set', () => {
+      delete process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS;
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(true);
+    });
+
+    it('should return true when skip list is empty', () => {
+      process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = '';
+      expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(true);
     });
 
     describe('skip list (DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS)', () => {
@@ -107,23 +76,8 @@ describe('Salesforce Utils', () => {
         expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(false);
       });
 
-      it('skip list takes priority over the enable list', () => {
+      it('should return true for workspaceIds not in the skip list', () => {
         process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
-        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1,ws2';
-        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
-        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
-      });
-
-      it('skip list takes priority over the ALL flag', () => {
-        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
-        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ALL';
-        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws1')).toBe(false);
-        expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
-      });
-
-      it('should not affect workspaceIds not in the skip list', () => {
-        process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
-        process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2,ws3';
         expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws2')).toBe(true);
         expect(isWorkspaceAndDestTypeSupportedForSoql('SALESFORCE_OAUTH', 'ws3')).toBe(true);
       });
@@ -705,8 +659,7 @@ describe('Salesforce Utils', () => {
       isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK by default for SALESFORCE_OAUTH', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [{ Id: '0011234567890ABC' }],
@@ -731,8 +684,8 @@ describe('Salesforce Utils', () => {
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
+    it('should use HTTP when workspace is in the skip list', async () => {
+      process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -761,15 +714,10 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [{ Id: '0011234567890ABC', External_ID__c: 'ext-123' }],
-          },
-          status: 200,
-        },
+    it('should use SDK when workspace ID is undefined', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [{ Id: '0011234567890ABC' }],
       });
 
       const stateInfo = {
@@ -787,7 +735,8 @@ describe('Salesforce Utils', () => {
       });
 
       expect(result).toBe('0011234567890ABC');
-      expect(handleHttpRequest).toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalled();
+      expect(handleHttpRequest).not.toHaveBeenCalled();
     });
   });
 
@@ -1506,8 +1455,7 @@ describe('Salesforce Utils', () => {
       isHttpStatusSuccess.mockReturnValue(true);
     });
 
-    it('should use SDK when workspace is supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws1';
+    it('should use SDK by default for SALESFORCE_OAUTH', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [
@@ -1540,8 +1488,8 @@ describe('Salesforce Utils', () => {
       expect(handleHttpRequest).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace is not supported for SOQL', async () => {
-      process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS = 'ws2';
+    it('should use HTTP when workspace is in the skip list', async () => {
+      process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS = 'ws1';
       handleHttpRequest.mockResolvedValueOnce({
         processedResponse: {
           response: {
@@ -1578,22 +1526,17 @@ describe('Salesforce Utils', () => {
       expect(mockSalesforceSdk.query).not.toHaveBeenCalled();
     });
 
-    it('should use HTTP when workspace ID is undefined', async () => {
-      delete process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS;
-      handleHttpRequest.mockResolvedValueOnce({
-        processedResponse: {
-          response: {
-            searchRecords: [
-              {
-                Id: '00Q1234567890ABC',
-                IsConverted: false,
-                ConvertedContactId: null,
-                IsDeleted: false,
-              },
-            ],
+    it('should use SDK when workspace ID is undefined', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [
+          {
+            Id: '00Q1234567890ABC',
+            IsConverted: false,
+            ConvertedContactId: null,
+            IsDeleted: false,
           },
-          status: 200,
-        },
+        ],
       });
 
       const stateInfo = {
@@ -1612,7 +1555,8 @@ describe('Salesforce Utils', () => {
         salesforceType: 'Lead',
         salesforceId: '00Q1234567890ABC',
       });
-      expect(handleHttpRequest).toHaveBeenCalled();
+      expect(mockSalesforceSdk.query).toHaveBeenCalled();
+      expect(handleHttpRequest).not.toHaveBeenCalled();
     });
   });
 });

@@ -14,7 +14,6 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 const Cache = require('../../util/cache');
-const stats = require('../../../util/stats');
 const {
   CLIENT_ID,
   CLIENT_SECRET,
@@ -266,16 +265,7 @@ const isWorkspaceAndDestTypeSupportedForSoql = (
   const normalizedWorkspaceId = workspaceId?.trim();
 
   const skipList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS);
-  if (skipList.includes(normalizedWorkspaceId)) {
-    return false;
-  }
-
-  const enableList = parseIdList(process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS);
-  if (enableList.includes(normalizedWorkspaceId)) {
-    return true;
-  }
-
-  return process.env.DEST_SALESFORCE_SOQL_SUPPORTED_WORKSPACE_IDS === 'ALL';
+  return !skipList.includes(normalizedWorkspaceId);
 };
 
 /**
@@ -433,11 +423,6 @@ async function getSalesforceIdForRecord({
       metadata?.workspaceId ?? '',
     )
   ) {
-    stats.increment('salesforce_soql_lookup_count', {
-      method: 'getSalesforceIdForRecordUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
-      objectType,
-    });
     return getSalesforceIdForRecordUsingSdk(
       stateInfo.salesforceSdk,
       objectType,
@@ -608,11 +593,6 @@ async function getSalesforceIdForLead({ email, destination, metadata, stateInfo 
       metadata?.workspaceId ?? '',
     )
   ) {
-    stats.increment('salesforce_soql_lookup_count', {
-      method: 'getSalesforceIdForLeadUsingSdk',
-      workspaceId: metadata?.workspaceId ?? '',
-      objectType: 'Lead',
-    });
     return getSalesforceIdForLeadUsingSdk(stateInfo.salesforceSdk, email, destination);
   }
   return getSalesforceIdForLeadUsingHttp(email, destination, stateInfo.authInfo, metadata);

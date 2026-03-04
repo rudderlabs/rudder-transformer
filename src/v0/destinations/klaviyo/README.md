@@ -41,7 +41,7 @@ Implementation in **JavaScript**
 
 ## Integration Functionalities
 
-> Klaviyo supports **Cloud mode** and **Device mode** (web only)
+> Klaviyo supports **Cloud mode** and **Device mode**
 
 ### Supported Message Types
 
@@ -52,11 +52,13 @@ Implementation in **JavaScript**
 
 ### Batching Support
 
-- **Supported**: Yes
+- **Supported**: Yes (both V1 and V2)
 - **Message Types**: Subscription events (subscribe/unsubscribe)
 - **Batch Limits**:
   - Subscription events: 100 profiles per batch
   - Profile and Track events: Not batched together with subscriptions
+
+Both API versions use `MAX_BATCH_SIZE` (100) when chunking subscription requests. V1 batches subscribe requests to `POST /api/profile-subscription-bulk-create-jobs`. V2 batches both subscribe requests to `POST /api/profile-subscription-bulk-create-jobs` and unsubscribe requests to `POST /api/profile-subscription-bulk-delete-jobs`. Profile and track events are sent individually.
 
 ### Rate Limits
 
@@ -157,16 +159,18 @@ When creating a profile that already exists (409 Conflict response), the transfo
 
 ### Additional Functionalities
 
-#### E-commerce Event Mapping
+#### E-commerce Event Mapping (V1 API Only)
 
-Special handling for e-commerce events with automatic event name conversion:
+Special handling for e-commerce events with automatic event name conversion is **supported only when using the V1 API** (`apiVersion: v1`). The V2 API passes event names through as-is without conversion.
 
-| RudderStack Event  | Klaviyo Event      |
+| RudderStack Event  | Klaviyo Event (V1) |
 | ------------------ | ------------------ |
 | `product viewed`   | `Viewed Product`   |
 | `product clicked`  | `Viewed Product`   |
 | `product added`    | `Added to Cart`    |
 | `checkout started` | `Started Checkout` |
+
+When using the V2 API, send events with the desired Klaviyo metric names directly (e.g., `Viewed Product`, `Added to Cart`).
 
 #### Metadata Operations (V2 API)
 
@@ -241,18 +245,26 @@ However, if track events include profile attributes, those attributes should sti
 
 1. **Identify Events with Subscription**:
 
-   - **Multiplexing**: YES
-   - First API Call: `POST /api/profiles` or `PATCH /api/profiles/{id}` - Update profile
-   - Second API Call: `POST /api/profile-subscription-bulk-create-jobs` - Subscribe to list
-   - **Condition**: `subscribe` trait is true and `listId` is configured
+   - **Multiplexing**: YES (both V1 and V2)
+   - **Condition**: `subscribe` trait is defined and `listId` is configured
+
+   | API | First API Call                                                             | Second API Call                                                                                                                  |
+   | --- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+   | V1  | `POST /api/profiles` or `PATCH /api/profiles/{id}` - Create/update profile | `POST /api/profile-subscription-bulk-create-jobs` - Subscribe to list                                                            |
+   | V2  | `POST /api/profile-import` - Create/update profile                         | `POST /api/profile-subscription-bulk-create-jobs` (subscribe) or `POST /api/profile-subscription-bulk-delete-jobs` (unsubscribe) |
+
+   - **Note**: V1 only supports subscription (`subscribe: true`). V2 supports both subscribe and unsubscribe based on the `subscribe` trait value.
 
 2. **Group Events**:
 
-   - **Multiplexing**: NO
+   - **Multiplexing**: NO (both V1 and V2)
    - Single call to subscription endpoint based on `subscribe` trait value
+   - **V1**: Subscribe only (`subscribe: true` required) → `POST /api/profile-subscription-bulk-create-jobs`
+   - **V2**: Subscribe or unsubscribe → `POST /api/profile-subscription-bulk-create-jobs` or `POST /api/profile-subscription-bulk-delete-jobs`
 
 3. **Track/Screen Events**:
-   - **Multiplexing**: NO
+
+   - **Multiplexing**: NO (both V1 and V2)
    - Single call to `POST /api/events`
 
 #### Event Type Grouping

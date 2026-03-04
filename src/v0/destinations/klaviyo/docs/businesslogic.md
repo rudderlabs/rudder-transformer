@@ -59,7 +59,10 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
 #### V2 API Flow
 
 **Primary Endpoint**: `POST /api/profile-import`
-**Subscription Endpoint**: `POST /api/profile-subscription-bulk-create-jobs`
+**Subscribe Endpoint**: `POST /api/profile-subscription-bulk-create-jobs`
+**Unsubscribe Endpoint**: `POST /api/profile-subscription-bulk-delete-jobs`
+
+**Documentation**: [Create or Update Profile](https://developers.klaviyo.com/en/reference/create_or_update_profile), [Bulk Subscribe](https://developers.klaviyo.com/en/reference/bulk_subscribe_profiles), [Bulk Unsubscribe](https://developers.klaviyo.com/en/reference/bulk_unsubscribe_profiles)
 
 **Request Flow**:
 
@@ -74,7 +77,171 @@ The API version is selected via `destination.Config.apiVersion` and affects endp
      revision: 2024-10-15
    ```
 
-2. **Optional Subscription** (same as V1)
+**RudderStack Input → V2 Profile Import** (Identify call):
+
+```json
+{
+  "userId": "user@1",
+  "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+  "traits": {
+    "email": "user@example.com",
+    "phone": "+15551234567",
+    "firstName": "John",
+    "lastName": "Doe",
+    "title": "Developer",
+    "organization": "Acme Inc",
+    "city": "Tokyo",
+    "region": "Kanto",
+    "country": "JP",
+    "zip": "100-0001",
+    "street": "63, Shibuya",
+    "custom_field": "value"
+  }
+}
+```
+
+**V2 Profile Import Payload** (sent to `POST /api/profile-import`):
+
+```json
+{
+  "data": {
+    "type": "profile",
+    "attributes": {
+      "external_id": "user@1",
+      "anonymous_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "email": "user@example.com",
+      "phone_number": "+15551234567",
+      "first_name": "John",
+      "last_name": "Doe",
+      "title": "Developer",
+      "organization": "Acme Inc",
+      "location": {
+        "city": "Tokyo",
+        "region": "Kanto",
+        "country": "JP",
+        "zip": "100-0001",
+        "address1": "63, Shibuya"
+      },
+      "properties": {
+        "custom_field": "value"
+      }
+    },
+    "meta": {
+      "patch_properties": {}
+    }
+  }
+}
+```
+
+2. **Optional Subscription** (if `traits.properties.subscribe` is `true` and `listId` exists)
+3. **Optional Unsubscription** (if `traits.properties.subscribe` is `false` and `listId` exists)
+
+**RudderStack Input → V2 Subscribe** (Identify with `subscribe: true`):
+
+```json
+{
+  "userId": "user@1",
+  "traits": {
+    "email": "user@example.com",
+    "phone": "+15551234567",
+    "firstName": "John",
+    "lastName": "Doe",
+    "properties": {
+      "listId": "XUepkK",
+      "subscribe": true,
+      "consent": ["email", "sms"]
+    }
+  }
+}
+```
+
+**V2 Subscribe Payload** (sent to `POST /api/profile-subscription-bulk-create-jobs`):
+
+```json
+{
+  "data": {
+    "type": "profile-subscription-bulk-create-job",
+    "attributes": {
+      "profiles": {
+        "data": [
+          {
+            "type": "profile",
+            "attributes": {
+              "email": "user@example.com",
+              "phone_number": "+15551234567",
+              "subscriptions": {
+                "email": { "marketing": { "consent": "SUBSCRIBED" } },
+                "sms": { "marketing": { "consent": "SUBSCRIBED" } }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "list": {
+        "data": {
+          "type": "list",
+          "id": "XUepkK"
+        }
+      }
+    }
+  }
+}
+```
+
+**RudderStack Input → V2 Unsubscribe** (Identify with `subscribe: false`):
+
+```json
+{
+  "userId": "user@1",
+  "traits": {
+    "email": "user@example.com",
+    "phone": "+15551234567",
+    "properties": {
+      "listId": "XUepkK",
+      "subscribe": false
+    }
+  }
+}
+```
+
+**V2 Unsubscribe Payload** (sent to `POST /api/profile-subscription-bulk-delete-jobs`):
+
+```json
+{
+  "data": {
+    "type": "profile-subscription-bulk-delete-job",
+    "attributes": {
+      "profiles": {
+        "data": [
+          {
+            "type": "profile",
+            "attributes": {
+              "email": "user@example.com",
+              "phone_number": "+15551234567"
+            }
+          }
+        ]
+      }
+    },
+    "relationships": {
+      "list": {
+        "data": {
+          "type": "list",
+          "id": "XUepkK"
+        }
+      }
+    }
+  }
+}
+```
+
+**V2 Subscription Notes**:
+
+- `traits.properties.listId` overrides destination `listId` config when present
+- `traits.properties.consent` controls channels: `["email"]`, `["sms"]`, or `["email", "sms"]`
+- At least one of `email` or `phone_number` is required for both subscribe and unsubscribe
 
 #### Identify Payload Structure
 

@@ -336,10 +336,18 @@ Klaviyo provides **2 years** of support for each API revision:
 
 ### Profile Identifier Priority
 
-1. `destination external_id` with type `klaviyo-profileId`
-2. `userId`
-3. Email/phone (when `enforceEmailAsPrimary` is enabled)
-4. `anonymousId` (not recommended, prefer email/phone)
+Identifier priority depends on configuration and API version.
+
+**V1 API**:
+
+- **If `enforceEmailAsPrimary` is enabled**: Use `email` and `phone_number` as identifiers. `external_id` is omitted.
+- **Otherwise**: Use `external_id` (mapped from `userId`).
+
+**V2 API**:
+
+1. **If `context.externalId` with type `klaviyo-profileId` is present**: Mapped to `data.id` for profile update operations (e.g., when profile already exists in Klaviyo).
+2. **If `enforceEmailAsPrimary` is enabled**: Use `email` and `phone_number` as identifiers. `external_id` is omitted.
+3. **Otherwise**: Use `external_id` (mapped from `userId`).
 
 ## Documentation Links
 

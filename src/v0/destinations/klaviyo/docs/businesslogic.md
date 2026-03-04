@@ -511,12 +511,18 @@ Screen events are converted to track events with the screen name as the event na
 
 ### Profile Identifier Priority
 
-The transformer determines profile identifier using this priority:
+Identifier priority depends on configuration and API version.
 
-1. **Destination External ID**: `context.externalId` with type `klaviyo-profileId`
-2. **User ID**: `message.userId`
-3. **Email/Phone**: When `enforceEmailAsPrimary` is enabled
-4. **Anonymous ID**: Fallback (not recommended)
+**V1 API**:
+
+- **If `enforceEmailAsPrimary` is enabled**: Use `email` and `phone_number` as identifiers. `external_id` is omitted.
+- **Otherwise**: Use `external_id` (mapped from `userId`).
+
+**V2 API**:
+
+1. **If `context.externalId` with type `klaviyo-profileId` is present**: Mapped to `data.id` for profile update operations (e.g., when profile already exists in Klaviyo).
+2. **If `enforceEmailAsPrimary` is enabled**: Use `email` and `phone_number` as identifiers. `external_id` is omitted.
+3. **Otherwise**: Use `external_id` (mapped from `userId`).
 
 ```javascript
 // Code reference for external ID extraction

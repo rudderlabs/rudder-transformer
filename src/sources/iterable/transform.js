@@ -10,8 +10,9 @@ const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.js
 
 function process(payload) {
   const event = getBodyFromV2SpecPayload(payload);
-  // throw an error if (email, eventName) are not present
-  if (!(event.email && event.eventName)) {
+  // throw an error if ((email or userId) and eventName) are not present
+  // https://support.iterable.com/hc/en-us/articles/208013936-System-Webhooks#system-webhook-request-body
+  if (!((event.email || event.userId) && event.eventName)) {
     throw new TransformationError('Unknown event type from Iterable');
   }
   const message = new Message(`Iterable`);

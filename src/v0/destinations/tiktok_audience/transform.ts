@@ -32,12 +32,12 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
     return trait;
   };
 
-  const hashTraits = (traits: Record<string, string>[]) =>
+  const hashTraits = (traits: Record<string, string | null>[]) =>
     traits.map((trait) =>
       destinationFields.map((destinationField) =>
         trait[destinationField]
           ? {
-              id: hashIdentifier(destinationField, trait[destinationField]),
+              id: hashIdentifier(destinationField, trait[destinationField]!),
               audience_ids: [audienceId],
             }
           : {},

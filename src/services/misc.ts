@@ -16,6 +16,10 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/transform`);
   }
 
+  public static getRouterTransformHandler(dest: string) {
+    return require(`../v0/destinations/${dest}/routerTransform`);
+  }
+
   public static getSourceHandler(source: string) {
     return require(`../sources/${source}/transform`);
   }

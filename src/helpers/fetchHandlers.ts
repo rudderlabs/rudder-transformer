@@ -51,4 +51,8 @@ export class FetchHandler {
     }
     return deletionHandler;
   }
+
+  public static getRouterTransformHandler(dest: string) {
+    return MiscService.getRouterTransformHandler(dest);
+  }
 }

@@ -28,6 +28,12 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
+import { batchedDestinationsMap } from '../../constants/batchedDestinationsMap';
+import { processBatchedDestination, RouterIntegration } from './routerIntegration';
+
+// const routerModule = require(
+//   `../../v0/destinations/${destinationType.toLowerCase()}/routerTransform`,
+// );
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -102,6 +108,14 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
+    // New batching framework path — opt-in via batchedDestinationsMap
+    if (batchedDestinationsMap[destinationType.toUpperCase()]) {
+      const routerModule = FetchHandler.getRouterTransformHandler(destinationType);
+      const integration: RouterIntegration = routerModule.integration;
+      return processBatchedDestination(events, integration);
+    }
+
+    // Legacy path (unchanged)
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const groupedEvents: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);

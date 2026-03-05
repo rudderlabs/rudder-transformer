@@ -333,9 +333,6 @@ function soqlEscapeValue(value) {
   if (typeof value === 'number' && Number.isFinite(value)) {
     return value;
   }
-  if (typeof value === 'string' && value !== '' && Number.isFinite(Number(value))) {
-    return value;
-  }
   const escaped = String(value)
     .replaceAll('\\', String.raw`\\`)
     .replaceAll("'", String.raw`\'`);

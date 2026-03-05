@@ -608,13 +608,26 @@ describe('Salesforce Utils', () => {
       ).rejects.toThrow(InstrumentationError);
     });
 
-    it('should not quote numeric identifierValue', async () => {
+    it('should not remove quote from numeric identifierValue', async () => {
       mockSalesforceSdk.query.mockResolvedValueOnce({
         totalSize: 1,
         records: [{ Id: '0011234567890ABC' }],
       });
 
       await getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'Count__c', '42');
+
+      expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
+        "SELECT Id FROM Account WHERE Count__c = '42'",
+      );
+    });
+
+    it('should not add quote to numeric identifierValue', async () => {
+      mockSalesforceSdk.query.mockResolvedValueOnce({
+        totalSize: 1,
+        records: [{ Id: '0011234567890ABC' }],
+      });
+
+      await getSalesforceIdForRecordUsingSdk(mockSalesforceSdk, 'Account', 'Count__c', 42);
 
       expect(mockSalesforceSdk.query).toHaveBeenCalledWith(
         'SELECT Id FROM Account WHERE Count__c = 42',

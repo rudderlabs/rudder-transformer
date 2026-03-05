@@ -20,7 +20,7 @@ export const TiktokAudienceMessageSchema = z
     properties: z
       .object({
         listData: z
-          .record(z.array(z.record(z.string(), z.string())))
+          .record(z.array(z.record(z.string(), z.string().nullable())))
           .optional()
           .superRefine((val, ctx) => {
             if (!val) {

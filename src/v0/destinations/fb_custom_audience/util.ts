@@ -30,6 +30,8 @@ const validateHashingConsistency = (
   propertyName: string,
   normalizedValue: string,
   isHashRequired: boolean,
+  workspaceId: string,
+  destinationId: string,
 ): void => {
   if (!normalizedValue) return;
   const isAlreadyHashed = HASHED_VALUE_REGEX.test(normalizedValue);
@@ -37,6 +39,8 @@ const validateHashingConsistency = (
     stats.increment('fb_custom_audience_hashing_inconsistency', {
       propertyName,
       type: 'hashed_when_hash_enabled',
+      workspaceId,
+      destinationId,
     });
     if (isHashingValidationEnabled()) {
       throw new InstrumentationError(
@@ -48,6 +52,8 @@ const validateHashingConsistency = (
     stats.increment('fb_custom_audience_hashing_inconsistency', {
       propertyName,
       type: 'unhashed_when_hash_disabled',
+      workspaceId,
+      destinationId,
     });
     if (isHashingValidationEnabled()) {
       throw new InstrumentationError(
@@ -188,6 +194,8 @@ const getUpdatedDataElement = (
   isHashRequired: boolean,
   propertyName: string,
   propertyValue: unknown,
+  workspaceId: string,
+  destinationId: string,
 ): unknown[] => {
   // Normalize undefined/null to empty string
   const normalizedValue = propertyValue ?? '';
@@ -214,7 +222,13 @@ const getUpdatedDataElement = (
   const shouldHash = isHashRequired && isHashableField;
 
   if (isHashableField) {
-    validateHashingConsistency(propertyName, String(normalizedValue), isHashRequired);
+    validateHashingConsistency(
+      propertyName,
+      String(normalizedValue),
+      isHashRequired,
+      workspaceId,
+      destinationId,
+    );
   }
 
   if (shouldHash) {
@@ -234,6 +248,7 @@ const prepareDataField = (
   isHashRequired: boolean,
   disableFormat: boolean,
   destinationId: string,
+  workspaceId: string,
 ): unknown[][] => {
   const data: unknown[][] = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
@@ -255,6 +270,8 @@ const prepareDataField = (
         isHashRequired,
         eachProperty,
         updatedProperty,
+        workspaceId,
+        destinationId,
       );
 
       if (dataElement[dataElement.length - 1]) {

@@ -53,6 +53,8 @@ const processRecord = (
   disableFormat: boolean | undefined,
 ): { dataElement: unknown[]; metadata: Metadata } => {
   const fields = record.message.fields!;
+  const { workspaceId } = record.metadata;
+  const destinationId = record.destination.ID;
   let dataElement: unknown[] = [];
   let nullUserData = true;
 
@@ -64,7 +66,14 @@ const processRecord = (
       updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
     }
 
-    dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+    dataElement = getUpdatedDataElement(
+      dataElement,
+      isHashRequired,
+      eachProperty,
+      updatedProperty,
+      workspaceId,
+      destinationId,
+    );
 
     if (dataElement[dataElement.length - 1]) {
       nullUserData = false;

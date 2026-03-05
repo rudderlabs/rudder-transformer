@@ -103,6 +103,15 @@ and error method we found that 65000 bytes is the maximum payload allowed size b
 const DEFAULT_MAX_PAYLOAD_SIZE = 60000; // bytes
 
 /**
+ * Returns whether hashing validation is enabled.
+ * Can be enabled via env var FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED=true.
+ * Defaults to false (disabled).
+ */
+function isHashingValidationEnabled(): boolean {
+  return process.env.FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED === 'true';
+}
+
+/**
  * Returns the maximum payload size in bytes for FB Custom Audience batching.
  * Can be overridden per workspace via env var FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE_<WORKSPACE_ID>,
  * or globally via FB_CUSTOM_AUDIENCE_MAX_PAYLOAD_SIZE. Defaults to 60000.
@@ -134,4 +143,5 @@ export {
   typeFields,
   subTypeFields,
   getMaxPayloadSize,
+  isHashingValidationEnabled,
 };

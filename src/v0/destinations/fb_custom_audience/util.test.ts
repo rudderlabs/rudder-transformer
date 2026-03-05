@@ -1,5 +1,10 @@
 import { getDataSource, responseBuilderSimple, getUpdatedDataElement } from './util';
 import { getEndPoint, ENDPOINT_PATH } from './config';
+jest.mock('../../../util/stats', () => ({
+  increment: jest.fn(),
+}));
+
+import stats from '../../../util/stats';
 import type { WrappedResponse } from './types';
 
 const basePayload = {
@@ -103,12 +108,12 @@ describe('FB_custom_audience utils test', () => {
         expected: ['59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda'],
       },
       {
-        name: 'Should not hash field if isHashRequired is set to false',
+        name: 'Should not hash field if isHashRequired is set to false (pre-hashed input is passed through as-is)',
         initialData: [],
         isHashRequired: false,
         field: 'FN',
-        value: 'some-name',
-        expected: ['some-name'],
+        value: '59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda',
+        expected: ['59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda'],
       },
       {
         name: 'Should not hash MADID and just pass value',
@@ -204,6 +209,68 @@ describe('FB_custom_audience utils test', () => {
       it(name, () => {
         const result = getUpdatedDataElement([...initialData], isHashRequired, field, value);
         expect(result).toEqual(expected);
+      });
+    });
+
+    describe('validateHashingConsistency function tests', () => {
+      const hashedValue = 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267'; // sha256 of 'test'
+      const plaintextEmail = 'user@example.com';
+      const mockStatsIncrement = stats.increment as jest.Mock;
+  
+      beforeEach(() => {
+        mockStatsIncrement.mockClear();
+      });
+  
+      afterEach(() => {
+        delete process.env.FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED;
+      });
+  
+      it('Hashing ON + pre-hashed value → emits metric and throws when validation enabled', () => {
+        process.env.FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+        expect(() => getUpdatedDataElement([], true, 'EMAIL', hashedValue)).toThrow(
+          'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+        );
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'hashed_when_hash_enabled',
+        });
+      });
+  
+      it('Hashing ON + plaintext value → no error, no metric', () => {
+        expect(() => getUpdatedDataElement([], true, 'EMAIL', plaintextEmail)).not.toThrow();
+        expect(mockStatsIncrement).not.toHaveBeenCalled();
+      });
+  
+      it('Hashing OFF + plaintext value → emits metric and throws when validation enabled', () => {
+        process.env.FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+        expect(() => getUpdatedDataElement([], false, 'EMAIL', plaintextEmail)).toThrow(
+          'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+        );
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'unhashed_when_hash_disabled',
+        });
+      });
+  
+      it('Hashing OFF + 64-char hex value → no error, no metric', () => {
+        expect(() => getUpdatedDataElement([], false, 'EMAIL', hashedValue)).not.toThrow();
+        expect(mockStatsIncrement).not.toHaveBeenCalled();
+      });
+  
+      it('Validation disabled (default) + hashing ON + pre-hashed value → emits metric but no throw', () => {
+        expect(() => getUpdatedDataElement([], true, 'EMAIL', hashedValue)).not.toThrow();
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'hashed_when_hash_enabled',
+        });
+      });
+  
+      it('Validation disabled (default) + hashing OFF + plaintext value → emits metric but no throw', () => {
+        expect(() => getUpdatedDataElement([], false, 'EMAIL', plaintextEmail)).not.toThrow();
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'unhashed_when_hash_disabled',
+        });
       });
     });
   });

@@ -15,7 +15,7 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint } from './config';
+import { typeFields, subTypeFields, getEndPoint, isHashingValidationEnabled } from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -23,6 +23,39 @@ import {
 } from '../../util';
 import stats from '../../../util/stats';
 import * as config from './config';
+
+const HASHED_VALUE_REGEX = /^[\da-f]{64}$/;
+
+const validateHashingConsistency = (
+  propertyName: string,
+  normalizedValue: string,
+  isHashRequired: boolean,
+): void => {
+  if (!normalizedValue) return;
+  const isAlreadyHashed = HASHED_VALUE_REGEX.test(normalizedValue);
+  if (isHashRequired && isAlreadyHashed) {
+    stats.increment('fb_custom_audience_hashing_inconsistency', {
+      propertyName,
+      type: 'hashed_when_hash_enabled',
+    });
+    if (isHashingValidationEnabled()) {
+      throw new InstrumentationError(
+        `Hashing is enabled but the value for field ${propertyName} appears to already be hashed. Either disable hashing or send unhashed data.`,
+      );
+    }
+  }
+  if (!isHashRequired && !isAlreadyHashed) {
+    stats.increment('fb_custom_audience_hashing_inconsistency', {
+      propertyName,
+      type: 'unhashed_when_hash_disabled',
+    });
+    if (isHashingValidationEnabled()) {
+      throw new InstrumentationError(
+        `Hashing is disabled but the value for field ${propertyName} appears to be unhashed. Either enable hashing or send pre-hashed data.`,
+      );
+    }
+  }
+};
 
 /**
  * Example payload ={
@@ -177,9 +210,14 @@ const getUpdatedDataElement = (
    * Reference: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
    * Send an empty string for the properties for which the user hasn't provided any value.
    */
-  const isHashable = isHashRequired && propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+  const isHashableField = propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+  const shouldHash = isHashRequired && isHashableField;
 
-  if (isHashable) {
+  if (isHashableField) {
+    validateHashingConsistency(propertyName, String(normalizedValue), isHashRequired);
+  }
+
+  if (shouldHash) {
     dataElement.push(normalizedValue ? sha256(String(normalizedValue)) : '');
   } else {
     dataElement.push(normalizedValue);

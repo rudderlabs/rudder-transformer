@@ -1,4 +1,9 @@
-import { getDataSource, responseBuilderSimple, getUpdatedDataElement } from './util';
+import {
+  getDataSource,
+  responseBuilderSimple,
+  getUpdatedDataElement,
+  ensureApplicableFormat,
+} from './util';
 import { getEndPoint, ENDPOINT_PATH } from './config';
 jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
@@ -52,6 +57,59 @@ const baseResponse = {
 
 const TEST_WORKSPACE_ID = 'ws-1';
 const TEST_DESTINATION_ID = 'dest-1';
+
+describe('ensureApplicableFormat', () => {
+  describe('PHONE', () => {
+    const cases = [
+      { input: '+1 (650) 555-1212', expected: '16505551212' },
+      { input: '00919876543210', expected: '919876543210' },
+      { input: '+44 20 7946 0958', expected: '442079460958' },
+    ];
+    cases.forEach(({ input, expected }) => {
+      it(`"${input}" → "${expected}"`, () => {
+        expect(ensureApplicableFormat('PHONE', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+          expected,
+        );
+      });
+    });
+  });
+
+  describe('FN / LN — lowercase, remove ASCII punctuation, preserve spaces and UTF-8', () => {
+    const cases = [
+      { input: 'Mary', expected: 'mary' },
+      { input: 'Valéry', expected: 'valéry' },
+      { input: '정', expected: '정' },
+      { input: "O'Brien", expected: 'obrien' },
+      { input: 'John Smith', expected: 'john smith' },
+      { input: 'Mary-Jane', expected: 'maryjane' },
+    ];
+    (['FN', 'LN'] as const).forEach((field) => {
+      cases.forEach(({ input, expected }) => {
+        it(`${field}: "${input}" → "${expected}"`, () => {
+          expect(ensureApplicableFormat(field, input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+            expected,
+          );
+        });
+      });
+    });
+  });
+
+  describe('ZIP — remove spaces and dashes, lowercase', () => {
+    const cases = [
+      { input: '94035-1234', expected: '940351234' },
+      { input: 'M1 1AE', expected: 'm11ae' },
+      { input: '75018', expected: '75018' },
+      { input: '  K1A 0A6  ', expected: 'k1a0a6' },
+    ];
+    cases.forEach(({ input, expected }) => {
+      it(`"${input}" → "${expected}"`, () => {
+        expect(ensureApplicableFormat('ZIP', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+          expected,
+        );
+      });
+    });
+  });
+});
 
 describe('FB_custom_audience utils test', () => {
   describe('getDataSource function tests', () => {

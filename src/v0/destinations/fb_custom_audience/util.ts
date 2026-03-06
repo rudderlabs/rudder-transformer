@@ -97,10 +97,10 @@ const ensureApplicableFormat = (
   let updatedProperty: unknown;
   let userInformationTrimmed: string;
   if (isDefinedAndNotNull(userInformation)) {
-    const stringifiedUserInformation = convertToString(userInformation);
+    const stringifiedUserInformation = convertToString(userInformation).trim();
     switch (userProperty) {
       case 'EMAIL': {
-        const emailValue = stringifiedUserInformation.trim().toLowerCase();
+        const emailValue = stringifiedUserInformation.toLowerCase();
         if (validator.isEmail(emailValue)) {
           updatedProperty = emailValue;
         } else {
@@ -123,7 +123,7 @@ const ensureApplicableFormat = (
             : 'm';
         break;
       case 'DOBY':
-        updatedProperty = stringifiedUserInformation.trim().replace(/\./g, '');
+        updatedProperty = stringifiedUserInformation.replace(/\./g, '');
         break;
       case 'DOBM':
       case 'DOBD':
@@ -136,14 +136,16 @@ const ensureApplicableFormat = (
         break;
       case 'LN':
       case 'FN':
+        // Remove ASCII punctuation (0x21-0x2F, 0x3A-0x40, 0x5B-0x60, 0x7B-0x7E).
+        // Preserves spaces, digits, accented letters, and all non-ASCII (UTF-8) characters.
+        updatedProperty = stringifiedUserInformation
+          .toLowerCase()
+          .replace(/[\x21-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]/g, '');
+        break;
       case 'FI':
-        if (userProperty !== 'FI') {
-          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[^#$%&'*+/a-z]/g, '');
-        } else {
-          updatedProperty = stringifiedUserInformation
-            .toLowerCase()
-            .replace(/[^!"#$%&'()*+,-./a-z]/g, '');
-        }
+        updatedProperty = stringifiedUserInformation
+          .toLowerCase()
+          .replace(/[^!"#$%&'()*+,-./a-z]/g, '');
         break;
       case 'MADID':
         updatedProperty = stringifiedUserInformation.toLowerCase();
@@ -162,8 +164,7 @@ const ensureApplicableFormat = (
         break;
       }
       case 'ZIP':
-        userInformationTrimmed = stringifiedUserInformation.replace(/\s/g, '');
-        updatedProperty = userInformationTrimmed.toLowerCase();
+        updatedProperty = stringifiedUserInformation.replace(/[\s-]/g, '').toLowerCase();
         break;
       case 'ST':
       case 'CT':

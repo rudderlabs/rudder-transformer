@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.124.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.3...v1.124.4) (2026-03-05)
+
+
+### Bug Fixes
+
+* tiktok zod validations for listdata ([8494b2d](https://github.com/rudderlabs/rudder-transformer/commit/8494b2d041efbd71bf6d3fbed8f922fdd103df16))
+
 ### [1.124.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.2...v1.124.3) (2026-03-02)
 
 

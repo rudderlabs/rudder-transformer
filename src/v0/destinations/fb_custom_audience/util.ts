@@ -2,6 +2,7 @@ import lodash from 'lodash';
 import sha256 from 'sha256';
 import crypto from 'crypto';
 import jsonSize from 'json-size';
+import validator from 'validator';
 import {
   InstrumentationError,
   ConfigurationError,
@@ -76,20 +77,37 @@ const getSchemaForEventMappedToDest = (message: FbRecordMessage): string[] => {
   return userSchema;
 };
 
-// function responsible to ensure the user inputs are passed according to the allowed format
-const ensureApplicableFormat = (userProperty: string, userInformation: unknown): unknown => {
+/**
+ * Ensures user inputs are in the format required by Facebook Custom Audiences.
+ * Returns empty string for invalid field values.
+ */
+const ensureApplicableFormat = (
+  userProperty: string,
+  userInformation: unknown,
+  workspaceId: string,
+  destinationId: string,
+): unknown => {
   let updatedProperty: unknown;
   let userInformationTrimmed: string;
   if (isDefinedAndNotNull(userInformation)) {
     const stringifiedUserInformation = convertToString(userInformation);
     switch (userProperty) {
-      case 'EMAIL':
-        updatedProperty = stringifiedUserInformation.trim().toLowerCase();
+      case 'EMAIL': {
+        const emailValue = stringifiedUserInformation.trim().toLowerCase();
+        if (validator.isEmail(emailValue)) {
+          updatedProperty = emailValue;
+        } else {
+          updatedProperty = '';
+          stats.increment('fb_custom_audience_invalid_email', { workspaceId, destinationId });
+        }
         break;
-      case 'PHONE':
+      }
+      case 'PHONE': {
         // remove all non-numerical characters, then remove all leading zeros
         updatedProperty = stringifiedUserInformation.replace(/\D/g, '').replace(/^0+/g, '');
+        // Note: libphonenumber-js is not used here as it requires a country code to validate, which may not always be present.
         break;
+      }
       case 'GEN':
         updatedProperty =
           stringifiedUserInformation.toLowerCase() === 'f' ||
@@ -123,9 +141,19 @@ const ensureApplicableFormat = (userProperty: string, userInformation: unknown):
       case 'MADID':
         updatedProperty = stringifiedUserInformation.toLowerCase();
         break;
-      case 'COUNTRY':
-        updatedProperty = stringifiedUserInformation.toLowerCase();
+      case 'COUNTRY': {
+        const countryCode = stringifiedUserInformation.toLowerCase();
+        if (countryCode.length === 2) {
+          updatedProperty = countryCode;
+        } else {
+          updatedProperty = '';
+          stats.increment('fb_custom_audience_invalid_country_code', {
+            workspaceId,
+            destinationId,
+          });
+        }
         break;
+      }
       case 'ZIP':
         userInformationTrimmed = stringifiedUserInformation.replace(/\s/g, '');
         updatedProperty = userInformationTrimmed.toLowerCase();
@@ -196,6 +224,7 @@ const prepareDataField = (
   isHashRequired: boolean,
   disableFormat: boolean,
   destinationId: string,
+  workspaceId: string,
 ): unknown[][] => {
   const data: unknown[][] = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
@@ -209,7 +238,12 @@ const prepareDataField = (
       let updatedProperty: unknown = userProperty;
 
       if (isHashRequired && !disableFormat) {
-        updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
+        updatedProperty = ensureApplicableFormat(
+          eachProperty,
+          userProperty,
+          workspaceId,
+          destinationId,
+        );
       }
 
       dataElement = getUpdatedDataElement(
@@ -226,10 +260,9 @@ const prepareDataField = (
     });
 
     if (nullUserData) {
-      stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-        destinationId,
-        nullFields: userSchema,
-      });
+      throw new InstrumentationError(
+        `All user properties [${userSchema.join(', ')}] are invalid or null. At least one valid field is required.`,
+      );
     }
 
     data.push(dataElement);

@@ -16,7 +16,7 @@ under the [Elastic License 2.0](https://www.elastic.co/licensing/elastic-license
 
 If you want to run the RudderStack Transformer inside a Docker container, follow these steps:
 
-1. Clone this repository
+1. Clone this repositorytest
 2. Run `docker-compose up transformer`
 
 ### Native Installation

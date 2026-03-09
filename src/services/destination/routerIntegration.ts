@@ -237,17 +237,12 @@ function toErrorResponse(
 
 export abstract class RouterIntegration<T = Record<string, unknown>> {
   /**
-   * Optional bulk lookup before transformation — runs once for the entire batch.
-   * Use when the integration needs external data (e.g. resolve 30 distinct users once
-   * instead of one lookup per event). Cache results for use in batchTransform.
-   */
-  preTransform?(inputs: RouterTransformationRequestData[]): Promise<void>; // need to be merged with batchTransform
-
-  /**
    * Integration transforms ALL events and groups them into endpoint buckets.
+   * Async to allow bulk lookups (e.g. deduplication, identity resolution) before transformation.
+   * Cache lookup results on `this` for use during transformation.
    * Must be implemented by each destination.
    */
-  abstract batchTransform(inputs: RouterTransformationRequestData[]): BatchTransformResult<T>;
+  abstract batchTransform(inputs: RouterTransformationRequestData[]): Promise<BatchTransformResult<T>>;
 
   /**
    * Chunks the group and builds one BatchRequest per chunk.
@@ -345,17 +340,14 @@ export async function processBatchedDestination<T>(
   // 2. Validate — invalid events are pushed to results, valid inputs returned
   const validInputs = integration.validate(inputs, results);
 
-  // 3. Optional bulk lookup before transformation
-  if (integration.preTransform) {
-    await integration.preTransform(validInputs);
-  }
-
-  // 4. Split valid inputs on dontBatch flag
+  // 3. Split valid inputs on dontBatch flag
   const { batchable, nonBatchable } = groupByDontBatchDirective(validInputs);
 
-  // 5. NonBatchable — each event processed as a batch of 1
-  for (const event of nonBatchable) {
-    const { groupedEvents, errorEvents } = integration.batchTransform([event]);
+  // 4. NonBatchable — each event processed as a batch of 1 (parallel)
+  const nonBatchableResults = await Promise.all(
+    nonBatchable.map(async (event) => ({ event, result: await integration.batchTransform([event]) })),
+  );
+  for (const { event, result: { groupedEvents, errorEvents } } of nonBatchableResults) {
 
     for (const e of errorEvents) {
       results.push(toErrorResponse(e, metadataMap, event.destination));
@@ -373,9 +365,9 @@ export async function processBatchedDestination<T>(
     }
   }
 
-  // 6. Batchable — integration transforms + groups all events at once
+  // 5. Batchable — integration transforms + groups all events at once
   if (batchable.length > 0) {
-    const { groupedEvents, errorEvents } = integration.batchTransform(batchable);
+    const { groupedEvents, errorEvents } = await integration.batchTransform(batchable);
     const { destination } = batchable[0];
 
     for (const e of errorEvents) {

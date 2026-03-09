@@ -2379,6 +2379,68 @@ export const data = [
       },
     },
   },
+  {
+    name: 'iterable',
+    description: 'test-30',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                userId: '12345',
+                eventName: 'webPushSendSkip',
+                dataFields: {
+                  createdAt: '2019-08-07 23:43:48 +00:00',
+                  reason: 'DuplicateMarketingMessage',
+                  campaignId: 723636,
+                  messageId: '4238c918b20a41dfbe9a910275b76f12',
+                  email: 'docs@iterable.com',
+                },
+              }),
+            },
+            source: {},
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  userId: '12345',
+                  context: {
+                    integration: { name: 'Iterable', version: '1.0.0' },
+                    library: { name: 'unknown', version: 'unknown' },
+                  },
+                  event: 'webPushSendSkip',
+                  integrations: { Iterable: false },
+                  properties: {
+                    createdAt: '2019-08-07 23:43:48 +00:00',
+                    reason: 'DuplicateMarketingMessage',
+                    campaignId: 723636,
+                    messageId: '4238c918b20a41dfbe9a910275b76f12',
+                  },
+                  receivedAt: '2019-08-07T23:43:48.000Z',
+                  timestamp: '2019-08-07T23:43:48.000Z',
+                  type: 'track',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
 ].map((tc) => ({
   ...tc,
   overrideReceivedAt: true,

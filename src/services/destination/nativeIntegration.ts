@@ -110,9 +110,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
   ): Promise<RouterTransformationResponse[]> {
     // New batching framework path — opt-in via batchedDestinationsMap
     if (batchedDestinationsMap[destinationType.toUpperCase()]) {
-      const routerModule = FetchHandler.getRouterTransformHandler(destinationType);
-      const integration: RouterIntegration = routerModule.integration;
-      return processBatchedDestination(events, integration);
+      const routerIntegration = FetchHandler.getRouterTransformHandler(destinationType);
+      return processBatchedDestination(events, routerIntegration);
     }
 
     // Legacy path (unchanged)

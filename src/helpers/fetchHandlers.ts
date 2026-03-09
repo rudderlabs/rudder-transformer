@@ -1,3 +1,5 @@
+import { PlatformError } from '@rudderstack/integrations-lib';
+import { RouterIntegration } from '../services/destination/routerIntegration';
 import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {
@@ -8,6 +10,8 @@ export class FetchHandler {
   private static destHandlerMap: Map<string, any> = new Map();
 
   private static deletionHandlerMap: Map<string, any> = new Map();
+
+  private static routerTransformHandlerMap: Map<string, RouterIntegration> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -52,7 +56,16 @@ export class FetchHandler {
     return deletionHandler;
   }
 
-  public static getRouterTransformHandler(dest: string) {
-    return MiscService.getRouterTransformHandler(dest);
+  public static getRouterTransformHandler(dest: string): RouterIntegration {
+    let integrationHandler = this.routerTransformHandlerMap.get(dest);
+    if (integrationHandler) {
+      return integrationHandler;
+    }
+    integrationHandler = MiscService.getRouterTransformHandler(dest);
+    if (!integrationHandler) {
+      throw new PlatformError(`Not found routerIntegration for dest type ${dest}`);
+    }
+    this.routerTransformHandlerMap.set(dest, integrationHandler);
+    return integrationHandler;
   }
 }

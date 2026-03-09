@@ -8,6 +8,7 @@
  * Activated by registering POSTHOG in batchedDestinationsMap.
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { z, ZodType } from 'zod';
 import {
   constructPayload,
   getBrowserInfo,
@@ -188,6 +189,26 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
       maxChunkSize: 2, // lowered for mock verification; production value: 250
       maxPayloadSize: '4MB',
     };
+  }
+
+  getIntegrationSchema(): ZodType | null {
+    // Add a Zod schema that enforces either userId or anonymousId must be present in the message
+
+    return z
+      .object({
+        message: z
+          .object({
+            userId: z.string().optional(),
+            anonymousId: z.string().optional(),
+            type: z.string().refine((val) => val !== 'record', {
+              message: 'messagetype should not be record',
+            }),
+          })
+          .refine((msg) => !!msg.userId || !!msg.anonymousId, {
+            message: 'Either userId or anonymousId must be provided',
+          }),
+      })
+      .passthrough();
   }
 }
 

@@ -1,9 +1,21 @@
+import { z, type ZodType } from 'zod';
 import type { Destination } from '../../types/controlPlaneConfig';
 import type { Metadata } from '../../types/rudderEvents';
+import { RudderMessageSchema } from '../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../types/destinationTransformation';
+
+// ---------------------------------------------------------------------------
+// Base input schema (RudderStack event spec — common to all destinations)
+// ---------------------------------------------------------------------------
+
+const baseInputSchema = z.object({
+  message: RudderMessageSchema,
+  metadata: z.object({ jobId: z.union([z.string(), z.number()]) }).passthrough(),
+  destination: z.object({}).passthrough(),
+});
 
 // ---------------------------------------------------------------------------
 // Public types
@@ -51,6 +63,11 @@ export type BatchRequest = {
   method: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
+};
+
+export type PostTransformResult = {
+  batchRequest: BatchRequest;
+  jobIds: string[];
 };
 
 // ---------------------------------------------------------------------------
@@ -233,20 +250,23 @@ export abstract class RouterIntegration<T = Record<string, unknown>> {
   abstract batchTransform(inputs: RouterTransformationRequestData[]): BatchTransformResult<T>;
 
   /**
-   * Default implementation: uses getBatchConfig() to reconstruct the body.
-   * setValueAtPath places chunk.payloads at the dot-notation path, then rootFields
-   * are merged at the root level.
-   * Complex integrations override this with custom merge logic.
+   * Chunks the group and builds one BatchRequest per chunk.
+   * Default implementation uses getBatchConfig() for chunking limits and payload path.
+   * Complex integrations override this with custom chunking or merge logic.
    */
-  postTransform(chunk: GroupedSuccessEvents<T>, destination: Destination): BatchRequest {
-    const { payloadHierarchyPath, rootFields } = this.getBatchConfig(destination);
-    const body = setValueAtPath({ ...(rootFields ?? {}) }, payloadHierarchyPath, chunk.payloads);
-    return {
-      body,
-      endpoint: chunk.endpoint,
-      method: chunk.method,
-      headers: chunk.headers,
-    };
+  postTransform(group: GroupedSuccessEvents<T>, destination: Destination): PostTransformResult[] {
+    const batchConfig = this.getBatchConfig(destination);
+    const { payloadHierarchyPath, rootFields } = batchConfig;
+    const chunks = chunkGroup(group, batchConfig);
+    return chunks.map((chunk) => ({
+      batchRequest: {
+        body: setValueAtPath({ ...(rootFields ?? {}) }, payloadHierarchyPath, chunk.payloads),
+        endpoint: chunk.endpoint,
+        method: chunk.method,
+        headers: chunk.headers,
+      },
+      jobIds: chunk.jobIds,
+    }));
   }
 
   /**
@@ -259,19 +279,43 @@ export abstract class RouterIntegration<T = Record<string, unknown>> {
   }
 
   /**
-   * Override to add pre-transform validations.
-   * Push a RouterTransformationResponse error entry into `results` for each invalid event.
-   * Return only the valid inputs that should continue through the pipeline.
-   * Default: all inputs are valid.
+   * Override to add destination-specific Zod validation rules.
+   * The framework automatically fuses this with the base schema for single-pass validation.
+   * Default: no additional rules.
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+  getIntegrationSchema(): ZodType | null {
+    return null;
+  }
+
+  private getFusedSchema(): ZodType {
+    const integrationSchema = this.getIntegrationSchema();
+    return integrationSchema ? baseInputSchema.and(integrationSchema) : baseInputSchema;
+  }
+
+  /**
+   * Validates all inputs against the fused schema (base spec rules + integration rules).
+   * Invalid events are pushed to results as error responses; valid inputs are returned.
+   */
   validate(
     inputs: RouterTransformationRequestData[],
-    _results: RouterTransformationResponse[],
+    results: RouterTransformationResponse[],
   ): RouterTransformationRequestData[] {
-    return inputs;
+    const schema = this.getFusedSchema();
+    return inputs.filter((input) => {
+      const parsed = schema.safeParse(input);
+      if (!parsed.success) {
+        results.push({
+          metadata: [input.metadata],
+          destination: input.destination,
+          batched: false,
+          statusCode: 400,
+          error: parsed.error.issues.map((i) => i.message).join('; '),
+        });
+        return false;
+      }
+      return true;
+    });
   }
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 }
 
 // ---------------------------------------------------------------------------
@@ -298,7 +342,7 @@ export async function processBatchedDestination<T>(
     inputs.map((i) => [String(i.metadata.jobId), i.metadata]),
   );
 
-  // 2. Pre-validate — invalid events are pushed to results, valid inputs returned
+  // 2. Validate — invalid events are pushed to results, valid inputs returned
   const validInputs = integration.validate(inputs, results);
 
   // 3. Optional bulk lookup before transformation
@@ -317,14 +361,15 @@ export async function processBatchedDestination<T>(
       results.push(toErrorResponse(e, metadataMap, event.destination));
     }
     for (const group of groupedEvents) {
-      const batchRequest = integration.postTransform(group, event.destination);
-      results.push(
-        convertToServerFormat(
-          batchRequest,
-          resolveMetadatas(group.jobIds, metadataMap),
-          event.destination,
-        ),
-      );
+      for (const { batchRequest, jobIds } of integration.postTransform(group, event.destination)) {
+        results.push(
+          convertToServerFormat(
+            batchRequest,
+            resolveMetadatas(jobIds, metadataMap),
+            event.destination,
+          ),
+        );
+      }
     }
   }
 
@@ -333,22 +378,13 @@ export async function processBatchedDestination<T>(
     const { groupedEvents, errorEvents } = integration.batchTransform(batchable);
     const { destination } = batchable[0];
 
-    // 7. Chunk each group and build one request per chunk
-    const batchConfig = integration.getBatchConfig(destination);
     for (const e of errorEvents) {
       results.push(toErrorResponse(e, metadataMap, destination));
     }
     for (const group of groupedEvents) {
-      const chunks = chunkGroup(group, batchConfig);
-
-      for (const chunk of chunks) {
-        const batchRequest = integration.postTransform(chunk, destination);
+      for (const { batchRequest, jobIds } of integration.postTransform(group, destination)) {
         results.push(
-          convertToServerFormat(
-            batchRequest,
-            resolveMetadatas(chunk.jobIds, metadataMap),
-            destination,
-          ),
+          convertToServerFormat(batchRequest, resolveMetadatas(jobIds, metadataMap), destination),
         );
       }
     }

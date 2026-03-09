@@ -1,19 +1,35 @@
 const path = require('path');
 const fs = require('fs');
 const md5 = require('md5');
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const {
+  TransformationError,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('@rudderstack/integrations-lib');
 const Message = require('../message');
-const { getBodyFromV2SpecPayload } = require('../../v0/util');
+const { getBodyFromV2SpecPayload, isDefinedAndNotNull } = require('../../v0/util');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-function process(payload) {
-  const event = getBodyFromV2SpecPayload(payload);
-  // throw an error if (email, eventName) are not present
-  if (!(event.email && event.eventName)) {
+const isNonEmptyString = (val) => typeof val === 'string' && isDefinedAndNotNullAndNotEmpty(val);
+
+/**
+ * Throws an error if required fields are not present.
+ * Ref: https://support.iterable.com/hc/en-us/articles/208013936-System-Webhooks#system-webhook-request-body
+ * @param {*} event
+ */
+function checkForRequiredFields(event) {
+  if (
+    (!isNonEmptyString(event.email) && !isNonEmptyString(event.userId)) ||
+    !isNonEmptyString(event.eventName)
+  ) {
     throw new TransformationError('Unknown event type from Iterable');
   }
+}
+
+function process(payload) {
+  const event = getBodyFromV2SpecPayload(payload);
+  checkForRequiredFields(event);
   const message = new Message(`Iterable`);
 
   // event type is always track
@@ -38,7 +54,7 @@ function process(payload) {
 
   // Treating userId as unique identifier
   // If userId is not present, then generating it from email using md5 hash function
-  if (message.userId === null || message.userId === undefined) {
+  if (!isDefinedAndNotNull(message.userId)) {
     message.userId = md5(event.email);
   }
 

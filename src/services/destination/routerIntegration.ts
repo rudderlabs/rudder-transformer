@@ -21,13 +21,20 @@ const baseInputSchema = z.object({
 // Public types
 // ---------------------------------------------------------------------------
 
-export type GroupedSuccessEvents<T = Record<string, unknown>> = {
+/**
+ * One group per endpoint returned by batchTransform.
+ * `body` is the full request body in destination-specific format.
+ * `payloadHierarchyPath` in BatchConfig tells the framework which field inside
+ * `body` holds the chunkable array (e.g. 'batch', 'data.events').
+ * `jobIds` are aligned with the items at that array path.
+ */
+export type GroupedSuccessEvents<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   endpoint: string;
   method: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
-  payloads: T[];
-  /** Aligned with payloads[] — one jobId per single payload or multiplexed payloads */
+  body: TBody;
+  /** Aligned with the array at payloadHierarchyPath — one jobId per item */
   jobIds: string[];
 };
 
@@ -38,8 +45,8 @@ export type TransformedErrorEvent = {
   statTags?: Record<string, unknown>;
 };
 
-export type BatchTransformResult<T = Record<string, unknown>> = {
-  groupedEvents: GroupedSuccessEvents<T>[];
+export type BatchTransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
+  groupedEvents: GroupedSuccessEvents<TBody>[];
   errorEvents: TransformedErrorEvent[];
 };
 
@@ -106,6 +113,23 @@ export function setValueAtPath(
   return obj;
 }
 
+/**
+ * Reads a value at a dot-notation path (supports array index notation).
+ *
+ * Examples:
+ *   getValueAtPath({ batch: [1,2] }, 'batch')             → [1,2]
+ *   getValueAtPath({ data: { events: [1,2] } }, 'data.events') → [1,2]
+ */
+export function getValueAtPath(obj: Record<string, unknown>, path: string): unknown {
+  const segments = path.replace(/\[(\d+)]/g, '.$1').split('.');
+  let current: unknown = obj;
+  for (const seg of segments) {
+    if (current === null || current === undefined) return undefined;
+    current = (current as Record<string, unknown>)[seg];
+  }
+  return current;
+}
+
 /** Parses a human-readable size string like '4MB', '512KB', '1GB' to bytes. */
 function parseSizeToBytes(size: string): number {
   const match = size.trim().match(/^(\d+(?:\.\d+)?)\s*(b|kb|mb|gb)$/i);
@@ -119,43 +143,59 @@ function parseSizeToBytes(size: string): number {
 }
 
 /**
- * Splits one GroupedSuccessEvents into chunks, keeping payloads + jobIds aligned.
+ * Splits one GroupedSuccessEvents into chunks by reading the array at
+ * config.payloadHierarchyPath from group.body, chunking it, and rebuilding
+ * the body for each chunk. jobIds are kept aligned with the array items.
  * Respects maxChunkSize (item count) and maxPayloadSize (serialised bytes).
  */
-export function chunkGroup<T>(
-  group: GroupedSuccessEvents<T>,
+export function chunkGroup<TBody extends Record<string, unknown>>(
+  group: GroupedSuccessEvents<TBody>,
   config: BatchConfig,
-): GroupedSuccessEvents<T>[] {
-  const maxCount = config.maxChunkSize ?? Infinity;
-  const maxBytes = config.maxPayloadSize ? parseSizeToBytes(config.maxPayloadSize) : Infinity;
+): GroupedSuccessEvents<TBody>[] {
+  const { payloadHierarchyPath, maxChunkSize, maxPayloadSize } = config;
+  const items = getValueAtPath(group.body, payloadHierarchyPath);
 
-  const chunks: GroupedSuccessEvents<T>[] = [];
-  let currentPayloads: T[] = [];
+  if (!Array.isArray(items)) {
+    return [group];
+  }
+
+  const maxCount = maxChunkSize ?? Infinity;
+  const maxBytes = maxPayloadSize ? parseSizeToBytes(maxPayloadSize) : Infinity;
+
+  const chunks: GroupedSuccessEvents<TBody>[] = [];
+  let currentItems: unknown[] = [];
   let currentJobIds: string[] = [];
   let currentBytes = 0;
 
-  for (let i = 0; i < group.payloads.length; i += 1) {
-    const payload = group.payloads[i];
+  for (const [i, item] of items.entries()) {
     const jobId = group.jobIds[i];
-    const payloadBytes = Buffer.byteLength(JSON.stringify(payload));
+    const itemBytes = Buffer.byteLength(JSON.stringify(item));
 
-    const wouldExceedCount = currentPayloads.length >= maxCount;
-    const wouldExceedSize = currentPayloads.length > 0 && currentBytes + payloadBytes > maxBytes;
+    const wouldExceedCount = currentItems.length >= maxCount;
+    const wouldExceedSize = currentItems.length > 0 && currentBytes + itemBytes > maxBytes;
 
-    if (currentPayloads.length > 0 && (wouldExceedCount || wouldExceedSize)) {
-      chunks.push({ ...group, payloads: currentPayloads, jobIds: currentJobIds });
-      currentPayloads = [];
+    if (currentItems.length > 0 && (wouldExceedCount || wouldExceedSize)) {
+      chunks.push({
+        ...group,
+        body: setValueAtPath({ ...group.body }, payloadHierarchyPath, currentItems) as TBody,
+        jobIds: currentJobIds,
+      });
+      currentItems = [];
       currentJobIds = [];
       currentBytes = 0;
     }
 
-    currentPayloads.push(payload);
+    currentItems.push(item);
     currentJobIds.push(jobId);
-    currentBytes += payloadBytes;
+    currentBytes += itemBytes;
   }
 
-  if (currentPayloads.length > 0) {
-    chunks.push({ ...group, payloads: currentPayloads, jobIds: currentJobIds });
+  if (currentItems.length > 0) {
+    chunks.push({
+      ...group,
+      body: setValueAtPath({ ...group.body }, payloadHierarchyPath, currentItems) as TBody,
+      jobIds: currentJobIds,
+    });
   }
 
   return chunks;
@@ -237,29 +277,27 @@ function toErrorResponse(
 // Abstract class
 // ---------------------------------------------------------------------------
 
-export abstract class RouterIntegration<T = Record<string, unknown>> {
+export abstract class RouterIntegration<TBody extends Record<string, unknown> = Record<string, unknown>> {
   /**
    * Integration transforms ALL events and groups them into endpoint buckets.
+   * Each group's `body` is the full destination-specific request body, with the
+   * chunkable array already embedded at `payloadHierarchyPath`.
    * Async to allow bulk lookups (e.g. deduplication, identity resolution) before transformation.
-   * Cache lookup results on `this` for use during transformation.
    * Must be implemented by each destination.
    */
-  abstract batchTransform(
-    inputs: RouterTransformationRequestData[],
-  ): Promise<BatchTransformResult<T>>;
+  abstract batchTransform(inputs: RouterTransformationRequestData[]): Promise<BatchTransformResult<TBody>>;
 
   /**
-   * Chunks the group and builds one BatchRequest per chunk.
-   * Default implementation uses getBatchConfig() for chunking limits and payload path.
-   * Complex integrations override this with custom chunking or merge logic.
+   * Chunks the group at payloadHierarchyPath and returns one BatchRequest per chunk.
+   * Default: reads getBatchConfig(), chunks group.body at payloadHierarchyPath, returns chunk.body as-is.
+   * Override for custom post-chunk logic (e.g. deduplication, field merging within a chunk).
    */
-  postTransform(group: GroupedSuccessEvents<T>, destination: Destination): PostTransformResult[] {
+  postTransform(group: GroupedSuccessEvents<TBody>, destination: Destination): PostTransformResult[] {
     const batchConfig = this.getBatchConfig(destination);
-    const { payloadHierarchyPath } = batchConfig;
     const chunks = chunkGroup(group, batchConfig);
     return chunks.map((chunk) => ({
       batchRequest: {
-        body: setValueAtPath({}, payloadHierarchyPath, chunk.payloads),
+        body: chunk.body,
         endpoint: chunk.endpoint,
         method: chunk.method,
         headers: chunk.headers,
@@ -326,9 +364,9 @@ export abstract class RouterIntegration<T = Record<string, unknown>> {
  * Called by NativeIntegrationDestinationService.doRouterTransformation when
  * the destination is registered in batchedDestinationsMap.
  */
-export async function processBatchedDestination<T>(
+export async function processBatchedDestination(
   inputs: RouterTransformationRequestData[],
-  integration: RouterIntegration<T>,
+  integration: RouterIntegration,
 ): Promise<RouterTransformationResponse[]> {
   if (!inputs || inputs.length === 0) {
     return [];

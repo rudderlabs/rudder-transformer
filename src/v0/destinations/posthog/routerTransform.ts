@@ -24,11 +24,9 @@ import type { Destination } from '../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import {
   RouterIntegration,
-  chunkGroup,
   type BatchConfig,
   type BatchTransformResult,
   type GroupedSuccessEvents,
-  type PostTransformResult,
 } from '../../../services/destination/routerIntegration';
 import { PROPERTY } from './config';
 
@@ -37,6 +35,11 @@ const { EventType } = require('../../../constants');
 const { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 
 type PostHogEvent = Record<string, unknown>;
+
+type PostHogBody = {
+  api_key: string;
+  batch: PostHogEvent[];
+};
 
 // ---------------------------------------------------------------------------
 // Per-event payload builder
@@ -145,14 +148,15 @@ function buildPostHogEventPayload(
 // PostHogIntegration
 // ---------------------------------------------------------------------------
 
-class PostHogIntegration extends RouterIntegration<PostHogEvent> {
+class PostHogIntegration extends RouterIntegration<PostHogBody> {
   async batchTransform(
     inputs: RouterTransformationRequestData[],
-  ): Promise<BatchTransformResult<PostHogEvent>> {
+  ): Promise<BatchTransformResult<PostHogBody>> {
     const payloads: PostHogEvent[] = [];
     const jobIds: string[] = [];
     const errorEvents: { error: string; statusCode: number; jobId: string }[] = [];
     const { destination } = inputs[0];
+    const apiKey = (destination.Config as { teamApiKey: string }).teamApiKey;
 
     for (const input of inputs) {
       try {
@@ -170,14 +174,14 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
 
     const endpoint = `${stripTrailingSlash((destination.Config as { yourInstance: string }).yourInstance) || DEFAULT_BASE_ENDPOINT}/batch`;
 
-    const groupedEvents: GroupedSuccessEvents<PostHogEvent>[] =
+    const groupedEvents: GroupedSuccessEvents<PostHogBody>[] =
       payloads.length > 0
         ? [
             {
               endpoint,
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              payloads,
+              body: { api_key: apiKey, batch: payloads },
               jobIds,
             },
           ]
@@ -193,22 +197,6 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
       maxChunkSize: 2, // lowered for mock verification; production value: 250
       maxPayloadSize: '4MB',
     };
-  }
-
-  postTransform(
-    group: GroupedSuccessEvents<PostHogEvent>,
-    destination: Destination,
-  ): PostTransformResult[] {
-    const apiKey = (destination.Config as { teamApiKey: string }).teamApiKey;
-    return chunkGroup(group, this.getBatchConfig(destination)).map((chunk) => ({
-      batchRequest: {
-        body: { api_key: apiKey, batch: chunk.payloads },
-        endpoint: chunk.endpoint,
-        method: chunk.method,
-        headers: chunk.headers,
-      },
-      jobIds: chunk.jobIds,
-    }));
   }
 
   getIntegrationSchema(): ZodType | null {

@@ -24,9 +24,11 @@ import type { Destination } from '../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import {
   RouterIntegration,
+  chunkGroup,
   type BatchConfig,
   type BatchTransformResult,
   type GroupedSuccessEvents,
+  type PostTransformResult,
 } from '../../../services/destination/routerIntegration';
 import { PROPERTY } from './config';
 
@@ -74,7 +76,7 @@ function generatePropertyDefinition(message: Record<string, unknown>): Record<st
 
 /**
  * Builds a single PostHog batch event payload from a RudderMessage.
- * Does NOT include api_key — that is added at the batch root via getBatchConfig().rootFields.
+ * Does NOT include api_key — that is added at the batch root by the postTransform override.
  */
 function buildPostHogEventPayload(
   message: Record<string, unknown>,
@@ -144,7 +146,9 @@ function buildPostHogEventPayload(
 // ---------------------------------------------------------------------------
 
 class PostHogIntegration extends RouterIntegration<PostHogEvent> {
-  async batchTransform(inputs: RouterTransformationRequestData[]): Promise<BatchTransformResult<PostHogEvent>> {
+  async batchTransform(
+    inputs: RouterTransformationRequestData[],
+  ): Promise<BatchTransformResult<PostHogEvent>> {
     const payloads: PostHogEvent[] = [];
     const jobIds: string[] = [];
     const errorEvents: { error: string; statusCode: number; jobId: string }[] = [];
@@ -182,13 +186,29 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
     return { groupedEvents, errorEvents };
   }
 
-  getBatchConfig(destination: Destination): BatchConfig {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getBatchConfig(_destination?: Destination): BatchConfig {
     return {
       payloadHierarchyPath: 'batch',
-      rootFields: { api_key: (destination.Config as { teamApiKey: string }).teamApiKey },
       maxChunkSize: 2, // lowered for mock verification; production value: 250
       maxPayloadSize: '4MB',
     };
+  }
+
+  postTransform(
+    group: GroupedSuccessEvents<PostHogEvent>,
+    destination: Destination,
+  ): PostTransformResult[] {
+    const apiKey = (destination.Config as { teamApiKey: string }).teamApiKey;
+    return chunkGroup(group, this.getBatchConfig(destination)).map((chunk) => ({
+      batchRequest: {
+        body: { api_key: apiKey, batch: chunk.payloads },
+        endpoint: chunk.endpoint,
+        method: chunk.method,
+        headers: chunk.headers,
+      },
+      jobIds: chunk.jobIds,
+    }));
   }
 
   getIntegrationSchema(): ZodType | null {

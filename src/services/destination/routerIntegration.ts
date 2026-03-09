@@ -50,8 +50,6 @@ export type BatchConfig = {
    * Examples: 'batch', 'data.events', 'operations[0].create.userIdentifiers'
    */
   payloadHierarchyPath: string;
-  /** Static root-level fields merged into the body alongside the array, e.g. { api_key: '...' } */
-  rootFields?: Record<string, unknown>; // No need of this field
   /** Maximum number of payloads per chunk */
   maxChunkSize?: number;
   /** Maximum payload size per chunk, e.g. '4MB', '512KB' */
@@ -246,7 +244,9 @@ export abstract class RouterIntegration<T = Record<string, unknown>> {
    * Cache lookup results on `this` for use during transformation.
    * Must be implemented by each destination.
    */
-  abstract batchTransform(inputs: RouterTransformationRequestData[]): Promise<BatchTransformResult<T>>;
+  abstract batchTransform(
+    inputs: RouterTransformationRequestData[],
+  ): Promise<BatchTransformResult<T>>;
 
   /**
    * Chunks the group and builds one BatchRequest per chunk.
@@ -255,11 +255,11 @@ export abstract class RouterIntegration<T = Record<string, unknown>> {
    */
   postTransform(group: GroupedSuccessEvents<T>, destination: Destination): PostTransformResult[] {
     const batchConfig = this.getBatchConfig(destination);
-    const { payloadHierarchyPath, rootFields } = batchConfig;
+    const { payloadHierarchyPath } = batchConfig;
     const chunks = chunkGroup(group, batchConfig);
     return chunks.map((chunk) => ({
       batchRequest: {
-        body: setValueAtPath({ ...(rootFields ?? {}) }, payloadHierarchyPath, chunk.payloads),
+        body: setValueAtPath({}, payloadHierarchyPath, chunk.payloads),
         endpoint: chunk.endpoint,
         method: chunk.method,
         headers: chunk.headers,
@@ -349,10 +349,15 @@ export async function processBatchedDestination<T>(
 
   // 4. NonBatchable — each event processed as a batch of 1 (parallel)
   const nonBatchableResults = await Promise.all(
-    nonBatchable.map(async (event) => ({ event, result: await integration.batchTransform([event]) })),
+    nonBatchable.map(async (event) => ({
+      event,
+      result: await integration.batchTransform([event]),
+    })),
   );
-  for (const { event, result: { groupedEvents, errorEvents } } of nonBatchableResults) {
-
+  for (const {
+    event,
+    result: { groupedEvents, errorEvents },
+  } of nonBatchableResults) {
     for (const e of errorEvents) {
       results.push(toErrorResponse(e, metadataMap, event.destination));
     }

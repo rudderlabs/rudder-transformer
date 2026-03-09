@@ -7,4 +7,5 @@
  */
 export const batchedDestinationsMap: Record<string, true> = {
   POSTHOG: true,
+  BRAZE: true,
 };

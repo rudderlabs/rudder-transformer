@@ -111,7 +111,21 @@ export class NativeIntegrationDestinationService implements DestinationService {
     // New batching framework path — opt-in via batchedDestinationsMap
     if (batchedDestinationsMap[destinationType.toUpperCase()]) {
       const routerIntegration = FetchHandler.getRouterTransformHandler(destinationType);
-      return processBatchedDestination(events, routerIntegration);
+      const results = await processBatchedDestination(events, routerIntegration);
+      const metaTO = this.getTags(
+        destinationType,
+        events[0]?.metadata?.destinationId,
+        events[0]?.metadata?.workspaceId,
+        tags.FEATURES.ROUTER,
+      );
+      metaTO.metadata = events[0]?.metadata;
+      return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+        results,
+        null,
+        metaTO,
+        tags.IMPLEMENTATIONS.NATIVE,
+        destinationType.toUpperCase(),
+      );
     }
 
     // Legacy path (unchanged)

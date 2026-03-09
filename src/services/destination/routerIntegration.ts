@@ -35,6 +35,7 @@ export type TransformedErrorEvent = {
   error: string;
   statusCode: number;
   jobId: string;
+  statTags?: Record<string, unknown>;
 };
 
 export type BatchTransformResult<T = Record<string, unknown>> = {
@@ -63,6 +64,8 @@ export type BatchRequest = {
   method: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
+  /** Optional path suffix (e.g. 'users/track'). Derived from endpoint URL if not set. */
+  endpointPath?: string;
 };
 
 export type PostTransformResult = {
@@ -228,6 +231,7 @@ function toErrorResponse(
     batched: false,
     statusCode: e.statusCode,
     error: e.error,
+    ...(e.statTags ? { statTags: e.statTags } : {}),
   };
 }
 

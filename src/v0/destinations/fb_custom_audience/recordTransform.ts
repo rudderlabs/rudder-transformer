@@ -70,7 +70,14 @@ const processRecord = (
       );
     }
 
-    dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+    dataElement = getUpdatedDataElement(
+      dataElement,
+      isHashRequired,
+      eachProperty,
+      updatedProperty,
+      record.metadata.workspaceId,
+      record.destination.ID,
+    );
 
     if (dataElement[dataElement.length - 1]) {
       nullUserData = false;

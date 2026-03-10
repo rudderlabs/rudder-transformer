@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.125.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.4...v1.125.0) (2026-03-09)
+
+
+### Features
+
+* **gaec:** support userDefined adjustment type ([#5016](https://github.com/rudderlabs/rudder-transformer/issues/5016)) ([1c7391c](https://github.com/rudderlabs/rudder-transformer/commit/1c7391cc01b6fd36cef27cde1e89a471e243016f))
+
+
+### Bug Fixes
+
+* **iterable:** source transformation to handle userId ([#5017](https://github.com/rudderlabs/rudder-transformer/issues/5017)) ([fcee8a6](https://github.com/rudderlabs/rudder-transformer/commit/fcee8a6a680738e4863cf27890d24203847b774e))
+
+### [1.124.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.3...v1.124.4) (2026-03-05)
+
+
+### Bug Fixes
+
+* tiktok zod validations for listdata ([8494b2d](https://github.com/rudderlabs/rudder-transformer/commit/8494b2d041efbd71bf6d3fbed8f922fdd103df16))
+
 ### [1.124.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.2...v1.124.3) (2026-03-02)
 
 

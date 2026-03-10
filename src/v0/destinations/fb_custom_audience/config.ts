@@ -93,6 +93,8 @@ const subTypeFields: readonly string[] = [
   'DATA_FILE',
 ];
 
+const DESTINATION = 'fb_custom_audience';
+
 const USER_ADD = 'add';
 const USER_DELETE = 'remove';
 // https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/
@@ -136,6 +138,7 @@ function isRejectInvalidFieldsEnabled(): boolean {
 }
 
 export {
+  DESTINATION,
   ENDPOINT_PATH,
   getEndPoint,
   schemaFields,

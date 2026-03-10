@@ -56,10 +56,11 @@ jobs:
           npm ci
 
       # Calculate the next release version based on conventional semantic release
-      - name: Calculate Release Version
+      - name: Create Release Branch
         id: create-release
         env:
           HUSKY: 0
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           source_branch_name=${GITHUB_REF##*/}
           release_type=release
@@ -80,19 +81,15 @@ jobs:
           echo "Release type is $release_type"
           echo "New version is $new_version"
           echo "New release branch name is $branch_name"
+          git checkout -b $branch_name
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:refs/heads/$branch_name
+
 
           echo "source_branch_name=$source_branch_name" >> $GITHUB_OUTPUT
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
           echo "new_version=$new_version" >> $GITHUB_OUTPUT
           echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
           echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
-
-      - name: Create Release Branch
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          RELEASE_BRANCH_NAME: ${{ steps.create-release.outputs.branch_name }}
-        run: |
-          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:refs/heads/$RELEASE_BRANCH_NAME
 
       - name: Update Changelog & Bump Version
         id: finish-release

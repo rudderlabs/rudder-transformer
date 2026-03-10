@@ -12,7 +12,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  teamApiKey: 'dummyApiKey',
                   yourInstance: 'https://app.posthog.com/',
                 },
               },
@@ -93,7 +93,7 @@ export const data = [
                     },
                     timestamp: '2020-11-04T13:21:09.712Z',
                     event: '$create_alias',
-                    api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                    api_key: 'dummyApiKey',
                     type: 'alias',
                   },
                   XML: {},
@@ -107,7 +107,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                  teamApiKey: 'dummyApiKey',
                   yourInstance: 'https://app.posthog.com/',
                 },
               },
@@ -129,7 +129,7 @@ export const data = [
           input: [
             {
               destination: {
-                Config: { teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE' },
+                Config: { teamApiKey: 'dummyApiKey' },
               },
               metadata: { jobId: 2, userId: 'u1' },
               message: {
@@ -271,7 +271,7 @@ export const data = [
                       win_amount: 0,
                     },
                     timestamp: '2020-11-04T13:21:09.712Z',
-                    api_key: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
+                    api_key: 'dummyApiKey',
                     type: 'capture',
                   },
                   XML: {},
@@ -284,7 +284,7 @@ export const data = [
               batched: false,
               statusCode: 200,
               destination: {
-                Config: { teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE' },
+                Config: { teamApiKey: 'dummyApiKey' },
               },
             },
           ],

@@ -182,6 +182,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -209,6 +210,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -275,6 +277,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -302,6 +305,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: unsubscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-delete-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -378,6 +382,7 @@ export const identifyData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -447,6 +452,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -474,6 +480,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -542,6 +549,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: userProfileCommonEndpoint,
+              endpointPath: '/api/profile-import',
               headers: commonOutputHeadersForOct2024,
               JSON: {
                 data: {
@@ -569,6 +577,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeadersForOct2024,
               JSON: {
                 data: {

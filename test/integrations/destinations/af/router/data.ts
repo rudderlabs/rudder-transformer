@@ -46,7 +46,7 @@ export const data = [
               metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },
                 Enabled: true,
@@ -88,7 +88,7 @@ export const data = [
               metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },
                 Enabled: true,
@@ -131,7 +131,7 @@ export const data = [
               metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   sharingFilter: 'hey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },
@@ -157,7 +157,7 @@ export const data = [
                 endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
+                  authentication: 'dummyDevKey',
                 },
                 method: 'POST',
                 params: {},
@@ -189,7 +189,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },
                 Enabled: true,
@@ -203,7 +203,7 @@ export const data = [
                 endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
+                  authentication: 'dummyDevKey',
                 },
                 params: {},
                 method: 'POST',
@@ -234,7 +234,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },
                 Enabled: true,
@@ -248,7 +248,7 @@ export const data = [
                 endpointPath: 'v1/inappevent',
                 headers: {
                   'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
+                  authentication: 'dummyDevKey',
                 },
                 method: 'POST',
                 params: {},
@@ -281,7 +281,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  devKey: 'ef1d42390426e3f7c90ac78272e74344',
+                  devKey: 'dummyDevKey',
                   sharingFilter: 'hey',
                   androidAppId: 'com.rudderlabs.javascript',
                 },

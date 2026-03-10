@@ -59,7 +59,7 @@ export const data = [
               },
             ],
             config: {
-              passcode: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+              passcode: 'dummyPassCode',
               trackAnonymous: true,
               enableObjectIdMapping: false,
             },

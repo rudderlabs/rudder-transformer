@@ -32,9 +32,9 @@ const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../u
 const { sendGetRequest, sendPostRequest, getResponseHandlerData, getAuthToken } = require('./util');
 const logger = require('../../../logger');
 
-const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
-const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
-const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
+const userIdLeadCache = new Cache('MARKETO_USER_ID_LEAD', USER_LEAD_CACHE_TTL); // 1 day
+const emailLeadCache = new Cache('MARKETO_EMAIL_LEAD', USER_LEAD_CACHE_TTL); // 1 day
+const authCache = new Cache('MARKETO_AUTH', AUTH_CACHE_TTL); // 1 hr
 
 // lookup Marketo with userId or anonymousId
 // Marketo will create the lead

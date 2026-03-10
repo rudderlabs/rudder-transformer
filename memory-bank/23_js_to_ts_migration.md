@@ -35,26 +35,37 @@ Functions from .js files will infer as 'any' - that's acceptable
 
 ## 📋 BASIC MIGRATION STEPS
 
-1. Change file extension: .js → .ts
+1. Identify all files to migrate:
 
-2. Convert imports:
+   - Main source files: .js → .ts
+   - Test files: .test.js → .test.ts (MUST be migrated together with source files)
+
+2. Change file extension: .js → .ts
+
+3. Convert imports:
 
    - require('foo') → import foo from 'foo'
    - const { bar } = require('foo') → import { bar } from 'foo'
 
-3. Add types ONLY when needed to fix TypeScript errors
+4. Add types ONLY when needed to fix TypeScript errors
 
    - Don't add types just because you can
    - Minimal changes = less risk of breaking things
 
-4. Run build after EVERY change:
+5. Run build after EVERY change:
    npm run build:ci
 
    ⚠️ ALWAYS run `npm run build:ci` after making changes to verify no type errors
    DO NOT skip this step - it's not optional!
 
-5. After successful migration:
-   Delete the original .js file
+6. Run tests for the migrated files:
+   npm run test:ts -- path/to/migrated/files
+
+   ⚠️ CRITICAL: Test files MUST be migrated and all tests must pass
+   Example: npm run test:ts -- src/cdk/v2/destinations/zoho
+
+7. After successful migration with all tests passing:
+   Delete the original .js files
 
 ═══════════════════════════════════════════════════════════════════════════
 
@@ -212,6 +223,100 @@ Type the variable correctly upfront to avoid both casts AND runtime checks
 
 ═══════════════════════════════════════════════════════════════════════════
 
+## 🧪 TEST FILE SPECIFIC PATTERNS
+
+### Mock Type Safety with jest.mocked()
+
+✅ RIGHT: Use jest.mocked() for type-safe mocking
+
+```typescript
+import { handleHttpRequest } from './network';
+jest.mock('./network');
+
+jest.mocked(handleHttpRequest).mockResolvedValueOnce(response);
+```
+
+❌ WRONG: Type casting mocks
+
+```typescript
+(handleHttpRequest as jest.Mock).mockResolvedValueOnce(response);
+```
+
+### Const Assertions for Literal Types
+
+✅ ALLOWED: Use "as const" for literal type inference in test data
+
+```typescript
+const mockConfig = { region: 'US' as const }; // Type: { region: "US" }
+const regions = ['US', 'EU', 'AU'] as const; // Type: readonly ["US", "EU", "AU"]
+```
+
+This is the ONLY acceptable use of "as" in TypeScript - for const assertions.
+
+❌ WRONG: Type casting to literal types
+
+```typescript
+const mockConfig = { region: 'US' as RegionKeys }; // Don't do this
+```
+
+### Test Object Structure
+
+When test objects need specific properties, provide them explicitly:
+
+✅ RIGHT: Complete mock objects
+
+```typescript
+const mockMetadata = {
+  secret: {
+    accessToken: 'test-token',
+  },
+};
+```
+
+❌ WRONG: Empty objects with type casts
+
+```typescript
+const mockMetadata = {} as Metadata;
+```
+
+### HTTP Response Mocks
+
+Some mocked responses may need additional properties like httpResponse:
+
+✅ RIGHT: Include all required properties
+
+```typescript
+const response = {
+  httpResponse: Promise.resolve({}),
+  processedResponse: {
+    status: 200,
+    response: { data: [{ id: '123' }] },
+  },
+};
+```
+
+### Avoid null in Test Data
+
+TypeScript types often don't include null. Use undefined instead:
+
+❌ WRONG: Using null where undefined is expected
+
+```typescript
+{
+  region: null;
+} // Type error if region is RegionKeys | undefined
+```
+
+✅ RIGHT: Use undefined
+
+```typescript
+{
+  region: undefined;
+}
+```
+
+═══════════════════════════════════════════════════════════════════════════
+
 ## 🛠️ OTHER COMMON FIXES
 
 ### Error Constructors
@@ -261,7 +366,12 @@ getUserId(message, headers, baseEndpoint, undefined, metadata);
 
 🔍 MANDATORY CHECKS:
 
-1. ❌ Search for " as " - If found, you're doing it WRONG! No type assertions.
+1. ❌ Search for " as " - If found, verify it's ONLY:
+
+   - "as const" for literal types in tests
+   - "as any" for unavoidable edge cases (must be justified)
+   - Type assertions from JS import returns
+     All other "as" usages are WRONG!
 
 2. ❌ Search for "any" - If found outside catch blocks, use unknown instead.
 
@@ -271,6 +381,13 @@ getUserId(message, headers, baseEndpoint, undefined, metadata);
 
 5. ✅ Functions from .js imports left untyped (let them infer as 'any')
 
-6. ⚠️ No behavioral changes - Compare with original .js file side-by-side
+6. ✅ All test files migrated - Check for remaining .test.js files
 
-7. ✅ Build passes: npm run build:ci
+7. ✅ All tests pass: npm run test:ts -- path/to/migrated/files
+   Example: npm run test:ts -- src/cdk/v2/destinations/zoho
+
+8. ⚠️ No behavioral changes - Compare with original .js file side-by-side
+
+9. ✅ Build passes: npm run build:ci
+
+10. ✅ Original .js files deleted after successful migration

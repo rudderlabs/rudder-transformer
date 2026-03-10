@@ -93,9 +93,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -311,9 +310,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -522,9 +520,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -733,9 +730,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -944,9 +940,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-4n07h3rsecr3t',
@@ -1141,9 +1136,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -1310,9 +1304,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',
@@ -1465,9 +1458,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'STATSIG',
+                Config: {},
               },
               Config: {
                 secretKey: 'secret-tHe5ecr37',

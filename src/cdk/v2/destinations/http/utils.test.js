@@ -1,6 +1,5 @@
 const {
   enhanceMappings,
-  encodeParamsObject,
   prepareEndpoint,
   prepareBody,
   stringifyFirstLevelValues,
@@ -10,24 +9,20 @@ const { XMLBuilder } = require('fast-xml-parser');
 const jsonpath = require('rs-jsonpath');
 
 describe('Utils Functions', () => {
-  describe('encodeParamsObject', () => {
-    test('should return empty object for invalid inputs', () => {
-      expect(encodeParamsObject(null)).toEqual({});
-      expect(encodeParamsObject(undefined)).toEqual({});
-      expect(encodeParamsObject('string')).toEqual({});
-    });
-
-    test('should encode object keys and values', () => {
-      const params = { key1: 'value1', key2: 'value2 3 4' };
-      const expected = { key1: 'value1', key2: 'value2%203%204' };
-      expect(encodeParamsObject(params)).toEqual(expected);
-    });
-  });
-
   describe('prepareEndpoint', () => {
-    test('should replace template variables in API URL', () => {
+    test('should preserve single trailing slash when pathParams is empty array', () => {
       const message = { id: 123 };
       const apiUrl = 'https://api.example.com/resource/';
+      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource/');
+    });
+    test('should normalize multiple trailing slashes to one when pathParams is empty array', () => {
+      const message = { id: 123 };
+      const apiUrl = 'https://api.example.com/resource///';
+      expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource/');
+    });
+    test('should not add trailing slash when pathParams is empty array and URL has no slash', () => {
+      const message = { id: 123 };
+      const apiUrl = 'https://api.example.com/resource';
       expect(prepareEndpoint(message, apiUrl, [])).toBe('https://api.example.com/resource');
     });
     test('should replace template variables in API URL and add path params', () => {

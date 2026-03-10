@@ -20,6 +20,11 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const getGroupId = (groupTitle, board) => {
   const { groups } = board.boards[0];
+
+  if (!groups || !Array.isArray(groups)) {
+    throw new ConfigurationError(`No groups found in the board`);
+  }
+
   let groupId;
   groups.forEach((group) => {
     if (group.title === groupTitle) {
@@ -41,6 +46,11 @@ const getGroupId = (groupTitle, board) => {
  */
 const getColumnId = (columnTitle, board) => {
   const { columns } = board.boards[0];
+
+  if (!columns || !Array.isArray(columns)) {
+    throw new ConfigurationError(`No columns found in the board`);
+  }
+
   let columnId;
   columns.forEach((column) => {
     if (column.title === columnTitle) {
@@ -63,6 +73,11 @@ const getColumnId = (columnTitle, board) => {
  */
 const getColumnValue = (properties, columnName, key, board) => {
   const { columns } = board.boards[0];
+
+  if (!columns || !Array.isArray(columns)) {
+    throw new ConfigurationError(`No columns found in the board`);
+  }
+
   let columnValue;
   columns.forEach((column) => {
     if (column.title === columnName && properties[key]) {

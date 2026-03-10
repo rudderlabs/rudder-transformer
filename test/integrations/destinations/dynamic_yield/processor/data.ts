@@ -37,7 +37,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: true,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -131,7 +131,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -238,7 +238,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -331,7 +331,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -438,7 +438,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -546,7 +546,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -672,7 +672,7 @@ export const data = [
                 apiKey: defaultApiKey,
                 hashEmail: false,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -778,7 +778,7 @@ export const data = [
               Config: {
                 apiKey: defaultApiKey,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -849,7 +849,7 @@ export const data = [
               Config: {
                 apiKey: defaultApiKey,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -919,7 +919,7 @@ export const data = [
             },
             destination: {
               Config: {},
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1003,7 +1003,7 @@ export const data = [
               Config: {
                 apiKey: defaultApiKey,
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'DYNAMIC_YIELD', Config: {} },
             },
             metadata: {
               destinationId: 'destId',

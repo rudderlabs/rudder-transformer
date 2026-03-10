@@ -5,7 +5,7 @@ import {
   generateProxyV1Payload,
 } from '../../../testUtils';
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 export const commonHeaders = {
   Authorization: authHeader1,

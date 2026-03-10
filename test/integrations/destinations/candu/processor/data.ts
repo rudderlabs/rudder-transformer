@@ -40,7 +40,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -196,7 +195,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -356,7 +354,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -482,7 +479,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -618,7 +614,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: '  ',
@@ -751,7 +746,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -883,7 +877,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1040,7 +1033,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,
@@ -1200,7 +1192,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret1,

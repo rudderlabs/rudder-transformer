@@ -115,7 +115,7 @@ export const existingTestData = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid OAuth 2.0 access token',
+            message: 'Invalid OAuth 2.0 access token. Facebook responded with error code: 190',
             destinationResponse: {
               error: {
                 error_user_msg: 'Invalid OAuth 2.0 access token',
@@ -377,7 +377,8 @@ export const existingTestData = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message:
+              'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
             destinationResponse: {
               error: {
                 message: 'Invalid parameter',
@@ -473,7 +474,7 @@ export const existingTestData = [
         body: {
           output: {
             status: 429,
-            message: 'User request limit reached',
+            message: 'User request limit reached. Facebook responded with error code: 17',
             destinationResponse: {
               error: {
                 message: 'User request limit reached',
@@ -565,7 +566,7 @@ export const existingTestData = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
             destinationResponse: {
               error: {
                 message:

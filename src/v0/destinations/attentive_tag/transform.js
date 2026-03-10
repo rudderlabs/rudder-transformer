@@ -32,6 +32,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
+    response.endpointPath = endpoint;
     response.headers = {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': JSON_MIME_TYPE,

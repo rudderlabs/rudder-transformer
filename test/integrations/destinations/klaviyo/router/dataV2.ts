@@ -66,6 +66,7 @@ const alreadyTransformedEvent = {
         },
       },
       endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+      endpointPath: '/api/profile-subscription-bulk-create-jobs',
       headers: headers,
       method: 'POST',
       userId: '',
@@ -106,6 +107,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -145,6 +147,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers,
                   params: {},
                   body: {
@@ -191,6 +194,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -239,6 +243,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers,
                   params: {},
                   body: {
@@ -440,6 +445,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -480,6 +486,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -520,6 +527,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers,
                   params: {},
                   body: {
@@ -718,6 +726,7 @@ export const dataV2: RouterTestData[] = [
                   },
                 },
                 endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                endpointPath: '/api/profile-subscription-bulk-create-jobs',
                 headers: headers,
                 method: 'POST',
                 userId: '',
@@ -734,6 +743,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',
@@ -794,6 +804,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',
@@ -852,6 +863,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -886,6 +898,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -919,6 +932,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -990,6 +1004,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',
@@ -1138,6 +1153,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -1172,6 +1188,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -1231,6 +1248,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -1398,6 +1416,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -1427,6 +1446,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -1455,6 +1475,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-create-jobs',
                   headers,
                   params: {},
                   body: {
@@ -1515,6 +1536,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -1543,6 +1565,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: userProfileCommonEndpoint,
+                  endpointPath: '/api/profile-import',
                   headers,
                   params: {},
                   body: {
@@ -1572,6 +1595,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-delete-jobs',
                   headers,
                   params: {},
                   body: {
@@ -1764,6 +1788,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',
@@ -1824,6 +1849,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',
@@ -1882,6 +1908,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -1916,6 +1943,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-import',
+                  endpointPath: '/api/profile-import',
                   headers: {
                     Authorization: authHeader1,
                     Accept: 'application/json',
@@ -1949,6 +1977,7 @@ export const dataV2: RouterTestData[] = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://a.klaviyo.com/api/profile-subscription-bulk-delete-jobs',
+                  endpointPath: '/api/profile-subscription-bulk-delete-jobs',
                   headers: {
                     Authorization: authHeader1,
                     'Content-Type': 'application/json',
@@ -2006,6 +2035,7 @@ export const dataV2: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://a.klaviyo.com/api/events',
+                endpointPath: '/api/events',
                 headers: {
                   Authorization: authHeader1,
                   Accept: 'application/json',

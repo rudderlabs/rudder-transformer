@@ -16,6 +16,7 @@ import {
 } from '../../types';
 import stats from '../../util/stats';
 import { generateErrorObject } from '../../v0/util';
+import { DeleteUsersError } from '../../v0/util/errorTypes/deleteUsersError';
 import tags from '../../v0/util/tags';
 import { ErrorReportingService } from '../errorReporting';
 import logger from '../../logger';
@@ -235,6 +236,13 @@ export class DestinationPostTransformationService {
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
+    // Use logMessage if available to avoid logging PII
+    const logMessage = error instanceof DeleteUsersError ? error.logMessage : errObj.message;
+    logger.error('User deletion failed', {
+      errorMessage: logMessage,
+      destinationId: metaTo.errorDetails.destinationId,
+      destType: metaTo.errorDetails.destType,
+    });
 
     stats.increment('regulation_worker_user_deletion_failure', {
       destType: metaTo.errorDetails.destType,

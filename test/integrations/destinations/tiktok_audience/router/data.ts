@@ -1,4 +1,6 @@
-export const data = [
+import { nativeData } from './data-native';
+
+const cdkData = [
   {
     name: 'tiktok_audience',
     description: 'Multiple jobs with different metadata',
@@ -43,11 +45,11 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -87,11 +89,11 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -106,7 +108,7 @@ export const data = [
                     add: [
                       {
                         EMAIL_SHA256: 'alex@email.com',
-                        PHONE_SHA256: '+129988776655',
+                        PHONE_SHA256: null,
                         IDFA_SHA256: '1234lkasfjdalj12321',
                         AAID_SHA256: '000999OOOQQQQ',
                         AAID_MD5: '000999OOOQQQQ',
@@ -140,11 +142,11 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -189,11 +191,11 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -237,11 +239,11 @@ export const data = [
                 userId: 'u1',
               },
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -262,11 +264,11 @@ export const data = [
               error: 'message Type is not present. Aborting message.',
               batched: false,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -377,11 +379,11 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -508,11 +510,11 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -542,10 +544,7 @@ export const data = [
                           id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
                           audience_ids: ['23856594064540489'],
                         },
-                        {
-                          id: '31e78a3bf9ce2b43316f64fe883a531d6266938091e94e2f2480272481163dee',
-                          audience_ids: ['23856594064540489'],
-                        },
+                        {},
                         {
                           id: '0259f595f7172c8dd692a5c37b4d296939555f862aae8adb964391bdb65006ab',
                           audience_ids: ['23856594064540489'],
@@ -603,11 +602,11 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -686,11 +685,11 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
-                  apiKey: 'intercomApiKey',
+                  apiKey: 'apiKey',
                   appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                   collectContext: false,
                 },
@@ -710,3 +709,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...cdkData, ...nativeData];

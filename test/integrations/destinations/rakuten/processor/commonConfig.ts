@@ -2,9 +2,8 @@ export const destination = {
   ID: 'random_id',
   Name: 'rakuten',
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Name: 'RAKUTEN',
+    Config: {},
   },
   Config: {
     mid: 'dummyMarketingId',

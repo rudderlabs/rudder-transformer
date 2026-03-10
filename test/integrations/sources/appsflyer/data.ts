@@ -726,7 +726,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Unknwon event type from Appsflyer',
+            error: 'Unknown event type from Appsflyer',
             statTags: {
               destinationId: 'Non determinable',
               errorCategory: 'transformation',

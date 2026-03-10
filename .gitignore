@@ -124,10 +124,9 @@ dist-test
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
-.vscode
-
-# ignore tasks.json in .vscode
+.vscode/*
 !.vscode/tasks.json
+!.vscode/launch.json
 
 # yarn v2
 .yarn/cache

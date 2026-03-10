@@ -4850,7 +4850,6 @@ export const data = [
                   supportsVisualMapper: true,
                   transformAt: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 apiKey: secret4,
@@ -4978,7 +4977,6 @@ export const data = [
                   supportsVisualMapper: true,
                   transformAt: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 apiKey: secret4,
@@ -5156,7 +5154,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -5334,7 +5331,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -5511,7 +5507,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -5688,7 +5683,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -5862,7 +5856,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6039,7 +6032,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6217,7 +6209,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6395,7 +6386,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6572,7 +6562,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6746,7 +6735,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -6923,7 +6911,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret6,
@@ -7066,7 +7053,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -7220,7 +7206,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -7377,7 +7362,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -7534,7 +7518,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -7691,7 +7674,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -7862,7 +7844,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,
@@ -8033,7 +8014,6 @@ export const data = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: {},
               },
               Config: {
                 apiKey: secret8,

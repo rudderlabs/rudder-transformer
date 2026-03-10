@@ -69,9 +69,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -153,9 +151,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -223,9 +219,7 @@
             "eventTypeSettings": []
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -292,9 +286,7 @@
             "eventTypeSettings": []
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -376,9 +368,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -460,9 +450,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -544,9 +532,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -628,9 +614,7 @@
             ]
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       },
@@ -706,9 +690,7 @@
             "applicationId": "O2YARRI15I"
           },
           "DestinationDefinition": {
-            "Config": {
-              "cdkV2TestThreshold": 1
-            }
+            "Config": {}
           }
         }
       }

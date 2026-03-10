@@ -59,6 +59,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
+              endpointPath: '/subscriptions',
               headers: headers,
               params: {},
               body: {
@@ -152,6 +153,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+              endpointPath: '/subscriptions/unsubscribe',
               headers: headers,
               params: {},
               body: {
@@ -236,6 +238,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
+              endpointPath: '/subscriptions',
               headers: headers,
               params: {},
               body: {
@@ -321,6 +324,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/subscriptions',
+              endpointPath: '/subscriptions',
               headers: headers,
               params: {},
               body: {
@@ -433,6 +437,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              endpointPath: '/identity-resolution/user-identifiers',
               headers: headers,
               params: {},
               body: {
@@ -465,6 +470,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              endpointPath: '/attributes/custom',
               headers: headers,
               params: {},
               body: {
@@ -588,6 +594,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              endpointPath: '/identity-resolution/user-identifiers',
               headers: headers,
               params: {},
               body: {
@@ -693,6 +700,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              endpointPath: '/attributes/custom',
               headers: headers,
               params: {},
               body: {
@@ -790,6 +798,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              endpointPath: '/attributes/custom',
               headers: headers,
               params: {},
               body: {
@@ -894,6 +903,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/identity-resolution/user-identifiers',
+              endpointPath: '/identity-resolution/user-identifiers',
               headers: headers,
               params: {},
               body: {
@@ -926,6 +936,7 @@ export const identifyTestData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.attentivemobile.com/v1/attributes/custom',
+              endpointPath: '/attributes/custom',
               headers: headers,
               params: {},
               body: {

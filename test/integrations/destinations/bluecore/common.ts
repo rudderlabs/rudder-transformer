@@ -38,7 +38,5 @@ export const baseDestinationDefinition: DestinationDefinition = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
   Name: 'BLUECORE',
   DisplayName: 'Bluecore',
-  Config: {
-    cdkV2Enabled: true,
-  },
+  Config: {},
 };

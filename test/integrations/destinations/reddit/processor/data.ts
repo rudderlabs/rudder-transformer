@@ -79,7 +79,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -246,7 +246,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -398,7 +398,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -533,7 +533,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -668,7 +668,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -800,7 +800,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -942,7 +942,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1090,7 +1090,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1237,7 +1237,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1343,7 +1343,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1449,7 +1449,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1554,7 +1554,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',
@@ -1660,7 +1660,7 @@ export const data = [
                   },
                 ],
               },
-              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              DestinationDefinition: { Name: 'REDDIT', Config: {} },
             },
             metadata: {
               destinationId: 'destId',

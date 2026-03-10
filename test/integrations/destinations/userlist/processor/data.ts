@@ -11,9 +11,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',
@@ -198,9 +197,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',
@@ -401,9 +399,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',
@@ -552,9 +549,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',
@@ -669,9 +665,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',
@@ -786,9 +781,8 @@ export const data = [
           {
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'USERLIST',
+                Config: {},
               },
               Config: {
                 pushKey: 'userlist-push-key',

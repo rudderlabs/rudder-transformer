@@ -19,7 +19,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -156,7 +155,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -296,7 +294,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -422,7 +419,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -547,7 +543,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -671,7 +666,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -797,7 +791,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -929,7 +922,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1054,7 +1046,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1173,7 +1164,6 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },

@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -100,7 +100,7 @@ export const data = [
                 'Page-search': '',
                 'Page-title': '',
                 'Page-url': 'http://localhost/tests/html/index2.html',
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _n: 'Loaded a Page',
                 _t: '1579847342',
@@ -142,7 +142,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -234,7 +234,7 @@ export const data = [
                 country: 'India',
                 email: 'sayan@disney.com',
                 firstname: 'Sayan',
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _t: '1579847342',
                 _d: 1,
@@ -275,7 +275,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -361,7 +361,7 @@ export const data = [
                 country: 'USA',
                 email: 'mickey@disney.com',
                 firstname: 'Mickey',
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _t: '1579847342',
                 _d: 1,
@@ -402,7 +402,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -492,7 +492,7 @@ export const data = [
                 'test revenue kissmetrics-currency': 'USD',
                 'test revenue kissmetrics - revenue': 50,
                 'Billing Amount': 50,
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _n: 'test revenue kissmetrics',
                 _t: '1579847342',
@@ -534,7 +534,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -617,7 +617,7 @@ export const data = [
               endpoint: 'https://trk.kissmetrics.com/a',
               headers: {},
               params: {
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _n: '1234abc',
               },
@@ -657,7 +657,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                apiKey: 'dummyApiKey',
                 prefixProperties: true,
                 useNativeSDK: false,
               },
@@ -785,7 +785,7 @@ export const data = [
                 'KM Order Completed-subtotal': 22.5,
                 'KM Order Completed-tax': 2,
                 'KM Order Completed-total': 27.5,
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 _n: 'KM Order Completed',
                 _t: '1579847342',
@@ -827,7 +827,7 @@ export const data = [
                 'KM Order Completed-quantity': 1,
                 'KM Order Completed-sku': '45790-32',
                 'KM Order Completed-url': 'https://www.example.com/product/path',
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               },
               body: {
@@ -864,7 +864,7 @@ export const data = [
                 'KM Order Completed-product_id': '505bd76785ebb509fc183733',
                 'KM Order Completed-quantity': 2,
                 'KM Order Completed-sku': '46493-32',
-                _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                _k: 'dummyApiKey',
                 _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               },
               body: {

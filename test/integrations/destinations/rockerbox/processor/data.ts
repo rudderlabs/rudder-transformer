@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                advertiserId: 'KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF',
+                advertiserId: 'dummyAdvertiserId',
               },
             },
             message: {
@@ -619,7 +619,7 @@ export const data = [
           {
             destination: {
               Config: {
-                advertiserId: 'KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF',
+                advertiserId: 'dummyAdvertiserId',
               },
             },
             message: {

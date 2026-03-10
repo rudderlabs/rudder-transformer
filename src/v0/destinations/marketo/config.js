@@ -27,9 +27,6 @@ const formatConfig = (destination) => ({
     ? getHashFromArray(destination.Config.rudderEventsMapping, 'event', 'marketoPrimarykey', false)
     : getHashFromArray(destination.Config.customActivityPrimaryKeyMap, 'from', 'to', false),
   leadTraitMapping: getHashFromArray(destination.Config.leadTraitMapping, 'from', 'to', false),
-  responseRules: destination.DestinationDefinition
-    ? destination.DestinationDefinition.ResponseRules
-    : null,
 });
 
 module.exports = {

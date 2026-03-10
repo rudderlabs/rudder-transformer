@@ -12,7 +12,7 @@ const Cache = require('../../util/cache');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
+const ACCESS_TOKEN_CACHE = new Cache('WOOTRIC_ACCESS_TOKEN', ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
 /**
  * Returns access token using axios call with parameters (username, password, accountToken taken from destination.Config)

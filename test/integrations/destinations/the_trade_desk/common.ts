@@ -16,9 +16,9 @@ const sampleDestination: Destination = {
     audienceId: segmentName,
   },
   DestinationDefinition: {
-    Config: { cdkV2Enabled: true },
+    Config: {},
     ID: '123',
-    Name: 'TRADEDESK',
+    Name: 'THE_TRADE_DESK',
     DisplayName: 'Trade Desk',
   },
   ID: '345',

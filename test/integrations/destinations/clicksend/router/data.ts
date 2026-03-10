@@ -21,9 +21,8 @@ const commonDestination = {
     defaultSource: 'php',
   },
   DestinationDefinition: {
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Name: 'CLICKSEND',
+    Config: {},
   },
 };
 

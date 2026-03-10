@@ -57,7 +57,7 @@ const responseBuilder = (payload, endpoint, Config) => {
  */
 const buildPageLoadPayload = (message, campaignId, impactAppId, enableEmailHashing) => {
   let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]);
-  if (isDefinedAndNotNull(payload.CustomerEmail)) {
+  if (isDefinedAndNotNull(payload.CustomerEmail) && typeof payload?.CustomerEmail === 'string') {
     payload.CustomerEmail = enableEmailHashing
       ? sha1(payload?.CustomerEmail.trim())
       : payload?.CustomerEmail;
@@ -172,7 +172,9 @@ const processTrackEvent = (message, Config) => {
       respArray.push(responseBuilder(payload, endpoint, Config));
     }
     if (eventType.includes('action')) {
-      payload.ClickId = message.context?.referrer?.id || message.properties?.clickId;
+      if (!isDefinedAndNotNull(payload.ClickId)) {
+        payload.ClickId = message.context?.referrer?.id || message.properties?.clickId;
+      }
       respArray.push(responseBuilder(payload, endpoint, Config));
     }
     return respArray;

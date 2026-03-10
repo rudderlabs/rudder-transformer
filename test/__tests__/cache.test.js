@@ -1,11 +1,30 @@
 const Cache = require('../../src/v0/util/cache');
+const stats = require('../../src/util/stats');
+
+jest.mock('../../src/util/stats', () => {
+  const statsMap = new Map();
+  const getStatsKey = (name, tags) => {
+    const tagStr = Object.entries(tags).map(([k, v]) => `${k}="${v}"`).join(',');
+    return tagStr ? `${name}_{${tagStr}}` : name;
+  };
+  return {
+    gauge: jest.fn().mockImplementation((name, value, tags) => {
+      statsMap.set(getStatsKey(name, tags), value);
+    }),
+    counter: jest.fn().mockImplementation((name, value, tags) => {
+      statsMap.set(getStatsKey(name, tags), value);
+    }),
+    getStats: (name, tags) => statsMap.get(getStatsKey(name, tags)),
+  };
+});
 
 describe('Cache class', () => {
   let cache;
   const DEFAULT_TTL = 5; // 5 seconds
 
   beforeEach(() => {
-    cache = new Cache(DEFAULT_TTL);
+    cache = new Cache("TEST", DEFAULT_TTL);
+    jest.clearAllMocks();
   });
 
   describe('set method', () => {
@@ -58,6 +77,17 @@ describe('Cache class', () => {
       // We'll verify this in the get tests
       expect(cache.set(key, 'updated')).toBe(true);
     });
+
+    it('should emit stats when a value is set', async () => {
+      const cache = new Cache("TEST", DEFAULT_TTL);
+      const times = 10;
+      for (let i = 0; i < times; i++) {
+        cache.set(`testKey${i}`, `test value ${i}` );
+      }
+      expect(stats.getStats('node_cache_keys', {name: 'TEST'})).toBe(times);
+      expect(stats.getStats('node_cache_ksize', {name: 'TEST'})).toBe(times * 8);
+      expect(stats.getStats('node_cache_vsize', {name: 'TEST'})).toBe(times * 12);
+    });
   });
 
   describe('get method without store function', () => {
@@ -78,7 +108,7 @@ describe('Cache class', () => {
     });
 
     it('should return undefined for expired keys when no store function provided', async () => {
-      const shortTTLCache = new Cache(0.1); // 100ms TTL
+      const shortTTLCache = new Cache("TEST", 0.1); // 100ms TTL
       const key = 'expiredKey';
 
       shortTTLCache.set(key, 'value');
@@ -207,6 +237,48 @@ describe('Cache class', () => {
       expect(result).toEqual(value);
       expect(await cache.get(key)).toEqual(value);
     });
+
+    it('should emit stats when a value is fetched', async () => {
+      const cache = new Cache("TEST", DEFAULT_TTL);
+      const times = 2;
+      for (let i = 0; i < times; i+=2) {
+        cache.set(`testKey${i}`, `test value ${i}`, DEFAULT_TTL);
+      }
+      for (let i = 0; i < times; i++) {
+        const result = await cache.get(`testKey${i}`, async () => `test value ${i}`);
+        expect(result).toEqual(`test value ${i}`);
+      }
+      expect(stats.getStats('node_cache_hits', {name: 'TEST'})).toBe(times / 2);
+      expect(stats.getStats('node_cache_misses', {name: 'TEST'})).toBe(1);
+      expect(stats.getStats('node_cache_keys', {name: 'TEST'})).toBe(times);
+      expect(stats.getStats('node_cache_ksize', {name: 'TEST'})).toBe(times * 8);
+      expect(stats.getStats('node_cache_vsize', {name: 'TEST'})).toBe(times * 12);
+    });
+
+    it('should correctly handle falsy values using get() instead of has()', async () => {
+      // This test verifies that using get() instead of has() correctly handles
+      // falsy values that would be problematic with has() check
+      const testCases = [
+        { key: 'zero', value: 0 },
+        { key: 'false', value: false },
+        { key: 'emptyString', value: '' },
+        { key: 'null', value: null },
+        { key: 'undefined', value: null },
+      ];
+
+      for (const { key, value } of testCases) {
+        // Get should return the falsy value (not undefined)
+        const result = await cache.get(key);
+        expect(result).toBeUndefined();
+
+        // Set falsy value directly
+        cache.set(key, value);
+
+        // Verify it's actually cached by getting again
+        const result2 = await cache.get(key);
+        expect(result2).toBe(value);
+      }
+    });
   });
 
   describe('del method', () => {
@@ -233,6 +305,50 @@ describe('Cache class', () => {
       const result = await cache.get(key);
 
       expect(result).toBeUndefined();
+    });
+
+    it('should emit stats when a value is deleted', async () => {
+      const cache = new Cache("TEST", DEFAULT_TTL);
+      const times = 10;
+      for (let i = 0; i < times; i++) {
+        cache.set(`testKey${i}`, `test value ${i}`);
+      }
+      for (let i = 0; i < times; i+=2) {
+        cache.del(`testKey${i}`);
+      }
+      expect(stats.getStats('node_cache_keys', {name: 'TEST'})).toBe(times / 2);
+      expect(stats.getStats('node_cache_ksize', {name: 'TEST'})).toBe((times / 2) * 8);
+      expect(stats.getStats('node_cache_vsize', {name: 'TEST'})).toBe((times / 2) * 12);
+    });
+  });
+
+  describe('stats emission', () => {
+    it('with custom tags', async () => {
+      const tags = { module: 'test', feature: 'test' };
+      const cache = new Cache("TEST", DEFAULT_TTL, tags);
+      cache.set('key1', 'value1');
+      cache.set('key2', 'value2');
+      const result = await cache.get('key1');
+      expect(result).toBe('value1');
+      cache.del('key1');
+      expect(stats.getStats('node_cache_hits', {name: 'TEST', ...tags})).toBe(1);
+      expect(stats.getStats('node_cache_misses', {name: 'TEST', ...tags})).toBe(0);
+      expect(stats.getStats('node_cache_keys', {name: 'TEST', ...tags})).toBe(1);
+      expect(stats.getStats('node_cache_ksize', {name: 'TEST', ...tags})).toBe(4);
+      expect(stats.getStats('node_cache_vsize', {name: 'TEST', ...tags})).toBe(6);
+    });
+    it('without custom tags', async () => {
+      const cache = new Cache("TEST", DEFAULT_TTL);
+      cache.set('key1', 'value1');
+      cache.set('key2', 'value2');
+      const result = await cache.get('key1');
+      expect(result).toBe('value1');
+      cache.del('key1');
+      expect(stats.getStats('node_cache_hits', {name: 'TEST'})).toBe(1);
+      expect(stats.getStats('node_cache_misses', {name: 'TEST'})).toBe(0);
+      expect(stats.getStats('node_cache_keys', {name: 'TEST'})).toBe(1);
+      expect(stats.getStats('node_cache_ksize', {name: 'TEST'})).toBe(4);
+      expect(stats.getStats('node_cache_vsize', {name: 'TEST'})).toBe(6);
     });
   });
 });

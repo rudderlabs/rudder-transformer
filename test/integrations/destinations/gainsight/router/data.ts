@@ -107,7 +107,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accessKey: 'sample-access-key',
@@ -215,7 +214,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accessKey: 'sample-access-key',
@@ -318,7 +316,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accessKey: 'sample-access-key',
@@ -411,7 +408,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accessKey: 'sample-access-key',

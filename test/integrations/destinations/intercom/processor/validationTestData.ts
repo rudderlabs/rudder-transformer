@@ -22,11 +22,9 @@ const destination: Destination = {
   Name: 'intercom',
   DestinationDefinition: {
     ID: '123',
-    Name: 'intercom',
+    Name: 'INTERCOM',
     DisplayName: 'Intercom',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   Config: {
     apiKey: secret1,

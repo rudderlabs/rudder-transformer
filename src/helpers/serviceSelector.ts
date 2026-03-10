@@ -5,7 +5,8 @@ import { INTEGRATION_SERVICE } from '../routes/utils/constants';
 import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
 import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
-import { FixMe, ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
+import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types';
+import { shouldUseCdkV2 } from '../cdk/v2/utils';
 
 export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
@@ -15,10 +16,6 @@ export class ServiceSelector {
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
-
-  private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
-    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
-  }
 
   private static fetchCachedService(serviceType: string) {
     if (this.serviceMap.has(serviceType)) {
@@ -43,9 +40,9 @@ export class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: FixMe =
-      events[0]?.destination?.DestinationDefinition?.Config;
-    if (this.isCdkV2Destination(destinationDefinitionConfig)) {
+    const destinationType = events[0]?.destination?.DestinationDefinition?.Name ?? '';
+    const workspaceId = events[0]?.metadata?.workspaceId ?? '';
+    if (shouldUseCdkV2(destinationType, workspaceId)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
     }
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);

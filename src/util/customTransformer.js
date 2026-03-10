@@ -331,6 +331,7 @@ async function userTransformHandler(
   libraryVersionIDs,
   trRevCode = {},
   testMode = false,
+  returnMetadata = false,
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
@@ -357,15 +358,17 @@ async function userTransformHandler(
 
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
-          userTransformedEvents = {
-            transformedEvents: result.transformedEvents.map((ev) => {
-              if (ev.error) {
-                return { error: ev.error };
-              }
-              return ev.transformedEvent;
-            }),
-            logs: result.logs,
-          };
+          userTransformedEvents = returnMetadata
+            ? result
+            : {
+                transformedEvents: result.transformedEvents.map((ev) => {
+                  if (ev.error) {
+                    return { error: ev.error };
+                  }
+                  return ev.transformedEvent;
+                }),
+                logs: result.logs,
+              };
         }
       } else {
         result = await runUserTransform(

@@ -24,11 +24,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',
@@ -86,11 +84,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',
@@ -149,11 +145,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',
@@ -283,11 +277,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',
@@ -366,11 +358,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',
@@ -449,11 +439,9 @@ export const data: RouterTestData[] = [
                 },
                 DestinationDefinition: {
                   ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
+                  Name: 'ACCOIL_ANALYTICS',
                   DisplayName: 'Default Display Name',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Enabled: true,
                 WorkspaceID: 'default-workspace',

@@ -21,7 +21,6 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { SourcePostTransformationService } from './postTransformation';
 import logger from '../../logger';
-import { getBodyFromV2SpecPayload } from '../../v0/util';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
 
 const SUPPORTED_HYDRATION_SOURCE_TYPES = ['facebook_lead_ads_native'];
@@ -63,20 +62,20 @@ export class NativeIntegrationSourceService implements SourceService {
           stats.increment('source_transform_errors', {
             source: sourceType,
           });
-          logger.debug(`Error during source Transform: ${error}`, {
+          logger.error(`Error during source Transform: ${error}`, {
             ...logger.getLogMetadata(metaTO.errorDetails),
           });
-          // log the payload schema here
-          const duplicateSourceEvent: any = sourceEvent;
+          const requestCopy = {
+            // Spreading to avoid mutation of the original object
+            ...sourceEvent.request,
+          };
           try {
-            duplicateSourceEvent.output.request.body = getBodyFromV2SpecPayload(
-              duplicateSourceEvent?.output,
-            );
+            requestCopy.body = JSON.parse(requestCopy.body);
           } catch (e) {
             /* empty */
           }
           logger.error(
-            `Sample Payload Schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(duplicateSourceEvent))}`,
+            `Request schema for source ${sourceType} : ${JSON.stringify(JsonSchemaGenerator.generate(requestCopy))}`,
           );
 
           return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);

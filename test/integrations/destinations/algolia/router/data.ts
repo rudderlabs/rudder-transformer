@@ -106,7 +106,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey',
@@ -210,7 +209,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey-2',
@@ -355,7 +353,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   apiKey: 'apiKey',
@@ -388,7 +385,7 @@ export const data = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'native',
+                implementation: 'cdkV2',
                 module: 'destination',
               },
               statusCode: 400,
@@ -2021,6 +2018,7 @@ export const data = [
                 id: 'destId',
                 workspaceId: 'wspId',
                 DestinationDefinition: {
+                  Name: 'ALGOLIA',
                   Config: {
                     destConfig: {
                       defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
@@ -2029,7 +2027,7 @@ export const data = [
                     excludeKeys: [],
                     includeKeys: [],
                     transformAt: 'router',
-                    cdkV2Enabled: true,
+
                     transformAtV1: 'router',
                     supportedSourceTypes: [
                       'android',
@@ -2047,7 +2045,6 @@ export const data = [
                     saveDestinationResponse: true,
                   },
                   configSchema: {},
-                  responseRules: {},
                   options: null,
                   id: '1xrHTzX8VrnvL6FTGOrBBgT687S',
                   name: 'ALGOLIA',
@@ -2149,8 +2146,8 @@ export const data = [
                   ],
                 },
                 DestinationDefinition: {
+                  Name: 'ALGOLIA',
                   Config: {
-                    cdkV2Enabled: true,
                     destConfig: {
                       defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
                     },
@@ -2181,7 +2178,6 @@ export const data = [
                   id: '1xrHTzX8VrnvL6FTGOrBBgT687S',
                   name: 'ALGOLIA',
                   options: null,
-                  responseRules: {},
                   updatedAt: '2023-06-13T13:18:08.335Z',
                 },
                 createdAt: '2023-05-26T14:18:01.205Z',
@@ -2228,12 +2224,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2287,7 +2281,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -2325,12 +2319,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2384,7 +2376,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -2422,12 +2414,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2481,7 +2471,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -2519,12 +2509,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2578,7 +2566,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -2669,12 +2657,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2728,7 +2714,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -2777,12 +2763,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2836,7 +2820,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -2885,12 +2869,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -2944,7 +2926,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -2993,12 +2975,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3052,7 +3032,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -3074,12 +3054,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3133,7 +3111,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -3171,12 +3149,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3230,7 +3206,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -3268,12 +3244,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3327,7 +3301,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -3365,12 +3339,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3424,7 +3396,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -3462,12 +3434,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3521,7 +3491,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -3646,12 +3616,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3705,7 +3673,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -3754,12 +3722,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3813,7 +3779,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -3862,12 +3828,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -3921,7 +3885,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },
@@ -3943,12 +3907,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4002,7 +3964,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -4040,12 +4002,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4099,7 +4059,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -4137,12 +4097,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4196,7 +4154,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -4234,12 +4192,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4293,7 +4249,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -4331,12 +4287,10 @@ export const data = [
             {
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4390,7 +4344,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
               message: {
@@ -4549,12 +4503,10 @@ export const data = [
               statusCode: 200,
               destination: {
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Name: 'ALGOLIA',
+                  Config: {},
                 },
                 Config: {
-                  cdkV2Enabled: true,
                   apiKey: defaultApiKey,
                   applicationId: 'O2YARRI15I',
                   eventTypeSettings: [
@@ -4608,7 +4560,7 @@ export const data = [
                 ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                 Name: 'ALGOLIA',
                 Enabled: true,
-                cdkV2Enabled: true,
+
                 Transformations: [],
               },
             },

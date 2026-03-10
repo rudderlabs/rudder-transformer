@@ -81,6 +81,7 @@ export const data: RouterTestData[] = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+                endpointPath: '/subscriptions/unsubscribe',
                 headers: headers,
                 params: {},
                 body: {

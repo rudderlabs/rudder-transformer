@@ -14,6 +14,7 @@ const {
 
 const { trackMapping } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { isCustomAdjustmentTypeSupported } = require('./utils');
 
 /**
  * This function is helping to update the mappingJson.
@@ -80,7 +81,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   let flag = false;
   const { Config } = destination;
   const { event } = message;
-  const { listOfConversions } = Config;
+  const { listOfConversions, adjustmentType } = Config;
   if (listOfConversions.some((i) => i.conversions === event)) {
     flag = true;
   }
@@ -108,6 +109,16 @@ const processTrackEvent = async (metadata, message, destination) => {
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
   payload.conversionAdjustments[0].userIdentifiers = arr.filter((item) => !!item);
+
+  if (
+    isCustomAdjustmentTypeSupported(metadata?.workspaceId) &&
+    adjustmentType &&
+    adjustmentType === 'RESTATEMENT'
+  ) {
+    payload.conversionAdjustments[0].adjustmentType = adjustmentType;
+    delete payload.conversionAdjustments[0].userIdentifiers;
+    delete payload.conversionAdjustments[0].userAgent;
+  }
   return responseBuilder(metadata, message, destination, payload);
 };
 

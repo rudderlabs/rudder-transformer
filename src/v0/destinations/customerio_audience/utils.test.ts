@@ -41,14 +41,36 @@ describe('utils', () => {
           length: 0,
         },
       },
+      {
+        name: 'should use EU base URL when region is EU',
+        input: {
+          insertOrUpdateRespList: [{ payload: { ids: ['user1'] }, metadata: { sourceId: '1' } }],
+          deleteRespList: [{ payload: { ids: ['user2'] }, metadata: { sourceId: '2' } }],
+        },
+        destinationOverride: {
+          Config: {
+            siteId: 'test-site',
+            apiKey: 'test-key',
+            region: 'EU',
+          },
+        },
+        expected: {
+          length: 2,
+          firstEndpoint: 'https://track-eu.customer.io/api/v1/segments/123/add_customers',
+          secondEndpoint: 'https://track-eu.customer.io/api/v1/segments/123/remove_customers',
+        },
+      },
     ];
 
-    testCases.forEach(({ name, input, expected }) => {
+    testCases.forEach(({ name, input, expected, destinationOverride }) => {
       test(name, () => {
+        const destination = destinationOverride
+          ? { ...mockDestination, ...destinationOverride }
+          : mockDestination;
         const result = batchResponseBuilder(
           input.insertOrUpdateRespList,
           input.deleteRespList,
-          mockDestination as any,
+          destination as any,
           mockConnection as any,
         );
 

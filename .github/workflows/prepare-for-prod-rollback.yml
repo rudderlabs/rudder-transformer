@@ -51,7 +51,7 @@ jobs:
 
       - name: Clone Devops Repo
         env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}   
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudder-devops
 
@@ -129,10 +129,9 @@ jobs:
 
       - name: Clone Operator Repo
         env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}  
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudderstack-operator
-
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:

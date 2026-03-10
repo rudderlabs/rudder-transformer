@@ -98,7 +98,7 @@ jobs:
 
       - name: Clone Devops Repo
         env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}  
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudder-devops
 

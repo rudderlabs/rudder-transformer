@@ -884,44 +884,9 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
-                  endpointPath: 'users',
-                  headers: {},
-                  params: {
-                    access_token: 'ABC',
-                    payload: {
-                      schema: ['EMAIL', 'FI'],
-                      data: [
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        [
-                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-                        ],
-                        ['', ''],
-                      ],
-                    },
-                  },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
-                },
-              ],
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
               metadata: [
                 {
                   attemptNum: 1,
@@ -972,31 +937,16 @@ export const data = [
                   workspaceId: 'default-workspaceId',
                 },
               ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  accessToken: 'ABC',
-                  disableFormat: false,
-                  isHashRequired: true,
-                  isRaw: false,
-                  skipVerify: false,
-                  subType: 'NA',
-                  type: 'NA',
-                },
-                Name: 'FB_CUSTOM_AUDIENCE',
-                Enabled: true,
-                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
-                DestinationDefinition: {
-                  Config: {},
-                  DisplayName: 'FB_CUSTOM_AUDIENCE',
-                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
-                  Name: 'FB_CUSTOM_AUDIENCE',
-                },
-                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                Transformations: [],
-                IsConnectionEnabled: true,
-                IsProcessorEnabled: true,
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
               },
             },
           ],

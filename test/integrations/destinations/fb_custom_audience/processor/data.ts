@@ -2029,47 +2029,17 @@ export const data = [
         status: 200,
         body: [
           {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
-              endpointPath: 'users',
-              headers: {},
-              userId: '',
-              params: {
-                access_token: 'ABC',
-                payload: {
-                  is_raw: true,
-                  data_source: {
-                    type: 'UNKNOWN',
-                    sub_type: 'ANYTHING',
-                  },
-                  schema: [
-                    'EMAIL',
-                    'DOBM',
-                    'DOBD',
-                    'DOBY',
-                    'PHONE',
-                    'GEN',
-                    'FI',
-                    'MADID',
-                    'ZIP',
-                    'ST',
-                    'COUNTRY',
-                  ],
-                  data: [['', '', '', '', '', '', '', '', '', '', '']],
-                },
-              },
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
+            error:
+              'All user properties [EMAIL, DOBM, DOBD, DOBY, PHONE, GEN, FI, MADID, ZIP, ST, COUNTRY] are invalid or null. At least one valid field is required.',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
             },
-            statusCode: 200,
+            statusCode: 400,
           },
         ],
       },

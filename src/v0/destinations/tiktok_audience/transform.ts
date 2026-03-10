@@ -1,17 +1,19 @@
 import md5 from 'md5';
 import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
-import type { TiktokAudienceRequest } from './types';
-import { TiktokAudienceRouterRequestSchema } from './types';
+import type { TiktokAudienceListRequest } from './types';
+import { TiktokAudienceListRouterRequestSchema } from './types';
 import { SHA256_TRAITS, ACTION_MAP, ENDPOINT, ENDPOINT_PATH } from './config';
 import {
   defaultRequestConfig,
   getDestinationExternalIDInfoForRetl,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
+  isEventSentByVDMV2Flow,
 } from '../../util';
+import { processTiktokAudienceRecord, validateAudienceRecordEvent } from './transform.record';
 
-function prepareIdentifiersList(event: TiktokAudienceRequest) {
+function prepareIdentifiersList(event: TiktokAudienceListRequest) {
   const { message, destination, metadata } = event;
   const { isHashRequired } = destination.Config;
 
@@ -57,7 +59,7 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
 
 function buildResponseForProcessTransformation(
   identifiersList: any[],
-  event: TiktokAudienceRequest,
+  event: TiktokAudienceListRequest,
 ) {
   const accessToken = event.metadata?.secret?.accessToken;
   const anonymousId = event.message?.anonymousId;
@@ -80,21 +82,24 @@ function buildResponseForProcessTransformation(
   return responses;
 }
 
-function validateEvent(event: unknown) {
-  const result = TiktokAudienceRouterRequestSchema.safeParse(event);
+function validateAudienceListEvent(event: unknown) {
+  const result = TiktokAudienceListRouterRequestSchema.safeParse(event);
   if (!result.success) {
     throw new InstrumentationError(formatZodError(result.error));
   }
   return result.data;
 }
 
-function processTiktokAudience(event: TiktokAudienceRequest) {
+function processTiktokAudienceList(event: TiktokAudienceListRequest) {
   const identifierLists = prepareIdentifiersList(event);
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 
 function process(event: unknown) {
-  return processTiktokAudience(validateEvent(event));
+  if (isEventSentByVDMV2Flow(event)) {
+    return processTiktokAudienceRecord(validateAudienceRecordEvent(event));
+  }
+  return processTiktokAudienceList(validateAudienceListEvent(event));
 }
 
 const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
@@ -105,8 +110,16 @@ const processRouterDest = async (events: unknown[]): Promise<RouterTransformatio
 
   for (const event of events) {
     try {
-      const tiktokEvent = validateEvent(event);
-      const response = processTiktokAudience(tiktokEvent);
+      let tiktokEvent; let response;
+
+      if (isEventSentByVDMV2Flow(event)) {
+        tiktokEvent = validateAudienceRecordEvent(event);
+        response = processTiktokAudienceRecord(tiktokEvent);
+      } else {
+        tiktokEvent = validateAudienceListEvent(event);
+        response = processTiktokAudienceList(tiktokEvent);
+      }
+
       successfulResponses.push(
         getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
       );

@@ -723,4 +723,300 @@ export const nativeData = [
       },
     },
   },
+  {
+    name: 'tiktok_audience',
+    description: 'Native record events: insert, delete, update actions',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 301,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'delete',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 302,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 303,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 301,
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'remove',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 302,
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 303,
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

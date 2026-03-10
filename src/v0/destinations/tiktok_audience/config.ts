@@ -3,6 +3,12 @@ export const ACTION_MAP: Record<string, string> = {
   remove: 'delete',
 };
 
+export const ACTION_RECORD_MAP: Record<string, string> = {
+  insert: 'add',
+  delete: 'remove',
+  update: 'add',
+};
+
 export const SHA256_TRAITS = ['IDFA_SHA256', 'AAID_SHA256', 'EMAIL_SHA256', 'PHONE_SHA256'];
 
 export const BASE_URL = 'https://business-api.tiktok.com/open_api/v1.3';

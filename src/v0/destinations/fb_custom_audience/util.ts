@@ -16,7 +16,13 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint, isRejectInvalidFieldsEnabled, DESTINATION } from './config';
+import {
+  typeFields,
+  subTypeFields,
+  getEndPoint,
+  isRejectInvalidFieldsEnabled,
+  DESTINATION,
+} from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,

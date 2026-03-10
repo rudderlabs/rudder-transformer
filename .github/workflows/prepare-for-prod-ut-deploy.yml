@@ -97,8 +97,10 @@ jobs:
           echo "User Transformer: $UT_TAG_NAME"
 
       - name: Clone Devops Repo
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}  
         run: |
-          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          gh repo clone rudderlabs/rudder-devops
 
       - name: Extract branch name
         id: extract_branch_name

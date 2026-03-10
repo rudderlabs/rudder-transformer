@@ -100,8 +100,10 @@ jobs:
           echo "Transformer: $TAG_NAME"
 
       - name: Clone Devops Repo
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudder-devops.git
+          gh repo clone rudderlabs/rudder-devops
 
       - name: Extract branch name
         id: extract_branch_name
@@ -197,8 +199,10 @@ jobs:
           gh pr create --fill
 
       - name: Clone Operator Repo
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          git clone https://x-access-token:${{ steps.generate-token.outputs.token }}@github.com/rudderlabs/rudderstack-operator.git
+          gh repo clone rudderlabs/rudderstack-operator
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:

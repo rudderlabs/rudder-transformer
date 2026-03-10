@@ -62,7 +62,12 @@ const processRecord = (
     let updatedProperty: unknown = userProperty;
 
     if (isHashRequired && !disableFormat) {
-      updatedProperty = ensureApplicableFormat(eachProperty, userProperty, workspaceId, destinationId);
+      updatedProperty = ensureApplicableFormat(
+        eachProperty,
+        userProperty,
+        workspaceId,
+        destinationId,
+      );
     }
 
     dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);

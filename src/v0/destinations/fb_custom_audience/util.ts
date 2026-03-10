@@ -16,7 +16,7 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint } from './config';
+import { typeFields, subTypeFields, getEndPoint , isRejectInvalidFieldsEnabled } from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -97,8 +97,8 @@ const ensureApplicableFormat = (
         if (validator.isEmail(emailValue)) {
           updatedProperty = emailValue;
         } else {
-          updatedProperty = '';
           stats.increment('fb_custom_audience_invalid_email', { workspaceId, destinationId });
+          updatedProperty = isRejectInvalidFieldsEnabled() ? '' : emailValue;
         }
         break;
       }
@@ -146,11 +146,11 @@ const ensureApplicableFormat = (
         if (countryCode.length === 2) {
           updatedProperty = countryCode;
         } else {
-          updatedProperty = '';
           stats.increment('fb_custom_audience_invalid_country_code', {
             workspaceId,
             destinationId,
           });
+          updatedProperty = isRejectInvalidFieldsEnabled() ? '' : countryCode;
         }
         break;
       }

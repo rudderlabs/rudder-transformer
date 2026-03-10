@@ -94,3 +94,4 @@ jobs:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      RELEASE_PRIVATE_KEY: ${{ secrets.RELEASE_PRIVATE_KEY }}

@@ -1,10 +1,4 @@
 import {
-  eventStreamAudienceListRouterRequest,
-  eventStreamRecordV1RouterRequest,
-  esDestinationAudience,
-  esDestinationRecord,
-} from './eventStream';
-import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
   rETLRecordV2RouterInvalidRequest,
@@ -15,6 +9,15 @@ import {
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
+import {
+  esDestinationAudience,
+  esDestinationRecord,
+  eventStreamAudienceListRouterRequest,
+  eventStreamHashOffRouterRequest,
+  eventStreamPreHashedRouterRequest,
+  eventStreamRecordV1RouterRequest,
+} from './eventStream';
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -1247,5 +1250,93 @@ export const data = [
         },
       },
     },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'unhashed data with isHashRequired false should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when unhashed data is sent with hashing disabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamHashOffRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationAudience,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when pre-hashed data is sent with hashing enabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamPreHashedRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationRecord,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
 ].map((d) => ({ ...d, mockFns }));

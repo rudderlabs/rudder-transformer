@@ -15,7 +15,7 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint } from './config';
+import { typeFields, subTypeFields, getEndPoint, DESTINATION } from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -23,6 +23,7 @@ import {
 } from '../../util';
 import stats from '../../../util/stats';
 import * as config from './config';
+import { validateHashingConsistency } from '../../util/audienceUtils';
 
 /**
  * Example payload ={
@@ -155,7 +156,15 @@ const getUpdatedDataElement = (
   isHashRequired: boolean,
   propertyName: string,
   propertyValue: unknown,
+  workspaceId: string,
+  destinationId: string,
 ): unknown[] => {
+  const destination = {
+    workspaceId,
+    id: destinationId,
+    type: DESTINATION,
+    config: { isHashRequired },
+  };
   // Normalize undefined/null to empty string
   const normalizedValue = propertyValue ?? '';
 
@@ -177,9 +186,14 @@ const getUpdatedDataElement = (
    * Reference: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
    * Send an empty string for the properties for which the user hasn't provided any value.
    */
-  const isHashable = isHashRequired && propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+  const isHashableField = propertyName !== 'MADID' && propertyName !== 'EXTERN_ID';
+  const shouldHash = isHashRequired && isHashableField;
 
-  if (isHashable) {
+  if (isHashableField) {
+    validateHashingConsistency(propertyName, String(normalizedValue), destination);
+  }
+
+  if (shouldHash) {
     dataElement.push(normalizedValue ? sha256(String(normalizedValue)) : '');
   } else {
     dataElement.push(normalizedValue);
@@ -196,6 +210,7 @@ const prepareDataField = (
   isHashRequired: boolean,
   disableFormat: boolean,
   destinationId: string,
+  workspaceId: string,
 ): unknown[][] => {
   const data: unknown[][] = [];
   let nullEvent = true; // flag to check for bad events (all user properties are null)
@@ -217,6 +232,8 @@ const prepareDataField = (
         isHashRequired,
         eachProperty,
         updatedProperty,
+        workspaceId,
+        destinationId,
       );
 
       if (dataElement[dataElement.length - 1]) {

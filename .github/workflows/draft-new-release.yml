@@ -87,7 +87,7 @@ jobs:
           echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
           echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
 
-      - name: Create Release Branch via GitHub API
+      - name: Create Release Branch
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
           RELEASE_BRANCH_NAME: ${{ steps.create-release.outputs.branch_name }}

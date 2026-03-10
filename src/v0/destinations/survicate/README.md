@@ -43,17 +43,17 @@ test/integrations/destinations/survicate/
 **Endpoint:** `POST /endpoint/rudder-stack/identify`
 
 **Requirements:**
-- `userId` is required (anonymous calls are skipped)
+- `user_id` is required (anonymous calls are skipped)
 
 **Transformed Payload:**
 ```json
 {
-  "userId": "user-123",
+  "user_id": "user-123",
   "name": "John Doe",
   "email": "john@example.com",
   "company_id": "company-A",
   "timestamp": "2020-04-22T08:06:20.337Z",
-  "messageId": "msg-123",
+  "message_id": "msg-123",
   "context": {
     "locale": "en-US",
     "userAgent": "Mozilla/5.0...",
@@ -67,19 +67,19 @@ test/integrations/destinations/survicate/
 **Endpoint:** `POST /endpoint/rudder-stack/group`
 
 **Requirements:**
-- `userId` is required (anonymous calls are skipped)
-- `groupId` is required
+- `user_id` is required (anonymous calls are skipped)
+- `group_id` is required
 
 **Transformed Payload:**
 ```json
 {
-  "userId": "user-123",
-  "groupId": "company-A",
+  "user_id": "user-123",
+  "group_id": "company-A",
   "name": "Acme Inc.",
   "plan": "Enterprise",
   "employees": 1200,
   "timestamp": "2025-11-07T10:15:00.000Z",
-  "messageId": "msg-123",
+  "message_id": "msg-123",
   "context": {
     "locale": "en-US"
   }
@@ -88,16 +88,16 @@ test/integrations/destinations/survicate/
 
 ### Track Events
 
-**Endpoint:** `POST /endpoint/rudder_stack/track`
+**Endpoint:** `POST /endpoint/rudder-stack/track`
 
 **Requirements:**
-- `userId` is required (anonymous calls are skipped)
+- `user_id` is required (anonymous calls are skipped)
 - `event` is required (event name)
 
 **Transformed Payload:**
 ```json
 {
-  "userId": "user-123",
+  "user_id": "user-123",
   "event": "Product Purchased",
   "properties": {
     "order_ID": "1",
@@ -106,7 +106,7 @@ test/integrations/destinations/survicate/
     "price": 60
   },
   "timestamp": "2020-04-22T08:06:20.338Z",
-  "messageId": "msg-123"
+  "message_id": "msg-123"
 }
 ```
 
@@ -261,8 +261,8 @@ export const SurvicateDestinationConfigSchema = z
 export const SurvicateMessageSchema = z
   .object({
     type: z.enum(['identify', 'group', 'track']),
-    userId: z.string().optional(),
-    groupId: z.string().optional(),
+    user_id: z.string().optional(),
+    group_id: z.string().optional(),
     event: z.string().optional(),
     // ... other fields
   })
@@ -275,8 +275,8 @@ The integration validates and handles the following error cases:
 
 1. **Missing Destination Key** - ConfigurationError
 2. **Anonymous Identify Calls** - InstrumentationError (skipped as per requirements)
-3. **Missing userId (group/track)** - InstrumentationError
-4. **Missing groupId (group events)** - InstrumentationError
+3. **Missing user_id (group/track)** - InstrumentationError
+4. **Missing group_id (group events)** - InstrumentationError
 5. **Missing event name (track events)** - InstrumentationError
 6. **Unsupported message type** - InstrumentationError
 

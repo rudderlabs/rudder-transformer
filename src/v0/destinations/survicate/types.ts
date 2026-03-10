@@ -23,11 +23,11 @@ export const SurvicateDestinationConfigSchema = z
 export const SurvicateMessageSchema = z
   .object({
     type: z.enum(['identify', 'group', 'track']),
-    userId: z.string().optional(),
+    user_id: z.string().optional(),
     anonymousId: z.string().optional(),
-    groupId: z.string().optional(),
+    group_id: z.string().optional(),
     event: z.string().optional(),
-    messageId: z.string().optional(),
+    message_id: z.string().optional(),
     originalTimestamp: z.string().optional(),
     properties: z.record(z.any()).optional(),
     traits: z.record(z.any()).optional(),
@@ -56,20 +56,20 @@ export type SurvicateRouterRequest = RouterTransformationRequestData<
 
 // Payload types for different event kinds
 export interface IdentifyPayload {
-  userId?: string;
+  user_id?: string;
   [key: string]: any;
 }
 
 export interface GroupPayload {
-  userId?: string;
-  groupId?: string;
+  user_id?: string;
+  group_id?: string;
   [key: string]: any;
 }
 
 export interface TrackPayload {
-  userId?: string;
+  user_id?: string;
   event?: string;
   properties?: Record<string, any>;
   timestamp?: string;
-  messageId?: string;
+  message_id?: string;
 }

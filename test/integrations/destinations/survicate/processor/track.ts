@@ -26,11 +26,11 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'track',
-              messageId: '04a303b1-a466-4e66-9022-2a24edaca4fc',
+              message_id: '04a303b1-a466-4e66-9022-2a24edaca4fc',
               originalTimestamp: '2020-04-22T08:06:20.338Z',
               sentAt: '2020-04-22T08:06:20.338Z',
-              userId: 'my-user-id',
-              anonymousId: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+              user_id: 'my-user-id',
+              anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
               channel: 'web',
               event: 'Product Purchased',
               properties: {
@@ -117,7 +117,7 @@ export const data: ProcessorTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'my-user-id',
+                  user_id: 'my-user-id',
                   event: 'Product Purchased',
                   properties: {
                     order_ID: '1',
@@ -130,7 +130,7 @@ export const data: ProcessorTestData[] = [
                     product_vendor_region: 'North America',
                   },
                   timestamp: '2020-04-22T08:06:20.338Z',
-                  messageId: '04a303b1-a466-4e66-9022-2a24edaca4fc',
+                  message_id: '04a303b1-a466-4e66-9022-2a24edaca4fc',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -146,7 +146,7 @@ export const data: ProcessorTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -170,8 +170,8 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'track',
-              messageId: 'msg-no-event',
-              userId: 'user-123',
+              message_id: 'msg-no-event',
+              user_id: 'user-123',
               properties: {
                 amount: 100,
               },
@@ -233,8 +233,8 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'track',
-              anonymousId: 'anon-456',
-              messageId: 'msg-anon-track',
+              anonymous_id: 'anon-456',
+              message_id: 'msg-anon-track',
               event: 'Purchase',
               properties: {
                 amount: 150,
@@ -270,7 +270,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous track calls are not supported. userId is required.',
+            error: 'Anonymous track calls are not supported. user_id is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -297,9 +297,9 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'track',
-              messageId: 'msg-simple',
+              message_id: 'msg-simple',
               originalTimestamp: '2020-04-22T08:06:20.338Z',
-              userId: 'user-123',
+              user_id: 'user-123',
               event: 'Page View',
               properties: {
                 page: '/checkout',
@@ -334,14 +334,14 @@ export const data: ProcessorTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-123',
+                  user_id: 'user-123',
                   event: 'Page View',
                   properties: {
                     page: '/checkout',
                     referrer: '/home',
                   },
                   timestamp: '2020-04-22T08:06:20.338Z',
-                  messageId: 'msg-simple',
+                  message_id: 'msg-simple',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -357,7 +357,7 @@ export const data: ProcessorTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',

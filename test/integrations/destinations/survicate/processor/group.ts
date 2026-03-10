@@ -26,12 +26,12 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'group',
-              messageId: '0b0e-test-cafe',
+              message_id: '0b0e-test-cafe',
               originalTimestamp: '2025-11-07T10:15:00.000Z',
               sentAt: '2025-11-07T10:15:02.000Z',
-              userId: 'my-user-id',
-              groupId: 'company-A',
-              anonymousId: '21b4-test-fc03',
+              user_id: 'my-user-id',
+              group_id: 'company-A',
+              anonymous_id: '21b4-test-fc03',
               traits: {
                 name: 'Acme Inc.',
                 industry: 'SaaS',
@@ -81,8 +81,8 @@ export const data: ProcessorTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'my-user-id',
-                  groupId: 'company-A',
+                  user_id: 'my-user-id',
+                  group_id: 'company-A',
                   name: 'Acme Inc.',
                   industry: 'SaaS',
                   employees: 1200,
@@ -98,7 +98,7 @@ export const data: ProcessorTestData[] = [
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36',
                   },
                   timestamp: '2025-11-07T10:15:00.000Z',
-                  messageId: '0b0e-test-cafe',
+                  message_id: '0b0e-test-cafe',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -114,7 +114,7 @@ export const data: ProcessorTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -128,7 +128,7 @@ export const data: ProcessorTestData[] = [
   },
   {
     name: 'survicate',
-    description: 'Group event without groupId - should fail',
+    description: 'Group event without group_id - should fail',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -138,8 +138,8 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'group',
-              messageId: 'msg-missing-groupid',
-              userId: 'user-123',
+              message_id: 'msg-missing-group_id',
+              user_id: 'user-123',
               traits: {
                 name: 'Company Name',
               },
@@ -174,7 +174,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'groupId is required for group events.',
+            error: 'group_id is required for group events.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -201,9 +201,9 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'group',
-              anonymousId: 'anon-123',
-              groupId: 'company-B',
-              messageId: 'msg-anon-group',
+              anonymous_id: 'anon-123',
+              group_id: 'company-B',
+              message_id: 'msg-anon-group',
               traits: {
                 name: 'Company B',
               },
@@ -238,7 +238,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous group calls are not supported. userId is required.',
+            error: 'Anonymous group calls are not supported. user_id is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

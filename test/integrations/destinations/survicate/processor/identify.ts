@@ -26,11 +26,11 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'identify',
-              messageId: '508d5e8c-96e4-4301-bd46-1890dba5c866',
+              message_id: '508d5e8c-96e4-4301-bd46-1890dba5c866',
               originalTimestamp: '2020-04-22T08:06:20.337Z',
               sentAt: '2020-04-22T08:06:20.337Z',
-              userId: 'my-user-id',
-              anonymousId: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+              user_id: 'my-user-id',
+              anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
               channel: 'web',
               context: {
                 app: {
@@ -102,7 +102,7 @@ export const data: ProcessorTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'my-user-id',
+                  user_id: 'my-user-id',
                   name: 'User name',
                   email: 'user@domain.com',
                   plan: 'Enterprise',
@@ -114,7 +114,7 @@ export const data: ProcessorTestData[] = [
                       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                   },
                   timestamp: '2020-04-22T08:06:20.337Z',
-                  messageId: '508d5e8c-96e4-4301-bd46-1890dba5c866',
+                  message_id: '508d5e8c-96e4-4301-bd46-1890dba5c866',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -130,7 +130,7 @@ export const data: ProcessorTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -154,9 +154,9 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'identify',
-              messageId: 'msg-456',
+              message_id: 'msg-456',
               originalTimestamp: '2020-04-22T08:06:20.337Z',
-              userId: 'user-456',
+              user_id: 'user-456',
               context: {
                 traits: {
                   name: 'John Doe',
@@ -200,7 +200,7 @@ export const data: ProcessorTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-456',
+                  user_id: 'user-456',
                   name: 'John Doe',
                   subscription_plan_tier: 'pro',
                   subscription_plan_renewal_date: '2025-12-01',
@@ -208,7 +208,7 @@ export const data: ProcessorTestData[] = [
                     locale: 'en-GB',
                   },
                   timestamp: '2020-04-22T08:06:20.337Z',
-                  messageId: 'msg-456',
+                  message_id: 'msg-456',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -224,7 +224,7 @@ export const data: ProcessorTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -248,8 +248,8 @@ export const data: ProcessorTestData[] = [
           {
             message: {
               type: 'identify',
-              anonymousId: '21b43de4-3b9b-423f-b51f-794eae31fc03',
-              messageId: 'msg-anonymous',
+              anonymous_id: '21b43de4-3b9b-423f-b51f-794eae31fc03',
+              message_id: 'msg-anonymous',
               context: {
                 traits: {
                   email: 'user@example.com',
@@ -286,7 +286,7 @@ export const data: ProcessorTestData[] = [
               workspaceId: 'wspId',
             },
             statusCode: 400,
-            error: 'Anonymous identify calls are not supported. userId is required.',
+            error: 'Anonymous identify calls are not supported. user_id is required.',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

@@ -27,8 +27,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                messageId: 'msg-1',
-                userId: 'user-1',
+                message_id: 'msg-1',
+                user_id: 'user-1',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -58,8 +58,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                messageId: 'msg-2',
-                userId: 'user-2',
+                message_id: 'msg-2',
+                user_id: 'user-2',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -101,14 +101,14 @@ export const data: RouterTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-1',
+                  user_id: 'user-1',
                   name: 'User 1',
                   email: 'user1@example.com',
                   context: {
                     locale: 'en-US',
                   },
                   timestamp: '2020-04-22T08:06:20.337Z',
-                  messageId: 'msg-1',
+                  message_id: 'msg-1',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -124,7 +124,7 @@ export const data: RouterTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -136,7 +136,7 @@ export const data: RouterTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-2',
+                  user_id: 'user-2',
                   name: 'User 2',
                   email: 'user2@example.com',
                   company_id: 'comp-2',
@@ -144,7 +144,7 @@ export const data: RouterTestData[] = [
                     locale: 'en-GB',
                   },
                   timestamp: '2020-04-22T08:06:20.337Z',
-                  messageId: 'msg-2',
+                  message_id: 'msg-2',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -160,7 +160,7 @@ export const data: RouterTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -185,8 +185,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                messageId: 'msg-identify',
-                userId: 'user-123',
+                message_id: 'msg-identify',
+                user_id: 'user-123',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -214,8 +214,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'track',
-                messageId: 'msg-track',
-                userId: 'user-123',
+                message_id: 'msg-track',
+                user_id: 'user-123',
                 event: 'Purchase',
                 originalTimestamp: '2020-04-22T08:06:21.337Z',
                 properties: {
@@ -242,9 +242,9 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'group',
-                messageId: 'msg-group',
-                userId: 'user-123',
-                groupId: 'group-456',
+                message_id: 'msg-group',
+                user_id: 'user-123',
+                group_id: 'group-456',
                 originalTimestamp: '2020-04-22T08:06:22.337Z',
                 traits: {
                   name: 'Company ABC',
@@ -279,10 +279,10 @@ export const data: RouterTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-123',
+                  user_id: 'user-123',
                   name: 'John Doe',
                   timestamp: '2020-04-22T08:06:20.337Z',
-                  messageId: 'msg-identify',
+                  message_id: 'msg-identify',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -298,7 +298,7 @@ export const data: RouterTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -310,13 +310,13 @@ export const data: RouterTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-123',
+                  user_id: 'user-123',
                   event: 'Purchase',
                   properties: {
                     amount: 100,
                   },
                   timestamp: '2020-04-22T08:06:21.337Z',
-                  messageId: 'msg-track',
+                  message_id: 'msg-track',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -332,7 +332,7 @@ export const data: RouterTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',
@@ -344,11 +344,11 @@ export const data: RouterTestData[] = [
             output: {
               body: {
                 JSON: {
-                  userId: 'user-123',
-                  groupId: 'group-456',
+                  user_id: 'user-123',
+                  group_id: 'group-456',
                   name: 'Company ABC',
                   timestamp: '2020-04-22T08:06:22.337Z',
-                  messageId: 'msg-group',
+                  message_id: 'msg-group',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -364,7 +364,7 @@ export const data: RouterTestData[] = [
               },
               params: {},
               files: {},
-              userId: '',
+              user_id: '',
             },
             metadata: {
               destinationId: 'destId',

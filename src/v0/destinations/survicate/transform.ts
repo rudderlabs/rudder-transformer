@@ -32,17 +32,17 @@ const processIdentifyEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   // Skip anonymous calls - we only accept identified users
-  if (!message.userId) {
+  if (!message.user_id) {
     throw new InstrumentationError(
-      'Anonymous identify calls are not supported. userId is required.',
+      'Anonymous identify calls are not supported. user_id is required.',
     );
   }
 
   // Build the payload - flatten traits and include context properties
   const payload: Record<string, any> = {
-    userId: message.userId,
+    user_id: message.user_id,
     timestamp: message.originalTimestamp,
-    messageId: message.messageId,
+    message_id: message.message_id,
   };
 
   // Add flattened traits
@@ -90,24 +90,24 @@ const processGroupEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   // Skip anonymous calls - we only accept identified users
-  if (!message.userId) {
+  if (!message.user_id) {
     throw new InstrumentationError(
-      'Anonymous group calls are not supported. userId is required.',
+      'Anonymous group calls are not supported. user_id is required.',
     );
   }
 
-  // groupId is required for group events
-  if (!message.groupId) {
-    throw new InstrumentationError('groupId is required for group events.');
+  // group_id is required for group events
+  if (!message.group_id) {
+    throw new InstrumentationError('group_id is required for group events.');
   }
 
   // Build the payload using the utility function
   const payload: Record<string, any> = {
-    userId: message.userId,
-    groupId: message.groupId,
+    user_id: message.user_id,
+    group_id: message.group_id,
     traits: message.traits || {},
     timestamp: message.originalTimestamp,
-    messageId: message.messageId,
+    message_id: message.message_id,
   };
 
   // Add flattened traits
@@ -155,9 +155,9 @@ const processTrackEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   // Skip anonymous calls - we only accept identified users
-  if (!message.userId) {
+  if (!message.user_id) {
     throw new InstrumentationError(
-      'Anonymous track calls are not supported. userId is required.',
+      'Anonymous track calls are not supported. user_id is required.',
     );
   }
 
@@ -168,10 +168,10 @@ const processTrackEvent = (
 
   // Build the payload using the utility function
   const payload = {
-    userId: message.userId,
+    user_id: message.user_id,
     event: message.event,
     properties: message.properties || {},
-    messageId: message.messageId,
+    message_id: message.message_id,
     timestamp: message.originalTimestamp,
   };
 

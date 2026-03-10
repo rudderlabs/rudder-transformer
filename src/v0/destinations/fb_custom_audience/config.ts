@@ -93,6 +93,8 @@ const subTypeFields: readonly string[] = [
   'DATA_FILE',
 ];
 
+const DESTINATION = 'fb_custom_audience';
+
 const USER_ADD = 'add';
 const USER_DELETE = 'remove';
 // https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/
@@ -101,15 +103,6 @@ const MAX_USER_COUNT = 10000;
 and error method we found that 65000 bytes is the maximum payload allowed size but we are 60000 just to be sure batching is done properly
 */
 const DEFAULT_MAX_PAYLOAD_SIZE = 60000; // bytes
-
-/**
- * Returns whether hashing validation is enabled.
- * Can be enabled via env var FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED=true.
- * Defaults to false (disabled).
- */
-function isHashingValidationEnabled(): boolean {
-  return process.env.FB_CUSTOM_AUDIENCE_HASHING_VALIDATION_ENABLED === 'true';
-}
 
 /**
  * Returns the maximum payload size in bytes for FB Custom Audience batching.
@@ -134,6 +127,7 @@ function getMaxPayloadSize(workspaceId: string): number {
 }
 
 export {
+  DESTINATION,
   ENDPOINT_PATH,
   getEndPoint,
   schemaFields,
@@ -143,5 +137,4 @@ export {
   typeFields,
   subTypeFields,
   getMaxPayloadSize,
-  isHashingValidationEnabled,
 };

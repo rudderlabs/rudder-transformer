@@ -1,10 +1,4 @@
 import {
-  eventStreamAudienceListRouterRequest,
-  eventStreamRecordV1RouterRequest,
-  esDestinationAudience,
-  esDestinationRecord,
-} from './eventStream';
-import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
   rETLRecordV2RouterInvalidRequest,
@@ -15,6 +9,15 @@ import {
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
 import { generateMetadata } from '../../../testUtils';
+import {
+  esDestinationAudience,
+  esDestinationRecord,
+  eventStreamAudienceListRouterRequest,
+  eventStreamHashOffRouterRequest,
+  eventStreamPreHashedRouterRequest,
+  eventStreamRecordV1RouterRequest,
+} from './eventStream';
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -65,17 +68,17 @@ export const data = [
                       ],
                       data: [
                         [
-                          '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
-                          'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35',
-                          '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
-                          '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
-                          '3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22',
-                          '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
-                          '7cfb46258a6f545f77cca49a27ded0bc69a56e16d0dcdf05ec843c0cc322145d',
+                          'shrouti@abc.com',
+                          '2',
+                          '13',
+                          '2013',
+                          '@09432457768',
+                          'f',
+                          'Ms.',
                           'ABC',
-                          '69deb728a28faee80ee80d8d5f97a5e2fd65758684f7412e535d19a19095369b',
-                          '1dc362d22242a898483383061a98f0b41d725190f7bc00a962b6013b36dc2b81',
-                          'fed1d872f6d540f4118582ec694270274e987b12f5dfe2057dddf1e12df2761a',
+                          'ZIP ',
+                          '123abc ',
+                          'IN',
                         ],
                       ],
                     },
@@ -117,17 +120,17 @@ export const data = [
                       ],
                       data: [
                         [
-                          '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
-                          'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35',
-                          '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
-                          '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
-                          '3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22',
-                          '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
-                          '7cfb46258a6f545f77cca49a27ded0bc69a56e16d0dcdf05ec843c0cc322145d',
+                          'shrouti@abc.com',
+                          '2',
+                          '13',
+                          '2013',
+                          '@09432457768',
+                          'f',
+                          'Ms.',
                           'ABC',
-                          '69deb728a28faee80ee80d8d5f97a5e2fd65758684f7412e535d19a19095369b',
-                          '1dc362d22242a898483383061a98f0b41d725190f7bc00a962b6013b36dc2b81',
-                          'fed1d872f6d540f4118582ec694270274e987b12f5dfe2057dddf1e12df2761a',
+                          'ZIP ',
+                          '123abc ',
+                          'IN',
                         ],
                       ],
                     },
@@ -190,17 +193,17 @@ export const data = [
                       ],
                       data: [
                         [
-                          '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
-                          'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35',
-                          '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
-                          '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
-                          '3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22',
-                          '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
-                          '7cfb46258a6f545f77cca49a27ded0bc69a56e16d0dcdf05ec843c0cc322145d',
+                          'shrouti@abc.com',
+                          '2',
+                          '13',
+                          '2013',
+                          '@09432457768',
+                          'f',
+                          'Ms.',
                           'ABC',
-                          '69deb728a28faee80ee80d8d5f97a5e2fd65758684f7412e535d19a19095369b',
-                          '1dc362d22242a898483383061a98f0b41d725190f7bc00a962b6013b36dc2b81',
-                          'fed1d872f6d540f4118582ec694270274e987b12f5dfe2057dddf1e12df2761a',
+                          'ZIP ',
+                          '123abc ',
+                          'IN',
                         ],
                       ],
                     },
@@ -242,17 +245,17 @@ export const data = [
                       ],
                       data: [
                         [
-                          '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
-                          'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35',
-                          '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
-                          '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
-                          '3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22',
-                          '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
-                          '7cfb46258a6f545f77cca49a27ded0bc69a56e16d0dcdf05ec843c0cc322145d',
+                          'shrouti@abc.com',
+                          '2',
+                          '13',
+                          '2013',
+                          '@09432457768',
+                          'f',
+                          'Ms.',
                           'ABC',
-                          '69deb728a28faee80ee80d8d5f97a5e2fd65758684f7412e535d19a19095369b',
-                          '1dc362d22242a898483383061a98f0b41d725190f7bc00a962b6013b36dc2b81',
-                          'fed1d872f6d540f4118582ec694270274e987b12f5dfe2057dddf1e12df2761a',
+                          'ZIP ',
+                          '123abc ',
+                          'IN',
                         ],
                       ],
                     },
@@ -1247,5 +1250,93 @@ export const data = [
         },
       },
     },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'unhashed data with isHashRequired false should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when unhashed data is sent with hashing disabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamHashOffRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationAudience,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description:
+      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+    scenario: 'business',
+    successCriteria:
+      'should throw InstrumentationError when pre-hashed data is sent with hashing enabled and validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamPreHashedRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+              destination: esDestinationRecord,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
 ].map((d) => ({ ...d, mockFns }));

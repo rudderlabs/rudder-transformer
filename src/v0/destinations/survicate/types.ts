@@ -29,13 +29,13 @@ export const SurvicateMessageSchema = z
     event: z.string().optional(),
     message_id: z.string().optional(),
     originalTimestamp: z.string().optional(),
-    properties: z.record(z.any()).optional(),
-    traits: z.record(z.any()).optional(),
+    properties: z.record(z.string(), z.unknown()).optional(),
+    traits: z.record(z.string(), z.unknown()).optional(),
     context: z
       .object({
-        traits: z.record(z.any()).optional(),
+        traits: z.record(z.string(), z.unknown()).optional(),
         locale: z.string().optional(),
-        campaign: z.record(z.any()).optional(),
+        campaign: z.record(z.string(), z.unknown()).optional(),
         userAgent: z.string().optional(),
       })
       .passthrough()

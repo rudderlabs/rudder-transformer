@@ -32,6 +32,9 @@ import stats from '../../../util/stats';
 import * as config from './config';
 import { validateHashingConsistency } from '../../util/audienceUtils';
 
+// ISO 3166-1 alpha-2: exactly two lowercase letters
+const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
+
 /**
  * Example payload ={
             "is_raw": true,
@@ -153,7 +156,7 @@ const ensureApplicableFormat = (
         break;
       case 'COUNTRY': {
         const countryCode = stringifiedUserInformation.toLowerCase();
-        if (countryCode.length === 2) {
+        if (COUNTRY_CODE_REGEX.test(countryCode)) {
           updatedProperty = countryCode;
         } else {
           stats.increment('fb_custom_audience_invalid_country_code', {

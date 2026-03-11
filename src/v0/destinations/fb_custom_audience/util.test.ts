@@ -94,6 +94,61 @@ describe('ensureApplicableFormat', () => {
     });
   });
 
+  describe('COUNTRY — lowercase, must be exactly two alpha characters', () => {
+    const validCases = [
+      { input: 'US', expected: 'us' },
+      { input: 'in', expected: 'in' },
+      { input: 'GB', expected: 'gb' },
+    ];
+    validCases.forEach(({ input, expected }) => {
+      it(`valid: "${input}" → "${expected}"`, () => {
+        expect(
+          ensureApplicableFormat('COUNTRY', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID),
+        ).toBe(expected);
+      });
+    });
+
+    const invalidCases = [
+      { input: 'USA', description: 'three letters' },
+      { input: 'U', description: 'single letter' },
+      { input: 'U1', description: 'contains digit' },
+      { input: '12', description: 'all digits' },
+      { input: '', description: 'empty string' },
+    ];
+    invalidCases.forEach(({ input, description }) => {
+      it(`invalid (${description}): "${input}" → passes through when reject disabled`, () => {
+        const result = ensureApplicableFormat(
+          'COUNTRY',
+          input,
+          TEST_WORKSPACE_ID,
+          TEST_DESTINATION_ID,
+        );
+        expect(result).toBe(input.toLowerCase());
+      });
+    });
+
+    it('invalid country code → increments stats counter and returns empty string when reject enabled', () => {
+      const mockStatsIncrement = stats.increment as jest.Mock;
+      mockStatsIncrement.mockClear();
+      process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS = 'true';
+      try {
+        const result = ensureApplicableFormat(
+          'COUNTRY',
+          'USA',
+          TEST_WORKSPACE_ID,
+          TEST_DESTINATION_ID,
+        );
+        expect(result).toBe('');
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_invalid_country_code', {
+          workspaceId: TEST_WORKSPACE_ID,
+          destinationId: TEST_DESTINATION_ID,
+        });
+      } finally {
+        delete process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS;
+      }
+    });
+  });
+
   describe('ZIP — remove spaces and dashes, lowercase', () => {
     const cases = [
       { input: '94035-1234', expected: '940351234' },

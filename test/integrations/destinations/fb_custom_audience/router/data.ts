@@ -1,6 +1,7 @@
 import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
+  rETLRecordV2AllNullRouterRequest,
   rETLRecordV2RouterInvalidRequest,
   rETLRecordV2RouterRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
@@ -884,59 +885,134 @@ export const data = [
         body: {
           output: [
             {
+              batched: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                Name: 'FB_CUSTOM_AUDIENCE',
+                Enabled: true,
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                DestinationDefinition: {
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'FB_CUSTOM_AUDIENCE',
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  Config: {},
+                },
+                Transformations: [],
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+              },
+              statusCode: 200,
+            },
+            {
               batched: false,
               error:
                 'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
-              metadata: [
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 2,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 3,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 4,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-              ],
+              metadata: [generateMetadata(4)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 all events have null user data',
+    scenario: 'Framework',
+    successCriteria:
+      'all record events should return individual error responses when all user properties are null',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2AllNullRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(1)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(2)],
               statusCode: 400,
               statTags: {
                 errorCategory: 'dataValidation',

@@ -53,7 +53,7 @@ const processRecord = (
   disableFormat: boolean | undefined,
   workspaceId: string,
   destinationId: string,
-): { metadata: Metadata; error?: string; dataElement?: unknown[] } => {
+): { metadata: Metadata } & ({ dataElement: unknown[] } | { error: string }) => {
   const fields = record.message.fields!;
   let dataElement: unknown[] = [];
   let nullUserData = true;
@@ -127,7 +127,7 @@ const processRecordEventArray = async (
         input.metadata.workspaceId,
         destination.ID,
       );
-      if (result.error) {
+      if ('error' in result) {
         const error = new InstrumentationError(result.error);
         const errorObj = generateErrorObject(error);
         invalidEvents.push(

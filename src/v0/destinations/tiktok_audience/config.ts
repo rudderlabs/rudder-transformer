@@ -1,12 +1,14 @@
+import { EVENT_TYPES } from '../../util/recordUtils';
+
 export const ACTION_MAP: Record<string, string> = {
   add: 'add',
   remove: 'delete',
 };
 
 export const ACTION_RECORD_MAP: Record<string, string> = {
-  insert: 'add',
-  delete: 'remove',
-  update: 'add',
+  [EVENT_TYPES.INSERT]: 'add',
+  [EVENT_TYPES.UPDATE]: 'add',
+  [EVENT_TYPES.DELETE]: 'remove',
 };
 
 export const SHA256_TRAITS = ['IDFA_SHA256', 'AAID_SHA256', 'EMAIL_SHA256', 'PHONE_SHA256'];

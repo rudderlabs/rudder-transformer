@@ -1,5 +1,10 @@
 import md5 from 'md5';
-import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
+import {
+  hashToSha256,
+  InstrumentationError,
+  formatZodError,
+  groupByInBatches,
+} from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
 import type { TiktokAudienceListRequest } from './types';
 import { TiktokAudienceListRouterRequestSchema } from './types';
@@ -9,9 +14,9 @@ import {
   getDestinationExternalIDInfoForRetl,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
-  isEventSentByVDMV2Flow,
 } from '../../util';
-import { processTiktokAudienceRecord, validateAudienceRecordEvent } from './transform.record';
+import { processTiktokAudienceRecords } from './recordTransform';
+import { TiktokAudienceRecordRequest } from './recordTypes';
 
 function prepareIdentifiersList(event: TiktokAudienceListRequest) {
   const { message, destination, metadata } = event;
@@ -95,39 +100,57 @@ function processTiktokAudienceList(event: TiktokAudienceListRequest) {
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 
-function process(event: unknown) {
-  if (isEventSentByVDMV2Flow(event)) {
-    return processTiktokAudienceRecord(validateAudienceRecordEvent(event));
-  }
-  return processTiktokAudienceList(validateAudienceListEvent(event));
-}
-
-const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
+const processRouterDest = async (
+  events: (TiktokAudienceListRequest | TiktokAudienceRecordRequest)[],
+): Promise<RouterTransformationResponse[]> => {
   if (!events || events.length === 0) return [];
 
-  const successfulResponses: RouterTransformationResponse[] = [];
+  const groupedEvents = await groupByInBatches<
+    TiktokAudienceListRequest | TiktokAudienceRecordRequest,
+    string
+  >(events, (event) => event.message?.type?.toLowerCase());
+
+  const supportedEventTypes = ['record', 'audiencelist'];
+  const eventTypes = Object.keys(groupedEvents);
+  const unsupportedEventList = eventTypes.filter(
+    (eventType) => !supportedEventTypes.includes(eventType),
+  );
+
   const failedResponses: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
 
-  for (const event of events) {
-    try {
-      let tiktokEvent; let response;
-
-      if (isEventSentByVDMV2Flow(event)) {
-        tiktokEvent = validateAudienceRecordEvent(event);
-        response = processTiktokAudienceRecord(tiktokEvent);
-      } else {
-        tiktokEvent = validateAudienceListEvent(event);
-        response = processTiktokAudienceList(tiktokEvent);
+  if (groupedEvents.record) {
+    const { recordFailedResponses, recordSuccessfulResponses } = processTiktokAudienceRecords(
+      groupedEvents.record,
+    );
+    failedResponses.push(...recordFailedResponses);
+    successfulResponses.push(...recordSuccessfulResponses);
+  }
+  if (groupedEvents.audiencelist) {
+    for (const event of groupedEvents.audiencelist) {
+      try {
+        const tiktokEvent = validateAudienceListEvent(event);
+        const response = processTiktokAudienceList(tiktokEvent);
+        successfulResponses.push(
+          getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
+        );
+      } catch (error) {
+        failedResponses.push(handleRtTfSingleEventError(event, error, {}));
       }
-
-      successfulResponses.push(
-        getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
+    }
+  }
+  for (const unsupportedEvent of unsupportedEventList) {
+    for (const event of groupedEvents[unsupportedEvent]) {
+      failedResponses.push(
+        handleRtTfSingleEventError(
+          event,
+          new InstrumentationError(`unsupported event found ${unsupportedEvent}`),
+          {},
+        ),
       );
-    } catch (error) {
-      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
   return [...failedResponses, ...successfulResponses];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

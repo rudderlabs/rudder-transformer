@@ -98,6 +98,7 @@ const ensureApplicableFormat = (
   let userInformationTrimmed: string;
   if (isDefinedAndNotNull(userInformation)) {
     const stringifiedUserInformation = convertToString(userInformation).trim();
+    // https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/customer-information-parameters
     switch (userProperty) {
       case 'EMAIL': {
         const emailValue = stringifiedUserInformation.toLowerCase();

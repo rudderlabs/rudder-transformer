@@ -164,6 +164,58 @@ export const rETLRecordV2RouterRequest: RouterTransformationRequest = {
   destType: 'fb_custom_audience',
 };
 
+export const rETLRecordV2AllNullRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      destination: destinationV2,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '1',
+        rudderId: '1',
+        identifiers: {
+          EMAIL: null,
+          FI: null,
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(1),
+    },
+    {
+      destination: destinationV2,
+      connection: connection,
+      message: {
+        action: 'insert',
+        context: {
+          sources: {
+            job_run_id: 'cgiiurt8um7k7n5dq480',
+            task_run_id: 'cgiiurt8um7k7n5dq48g',
+            job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+            version: '895/merge',
+          },
+        },
+        recordId: '2',
+        rudderId: '2',
+        identifiers: {
+          EMAIL: null,
+          FI: null,
+        },
+        type: 'record',
+      },
+      metadata: generateMetadata(2),
+    },
+  ],
+  destType: 'fb_custom_audience',
+};
+
 export const rETLRecordV2RouterInvalidRequest: RouterTransformationRequest = {
   input: [
     {

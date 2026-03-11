@@ -80,7 +80,7 @@ describe('ensureApplicableFormat', () => {
       { input: 'Valéry', expected: 'valéry' },
       { input: '정', expected: '정' },
       { input: "O'Brien", expected: 'obrien' },
-      { input: 'John Smith', expected: 'john smith' },
+      { input: 'John Smith1', expected: 'john smith1' },
       { input: 'Mary-Jane', expected: 'maryjane' },
     ];
     (['FN', 'LN'] as const).forEach((field) => {

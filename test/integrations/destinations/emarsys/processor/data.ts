@@ -84,8 +84,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -248,8 +248,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -414,8 +414,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -552,8 +552,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -670,8 +670,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -785,8 +785,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -898,8 +898,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1018,8 +1018,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1140,8 +1140,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1261,8 +1261,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1395,8 +1395,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
+                Name: 'EMARSYS',
                 Config: {
-                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },

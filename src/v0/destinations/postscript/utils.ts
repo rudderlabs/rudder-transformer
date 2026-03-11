@@ -255,7 +255,6 @@ export const performSubscriberLookup = async (
   if (processedResponse.status >= 400) {
     logger.warn('PostScript subscriber lookup failed:', {
       status: processedResponse.status,
-      response: processedResponse.response,
     });
 
     return events.map((event) => ({

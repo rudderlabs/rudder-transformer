@@ -19,7 +19,7 @@ const DEST_DEFINITION = {
   transformAtV1: 'processor',
 };
 const DEST_OBJECT = {
-  ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+  ID: 'dummyDestinationId',
   Name: 'test_marketo_rc',
   DestinationDefinition: DEST_DEFINITION,
   Config: DEST_CONFIG,

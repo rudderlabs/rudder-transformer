@@ -316,7 +316,7 @@ export const configuration: ProcessorTestData[] = [
                 'content-type': 'application/json',
               },
               params: {
-                'user%20name': 'val1',
+                'user name': 'val1',
               },
             }),
             statusCode: 200,

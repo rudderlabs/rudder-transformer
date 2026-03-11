@@ -220,7 +220,13 @@ export class UserTransformService {
     } as UserTransformationServiceResponse;
   }
 
-  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs, credentials) {
+  public static async testTransformRoutine(
+    events,
+    trRevCode,
+    libraryVersionIDs,
+    credentials,
+    returnMetadata = false,
+  ) {
     const response: FixMe = {};
     let errorCode: number | undefined;
     try {
@@ -249,6 +255,7 @@ export class UserTransformService {
         libraryVersionIDs,
         trRevCode,
         true,
+        returnMetadata,
       );
       response.status = 200;
     } catch (error: CatchErr) {

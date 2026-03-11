@@ -43,9 +43,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -158,9 +157,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -268,9 +266,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -378,9 +375,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -493,9 +489,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -603,9 +598,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -714,9 +708,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',
@@ -828,9 +821,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'NEW_RELIC',
+                Config: {},
               },
               Config: {
                 accountId: '12345',

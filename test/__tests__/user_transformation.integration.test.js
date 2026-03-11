@@ -257,7 +257,7 @@ describe('Python Openfaas Transformation', () => {
       const outputEvents = require(`./data/user_transformation_pycode_test_output.json`);
 
       let trRevCode = contructTrRevCode(workspaceId, versionId);
-      let response = await userTransformHandler(inputEvents, versionId, [], trRevCode, [], true);
+      let response = await userTransformHandler(inputEvents, versionId, [], trRevCode,  true);
       expect(response).toEqual(outputEvents);
 
       // Test with language python; should return same output

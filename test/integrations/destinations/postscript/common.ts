@@ -18,7 +18,7 @@ export const destination: Destination = {
     DisplayName: displayName,
     ID: 'ps-123',
     Name: destTypeInUpperCase,
-    Config: { cdkV2Enabled: false },
+    Config: {},
   },
   Enabled: true,
   ID: 'ps-123',

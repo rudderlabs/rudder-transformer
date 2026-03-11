@@ -25,6 +25,11 @@ router.post(
   UserTransformController.testTransform,
 );
 router.post(
+  '/transformation/testRun',
+  RouteActivationMiddleware.isUserTransformTestRouteActive,
+  UserTransformController.testRun,
+);
+router.post(
   '/transformationLibrary/test',
   RouteActivationMiddleware.isUserTransformTestRouteActive,
   UserTransformController.testTransformLibrary,

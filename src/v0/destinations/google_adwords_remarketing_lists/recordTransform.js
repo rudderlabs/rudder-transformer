@@ -3,6 +3,7 @@ const {
   groupByInBatches,
   mapInBatches,
   reduceInBatches,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('@rudderstack/integrations-lib');
 const {
   getAccessToken,
@@ -11,6 +12,8 @@ const {
   getSuccessRespEvents,
   isEventSentByVDMV1Flow,
   isEventSentByVDMV2Flow,
+  generateErrorObject,
+  getErrorRespEvents,
 } = require('../../util');
 const { populateConsentFromConfig } = require('../../util/googleUtils');
 const {
@@ -64,7 +67,41 @@ const processRecordEventArray = async (records, context, operationType) => {
 };
 
 async function preparePayload(events, config) {
-  const { destination, message, metadata } = events[0];
+  /**
+   * If we are getting invalid identifiers, we are preparing empty object response for that event and that is ending up
+   * as an error from google ads api. So we are validating the identifiers and then processing the events.
+   */
+
+  const { validEvents, invalidEvents } = await reduceInBatches(
+    events,
+    (acc, event) => {
+      const hasValidIdentifiers = Object.values(event.message?.fields || {}).some(
+        isDefinedAndNotNullAndNotEmpty,
+      );
+      if (hasValidIdentifiers) {
+        acc.validEvents.push(event);
+      } else {
+        const error = new InstrumentationError('Event has no valid identifiers');
+        const errorObj = generateErrorObject(error);
+        acc.invalidEvents.push(
+          getErrorRespEvents(
+            [event.metadata],
+            errorObj.status,
+            errorObj.message,
+            errorObj.statTags,
+          ),
+        );
+      }
+      return acc;
+    },
+    { validEvents: [], invalidEvents: [] },
+  );
+
+  if (validEvents.length === 0) {
+    return invalidEvents;
+  }
+
+  const { destination, message, metadata } = validEvents[0];
   const accessToken = getAccessToken(metadata, 'access_token');
 
   const context = {
@@ -74,7 +111,7 @@ async function preparePayload(events, config) {
     ...config,
   };
 
-  const groupedRecordsByAction = await groupByInBatches(events, (record) =>
+  const groupedRecordsByAction = await groupByInBatches(validEvents, (record) =>
     record.message.action?.toLowerCase(),
   );
 
@@ -97,7 +134,7 @@ async function preparePayload(events, config) {
     {},
   );
 
-  const errorResponse = getErrorResponse(groupedRecordsByAction);
+  const errorResponse = [...invalidEvents, ...getErrorResponse(groupedRecordsByAction)];
   const finalResponse = createFinalResponse(
     actionResponses.delete,
     actionResponses.insert,

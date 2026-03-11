@@ -38,10 +38,9 @@ const commonDeletionDestConfig: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -73,10 +72,9 @@ const commonDeletionDestConfig2: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -200,10 +198,9 @@ const commonUpsertDestConfig: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -235,10 +232,9 @@ const commonUpsertDestConfig2: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -270,10 +266,9 @@ const commonUpsertDestConfig2CustomModule: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -305,10 +300,9 @@ const commonUpsertDestConfig3: Destination = {
   hasDynamicConfig: false,
   DestinationDefinition: {
     ID: '345',
-    Name: 'Test',
+    Name: 'ZOHO',
     DisplayName: 'ZOHO',
     Config: {
-      cdkV2Enabled: true,
       excludeKeys: [],
       includeKeys: [],
     },
@@ -444,9 +438,50 @@ const commonConnectionConfigV2_4: Connection = {
       identifierMappings: [
         {
           from: 'email',
-          to: 'email',
+          to: 'Email',
         },
       ],
+      multiSelectFieldLevelDecision: [
+        { from: 'multi-language', to: 'true' },
+        { from: 'multi class', to: 'false' },
+      ],
+    },
+  },
+};
+
+const commonDeletionConnectionConfigV2_MultipleIdentifiers: Connection = {
+  sourceId: '2t1wMHLftBHKN1XzcfU4v7JTQTg',
+  destinationId: '2tCmPNvYHqCUgcRva2XN52ZaYHk',
+  enabled: true,
+  processorEnabled: true,
+  config: {
+    destination: {
+      object: 'Leads',
+      trigger: 'None',
+      schemaVersion: '1.1',
+      identifierMappings: [
+        {
+          from: 'email',
+          to: 'Email',
+        },
+        {
+          from: 'phone',
+          to: 'Phone',
+        },
+        {
+          from: 'company',
+          to: 'Company',
+        },
+        {
+          from: 'website',
+          to: 'Website',
+        },
+        {
+          from: 'lead_source',
+          to: 'Lead_Source',
+        },
+      ],
+      addDefaultDuplicateCheck: true,
       multiSelectFieldLevelDecision: [
         { from: 'multi-language', to: 'true' },
         { from: 'multi class', to: 'false' },
@@ -479,4 +514,5 @@ export {
   commonConnectionConfigV2_4,
   commonConnectionConfigCustomModuleV2,
   commonDeletionConnectionConfigV2,
+  commonDeletionConnectionConfigV2_MultipleIdentifiers,
 };

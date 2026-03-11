@@ -26,28 +26,12 @@ describe('ServiceSelector Service', () => {
     );
   });
 
-  test('isCdkV2Destination should return true', async () => {
-    const destinationDefinitionConfig = {
-      cdkV2Enabled: true,
-    };
-    expect(ServiceSelector['isCdkV2Destination'](destinationDefinitionConfig)).toBe(true);
-  });
-
-  test('isCdkV2Destination should return false', async () => {
-    const destinationDefinitionConfig = {
-      cdkV2EnabledXYZ: true,
-    };
-    expect(ServiceSelector['isCdkV2Destination'](destinationDefinitionConfig)).toBe(false);
-  });
-
   test('getPrimaryDestinationService should return cdk v2 dest service', async () => {
     const events = [
       {
         destination: {
           DestinationDefinition: {
-            Config: {
-              cdkV2Enabled: true,
-            },
+            Name: 'WEBHOOK',
           },
         },
       },

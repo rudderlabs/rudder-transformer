@@ -79,6 +79,7 @@ export const screenTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: 'https://a.klaviyo.com/api/events',
+              endpointPath: '/api/events',
               headers: {
                 Accept: 'application/json',
                 Authorization: authHeader1,

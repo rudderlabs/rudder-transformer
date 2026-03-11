@@ -91,7 +91,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -178,7 +177,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -267,7 +265,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -354,7 +351,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -449,7 +445,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -544,7 +539,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -637,7 +631,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -732,7 +725,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -826,7 +818,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -920,7 +911,6 @@ export const data: RouterStreamTestData[] = [
                     transformAt: 'processor',
                     transformAtV1: 'processor',
                   },
-                  ResponseRules: null,
                 },
                 Config: {
                   caCertificate: 'caCertificate',
@@ -1144,7 +1134,6 @@ export const data: RouterStreamTestData[] = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 caCertificate: 'caCertificate',
@@ -1279,7 +1268,6 @@ export const data: RouterStreamTestData[] = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 caCertificate: 'caCertificate',
@@ -1414,7 +1402,6 @@ export const data: RouterStreamTestData[] = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 caCertificate: 'caCertificate',
@@ -1514,7 +1501,6 @@ export const data: RouterStreamTestData[] = [
                   transformAt: 'processor',
                   transformAtV1: 'processor',
                 },
-                ResponseRules: null,
               },
               Config: {
                 caCertificate: 'caCertificate',

@@ -31,14 +31,14 @@ export const otherScenariosV1: ProxyV1TestData[] = [
         body: {
           output: {
             status: 429,
-            message: 'User request limit reached',
+            message: 'User request limit reached. Facebook responded with error code: 17',
             statTags: {
               ...statTags,
               errorType: 'throttled',
             },
             response: [
               {
-                error: 'User request limit reached',
+                error: 'User request limit reached. Facebook responded with error code: 17',
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },

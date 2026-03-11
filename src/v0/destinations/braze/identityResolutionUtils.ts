@@ -8,32 +8,7 @@ import { getIdentifyEndpoint, IDENTIFY_BRAZE_MAX_REQ_COUNT } from './config';
 import * as stats from '../../../util/stats';
 import * as tags from '../../util/tags';
 import * as logger from '../../../logger';
-import { Destination } from '../../../types';
-
-interface AliasToIdentify {
-  external_id: string;
-  alias_name: string;
-  alias_label: string;
-}
-
-interface IdentifyPayload {
-  aliases_to_identify: AliasToIdentify[];
-  merge_behavior?: string;
-}
-
-// -------------------------------
-
-interface BrazeDestinationConfig {
-  restApiKey: string;
-  dataCenter?: string;
-  [key: string]: unknown;
-}
-
-interface IdentifyCall {
-  identifyPayload: IdentifyPayload;
-  destination: Destination<BrazeDestinationConfig>;
-  metadata: unknown;
-}
+import type { BrazeIdentifyCall } from './types';
 
 interface BrazePartialError {
   type?: string;
@@ -47,6 +22,7 @@ interface BrazeResponse {
     message?: string;
     errors?: BrazePartialError[];
     users?: Record<string, unknown>[];
+    aliases_processed?: number;
   };
 }
 
@@ -63,7 +39,7 @@ interface BatchIdentifyResult {
  * @returns Promise that resolves to BatchIdentifyResult
  */
 async function processSingleBatch(
-  identifyCallsChunk: IdentifyCall[],
+  identifyCallsChunk: BrazeIdentifyCall[],
   destinationId: string,
 ): Promise<BatchIdentifyResult> {
   const { destination } = identifyCallsChunk[0];
@@ -151,7 +127,7 @@ async function processSingleBatch(
  * @returns Promise that resolves when all batches are processed
  */
 async function processBatchedIdentify(
-  identifyCallsArray: IdentifyCall[],
+  identifyCallsArray: BrazeIdentifyCall[],
   destinationId: string,
 ): Promise<void> {
   if (!identifyCallsArray || identifyCallsArray.length === 0) {

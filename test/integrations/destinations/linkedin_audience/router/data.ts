@@ -34,9 +34,7 @@ export const data = [
                   ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                   Name: 'LINKEDIN_AUDIENCE',
                   DisplayName: 'Linkedin Audience',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Config: {
                   connectionMode: 'cloud',
@@ -99,9 +97,7 @@ export const data = [
                   ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                   Name: 'LINKEDIN_AUDIENCE',
                   DisplayName: 'Linkedin Audience',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Config: {
                   connectionMode: 'cloud',
@@ -169,9 +165,7 @@ export const data = [
                   ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                   Name: 'LINKEDIN_AUDIENCE',
                   DisplayName: 'Linkedin Audience',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 Config: {
                   connectionMode: 'cloud',
@@ -289,9 +283,7 @@ export const data = [
                   rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                   DisplayName: 'Linkedin Audience',
                   ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                   Name: 'LINKEDIN_AUDIENCE',
@@ -338,9 +330,7 @@ export const data = [
                   rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu',
                 },
                 DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                   DisplayName: 'Linkedin Audience',
                   ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                   Name: 'LINKEDIN_AUDIENCE',

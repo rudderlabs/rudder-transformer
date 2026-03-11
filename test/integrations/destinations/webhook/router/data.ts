@@ -99,7 +99,7 @@ export const data = [
                     { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -186,7 +186,7 @@ export const data = [
               metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
           ],
@@ -307,7 +307,7 @@ export const data = [
                     { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -411,7 +411,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
           ],
@@ -514,7 +514,7 @@ export const data = [
                     { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -561,7 +561,7 @@ export const data = [
               metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -579,7 +579,7 @@ export const data = [
               metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
           ],
@@ -695,7 +695,7 @@ export const data = [
                     { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -761,7 +761,7 @@ export const data = [
                 Config: {
                   webhookUrl: 'https://6b0e6a60.ngrok.io/n',
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
             {
@@ -798,7 +798,7 @@ export const data = [
                 Config: {
                   webhookUrl: 'https://6b0e6a60.ngrok.io/n',
                 },
-                DestinationDefinition: { Config: { cdkV2Enabled: true } },
+                DestinationDefinition: { Name: 'WEBHOOK', Config: {} },
               },
             },
           ],

@@ -43,7 +43,6 @@ const destination2 = {
       transformAt: 'router',
       transformAtV1: 'router',
     },
-    ResponseRules: {},
   },
   Config: {
     accountAttributeMap: [
@@ -183,7 +182,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
@@ -309,7 +307,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
@@ -414,7 +411,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
@@ -517,7 +513,6 @@ export const data = [
                     transformAt: 'router',
                     transformAtV1: 'router',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],

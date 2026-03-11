@@ -1,22 +1,26 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 const CUSTOMER_ID_PARAM = ':customerId';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers/${CUSTOMER_ID_PARAM}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadClickConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers/uploadClickConversions
 const CLICK_CONVERSION_ENDPOINT_PATH = 'uploadClickConversions';
 const CLICK_CONVERSION = `${BASE_ENDPOINT}:${CLICK_CONVERSION_ENDPOINT_PATH}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadCallConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers/uploadCallConversions
 const CALL_CONVERSION_ENDPOINT_PATH = 'uploadCallConversions';
 const CALL_CONVERSION = `${BASE_ENDPOINT}:${CALL_CONVERSION_ENDPOINT_PATH}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers.googleAds/searchStream
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers.googleAds/searchStream
 const SEARCH_STREAM_ENDPOINT_PATH = 'searchStream';
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:${SEARCH_STREAM_ENDPOINT_PATH}`;
+
+// Batch size limit for click and call conversions
+// https://developers.google.com/google-ads/api/docs/best-practices/quotas
+const MAX_CONVERSIONS_PER_BATCH = 2000;
 
 const STORE_CONVERSION_ENDPOINT_PATH = 'offlineUserDataJobs';
 const STORE_CONVERSION_CONFIG = `${BASE_ENDPOINT}/${STORE_CONVERSION_ENDPOINT_PATH}`;
@@ -77,4 +81,5 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
   consentConfigMap,
   API_VERSION,
+  MAX_CONVERSIONS_PER_BATCH,
 };

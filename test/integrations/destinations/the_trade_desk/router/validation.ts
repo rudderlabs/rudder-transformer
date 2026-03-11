@@ -70,7 +70,8 @@ export const validation = [
               batched: false,
               metadata: [generateMetadata(1, 'u1'), generateMetadata(2, 'u1')],
               statusCode: 400,
-              error: 'Advertiser ID is not present. Aborting',
+              error:
+                'Advertiser ID is not present. Aborting: Workflow: rtWorkflow, Step: validateConfig, ChildStep: undefined, OriginalError: Advertiser ID is not present. Aborting',
               statTags: {
                 destType: destTypeInUpperCase,
                 destinationId: 'default-destinationId',
@@ -146,7 +147,8 @@ export const validation = [
               batched: false,
               metadata: [generateMetadata(1, 'u1'), generateMetadata(2, 'u1')],
               statusCode: 400,
-              error: 'Segment name/Audience ID is not present. Aborting',
+              error:
+                'Segment name/Audience ID is not present. Aborting: Workflow: rtWorkflow, Step: validateConfig, ChildStep: undefined, OriginalError: Segment name/Audience ID is not present. Aborting',
               statTags: {
                 destType: destTypeInUpperCase,
                 destinationId: 'default-destinationId',
@@ -206,7 +208,8 @@ export const validation = [
               batched: false,
               metadata: [generateMetadata(1, 'u1')],
               statusCode: 400,
-              error: 'Advertiser Secret Key is not present. Aborting',
+              error:
+                'Advertiser Secret Key is not present. Aborting: Workflow: rtWorkflow, Step: validateConfig, ChildStep: undefined, OriginalError: Advertiser Secret Key is not present. Aborting',
               statTags: {
                 destType: destTypeInUpperCase,
                 destinationId: 'default-destinationId',
@@ -725,7 +728,8 @@ export const validation = [
               batched: false,
               metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 400,
-              error: 'TTL is out of range. Allowed values are 0 to 180 days',
+              error:
+                'TTL is out of range. Allowed values are 0 to 180 days: Workflow: rtWorkflow, Step: validateConfig, ChildStep: undefined, OriginalError: TTL is out of range. Allowed values are 0 to 180 days',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',

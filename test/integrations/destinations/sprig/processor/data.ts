@@ -26,9 +26,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -94,9 +93,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -160,9 +158,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {},
             },
@@ -224,9 +221,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -290,9 +286,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -376,9 +371,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,
@@ -444,9 +438,8 @@ export const data = [
             },
             destination: {
               DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Name: 'SPRIG',
+                Config: {},
               },
               Config: {
                 apiKey: secret1,

@@ -1,5 +1,5 @@
 import { authHeader1, authHeader2, secret2 } from './maskedSecrets';
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 export const networkCallsData = [
   {

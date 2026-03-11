@@ -88,6 +88,7 @@ export const groupTestData: ProcessorTestData[] = [
                 },
               },
               endpoint: commonEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: headers,
               method: 'POST',
               userId: '',

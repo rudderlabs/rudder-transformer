@@ -342,4 +342,178 @@ export const networkCallsData = [
       statusText: 'OK',
     },
   },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query: "SELECT id, Email FROM Contacts WHERE Email in ('tobedeleted2@gmail.com')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_2>',
+            Email: 'tobedeleted2@gmail.com',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query:
+          "SELECT id, Email FROM Leads WHERE Email in ('tobedeleted@gmail.com', 'tobedeleted2@gmail.com')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_1>',
+            Email: 'tobedeleted@gmail.com',
+          },
+          {
+            id: '<RECORD_ID_2>',
+            Email: 'tobedeleted2@gmail.com',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token',
+      },
+      data: {
+        select_query:
+          "SELECT id, Email FROM Leads WHERE Email in ('tobedeleted@gmail.com', 'tobedeleted3@gmail.com')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_1>',
+            Email: 'tobedeleted@gmail.com',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken expired-access-token',
+      },
+      data: {
+        select_query: "SELECT id, Email FROM Leads WHERE Email in ('tobedeleted3@gmail.com')",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 'INVALID_TOKEN',
+        details: {},
+        message: 'invalid oauth token',
+        status: 'error',
+      },
+      status: 401,
+      statusText: 'Bad Request',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token-partial',
+      },
+      data: {
+        select_query:
+          "SELECT id, Email, Phone, Company, Website, Lead_Source FROM Leads WHERE ((Email in ('tobedeleted1@gmail.com', 'tobedeleted2@gmail.com', 'tobedeleted3@gmail.com') OR Phone in ('+1234567801', '+1234567802', '+1234567803')) OR ((Company in ('Company One', 'Company Two', 'Company Three') OR Website in ('https://company1.com', 'https://company2.com', 'https://company3.com')) OR Lead_Source in ('Direct', 'Advertisement', 'Referral')))",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_1>',
+            Email: 'tobedeleted1@gmail.com',
+            Phone: '+1234567801',
+            Company: 'Company One',
+            Website: 'https://company1.com',
+            Lead_Source: 'Direct',
+          },
+          {
+            id: '<RECORD_ID_2>',
+            Email: 'tobedeleted2@gmail.com',
+            Phone: '+1234567802',
+            Company: 'Company Two',
+            Website: 'https://company2.com',
+            Lead_Source: 'Advertisement',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://www.zohoapis.in/crm/v6/coql',
+      headers: {
+        Authorization: 'Zoho-oauthtoken correct-access-token-partial',
+      },
+      data: {
+        select_query:
+          "SELECT id, Email, Phone, Company, Website, Lead_Source FROM Leads WHERE ((Email in ('tobedeleted4@gmail.com', 'tobedeleted5@gmail.com') OR Phone in ('+1234567804', '+1234567805')) OR ((Company in ('Company Four', 'Company Five') OR Website in ('https://company4.com', 'https://company5.com')) OR Lead_Source in ('Social Media', 'Partner')))",
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        data: [
+          {
+            id: '<RECORD_ID_4>',
+            Email: 'tobedeleted4@gmail.com',
+            Phone: '+1234567804',
+            Company: 'Company Four',
+            Website: 'https://company4.com',
+            Lead_Source: 'Social Media',
+          },
+          {
+            id: '<RECORD_ID_5>',
+            Email: 'tobedeleted5@gmail.com',
+            Phone: '+1234567805',
+            Company: 'Company Five',
+            Website: 'https://company5.com',
+            Lead_Source: 'Partner',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
 ];

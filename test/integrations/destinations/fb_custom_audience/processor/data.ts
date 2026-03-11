@@ -1,4 +1,4 @@
-import config from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import * as config from '../../../../../src/v0/destinations/fb_custom_audience/config';
 import { mockFns } from '../mocks';
 export const data = [
   {
@@ -2480,7 +2480,7 @@ export const data = [
     },
     mockFns: () => {
       jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
-      jest.replaceProperty(config, 'maxPayloadSize', 400 as typeof config.maxPayloadSize);
+      jest.spyOn(config, 'getMaxPayloadSize').mockReturnValue(400);
     },
   },
   {

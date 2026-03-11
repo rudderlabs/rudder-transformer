@@ -47,6 +47,7 @@ export type BatchedRequest<
   type: string;
   method: string;
   endpoint: string;
+  endpointPath?: string;
   headers: THeaders;
   params: TParams;
   files: Record<string, never>;
@@ -59,6 +60,19 @@ export type BatchRequestOutput<
   TDestination = Destination,
 > = {
   batchedRequest: BatchedRequest<TPayload, THeaders, TParams>;
+  metadata: Partial<Metadata>[];
+  batched: boolean;
+  statusCode: number;
+  destination: TDestination;
+};
+
+export type MultiBatchRequestOutput<
+  TPayload = Record<string, unknown>,
+  THeaders = Record<string, unknown>,
+  TParams = Record<string, unknown>,
+  TDestination = Destination,
+> = {
+  batchedRequest: BatchedRequest<TPayload, THeaders, TParams>[];
   metadata: Partial<Metadata>[];
   batched: boolean;
   statusCode: number;
@@ -128,6 +142,7 @@ export type RouterTransformationResponse = {
   statusCode: number;
   error?: string;
   statTags?: object;
+  authErrorCategory?: string;
 };
 
 /**

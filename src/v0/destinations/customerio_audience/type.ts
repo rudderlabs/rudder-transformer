@@ -45,6 +45,8 @@ export const CustomerIODestinationConfigSchema = z
     apiKey: z.string(),
     appApiKey: z.string(),
     siteId: z.string(),
+    // keeping it optional for backward compatibility
+    region: z.enum(['US', 'EU']).optional(),
   })
   .passthrough();
 

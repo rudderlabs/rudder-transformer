@@ -122,9 +122,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         },
@@ -247,9 +245,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         },
@@ -349,9 +345,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         },
@@ -470,9 +464,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         },
@@ -595,9 +587,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         },
@@ -720,9 +710,7 @@
             "Enabled": true,
             "Transformations": [],
             "DestinationDefinition": {
-              "Config": {
-                "cdkV2TestThreshold": 1
-              }
+              "Config": {}
             }
           }
         }

@@ -12,6 +12,28 @@ import { reconcileFunction } from '../util/openfaas/index';
 import { ControllerUtility } from './util';
 import logger from '../logger';
 
+interface Dependencies {
+  libraries: {
+    versionId: string;
+  }[];
+  credentials: {
+    key: string;
+    value: string;
+    isSecret: boolean;
+  }[];
+}
+
+interface TestRunRequestBody {
+  input: { message: Record<string, unknown>; metadata?: Record<string, unknown> }[];
+  codeRevision: {
+    code: string;
+    language: string;
+    versionId: string;
+    codeVersion?: string;
+  };
+  dependencies?: Dependencies;
+}
+
 export class UserTransformController {
   /**
   reconcileFunction is a controller function to reconcile the openfaas
@@ -48,6 +70,40 @@ export class UserTransformController {
       libraryVersionIDs,
       credentials,
     );
+    ctx.body = response.body;
+    ControllerUtility.postProcess(ctx, response.status);
+    return ctx;
+  }
+
+  /**
+   * testRun is a controller function that executes a test run of user-provided transformation code
+   * using the given input data and optional dependencies. This is typically used to validate
+   * transformation logic by running it as a test before deployment.
+   *
+   * Expects the following body structure (TestRunRequestBody):
+   *  - input: array of objects representing input records
+   *  - code: string containing the transformation code to test
+   *  - language: programming language used for the transformation (e.g., 'javascript')
+   *  - codeVersion (optional): string representing code version, defaults to '1' if not provided
+   *  - dependencies (optional):
+   *      - libraries: array of library objects with `versionId` for each library to load in the test environment
+   *      - credentials: array of credential objects to provide for the test
+   *
+   * Responds with the result of the test execution.
+   *
+   * @param ctx - The Koa request/response context object.
+   */
+  public static async testRun(ctx: Context) {
+    const { input, codeRevision, dependencies } = ctx.request.body as TestRunRequestBody;
+
+    const response = await UserTransformService.testTransformRoutine(
+      input,
+      { ...codeRevision, codeVersion: codeRevision.codeVersion || '1' },
+      (dependencies?.libraries ?? []).map((library) => library.versionId),
+      dependencies?.credentials ?? [],
+      true,
+    );
+
     ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);
     return ctx;

@@ -1,5 +1,6 @@
 import { authHeader1, secret1, authHeader2, authHeader3, secret3, secret2 } from '../maskedSecrets';
 import { destination } from './config';
+import { upsertData } from './upsertData';
 export const data = [
   {
     name: 'hs',
@@ -3003,6 +3004,8 @@ export const data = [
                 userId: 'user1',
                 event: 'purchase',
                 properties: {
+                  Revenue: 0,
+                  isVersionUpdated: false,
                   user_actual_role: 'system_admin, system_user',
                   user_actual_id: 12345,
                 },
@@ -3287,7 +3290,10 @@ export const data = [
                   JSON: {
                     email: 'user1@a.com',
                     eventName: 'pedummy-hubId_rs_hub_test',
-                    properties: {},
+                    properties: {
+                      value: 0,
+                      isVersionUpdated: false,
+                    },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -4070,4 +4076,5 @@ export const data = [
       },
     },
   },
+  ...upsertData,
 ];

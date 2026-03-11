@@ -29,11 +29,9 @@ const commonDestination = {
   Name: 'sample-destination',
   DestinationDefinition: {
     ID: '123',
-    Name: 'linkedin_ads',
+    Name: 'LINKEDIN_ADS',
     DisplayName: 'LinkedIn Ads',
-    Config: {
-      cdkV2Enabled: true,
-    },
+    Config: {},
   },
   WorkspaceID: '123',
   Transformations: [],
@@ -290,11 +288,9 @@ export const data = [
                 Name: 'sample-destination',
                 DestinationDefinition: {
                   ID: '123',
-                  Name: 'linkedin_ads',
+                  Name: 'LINKEDIN_ADS',
                   DisplayName: 'LinkedIn Ads',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
+                  Config: {},
                 },
                 WorkspaceID: '123',
                 Transformations: [],

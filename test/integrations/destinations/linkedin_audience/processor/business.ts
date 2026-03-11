@@ -36,9 +36,7 @@ export const businessTestData: ProcessorTestData[] = [
                 ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                 Name: 'LINKEDIN_AUDIENCE',
                 DisplayName: 'Linkedin Audience',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 connectionMode: 'cloud',
@@ -140,9 +138,7 @@ export const businessTestData: ProcessorTestData[] = [
                 ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                 Name: 'LINKEDIN_AUDIENCE',
                 DisplayName: 'Linkedin Audience',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 connectionMode: 'cloud',
@@ -271,9 +267,7 @@ export const businessTestData: ProcessorTestData[] = [
                 ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                 Name: 'LINKEDIN_AUDIENCE',
                 DisplayName: 'Linkedin Audience',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 connectionMode: 'cloud',
@@ -411,9 +405,7 @@ export const businessTestData: ProcessorTestData[] = [
                 ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
                 Name: 'LINKEDIN_AUDIENCE',
                 DisplayName: 'Linkedin Audience',
-                Config: {
-                  cdkV2Enabled: true,
-                },
+                Config: {},
               },
               Config: {
                 connectionMode: 'cloud',

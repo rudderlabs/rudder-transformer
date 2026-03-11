@@ -73,7 +73,6 @@ export const data = [
                     supportedSourceTypes: [],
                     transformAt: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -152,7 +151,6 @@ export const data = [
                     supportedSourceTypes: [],
                     transformAt: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -200,7 +198,6 @@ export const data = [
                     supportedSourceTypes: [],
                     transformAt: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
@@ -315,7 +312,6 @@ export const data = [
                     supportedSourceTypes: [],
                     transformAt: 'processor',
                   },
-                  ResponseRules: {},
                 },
                 Config: {
                   clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',

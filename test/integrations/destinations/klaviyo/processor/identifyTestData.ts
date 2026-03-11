@@ -146,6 +146,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'PATCH',
               endpoint: commonUserUpdateEndpoint,
+              endpointPath: '/api/profiles',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -163,6 +164,7 @@ export const identifyData: ProcessorTestData[] = [
               method: 'POST',
               userId: '',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -226,6 +228,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'PATCH',
               endpoint: commonUserUpdateEndpoint,
+              endpointPath: '/api/profiles',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -251,6 +254,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -369,6 +373,7 @@ export const identifyData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'PATCH',
               endpoint: commonUserUpdateEndpoint,
+              endpointPath: '/api/profiles',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -425,6 +430,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'PATCH',
               endpoint: commonUserUpdateEndpoint,
+              endpointPath: '/api/profiles',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -450,6 +456,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -508,6 +515,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'PATCH',
               endpoint: commonUserUpdateEndpoint,
+              endpointPath: '/api/profiles',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -528,6 +536,7 @@ export const identifyData: ProcessorTestData[] = [
               userId: '',
               method: 'POST',
               endpoint: subscribeEndpoint,
+              endpointPath: '/api/profile-subscription-bulk-create-jobs',
               headers: commonOutputHeaders,
               JSON: {
                 data: {

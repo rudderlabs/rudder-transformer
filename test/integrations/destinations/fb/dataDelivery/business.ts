@@ -148,7 +148,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Invalid OAuth 2.0 access token',
+            message: 'Invalid OAuth 2.0 access token. Facebook responded with error code: 190',
             statTags: {
               ...statTags,
               errorCategory: 'dataValidation',
@@ -157,7 +157,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             },
             response: [
               {
-                error: 'Invalid OAuth 2.0 access token',
+                error: 'Invalid OAuth 2.0 access token. Facebook responded with error code: 190',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -240,11 +240,13 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: {
           output: {
             status: 400,
-            message: 'Event Timestamp Too Old',
+            message:
+              'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
             statTags,
             response: [
               {
-                error: 'Event Timestamp Too Old',
+                error:
+                  'Event Timestamp Too Old. Facebook responded with error code: 100 and sub-code: 2804003',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -285,12 +287,12 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
             statTags,
             response: [
               {
                 error:
-                  "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+                  "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Facebook responded with error code: 100 and sub-code: 33",
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

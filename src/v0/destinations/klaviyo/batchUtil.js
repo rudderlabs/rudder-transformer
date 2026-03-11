@@ -36,7 +36,9 @@ const generateBatchedSubscriptionRequest = (subscription, destination) => {
   const { listId, subscriptionProfileList, operation } = subscription;
   subscriptionProfileList.forEach((profileList) => profiles.push(...profileList));
   subscriptionPayloadResponse.body.JSON = getSubscriptionPayload(listId, profiles, operation);
-  subscriptionPayloadResponse.endpoint = `${BASE_ENDPOINT}/api/${operation === 'subscribe' ? 'profile-subscription-bulk-create-jobs' : 'profile-subscription-bulk-delete-jobs'}`;
+  const endpointPath = `/api/${operation === 'subscribe' ? 'profile-subscription-bulk-create-jobs' : 'profile-subscription-bulk-delete-jobs'}`;
+  subscriptionPayloadResponse.endpoint = `${BASE_ENDPOINT}${endpointPath}`;
+  subscriptionPayloadResponse.endpointPath = endpointPath;
   subscriptionPayloadResponse.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,

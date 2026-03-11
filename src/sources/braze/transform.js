@@ -89,7 +89,7 @@ const process = (payload) => {
       // Figure out a way to handle partial failures within batch
       // responses.push({
       //   statusCode: 400,
-      //   error: error.message || "Unknwon error"
+      //   error: error.message || "Unknown error"
       // });
     }
   });

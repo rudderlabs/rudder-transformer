@@ -93,6 +93,7 @@ export const ecomTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventsEndpoint,
+              endpointPath: '/api/events',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -203,6 +204,7 @@ export const ecomTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: eventsEndpoint,
+              endpointPath: '/api/events',
               headers: commonOutputHeaders,
               JSON: {
                 data: {
@@ -316,6 +318,7 @@ export const ecomTestData: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               endpoint: 'https://a.klaviyo.com/api/events',
+              endpointPath: '/api/events',
               headers: commonOutputHeaders,
               JSON: {
                 data: {

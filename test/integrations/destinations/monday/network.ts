@@ -1,4 +1,9 @@
-import { secretFailedApiToken, secretApiToken } from './maskedSecrets';
+import {
+  secretFailedApiToken,
+  secretApiToken,
+  secretNullColumnsApiToken,
+  secretNullGroupsApiToken,
+} from './maskedSecrets';
 
 export const networkCallsData = [
   {
@@ -597,6 +602,71 @@ export const networkCallsData = [
     httpRes: {
       data: {
         boards: [],
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.monday.com/v2',
+      method: 'POST',
+      headers: {
+        Authorization: secretNullColumnsApiToken,
+      },
+    },
+    httpRes: {
+      data: {
+        data: {
+          boards: [
+            {
+              name: 'Planning',
+              columns: null,
+              groups: [
+                {
+                  id: 'topics',
+                  title: 'This month',
+                },
+                {
+                  id: 'group_title',
+                  title: 'Next month',
+                },
+              ],
+            },
+          ],
+        },
+        account_id: 13215538,
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.monday.com/v2',
+      method: 'POST',
+      headers: {
+        Authorization: secretNullGroupsApiToken,
+      },
+    },
+    httpRes: {
+      data: {
+        data: {
+          boards: [
+            {
+              name: 'Planning',
+              columns: [
+                {
+                  id: 'status',
+                  title: 'Status',
+                  type: 'color',
+                  description: null,
+                  settings_str: '{}',
+                },
+              ],
+              groups: null,
+            },
+          ],
+        },
+        account_id: 13215538,
       },
       status: 200,
     },

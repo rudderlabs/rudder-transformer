@@ -4,14 +4,13 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "transformer",
-      "program": "${workspaceFolder}/src/index.ts",
-      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "runtimeArgs": ["--require", "${workspaceFolder}/node_modules/ts-node/register"],
-      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
-      "env": {
-        "NODE_ENV": "development"
-      }
+      "name": "Start transformer",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "restart": true,
+      "skipFiles": ["<node_internals>/**"]
     },
     {
       "type": "node",

@@ -137,7 +137,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Config: {
                 accessKeyId: '',
@@ -401,7 +400,6 @@ export const data = [
                   transformAt: 'router',
                   transformAtV1: 'router',
                 },
-                ResponseRules: {},
               },
               Enabled: true,
               Transformations: [],

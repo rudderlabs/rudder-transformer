@@ -12,7 +12,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                  apiKey: 'dummyApiKey',
                   prefixProperties: true,
                   useNativeSDK: false,
                 },
@@ -75,7 +75,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                  apiKey: 'dummyApiKey',
                   prefixProperties: true,
                   useNativeSDK: false,
                 },
@@ -163,7 +163,7 @@ export const data = [
                     'Page-search': '',
                     'Page-title': '',
                     'Page-url': 'http://localhost/tests/html/index2.html',
-                    _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                    _k: 'dummyApiKey',
                     _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                     _n: 'Loaded a Page',
                     _t: '1579847342',
@@ -190,7 +190,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                  apiKey: 'dummyApiKey',
                   prefixProperties: true,
                   useNativeSDK: false,
                 },
@@ -218,7 +218,7 @@ export const data = [
                     country: 'India',
                     email: 'sayan@disney.com',
                     firstname: 'Sayan',
-                    _k: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                    _k: 'dummyApiKey',
                     _p: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                     _t: '1579847342',
                     _d: 1,
@@ -244,7 +244,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '9432f11f70f8ce386f5110c8c924b3ec4f825256',
+                  apiKey: 'dummyApiKey',
                   prefixProperties: true,
                   useNativeSDK: false,
                 },

@@ -6,6 +6,7 @@
   "delay": "1000",
   "signal": "SIGTERM",
   "env": {
-    "CLUSTER_ENABLED": "false"
+    "CLUSTER_ENABLED": "false",
+    "STATS_CLIENT": "prometheus"
   }
 }

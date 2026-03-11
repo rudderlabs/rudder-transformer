@@ -90,8 +90,7 @@
             ],
             "transformAt": "processor",
             "transformAtV1": "processor"
-          },
-          "ResponseRules": null
+          }
         },
         "Config": {
           "webhookMethod": "POST",

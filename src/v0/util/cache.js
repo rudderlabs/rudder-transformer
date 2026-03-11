@@ -1,4 +1,5 @@
 const NodeCache = require('node-cache');
+const stats = require('../../util/stats');
 
 /**
  * Cache class wrapper around NodeCache with support for async store functions
@@ -13,14 +14,22 @@ const NodeCache = require('node-cache');
 class Cache {
   /**
    * Creates a new Cache instance
+   * @param {string} name - Name of the cache instance for metric tagging
    * @param {number} ttlSeconds - Default time-to-live for cache entries in seconds
+   * @param {Object} defaultStatTags - Default tags to add to cache stats
    */
-  constructor(ttlSeconds) {
+  constructor(name, ttlSeconds, defaultStatTags = {}) {
+    this.name = name;
+    this.defaultStatTags = defaultStatTags;
+
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
       useClones: false,
     });
+    this.cache.on('set', this.emitStats.bind(this));
+    this.cache.on('del', this.emitStats.bind(this));
+    this.cache.on('expired', this.emitStats.bind(this));
   }
 
   /**
@@ -39,10 +48,11 @@ class Cache {
    * const value = await cache.get('myKey'); // undefined if not cached
    */
   async get(key, storeFunction) {
-    // Check if key exists in cache (use has() to handle falsy values correctly)
-    if (this.cache.has(key)) {
-      const value = this.cache.get(key);
-      return Promise.resolve(value);
+    // Check if key exists in cache
+    const cacheVal = this.cache.get(key);
+    this.emitStats();
+    if (cacheVal !== undefined) {
+      return Promise.resolve(cacheVal);
     }
 
     // If no store function provided, return undefined (cache miss)
@@ -98,6 +108,17 @@ class Cache {
    */
   del(key) {
     return this.cache.del(key);
+  }
+
+  emitStats() {
+    const cacheStats = this.cache.getStats();
+    const tags = { name: this.name, ...this.defaultStatTags };
+
+    stats.counter('node_cache_hits', cacheStats.hits, tags);
+    stats.counter('node_cache_misses', cacheStats.misses, tags);
+    stats.gauge('node_cache_keys', cacheStats.keys, tags);
+    stats.gauge('node_cache_ksize', cacheStats.ksize, tags);
+    stats.gauge('node_cache_vsize', cacheStats.vsize, tags);
   }
 }
 

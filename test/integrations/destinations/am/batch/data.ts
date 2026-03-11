@@ -44,7 +44,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -154,7 +154,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -210,7 +210,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -266,7 +266,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -325,7 +325,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -384,7 +384,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -420,7 +420,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     identification: [
                       JSON.stringify({
                         group_type: 'Company',
@@ -464,7 +464,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     mapping: [
                       JSON.stringify({
                         global_user_id: 'newUserIdAlias',
@@ -540,7 +540,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   options: {
                     min_id_length: 1,
                   },
@@ -578,7 +578,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   identification: [
                     JSON.stringify({
                       group_type: 'Company',
@@ -624,7 +624,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   mapping: [
                     JSON.stringify({
                       global_user_id: 'newUserIdAlias',
@@ -741,7 +741,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                 },
               },
               type: 'REST',
@@ -831,7 +831,7 @@ export const data = [
                         createdAt: 1599264000,
                       },
                     },
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -885,7 +885,7 @@ export const data = [
                         key: 'val',
                       },
                     },
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -939,7 +939,7 @@ export const data = [
                         key: 'val',
                       },
                     },
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -996,7 +996,7 @@ export const data = [
                         Company: 'Comapny-ABC',
                       },
                     },
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -1053,7 +1053,7 @@ export const data = [
                         Company: 'Comapny-ABC',
                       },
                     },
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -1089,7 +1089,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     identification: [
                       JSON.stringify({
                         group_type: 'Company',
@@ -1133,7 +1133,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     mapping: [
                       JSON.stringify({
                         global_user_id: 'newUserIdAlias',
@@ -1207,7 +1207,7 @@ export const data = [
                       createdAt: 1599264000,
                     },
                   },
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   options: {
                     min_id_length: 1,
                   },
@@ -1245,7 +1245,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   identification: [
                     JSON.stringify({
                       group_type: 'Company',
@@ -1291,7 +1291,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   mapping: [
                     JSON.stringify({
                       global_user_id: 'newUserIdAlias',
@@ -1408,7 +1408,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                 },
               },
               type: 'REST',
@@ -2192,7 +2192,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2248,7 +2248,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2304,7 +2304,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2363,7 +2363,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2422,7 +2422,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2458,7 +2458,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     identification: [
                       JSON.stringify({
                         group_type: 'Company',
@@ -2502,7 +2502,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     mapping: [
                       JSON.stringify({
                         global_user_id: 'newUserIdAlias',
@@ -2578,7 +2578,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   options: {
                     min_id_length: 1,
                   },
@@ -2616,7 +2616,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   identification: [
                     JSON.stringify({
                       group_type: 'Company',
@@ -2662,7 +2662,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   mapping: [
                     JSON.stringify({
                       global_user_id: 'newUserIdAlias',
@@ -2779,7 +2779,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                 },
               },
               type: 'REST',
@@ -2870,7 +2870,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2926,7 +2926,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -2982,7 +2982,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -3041,7 +3041,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -3100,7 +3100,7 @@ export const data = [
                         },
                       },
                     ],
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     options: {
                       min_id_length: 1,
                     },
@@ -3136,7 +3136,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     identification: [
                       JSON.stringify({
                         group_type: 'Company',
@@ -3180,7 +3180,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {
-                    api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                    api_key: 'dummyApiKey',
                     mapping: [
                       JSON.stringify({
                         global_user_id: 'newUserIdAlias',
@@ -3255,7 +3255,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   options: {
                     min_id_length: 1,
                   },
@@ -3293,7 +3293,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   identification: [
                     JSON.stringify({
                       group_type: 'Company',
@@ -3339,7 +3339,7 @@ export const data = [
                 XML: {},
                 JSON_ARRAY: {},
                 FORM: {
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                   mapping: [
                     JSON.stringify({
                       global_user_id: 'newUserIdAlias',
@@ -3456,7 +3456,7 @@ export const data = [
                       },
                     },
                   ],
-                  api_key: '4c7ed7573eb73517ee4c26ed4bde9a85',
+                  api_key: 'dummyApiKey',
                 },
               },
               type: 'REST',

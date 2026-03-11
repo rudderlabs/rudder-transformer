@@ -17,7 +17,6 @@ import type {
   FbRecordEvent,
 } from './types';
 import { schemaFields, MAX_USER_COUNT } from './config';
-import stats from '../../../util/stats';
 import {
   getDestinationExternalIDInfoForRetl,
   checkSubsetOfArray,
@@ -51,6 +50,8 @@ const processRecord = (
   userSchema: string[],
   isHashRequired: boolean,
   disableFormat: boolean | undefined,
+  workspaceId: string,
+  destinationId: string,
 ): { dataElement: unknown[]; metadata: Metadata } => {
   const fields = record.message.fields!;
   let dataElement: unknown[] = [];
@@ -61,7 +62,12 @@ const processRecord = (
     let updatedProperty: unknown = userProperty;
 
     if (isHashRequired && !disableFormat) {
-      updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
+      updatedProperty = ensureApplicableFormat(
+        eachProperty,
+        userProperty,
+        workspaceId,
+        destinationId,
+      );
     }
 
     dataElement = getUpdatedDataElement(
@@ -79,10 +85,9 @@ const processRecord = (
   });
 
   if (nullUserData) {
-    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-      destinationId: record.destination.ID,
-      nullFields: userSchema,
-    });
+    throw new InstrumentationError(
+      `All user properties [${userSchema.join(', ')}] are invalid or null. At least one valid field is required.`,
+    );
   }
 
   return { dataElement, metadata: record.metadata };
@@ -115,6 +120,8 @@ const processRecordEventArray = async (
         userSchema,
         isHashRequired,
         disableFormat,
+        input.metadata.workspaceId,
+        destination.ID,
       );
       metadata.push(recordMetadata);
       return dataElement;

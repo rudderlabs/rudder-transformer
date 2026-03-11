@@ -23,16 +23,11 @@ jobs:
     # Only run if the workflow_run was successful (doesn't apply to manual triggers)
     if: >
       github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'workflow_call' ||
-      (
-        github.event_name == 'workflow_run' &&
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.pull_requests[0].merged == true &&
-        github.event.workflow_run.pull_requests[0].base.ref == 'main'
-      )
+      github.event_name == 'workflow_call' ||  
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -110,7 +105,7 @@ jobs:
           echo "Go version from ingestion service: $go_version"
 
       - name: Setup Go
-        uses: actions/setup-go@7a3fe6cf4cb3a834922a1244abfce67bcef6a0c5 # v6.2.0
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
         with:
           go-version: ${{ steps.get_go_version.outputs.go_version }}
 

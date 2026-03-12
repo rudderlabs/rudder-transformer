@@ -45,7 +45,11 @@ export const SurvicateMessageSchema = z
       .passthrough()
       .optional(),
   })
-  .passthrough();
+  .passthrough()
+  .refine(
+    (msg) => !!msg.userId || !!msg.anonymousId,
+    { message: 'Either userId or anonymousId must be provided' },
+  );
 
 // TypeScript types derived from Zod schemas
 export type SurvicateDestinationConfig = z.infer<typeof SurvicateDestinationConfigSchema>;
@@ -63,19 +67,19 @@ export type SurvicateRouterRequest = RouterTransformationRequestData<
 // Payload types for different event kinds
 export interface IdentifyPayload {
   user_id?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface GroupPayload {
   user_id?: string;
   group_id?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface TrackPayload {
   user_id?: string;
   event?: string;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   timestamp?: string;
   message_id?: string;
 }

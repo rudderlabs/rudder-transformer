@@ -470,4 +470,64 @@ export const data: ProcessorTestData[] = [
       },
     },
   },
+  {
+    name: 'survicate',
+    description: 'Identify event missing both userId and anonymousId - should fail',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              messageId: 'no-id',
+              originalTimestamp: '2024-01-01T00:00:00.000Z',
+            },
+            destination: {
+              ID: 'survicate-dest-id',
+              Name: 'Survicate',
+              DestinationDefinition: {
+                Config: {},
+              },
+              Config: {
+                destinationKey: 'test-key',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error: 'Either userId or anonymousId must be provided',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'processor',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -772,6 +772,58 @@ export const data: RouterTestData[] = [
   },
   {
     name: 'survicate',
+    description: 'Missing user identifier results in validation error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'no-id',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'Either userId or anonymousId must be provided',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
     description: 'Missing originalTimestamp results in validation error',
     feature: 'router',
     module: 'destination',

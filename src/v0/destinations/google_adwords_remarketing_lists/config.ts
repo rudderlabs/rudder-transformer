@@ -1,4 +1,4 @@
-const { getMappingConfig } = require('../../util');
+import { getMappingConfig } from '../../util';
 
 const API_VERSION = 'v22';
 
@@ -9,32 +9,36 @@ const CONFIG_CATEGORIES = {
   ADDRESSINFO: { type: 'addressInfo', name: 'addressInfo' },
 };
 const ADDRESS_INFO_ATTRIBUTES = ['firstName', 'lastName', 'country', 'postalCode'];
-const attributeMapping = {
+const attributeMapping: Record<string, string> = {
   email: 'hashedEmail',
   phone: 'hashedPhoneNumber',
 };
 const hashAttributes = ['email', 'phone', 'firstName', 'lastName'];
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-const TYPEOFLIST = Object.freeze({
+const TYPEOFLIST: Readonly<Record<string, string>> = Object.freeze({
   userID: 'thirdPartyUserId',
   mobileDeviceID: 'mobileId',
 });
 
-const consentConfigMap = {
+const consentConfigMap: Record<string, string> = {
   personalizationConsent: 'adPersonalization',
   userDataConsent: 'adUserData',
 };
 
-module.exports = {
+const offlineDataJobsMapping = MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name];
+const addressInfoMapping = MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name];
+const destType = 'google_adwords_remarketing_lists';
+
+export {
   API_VERSION,
   OFFLINE_USER_DATA_JOBS_ENDPOINT,
   BASE_ENDPOINT,
   TYPEOFLIST,
   attributeMapping,
   hashAttributes,
-  offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
-  addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
+  offlineDataJobsMapping,
+  addressInfoMapping,
   ADDRESS_INFO_ATTRIBUTES,
   consentConfigMap,
-  destType: 'google_adwords_remarketing_lists',
+  destType,
 };

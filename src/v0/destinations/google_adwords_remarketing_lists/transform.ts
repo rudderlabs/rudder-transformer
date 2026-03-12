@@ -1,22 +1,23 @@
-const {
+import {
   InstrumentationError,
   ConfigurationError,
   groupByInBatches,
-} = require('@rudderstack/integrations-lib');
-const logger = require('../../../logger');
-const {
+} from '@rudderstack/integrations-lib';
+import logger from '../../../logger';
+import {
   returnArrayOfSubarrays,
   constructPayload,
   simpleProcessRouterDest,
   getAccessToken,
-} = require('../../util');
+} from '../../util';
 
-const { populateConsentFromConfig } = require('../../util/googleUtils');
-const { offlineDataJobsMapping, consentConfigMap } = require('./config');
-const { processRecordInputs } = require('./recordTransform');
-const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
+import { populateConsentFromConfig } from '../../util/googleUtils';
+import { offlineDataJobsMapping, consentConfigMap } from './config';
+import { processRecordInputs } from './recordTransform';
+import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
+import type { GARLDestination, Message, RecordInput } from './types';
 
-function extraKeysPresent(dictionary, keyList) {
+function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]) {
   // eslint-disable-next-line no-restricted-syntax
   for (const key in dictionary) {
     if (!keyList.includes(key)) {
@@ -36,12 +37,12 @@ function extraKeysPresent(dictionary, keyList) {
  * @param {rudder event destination} destination
  * @returns
  */
-const createPayload = (message, destination) => {
+const createPayload = (message: Message, destination: GARLDestination) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];
   const { typeOfList, userSchema, isHashRequired } = destination.Config;
 
-  let outputPayloads = {};
+  let outputPayloads: Record<string, unknown> = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach((key) => {
     if (properties.includes(key)) {
@@ -58,19 +59,21 @@ const createPayload = (message, destination) => {
         return;
       }
 
-      const outputPayload = constructPayload(message, offlineDataJobsMapping);
+      const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
       outputPayload.operations = [];
       // breaking the userIdentiFier array in chunks of 20
-      const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
+      const userIdentifierChunks: Record<string, unknown>[][] = returnArrayOfSubarrays(
+        userIdentifiersList,
+        20,
+      );
       // putting each chunk in different create/remove operations
       switch (key) {
         case 'add':
           // for add operation
           userIdentifierChunks.forEach((element) => {
             const operations = {
-              create: {},
+              create: { userIdentifiers: element },
             };
-            operations.create.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
           outputPayloads = { ...outputPayloads, create: outputPayload };
@@ -79,9 +82,8 @@ const createPayload = (message, destination) => {
           // for remove operation
           userIdentifierChunks.forEach((element) => {
             const operations = {
-              remove: {},
+              remove: { userIdentifiers: element },
             };
-            operations.remove.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
           outputPayloads = { ...outputPayloads, remove: outputPayload };
@@ -96,8 +98,12 @@ const createPayload = (message, destination) => {
   return outputPayloads;
 };
 
-const processEvent = async (metadata, message, destination) => {
-  const response = [];
+const processEvent = async (
+  metadata: Record<string, unknown>,
+  message: Message,
+  destination: GARLDestination,
+) => {
+  const response: unknown[] = [];
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -137,15 +143,19 @@ const processEvent = async (metadata, message, destination) => {
   throw new InstrumentationError(`Message Type ${message.type} not supported.`);
 };
 
-const process = async (event) => processEvent(event.metadata, event.message, event.destination);
+const process = async (event: {
+  metadata: Record<string, unknown>;
+  message: Message;
+  destination: GARLDestination;
+}) => processEvent(event.metadata, event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = [];
+const processRouterDest = async (inputs: { message: Message }[], reqMetadata: unknown) => {
+  const respList: unknown[] = [];
   const groupedInputs = await groupByInBatches(inputs, (input) =>
     input.message.type?.toLowerCase(),
   );
-  let transformedRecordEvent = [];
-  let transformedAudienceEvent = [];
+  let transformedRecordEvent: unknown[] = [];
+  let transformedAudienceEvent: unknown[] = [];
 
   const eventTypes = ['record', 'audiencelist'];
   if (extraKeysPresent(groupedInputs, eventTypes)) {
@@ -153,7 +163,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   if (groupedInputs.record) {
-    transformedRecordEvent = await processRecordInputs(groupedInputs.record, reqMetadata);
+    transformedRecordEvent = await processRecordInputs(
+      groupedInputs.record as unknown as RecordInput[],
+    );
   }
 
   if (groupedInputs.audiencelist) {
@@ -161,6 +173,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       groupedInputs.audiencelist,
       process,
       reqMetadata,
+      undefined,
     );
   }
 
@@ -168,4 +181,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

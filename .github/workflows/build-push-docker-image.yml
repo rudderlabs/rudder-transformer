@@ -34,10 +34,6 @@ on:
       DOCKERHUB_TOKEN:
         required: true
 
-permissions:
-  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
-  contents: read # This is required for actions/checkout
-
 env:
   DOCKERHUB_USERNAME: rudderlabs
 
@@ -45,11 +41,13 @@ jobs:
   check_actor:
     runs-on: ubuntu-latest
     name: Check if actor is dependabot
+    permissions:
+      contents: read # minimum required permission for job execution
     outputs:
       is_dependabot: ${{ steps.check.outputs.is_dependabot }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -67,11 +65,13 @@ jobs:
   get_sha:
     runs-on: ubuntu-latest
     name: Get SHA information
+    permissions:
+      contents: read # minimum required permission for job execution
     outputs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -89,11 +89,13 @@ jobs:
   get_changed_files:
     runs-on: ubuntu-latest
     name: Get Changed files
+    permissions:
+      contents: read # to checkout repository code and list changed files (actions/checkout, Ana06/get-changed-files)
     outputs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -122,6 +124,9 @@ jobs:
 
   build-images:
     name: Build Docker Images
+    permissions:
+      id-token: write # for AWS OIDC authentication (aws-actions/configure-aws-credentials)
+      contents: read # to checkout repository code (actions/checkout)
     needs: [check_actor, get_sha, get_changed_files]
     strategy:
       matrix:
@@ -137,7 +142,7 @@ jobs:
     runs-on: ${{ matrix.build-config.os }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -218,11 +223,14 @@ jobs:
   create-manifest-ecr:
     name: Create multi-arch manifest for ECR
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # for AWS OIDC authentication (aws-actions/configure-aws-credentials)
+      contents: read # minimum required permission for job execution
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 
@@ -255,11 +263,13 @@ jobs:
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # minimum required permission for job execution
     needs: [build-images, check_actor]
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 

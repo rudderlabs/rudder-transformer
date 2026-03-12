@@ -93,6 +93,8 @@ const subTypeFields: readonly string[] = [
   'DATA_FILE',
 ];
 
+const DESTINATION = 'fb_custom_audience';
+
 const USER_ADD = 'add';
 const USER_DELETE = 'remove';
 // https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences/
@@ -124,7 +126,19 @@ function getMaxPayloadSize(workspaceId: string): number {
   return DEFAULT_MAX_PAYLOAD_SIZE;
 }
 
+/**
+ * Whether to reject invalid field values (e.g., malformed emails, invalid country codes)
+ * by replacing them with empty strings. When disabled, invalid values are passed through as-is.
+ *
+ * Controlled via env var: FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS=true
+ * Default: false
+ */
+function isRejectInvalidFieldsEnabled(): boolean {
+  return process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS === 'true';
+}
+
 export {
+  DESTINATION,
   ENDPOINT_PATH,
   getEndPoint,
   schemaFields,
@@ -134,4 +148,5 @@ export {
   typeFields,
   subTypeFields,
   getMaxPayloadSize,
+  isRejectInvalidFieldsEnabled,
 };

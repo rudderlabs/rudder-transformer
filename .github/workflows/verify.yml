@@ -3,10 +3,6 @@ name: Verify
 on:
   pull_request:
 
-permissions:
-  contents: read
-  pull-requests: read
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
@@ -15,10 +11,13 @@ jobs:
   formatting-lint:
     name: Check for formatting & lint errors
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to checkout repository code (actions/checkout)
+      pull-requests: read # to list changed files in the PR (Ana06/get-changed-files)
 
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
         with:
           egress-policy: audit
 

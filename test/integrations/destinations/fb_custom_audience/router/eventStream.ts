@@ -264,3 +264,59 @@ export const eventStreamRecordV1RouterRequest: RouterTransformationRequest = {
   ],
   destType: 'fb_custom_audience',
 };
+
+export const eventStreamHashOffRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      message: {
+        userId: 'user 1',
+        anonymousId: 'anon-id-new',
+        event: 'event1',
+        type: 'audiencelist',
+        properties: {
+          listData: {
+            add: [
+              {
+                EMAIL: 'test@example.com',
+                FN: 'john',
+              },
+            ],
+          },
+        },
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        timestamp: '2020-02-02T00:23:09.544Z',
+      },
+      metadata: generateMetadata(1),
+      destination: esDestinationAudience,
+    },
+  ],
+  destType: 'fb_custom_audience',
+};
+
+export const eventStreamPreHashedRouterRequest: RouterTransformationRequest = {
+  input: [
+    {
+      message: {
+        userId: 'user 1',
+        anonymousId: 'anon-id-new',
+        event: 'event1',
+        type: 'audiencelist',
+        properties: {
+          listData: {
+            add: [
+              {
+                EMAIL: 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267',
+                FN: '59107c750fd5ee2758d1988f2bf12d9f110439221ebdb7997e70d6a2c1c5afda',
+              },
+            ],
+          },
+        },
+        context: { ip: '14.5.67.21', library: { name: 'http' } },
+        timestamp: '2020-02-02T00:23:09.544Z',
+      },
+      metadata: generateMetadata(1),
+      destination: esDestinationRecord,
+    },
+  ],
+  destType: 'fb_custom_audience',
+};

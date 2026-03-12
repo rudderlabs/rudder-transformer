@@ -376,4 +376,258 @@ export const data: RouterTestData[] = [
       },
     },
   },
+  {
+    name: 'survicate',
+    description: 'Reserved keys in context.traits should not overwrite canonical fields',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                messageId: 'msg-reserved',
+                userId: 'user-reserved',
+                originalTimestamp: '2021-01-01T00:00:00.000Z',
+                context: {
+                  traits: {
+                    user_id: 'bad',
+                    group_id: 'bad',
+                    timestamp: 'bad',
+                    message_id: 'bad',
+                    extra: 'value1',
+                  },
+                },
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              message: {
+                type: 'group',
+                messageId: 'msg-res-g',
+                userId: 'user-reserved',
+                groupId: 'group-reserved',
+                originalTimestamp: '2021-01-01T01:00:00.000Z',
+                traits: {
+                  foo: 'bar',
+                },
+                context: {
+                  traits: {
+                    user_id: 'override',
+                    group_id: 'override',
+                    timestamp: 'override',
+                    message_id: 'override',
+                    other: 'value2',
+                  },
+                },
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-reserved',
+                  extra: 'value1',
+                  timestamp: '2021-01-01T00:00:00.000Z',
+                  message_id: 'msg-reserved',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.survicate.com/v1/users/identify',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': 'test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-reserved',
+                  group_id: 'group-reserved',
+                  foo: 'bar',
+                  other: 'value2',
+                  timestamp: '2021-01-01T01:00:00.000Z',
+                  message_id: 'msg-res-g',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.survicate.com/v1/groups/associate',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': 'test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Track events include filtered context properties and traits',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: 'msg-track2',
+                userId: 'user-track',
+                event: 'Clicked',
+                originalTimestamp: '2022-02-02T02:02:02.000Z',
+                properties: { foo: 'bar' },
+                context: {
+                  traits: {
+                    alice: 'wonderland',
+                    user_id: 'should-not',
+                    timestamp: 'nope',
+                  },
+                  locale: 'fr-FR',
+                  campaign: { id: 'cmp-123' },
+                  userAgent: 'UA-1',
+                },
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-track',
+                  event: 'Clicked',
+                  properties: {
+                    foo: 'bar',
+                    alice: 'wonderland',
+                  },
+                  timestamp: '2022-02-02T02:02:02.000Z',
+                  message_id: 'msg-track2',
+                  context: {
+                    locale: 'fr-FR',
+                    campaign: { id: 'cmp-123' },
+                    userAgent: 'UA-1',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.survicate.com/v1/events/track',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

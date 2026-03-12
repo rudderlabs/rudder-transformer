@@ -34,20 +34,29 @@ const processIdentifyEvent = (
   // Skip anonymous calls - we only accept identified users
   if (!message.user_id) {
     throw new InstrumentationError(
-      'Anonymous identify calls are not supported. user_id is required.',
+      'Anonymous identify calls are not supported. userId is required.',
     );
   }
 
   // Build the payload - flatten traits and include context properties
   const payload: Record<string, any> = {
-    user_id: message.user_id,
+    user_id: message.userId,
     timestamp: message.originalTimestamp,
     message_id: message.message_id,
   };
 
-  // Add flattened traits
+  // Add flattened traits (excluding reserved identifiers to avoid overwriting)
   if (message.context?.traits) {
-    Object.assign(payload, message.context.traits);
+    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
+
+    const filtered: Record<string, any> = {};
+
+    for (const [k, v] of Object.entries(message.context.traits)) {
+      if (!reserved.includes(k)) {
+        filtered[k] = v;
+      }
+    }
+    Object.assign(payload, filtered);
   }
 
   // Add selected context properties
@@ -90,15 +99,15 @@ const processGroupEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   // Skip anonymous calls - we only accept identified users
-  if (!message.user_id) {
+  if (!message.userId) {
     throw new InstrumentationError(
-      'Anonymous group calls are not supported. user_id is required.',
+      'Anonymous group calls are not supported. userId is required.',
     );
   }
 
-  // group_id is required for group events
-  if (!message.group_id) {
-    throw new InstrumentationError('group_id is required for group events.');
+  // groupId is required for group events
+  if (!message.groupId) {
+    throw new InstrumentationError('groupId is required for group events.');
   }
 
   // Build the payload using the utility function
@@ -110,9 +119,16 @@ const processGroupEvent = (
     message_id: message.message_id,
   };
 
-  // Add flattened traits
+  // Add flattened traits (excluding reserved identifiers to avoid overwriting)
   if (message.context?.traits) {
-    Object.assign(payload, message.context.traits);
+    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
+    const filtered: Record<string, any> = {};
+    for (const [k, v] of Object.entries(message.context.traits)) {
+      if (!reserved.includes(k)) {
+        filtered[k] = v;
+      }
+    }
+    Object.assign(payload, filtered);
   }
 
   // Add selected context properties
@@ -155,9 +171,9 @@ const processTrackEvent = (
   destinationConfig: SurvicateDestinationConfig,
 ) => {
   // Skip anonymous calls - we only accept identified users
-  if (!message.user_id) {
+  if (!message.userId) {
     throw new InstrumentationError(
-      'Anonymous track calls are not supported. user_id is required.',
+      'Anonymous track calls are not supported. userId is required.',
     );
   }
 
@@ -167,13 +183,40 @@ const processTrackEvent = (
   }
 
   // Build the payload using the utility function
-  const payload = {
-    user_id: message.user_id,
+  const payload: Record<string, any> = {
+    user_id: message.userId,
     event: message.event,
     properties: message.properties || {},
-    message_id: message.message_id,
+    message_id: message.messageId,
     timestamp: message.originalTimestamp,
   };
+
+  // Enrich with context traits and properties (exclude reserved keys)
+  if (message.context) {
+    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
+
+    // flatten traits into properties
+    if (message.context.traits) {
+      const filteredTraits: Record<string, any> = {};
+      for (const [k, v] of Object.entries(message.context.traits)) {
+        if (!reserved.includes(k)) {
+          filteredTraits[k] = v;
+        }
+      }
+      if (Object.keys(filteredTraits).length > 0) {
+        payload.properties = { ...payload.properties, ...filteredTraits };
+      }
+    }
+
+    // attach locale/campaign/userAgent to a context block
+    const contextData: Record<string, any> = {};
+    if (message.context.locale) contextData.locale = message.context.locale;
+    if (message.context.campaign) contextData.campaign = message.context.campaign;
+    if (message.context.userAgent) contextData.userAgent = message.context.userAgent;
+    if (Object.keys(contextData).length > 0) {
+      payload.context = contextData;
+    }
+  }
 
   // Create the response
   const response = defaultRequestConfig();

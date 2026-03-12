@@ -19,9 +19,42 @@ import {
 
 import { ENDPOINT_CONFIG } from './config';
 
-// repeated error messages
-const ERR_MESSAGE_ID_REQUIRED = 'messageId is required.';
-const ERR_ORIG_TS_REQUIRED = 'originalTimestamp is required.';
+// reserved keys in either snake_case or camelCase that should be stripped from traits
+const RESERVED_KEYS = [
+  'user_id',
+  'userId',
+  'group_id',
+  'groupId',
+  'timestamp',
+  'originalTimestamp',
+  'message_id',
+  'messageId',
+];
+
+/**
+ * Remove reserved identifiers from a traits object.
+ */
+function filterTraits(traits: Record<string, any> = {}): Record<string, any> {
+  const result: Record<string, any> = {};
+  for (const [k, v] of Object.entries(traits)) {
+    if (!RESERVED_KEYS.includes(k)) {
+      result[k] = v;
+    }
+  }
+  return result;
+}
+
+/**
+ * Extract only the allowed context properties from message.context.
+ */
+function extractContext(ctx: any): Record<string, any> | undefined {
+  if (!ctx) return undefined;
+  const out: Record<string, any> = {};
+  if (ctx.locale) out.locale = ctx.locale;
+  if (ctx.campaign) out.campaign = ctx.campaign;
+  if (ctx.userAgent) out.userAgent = ctx.userAgent;
+  return Object.keys(out).length > 0 ? out : undefined;
+}
 
 /**
  * Normalize incoming message keys to canonical camelCase.  Rudder sometimes
@@ -73,14 +106,6 @@ const processIdentifyEvent = (
     );
   }
 
-  // require audit fields
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
-  }
-
   // Build the payload - flatten traits and include context properties
   const payload: Record<string, any> = {
     user_id: msg.userId,
@@ -88,30 +113,12 @@ const processIdentifyEvent = (
     message_id: msg.messageId,
   };
 
-  // Add flattened traits (excluding reserved identifiers to avoid overwriting)
-  if (msg.context?.traits) {
-    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
+  // merge any non‑reserved traits
+  Object.assign(payload, filterTraits(msg.context?.traits));
 
-    const filtered: Record<string, any> = {};
-
-    for (const [k, v] of Object.entries(msg.context.traits)) {
-      if (!reserved.includes(k)) {
-        filtered[k] = v;
-      }
-    }
-    Object.assign(payload, filtered);
-  }
-
-  // Add selected context properties
-  if (msg.context) {
-    const contextData: Record<string, any> = {};
-    if (msg.context.locale) contextData.locale = msg.context.locale;
-    if (msg.context.campaign) contextData.campaign = msg.context.campaign;
-    if (msg.context.userAgent) contextData.userAgent = msg.context.userAgent;
-    if (Object.keys(contextData).length > 0) {
-      payload.context = contextData;
-    }
-  }
+  // attach filtered context
+  const ctx = extractContext(msg.context);
+  if (ctx) payload.context = ctx;
 
   // Create the response
   const response = defaultRequestConfig();
@@ -157,14 +164,6 @@ const processGroupEvent = (
     throw new InstrumentationError('groupId is required for group events.');
   }
 
-  // require audit fields
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
-  }
-
   // Build the payload using the utility function
   const payload: Record<string, any> = {
     user_id: msg.userId,
@@ -174,28 +173,12 @@ const processGroupEvent = (
     message_id: msg.messageId,
   };
 
-  // Add flattened traits (excluding reserved identifiers to avoid overwriting)
-  if (msg.context?.traits) {
-    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
-    const filtered: Record<string, any> = {};
-    for (const [k, v] of Object.entries(msg.context.traits)) {
-      if (!reserved.includes(k)) {
-        filtered[k] = v;
-      }
-    }
-    Object.assign(payload, filtered);
-  }
+  // merge non‑reserved traits from context
+  Object.assign(payload, filterTraits(msg.context?.traits));
 
-  // Add selected context properties
-  if (msg.context) {
-    const contextData: Record<string, any> = {};
-    if (msg.context.locale) contextData.locale = msg.context.locale;
-    if (msg.context.campaign) contextData.campaign = msg.context.campaign;
-    if (msg.context.userAgent) contextData.userAgent = msg.context.userAgent;
-    if (Object.keys(contextData).length > 0) {
-      payload.context = contextData;
-    }
-  }
+  // attach filtered context
+  const ctxGroup = extractContext(msg.context);
+  if (ctxGroup) payload.context = ctxGroup;
 
 
   // Create the response
@@ -241,14 +224,6 @@ const processTrackEvent = (
     throw new InstrumentationError('event name is required for track events.');
   }
 
-  // require audit fields
-  if (!msg.messageId) {
-    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
-  }
-  if (!msg.originalTimestamp) {
-    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
-  }
-
   // Build the payload using the utility function
   const payload: Record<string, any> = {
     user_id: msg.userId,
@@ -258,32 +233,12 @@ const processTrackEvent = (
     timestamp: msg.originalTimestamp,
   };
 
-  // Enrich with context traits and properties (exclude reserved keys)
-  if (msg.context) {
-    const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
+  // merge non‑reserved traits into properties
+  Object.assign(payload.properties, filterTraits(msg.context?.traits));
 
-    // flatten traits into properties
-    if (msg.context?.traits) {
-      const filteredTraits: Record<string, any> = {};
-      for (const [k, v] of Object.entries(msg.context.traits)) {
-        if (!reserved.includes(k)) {
-          filteredTraits[k] = v;
-        }
-      }
-      if (Object.keys(filteredTraits).length > 0) {
-        payload.properties = { ...payload.properties, ...filteredTraits };
-      }
-    }
-
-    // attach locale/campaign/userAgent to a context block
-    const contextData: Record<string, any> = {};
-    if (msg.context?.locale) contextData.locale = msg.context.locale;
-    if (msg.context?.campaign) contextData.campaign = msg.context.campaign;
-    if (msg.context?.userAgent) contextData.userAgent = msg.context.userAgent;
-    if (Object.keys(contextData).length > 0) {
-      payload.context = contextData;
-    }
-  }
+  // attach filtered context
+  const ctxTrack = extractContext(msg.context);
+  if (ctxTrack) payload.context = ctxTrack;
 
   // Create the response
   const response = defaultRequestConfig();

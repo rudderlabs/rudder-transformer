@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-import { Destination, RouterTransformationRequestData } from '../../../types';
+import { Destination, RouterTransformationRequestData, Metadata } from '../../../types';
 
 /**
  * Survicate destination configuration schema
@@ -55,7 +55,9 @@ export type SurvicateDestination = Destination<SurvicateDestinationConfig>;
 // Request/response types for router (batch event processing)
 export type SurvicateRouterRequest = RouterTransformationRequestData<
   SurvicateMessage,
-  SurvicateDestination
+  SurvicateDestination,
+  undefined,
+  Metadata
 >;
 
 // Payload types for different event kinds

@@ -473,9 +473,13 @@ export const data: RouterTestData[] = [
                 context: {
                   traits: {
                     user_id: 'bad',
+                    userId: 'bad2',
                     group_id: 'bad',
+                    groupId: 'bad2',
                     timestamp: 'bad',
+                    originalTimestamp: 'bad2',
                     message_id: 'bad',
+                    messageId: 'bad2',
                     extra: 'value1',
                   },
                 },
@@ -510,9 +514,13 @@ export const data: RouterTestData[] = [
                 context: {
                   traits: {
                     user_id: 'override',
+                    userId: 'override2',
                     group_id: 'override',
+                    groupId: 'override2',
                     timestamp: 'override',
+                    originalTimestamp: 'override2',
                     message_id: 'override',
+                    messageId: 'override2',
                     other: 'value2',
                   },
                 },

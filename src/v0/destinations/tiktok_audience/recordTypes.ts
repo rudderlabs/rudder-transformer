@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { RouterTransformationResponse } from '../../../types';
 
 const TiktokAudienceDestinationSchema = z
   .object({
@@ -57,5 +58,30 @@ export const TiktokAudienceRecordRouterRequestSchema = z
     metadata: TiktokAudienceMetadataSchema,
   })
   .passthrough();
+
+export type ProcessTiktokAudienceRecordsResponse = {
+  failedResponses: RouterTransformationResponse[];
+  successfulResponses: RouterTransformationResponse[];
+};
+
+export type Identifier = {
+  id: string;
+  audience_ids: string[];
+};
+
+export type IdentifiersPayload = {
+  event: TiktokAudienceRecordRequest;
+  batchIdentifiers: Identifier[];
+  idSchema: string[];
+  advertiserId: string;
+  action: string;
+};
+
+export type SegmentMappingPayload = {
+  batch_data: Identifier[][];
+  id_schema: string[];
+  advertiser_ids: string[];
+  action: string;
+};
 
 export type TiktokAudienceRecordRequest = z.infer<typeof TiktokAudienceRecordRouterRequestSchema>;

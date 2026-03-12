@@ -15,11 +15,8 @@ import {
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } from '../../util';
-import {
-  processTiktokAudienceRecords,
-  ProcessTiktokAudienceRecordsResponse,
-} from './recordTransform';
-import { TiktokAudienceRecordRequest } from './recordTypes';
+import { processTiktokAudienceRecords } from './recordTransform';
+import { ProcessTiktokAudienceRecordsResponse, TiktokAudienceRecordRequest } from './recordTypes';
 
 function prepareIdentifiersList(event: TiktokAudienceListRequest) {
   const { message, destination, metadata } = event;

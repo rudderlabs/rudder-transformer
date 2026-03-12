@@ -1,36 +1,16 @@
 import md5 from 'md5';
 import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
 import { groupBy } from 'lodash';
-import type { TiktokAudienceRecordRequest } from './recordTypes';
+import type {
+  TiktokAudienceRecordRequest,
+  IdentifiersPayload,
+  Identifier,
+  SegmentMappingPayload,
+  ProcessTiktokAudienceRecordsResponse,
+} from './recordTypes';
 import { TiktokAudienceRecordRouterRequestSchema } from './recordTypes';
 import { SHA256_TRAITS, ENDPOINT, ENDPOINT_PATH, ACTION_RECORD_MAP } from './config';
 import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
-import { RouterTransformationResponse } from '../../../types';
-
-type ProcessTiktokAudienceRecordsResponse = {
-  failedResponses: RouterTransformationResponse[];
-  successfulResponses: RouterTransformationResponse[];
-};
-
-type Identifier = {
-  id: string;
-  audience_ids: string[];
-};
-
-type IdentifiersPayload = {
-  event: TiktokAudienceRecordRequest;
-  batchIdentifiers: Identifier[];
-  idSchema: string[];
-  advertiserId: string;
-  action: string;
-};
-
-type SegmentMappingPayload = {
-  batch_data: Identifier[][];
-  id_schema: string[];
-  advertiser_ids: string[];
-  action: string;
-};
 
 function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): IdentifiersPayload {
   const { message, connection, destination } = event;
@@ -143,4 +123,4 @@ function processTiktokAudienceRecords(events: unknown[]): ProcessTiktokAudienceR
   return recordResponse;
 }
 
-export { processTiktokAudienceRecords, ProcessTiktokAudienceRecordsResponse };
+export { processTiktokAudienceRecords };

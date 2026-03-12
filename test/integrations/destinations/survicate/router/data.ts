@@ -27,8 +27,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                message_id: 'msg-1',
-                user_id: 'user-1',
+                messageId: 'msg-1',
+                userId: 'user-1',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -58,8 +58,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                message_id: 'msg-2',
-                user_id: 'user-2',
+                messageId: 'msg-2',
+                userId: 'user-2',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -185,8 +185,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'identify',
-                message_id: 'msg-identify',
-                user_id: 'user-123',
+                messageId: 'msg-identify',
+                userId: 'user-123',
                 originalTimestamp: '2020-04-22T08:06:20.337Z',
                 context: {
                   traits: {
@@ -214,8 +214,8 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'track',
-                message_id: 'msg-track',
-                user_id: 'user-123',
+                messageId: 'msg-track',
+                userId: 'user-123',
                 event: 'Purchase',
                 originalTimestamp: '2020-04-22T08:06:21.337Z',
                 properties: {
@@ -242,9 +242,9 @@ export const data: RouterTestData[] = [
             {
               message: {
                 type: 'group',
-                message_id: 'msg-group',
-                user_id: 'user-123',
-                group_id: 'group-456',
+                messageId: 'msg-group',
+                userId: 'user-123',
+                groupId: 'group-456',
                 originalTimestamp: '2020-04-22T08:06:22.337Z',
                 traits: {
                   name: 'Company ABC',
@@ -358,6 +358,84 @@ export const data: RouterTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://api.survicate.com/v1/groups/associate',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-API-Key': 'test-key',
+              },
+              params: {},
+              files: {},
+              user_id: '',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Incoming snake_case keys are normalized',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                message_id: 'snake-1',
+                user_id: 'user-snake',
+                originalTimestamp: '2021-05-05T05:05:05.000Z',
+                context: { traits: { foo: 'bar' } },
+              },
+              metadata: {
+                destinationId: 'destId',
+                workspaceId: 'wspId',
+              },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: {
+                  Config: {},
+                },
+                Config: {
+                  destinationKey: 'test-key',
+                },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                JSON: {
+                  user_id: 'user-snake',
+                  foo: 'bar',
+                  timestamp: '2021-05-05T05:05:05.000Z',
+                  message_id: 'snake-1',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.survicate.com/v1/users/identify',
               headers: {
                 'Content-Type': 'application/json',
                 'X-API-Key': 'test-key',
@@ -630,4 +708,111 @@ export const data: RouterTestData[] = [
       },
     },
   },
+  // audit field validation
+  {
+    name: 'survicate',
+    description: 'Missing messageId results in validation error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'identify',
+                userId: 'user-noid',
+                originalTimestamp: '2023-01-01T00:00:00.000Z',
+                context: { traits: { name: 'Alice' } },
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'messageId is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'survicate',
+    description: 'Missing originalTimestamp results in validation error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'track',
+                messageId: 'msg-no-ts',
+                userId: 'user-nots',
+                event: 'Test',
+              },
+              metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+              destination: {
+                ID: 'survicate-dest-id',
+                Name: 'Survicate',
+                DestinationDefinition: { Config: {} },
+                Config: { destinationKey: 'test-key' },
+                Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: { destinationId: 'destId', workspaceId: 'wspId' },
+            statusCode: 400,
+            error: 'originalTimestamp is required.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'SURVICATE',
+              module: 'destination',
+              feature: 'router',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  }
 ];

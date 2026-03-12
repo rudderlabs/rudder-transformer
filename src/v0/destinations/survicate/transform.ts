@@ -14,8 +14,37 @@ import {
   SurvicateRouterRequest,
   SurvicateDestinationConfig,
   SurvicateMessage,
+  SurvicateMessageSchema,
 } from './types';
+
 import { ENDPOINT_CONFIG } from './config';
+
+// repeated error messages
+const ERR_MESSAGE_ID_REQUIRED = 'messageId is required.';
+const ERR_ORIG_TS_REQUIRED = 'originalTimestamp is required.';
+
+/**
+ * Normalize incoming message keys to canonical camelCase.  Rudder sometimes
+ * delivers snake_case (e.g. `user_id`) but our handler logic and Zod schema
+ * expect camelCase.  Call this at the very start of each processor.
+ */
+function normalizeMessage(raw: any): SurvicateMessage {
+  const msg: any = { ...raw };
+
+  if (raw.user_id && !raw.userId) {
+    msg.userId = raw.user_id;
+  }
+  if (raw.group_id && !raw.groupId) {
+    msg.groupId = raw.group_id;
+  }
+  if (raw.message_id && !raw.messageId) {
+    msg.messageId = raw.message_id;
+  }
+  if (raw.original_timestamp && !raw.originalTimestamp) {
+    msg.originalTimestamp = raw.original_timestamp;
+  }
+  return msg;
+}
 
 /**
  * Process identify event
@@ -31,27 +60,41 @@ const processIdentifyEvent = (
   message: SurvicateMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
+  // allow snake_case input by normalizing first
+  const msg = normalizeMessage(message);
+
+  // validate message shape
+  SurvicateMessageSchema.parse(msg);
+
   // Skip anonymous calls - we only accept identified users
-  if (!message.user_id) {
+  if (!msg.userId) {
     throw new InstrumentationError(
       'Anonymous identify calls are not supported. userId is required.',
     );
   }
 
+  // require audit fields
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
+  }
+
   // Build the payload - flatten traits and include context properties
   const payload: Record<string, any> = {
-    user_id: message.userId,
-    timestamp: message.originalTimestamp,
-    message_id: message.message_id,
+    user_id: msg.userId,
+    timestamp: msg.originalTimestamp,
+    message_id: msg.messageId,
   };
 
   // Add flattened traits (excluding reserved identifiers to avoid overwriting)
-  if (message.context?.traits) {
+  if (msg.context?.traits) {
     const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
 
     const filtered: Record<string, any> = {};
 
-    for (const [k, v] of Object.entries(message.context.traits)) {
+    for (const [k, v] of Object.entries(msg.context.traits)) {
       if (!reserved.includes(k)) {
         filtered[k] = v;
       }
@@ -60,11 +103,11 @@ const processIdentifyEvent = (
   }
 
   // Add selected context properties
-  if (message.context) {
+  if (msg.context) {
     const contextData: Record<string, any> = {};
-    if (message.context.locale) contextData.locale = message.context.locale;
-    if (message.context.campaign) contextData.campaign = message.context.campaign;
-    if (message.context.userAgent) contextData.userAgent = message.context.userAgent;
+    if (msg.context.locale) contextData.locale = msg.context.locale;
+    if (msg.context.campaign) contextData.campaign = msg.context.campaign;
+    if (msg.context.userAgent) contextData.userAgent = msg.context.userAgent;
     if (Object.keys(contextData).length > 0) {
       payload.context = contextData;
     }
@@ -98,32 +141,44 @@ const processGroupEvent = (
   message: SurvicateMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
+  const msg = normalizeMessage(message);
+  // validate message
+  SurvicateMessageSchema.parse(msg);
+
   // Skip anonymous calls - we only accept identified users
-  if (!message.userId) {
+  if (!msg.userId) {
     throw new InstrumentationError(
       'Anonymous group calls are not supported. userId is required.',
     );
   }
 
   // groupId is required for group events
-  if (!message.groupId) {
+  if (!msg.groupId) {
     throw new InstrumentationError('groupId is required for group events.');
+  }
+
+  // require audit fields
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
   }
 
   // Build the payload using the utility function
   const payload: Record<string, any> = {
-    user_id: message.user_id,
-    group_id: message.group_id,
-    traits: message.traits || {},
-    timestamp: message.originalTimestamp,
-    message_id: message.message_id,
+    user_id: msg.userId,
+    group_id: msg.groupId,
+    traits: msg.traits || {},
+    timestamp: msg.originalTimestamp,
+    message_id: msg.messageId,
   };
 
   // Add flattened traits (excluding reserved identifiers to avoid overwriting)
-  if (message.context?.traits) {
+  if (msg.context?.traits) {
     const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
     const filtered: Record<string, any> = {};
-    for (const [k, v] of Object.entries(message.context.traits)) {
+    for (const [k, v] of Object.entries(msg.context.traits)) {
       if (!reserved.includes(k)) {
         filtered[k] = v;
       }
@@ -132,11 +187,11 @@ const processGroupEvent = (
   }
 
   // Add selected context properties
-  if (message.context) {
+  if (msg.context) {
     const contextData: Record<string, any> = {};
-    if (message.context.locale) contextData.locale = message.context.locale;
-    if (message.context.campaign) contextData.campaign = message.context.campaign;
-    if (message.context.userAgent) contextData.userAgent = message.context.userAgent;
+    if (msg.context.locale) contextData.locale = msg.context.locale;
+    if (msg.context.campaign) contextData.campaign = msg.context.campaign;
+    if (msg.context.userAgent) contextData.userAgent = msg.context.userAgent;
     if (Object.keys(contextData).length > 0) {
       payload.context = contextData;
     }
@@ -170,35 +225,47 @@ const processTrackEvent = (
   message: SurvicateMessage,
   destinationConfig: SurvicateDestinationConfig,
 ) => {
+  const msg = normalizeMessage(message);
+  // validate message
+  SurvicateMessageSchema.parse(msg);
+
   // Skip anonymous calls - we only accept identified users
-  if (!message.userId) {
+  if (!msg.userId) {
     throw new InstrumentationError(
       'Anonymous track calls are not supported. userId is required.',
     );
   }
 
   // event name is required for track events
-  if (!message.event) {
+  if (!msg.event) {
     throw new InstrumentationError('event name is required for track events.');
+  }
+
+  // require audit fields
+  if (!msg.messageId) {
+    throw new InstrumentationError(ERR_MESSAGE_ID_REQUIRED);
+  }
+  if (!msg.originalTimestamp) {
+    throw new InstrumentationError(ERR_ORIG_TS_REQUIRED);
   }
 
   // Build the payload using the utility function
   const payload: Record<string, any> = {
-    user_id: message.userId,
-    event: message.event,
-    properties: message.properties || {},
-    message_id: message.messageId,
-    timestamp: message.originalTimestamp,
+    user_id: msg.userId,
+    event: msg.event,
+    properties: msg.properties || {},
+    message_id: msg.messageId,
+    timestamp: msg.originalTimestamp,
   };
 
   // Enrich with context traits and properties (exclude reserved keys)
-  if (message.context) {
+  if (msg.context) {
     const reserved = ['user_id', 'group_id', 'timestamp', 'message_id'];
 
     // flatten traits into properties
-    if (message.context.traits) {
+    if (msg.context?.traits) {
       const filteredTraits: Record<string, any> = {};
-      for (const [k, v] of Object.entries(message.context.traits)) {
+      for (const [k, v] of Object.entries(msg.context.traits)) {
         if (!reserved.includes(k)) {
           filteredTraits[k] = v;
         }
@@ -210,9 +277,9 @@ const processTrackEvent = (
 
     // attach locale/campaign/userAgent to a context block
     const contextData: Record<string, any> = {};
-    if (message.context.locale) contextData.locale = message.context.locale;
-    if (message.context.campaign) contextData.campaign = message.context.campaign;
-    if (message.context.userAgent) contextData.userAgent = message.context.userAgent;
+    if (msg.context?.locale) contextData.locale = msg.context.locale;
+    if (msg.context?.campaign) contextData.campaign = msg.context.campaign;
+    if (msg.context?.userAgent) contextData.userAgent = msg.context.userAgent;
     if (Object.keys(contextData).length > 0) {
       payload.context = contextData;
     }

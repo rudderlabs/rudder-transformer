@@ -18,17 +18,21 @@ export const SurvicateDestinationConfigSchema = z
 
 /**
  * Message schema - defines the structure of incoming RudderStack events
- * This validates the event data before processing
+ * This validates the event data before processing.  Note that the
+ * transformer performs a normalization step so callers may supply either
+ * snake_case (`user_id`, `message_id`, etc.) or camelCase; the schema
+ * itself works against the normalized camelCase shape.
  */
 export const SurvicateMessageSchema = z
   .object({
     type: z.enum(['identify', 'group', 'track']),
-    user_id: z.string().optional(),
-    anonymous_id: z.string().optional(),
-    group_id: z.string().optional(),
+    userId: z.string().optional(),
+    anonymousId: z.string().optional(),
+    groupId: z.string().optional(),
     event: z.string().optional(),
-    message_id: z.string().optional(),
-    originalTimestamp: z.string().optional(),
+    // audit fields must always be present
+    messageId: z.string(),
+    originalTimestamp: z.string(),
     properties: z.record(z.string(), z.unknown()).optional(),
     traits: z.record(z.string(), z.unknown()).optional(),
     context: z

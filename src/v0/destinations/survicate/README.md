@@ -38,12 +38,22 @@ test/integrations/destinations/survicate/
 
 ## Event Transformation Details
 
+> **Key normalization:** Incoming Rudder messages often use `snake_case` for the standard fields (`user_id`, `group_id`, `message_id`, etc.). The integration normalizes these to a canonical `camelCase` form at the transformer boundary, so the rest of the code (and Zod schema) can operate on a single convention. You may continue to send or store snake_case on your side.
+
+
+
+> **Audit fields:** All messages must include `messageId` and `originalTimestamp`. The internal schema enforces their presence; missing values result in validation errors.
+
+> **Key normalization:** See above.
+
+
 ### Identify Events
 
 **Endpoint:** `POST /endpoint/rudder-stack/identify`
 
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)
+- `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
 ```json
@@ -69,6 +79,7 @@ test/integrations/destinations/survicate/
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)
 - `group_id` is required
+- `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
 ```json
@@ -93,6 +104,7 @@ test/integrations/destinations/survicate/
 **Requirements:**
 - `user_id` is required (anonymous calls are skipped)
 - `event` is required (event name)
+- `messageId` and `originalTimestamp` are mandatory and will be validated by the schema
 
 **Transformed Payload:**
 ```json

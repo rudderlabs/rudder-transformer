@@ -7,12 +7,17 @@ import { SHA256_TRAITS, ENDPOINT, ENDPOINT_PATH, ACTION_RECORD_MAP } from './con
 import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
 import { RouterTransformationResponse } from '../../../types';
 
+type ProcessTiktokAudienceRecordsResponse = {
+  failedResponses: RouterTransformationResponse[];
+  successfulResponses: RouterTransformationResponse[];
+};
+
 type Identifier = {
   id: string;
   audience_ids: string[];
 };
 
-type Payload = {
+type IdentifiersPayload = {
   event: TiktokAudienceRecordRequest;
   batchIdentifiers: Identifier[];
   idSchema: string[];
@@ -20,7 +25,14 @@ type Payload = {
   action: string;
 };
 
-function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Payload {
+type SegmentMappingPayload = {
+  batch_data: Identifier[][];
+  id_schema: string[];
+  advertiser_ids: string[];
+  action: string;
+};
+
+function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): IdentifiersPayload {
   const { message, connection, destination } = event;
   const { isHashRequired, audienceId } = connection.config.destination;
   const { advertiserId } = destination.Config;
@@ -46,7 +58,7 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Payload 
     }
   }
 
-  const payload: Payload = {
+  const payload: IdentifiersPayload = {
     event,
     batchIdentifiers: identifiersList,
     idSchema: Object.keys(identifiers).sort(),
@@ -56,8 +68,8 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Payload 
   return payload;
 }
 
-function buildResponseForProcessTransformation(
-  payload: Record<string, any>,
+function prepareSegmentMappingRequest(
+  payload: SegmentMappingPayload,
   event: TiktokAudienceRecordRequest,
 ) {
   const accessToken = event.metadata?.secret?.accessToken;
@@ -75,7 +87,7 @@ function buildResponseForProcessTransformation(
   return response;
 }
 
-function validateAudienceRecordEvent(event: unknown) {
+function validateAudienceRecordEvent(event: unknown): TiktokAudienceRecordRequest {
   const result = TiktokAudienceRecordRouterRequestSchema.safeParse(event);
   if (!result.success) {
     throw new InstrumentationError(formatZodError(result.error));
@@ -83,27 +95,25 @@ function validateAudienceRecordEvent(event: unknown) {
   return result.data;
 }
 
-function processTiktokAudienceRecords(events: unknown[]): {
-  recordFailedResponses: RouterTransformationResponse[];
-  recordSuccessfulResponses: RouterTransformationResponse[];
-} {
-  const recordSuccessfulResponses: RouterTransformationResponse[] = [];
-  const recordFailedResponses: RouterTransformationResponse[] = [];
-
-  const payloads: Payload[] = [];
+function processTiktokAudienceRecords(events: unknown[]): ProcessTiktokAudienceRecordsResponse {
+  const recordResponse: ProcessTiktokAudienceRecordsResponse = {
+    failedResponses: [],
+    successfulResponses: [],
+  };
+  const identifiersPayloads: IdentifiersPayload[] = [];
 
   for (const event of events) {
     try {
-      const tiktokEvent = validateAudienceRecordEvent(event);
-      const payload = prepareIdentifiersPayload(tiktokEvent);
-      payloads.push(payload);
+      const recordEvent = validateAudienceRecordEvent(event);
+      const identifiersPayload = prepareIdentifiersPayload(recordEvent);
+      identifiersPayloads.push(identifiersPayload);
     } catch (error) {
-      recordFailedResponses.push(handleRtTfSingleEventError(event, error, {}));
+      recordResponse.failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
 
   const groupedPayloads = groupBy(
-    payloads,
+    identifiersPayloads,
     (payload) => `${payload.advertiserId}-${payload.action}-${payload.idSchema.join(',')}`,
   );
 
@@ -111,27 +121,26 @@ function processTiktokAudienceRecords(events: unknown[]): {
     try {
       const [advertiserId, action, idSchema] = key.split('-');
       const idSchemaList = idSchema.split(',');
-      const batchData = payloadArray.map((payload) => payload.batchIdentifiers);
+      const batchIdentifiers = payloadArray.map((payload) => payload.batchIdentifiers);
       const metadataList = payloadArray.map((payload) => payload.event.metadata);
 
-      const payload: Record<string, any> = {
-        batch_data: batchData,
+      const payload: SegmentMappingPayload = {
+        batch_data: batchIdentifiers,
         id_schema: idSchemaList,
         advertiser_ids: [advertiserId],
         action,
       };
-      const response = buildResponseForProcessTransformation(payload, payloadArray[0].event);
-      recordSuccessfulResponses.push(
+      const response = prepareSegmentMappingRequest(payload, payloadArray[0].event);
+      recordResponse.successfulResponses.push(
         getSuccessRespEvents(response, metadataList, payloadArray[0].event.destination, true),
       );
     } catch (error) {
-      recordFailedResponses.push(
+      recordResponse.failedResponses.push(
         ...payloadArray.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
       );
     }
   }
-
-  return { recordFailedResponses, recordSuccessfulResponses };
+  return recordResponse;
 }
 
-export { processTiktokAudienceRecords };
+export { processTiktokAudienceRecords, ProcessTiktokAudienceRecordsResponse };

@@ -15,7 +15,10 @@ import {
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } from '../../util';
-import { processTiktokAudienceRecords } from './recordTransform';
+import {
+  processTiktokAudienceRecords,
+  ProcessTiktokAudienceRecordsResponse,
+} from './recordTransform';
 import { TiktokAudienceRecordRequest } from './recordTypes';
 
 function prepareIdentifiersList(event: TiktokAudienceListRequest) {
@@ -120,11 +123,11 @@ const processRouterDest = async (
   const successfulResponses: RouterTransformationResponse[] = [];
 
   if (groupedEvents.record) {
-    const { recordFailedResponses, recordSuccessfulResponses } = processTiktokAudienceRecords(
+    const response: ProcessTiktokAudienceRecordsResponse = processTiktokAudienceRecords(
       groupedEvents.record,
     );
-    failedResponses.push(...recordFailedResponses);
-    successfulResponses.push(...recordSuccessfulResponses);
+    failedResponses.push(...response.failedResponses);
+    successfulResponses.push(...response.successfulResponses);
   }
   if (groupedEvents.audiencelist) {
     for (const event of groupedEvents.audiencelist) {

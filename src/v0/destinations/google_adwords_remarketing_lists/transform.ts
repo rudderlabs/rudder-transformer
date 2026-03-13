@@ -15,7 +15,7 @@ import { populateConsentFromConfig } from '../../util/googleUtils';
 import { offlineDataJobsMapping, consentConfigMap } from './config';
 import { processRecordInputs } from './recordTransform';
 import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
-import type { GARLDestination, Message, RecordInput } from './types';
+import type { GARLDestination, Message, OfflineDataJobPayload, RecordInput } from './types';
 
 function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]) {
   // eslint-disable-next-line no-restricted-syntax
@@ -42,7 +42,7 @@ const createPayload = (message: Message, destination: GARLDestination) => {
   const properties = ['add', 'remove'];
   const { typeOfList, userSchema, isHashRequired } = destination.Config;
 
-  let outputPayloads: Record<string, unknown> = {};
+  let outputPayloads: Partial<Record<'create' | 'remove', OfflineDataJobPayload>> = {};
   const typeOfOperation = Object.keys(listData);
   typeOfOperation.forEach((key) => {
     if (properties.includes(key)) {
@@ -59,7 +59,7 @@ const createPayload = (message: Message, destination: GARLDestination) => {
         return;
       }
 
-      const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
+      const outputPayload = constructPayload(message, offlineDataJobsMapping) as OfflineDataJobPayload;
       outputPayload.operations = [];
       // breaking the userIdentiFier array in chunks of 20
       const userIdentifierChunks: Record<string, unknown>[][] = returnArrayOfSubarrays(

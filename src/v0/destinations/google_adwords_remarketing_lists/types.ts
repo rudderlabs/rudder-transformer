@@ -49,3 +49,14 @@ export interface RecordInput {
 }
 
 export type GARLDestination = Destination<GARLDestinationConfig>;
+
+export interface OfflineDataJobPayload {
+  validateOnly?: boolean;
+  enablePartialFailure?: boolean;
+  enableWarnings?: boolean;
+  operations: Array<{
+    create?: { userIdentifiers: Record<string, unknown>[] };
+    remove?: { userIdentifiers: Record<string, unknown>[] };
+  }>;
+}
+

@@ -2430,4 +2430,87 @@ export const nativeData = [
       },
     },
   },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 17: record missing action',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+              },
+              metadata: {
+                jobId: 206,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+              },
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'message.action: action is not present. Aborting message.',
+              batched: false,
+              destination: {
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 206,
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statTags: {
+                destType: 'TIKTOK_AUDIENCE',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

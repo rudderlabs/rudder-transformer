@@ -418,7 +418,10 @@ describe('Facebook Lead Ads Hydration', () => {
           status: 500,
           response: JSON.stringify({
             type: 'object',
-            properties: { some_field: { type: 'string' } },
+            properties: {
+              response: { type: 'object', properties: { some_field: { type: 'string' } } },
+              status: { type: 'number' },
+            },
           }),
         },
       );
@@ -444,7 +447,10 @@ describe('Facebook Lead Ads Hydration', () => {
           status: 500,
           response: JSON.stringify({
             type: 'object',
-            properties: {},
+            properties: {
+              response: { type: 'object', properties: {} },
+              status: { type: 'number' },
+            },
           }),
         },
       );
@@ -468,7 +474,13 @@ describe('Facebook Lead Ads Hydration', () => {
         '[facebook_lead_ads_native] Non-OK response from Facebook API',
         {
           status: 500,
-          response: JSON.stringify({ type: 'string' }),
+          response: JSON.stringify({
+            type: 'object',
+            properties: {
+              response: { type: 'string' },
+              status: { type: 'number' },
+            },
+          }),
         },
       );
     });
@@ -493,7 +505,10 @@ describe('Facebook Lead Ads Hydration', () => {
           status: 500,
           response: JSON.stringify({
             type: 'object',
-            properties: { error: { type: 'null' } },
+            properties: {
+              response: { type: 'object', properties: { error: { type: 'null' } } },
+              status: { type: 'number' },
+            },
           }),
         },
       );

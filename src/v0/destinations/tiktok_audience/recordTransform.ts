@@ -1,6 +1,5 @@
 import md5 from 'md5';
 import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
-import { groupBy } from 'lodash';
 import type {
   TiktokAudienceRecordRequest,
   IdentifiersPayload,
@@ -80,43 +79,60 @@ function processTiktokAudienceRecords(events: unknown[]): ProcessTiktokAudienceR
     failedResponses: [],
     successfulResponses: [],
   };
-  const identifiersPayloads: IdentifiersPayload[] = [];
+  const groupedPayloads: {
+    advertiserId: string;
+    action: string;
+    idSchema: string[];
+    payloads: IdentifiersPayload[];
+  }[] = [];
 
   for (const event of events) {
     try {
       const recordEvent = validateAudienceRecordEvent(event);
       const identifiersPayload = prepareIdentifiersPayload(recordEvent);
-      identifiersPayloads.push(identifiersPayload);
+
+      const existingGroup = groupedPayloads.find(
+        (group) =>
+          group.advertiserId === identifiersPayload.advertiserId &&
+          group.action === identifiersPayload.action &&
+          group.idSchema.length === identifiersPayload.idSchema.length &&
+          group.idSchema.every((field, index) => field === identifiersPayload.idSchema[index]),
+      );
+
+      if (existingGroup) {
+        existingGroup.payloads.push(identifiersPayload);
+      } else {
+        groupedPayloads.push({
+          advertiserId: identifiersPayload.advertiserId,
+          action: identifiersPayload.action,
+          idSchema: identifiersPayload.idSchema,
+          payloads: [identifiersPayload],
+        });
+      }
     } catch (error) {
       recordResponse.failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
 
-  const groupedPayloads = groupBy(
-    identifiersPayloads,
-    (payload) => `${payload.advertiserId}-${payload.action}-${payload.idSchema.join(',')}`,
-  );
-
-  for (const [key, payloadArray] of Object.entries(groupedPayloads)) {
+  for (const group of groupedPayloads) {
     try {
-      const [advertiserId, action, idSchema] = key.split('-');
-      const idSchemaList = idSchema.split(',');
-      const batchIdentifiers = payloadArray.map((payload) => payload.batchIdentifiers);
-      const metadataList = payloadArray.map((payload) => payload.event.metadata);
+      const batchIdentifiers = group.payloads.map((payload) => payload.batchIdentifiers);
+      const metadataList = group.payloads.map((payload) => payload.event.metadata);
 
       const payload: SegmentMappingPayload = {
         batch_data: batchIdentifiers,
-        id_schema: idSchemaList,
-        advertiser_ids: [advertiserId],
-        action,
+        id_schema: group.idSchema,
+        advertiser_ids: [group.advertiserId],
+        action: group.action,
       };
-      const response = prepareSegmentMappingRequest(payload, payloadArray[0].event);
+      const response = prepareSegmentMappingRequest(payload, group.payloads[0].event);
+
       recordResponse.successfulResponses.push(
-        getSuccessRespEvents(response, metadataList, payloadArray[0].event.destination, true),
+        getSuccessRespEvents(response, metadataList, group.payloads[0].event.destination, true),
       );
     } catch (error) {
       recordResponse.failedResponses.push(
-        ...payloadArray.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
+        ...group.payloads.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
       );
     }
   }

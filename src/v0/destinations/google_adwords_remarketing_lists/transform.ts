@@ -59,7 +59,10 @@ const createPayload = (message: Message, destination: GARLDestination) => {
         return;
       }
 
-      const outputPayload = constructPayload(message, offlineDataJobsMapping) as OfflineDataJobPayload;
+      const outputPayload = constructPayload(
+        message,
+        offlineDataJobsMapping,
+      ) as OfflineDataJobPayload;
       outputPayload.operations = [];
       // breaking the userIdentiFier array in chunks of 20
       const userIdentifierChunks: Record<string, unknown>[][] = returnArrayOfSubarrays(

@@ -5,6 +5,7 @@ import { isHttpStatusSuccess } from '../../util/index';
 import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
 import tags from '../../util/tags';
 import { getAuthErrCategory, getDeveloperToken } from '../../util/googleUtils';
+import type { OfflineDataJobPayload } from './types';
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -78,7 +79,7 @@ const addUserToJob = async ({
   headers: Record<string, string>;
   method: string;
   jobId: string;
-  body: { JSON: unknown };
+  body: { JSON: OfflineDataJobPayload };
   metadata: unknown;
 }) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
@@ -143,7 +144,7 @@ const runTheJob = async ({
  * @returns
  */
 const gaAudienceProxyRequest = async (request: {
-  body: { JSON: unknown };
+  body: { JSON: OfflineDataJobPayload };
   method: string;
   params: { customerId: string; listId: string; consent: Record<string, string> };
   endpoint: string;

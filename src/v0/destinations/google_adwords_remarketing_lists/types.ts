@@ -56,4 +56,3 @@ export interface OfflineDataJobPayload {
     remove?: { userIdentifiers: Record<string, unknown>[] };
   }>;
 }
-

@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { BaseError, formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  BaseError,
+  formatZodError,
+  InstrumentationError,
+  JsonSchemaGenerator,
+} from '@rudderstack/integrations-lib';
+import logger from '../../logger';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import {
@@ -12,6 +18,7 @@ import {
 } from '../../types/sourceHydration';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
 import { errorResponseHandler } from '../../v0/util/facebookUtils/networkHandler';
+import { isHttpStatusSuccess } from '../../v0/util';
 
 // Complete schema
 const FacebookLeadAdsHydrationInputSchema = SourceHydrationRequestSchema.extend({
@@ -81,7 +88,7 @@ async function fetchLeadData(
 
   const processedResponse = processAxiosResponse(clientResponse);
 
-  if (processedResponse.status === HTTP_STATUS_CODES.OK) {
+  if (isHttpStatusSuccess(processedResponse.status)) {
     return {
       data: processedResponse.response,
       statusCode: HTTP_STATUS_CODES.OK,
@@ -103,6 +110,10 @@ async function fetchLeadData(
     }
     throw new Error(`Unexpected: unknown error type ${error}`);
   }
+  logger.error(`[facebook_lead_ads_native] Non-OK response from Facebook API`, {
+    status: processedResponse.status,
+    response: JSON.stringify(JsonSchemaGenerator.generate(processedResponse.response)),
+  });
   // This should never be reached since errorResponseHandler always throws for errors
   throw new Error('Unexpected: errorResponseHandler did not throw for non-OK response');
 }

@@ -1,6 +1,6 @@
-const { populateIdentifiers, responseBuilder, getOperationAudienceId } = require('./util');
-const { API_VERSION } = require('./config');
-const { generateRandomString } = require('@rudderstack/integrations-lib');
+import { generateRandomString } from '@rudderstack/integrations-lib';
+import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
+import { API_VERSION } from './config';
 
 const accessToken = generateRandomString();
 const body = {
@@ -168,9 +168,11 @@ describe('GARL utils test', () => {
           getOperationAudienceId(baseDestination.Config.audienceId, message),
           consentBlock,
         );
-        expect(response).toEqual();
-      } catch (error) {
-        expect(error.message).toEqual(`loginCustomerId is required as subAccount is true.`);
+        expect(response).toEqual(undefined);
+      } catch (error: unknown) {
+        expect((error as Error).message).toEqual(
+          `loginCustomerId is required as subAccount is true.`,
+        );
       }
     });
 
@@ -185,9 +187,9 @@ describe('GARL utils test', () => {
           getOperationAudienceId(baseDestination.Config.audienceId, message),
           consentBlock,
         );
-        expect(response).toEqual();
-      } catch (error) {
-        expect(error.message).toEqual(`List ID is a mandatory field`);
+        expect(response).toEqual(undefined);
+      } catch (error: unknown) {
+        expect((error as Error).message).toEqual(`List ID is a mandatory field`);
       }
     });
   });

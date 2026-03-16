@@ -9,6 +9,7 @@ import {
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
 } from '../../util';
+import { validateHashingConsistency } from '../../util/audienceUtils';
 import logger from '../../../logger';
 import { MappedToDestinationKey } from '../../../constants';
 import { JSON_MIME_TYPE } from '../../util/constant';
@@ -20,6 +21,7 @@ import {
   BASE_ENDPOINT,
   hashAttributes,
   ADDRESS_INFO_ATTRIBUTES,
+  destType,
 } from './config';
 import type { GARLDestinationConfig } from './types';
 
@@ -80,6 +82,8 @@ const populateIdentifiers = (
   typeOfList: string,
   userSchema: string[],
   isHashRequired: boolean,
+  workspaceId: string,
+  destinationId: string,
 ) => {
   const userIdentifier: Record<string, unknown>[] = [];
   let attribute: string | string[];
@@ -89,8 +93,19 @@ const populateIdentifiers = (
     attribute = userSchema;
   }
   if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
+    const audienceDest = {
+      workspaceId,
+      id: destinationId,
+      type: destType,
+      config: { isHashRequired },
+    };
     // traversing through every element in the add array
     attributeArray.forEach((element, index) => {
+      hashAttributes.forEach((field) => {
+        if (element[field]) {
+          validateHashingConsistency(field, String(element[field]), audienceDest);
+        }
+      });
       if (isHashRequired) {
         hashEncrypt(element);
       }
@@ -126,12 +141,25 @@ const populateIdentifiersForRecordEvent = (
   typeOfList: string,
   userSchema: string[] | undefined,
   isHashRequired: boolean,
+  workspaceId: string,
+  destinationId: string,
 ) => {
   const userIdentifiers: Record<string, unknown>[] = [];
 
   if (isDefinedAndNotNullAndNotEmpty(identifiersArray)) {
+    const audienceDest = {
+      workspaceId,
+      id: destinationId,
+      type: destType,
+      config: { isHashRequired },
+    };
     // traversing through every element in the add array
     identifiersArray.forEach((identifiers) => {
+      hashAttributes.forEach((field) => {
+        if (identifiers[field]) {
+          validateHashingConsistency(field, String(identifiers[field]), audienceDest);
+        }
+      });
       if (isHashRequired) {
         hashEncrypt(identifiers);
       }

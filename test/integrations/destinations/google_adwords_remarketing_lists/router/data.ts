@@ -5,6 +5,8 @@ import {
   rETLRecordRouterRequestVDMv2General,
   rETLRecordRouterRequestVDMv2UserId,
   eventStreamRecordRouterRequest,
+  eventStreamRecordPreHashedRequest,
+  eventStreamRecordHashOffRequest,
   rETLRecordRouterRequestVDMv1,
   rETLRecordRouterRequestForVDMV2Flow,
 } from './record';
@@ -1610,5 +1612,109 @@ export const data = [
         },
       },
     },
+  },
+  {
+    name: 'google_adwords_remarketing_lists record event tests EventStream pre-hashed input',
+    description:
+      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamRecordPreHashedRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is enabled but the value for field email appears to already be hashed. Either disable hashing or send unhashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'google_adwords_remarketing_lists record event tests EventStream hash-off plaintext input',
+    description:
+      'plaintext data with isHashRequired false should fail when hashing validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamRecordHashOffRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field email appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
   },
 ];

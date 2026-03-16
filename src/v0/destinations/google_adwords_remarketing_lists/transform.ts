@@ -37,7 +37,7 @@ function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]
  * @param {rudder event destination} destination
  * @returns
  */
-const createPayload = (message: Message, destination: GARLDestination) => {
+const createPayload = (message: Message, destination: GARLDestination, workspaceId: string) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];
   const { typeOfList, userSchema, isHashRequired } = destination.Config;
@@ -51,6 +51,8 @@ const createPayload = (message: Message, destination: GARLDestination) => {
         typeOfList,
         userSchema,
         isHashRequired,
+        workspaceId,
+        destination.ID,
       );
       if (userIdentifiersList.length === 0) {
         logger.info(
@@ -102,7 +104,7 @@ const createPayload = (message: Message, destination: GARLDestination) => {
 };
 
 const processEvent = async (
-  metadata: Record<string, unknown>,
+  metadata: { workspaceId: string },
   message: Message,
   destination: GARLDestination,
 ) => {
@@ -117,7 +119,7 @@ const processEvent = async (
     throw new InstrumentationError('listData is not present inside properties. Aborting message.');
   }
   if (message.type.toLowerCase() === 'audiencelist') {
-    const createdPayload = createPayload(message, destination);
+    const createdPayload = createPayload(message, destination, metadata.workspaceId);
 
     if (Object.keys(createdPayload).length === 0) {
       throw new InstrumentationError(
@@ -147,7 +149,7 @@ const processEvent = async (
 };
 
 const process = async (event: {
-  metadata: Record<string, unknown>;
+  metadata: { workspaceId: string; [key: string]: unknown };
   message: Message;
   destination: GARLDestination;
 }) => processEvent(event.metadata, event.message, event.destination);

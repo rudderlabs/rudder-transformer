@@ -14,7 +14,7 @@ export interface GARLDestinationConfig {
 
 export interface RecordEventContext {
   message: unknown;
-  destination: { Config: GARLDestinationConfig };
+  destination: { Config: GARLDestinationConfig; ID: string };
   accessToken: string;
   audienceId: string;
   typeOfList: string;
@@ -37,9 +37,12 @@ export interface RecordInput {
     fields: Record<string, unknown>;
     identifiers?: Record<string, string | number>;
   };
-  metadata: Record<string, unknown>;
+  metadata: {
+    workspaceId: string;
+  };
   destination: {
     Config: GARLDestinationConfig;
+    ID: string;
   };
   connection: {
     config: {

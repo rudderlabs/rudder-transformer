@@ -25,6 +25,7 @@ const processRecordEventArray = async (
   records: RecordInput[],
   context: RecordEventContext,
   operationType: string,
+  workspaceId: string,
 ) => {
   const {
     message,
@@ -46,6 +47,8 @@ const processRecordEventArray = async (
     typeOfList,
     userSchema,
     isHashRequired,
+    workspaceId,
+    destination.ID,
   );
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
@@ -108,6 +111,8 @@ async function preparePayload(
   const { destination, message, metadata } = validEvents[0];
   const accessToken = getAccessToken(metadata, 'access_token');
 
+  const workspaceId = metadata.workspaceId;
+
   const context: RecordEventContext = {
     message,
     destination,
@@ -131,6 +136,7 @@ async function preparePayload(
             groupedRecordsByAction[action],
             context,
             operationType,
+            workspaceId,
           ),
         };
       }

@@ -87,7 +87,7 @@ const handleCartTokenRedisOperations = async (inputEvent, clientId) => {
 
 async function processPixelEvent(inputEvent) {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { name, query_parameters, context, data, clientId, id, timestamp } = inputEvent;
+  const { name, query_parameters, context, clientId, id, timestamp } = inputEvent;
   const shopifyDetails = { ...inputEvent };
   delete shopifyDetails.query_parameters;
   delete shopifyDetails.pixelEventLabel;
@@ -148,12 +148,6 @@ async function processPixelEvent(inputEvent) {
   });
   message.setProperty('context.topic', name);
   message.setProperty('context.shopifyDetails', shopifyDetails);
-
-  // extract email from checkout data for pixel events
-  const email = data?.checkout?.email;
-  if (isDefinedNotNullNotEmpty(email)) {
-    message.setProperty('context.traits.email', email);
-  }
 
   // adding campaign object with utm parameters to the message context
   const campaignParams = extractCampaignParams(context, campaignObjectMappings);

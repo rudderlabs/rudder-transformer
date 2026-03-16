@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.126.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.0...v1.126.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* add validation to mixpanel for invalid context ([#5040](https://github.com/rudderlabs/rudder-transformer/issues/5040)) ([af1b713](https://github.com/rudderlabs/rudder-transformer/commit/af1b713ea1e8568436e5d517e410f8e42db62c46))
+* consider email from dataSoruce as well ([#5039](https://github.com/rudderlabs/rudder-transformer/issues/5039)) ([c18e1ac](https://github.com/rudderlabs/rudder-transformer/commit/c18e1acd1f5908a6391b5dc08930b08c0ed8a8ba))
+* **shopify:** extract email to context.traits for pixel app events ([#5041](https://github.com/rudderlabs/rudder-transformer/issues/5041)) ([839a19a](https://github.com/rudderlabs/rudder-transformer/commit/839a19a095707cab2fb2fb585ce3fa4447be452e))
+
 ## [1.126.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.125.0...v1.126.0) (2026-03-10)
 
 

@@ -1,6 +1,6 @@
 [
   {
-    "sourceKeys": "email",
+    "sourceKeys": ["email", "dataFields.email"],
     "destKeys": "context.traits.email"
   },
   {

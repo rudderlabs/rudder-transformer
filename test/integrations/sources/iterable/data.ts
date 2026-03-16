@@ -105,16 +105,32 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Unknown event type from Iterable',
-            statTags: {
-              destinationId: 'Non determinable',
-              errorCategory: 'transformation',
-              implementation: 'native',
-              module: 'source',
-              srcType: 'iterable',
-              workspaceId: 'Non determinable',
+            output: {
+              batch: [
+                {
+                  userId: '7c904adb430b791c0abd432442374b17',
+                  context: {
+                    integration: { name: 'Iterable', version: '1.0.0' },
+                    library: { name: 'unknown', version: 'unknown' },
+                    traits: { email: 'test@abcd.com' },
+                  },
+                  event: 'emailSubscribe',
+                  integrations: { Iterable: false },
+                  properties: {
+                    channelIds: [],
+                    createdAt: '2022-04-19 03:33:50 +00:00',
+                    emailListIds: [1589748],
+                    messageTypeIds: [],
+                    profileUpdatedAt: '2022-04-19 03:33:50 +00:00',
+                    publicIdString: 'ad474bf7-e785-480f-b9d0-861b85ab5bf5',
+                    signupSource: 'WebForm',
+                  },
+                  receivedAt: '2022-04-19T03:33:50.000Z',
+                  timestamp: '2022-04-19T03:33:50.000Z',
+                  type: 'track',
+                },
+              ],
             },
-            statusCode: 400,
           },
         ],
       },
@@ -2421,6 +2437,7 @@ export const data = [
                   context: {
                     integration: { name: 'Iterable', version: '1.0.0' },
                     library: { name: 'unknown', version: 'unknown' },
+                    traits: { email: 'docs@iterable.com' },
                   },
                   event: 'webPushSendSkip',
                   integrations: { Iterable: false },

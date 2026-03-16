@@ -30,6 +30,9 @@
           "library": {
             "name": "unknown",
             "version": "unknown"
+          },
+          "traits": {
+            "email": "docs@iterable.com"
           }
         },
         "event": "webPushSendSkip",

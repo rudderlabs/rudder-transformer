@@ -8453,4 +8453,116 @@ export const data = [
       },
     },
   },
+  {
+    name: 'mp',
+    description: 'Test identify with setOnceProperties when message.context is undefined',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinationWithSetOnceProperty,
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              traits: {
+                email: 'test@rudderstack.com',
+                firstName: 'Mickey',
+                lastName: 'Mouse',
+                nationality: 'USA',
+                random: 'superProp',
+              },
+              integrations: {
+                All: true,
+              },
+              request_ip: '[::1]:53709',
+              timestamp: '2020-01-24T06:29:02.362Z',
+              type: 'identify',
+              userId: 'user123',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              endpointPath: 'engage',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      $set_once: {
+                        $first_name: 'Mickey',
+                        nationality: 'USA',
+                      },
+                      $token: secret2,
+                      $distinct_id: 'user123',
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'user123',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              endpointPath: 'engage',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch: JSON.stringify([
+                    {
+                      $set: {
+                        $email: 'test@rudderstack.com',
+                        random: 'superProp',
+                        $lastName: 'Mouse',
+                      },
+                      $token: secret2,
+                      $distinct_id: 'user123',
+                      $ip: '[::1]:53709',
+                      $time: 1579847342362,
+                    },
+                  ]),
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'user123',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -97,6 +97,86 @@ describe('pixelTransform', () => {
       expect(result).toMatchObject(expected);
     });
 
+    it('should extract email from checkout data to context.traits.email for checkout_completed', async () => {
+      RedisDB.getVal.mockResolvedValue(null);
+      RedisDB.setVal.mockResolvedValue(null);
+
+      const input = {
+        name: PIXEL_EVENT_TOPICS.CHECKOUT_COMPLETED,
+        clientId: 'test-client',
+        id: 'test-id',
+        timestamp: '2024-01-01',
+        context: {
+          document: {
+            location: {
+              pathname: '/checkout/cn/abc123',
+            },
+          },
+        },
+        data: {
+          checkout: {
+            email: 'user@example.com',
+            token: 'abc123',
+            lineItems: [],
+            totalPrice: { amount: 100 },
+            currencyCode: 'USD',
+          },
+        },
+        query_parameters: { writeKey: 'test' },
+      };
+
+      const result = await processPixelWebEvents(input);
+      expect(result.context.traits.email).toBe('user@example.com');
+    });
+
+    it('should not set context.traits.email when checkout email is empty', async () => {
+      RedisDB.getVal.mockResolvedValue(null);
+      RedisDB.setVal.mockResolvedValue(null);
+
+      const input = {
+        name: PIXEL_EVENT_TOPICS.CHECKOUT_STARTED,
+        clientId: 'test-client',
+        id: 'test-id',
+        timestamp: '2024-01-01',
+        context: {
+          document: {
+            location: {
+              pathname: '/checkout/cn/abc123',
+            },
+          },
+        },
+        data: {
+          checkout: {
+            email: '',
+            token: 'abc123',
+            lineItems: [],
+            totalPrice: { amount: 100 },
+            currencyCode: 'USD',
+          },
+        },
+        query_parameters: { writeKey: 'test' },
+      };
+
+      const result = await processPixelWebEvents(input);
+      expect(result.context.traits?.email).toBeUndefined();
+    });
+
+    it('should not set context.traits.email for non-checkout events', async () => {
+      RedisDB.getVal.mockResolvedValue(null);
+
+      const input = {
+        name: PIXEL_EVENT_TOPICS.PAGE_VIEWED,
+        clientId: 'test-client',
+        id: 'test-id',
+        timestamp: '2024-01-01',
+        context: {},
+        query_parameters: { writeKey: 'test' },
+      };
+
+      const result = await processPixelWebEvents(input);
+      expect(result.context.traits?.email).toBeUndefined();
+    });
+
     it('should attach userId from Redis if available', async () => {
       RedisDB.getVal.mockResolvedValue({ userId: 'test-user' });
 

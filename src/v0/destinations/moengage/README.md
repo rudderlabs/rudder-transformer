@@ -22,6 +22,7 @@ Implementation in **Javascript**
     - `US`: United States data center (api-01.moengage.com)
     - `EU`: European data center (api-02.moengage.com)
     - `IND`: India data center (api-03.moengage.com)
+    - `DC_04`: Datacenter 04 (api-04.moengage.com)
   - Default: `US`
 
 ### Optional Settings
@@ -260,7 +261,7 @@ The destination implements comprehensive error handling for various scenarios:
 
 1. **ConfigurationError**: Thrown when required configuration is missing or invalid
 
-   - Invalid region values (must be 'US', 'EU', or 'IND')
+   - Invalid region values (must be 'US', 'EU', 'IND', or 'DC_04')
    - Missing API ID or API Key
 
 2. **TransformationError**: Thrown when payload construction fails
@@ -323,7 +324,7 @@ The destination performs automatic data type conversions:
 
 - **Authentication Failed**: Check API ID and API Key configuration
   - **Solution**: Verify credentials from MoEngage Dashboard > Settings > Account > APIs
-- **Invalid Region**: Ensure region is set to 'US', 'EU', or 'IND'
+- **Invalid Region**: Ensure region is set to 'US', 'EU', 'IND', or 'DC_04'
   - **Solution**: Update destination configuration with correct region
 - **Rate Limit Exceeded**: 429 error due to too many requests
   - **Solution**: Implement retry logic with exponential backoff

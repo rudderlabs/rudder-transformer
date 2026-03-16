@@ -240,6 +240,7 @@ Based on the `region` configuration:
 | US     | `https://api-01.moengage.com` |
 | EU     | `https://api-02.moengage.com` |
 | IND    | `https://api-03.moengage.com` |
+| DC_04  | `https://api-04.moengage.com` |
 
 ## Use Cases
 

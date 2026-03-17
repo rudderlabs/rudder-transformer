@@ -3,6 +3,7 @@ import { RouterTransformationResponse } from '../../../types';
 
 const TiktokAudienceDestinationSchema = z
   .object({
+    ID: z.string(),
     Config: z
       .object({
         advertiserId: z.string(),
@@ -42,6 +43,7 @@ const TiktokAudienceMessageSchema = z
 
 const TiktokAudienceMetadataSchema = z
   .object({
+    workspaceId: z.string(),
     secret: z
       .object({
         accessToken: z.string(),

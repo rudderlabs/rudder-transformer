@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.126.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.1...v1.126.2) (2026-03-16)
+
+
+### Bug Fixes
+
+* iterable source go tests ([#5046](https://github.com/rudderlabs/rudder-transformer/issues/5046)) ([c2fa1ff](https://github.com/rudderlabs/rudder-transformer/commit/c2fa1ff0691adbbcdbb954ae9e45baa97f78a074))
+
 ### [1.126.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.0...v1.126.1) (2026-03-16)
 
 

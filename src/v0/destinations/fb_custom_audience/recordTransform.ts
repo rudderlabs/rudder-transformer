@@ -5,7 +5,6 @@ import {
   ConfigurationError,
   groupByInBatches,
   forEachInBatches,
-  mapInBatches,
 } from '@rudderstack/integrations-lib';
 import type { Metadata } from '../../../types';
 import type {
@@ -17,12 +16,13 @@ import type {
   FbRecordEvent,
 } from './types';
 import { schemaFields, MAX_USER_COUNT } from './config';
-import stats from '../../../util/stats';
 import {
   getDestinationExternalIDInfoForRetl,
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
+  getErrorRespEvents,
+  generateErrorObject,
   isEventSentByVDMV2Flow,
   isEventSentByVDMV1Flow,
   isDefinedAndNotNullAndNotEmpty,
@@ -51,7 +51,9 @@ const processRecord = (
   userSchema: string[],
   isHashRequired: boolean,
   disableFormat: boolean | undefined,
-): { dataElement: unknown[]; metadata: Metadata } => {
+  workspaceId: string,
+  destinationId: string,
+): { metadata: Metadata } & ({ dataElement: unknown[] } | { error: string }) => {
   const fields = record.message.fields!;
   let dataElement: unknown[] = [];
   let nullUserData = true;
@@ -61,10 +63,22 @@ const processRecord = (
     let updatedProperty: unknown = userProperty;
 
     if (isHashRequired && !disableFormat) {
-      updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
+      updatedProperty = ensureApplicableFormat(
+        eachProperty,
+        userProperty,
+        workspaceId,
+        destinationId,
+      );
     }
 
-    dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+    dataElement = getUpdatedDataElement(
+      dataElement,
+      isHashRequired,
+      eachProperty,
+      updatedProperty,
+      record.metadata.workspaceId,
+      record.destination.ID,
+    );
 
     if (dataElement[dataElement.length - 1]) {
       nullUserData = false;
@@ -72,10 +86,10 @@ const processRecord = (
   });
 
   if (nullUserData) {
-    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
-      destinationId: record.destination.ID,
-      nullFields: userSchema,
-    });
+    return {
+      error: `All user properties [${userSchema.join(', ')}] are invalid or null. At least one valid field is required.`,
+      metadata: record.metadata,
+    };
   }
 
   return { dataElement, metadata: record.metadata };
@@ -100,18 +114,39 @@ const processRecordEventArray = async (
   const { userSchema, isHashRequired, disableFormat, paramsPayload, prepareParams } = config;
   const toSendEvents: unknown[] = [];
   const metadata: Metadata[] = [];
+  const invalidEvents: unknown[] = [];
 
   await forEachInBatches(recordChunksArray, async (recordArray) => {
-    const data = await mapInBatches(recordArray, async (input) => {
-      const { dataElement, metadata: recordMetadata } = processRecord(
+    const data: unknown[][] = [];
+    await forEachInBatches(recordArray, async (input) => {
+      const result = processRecord(
         input,
         userSchema,
         isHashRequired,
         disableFormat,
+        input.metadata.workspaceId,
+        destination.ID,
       );
-      metadata.push(recordMetadata);
-      return dataElement;
+      if ('error' in result) {
+        const error = new InstrumentationError(result.error);
+        const errorObj = generateErrorObject(error);
+        invalidEvents.push(
+          getErrorRespEvents(
+            [result.metadata],
+            errorObj.status,
+            errorObj.message,
+            errorObj.statTags,
+          ),
+        );
+      } else {
+        data.push(result.dataElement!);
+        metadata.push(result.metadata);
+      }
     });
+
+    if (data.length === 0) {
+      return;
+    }
 
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
     prepareFinalPayload.schema = userSchema;
@@ -135,7 +170,12 @@ const processRecordEventArray = async (
     });
   });
 
-  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
+  const successResponse =
+    toSendEvents.length > 0
+      ? getSuccessRespEvents(toSendEvents, metadata, destination, true)
+      : null;
+
+  return { successResponse, invalidEvents };
 };
 
 /**
@@ -244,14 +284,20 @@ async function preparePayload(
   const insertResponse = await processAction('insert', 'add');
   const updateResponse = await processAction('update', 'add');
 
-  const errorResponse = getErrorResponse(groupedRecordsByAction);
+  const errorResponse = [
+    ...getErrorResponse(groupedRecordsByAction),
+    ...(deleteResponse?.invalidEvents || []),
+    ...(insertResponse?.invalidEvents || []),
+    ...(updateResponse?.invalidEvents || []),
+  ];
 
   const finalResponse = createFinalResponse(
-    deleteResponse,
-    insertResponse,
-    updateResponse,
+    deleteResponse?.successResponse,
+    insertResponse?.successResponse,
+    updateResponse?.successResponse,
     errorResponse,
   );
+
   if (finalResponse.length === 0) {
     throw new InstrumentationError(
       'Missing valid parameters, unable to generate transformed payload',

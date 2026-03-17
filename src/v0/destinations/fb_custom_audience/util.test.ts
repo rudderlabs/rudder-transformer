@@ -1,7 +1,16 @@
-import { getDataSource, responseBuilderSimple, getUpdatedDataElement } from './util';
+import {
+  getDataSource,
+  responseBuilderSimple,
+  getUpdatedDataElement,
+  ensureApplicableFormat,
+} from './util';
 import { getEndPoint, ENDPOINT_PATH } from './config';
-import type { WrappedResponse } from './types';
+jest.mock('../../../util/stats', () => ({
+  increment: jest.fn(),
+}));
 
+import stats from '../../../util/stats';
+import type { WrappedResponse } from './types';
 const basePayload = {
   responseField: {
     access_token: 'ABC',
@@ -45,6 +54,117 @@ const baseResponse = {
   files: {},
   method: '',
 };
+
+const TEST_WORKSPACE_ID = 'ws-1';
+const TEST_DESTINATION_ID = 'dest-1';
+
+describe('ensureApplicableFormat', () => {
+  describe('PHONE', () => {
+    const cases = [
+      { input: '+1 (650) 555-1212', expected: '16505551212' },
+      { input: '00919876543210', expected: '919876543210' },
+      { input: '+44 20 7946 0958', expected: '442079460958' },
+    ];
+    cases.forEach(({ input, expected }) => {
+      it(`"${input}" → "${expected}"`, () => {
+        expect(ensureApplicableFormat('PHONE', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+          expected,
+        );
+      });
+    });
+  });
+
+  describe('FN / LN — lowercase, remove ASCII punctuation, preserve spaces and UTF-8', () => {
+    const cases = [
+      { input: 'Mary', expected: 'mary' },
+      { input: 'Valéry', expected: 'valéry' },
+      { input: '정', expected: '정' },
+      { input: "O'Brien", expected: 'obrien' },
+      { input: 'John Smith1', expected: 'john smith1' },
+      { input: 'Mary-Jane', expected: 'maryjane' },
+    ];
+    (['FN', 'LN'] as const).forEach((field) => {
+      cases.forEach(({ input, expected }) => {
+        it(`${field}: "${input}" → "${expected}"`, () => {
+          expect(ensureApplicableFormat(field, input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+            expected,
+          );
+        });
+      });
+    });
+  });
+
+  describe('COUNTRY — lowercase, must be exactly two alpha characters', () => {
+    const validCases = [
+      { input: 'US', expected: 'us' },
+      { input: 'in', expected: 'in' },
+      { input: 'GB', expected: 'gb' },
+    ];
+    validCases.forEach(({ input, expected }) => {
+      it(`valid: "${input}" → "${expected}"`, () => {
+        expect(
+          ensureApplicableFormat('COUNTRY', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID),
+        ).toBe(expected);
+      });
+    });
+
+    const invalidCases = [
+      { input: 'USA', description: 'three letters' },
+      { input: 'U', description: 'single letter' },
+      { input: 'U1', description: 'contains digit' },
+      { input: '12', description: 'all digits' },
+      { input: '', description: 'empty string' },
+    ];
+    invalidCases.forEach(({ input, description }) => {
+      it(`invalid (${description}): "${input}" → passes through when reject disabled`, () => {
+        const result = ensureApplicableFormat(
+          'COUNTRY',
+          input,
+          TEST_WORKSPACE_ID,
+          TEST_DESTINATION_ID,
+        );
+        expect(result).toBe(input.toLowerCase());
+      });
+    });
+
+    it('invalid country code → increments stats counter and returns empty string when reject enabled', () => {
+      const mockStatsIncrement = stats.increment as jest.Mock;
+      mockStatsIncrement.mockClear();
+      process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS = 'true';
+      try {
+        const result = ensureApplicableFormat(
+          'COUNTRY',
+          'USA',
+          TEST_WORKSPACE_ID,
+          TEST_DESTINATION_ID,
+        );
+        expect(result).toBe('');
+        expect(mockStatsIncrement).toHaveBeenCalledWith('fb_custom_audience_invalid_country_code', {
+          workspaceId: TEST_WORKSPACE_ID,
+          destinationId: TEST_DESTINATION_ID,
+        });
+      } finally {
+        delete process.env.FB_CUSTOM_AUDIENCE_REJECT_INVALID_FIELDS;
+      }
+    });
+  });
+
+  describe('ZIP — remove spaces and dashes, lowercase', () => {
+    const cases = [
+      { input: '94035-1234', expected: '940351234' },
+      { input: 'M1 1AE', expected: 'm11ae' },
+      { input: '75018', expected: '75018' },
+      { input: '  K1A 0A6  ', expected: 'k1a0a6' },
+    ];
+    cases.forEach(({ input, expected }) => {
+      it(`"${input}" → "${expected}"`, () => {
+        expect(ensureApplicableFormat('ZIP', input, TEST_WORKSPACE_ID, TEST_DESTINATION_ID)).toBe(
+          expected,
+        );
+      });
+    });
+  });
+});
 
 describe('FB_custom_audience utils test', () => {
   describe('getDataSource function tests', () => {
@@ -202,8 +322,143 @@ describe('FB_custom_audience utils test', () => {
 
     testCases.forEach(({ name, initialData, isHashRequired, field, value, expected }) => {
       it(name, () => {
-        const result = getUpdatedDataElement([...initialData], isHashRequired, field, value);
+        const result = getUpdatedDataElement(
+          [...initialData],
+          isHashRequired,
+          field,
+          value,
+          TEST_WORKSPACE_ID,
+          TEST_DESTINATION_ID,
+        );
         expect(result).toEqual(expected);
+      });
+    });
+
+    describe('validateHashingConsistency function tests', () => {
+      const hashedValue = 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267'; // sha256 of 'test'
+      const plaintextEmail = 'user@example.com';
+      const mockStatsIncrement = stats.increment as jest.Mock;
+
+      beforeEach(() => {
+        mockStatsIncrement.mockClear();
+      });
+
+      afterEach(() => {
+        delete process.env.AUDIENCE_HASHING_VALIDATION_ENABLED;
+      });
+
+      it('Hashing ON + pre-hashed value → emits metric and throws when validation enabled', () => {
+        process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            true,
+            'EMAIL',
+            hashedValue,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).toThrow(
+          'Hashing is enabled but the value for field EMAIL appears to already be hashed. Either disable hashing or send unhashed data.',
+        );
+        expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'hashed_when_hash_enabled',
+          workspaceId: 'ws-1',
+          destinationId: 'dest-1',
+          destType: 'fb_custom_audience',
+        });
+      });
+
+      it('Hashing ON + plaintext value → no error, no metric', () => {
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            true,
+            'EMAIL',
+            plaintextEmail,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).not.toThrow();
+        expect(mockStatsIncrement).not.toHaveBeenCalled();
+      });
+
+      it('Hashing OFF + plaintext value → emits metric and throws when validation enabled', () => {
+        process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            false,
+            'EMAIL',
+            plaintextEmail,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).toThrow(
+          'Hashing is disabled but the value for field EMAIL appears to be unhashed. Either enable hashing or send pre-hashed data.',
+        );
+        expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'unhashed_when_hash_disabled',
+          workspaceId: 'ws-1',
+          destinationId: 'dest-1',
+          destType: 'fb_custom_audience',
+        });
+      });
+
+      it('Hashing OFF + 64-char hex value → no error, no metric', () => {
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            false,
+            'EMAIL',
+            hashedValue,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).not.toThrow();
+        expect(mockStatsIncrement).not.toHaveBeenCalled();
+      });
+
+      it('Validation disabled (default) + hashing ON + pre-hashed value → emits metric but no throw', () => {
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            true,
+            'EMAIL',
+            hashedValue,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).not.toThrow();
+        expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'hashed_when_hash_enabled',
+          workspaceId: 'ws-1',
+          destinationId: 'dest-1',
+          destType: 'fb_custom_audience',
+        });
+      });
+
+      it('Validation disabled (default) + hashing OFF + plaintext value → emits metric but no throw', () => {
+        expect(() =>
+          getUpdatedDataElement(
+            [],
+            false,
+            'EMAIL',
+            plaintextEmail,
+            TEST_WORKSPACE_ID,
+            TEST_DESTINATION_ID,
+          ),
+        ).not.toThrow();
+        expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+          propertyName: 'EMAIL',
+          type: 'unhashed_when_hash_disabled',
+          workspaceId: 'ws-1',
+          destinationId: 'dest-1',
+          destType: 'fb_custom_audience',
+        });
       });
     });
   });

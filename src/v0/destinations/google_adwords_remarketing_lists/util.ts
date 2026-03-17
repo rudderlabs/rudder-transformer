@@ -1,18 +1,18 @@
-const get = require('get-value');
-const sha256 = require('sha256');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const {
+import get from 'get-value';
+import sha256 from 'sha256';
+import { ConfigurationError } from '@rudderstack/integrations-lib';
+import {
   isDefinedAndNotNullAndNotEmpty,
   constructPayload,
   defaultRequestConfig,
   removeHyphens,
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
-} = require('../../util');
-const logger = require('../../../logger');
-const { MappedToDestinationKey } = require('../../../constants');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const {
+} from '../../util';
+import logger from '../../../logger';
+import { MappedToDestinationKey } from '../../../constants';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import {
   addressInfoMapping,
   attributeMapping,
   TYPEOFLIST,
@@ -20,9 +20,10 @@ const {
   BASE_ENDPOINT,
   hashAttributes,
   ADDRESS_INFO_ATTRIBUTES,
-} = require('./config');
+} from './config';
+import type { GARLDestinationConfig } from './types';
 
-const hashEncrypt = (object) => {
+const hashEncrypt = (object: Record<string, unknown>) => {
   Object.keys(object).forEach((key) => {
     if (hashAttributes.includes(key) && object[key]) {
       // eslint-disable-next-line no-param-reassign
@@ -31,7 +32,13 @@ const hashEncrypt = (object) => {
   });
 };
 
-const responseBuilder = (accessToken, body, { Config }, audienceId, consentBlock) => {
+const responseBuilder = (
+  accessToken: string,
+  body: unknown,
+  { Config }: { Config: GARLDestinationConfig },
+  audienceId: string | null,
+  consentBlock: Record<string, string>,
+) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -68,9 +75,14 @@ const responseBuilder = (accessToken, body, { Config }, audienceId, consentBlock
  * @param {boolean} isHashRequired
  * @returns
  */
-const populateIdentifiers = (attributeArray, typeOfList, userSchema, isHashRequired) => {
-  const userIdentifier = [];
-  let attribute;
+const populateIdentifiers = (
+  attributeArray: Record<string, unknown>[],
+  typeOfList: string,
+  userSchema: string[],
+  isHashRequired: boolean,
+) => {
+  const userIdentifier: Record<string, unknown>[] = [];
+  let attribute: string | string[];
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];
   } else {
@@ -110,12 +122,12 @@ const populateIdentifiers = (attributeArray, typeOfList, userSchema, isHashRequi
 };
 
 const populateIdentifiersForRecordEvent = (
-  identifiersArray,
-  typeOfList,
-  userSchema,
-  isHashRequired,
+  identifiersArray: Record<string, unknown>[],
+  typeOfList: string,
+  userSchema: string[] | undefined,
+  isHashRequired: boolean,
 ) => {
-  const userIdentifiers = [];
+  const userIdentifiers: Record<string, unknown>[] = [];
 
   if (isDefinedAndNotNullAndNotEmpty(identifiersArray)) {
     // traversing through every element in the add array
@@ -127,14 +139,14 @@ const populateIdentifiersForRecordEvent = (
         userIdentifiers.push({ [TYPEOFLIST[typeOfList]]: identifiers[TYPEOFLIST[typeOfList]] });
       } else {
         Object.entries(attributeMapping).forEach(([key, mappedKey]) => {
-          if (identifiers[key] && userSchema.includes(key))
+          if (identifiers[key] && userSchema?.includes(key))
             userIdentifiers.push({ [mappedKey]: identifiers[key] });
         });
         const addressInfo = constructPayload(identifiers, addressInfoMapping);
         if (
           isDefinedAndNotNullAndNotEmpty(addressInfo) &&
-          (userSchema.includes('addressInfo') ||
-            userSchema.some((schema) => ADDRESS_INFO_ATTRIBUTES.includes(schema)))
+          (userSchema?.includes('addressInfo') ||
+            userSchema?.some((schema) => ADDRESS_INFO_ATTRIBUTES.includes(schema)))
         )
           userIdentifiers.push({ addressInfo });
       }
@@ -143,7 +155,7 @@ const populateIdentifiersForRecordEvent = (
   return userIdentifiers;
 };
 
-const getOperationAudienceId = (audienceId, message) => {
+const getOperationAudienceId = (audienceId: string, message: Record<string, unknown>) => {
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
@@ -151,12 +163,12 @@ const getOperationAudienceId = (audienceId, message) => {
       message,
       'GOOGLE_ADWORDS_REMARKETING_LISTS',
     );
-    operationAudienceId = objectType;
+    operationAudienceId = objectType!;
   }
   return operationAudienceId;
 };
 
-module.exports = {
+export {
   populateIdentifiers,
   responseBuilder,
   getOperationAudienceId,

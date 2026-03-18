@@ -65,13 +65,6 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
   };
 
   const hashIdentifier = (fieldName: string, value: string) => {
-    validateHashingConsistency(fieldName, value, {
-      workspaceId: metadata.workspaceId,
-      id: destination.ID,
-      type: DESTINATION_TYPE,
-      config: { isHashRequired },
-    });
-
     if (SHA256_TRAITS.includes(fieldName)) {
       return hashToSha256(value);
     }
@@ -87,6 +80,13 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
       throw new Error(`Invalid identifier key ${fieldName} for TikTok Audience.`);
     }
     if (value) {
+      validateHashingConsistency(fieldName, value, {
+        workspaceId: metadata.workspaceId,
+        id: destination.ID,
+        type: DESTINATION_TYPE,
+        config: { isHashRequired },
+      });
+
       if (isHashRequired) {
         const normalizedFieldValue = normalizedValue(fieldName, value);
         if (isDefinedAndNotNullAndNotEmpty(normalizedFieldValue)) {

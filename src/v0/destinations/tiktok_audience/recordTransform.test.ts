@@ -158,7 +158,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     });
   });
 
-  it('Validation disabled (default) + hashing OFF + plaintext value → emits metric but no failed responses', () => {
+  it('Validation disabled (default) + hashing ON + plaintext value → emits metric but no failed responses', () => {
     const event = buildBaseEvent(
       {
         identifiers: {
@@ -171,7 +171,13 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
     expect(failedResponses).toHaveLength(0);
     expect(successfulResponses).toHaveLength(1);
-    expect(mockStatsIncrement).not.toHaveBeenCalled();
+    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
+      propertyName: 'EMAIL_SHA256',
+      type: 'unhashed_when_hash_disabled',
+      workspaceId: TEST_WORKSPACE_ID,
+      destinationId: TEST_DESTINATION_ID,
+      destType: 'tiktok_audience',
+    });
   });
 });
 

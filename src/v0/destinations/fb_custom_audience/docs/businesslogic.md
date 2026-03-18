@@ -169,13 +169,8 @@ if (!checkSubsetOfArray(schemaFields, userSchema)) {
 ### Step 3: Data Formatting
 
 ```javascript
-// Apply formatting rules
-if (isHashRequired && !disableFormat) {
-  updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-}
-
-// Apply hashing
-dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+// Apply formatting and hashing
+dataElement = processAndAppendDataElement(dataElement, isHashRequired, eachProperty, userProperty);
 ```
 
 ### Step 4: Batching

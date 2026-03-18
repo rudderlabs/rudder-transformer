@@ -29,8 +29,7 @@ import {
 } from '../../util';
 import { getErrorResponse, createFinalResponse } from '../../util/recordUtils';
 import {
-  ensureApplicableFormat,
-  getUpdatedDataElement,
+  processAndAppendDataElement,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
   responseBuilderSimple,
@@ -50,40 +49,36 @@ const processRecord = (
   record: FbRecordEvent,
   userSchema: string[],
   isHashRequired: boolean,
-  disableFormat: boolean | undefined,
-  workspaceId: string,
-  destinationId: string,
+  disableFormat: boolean,
 ): { metadata: Metadata } & ({ dataElement: unknown[] } | { error: string }) => {
   const fields = record.message.fields!;
   let dataElement: unknown[] = [];
   let nullUserData = true;
 
-  userSchema.forEach((eachProperty) => {
-    const userProperty = fields[eachProperty];
-    let updatedProperty: unknown = userProperty;
+  try {
+    userSchema.forEach((eachProperty) => {
+      const userProperty = fields[eachProperty];
 
-    if (isHashRequired && !disableFormat) {
-      updatedProperty = ensureApplicableFormat(
+      dataElement = processAndAppendDataElement(
+        dataElement,
+        isHashRequired,
+        disableFormat,
         eachProperty,
         userProperty,
-        workspaceId,
-        destinationId,
+        record.metadata.workspaceId,
+        record.destination.ID,
       );
-    }
 
-    dataElement = getUpdatedDataElement(
-      dataElement,
-      isHashRequired,
-      eachProperty,
-      updatedProperty,
-      record.metadata.workspaceId,
-      record.destination.ID,
-    );
-
-    if (dataElement[dataElement.length - 1]) {
-      nullUserData = false;
-    }
-  });
+      if (dataElement[dataElement.length - 1]) {
+        nullUserData = false;
+      }
+    });
+  } catch (err) {
+    return {
+      metadata: record.metadata,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 
   if (nullUserData) {
     return {
@@ -119,14 +114,7 @@ const processRecordEventArray = async (
   await forEachInBatches(recordChunksArray, async (recordArray) => {
     const data: unknown[][] = [];
     await forEachInBatches(recordArray, async (input) => {
-      const result = processRecord(
-        input,
-        userSchema,
-        isHashRequired,
-        disableFormat,
-        input.metadata.workspaceId,
-        destination.ID,
-      );
+      const result = processRecord(input, userSchema, isHashRequired, disableFormat);
       if ('error' in result) {
         const error = new InstrumentationError(result.error);
         const errorObj = generateErrorObject(error);
@@ -193,7 +181,7 @@ async function preparePayload(
     type?: string;
     subType?: string;
     isHashRequired: boolean;
-    disableFormat?: boolean;
+    disableFormat: boolean;
     isValueBasedAudience?: boolean;
   },
 ) {

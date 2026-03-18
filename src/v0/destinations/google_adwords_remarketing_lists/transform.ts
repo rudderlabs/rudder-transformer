@@ -16,6 +16,7 @@ import { offlineDataJobsMapping, consentConfigMap } from './config';
 import { processRecordInputs } from './recordTransform';
 import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
 import type { GARLDestination, Message, OfflineDataJobPayload, RecordInput } from './types';
+import { Metadata } from '../../../types';
 
 function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]) {
   // eslint-disable-next-line no-restricted-syntax
@@ -37,7 +38,7 @@ function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]
  * @param {rudder event destination} destination
  * @returns
  */
-const createPayload = (message: Message, destination: GARLDestination) => {
+const createPayload = (message: Message, destination: GARLDestination, workspaceId: string) => {
   const { listData } = message.properties;
   const properties = ['add', 'remove'];
   const { typeOfList, userSchema, isHashRequired } = destination.Config;
@@ -51,6 +52,8 @@ const createPayload = (message: Message, destination: GARLDestination) => {
         typeOfList,
         userSchema,
         isHashRequired,
+        workspaceId,
+        destination.ID,
       );
       if (userIdentifiersList.length === 0) {
         logger.info(
@@ -101,11 +104,7 @@ const createPayload = (message: Message, destination: GARLDestination) => {
   return outputPayloads;
 };
 
-const processEvent = async (
-  metadata: Record<string, unknown>,
-  message: Message,
-  destination: GARLDestination,
-) => {
+const processEvent = async (metadata: Metadata, message: Message, destination: GARLDestination) => {
   const response: unknown[] = [];
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
@@ -117,7 +116,7 @@ const processEvent = async (
     throw new InstrumentationError('listData is not present inside properties. Aborting message.');
   }
   if (message.type.toLowerCase() === 'audiencelist') {
-    const createdPayload = createPayload(message, destination);
+    const createdPayload = createPayload(message, destination, metadata.workspaceId);
 
     if (Object.keys(createdPayload).length === 0) {
       throw new InstrumentationError(
@@ -147,7 +146,7 @@ const processEvent = async (
 };
 
 const process = async (event: {
-  metadata: Record<string, unknown>;
+  metadata: Metadata;
   message: Message;
   destination: GARLDestination;
 }) => processEvent(event.metadata, event.message, event.destination);

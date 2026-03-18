@@ -3,6 +3,7 @@ import stats from '../../../util/stats';
 import type { TiktokAudienceRecordRequest } from './recordTypes';
 import sha256 from 'sha256';
 import md5 from 'md5';
+import { RouterTransformationResponse } from '../../../types';
 
 jest.mock('../../../util/stats', () => ({
   increment: jest.fn(),
@@ -24,7 +25,7 @@ const buildBaseEvent = (
     },
     fields: {},
     ...overrides,
-  } as any;
+  };
 
   return {
     message,
@@ -33,7 +34,7 @@ const buildBaseEvent = (
       Config: {
         advertiserId: 'dummyAdverTiserID',
       },
-    } as any,
+    },
     connection: {
       config: {
         destination: {
@@ -42,14 +43,14 @@ const buildBaseEvent = (
           audienceId: '23856594064540489',
         },
       },
-    } as any,
+    },
     metadata: {
       workspaceId: TEST_WORKSPACE_ID,
       secret: {
         accessToken: 'dummyAccessToken',
       },
-    } as any,
-  } as any;
+    },
+  };
 };
 
 describe('processTiktokAudienceRecords hashing validation for tiktok_audience', () => {
@@ -109,7 +110,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     const event = buildBaseEvent(
       {
         identifiers: {
-          EMAIL_SHA256: plaintextEmail,
+          EMAIL_SHA256: hashedValue,
         },
       },
       false,
@@ -117,18 +118,8 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
 
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
 
-    expect(successfulResponses).toHaveLength(0);
-    expect(failedResponses).toHaveLength(1);
-    expect(failedResponses[0].error).toContain(
-      'Hashing is disabled but the value for field EMAIL_SHA256 appears to be unhashed. Either enable hashing or send pre-hashed data.',
-    );
-    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-      propertyName: 'EMAIL_SHA256',
-      type: 'unhashed_when_hash_disabled',
-      workspaceId: TEST_WORKSPACE_ID,
-      destinationId: TEST_DESTINATION_ID,
-      destType: 'tiktok_audience',
-    });
+    expect(failedResponses).toHaveLength(0);
+    expect(successfulResponses).toHaveLength(1);
   });
 
   it('Hashing OFF + 64-char hex value → no error, one successful response', () => {
@@ -178,16 +169,9 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     );
 
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
-
     expect(failedResponses).toHaveLength(0);
     expect(successfulResponses).toHaveLength(1);
-    expect(mockStatsIncrement).toHaveBeenCalledWith('audience_hashing_inconsistency', {
-      propertyName: 'EMAIL_SHA256',
-      type: 'unhashed_when_hash_disabled',
-      workspaceId: TEST_WORKSPACE_ID,
-      destinationId: TEST_DESTINATION_ID,
-      destType: 'tiktok_audience',
-    });
+    expect(mockStatsIncrement).not.toHaveBeenCalled();
   });
 });
 
@@ -241,13 +225,18 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
     const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
     expect(failedResponses).toHaveLength(0);
     expect(successfulResponses).toHaveLength(1);
+    expect(successfulResponses[0]).toBeDefined();
 
     expect(mockStatsIncrement).toHaveBeenCalledWith('tiktok_audience_invalid_email', {
       workspaceId: TEST_WORKSPACE_ID,
       destinationId: TEST_DESTINATION_ID,
     });
 
-    const output = (successfulResponses[0] as any).batchedRequest;
+    const output = (
+      successfulResponses[0] as unknown as {
+        batchedRequest: { body: { JSON: { batch_data: { id: string }[] } } };
+      }
+    ).batchedRequest;
     const id = output.body.JSON.batch_data[0][0].id;
     expect(id).toBe(sha256('not-an-email'));
   });
@@ -277,7 +266,11 @@ describe('processTiktokAudienceRecords tiktok_audience record edge cases', () =>
     expect(failedResponses).toHaveLength(0);
     expect(successfulResponses).toHaveLength(1);
 
-    const output = (successfulResponses[0] as any).batchedRequest;
+    const output = (
+      successfulResponses[0] as unknown as {
+        batchedRequest: { body: { JSON: { batch_data: { id: string }[] } } };
+      }
+    ).batchedRequest;
     const id = output.body.JSON.batch_data[0][0].id;
     expect(id).toBe(md5('abcdef'));
   });

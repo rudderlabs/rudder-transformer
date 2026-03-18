@@ -18,6 +18,7 @@ import {
   DESTINATION_TYPE,
   isRejectInvalidFieldsEnabled,
   REMOVE_SPACES_REGEX,
+  TRAITS_SET,
 } from './config';
 import {
   defaultRequestConfig,
@@ -33,12 +34,11 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
   const { isHashRequired, audienceId } = connection.config.destination;
   const { advertiserId } = destination.Config;
   const { action, identifiers } = message;
-  const traitsSet = new Set([...SHA256_TRAITS, ...MD5_TRAITS]);
 
   const normalizedValue = (fieldName: string, fieldvalue: string): string => {
     switch (fieldName) {
       case 'EMAIL_SHA256': {
-        // 1. Remove spaces at the beginning and end
+        // 1. Remove spaces
         // 2. Convert all characters to lowercase
         const removeSpacesValue = fieldvalue.replace(REMOVE_SPACES_REGEX, '');
         const emailValue = removeSpacesValue.toLowerCase();
@@ -72,30 +72,32 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
       config: { isHashRequired },
     });
 
-    if (isHashRequired) {
-      if (SHA256_TRAITS.includes(fieldName)) {
-        return hashToSha256(value);
-      }
-      if (MD5_TRAITS.includes(fieldName)) {
-        return md5(value);
-      }
-      throw new InstrumentationError(
-        `Invalid hashing method for identifier key ${fieldName} for TikTok Audience.`,
-      );
+    if (SHA256_TRAITS.includes(fieldName)) {
+      return hashToSha256(value);
     }
-    return value;
+    if (MD5_TRAITS.includes(fieldName)) {
+      return md5(value);
+    }
+    throw new Error(`Invalid hashing method for identifier key ${fieldName} for TikTok Audience.`);
   };
 
   const identifiersList: Identifier[] = [];
   for (const [fieldName, value] of Object.entries(identifiers)) {
-    if (!traitsSet.has(fieldName)) {
-      throw new InstrumentationError(`Invalid identifier key ${fieldName} for TikTok Audience.`);
+    if (!TRAITS_SET.has(fieldName)) {
+      throw new Error(`Invalid identifier key ${fieldName} for TikTok Audience.`);
     }
     if (value) {
-      const normalizedFieldValue = normalizedValue(fieldName, value);
-      if (isDefinedAndNotNullAndNotEmpty(normalizedFieldValue)) {
+      if (isHashRequired) {
+        const normalizedFieldValue = normalizedValue(fieldName, value);
+        if (isDefinedAndNotNullAndNotEmpty(normalizedFieldValue)) {
+          identifiersList.push({
+            id: hashIdentifier(fieldName, normalizedFieldValue),
+            audience_ids: [audienceId],
+          });
+        }
+      } else {
         identifiersList.push({
-          id: hashIdentifier(fieldName, normalizedFieldValue),
+          id: value,
           audience_ids: [audienceId],
         });
       }

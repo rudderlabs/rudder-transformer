@@ -44,6 +44,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -156,6 +157,7 @@ export const nativeData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -225,6 +227,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -361,6 +364,7 @@ export const nativeData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -439,6 +443,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -538,6 +543,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -612,6 +618,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -699,6 +706,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -756,6 +764,7 @@ export const nativeData = [
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -775,6 +784,7 @@ export const nativeData = [
               error: 'unsupported event found undefined',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -841,6 +851,7 @@ export const nativeData = [
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -860,6 +871,7 @@ export const nativeData = [
               error: 'unsupported event found identify',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -925,6 +937,7 @@ export const nativeData = [
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -944,6 +957,7 @@ export const nativeData = [
               error: 'message.properties: Message properties is not present. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1010,6 +1024,7 @@ export const nativeData = [
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1030,6 +1045,7 @@ export const nativeData = [
                 'message.properties.listData: listData is not present inside properties. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1096,6 +1112,7 @@ export const nativeData = [
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1116,6 +1133,7 @@ export const nativeData = [
                 'message.properties.listData: unsupported action type update. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1172,6 +1190,7 @@ export const nativeData = [
                 secret: { accessToken: 'dummyAccessToken' },
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1231,6 +1250,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1272,6 +1292,7 @@ export const nativeData = [
                 secret: { accessToken: 'dummyAccessToken' },
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1331,6 +1352,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1372,6 +1394,7 @@ export const nativeData = [
                 secret: { accessToken: 'dummyAccessToken' },
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1431,6 +1454,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { advertiserId: 'dummyAdverTiserID' },
               },
@@ -1493,6 +1517,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1538,6 +1563,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1592,6 +1618,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1642,6 +1669,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1691,6 +1719,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1716,6 +1745,7 @@ export const nativeData = [
               error: 'unsupported event found undefined',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1835,6 +1865,7 @@ export const nativeData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1969,6 +2000,7 @@ export const nativeData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -2063,6 +2095,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -2148,6 +2181,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -2207,6 +2241,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2247,6 +2282,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2287,6 +2323,7 @@ export const nativeData = [
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2354,6 +2391,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2410,6 +2448,7 @@ export const nativeData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2455,6 +2494,7 @@ export const nativeData = [
                 secret: { accessToken: 'dummyAccessToken' },
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2485,6 +2525,7 @@ export const nativeData = [
               error: 'message.action: action is not present. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   advertiserId: 'dummyAdverTiserID',
@@ -2507,6 +2548,202 @@ export const nativeData = [
                 workspaceId: 'workspace-disable-cdkv2',
               },
               statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 18: record events: invalid identifiers',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                  PHONE_SHA256: '1234567890',
+                  IDFA_SHA256: null,
+                  AAID_SHA256: null,
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 1,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: null,
+                  PHONE_SHA256: null,
+                  IDFA_SHA256: null,
+                  AAID_SHA256: null,
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 2,
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'No identifiers found, aborting event.',
+              batched: false,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statTags: {
+                destType: 'TIKTOK_AUDIENCE',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-disable-cdkv2',
+              },
+              statusCode: 400,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                        {
+                          id: 'c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['AAID_SHA256', 'EMAIL_SHA256', 'IDFA_SHA256', 'PHONE_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
             },
           ],
         },

@@ -1,4 +1,4 @@
-import type { Destination } from '../../../types';
+import type { Destination, Metadata } from '../../../types';
 
 export interface GARLDestinationConfig {
   customerId: string;
@@ -12,9 +12,11 @@ export interface GARLDestinationConfig {
   personalizationConsent?: string;
 }
 
+export type GARLDestination = Destination<GARLDestinationConfig>;
+
 export interface RecordEventContext {
   message: unknown;
-  destination: { Config: GARLDestinationConfig };
+  destination: GARLDestination;
   accessToken: string;
   audienceId: string;
   typeOfList: string;
@@ -37,18 +39,14 @@ export interface RecordInput {
     fields: Record<string, unknown>;
     identifiers?: Record<string, string | number>;
   };
-  metadata: Record<string, unknown>;
-  destination: {
-    Config: GARLDestinationConfig;
-  };
+  metadata: Metadata;
+  destination: GARLDestination;
   connection: {
     config: {
       destination: GARLDestinationConfig;
     };
   };
 }
-
-export type GARLDestination = Destination<GARLDestinationConfig>;
 
 export interface OfflineDataJobPayload {
   operations: Array<{

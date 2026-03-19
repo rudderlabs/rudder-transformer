@@ -11249,7 +11249,7 @@ export const data = [
                               hashedFirstName:
                                 '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
                               countryCode: 'US',
-                              postalCode: 0,
+                              postalCode: '0',
                             },
                           },
                         ],
@@ -11453,7 +11453,7 @@ export const data = [
                               hashedFirstName:
                                 'a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844',
                               countryCode: 'US',
-                              postalCode: 0,
+                              postalCode: '0',
                             },
                           },
                         ],

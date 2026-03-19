@@ -5,8 +5,12 @@ import {
   rETLRecordRouterRequestVDMv2General,
   rETLRecordRouterRequestVDMv2UserId,
   eventStreamRecordRouterRequest,
+  eventStreamRecordPreHashedRequest,
+  eventStreamRecordHashOffRequest,
   rETLRecordRouterRequestVDMv1,
   rETLRecordRouterRequestForVDMV2Flow,
+  fieldStrippingRequest,
+  allFieldsInvalidRequest,
 } from './record';
 
 const API_VERSION = 'v22';
@@ -1610,5 +1614,279 @@ export const data = [
         },
       },
     },
+  },
+  {
+    name: 'google_adwords_remarketing_lists record event tests EventStream pre-hashed input',
+    description:
+      'pre-hashed data with isHashRequired true should fail when hashing validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamRecordPreHashedRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is enabled but the value for field email appears to already be hashed. Either disable hashing or send unhashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'google_adwords_remarketing_lists record event tests EventStream hash-off plaintext input',
+    description:
+      'plaintext data with isHashRequired false should fail when hashing validation is enabled',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamRecordHashOffRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                  jobId: 2,
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                'Hashing is disabled but the value for field email appears to be unhashed. Either enable hashing or send pre-hashed data.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'google_adwords_remarketing_lists field validation: invalid email stripped, valid fields sent',
+    description:
+      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, an invalid email is stripped while valid phone and addressInfo are forwarded',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: fieldStrippingRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/offlineUserDataJobs`,
+                  endpointPath: 'offlineUserDataJobs',
+                  headers: {
+                    Authorization: authHeader3,
+                    'Content-Type': 'application/json',
+                  },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
+                  body: {
+                    JSON: {
+                      operations: [
+                        {
+                          create: {
+                            userIdentifiers: [
+                              {
+                                // sha256('09876543210')
+                                hashedPhoneNumber:
+                                  '8ffcdae3d5e020edeb044b5fdf82bbf4bcac96f4fb92b577dc2d59a34c7ef308',
+                              },
+                              {
+                                addressInfo: {
+                                  // sha256('test')
+                                  hashedFirstName:
+                                    '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                                  // sha256('rudderlabs')
+                                  hashedLastName:
+                                    'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+                                  countryCode: 'US',
+                                  postalCode: '1245',
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 10,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  rudderAccountId: '258Yea7usSKNpbkIaesL9oJ9iYw',
+                  audienceId: '7090784486',
+                  customerId: '7693729833',
+                  loginCustomerId: '',
+                  subAccount: false,
+                  userSchema: ['email', 'phone', 'addressInfo'],
+                  isHashRequired: true,
+                  typeOfList: 'General',
+                },
+                DestinationDefinition: {
+                  Config: {},
+                  DisplayName: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                },
+                Enabled: true,
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+                Name: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                Transformations: [],
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
+  },
+  {
+    name: 'google_adwords_remarketing_lists field validation: all fields invalid → InstrumentationError',
+    description:
+      'With GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS=true, when all fields are invalid the record is rejected with InstrumentationError',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: allFieldsInvalidRequest,
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              error: 'Event has no valid identifiers',
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 11,
+                  secret: { access_token: secret3 },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              statTags: {
+                destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+                destinationId: 'default-destinationId',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'default-workspaceId',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { GOOGLE_ADWORDS_REMARKETING_LISTS_REJECT_INVALID_FIELDS: 'true' },
   },
 ];

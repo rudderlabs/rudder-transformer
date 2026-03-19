@@ -13,7 +13,6 @@ const attributeMapping: Record<string, string> = {
   email: 'hashedEmail',
   phone: 'hashedPhoneNumber',
 };
-const hashAttributes = ['email', 'phone', 'firstName', 'lastName'];
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 const TYPEOFLIST: Readonly<Record<string, string>> = Object.freeze({
   userID: 'thirdPartyUserId',
@@ -35,7 +34,6 @@ export {
   BASE_ENDPOINT,
   TYPEOFLIST,
   attributeMapping,
-  hashAttributes,
   offlineDataJobsMapping,
   addressInfoMapping,
   ADDRESS_INFO_ATTRIBUTES,

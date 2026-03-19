@@ -10,7 +10,7 @@ interface FbCustomAudienceDestinationConfig {
   audienceId: string;
   userSchema: string | string[];
   isHashRequired: boolean;
-  disableFormat?: boolean;
+  disableFormat: boolean;
   type?: string;
   subType?: string;
   isRaw?: boolean;
@@ -54,7 +54,7 @@ export interface WrappedResponse {
 export interface RecordPrepareConfig {
   userSchema: string[];
   isHashRequired: boolean;
-  disableFormat?: boolean;
+  disableFormat: boolean;
   paramsPayload: FbCustomAudiencePayload;
   prepareParams: PrepareParams;
 }

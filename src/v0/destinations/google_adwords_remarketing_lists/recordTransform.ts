@@ -3,7 +3,6 @@ import {
   groupByInBatches,
   mapInBatches,
   reduceInBatches,
-  isDefinedAndNotNullAndNotEmpty,
 } from '@rudderstack/integrations-lib';
 import {
   getAccessToken,
@@ -25,6 +24,7 @@ const processRecordEventArray = async (
   records: RecordInput[],
   context: RecordEventContext,
   operationType: string,
+  workspaceId: string,
 ) => {
   const {
     message,
@@ -41,12 +41,34 @@ const processRecordEventArray = async (
   const fieldsArray = await mapInBatches(records, (record) => record.message.fields);
   const metadata = await mapInBatches(records, (record) => record.metadata);
 
-  const userIdentifiersList = populateIdentifiersForRecordEvent(
+  const recordIdentifiers = populateIdentifiersForRecordEvent(
     fieldsArray,
     typeOfList,
     userSchema,
     isHashRequired,
+    workspaceId,
+    destination.ID,
   );
+
+  const validMetadata: (typeof metadata)[0][] = [];
+  const userIdentifiersList: Record<string, unknown>[] = [];
+  const invalidResponses: unknown[] = [];
+
+  recordIdentifiers.forEach((result, i) => {
+    if ('error' in result) {
+      const errorObj = generateErrorObject(result.error);
+      invalidResponses.push(
+        getErrorRespEvents([metadata[i]], errorObj.status, errorObj.message, errorObj.statTags),
+      );
+    } else {
+      validMetadata.push(metadata[i]);
+      userIdentifiersList.push(...result.identifiers);
+    }
+  });
+
+  if (userIdentifiersList.length === 0) {
+    return { successResponse: null, invalidResponses };
+  }
 
   const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
 
@@ -64,49 +86,20 @@ const processRecordEventArray = async (
     responseBuilder(accessToken, data, destination, audienceId, consentObj),
   );
 
-  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
+  return {
+    successResponse: getSuccessRespEvents(toSendEvents, validMetadata, destination, true),
+    invalidResponses,
+  };
 };
 
 async function preparePayload(
   events: RecordInput[],
   config: Omit<RecordEventContext, 'message' | 'destination' | 'accessToken'>,
 ) {
-  /**
-   * If we are getting invalid identifiers, we are preparing empty object response for that event and that is ending up
-   * as an error from google ads api. So we are validating the identifiers and then processing the events.
-   */
-
-  const { validEvents, invalidEvents } = await reduceInBatches(
-    events,
-    (acc, event) => {
-      const hasValidIdentifiers = Object.values(event.message?.fields || {}).some(
-        isDefinedAndNotNullAndNotEmpty,
-      );
-      if (hasValidIdentifiers) {
-        acc.validEvents.push(event);
-      } else {
-        const error = new InstrumentationError('Event has no valid identifiers');
-        const errorObj = generateErrorObject(error);
-        acc.invalidEvents.push(
-          getErrorRespEvents(
-            [event.metadata],
-            errorObj.status,
-            errorObj.message,
-            errorObj.statTags,
-          ),
-        );
-      }
-      return acc;
-    },
-    { validEvents: [] as RecordInput[], invalidEvents: [] as unknown[] },
-  );
-
-  if (validEvents.length === 0) {
-    return invalidEvents;
-  }
-
-  const { destination, message, metadata } = validEvents[0];
+  const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
+
+  const { workspaceId } = metadata;
 
   const context: RecordEventContext = {
     message,
@@ -116,21 +109,25 @@ async function preparePayload(
   };
 
   const groupedRecordsByAction = await groupByInBatches(
-    validEvents,
+    events,
     (record) => record.message.action?.toLowerCase() || '',
   );
 
   const actionResponses = await reduceInBatches(
     ['delete', 'insert', 'update'],
-    async (responses: Record<string, unknown>, action: string) => {
+    async (
+      responses: Record<string, { successResponse: unknown; invalidResponses: unknown[] }>,
+      action: string,
+    ) => {
       const operationType = action === 'delete' ? 'remove' : 'create';
       if (groupedRecordsByAction[action]) {
         return {
           ...responses,
           [action]: await processRecordEventArray(
-            groupedRecordsByAction[action],
+            groupedRecordsByAction[action] as RecordInput[],
             context,
             operationType,
+            workspaceId,
           ),
         };
       }
@@ -139,11 +136,14 @@ async function preparePayload(
     {},
   );
 
-  const errorResponse = [...invalidEvents, ...getErrorResponse(groupedRecordsByAction)];
+  const perRecordInvalidResponses = ['delete', 'insert', 'update'].flatMap(
+    (action) => actionResponses[action]?.invalidResponses ?? [],
+  );
+  const errorResponse = [...perRecordInvalidResponses, ...getErrorResponse(groupedRecordsByAction)];
   const finalResponse = createFinalResponse(
-    actionResponses.delete,
-    actionResponses.insert,
-    actionResponses.update,
+    actionResponses.delete?.successResponse,
+    actionResponses.insert?.successResponse,
+    actionResponses.update?.successResponse,
     errorResponse,
   );
 

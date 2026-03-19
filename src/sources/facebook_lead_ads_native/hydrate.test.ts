@@ -82,6 +82,29 @@ describe('Facebook Lead Ads Hydration', () => {
         verifyHttpCall: true,
       },
       {
+        name: 'should skip field and log warning when field_data entry is missing values',
+        mockResponse: {
+          success: true,
+          response: {
+            data: {
+              id: '123456',
+              field_data: [
+                { name: 'full_name', values: ['John Doe'] },
+                { name: 'missing_values_field' },
+                { name: 'phone', values: ['+1234567890'] },
+              ],
+            },
+            status: 200,
+          },
+        },
+        input: createValidInput(['123456']),
+        expectedTraits: {
+          full_name: 'John Doe',
+          phone: '+1234567890',
+        },
+        expectedStatusCode: 200,
+      },
+      {
         name: 'should handle field_data with empty values array',
         mockResponse: {
           success: true,
@@ -274,6 +297,38 @@ describe('Facebook Lead Ads Hydration', () => {
         });
       },
     );
+
+    it('should log a warning when a field_data entry has no values property', async () => {
+      mockHttpGET.mockResolvedValue({
+        success: true,
+        response: {
+          data: {
+            id: '123456',
+            field_data: [
+              { name: 'full_name', values: ['John Doe'] },
+              { name: 'missing_values_field' },
+            ],
+          },
+          status: 200,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch[0].event?.context?.traits).toEqual({ full_name: 'John Doe' });
+      expect(logger.warn).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] field values is not an array',
+        {
+          fieldSchema: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+            },
+          },
+        },
+      );
+    });
 
     it('should handle empty batch array', async () => {
       const input = {

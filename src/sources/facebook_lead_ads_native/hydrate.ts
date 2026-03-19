@@ -160,7 +160,11 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
 
       // Convert field_data array to traits object
       result.data.field_data?.forEach((field) => {
-        if (field.values.length > 0) {
+        if (!Array.isArray(field.values)) {
+          logger.warn('[facebook_lead_ads_native] field values is not an array', {
+            fieldSchema: JsonSchemaGenerator.generate(field),
+          });
+        } else if (field.values.length > 0) {
           const [firstValue] = field.values;
           traits[field.name] = firstValue;
         }

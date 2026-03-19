@@ -162,8 +162,7 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
       result.data.field_data?.forEach((field) => {
         if (!Array.isArray(field.values)) {
           logger.warn('[facebook_lead_ads_native] field values is not an array', {
-            fieldName: field.name,
-            field: JsonSchemaGenerator.generate(field),
+            fieldSchema: JsonSchemaGenerator.generate(field),
           });
         } else if (field.values.length > 0) {
           const [firstValue] = field.values;

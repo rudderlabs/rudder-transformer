@@ -320,8 +320,7 @@ describe('Facebook Lead Ads Hydration', () => {
       expect(logger.warn).toHaveBeenCalledWith(
         '[facebook_lead_ads_native] field values is not an array',
         {
-          fieldName: 'missing_values_field',
-          field: {
+          fieldSchema: {
             type: 'object',
             properties: {
               name: { type: 'string' },

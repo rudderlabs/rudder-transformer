@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.126.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.2...v1.126.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* **facebook-lead-ads:** unexpected error during FBLA hydration when field_data entry has no values ([#5053](https://github.com/rudderlabs/rudder-transformer/issues/5053)) ([3e81b33](https://github.com/rudderlabs/rudder-transformer/commit/3e81b33c7819291fd6a25394f4b7750d6c6ff75f))
+
 ### [1.126.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.1...v1.126.2) (2026-03-16)
 
 

@@ -135,15 +135,19 @@ const attributeArray = [
 
 const hashedArray = [
   {
+    // test@abc.com → normalized (non-Gmail: trim+lowercase only) → test@abc.com → sha256
     hashedEmail: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
   },
   {
-    hashedPhoneNumber: '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+    // @09876543210 → strip spaces/dashes/parens/dots (@ not stripped) → @09876543210 → add + → +@09876543210 → sha256
+    hashedPhoneNumber: sha256('+@09876543210'),
   },
   {
     addressInfo: {
-      hashedFirstName: '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
-      hashedLastName: 'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
+      // 'test' → trim+lowercase → 'test' → sha256
+      hashedFirstName: sha256('test'),
+      // 'rudderlabs' → trim+lowercase → 'rudderlabs' → sha256
+      hashedLastName: sha256('rudderlabs'),
       countryCode: 'US',
       postalCode: '1245',
     },
@@ -216,6 +220,147 @@ describe('GARL utils test', () => {
     });
   });
 
+  describe('Google-specific PII normalization', () => {
+    const wsId = 'test-workspace-id';
+    const destId = 'test-destination-id';
+
+    describe('email normalization', () => {
+      it.each([
+        {
+          description: 'Gmail: removes dots and +suffix from username',
+          input: 'Jane.Doe+Shopping@googlemail.com',
+          expected: sha256('janedoe@googlemail.com'),
+        },
+        {
+          description: 'Gmail: removes dots (no +suffix)',
+          input: 'Jane.Doe@gmail.com',
+          expected: sha256('janedoe@gmail.com'),
+        },
+        {
+          description: 'Non-Gmail: preserves dots and +suffix, only lowercases',
+          input: 'user.name+NYC@Example.com',
+          expected: sha256('user.name+nyc@example.com'),
+        },
+        {
+          description: 'Non-Gmail: already lowercase, no change',
+          input: 'test@abc.com',
+          expected: sha256('test@abc.com'),
+        },
+        {
+          description: 'Gmail: multiple dots in username',
+          input: 'a.b.c@gmail.com',
+          expected: sha256('abc@gmail.com'),
+        },
+      ])('$description', ({ input, expected }) => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ email: input }],
+          'General',
+          ['email'],
+          true,
+          wsId,
+          destId,
+        );
+        expect(result).toEqual([{ identifiers: [{ hashedEmail: expected }] }]);
+      });
+    });
+
+    describe('phone normalization', () => {
+      it.each([
+        {
+          description: 'strips formatting characters and preserves + prefix',
+          input: '+1 (800) 555-0101',
+          expected: sha256('+18005550101'),
+        },
+        {
+          description: 'adds + prefix when missing',
+          input: '18005550101',
+          expected: sha256('+18005550101'),
+        },
+        {
+          description: 'already normalized phone passes through unchanged',
+          input: '+19876543210',
+          expected: sha256('+19876543210'),
+        },
+        {
+          description: 'strips parentheses and dashes',
+          input: '+1(800)555-0101',
+          expected: sha256('+18005550101'),
+        },
+      ])('$description', ({ input, expected }) => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ phone: input }],
+          'General',
+          ['phone'],
+          true,
+          wsId,
+          destId,
+        );
+        expect(result).toEqual([{ identifiers: [{ hashedPhoneNumber: expected }] }]);
+      });
+    });
+
+    describe('name normalization', () => {
+      it.each([
+        {
+          description: 'firstName: trims whitespace and lowercases',
+          field: 'firstName',
+          input: '  John  ',
+          expected: sha256('john'),
+        },
+        {
+          description: 'lastName: trims whitespace and lowercases',
+          field: 'lastName',
+          input: '  DOE  ',
+          expected: sha256('doe'),
+        },
+      ])('$description', ({ field, input, expected }) => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ [field]: input, country: 'US', postalCode: '12345' }],
+          'General',
+          ['addressInfo'],
+          true,
+          wsId,
+          destId,
+        );
+        const addressInfo = (result[0] as { identifiers: Record<string, unknown>[] }).identifiers[0]
+          .addressInfo as Record<string, unknown>;
+        expect(addressInfo[field === 'firstName' ? 'hashedFirstName' : 'hashedLastName']).toEqual(
+          expected,
+        );
+      });
+    });
+
+    describe('country and postal code normalization', () => {
+      it('trims whitespace from country code (not hashed)', () => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ country: '  US  ', postalCode: '12345' }],
+          'General',
+          ['addressInfo'],
+          true,
+          wsId,
+          destId,
+        );
+        const addressInfo = (result[0] as { identifiers: Record<string, unknown>[] }).identifiers[0]
+          .addressInfo as Record<string, unknown>;
+        expect(addressInfo.countryCode).toEqual('US');
+      });
+
+      it('trims whitespace from postal code (not hashed)', () => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ country: 'US', postalCode: '  90210  ' }],
+          'General',
+          ['addressInfo'],
+          true,
+          wsId,
+          destId,
+        );
+        const addressInfo = (result[0] as { identifiers: Record<string, unknown>[] }).identifiers[0]
+          .addressInfo as Record<string, unknown>;
+        expect(addressInfo.postalCode).toEqual('90210');
+      });
+    });
+  });
+
   describe('populateIdentifiersForRecordEvent', () => {
     const wsId = 'test-workspace-id';
     const destId = 'test-destination-id';
@@ -253,10 +398,10 @@ describe('GARL utils test', () => {
           expected: [{ identifiers: [{ hashedPhoneNumber: sha256('+19876543210') }] }],
         },
         {
-          description: 'valid phone without + → hashedPhoneNumber',
+          description: 'valid phone without + → normalized to +19876543210 → hashedPhoneNumber',
           identifiers: [{ phone: '19876543210' }],
           userSchema: ['phone'],
-          expected: [{ identifiers: [{ hashedPhoneNumber: sha256('19876543210') }] }],
+          expected: [{ identifiers: [{ hashedPhoneNumber: sha256('+19876543210') }] }],
         },
         {
           description: 'full addressInfo with 2-letter country',
@@ -267,8 +412,8 @@ describe('GARL utils test', () => {
               identifiers: [
                 {
                   addressInfo: {
-                    hashedFirstName: sha256('John'),
-                    hashedLastName: sha256('Doe'),
+                    hashedFirstName: sha256('john'),
+                    hashedLastName: sha256('doe'),
                     countryCode: 'US',
                     postalCode: '12345',
                   },
@@ -284,7 +429,7 @@ describe('GARL utils test', () => {
           expected: [
             {
               identifiers: [
-                { addressInfo: { hashedFirstName: sha256('John'), countryCode: 'USA' } },
+                { addressInfo: { hashedFirstName: sha256('john'), countryCode: 'USA' } },
               ],
             },
           ],
@@ -380,7 +525,7 @@ describe('GARL utils test', () => {
               identifiers: [
                 {
                   addressInfo: {
-                    hashedLastName: sha256('Doe'),
+                    hashedLastName: sha256('doe'),
                     countryCode: 'US',
                     postalCode: '12345',
                   },
@@ -397,7 +542,7 @@ describe('GARL utils test', () => {
           expected: [
             {
               identifiers: [
-                { addressInfo: { hashedFirstName: sha256('John'), postalCode: '12345' } },
+                { addressInfo: { hashedFirstName: sha256('john'), postalCode: '12345' } },
               ],
             },
           ],
@@ -439,11 +584,12 @@ describe('GARL utils test', () => {
           expected: [{ identifiers: [{ hashedEmail: sha256('not-an-email') }] }],
         },
         {
-          description: 'invalid phone → hashed and passed through',
+          description:
+            'invalid phone → normalized (@ preserved, + added) → hashed and passed through',
           identifiers: [{ phone: '@09876543210' }],
           userSchema: ['phone'],
           isHashRequired: true,
-          expected: [{ identifiers: [{ hashedPhoneNumber: sha256('@09876543210') }] }],
+          expected: [{ identifiers: [{ hashedPhoneNumber: sha256('+@09876543210') }] }],
         },
         {
           description: 'unhashed email when isHashRequired=false → passed through as-is',

@@ -281,9 +281,9 @@ export const eventStreamRecordPreHashedRequest: RouterTransformationRequest = {
         recordId: '2',
         rudderId: '2',
         fields: {
-          // pre-hashed values: sha256('test@abc.com') and sha256('@09876543210')
+          // pre-hashed values: sha256('test@abc.com') and sha256('+@09876543210')
           email: 'd3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419',
-          phone: '8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45',
+          phone: '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f',
           country: 'US',
           postalCode: '1245',
         },

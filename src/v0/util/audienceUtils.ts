@@ -36,7 +36,7 @@ function isHashingValidationEnabled(): boolean {
  * Emits a metric when inconsistency is detected.
  * Optionally throws an error when validation is enabled via env var AUDIENCE_HASHING_VALIDATION_ENABLED.
  */
-const validateHashingConsistency = (
+export const validateHashingConsistency = (
   propertyName: string,
   sourceValue: string,
   destination: AudienceDestination,

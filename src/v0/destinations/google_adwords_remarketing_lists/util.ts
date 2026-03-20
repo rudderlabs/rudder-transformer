@@ -45,6 +45,9 @@ const normalizeEmail = (v: string): string => {
 
 const normalizePhone = (v: string): string => {
   const stripped = v.replace(/[\s().-]/g, '');
+  if (!stripped) {
+    return '';
+  }
   return stripped.startsWith('+') ? stripped : `+${stripped}`;
 };
 

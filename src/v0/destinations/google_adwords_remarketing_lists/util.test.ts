@@ -297,6 +297,22 @@ describe('GARL utils test', () => {
         );
         expect(result).toEqual([{ identifiers: [{ hashedPhoneNumber: expected }] }]);
       });
+
+      it.each([
+        { description: 'whitespace only', input: '   ' },
+        { description: 'separators only', input: '().-' },
+        { description: 'empty string', input: '' },
+      ])('blank phone ($description) is skipped, not hashed as "+"', ({ input }) => {
+        const result = populateIdentifiersForRecordEvent(
+          [{ phone: input }],
+          'General',
+          ['phone'],
+          true,
+          wsId,
+          destId,
+        );
+        expect(result).toEqual([{ error: expect.any(Error) }]);
+      });
     });
 
     describe('name normalization', () => {

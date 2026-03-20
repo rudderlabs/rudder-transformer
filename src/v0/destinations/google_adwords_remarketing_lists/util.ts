@@ -29,23 +29,52 @@ import {
 import type { GARLDestinationConfig } from './types';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
+const GMAIL_DOMAINS = new Set(['gmail.com', 'googlemail.com']);
+
+const normalizeEmail = (v: string): string => {
+  const trimmed = v.trim().toLowerCase();
+  const atIdx = trimmed.indexOf('@');
+  if (atIdx === -1) return trimmed;
+  const domain = trimmed.slice(atIdx + 1);
+  if (GMAIL_DOMAINS.has(domain)) {
+    const username = trimmed.slice(0, atIdx).replace(/\./g, '').replace(/\+.*$/, '');
+    return `${username}@${domain}`;
+  }
+  return trimmed;
+};
+
+const normalizePhone = (v: string): string => {
+  const stripped = v.replace(/[\s().-]/g, '');
+  if (!stripped) {
+    return '';
+  }
+  return stripped.startsWith('+') ? stripped : `+${stripped}`;
+};
 
 /**
  * Per-field normalization and validation rules for GARL.
- * When isHashRequired=false, processAudienceRecord automatically overrides
- * validators for hashable fields to require pre-hashed (64-char hex) values.
+ * Normalization follows Google Customer Match requirements:
+ * https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/get-started
  */
 const GARL_FIELD_CONFIG: Record<string, AudienceField> = {
-  email: { normalize: (v) => v, validate: validator.isEmail, hashable: true },
-  phone: { normalize: (v) => v, validate: isValidPhoneNumber, hashable: true },
-  firstName: { normalize: (v) => v, validate: (v) => v.length > 0, hashable: true },
-  lastName: { normalize: (v) => v, validate: (v) => v.length > 0, hashable: true },
+  email: { normalize: normalizeEmail, validate: validator.isEmail, hashable: true },
+  phone: { normalize: normalizePhone, validate: isValidPhoneNumber, hashable: true },
+  firstName: {
+    normalize: (v) => v.trim().toLowerCase(),
+    validate: (v) => v.length > 0,
+    hashable: true,
+  },
+  lastName: {
+    normalize: (v) => v.trim().toLowerCase(),
+    validate: (v) => v.length > 0,
+    hashable: true,
+  },
   country: {
-    normalize: (v) => v,
+    normalize: (v) => v.trim(),
     validate: (v) => COUNTRY_CODE_REGEX.test(v),
     hashable: false,
   },
-  postalCode: { normalize: (v) => v, validate: (v) => v.length > 0, hashable: false },
+  postalCode: { normalize: (v) => v.trim(), validate: (v) => v.length > 0, hashable: false },
 };
 
 const responseBuilder = (

@@ -138,44 +138,41 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: authHeader1,
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        external_id: 'user123',
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                      },
+                      {
+                        external_id: 'user456',
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
               metadata: [
                 { jobId: 1, userId: 'u1' },
                 { jobId: 2, userId: 'u2' },
@@ -286,38 +283,35 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: authHeader1,
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        external_id: 'user123',
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
@@ -479,44 +473,41 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: authHeader1,
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        external_id: 'user123',
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                      },
+                      {
+                        external_id: 'user456',
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
               metadata: [
                 { jobId: 1, userId: 'u1' },
                 { jobId: 2, userId: 'u2' },
@@ -681,44 +672,41 @@ export const identityResolution = [
         body: {
           output: [
             {
-              batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
-                  endpoint: 'https://rest.fra-01.braze.eu/users/track',
-                  endpointPath: 'users/track',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                    Authorization: authHeader1,
-                  },
-                  params: {},
-                  body: {
-                    JSON: {
-                      partner: 'RudderStack',
-                      attributes: [
-                        {
-                          external_id: 'user123',
-                          email: 'test@example.com',
-                          first_name: 'John',
-                          last_name: 'Doe',
-                        },
-                        {
-                          external_id: 'user456',
-                          email: 'test2@example.com',
-                          first_name: 'Jane',
-                          last_name: 'Smith',
-                        },
-                      ],
-                    },
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
-                  files: {},
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://rest.fra-01.braze.eu/users/track',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                  Authorization: authHeader1,
                 },
-              ],
+                params: {},
+                body: {
+                  JSON: {
+                    partner: 'RudderStack',
+                    attributes: [
+                      {
+                        external_id: 'user123',
+                        email: 'test@example.com',
+                        first_name: 'John',
+                        last_name: 'Doe',
+                      },
+                      {
+                        external_id: 'user456',
+                        email: 'test2@example.com',
+                        first_name: 'Jane',
+                        last_name: 'Smith',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
               metadata: [
                 { jobId: 1, userId: 'u1' },
                 { jobId: 2, userId: 'u2' },

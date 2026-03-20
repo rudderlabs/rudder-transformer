@@ -1189,4 +1189,5 @@ export {
   combineSubscriptionGroups,
   batchForTrackAPI,
   batchForTrackAPIV2,
+  isWorkspaceOnMauPlan,
 };

@@ -1,30 +1,42 @@
-const lodash = require('lodash');
-const {
+import lodash from 'lodash';
+import {
   InstrumentationError,
   ConfigurationError,
   groupByInBatches,
-} = require('@rudderstack/integrations-lib');
-const {
+} from '@rudderstack/integrations-lib';
+import {
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
   flattenMap,
   simpleProcessRouterDest,
-} = require('../../util');
-const {
+  getValueFromMessage,
+} from '../../util';
+import {
   prepareDataField,
   batchingWithPayloadSize,
   generateAppSecretProof,
   responseBuilderSimple,
   getDataSource,
-} = require('./util');
-const { schemaFields, USER_ADD, USER_DELETE, MAX_USER_COUNT } = require('./config');
+} from './util';
+import { schemaFields, USER_ADD, USER_DELETE, MAX_USER_COUNT } from './config';
+import { processRecordInputs } from './recordTransform';
+import logger from '../../../logger';
+import type {
+  FbCustomAudienceDestination,
+  FbCustomAudiencePayload,
+  FbCustomAudienceRequestParams,
+  WrappedResponse,
+  FbRecordEvent,
+  PrepareParams,
+} from './types';
+import type { RudderMessage } from '../../../types';
 
-const { processRecordInputs } = require('./recordTransform');
-const logger = require('../../../logger');
-
-function checkForUnsupportedEventTypes(dictionary, keyList) {
-  const unsupportedEventTypes = [];
+function checkForUnsupportedEventTypes(
+  dictionary: Record<string, unknown>,
+  keyList: string[],
+): string[] {
+  const unsupportedEventTypes: string[] = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const key in dictionary) {
     if (!keyList.includes(key)) {
@@ -36,13 +48,14 @@ function checkForUnsupportedEventTypes(dictionary, keyList) {
 
 // Function responsible prepare the payload field of every event parameter
 const preparePayload = (
-  userUpdateList,
-  userSchema,
-  paramsPayload,
-  isHashRequired,
-  disableFormat,
-  destinationId,
-) => {
+  userUpdateList: Record<string, unknown>[],
+  userSchema: string | string[],
+  paramsPayload: FbCustomAudiencePayload,
+  isHashRequired: boolean,
+  disableFormat: boolean,
+  destinationId: string,
+  workspaceId: string,
+): FbCustomAudiencePayload[] => {
   const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
@@ -51,36 +64,38 @@ const preparePayload = (
   }
 
   prepareFinalPayload.data = prepareDataField(
-    userSchema,
+    userSchema as string[],
     userUpdateList,
     isHashRequired,
     disableFormat,
     destinationId,
+    workspaceId,
   );
-  return batchingWithPayloadSize(prepareFinalPayload);
+  return batchingWithPayloadSize(prepareFinalPayload, workspaceId);
 };
 
 // Function responsible for building the parameters for each event calls
 
 const prepareResponse = (
-  message,
-  destination,
-  allowedAudienceArray,
-  userSchema,
+  message: RudderMessage,
+  destination: FbCustomAudienceDestination,
+  allowedAudienceArray: Record<string, unknown>[],
+  userSchema: string[],
+  workspaceId: string,
   isHashRequired = true,
-) => {
+): FbCustomAudienceRequestParams[] => {
   const { accessToken, disableFormat, type, subType, isRaw, appSecret } = destination.Config;
 
-  const prepareParams = {};
+  const prepareParams: PrepareParams = {
+    access_token: accessToken,
+  };
   // creating the parameters field
-  const paramsPayload = {};
-
-  prepareParams.access_token = accessToken;
+  const paramsPayload: FbCustomAudiencePayload = {};
 
   if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
     const dateNow = Date.now();
     prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
-    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret!, dateNow);
   }
 
   // creating the payload field for parameters
@@ -98,13 +113,14 @@ const prepareResponse = (
     userSchema,
     paramsPayload,
     isHashRequired,
-    disableFormat,
+    disableFormat!,
     destination.ID,
+    workspaceId,
   );
 
-  const respList = [];
+  const respList: FbCustomAudienceRequestParams[] = [];
   payloadBatches.forEach((payloadBatch) => {
-    const response = {
+    const response: FbCustomAudienceRequestParams = {
       ...prepareParams,
       payload: payloadBatch,
     };
@@ -120,24 +136,26 @@ const prepareResponse = (
  * @returns
  */
 const prepareToSendEvents = (
-  message,
-  destination,
-  audienceChunksArray,
-  userSchema,
-  isHashRequired,
-  operation,
-) => {
-  const toSendEvents = [];
+  message: RudderMessage,
+  destination: FbCustomAudienceDestination,
+  audienceChunksArray: Record<string, unknown>[][],
+  userSchema: string[],
+  isHashRequired: boolean,
+  operation: string,
+  workspaceId: string,
+): WrappedResponse[] => {
+  const toSendEvents: WrappedResponse[] = [];
   audienceChunksArray.forEach((allowedAudienceArray) => {
     const responseArray = prepareResponse(
       message,
       destination,
       allowedAudienceArray,
       userSchema,
+      workspaceId,
       isHashRequired,
     );
     responseArray.forEach((response) => {
-      const wrappedResponse = {
+      const wrappedResponse: WrappedResponse = {
         responseField: response,
         operationCategory: operation,
       };
@@ -146,9 +164,14 @@ const prepareToSendEvents = (
   });
   return toSendEvents;
 };
-const processEvent = (message, destination) => {
-  const respList = [];
-  let toSendEvents = [];
+
+const processEvent = (
+  message: RudderMessage,
+  destination: FbCustomAudienceDestination,
+  workspaceId: string,
+) => {
+  const respList: unknown[] = [];
+  let toSendEvents: WrappedResponse[] = [];
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId } = destination.Config;
   if (!message.type) {
@@ -172,7 +195,8 @@ const processEvent = (message, destination) => {
   if (!checkSubsetOfArray(schemaFields, userSchema)) {
     throw new ConfigurationError('One or more of the schema fields are not supported');
   }
-  const { listData } = message.properties;
+  const properties = getValueFromMessage(message, 'properties');
+  const listData = properties?.listData;
 
   // when "remove" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
@@ -184,6 +208,7 @@ const processEvent = (message, destination) => {
       userSchema,
       isHashRequired,
       USER_DELETE,
+      workspaceId,
     );
   }
 
@@ -198,6 +223,7 @@ const processEvent = (message, destination) => {
         userSchema,
         isHashRequired,
         USER_ADD,
+        workspaceId,
       ),
     );
   }
@@ -214,15 +240,19 @@ const processEvent = (message, destination) => {
   return respList;
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event: {
+  message: RudderMessage;
+  destination: FbCustomAudienceDestination;
+  metadata: { workspaceId: string };
+}) => processEvent(event.message, event.destination, event.metadata?.workspaceId as string);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = [];
+const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
+  const respList: unknown[] = [];
   const groupedInputs = await groupByInBatches(inputs, (input) =>
-    input.message.type?.toLowerCase(),
+    (input.message.type ?? '').toLowerCase(),
   );
-  let transformedRecordEvent = [];
-  let transformedAudienceEvent = [];
+  let transformedRecordEvent: unknown[] = [];
+  let transformedAudienceEvent: unknown[] = [];
 
   const eventTypes = ['record', 'audiencelist'];
   const unsupportedEventList = checkForUnsupportedEventTypes(groupedInputs, eventTypes);
@@ -240,6 +270,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       groupedInputs.audiencelist,
       process,
       reqMetadata,
+      undefined,
     );
   }
 
@@ -247,4 +278,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return flattenMap(respList);
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

@@ -4,6 +4,8 @@ const BASE_ENDPOINT = 'https://api.hubapi.com';
 
 // For fetching properties from HubSpot
 const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
+// Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
+const CRM_V3_CONTACT_PROPERTIES_ENDPOINT = `${BASE_ENDPOINT}/crm/v3/properties/contacts`;
 
 /*
  * Legacy API
@@ -36,6 +38,8 @@ const IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:c
 // Identify Batch
 const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
 const BATCH_IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
+// Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+const BATCH_IDENTIFY_CRM_UPSERT_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/upsert`;
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
 const MAX_BATCH_SIZE_CRM_CONTACT = 100;
 
@@ -92,10 +96,12 @@ const primaryToSecondaryFields: Record<string, string> = {
 const HUBSPOT_SYSTEM_FIELDS = ['hs_object_id'];
 
 const DESTINATION = 'HS';
+const CONTACT_PROPERTIES_CACHE_TTL = 60 * 60 * 24; // 24 hours
 
 export {
   BASE_ENDPOINT,
   CONTACT_PROPERTY_MAP_ENDPOINT,
+  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
   TRACK_ENDPOINT,
   IDENTIFY_CREATE_UPDATE_CONTACT,
   IDENTIFY_CREATE_NEW_CONTACT,
@@ -107,6 +113,7 @@ export {
   IDENTIFY_CRM_UPDATE_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+  BATCH_IDENTIFY_CRM_UPSERT_CONTACT,
   MAX_BATCH_SIZE_CRM_CONTACT,
   TRACK_CRM_ENDPOINT,
   CRM_CREATE_UPDATE_ALL_OBJECTS,
@@ -124,4 +131,5 @@ export {
   primaryToSecondaryFields,
   DESTINATION,
   HUBSPOT_SYSTEM_FIELDS,
+  CONTACT_PROPERTIES_CACHE_TTL,
 };

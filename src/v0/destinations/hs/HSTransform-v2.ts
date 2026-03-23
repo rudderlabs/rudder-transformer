@@ -29,6 +29,7 @@ import {
   MAX_BATCH_SIZE_CRM_CONTACT,
   BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT,
   BATCH_IDENTIFY_CRM_UPDATE_CONTACT,
+  BATCH_IDENTIFY_CRM_UPSERT_CONTACT,
   mappingConfig,
   ConfigCategory,
   TRACK_CRM_ENDPOINT,
@@ -46,6 +47,10 @@ import {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
+  isUpsertEnabled,
+  isLookupFieldUnique,
+  getLookupFieldValue,
+  addHsAuthentication,
 } from './util';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -60,25 +65,64 @@ import type {
   HubSpotBatchProcessingItem,
   HubspotRudderMessage,
   HubSpotBatchRequestOutput,
+  HubSpotUpsertPayload,
 } from './types';
-import { hasPropertiesRecord, hasAssociationShape } from './types';
+import { hasPropertiesRecord, hasAssociationShape, hasUpsertPayloadShape } from './types';
 
-const addHsAuthentication = (
-  response: HubspotProcessorTransformationOutput,
-  Config: HubSpotDestination['Config'],
-): HubspotProcessorTransformationOutput => {
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
+/**
+ * Process identify event for HubSpot V3 Upsert API.
+ * This function builds the upsert payload that will be batched and sent to
+ * /crm/v3/objects/contacts/batch/upsert endpoint.
+ *
+ * Ref - https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+ *
+ * @param {object} param0 - Object containing message, destination, and metadata
+ * @param {object} propertyMap - HubSpot property map for type validation
+ * @returns {object} - Response object with upsert payload
+ */
+const processUpsertIdentify = async (
+  {
+    message,
+    destination,
+    metadata,
+  }: { message: HubspotRudderMessage; destination: HubSpotDestination; metadata: Metadata },
+  propertyMap?: HubSpotPropertyMap,
+): Promise<HubspotProcessorTransformationOutput> => {
+  const { Config } = destination;
+
+  // Get lookup info for upsert (id and idProperty)
+  const lookupFieldInfo = getLookupFieldValue(message, Config.lookupField!);
+  if (!lookupFieldInfo) {
+    throw new InstrumentationError(
+      `Identify:: lookupField "${Config.lookupField}" value not found in traits. Email fallback also not available.`,
+    );
   }
-  return response;
+
+  // Build properties payload
+  let properties = await getTransformedJSON({ message, destination, metadata }, propertyMap);
+  properties = removeHubSpotSystemField(properties);
+
+  // Build upsert payload
+  // Ref: https://developers.hubspot.com/docs/api/crm/contacts#create-or-update-contacts-upsert
+  const upsertPayload = {
+    id: lookupFieldInfo.value,
+    idProperty: lookupFieldInfo.fieldName,
+    properties,
+    // objectWriteTraceId is used to correlate results in 207 multi-status responses
+    objectWriteTraceId: metadata?.jobId?.toString(),
+  };
+
+  // Build response
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = BATCH_IDENTIFY_CRM_UPSERT_CONTACT;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.body.JSON = removeUndefinedAndNullValues(upsertPayload);
+  response.operation = 'upsertContacts';
+
+  return addHsAuthentication(response, Config);
 };
 
 /**
@@ -172,7 +216,17 @@ const processIdentify = async (
 
     let contactId = getDestinationExternalID(message, 'hsContactId');
 
-    // if contactId is not provided then search
+    // We can't use contactId for upsert, as it is a non-unique field.
+    // This skips the searchContacts call and uses the batch upsert endpoint
+    if (
+      !contactId &&
+      isUpsertEnabled(metadata?.workspaceId) &&
+      (await isLookupFieldUnique(destination, Config.lookupField!, metadata))
+    ) {
+      return processUpsertIdentify({ message, destination, metadata }, propertyMap);
+    }
+
+    // Legacy flow: search for contact if contactId is not provided
     if (!contactId) {
       contactId = await searchContacts(message, destination, metadata);
     }
@@ -204,18 +258,7 @@ const processIdentify = async (
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  // choosing API Type
-  if (Config.authorizationType === 'newPrivateAppApi') {
-    // Private Apps
-    response.headers = {
-      ...response.headers,
-      Authorization: `Bearer ${Config.accessToken}`,
-    };
-  } else {
-    // use legacy API Key
-    response.params = { hapikey: Config.apiKey };
-  }
-  return response;
+  return addHsAuthentication(response, Config);
 };
 
 /**
@@ -382,6 +425,37 @@ const batchIdentify = (
         identifyResponseList.push(ev.message.body.JSON);
         metadata.push(ev.metadata);
       });
+    } else if (batchOperation === 'upsertContacts') {
+      // Upsert operation for V3 batch upsert endpoint
+      // Each event already has the complete upsert payload structure
+      // { id, idProperty, properties, objectWriteTraceId }
+      chunk.forEach((ev) => {
+        const json = ev.message.body.JSON;
+
+        if (!hasUpsertPayloadShape(json)) {
+          throw new TransformationError('Invalid payload for upsertContacts batch');
+        }
+        const { id, idProperty, properties } = json;
+
+        // Deduplicate by id (lookup value) - If we don't deduplicate, hubspot will fail the batch upsert request
+        const existing = identifyResponseList.find(
+          (data): data is HubSpotUpsertPayload =>
+            hasUpsertPayloadShape(data) && data.id === id && data.idProperty === idProperty,
+        );
+        if (existing) {
+          // Merge latest properties with existing properties
+          existing.properties = { ...existing.properties, ...properties };
+          // Track duplicate objectWriteTraceId for monitoring
+          stats.increment('hs_upsert_duplicate_trace_id', {
+            destination_id: destinationId,
+          });
+        } else {
+          // Add new entry with full upsert payload
+          identifyResponseList.push(json);
+        }
+        metadata.push(ev.metadata);
+      });
+      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint;
     } else {
       throw new TransformationError('Unknown hubspot operation', 400);
     }
@@ -421,10 +495,12 @@ const batchEvents = (
 ): HubSpotRouterTransformationOutput[] => {
   let batchedResponseList: HubSpotRouterTransformationOutput[] = [];
   const trackResponseList: HubSpotRouterTransformationOutput[] = [];
-  // create contact chunck
+  // create contact chunk
   const createContactEventsChunk: HubSpotBatchProcessingItem[] = [];
   // update contact chunk
   const updateContactEventsChunk: HubSpotBatchProcessingItem[] = [];
+  // upsert contact chunk (V3 batch upsert)
+  const upsertContactEventsChunk: HubSpotBatchProcessingItem[] = [];
   // rETL specific chunk
   const createAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
   const updateAllObjectsEventChunk: HubSpotBatchProcessingItem[] = [];
@@ -478,6 +554,9 @@ const batchEvents = (
     } else if (operation === 'updateContacts') {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
+    } else if (operation === 'upsertContacts') {
+      // Identify: making chunks for CRM upsert contact endpoint (V3 batch upsert)
+      upsertContactEventsChunk.push(event);
     } else {
       throw new TransformationError('rETL - Not a valid operation');
     }
@@ -496,6 +575,12 @@ const batchEvents = (
   // CRM update contact endpoint chunks
   const arrayChunksIdentifyUpdateContact = lodash.chunk(
     updateContactEventsChunk,
+    MAX_BATCH_SIZE_CRM_CONTACT,
+  );
+
+  // CRM upsert contact endpoint chunks (V3 batch upsert)
+  const arrayChunksIdentifyUpsertContact = lodash.chunk(
+    upsertContactEventsChunk,
     MAX_BATCH_SIZE_CRM_CONTACT,
   );
 
@@ -537,6 +622,15 @@ const batchEvents = (
       arrayChunksIdentifyUpdateContact,
       batchedResponseList,
       'updateContacts',
+    );
+  }
+
+  // batching up 'upsert' contact endpoint chunks (V3 batch upsert)
+  if (arrayChunksIdentifyUpsertContact.length > 0) {
+    batchedResponseList = batchIdentify(
+      arrayChunksIdentifyUpsertContact,
+      batchedResponseList,
+      'upsertContacts',
     );
   }
 

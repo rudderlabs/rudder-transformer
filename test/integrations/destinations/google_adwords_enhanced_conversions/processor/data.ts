@@ -1821,4 +1821,189 @@ export const data = [
       },
     },
   },
+  {
+    name: 'google_adwords_enhanced_conversions',
+    description: 'Test 12: Custom adjustment type supported',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+              workspaceId: 'workspaceId1',
+            },
+            destination: {
+              hasDynamicConfig: false,
+              Config: {
+                adjustmentType: 'RESTATEMENT',
+                rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
+                customerId: '123-456-7890',
+                subAccount: true,
+                loginCustomerId: '123-456-7890',
+                listOfConversions: [
+                  {
+                    conversions: 'Page View',
+                  },
+                  {
+                    conversions: 'Product Added',
+                  },
+                ],
+                authStatus: 'active',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  phone: '912382193',
+                  firstName: 'John',
+                  lastName: 'Gomes',
+                  city: 'London',
+                  state: 'UK',
+                  countryCode: 'us',
+                  streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              event: 'Page View',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid1234',
+                conversionDateTime: '2022-01-01 12:32:45-08:00',
+                adjustedValue: '10',
+                currency: 'INR',
+                adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                partialFailure: true,
+                campaignId: '1',
+                templateId: '0',
+                order_id: 10000,
+                total: 1000,
+                products: [
+                  {
+                    product_id: '507f1f77bcf86cd799439011',
+                    sku: '45790-32',
+                    name: 'Monopoly: 3rd Edition',
+                    price: '19',
+                    position: '1',
+                    category: 'cars',
+                    url: 'https://www.example.com/product/path',
+                    image_url: 'https://www.example.com/product/path.jpg',
+                    quantity: '2',
+                  },
+                  {
+                    product_id: '507f1f77bcf86cd7994390112',
+                    sku: '45790-322',
+                    name: 'Monopoly: 3rd Edition2',
+                    price: '192',
+                    quantity: 22,
+                    position: '12',
+                    category: 'Cars2',
+                    url: 'https://www.example.com/product/path2',
+                    image_url: 'https://www.example.com/product/path.jpg2',
+                  },
+                ],
+              },
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: '',
+              headers: {
+                Authorization: authHeader1,
+                'Content-Type': 'application/json',
+                'login-customer-id': '1234567890',
+              },
+              params: {
+                accessToken: 'google_adwords_enhanced_conversions1',
+                event: 'Page View',
+                customerId: '1234567890',
+                loginCustomerId: '1234567890',
+                subAccount: true,
+              },
+              body: {
+                JSON: {
+                  conversionAdjustments: [
+                    {
+                      gclidDateTimePair: {
+                        gclid: 'gclid1234',
+                        conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      },
+                      restatementValue: {
+                        adjustedValue: 10,
+                        currencyCode: 'INR',
+                      },
+                      orderId: '10000',
+                      adjustmentDateTime: '2022-01-01 12:32:45-08:00',
+                      adjustmentType: 'RESTATEMENT',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: secret1,
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+              workspaceId: 'workspaceId1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

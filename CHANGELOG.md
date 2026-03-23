@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.126.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.3...v1.126.4) (2026-03-23)
+
+
+### Bug Fixes
+
+* **mp:** engage/groups API errors silently treated as success ([#5060](https://github.com/rudderlabs/rudder-transformer/issues/5060)) ([a844994](https://github.com/rudderlabs/rudder-transformer/commit/a844994e6fa7ae5ab4b934e92ea7be371771db41))
+
 ### [1.126.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.2...v1.126.3) (2026-03-19)
 
 

@@ -65,13 +65,13 @@ describe('staticLookup', () => {
     {
       name: 'should handle empty address',
       mockResponse: { address: '', cacheHit: true },
-      expectedArgs: [new Error(`resolved empty list of IP address for ${HOST_NAME}`), null],
+      expectedArgs: [new Error(`cannot use empty as IP address for ${HOST_NAME}`), null],
       expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
     {
       name: 'should handle localhost address',
       mockResponse: { address: '127.0.0.1', cacheHit: true },
-      expectedArgs: [new Error(`cannot use 127.0.0.1 as IP address`), null],
+      expectedArgs: [new Error(`cannot use 127.0.0.1 as IP address for ${HOST_NAME}`), null],
       expectedDnsResolvedCall: { cacheHit: true, error: false },
     },
   ];

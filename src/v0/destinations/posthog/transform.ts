@@ -1,8 +1,12 @@
-const get = require('get-value');
-const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
-const { EventType } = require('../../../constants');
-const { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const {
+import get from 'get-value';
+import {
+  InstrumentationError,
+  TransformationError,
+  isDefinedAndNotNull,
+} from '@rudderstack/integrations-lib';
+import { EventType } from '../../../constants';
+import { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY } from './config';
+import {
   defaultRequestConfig,
   getBrowserInfo,
   getDeviceModel,
@@ -11,18 +15,24 @@ const {
   ErrorMessage,
   isValidUrl,
   stripTrailingSlash,
-  isDefinedAndNotNull,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
-} = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+} from '../../util';
+import { JSON_MIME_TYPE } from '../../util/constant';
+import type { RudderMessage } from '../../../types';
+import type {
+  PostHogCategory,
+  PostHogDestination,
+  PostHogMessage,
+  PostHogPayload,
+  PostHogProcessorRequest,
+  PostHogResponseBody,
+  PostHogRouterRequest,
+} from './types';
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
-const generatePropertyDefination = (message) => {
-  const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
-  const propertyJson = MAPPING_CONFIG[PHPropertyJson];
-  let data = {};
-
+const generatePropertyDefination = (message: PostHogMessage) => {
+  const propertyJson = MAPPING_CONFIG[PROPERTY.name];
   // Filter out property specific to mobile or web. isMobile key takes care of it.
   // Array Filter() will map propeerty on basis of given condition and filters it.
   // if (message.channel === "mobile") {
@@ -35,7 +45,7 @@ const generatePropertyDefination = (message) => {
   //   });
   // }
 
-  data = constructPayload(message, propertyJson);
+  let data = constructPayload(message, propertyJson)!;
 
   // This logic ensures to get browser info only for payload generated from web.
   if (message.channel === 'web' && message.context && message.context.userAgent) {
@@ -70,9 +80,13 @@ const generatePropertyDefination = (message) => {
   return removeUndefinedAndNullValues(data);
 };
 
-const responseBuilderSimple = (message, category, destination) => {
+const responseBuilderSimple = (
+  message: RudderMessage,
+  category: PostHogCategory,
+  destination: PostHogDestination,
+) => {
   // This is to ensure backward compatibility of group calls.
-  let payload;
+  let payload: PostHogPayload | null;
   if (category.type === 'group' && destination.Config.useV2Group) {
     payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.GROUPV2.name]);
   } else {
@@ -123,7 +137,7 @@ const responseBuilderSimple = (message, category, destination) => {
     payload.event = category.event;
   }
 
-  const responseBody = {
+  const responseBody: PostHogResponseBody = {
     ...payload,
     api_key: destination.Config.teamApiKey,
     type: category.type,
@@ -140,24 +154,30 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
-const processEvent = (message, destination) => {
+const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>
+  key in CONFIG_CATEGORIES;
+
+const processEvent = (message: RudderMessage, destination: PostHogDestination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
 
-  const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
-  if (!category) {
+  const key = message.type.toUpperCase();
+  if (!isValidCategoryKey(key)) {
     throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
 
-  return responseBuilderSimple(message, category, destination);
+  return responseBuilderSimple(message, CONFIG_CATEGORIES[key], destination);
 };
 
-const process = (event) => processEvent(event.message, event.destination);
+const process = (event: PostHogProcessorRequest) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+const processRouterDest = async (
+  inputs: PostHogRouterRequest[],
+  reqMetadata: Record<string, unknown>,
+) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata, undefined);
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+export { process, processRouterDest };

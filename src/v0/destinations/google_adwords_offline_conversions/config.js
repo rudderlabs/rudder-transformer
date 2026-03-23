@@ -1,20 +1,20 @@
 const { getMappingConfig } = require('../../util');
 
-const API_VERSION = 'v19';
+const API_VERSION = 'v22';
 
 const CUSTOMER_ID_PARAM = ':customerId';
 
 const BASE_ENDPOINT = `https://googleads.googleapis.com/${API_VERSION}/customers/${CUSTOMER_ID_PARAM}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadClickConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers/uploadClickConversions
 const CLICK_CONVERSION_ENDPOINT_PATH = 'uploadClickConversions';
 const CLICK_CONVERSION = `${BASE_ENDPOINT}:${CLICK_CONVERSION_ENDPOINT_PATH}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers/uploadCallConversions
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers/uploadCallConversions
 const CALL_CONVERSION_ENDPOINT_PATH = 'uploadCallConversions';
 const CALL_CONVERSION = `${BASE_ENDPOINT}:${CALL_CONVERSION_ENDPOINT_PATH}`;
 
-// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v19/customers.googleAds/searchStream
+// Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v22/customers.googleAds/searchStream
 const SEARCH_STREAM_ENDPOINT_PATH = 'searchStream';
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:${SEARCH_STREAM_ENDPOINT_PATH}`;
 

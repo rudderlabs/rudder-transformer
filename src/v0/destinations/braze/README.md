@@ -73,17 +73,30 @@ The Braze API enforces rate limits to ensure system stability. Here are the rate
 
 \*Note: For accounts created after August 22, 2024, the rate limit for `/users/export/ids` is 250 requests per minute.
 
+#### Monthly Active Users (MAU) plans – CY 24-25, Universal MAU, Web MAU, Mobile MAU
+
+For customers on **Monthly Active Users CY 24-25**, **Universal MAU**, **Web MAU**, or **Mobile MAU** pricing, different limits apply to `/users/track`:
+
+- **Enforcement**: Rate limits are enforced at the **company level**. Workspaces can set hourly limits, but burst limits are shared across all workspaces.
+- **Hourly limits**: Set according to expected data ingestion (e.g. MAU tier, industry, seasonality). Current values are in the Braze dashboard under **Settings** → **APIs and Identifiers** → **API Usage Dashboard**.
+- **Burst limit**: In addition to the hourly limit, Braze enforces a **burst limit** on the number of requests allowed every 3 seconds.
+- **Batch limits**: Each request may include up to **75 updates combined** across attribute, event, and purchase objects (same as the base limits above).
+
+Contact Braze Support or your customer success manager for your account’s hourly and burst limits. See [Braze docs: MAU rate limits](https://www.braze.com/docs/api/endpoints/user_data/post_user_track/#monthly-active-users-cy-24-25-universal-mau-web-mau-and-mobile-mau).
+
 #### Monitoring Rate Limits
 
-Every API response from Braze includes the following headers:
+Every API response from Braze includes the following headers (for non-`429` responses):
 
 - `X-RateLimit-Limit`: Maximum number of requests allowed in the current time window
-- `X-RateLimit-Remaining`: Number of requests remaining in the current time window
-- `X-RateLimit-Reset`: Time at which the current rate limit window resets (UTC epoch seconds)
+- `X-RateLimit-Remaining`: Approximate number of requests remaining in the current window
+- `X-RateLimit-Reset`: Number of seconds until the current window resets
+
+For MAU-plan accounts, these headers reflect the hourly rate limit window. When Braze returns **HTTP 429**, these headers are not included; the response includes `X-Ratelimit-Retry-After` (seconds until retry is allowed) instead.
 
 #### Handling Rate Limit Errors
 
-If you exceed rate limits, Braze will return a `429 Too Many Requests` status code. The destination implements exponential backoff retry logic to handle these errors.
+If you exceed rate limits, Braze returns **429 Too Many Requests**. The destination uses exponential backoff retry logic to handle these errors.
 
 [Docs Reference](https://braze.com/docs/api/api_limits/#rate-limits-by-request-type)
 

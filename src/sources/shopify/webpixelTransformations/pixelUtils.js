@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
-const { isDefinedAndNotNull, removeNullValues } = require('@rudderstack/integrations-lib');
+const {
+  isDefinedAndNotNull,
+  isDefinedNotNullNotEmpty,
+  removeNullValues,
+} = require('@rudderstack/integrations-lib');
 const Message = require('../../message');
 const { EventType } = require('../../../constants');
 const {
@@ -129,6 +133,13 @@ const productToCartEventBuilder = (inputEvent) => {
   );
 };
 
+function setCheckoutEmail(inputEvent, message) {
+  const email = inputEvent?.data?.checkout?.email;
+  if (isDefinedNotNullNotEmpty(email)) {
+    message.setProperty('context.traits.email', email);
+  }
+}
+
 const checkoutEventBuilder = (inputEvent) => {
   const lineItems = inputEvent?.data?.checkout?.lineItems;
   const products = [];
@@ -152,12 +163,14 @@ const checkoutEventBuilder = (inputEvent) => {
   };
   const sanitizedProperties = removeNullValues(properties);
   const contextualPayload = mapObjectKeys(inputEvent.context, contextualFieldMappingJSON);
-  return createMessage(
+  const message = createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
     sanitizedProperties,
     contextualPayload,
   );
+  setCheckoutEmail(inputEvent, message);
+  return message;
 };
 
 const checkoutStepEventBuilder = (inputEvent) => {
@@ -165,12 +178,14 @@ const checkoutStepEventBuilder = (inputEvent) => {
   const properties = {
     checkout_id: inputEvent?.data?.checkout?.token,
   };
-  return createMessage(
+  const message = createMessage(
     EventType.TRACK,
     PIXEL_EVENT_MAPPING[inputEvent.name],
     properties,
     contextualPayload,
   );
+  setCheckoutEmail(inputEvent, message);
+  return message;
 };
 
 const searchEventBuilder = (inputEvent) => {

@@ -24,9 +24,11 @@ import {
   validateEventName,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
+  isHttpStatusSuccess,
 } from '../../util';
 import {
   CONTACT_PROPERTY_MAP_ENDPOINT,
+  CRM_V3_CONTACT_PROPERTIES_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
@@ -35,8 +37,10 @@ import {
   DESTINATION,
   MAX_CONTACTS_PER_REQUEST,
   HUBSPOT_SYSTEM_FIELDS,
+  CONTACT_PROPERTIES_CACHE_TTL,
 } from './config';
 
+import Cache from '../../util/cache';
 import tags from '../../util/tags';
 import { JSON_MIME_TYPE } from '../../util/constant';
 import type { Metadata } from '../../../types';
@@ -56,6 +60,8 @@ import type {
   HubspotRudderMessage,
   HubSpotExternalIdObject,
   HubSpotTrackEventRequest,
+  HubSpotPropertyV3,
+  HubSpotPropertiesV3Response,
 } from './types';
 import { isDateLike, isHubSpotExternalIdInfo, isHubSpotSearchResponse } from './types';
 
@@ -78,6 +84,32 @@ const validateDestinationConfig = ({ Config }: HubSpotDestination): Configuratio
       throw new ConfigurationError('API Key not found. Aborting');
     }
   }
+};
+
+/**
+ * Adds HubSpot authentication details (headers/params) to a response-like object.
+ * Works for both Private Apps (access token) and legacy API key auth.
+ */
+const addHsAuthentication = <
+  T extends { headers?: Record<string, unknown>; params?: Record<string, unknown> },
+>(
+  response: T,
+  Config: HubSpotDestination['Config'],
+): T => {
+  if (Config.authorizationType === 'newPrivateAppApi') {
+    // Private Apps
+    response.headers = {
+      ...(response.headers || {}),
+      Authorization: `Bearer ${Config.accessToken}`,
+    };
+  } else {
+    // Legacy API Key
+    response.params = {
+      ...(response.params || {}),
+      hapikey: Config.apiKey,
+    };
+  }
+  return response;
 };
 
 /**
@@ -359,16 +391,21 @@ const getLookupFieldValue = (
   lookupField: string | undefined,
 ): HubSpotLookupFieldInfo | null => {
   const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
-  let value = getValueFromMessage(message, `${lookupField}`);
-  if (!value) {
-    // Check in free-flowing object level
-    SOURCE_KEYS.some((sourceKey) => {
-      value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
-      return !!value;
-    });
+  const lookUpFields = [lookupField, 'email'];
+  for (const lookUpField of lookUpFields) {
+    let value = getValueFromMessage(message, lookUpField);
+    if (!isDefinedNotNullNotEmpty(value)) {
+      // Check in free-flowing object level
+      SOURCE_KEYS.some((sourceKey) => {
+        value = getMappingFieldValueFormMessage(message, sourceKey, lookUpField);
+        return isDefinedNotNullNotEmpty(value);
+      });
+    }
+    if (isDefinedNotNullNotEmpty(value)) {
+      return { fieldName: lookUpField!, value };
+    }
   }
-  const lookupValueInfo = value && lookupField ? { fieldName: lookupField, value } : null;
-  return lookupValueInfo;
+  return null;
 };
 
 /**
@@ -388,8 +425,7 @@ const searchContacts = async (
   if (!getFieldValueFromMessage(message, 'traits') && !message.properties) {
     throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
-  const lookupFieldInfo =
-    getLookupFieldValue(message, Config.lookupField) || getLookupFieldValue(message, 'email');
+  const lookupFieldInfo = getLookupFieldValue(message, Config.lookupField);
   if (!lookupFieldInfo?.value) {
     throw new InstrumentationError(
       'Identify:: email i.e a default lookup field for contact lookup not found in traits',
@@ -630,7 +666,7 @@ const performHubSpotSearch = async (
 
     const processedResponse = processAxiosResponse(httpResponse);
 
-    if (processedResponse.status !== 200) {
+    if (!isHttpStatusSuccess(processedResponse.status)) {
       throw new NetworkError(
         `rETL - Error during searching object record. ${JSON.stringify(
           processedResponse.response?.message,
@@ -981,8 +1017,129 @@ const convertToResponseFormat = (
 const removeHubSpotSystemField = (properties: Record<string, unknown>): Record<string, unknown> =>
   omit(properties, HUBSPOT_SYSTEM_FIELDS);
 
+// Cache for HubSpot contact properties (V3 API) - stores hasUniqueValue per property
+// TTL: 1 hour - property definitions rarely change
+const uniqueContactPropertiesCache = new Cache(
+  'HS_CONTACT_PROPERTIES_V3',
+  CONTACT_PROPERTIES_CACHE_TTL,
+  {
+    destType: DESTINATION,
+  },
+);
+
+/**
+ * Fetches contact properties from HubSpot CRM V3 API.
+ * Ref - https://developers.hubspot.com/docs/api-reference/crm-properties-v3/core/get-crm-v3-properties-objectType
+ *
+ * @param destination - HubSpot destination config
+ * @param metadata - Request metadata
+ * @returns Map of property name -> hasUniqueValue
+ */
+const fetchContactPropertiesV3 = async (
+  destination: HubSpotDestination,
+  metadata: Metadata,
+): Promise<Record<string, boolean>> => {
+  const { Config } = destination;
+  const statTags = {
+    destType: DESTINATION,
+    feature: 'transformation',
+    endpointPath: '/crm/v3/properties/contacts',
+    requestMethod: 'GET',
+    module: 'router',
+    metadata,
+  };
+  const authenticationInfo = addHsAuthentication({}, Config);
+  const response = await httpGET(CRM_V3_CONTACT_PROPERTIES_ENDPOINT, authenticationInfo, statTags);
+
+  const processedResponse = processAxiosResponse(response);
+  if (processedResponse.status !== 200) {
+    throw new NetworkError(
+      `Failed to fetch HubSpot contact properties: ${JSON.stringify(processedResponse.response)}`,
+      processedResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
+      },
+      processedResponse,
+    );
+  }
+
+  const body = processedResponse.response as HubSpotPropertiesV3Response;
+  const results = body?.results ?? [];
+  const map: Record<string, boolean> = {};
+  results.forEach((prop: HubSpotPropertyV3) => {
+    map[prop.name] = Boolean(prop.hasUniqueValue);
+  });
+  return map;
+};
+
+/**
+ * Checks if the lookup field has unique value constraint in HubSpot.
+ * Uses in-memory cache to avoid repeated API calls.
+ * Refetches when lookup field is not in cache (handles new custom fields added after cache).
+ * Upsert endpoint requires hasUniqueValue=true for the lookup field.
+ *
+ * @param destination - HubSpot destination config
+ * @param lookupField - The configured lookup field (e.g. email, hs_object_id)
+ * @param metadata - Request metadata
+ * @returns true if lookupField has hasUniqueValue=true, false otherwise
+ */
+const isLookupFieldUnique = async (
+  destination: HubSpotDestination,
+  lookupField: string,
+  metadata: Metadata,
+): Promise<boolean> => {
+  const cacheKey = destination.ID;
+
+  const isFieldInMap = (map: Record<string, boolean>) => lookupField in map;
+
+  let propertiesMap = (await uniqueContactPropertiesCache.get(cacheKey)) as
+    | Record<string, boolean>
+    | undefined;
+
+  // Refetch if cache miss OR lookup field not in cached data (e.g. new custom field added)
+  if (!propertiesMap || !isFieldInMap(propertiesMap)) {
+    propertiesMap = await fetchContactPropertiesV3(destination, metadata);
+    if (propertiesMap) {
+      uniqueContactPropertiesCache.set(cacheKey, propertiesMap);
+    }
+  }
+
+  if (!propertiesMap) return false;
+  return propertiesMap[lookupField] ?? false;
+};
+
+/**
+ * Determines if the upsert feature is enabled for a given workspace.
+ *
+ * Logic:
+ * 1. If ENABLED = "ALL" -> return true
+ * 2. If workspaceId in ENABLED list -> return true
+ * 3. Default -> return false
+ *
+ * @param workspaceId - The workspace ID to check
+ * @returns Whether upsert is enabled for this workspace
+ */
+const isUpsertEnabled = (workspaceId: string): boolean => {
+  const enabledWorkspaces = process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES || '';
+
+  // Check if enabled for all workspaces
+  if (enabledWorkspaces.trim().toUpperCase() === 'ALL') {
+    return true;
+  }
+
+  // Check if workspace is in the enabled list
+  if (enabledWorkspaces && workspaceId) {
+    const enabledList = enabledWorkspaces.split(',').map((ws) => ws.trim());
+    return enabledList.includes(workspaceId);
+  }
+
+  // Default: upsert not enabled
+  return false;
+};
+
 export {
   validateDestinationConfig,
+  addHsAuthentication,
   addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,
@@ -1002,4 +1159,7 @@ export {
   getRequestData,
   convertToResponseFormat,
   removeHubSpotSystemField,
+  isUpsertEnabled,
+  getLookupFieldValue,
+  isLookupFieldUnique,
 };

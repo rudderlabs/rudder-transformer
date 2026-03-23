@@ -759,21 +759,28 @@ const addTrackStats = (
   destination: BrazeDestination,
 ) => {
   const { attributes, events, purchases } = chunk;
+  let totalCount = 0;
   if (attributes) {
+    totalCount += attributes.length;
     stats.histogram('braze_batch_attributes_pack_size', attributes.length, {
       destination_id: destination.ID,
     });
   }
   if (events) {
+    totalCount += events.length;
     stats.histogram('braze_batch_events_pack_size', events.length, {
       destination_id: destination.ID,
     });
   }
   if (purchases) {
+    totalCount += purchases.length;
     stats.histogram('braze_batch_purchase_pack_size', purchases.length, {
       destination_id: destination.ID,
     });
   }
+  stats.histogram('braze_batch_total_pack_size', totalCount, {
+    destination_id: destination.ID,
+  });
 };
 
 let mauWorkspaceSkipIds: string | Map<string, boolean> = 'ALL';

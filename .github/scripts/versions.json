@@ -49,6 +49,13 @@
     "Sunset Date Current Version used in backend": "Not Available"
   },
   {
+    "Destination": "Campaign Manager",
+    "Version currently referred in CloudMode Services": "/dfareporting/v5/userprofiles/:profileId/conversions/batchinsert, /dfareporting/v5/userprofiles/:profileId/conversions/batchupdate",
+    "Link to check Versions documentation": "https://developers.google.com/doubleclick-advertisers/rest/v5/ https://developers.google.com/doubleclick-advertisers/deprecation",
+    "Latest Version rolled out": "v5",
+    "Sunset Date Current Version used in backend": "v4 is deprecated and sunsets on Feb 26, 2026. v5 is current (no sunset announced)."
+  },
+  {
     "Destination": "CleverTap",
     "Version currently referred in CloudMode Services": "/1/upload, /1/delete/profiles.json",
     "Link to check Versions documentation": "https://developer.clevertap.com/docs/upload-events-api",
@@ -64,10 +71,10 @@
   },
   {
     "Destination": "Criteo Audience",
-    "Version currently referred in CloudMode Services": "/2025-04/audiences/:audienceId/contactlist",
+    "Version currently referred in CloudMode Services": "/2025-10/audiences/:audienceId/contactlist",
     "Link to check Versions documentation": "https://developers.criteo.com/marketing-solutions/docs/versioning-policy",
     "Latest Version rolled out": "v2025-10 (supported until October 2026)",
-    "Sunset Date Current Version used in backend": "April 2026 (12 months after release - version 2025-04 released April 2025)"
+    "Sunset Date Current Version used in backend": "October 2026 (12 months after release - version 2025-10 released October 2025)"
   },
   {
     "Destination": "Customer IO",
@@ -112,25 +119,25 @@
     "Sunset Date Current Version used in backend": "Not Available"
   },
   {
-    "Destination": "GAEC",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/release-notes",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+    "Destination": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/uploadClickConversions, /v22/customers/:customerId/uploadCallConversions, /v22/customers/:customerId/googleAds:searchStream, /v22/customers/:customerId/offlineUserDataJobs (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/uploadClickConversions, /v19/customers/:customerId/uploadCallConversions, /v19/customers/:customerId/googleAds:searchStream, /v19/customers/:customerId/offlineUserDataJobs",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v19 will be deprecated in February 2026"
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/uploadClickConversions, /v22/customers/:customerId/uploadCallConversions, /v22/customers/:customerId/googleAds:searchStream, /v22/customers/:customerId/offlineUserDataJobs (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "GOOGLE_ADWORDS_REMARKETING_LISTS",
-    "Version currently referred in CloudMode Services": "/v19/customers/:customerId/offlineUserDataJobs, /v19/customers/:customerId/offlineUserDataJobs/:jobId:create, /v19/customers/:customerId/offlineUserDataJobs/:jobId:addOperations",
-    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates\nhttps://developers.google.com/google-ads/api/docs/release-notes",
-    "Latest Version rolled out": "v20",
-    "Sunset Date Current Version used in backend": "v17 @June 4, 2025 v18 September 2025, v19 will be deprecated in February 2026"
+    "Version currently referred in CloudMode Services": "/v22/customers/:customerId/offlineUserDataJobs, /v22/customers/:customerId/offlineUserDataJobs/:jobId:create, /v22/customers/:customerId/offlineUserDataJobs/:jobId:addOperations (currently used: v22)",
+    "Link to check Versions documentation": "https://developers.google.com/google-ads/api/docs/sunset-dates https://developers.google.com/google-ads/api/docs/release-notes",
+    "Latest Version rolled out": "v23 (released Jan 28, 2026)",
+    "Sunset Date Current Version used in backend": "v22 sunset: October 2026 (tentative). Latest available: v23 (released Jan 28, 2026) with sunset February 2027."
   },
   {
     "Destination": "Google Analytics 4 (GA4)",

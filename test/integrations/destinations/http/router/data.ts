@@ -244,7 +244,7 @@ export const data = [
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe%40example.com',
+                  q2: 'john.doe@example.com',
                 },
                 body: {
                   JSON: {},
@@ -277,7 +277,7 @@ export const data = [
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'john.doe%40example.com',
+                  q2: 'john.doe@example.com',
                 },
                 body: {
                   JSON: {},
@@ -310,7 +310,7 @@ export const data = [
                 },
                 params: {
                   q1: 'val1',
-                  q2: 'alex.t%40example.com',
+                  q2: 'alex.t@example.com',
                 },
                 body: {
                   JSON: {},

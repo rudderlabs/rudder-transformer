@@ -1,4 +1,4 @@
-const version = '2025-04';
+const version = '2025-10';
 const BASE_ENDPOINT = `https://api.criteo.com/${version}/`;
 const operation = ['add', 'remove'];
 // https://developers.criteo.com/marketing-solutions/docs/audience-segments#manage-contact-lists

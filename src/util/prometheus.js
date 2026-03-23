@@ -504,6 +504,13 @@ class Prometheus {
         buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75],
       },
       {
+        name: 'braze_batch_total_pack_size',
+        help: 'Distribution of total count per batch chunk',
+        type: 'histogram',
+        labelNames: ['destination_id'],
+        buckets: [1, 5, 10, 20, 30, 40, 50, 60, 70, 75, 100, 125, 150, 175, 200, 225],
+      },
+      {
         name: 'braze_alias_failure_count',
         help: 'braze_alias_failure_count',
         type: 'counter',
@@ -1047,12 +1054,6 @@ class Prometheus {
         type: 'histogram',
         labelNames: ['destination_id', 'source_id'],
         buckets: [10, 50, 100, 200, 500, 800, 1000],
-      },
-      {
-        name: 'salesforce_soql_lookup_count',
-        help: 'Count of SOQL-based lookups executed using Salesforce SDK',
-        type: 'counter',
-        labelNames: ['method', 'objectType', 'workspaceId'],
       },
     ];
 

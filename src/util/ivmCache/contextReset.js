@@ -1,4 +1,4 @@
-const net = require('net');
+const net = require('node:net');
 const { isNil, isObject } = require('lodash');
 const fetch = require('node-fetch');
 const ivm = require('isolated-vm');

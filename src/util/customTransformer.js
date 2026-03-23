@@ -1,4 +1,4 @@
-const net = require('net');
+const net = require('node:net');
 const ivm = require('isolated-vm');
 const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');

@@ -110,6 +110,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       response.headers = {
         'Content-Type': 'application/json',
       };
+      response.params = { verbose: 2 };
   }
   return response;
 };

@@ -78,6 +78,7 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
 
   async batchTransform(
     inputs: RouterTransformationRequestData[],
+    reqMetadata?: NonNullable<unknown>,
   ): Promise<BatchTransformResult<BrazeBody>> {
     const { destination } = inputs[0];
     const brazeDest = destination as unknown as BrazeDestination;
@@ -111,7 +112,7 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
       inputs.map(async (input) => {
         const jobId = String(input.metadata.jobId);
         try {
-          const result = await process(input as never, processParams, {});
+          const result = await process(input as never, processParams, reqMetadata ?? {});
           return { jobId, result, error: null };
         } catch (err: unknown) {
           const e = err as { message?: string; status?: number; statTags?: Record<string, unknown> };
@@ -308,4 +309,4 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
   }
 }
 
-export const integration = new BrazeIntegration();
+export const Integration = BrazeIntegration;

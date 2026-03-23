@@ -151,6 +151,7 @@ function buildPostHogEventPayload(
 class PostHogIntegration extends RouterIntegration<PostHogBody> {
   async batchTransform(
     inputs: RouterTransformationRequestData[],
+    _reqMetadata?: NonNullable<unknown>,
   ): Promise<BatchTransformResult<PostHogBody>> {
     const payloads: PostHogEvent[] = [];
     const jobIds: string[] = [];
@@ -220,8 +221,4 @@ class PostHogIntegration extends RouterIntegration<PostHogBody> {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Singleton exported for use by nativeIntegration.ts
-// ---------------------------------------------------------------------------
-
-export const integration = new PostHogIntegration();
+export const Integration = PostHogIntegration;

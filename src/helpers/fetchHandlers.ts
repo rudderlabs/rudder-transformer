@@ -11,7 +11,7 @@ export class FetchHandler {
 
   private static deletionHandlerMap: Map<string, any> = new Map();
 
-  private static routerTransformHandlerMap: Map<string, RouterIntegration> = new Map();
+  private static routerTransformHandlerMap: Map<string, new () => RouterIntegration> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -56,16 +56,16 @@ export class FetchHandler {
     return deletionHandler;
   }
 
-  public static getRouterTransformHandler(dest: string): RouterIntegration {
-    let integrationHandler = this.routerTransformHandlerMap.get(dest);
-    if (integrationHandler) {
-      return integrationHandler;
+  public static getRouterTransformHandler(dest: string): new () => RouterIntegration {
+    let integrationClass = this.routerTransformHandlerMap.get(dest);
+    if (integrationClass) {
+      return integrationClass;
     }
-    integrationHandler = MiscService.getRouterTransformHandler(dest);
-    if (!integrationHandler) {
+    integrationClass = MiscService.getRouterTransformHandler(dest);
+    if (!integrationClass) {
       throw new PlatformError(`Not found routerIntegration for dest type ${dest}`);
     }
-    this.routerTransformHandlerMap.set(dest, integrationHandler);
-    return integrationHandler;
+    this.routerTransformHandlerMap.set(dest, integrationClass);
+    return integrationClass;
   }
 }

@@ -18,7 +18,7 @@ export class MiscService {
 
   public static getRouterTransformHandler(dest: string) {
     const destDir = DestHandlerMap.hasOwnProperty(dest) ? DestHandlerMap[dest] : dest.toLowerCase();
-    return require(`../v0/destinations/${destDir}/routerTransform`).integration;
+    return require(`../v0/destinations/${destDir}/routerTransform`).Integration;
   }
 
   public static getSourceHandler(source: string) {

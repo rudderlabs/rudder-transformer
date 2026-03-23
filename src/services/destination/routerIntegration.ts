@@ -6,6 +6,7 @@ import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
 } from '../../types/destinationTransformation';
+import tags from '../../v0/util/tags';
 
 // ---------------------------------------------------------------------------
 // Base input schema (RudderStack event spec — common to all destinations)
@@ -285,7 +286,10 @@ export abstract class RouterIntegration<TBody extends Record<string, unknown> = 
    * Async to allow bulk lookups (e.g. deduplication, identity resolution) before transformation.
    * Must be implemented by each destination.
    */
-  abstract batchTransform(inputs: RouterTransformationRequestData[]): Promise<BatchTransformResult<TBody>>;
+  abstract batchTransform(
+    inputs: RouterTransformationRequestData[],
+    reqMetadata?: NonNullable<unknown>,
+  ): Promise<BatchTransformResult<TBody>>;
 
   /**
    * Chunks the group at payloadHierarchyPath and returns one BatchRequest per chunk.
@@ -347,6 +351,10 @@ export abstract class RouterIntegration<TBody extends Record<string, unknown> = 
           batched: false,
           statusCode: 400,
           error: parsed.error.issues.map((i) => i.message).join('; '),
+          statTags: {
+            errorCategory: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+            errorType: tags.ERROR_TYPES.INSTRUMENTATION,
+          },
         });
         return false;
       }
@@ -366,12 +374,14 @@ export abstract class RouterIntegration<TBody extends Record<string, unknown> = 
  */
 export async function processBatchedDestination(
   inputs: RouterTransformationRequestData[],
-  integration: RouterIntegration,
+  IntegrationClass: new () => RouterIntegration,
+  reqMetadata?: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (!inputs || inputs.length === 0) {
     return [];
   }
 
+  const integration = new IntegrationClass();
   const results: RouterTransformationResponse[] = [];
 
   // 1. Build jobId → Metadata map from ALL inputs (including any that fail validation)
@@ -389,7 +399,7 @@ export async function processBatchedDestination(
   const nonBatchableResults = await Promise.all(
     nonBatchable.map(async (event) => ({
       event,
-      result: await integration.batchTransform([event]),
+      result: await integration.batchTransform([event], reqMetadata),
     })),
   );
   for (const {
@@ -414,7 +424,7 @@ export async function processBatchedDestination(
 
   // 5. Batchable — integration transforms + groups all events at once
   if (batchable.length > 0) {
-    const { groupedEvents, errorEvents } = await integration.batchTransform(batchable);
+    const { groupedEvents, errorEvents } = await integration.batchTransform(batchable, reqMetadata);
     const { destination } = batchable[0];
 
     for (const e of errorEvents) {

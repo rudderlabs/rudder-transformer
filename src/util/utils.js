@@ -22,6 +22,7 @@ const LOCAL_HOST_NAMES_LIST = [
   '[::]',
   '[::1]',
   '[::ffff:127.0.0.1]',
+  '[::ffff:7f00:1]',
 ];
 const LOCALHOST_OCTET = '127.';
 

@@ -536,6 +536,23 @@ describe('Context Reset Utilities', () => {
       );
     });
 
+    test('should reject invalid IP address', async () => {
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '../../metrics');
+
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.any(Object)] // ExternalCopy error
+      );
+    });
+
     test('should handle missing GEOLOCATION_URL environment variable', async () => {
       delete process.env.GEOLOCATION_URL;
 

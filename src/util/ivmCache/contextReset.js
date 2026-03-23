@@ -1,3 +1,4 @@
+const net = require('net');
 const { isNil, isObject } = require('lodash');
 const fetch = require('node-fetch');
 const ivm = require('isolated-vm');
@@ -110,6 +111,9 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
       try {
         if (args.length === 0) {
           throw new Error('ip address is required');
+        }
+        if (!net.isIP(args[0])) {
+          throw new Error('invalid ip address');
         }
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
         const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {

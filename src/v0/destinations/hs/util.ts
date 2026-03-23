@@ -1108,35 +1108,6 @@ const isLookupFieldUnique = async (
   return propertiesMap[lookupField] ?? false;
 };
 
-/**
- * Determines if the upsert feature is enabled for a given workspace.
- *
- * Logic:
- * 1. If ENABLED = "ALL" -> return true
- * 2. If workspaceId in ENABLED list -> return true
- * 3. Default -> return false
- *
- * @param workspaceId - The workspace ID to check
- * @returns Whether upsert is enabled for this workspace
- */
-const isUpsertEnabled = (workspaceId: string): boolean => {
-  const enabledWorkspaces = process.env.HUBSPOT_UPSERT_ENABLED_WORKSPACES || '';
-
-  // Check if enabled for all workspaces
-  if (enabledWorkspaces.trim().toUpperCase() === 'ALL') {
-    return true;
-  }
-
-  // Check if workspace is in the enabled list
-  if (enabledWorkspaces && workspaceId) {
-    const enabledList = enabledWorkspaces.split(',').map((ws) => ws.trim());
-    return enabledList.includes(workspaceId);
-  }
-
-  // Default: upsert not enabled
-  return false;
-};
-
 export {
   validateDestinationConfig,
   addHsAuthentication,
@@ -1159,7 +1130,6 @@ export {
   getRequestData,
   convertToResponseFormat,
   removeHubSpotSystemField,
-  isUpsertEnabled,
   getLookupFieldValue,
   isLookupFieldUnique,
 };

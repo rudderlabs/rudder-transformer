@@ -1,5 +1,6 @@
 import { secret1 } from '../maskedSecrets';
 export const destination = {
+  ID: 'hs-router-dest',
   Config: {
     accessToken: secret1,
     hubID: 'dummy-hubId',

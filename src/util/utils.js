@@ -15,11 +15,17 @@ const dnsCallbackStorage = new AsyncLocalStorage();
 
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
-const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '0.0.0.0', '[::]', '[::1]', '[::ffff:127.0.0.1]'];
+const LOCAL_HOST_NAMES_LIST = [
+  'localhost',
+  '127.0.0.1',
+  '0.0.0.0',
+  '[::]',
+  '[::1]',
+  '[::ffff:127.0.0.1]',
+];
 const LOCALHOST_OCTET = '127.';
 
-const isBlockedIP = (address) =>
-  !address || address.startsWith('127.') || address === '0.0.0.0';
+const isBlockedIP = (address) => !address || address.startsWith('127.') || address === '0.0.0.0';
 const RECORD_TYPE_A = 4; // ipv4
 const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
 const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;

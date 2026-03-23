@@ -47,7 +47,6 @@ import {
   populateTraits,
   addExternalIdToHSTraits,
   removeHubSpotSystemField,
-  isUpsertEnabled,
   isLookupFieldUnique,
   getLookupFieldValue,
   addHsAuthentication,
@@ -218,11 +217,7 @@ const processIdentify = async (
 
     // We can't use contactId for upsert, as it is a non-unique field.
     // This skips the searchContacts call and uses the batch upsert endpoint
-    if (
-      !contactId &&
-      isUpsertEnabled(metadata?.workspaceId) &&
-      (await isLookupFieldUnique(destination, Config.lookupField!, metadata))
-    ) {
+    if (!contactId && (await isLookupFieldUnique(destination, Config.lookupField!, metadata))) {
       return processUpsertIdentify({ message, destination, metadata }, propertyMap);
     }
 

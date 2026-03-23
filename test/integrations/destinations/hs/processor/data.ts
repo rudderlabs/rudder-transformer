@@ -2050,6 +2050,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
+              ID: 'hs-dest-18',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 accessToken: secret2,
@@ -2114,7 +2115,8 @@ export const data = [
   },
   {
     name: 'hs',
-    description: 'Test 19',
+    description:
+      '[HS] (newApi): upsert contact with email as lookupField when no contactId is provided',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2124,7 +2126,7 @@ export const data = [
           {
             message: {
               description:
-                '[HS] (newApi): get contact from hs with email (lookupField) having no contacts',
+                '[HS] (newApi): upsert contact with email as lookupField when no contactId is provided',
               channel: 'web',
               context: {
                 app: {
@@ -2173,6 +2175,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
+              ID: 'hs-dest-19',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 accessToken: secret1,
@@ -2209,15 +2212,17 @@ export const data = [
               type: 'REST',
               userId: '',
               method: 'POST',
-              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader1,
               },
               params: {},
-              operation: 'createContacts',
+              operation: 'upsertContacts',
               body: {
                 JSON: {
+                  id: 'noname@email.com',
+                  idProperty: 'email',
                   properties: {
                     email: 'noname@email.com',
                     firstname: 'Test Hubspot',
@@ -2295,6 +2300,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
+              ID: 'hs-dest-20',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 accessToken: secret4,
@@ -2820,6 +2826,7 @@ export const data = [
               },
             },
             destination: {
+              ID: 'hs-dest-24',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
@@ -2920,6 +2927,7 @@ export const data = [
               },
             },
             destination: {
+              ID: 'hs-dest-25',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
@@ -3013,7 +3021,7 @@ export const data = [
   {
     name: 'hs',
     description:
-      '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+      '[HS] (New API v3) - (newPrivateAppApi) upsert contact when lookupField is hs_object_id',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3022,7 +3030,7 @@ export const data = [
         body: [
           {
             description:
-              '[HS] (New API v3) - (newPrivateAppApi) firstname is present in traits and lookupField is hs_object_id',
+              '[HS] (New API v3) - (newPrivateAppApi) upsert contact when lookupField is hs_object_id',
             message: {
               type: 'identify',
               traits: {
@@ -3034,6 +3042,7 @@ export const data = [
               },
             },
             destination: {
+              ID: 'hs-dest-26',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
@@ -3068,8 +3077,8 @@ export const data = [
               version: '1',
               type: 'REST',
               userId: '',
-              method: 'PATCH',
-              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103689',
+              method: 'POST',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
               headers: {
                 'Content-Type': 'application/json',
                 Authorization: authHeader5,
@@ -3077,6 +3086,8 @@ export const data = [
               params: {},
               body: {
                 JSON: {
+                  id: 345678,
+                  idProperty: 'hs_object_id',
                   properties: {
                     firstname: 'john',
                   },
@@ -3086,7 +3097,7 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              operation: 'updateContacts',
+              operation: 'upsertContacts',
             },
             statusCode: 200,
           },
@@ -3923,7 +3934,7 @@ export const data = [
   },
   {
     name: 'hs',
-    description: 'Test 33',
+    description: '[HS] (newApi): upsert contact using legacyApiKey authentication',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3932,7 +3943,7 @@ export const data = [
         body: [
           {
             message: {
-              description: '[HS] (newApi): check for legacyApiKey',
+              description: '[HS] (newApi): upsert contact using legacyApiKey authentication',
               channel: 'web',
               context: {
                 app: {
@@ -3980,6 +3991,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
+              ID: 'hs-dest-34',
               Config: {
                 authorizationType: 'legacyApiKey',
                 accessToken: secret1,
@@ -4016,16 +4028,18 @@ export const data = [
               type: 'REST',
               userId: '',
               method: 'POST',
-              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
               headers: {
                 'Content-Type': 'application/json',
               },
               params: {
                 hapikey: 'dummy-apikeysuccess',
               },
-              operation: 'createContacts',
+              operation: 'upsertContacts',
               body: {
                 JSON: {
+                  id: 'noname@email.com',
+                  idProperty: 'email',
                   properties: {
                     email: 'noname@email.com',
                     firstname: 'Test Hubspot',
@@ -4271,6 +4285,7 @@ export const data = [
               },
             },
             destination: {
+              ID: 'hs-dest-37',
               Config: {
                 authorizationType: 'newPrivateAppApi',
                 hubID: '',
@@ -5407,7 +5422,7 @@ export const data = [
   },
   {
     name: 'hs',
-    description: 'Test coversion of null to string values',
+    description: '[HS] (newApi): upsert contact with null to string value conversion',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5442,19 +5457,22 @@ export const data = [
               type: 'REST',
               userId: '',
               method: 'POST',
-              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
               files: {},
               headers: commonOutputHeaders,
-              operation: 'createContacts',
+              operation: 'upsertContacts',
               params: {},
               body: {
                 FORM: {},
                 JSON: {
+                  id: 'noname@email.com',
+                  idProperty: 'email',
                   properties: {
                     email: 'noname@email.com',
                     firstname: '',
                     gender: '',
                   },
+                  objectWriteTraceId: '1',
                 },
                 JSON_ARRAY: {},
                 XML: {},

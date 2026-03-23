@@ -35,6 +35,62 @@ export const networkCallsData = [
       data: crmV3PropertiesResponse,
     },
   })),
+  // CRM V3 properties API mocks for authHeader2
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        Authorization: authHeader2,
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: crmV3PropertiesResponse,
+    },
+  },
+  // CRM V3 properties API mocks for authHeader4
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        Authorization: authHeader4,
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: crmV3PropertiesResponse,
+    },
+  },
+  // CRM V3 properties API mocks for authHeader5
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      headers: {
+        Authorization: authHeader5,
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: crmV3PropertiesResponse,
+    },
+  },
+  // CRM V3 properties API mock for legacyApiKey (hapikey)
+  {
+    httpReq: {
+      url: CRM_V3_PROPERTIES_ENDPOINT,
+      method: 'GET',
+      params: {
+        hapikey: 'dummy-apikeysuccess',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: crmV3PropertiesResponse,
+    },
+  },
   // 207 Multi-Status response mocks for upsert endpoint
   {
     httpReq: {

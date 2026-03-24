@@ -339,6 +339,70 @@ hundreds of workspaces generating hundreds of Deployments+Services in a single
 - Use the operator to create raw K8s objects directly (bypass Helm for per-workspace
   resources), keeping Helm only for shared infrastructure
 
+### Workspace deletion and stale deployments
+
+rudder-server fetches transformation configs from the config backend. When a workspace is
+deleted, the config backend stops returning transformations for it, so rudder-server
+naturally stops routing traffic — no active verification needed.
+
+The only edge case is **in-flight events during the deletion window**: rudder-server has
+already resolved the URL but the deployment is being torn down. For these, rudder-server
+gets a DNS resolution error or connection refused, which it already handles with retries
+and dead-lettering.
+
+The operator should add a **grace period** — keep the deployment alive for a configurable
+window (e.g., 5 minutes) after a workspace is removed from the spec, to drain in-flight
+requests before garbage-collecting the Deployment + Service.
+
+### Scale to zero and back up
+
+With one deployment per tenant, idle workspaces waste resources. We need a way to scale
+inactive deployments to 0 replicas and bring them back when traffic arrives.
+
+Standard HPA cannot scale below `minReplicas=1`. Options:
+
+| Approach                      | Scale to 0                       | Scale back up                                       | Extra infra                       | Cold start                       |
+|-------------------------------|----------------------------------|-----------------------------------------------------|-----------------------------------|----------------------------------|
+| **KEDA + HTTP Add-on**        | Yes, based on HTTP request count | Interceptor proxy buffers requests while pod starts | KEDA operator + interceptor proxy | ~5-15s (pod startup + Kata boot) |
+| **Knative Serving**           | Yes, built-in                    | Activator component buffers requests                | Knative stack (heavy)             | ~5-15s                           |
+| **KEDA + Prometheus metrics** | Yes, based on request rate       | Needs a trigger mechanism (see below)               | KEDA operator                     | ~5-15s + trigger delay           |
+| **Custom operator logic**     | Yes, operator watches idle time  | rudder-server retry + operator wake-up endpoint     | Wake-up endpoint                  | ~5-15s + retry delay             |
+
+#### Recommended: Custom operator logic + rudder-server wake-up
+
+This keeps the happy path direct (no proxy hop) and only adds complexity during cold starts:
+
+**Scale down:**
+
+- The operator (or KEDA with Prometheus) watches per-workspace request rate metrics
+  emitted by rudder-server or the transformer pods themselves.
+- When a workspace has zero traffic for N minutes (configurable, e.g., 30 min), the
+  operator scales the Deployment to 0 replicas.
+- The Service remains in place (so the DNS name still resolves, but there are no endpoints).
+
+**Scale up:**
+
+- rudder-server sends a request to the per-workspace URL.
+- With 0 replicas, the connection is refused (no endpoints behind the Service).
+- rudder-server detects this and calls a lightweight **wake-up endpoint** on the operator:
+  ```
+  POST /wake/{workspaceId}?language=javascript
+  ```
+- The operator sets `replicas=1` on the Deployment.
+- rudder-server retries with backoff until the pod is ready.
+- Subsequent requests go directly to the pod (no proxy in the path).
+
+**Cold start budget:** Kata+Firecracker VMs boot in ~125ms. The main latency is container
+image pull (mitigated by pre-pulling / image caching on nodes) and application startup.
+Expect ~5-15s total cold start. rudder-server's existing retry logic (configurable max
+retry of 30 with backoff) can absorb this.
+
+**Alternative — KEDA HTTP Add-on:** If the cold start UX is unacceptable (failed first
+requests, even with retries), the KEDA HTTP Add-on provides an interceptor proxy that
+buffers requests during scale-from-zero. The trade-off is that **all** traffic flows
+through the interceptor (not just cold starts), adding a hop on the happy path. Consider
+this if retry-based wake-up proves too slow or unreliable.
+
 ---
 
 ## Issue 2: Removing isolated-vm

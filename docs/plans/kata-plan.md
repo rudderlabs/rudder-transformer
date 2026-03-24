@@ -497,12 +497,22 @@ If migrating to Bun (see sub-question 3), use Bun's Web Worker implementation.
 | Modern Web Worker API                           | Bun's worker implementation is still maturing |
 | Better performance than Node.js child processes | Less battle-tested than Node.js child_process |
 
-**Verdict**: Consider this only if we decide to migrate to Bun (see sub-question 3).
+Since Bun migration is planned (see sub-question 3), this is the recommended approach.
+See [kata-estimations.md](kata-estimations.md) for detailed effort breakdown.
 
-#### Recommendation: Option A (Child Process Pool)
+#### Recommendation: Option C (Bun Workers)
 
-This is the safest, most proven approach. It mirrors what rudder-pytransformer already does
-successfully, uses only Node.js built-ins, and provides strong isolation guarantees.
+Since we are migrating to Bun, using Bun's native Web Workers is the natural choice.
+It avoids building an intermediate Node.js child process pool that would be thrown away
+after the Bun migration. Bun Workers provide true isolation (separate JavaScriptCore
+instances), fast IPC via `postMessage` (structured clone), and ~1-5ms startup per worker
+(vs ~30-50ms for `child_process.fork()`).
+
+The main trade-off vs Option A is that Bun Workers don't support per-worker memory limits.
+This is acceptable because each tenant runs in a Kata VM with cgroup memory limits — an
+OOM only affects that tenant's pod.
+
+Option A remains the fallback if Bun Worker stability proves insufficient during prototyping.
 
 ### Sub-question 2: Effort estimation to remove isolated-vm
 
@@ -607,18 +617,18 @@ Based on grep, approximately 5-10 test files.
 
 #### Recommendation
 
-**Do the ivm removal first (with Node.js child processes), then evaluate Bun migration separately.**
+**Migrate to Bun first, then remove ivm using Bun Workers (Option C).**
 
 Reasoning:
 
-1. Removing ivm is the pressing concern (maintenance mode). Bun migration is an optimization.
-2. Doing both at once doubles the risk and makes debugging harder.
-3. The child process pool architecture works identically on Node.js and Bun, so migrating later
-   is straightforward once the ivm dependency is gone.
-4. Bun is still maturing. By the time ivm removal is done, Bun will be more stable.
+1. Bun migration is planned — it's not optional.
+2. Sequential approach (Bun first, then ivm removal) is safer: each change can be
+   validated independently.
+3. Skips building a Node.js child process pool that would be discarded after Bun migration.
+4. If timeline pressure demands it, both can be combined into ~9 weeks (vs ~14 weeks
+   sequential) at the cost of harder debugging.
 
-If Bun migration is pursued later, the child process pool would simply use Bun's runtime instead
-of Node.js — the architecture doesn't change.
+See [kata-estimations.md](kata-estimations.md) for detailed sequencing options.
 
 ---
 
@@ -627,10 +637,16 @@ of Node.js — the architecture doesn't change.
 | Decision                   | Recommendation                                                             |
 |----------------------------|----------------------------------------------------------------------------|
 | **Routing**                | Predictable K8s DNS names (Option 1a), provisioned by rudderstack-operator |
-| **Intra-tenant isolation** | Child Process Pool (mirroring rudder-pytransformer)                        |
-| **ivm removal effort**     | ~6 weeks for one senior engineer                                           |
-| **Bun migration effort**   | ~5-6 weeks for one senior engineer                                         |
-| **Sequencing**             | Remove ivm first, then evaluate Bun migration separately                   |
+| **Intra-tenant isolation** | Bun Workers (Option C) with capability-restricted sandbox                  |
+| **Bun + ivm removal**     | ~10 weeks combined for one senior engineer                                 |
+| **1a Routing**             | ~6.5 weeks for one senior engineer                                         |
+| **Scale to zero**          | ~3.5 weeks (optional)                                                      |
+| **Sequencing**             | Combined Bun migration + ivm removal with Bun Workers                      |
+| **Total effort**           | ~10 weeks with 2 engineers in parallel (routing + Bun/ivm)                 |
+
+See [kata-estimations.md](kata-estimations.md) for full breakdown, risk factors, and
+parallelization options. Note: `isolated-vm` is V8-only and incompatible with Bun, so
+the combined approach avoids the need for a temporary Node.js sidecar deployment.
 
 ---
 

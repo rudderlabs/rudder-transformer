@@ -29,15 +29,16 @@ const baseInputSchema = z.object({
  * `body` holds the chunkable array (e.g. 'batch', 'data.events').
  * `jobIds` are aligned with the items at that array path.
  */
-export type GroupedSuccessEvents<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  endpoint: string;
-  method: string;
-  headers?: Record<string, unknown>;
-  params?: Record<string, unknown>;
-  body: TBody;
-  /** Aligned with the array at payloadHierarchyPath — one jobId per item */
-  jobIds: string[];
-};
+export type GroupedSuccessEvents<TBody extends Record<string, unknown> = Record<string, unknown>> =
+  {
+    endpoint: string;
+    method: string;
+    headers?: Record<string, unknown>;
+    params?: Record<string, unknown>;
+    body: TBody;
+    /** Aligned with the array at payloadHierarchyPath — one jobId per item */
+    jobIds: string[];
+  };
 
 export type TransformedErrorEvent = {
   error: string;
@@ -46,10 +47,11 @@ export type TransformedErrorEvent = {
   statTags?: Record<string, unknown>;
 };
 
-export type BatchTransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  groupedEvents: GroupedSuccessEvents<TBody>[];
-  errorEvents: TransformedErrorEvent[];
-};
+export type BatchTransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> =
+  {
+    groupedEvents: GroupedSuccessEvents<TBody>[];
+    errorEvents: TransformedErrorEvent[];
+  };
 
 export type BatchConfig = {
   /**
@@ -278,7 +280,9 @@ function toErrorResponse(
 // Abstract class
 // ---------------------------------------------------------------------------
 
-export abstract class RouterIntegration<TBody extends Record<string, unknown> = Record<string, unknown>> {
+export abstract class RouterIntegration<
+  TBody extends Record<string, unknown> = Record<string, unknown>,
+> {
   /**
    * Integration transforms ALL events and groups them into endpoint buckets.
    * Each group's `body` is the full destination-specific request body, with the
@@ -296,7 +300,10 @@ export abstract class RouterIntegration<TBody extends Record<string, unknown> = 
    * Default: reads getBatchConfig(), chunks group.body at payloadHierarchyPath, returns chunk.body as-is.
    * Override for custom post-chunk logic (e.g. deduplication, field merging within a chunk).
    */
-  postTransform(group: GroupedSuccessEvents<TBody>, destination: Destination): PostTransformResult[] {
+  postTransform(
+    group: GroupedSuccessEvents<TBody>,
+    destination: Destination,
+  ): PostTransformResult[] {
     const batchConfig = this.getBatchConfig(destination);
     const chunks = chunkGroup(group, batchConfig);
     return chunks.map((chunk) => ({

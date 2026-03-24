@@ -60,7 +60,6 @@ type BrazeMergeContribution = {
   update: BrazeMergeUpdate;
 };
 
-
 type BrazeTrackBody = { trackContributions: BrazeTrackContribution[] };
 type BrazeSubscriptionBody = { subscription_groups: BrazeSubscriptionContribution[] };
 type BrazeMergeBody = { merge_updates: BrazeMergeContribution[] };
@@ -115,11 +114,19 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
           const result = await process(input as never, processParams, reqMetadata ?? {});
           return { jobId, result, error: null };
         } catch (err: unknown) {
-          const e = err as { message?: string; status?: number; statTags?: Record<string, unknown> };
+          const e = err as {
+            message?: string;
+            status?: number;
+            statTags?: Record<string, unknown>;
+          };
           return {
             jobId,
             result: null,
-            error: { message: e.message ?? String(err), status: e.status ?? 400, statTags: e.statTags },
+            error: {
+              message: e.message ?? String(err),
+              status: e.status ?? 400,
+              statTags: e.statTags,
+            },
           };
         }
       }),
@@ -137,7 +144,12 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
     const subscriptionJobIds: string[] = [];
     const mergePayloads: BrazeMergeContribution[] = [];
     const mergeJobIds: string[] = [];
-    const errorEvents: { error: string; statusCode: number; jobId: string; statTags?: Record<string, unknown> }[] = [];
+    const errorEvents: {
+      error: string;
+      statusCode: number;
+      jobId: string;
+      statTags?: Record<string, unknown>;
+    }[] = [];
 
     for (const { jobId, result, error } of perEventResults) {
       if (error || !result) {
@@ -215,10 +227,7 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
     return { groupedEvents, errorEvents };
   }
 
-  postTransform(
-    group: GroupedSuccessEvents,
-    destination: Destination,
-  ): PostTransformResult[] {
+  postTransform(group: GroupedSuccessEvents, destination: Destination): PostTransformResult[] {
     const brazeDest = destination as unknown as BrazeDestination;
     const baseUrl = getEndpointFromConfig(brazeDest);
 
@@ -231,7 +240,9 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
         batchRequest: {
           body: {
             subscription_groups: combineSubscriptionGroups(
-              (chunk.body.subscription_groups as BrazeSubscriptionContribution[]).map((p) => p.group),
+              (chunk.body.subscription_groups as BrazeSubscriptionContribution[]).map(
+                (p) => p.group,
+              ),
             ),
           },
           endpoint: chunk.endpoint,
@@ -250,7 +261,9 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
       }).map((chunk) => ({
         batchRequest: {
           body: removeUndefinedAndNullValues({
-            merge_updates: (chunk.body.merge_updates as BrazeMergeContribution[]).map((p) => p.update),
+            merge_updates: (chunk.body.merge_updates as BrazeMergeContribution[]).map(
+              (p) => p.update,
+            ),
           }),
           endpoint: chunk.endpoint,
           method: chunk.method,
@@ -261,7 +274,7 @@ class BrazeIntegration extends RouterIntegration<BrazeBody> {
     }
 
     // Track endpoint — V1/V2 algorithm
-    const trackItems = (group.body.trackContributions as BrazeTrackContribution[]);
+    const trackItems = group.body.trackContributions as BrazeTrackContribution[];
     const attributesArray: BrazeUserAttributes[] = trackItems.flatMap((p) => p.attributes ?? []);
     const eventsArray: BrazeEvent[] = trackItems.flatMap((p) => p.events ?? []);
     const purchasesArray: BrazePurchase[] = trackItems.flatMap((p) => p.purchases ?? []);

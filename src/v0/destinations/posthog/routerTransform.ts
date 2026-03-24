@@ -151,7 +151,6 @@ function buildPostHogEventPayload(
 class PostHogIntegration extends RouterIntegration<PostHogBody> {
   async batchTransform(
     inputs: RouterTransformationRequestData[],
-    _reqMetadata?: NonNullable<unknown>,
   ): Promise<BatchTransformResult<PostHogBody>> {
     const payloads: PostHogEvent[] = [];
     const jobIds: string[] = [];

@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "emailAddress",
+    "sourceKeys": "email",
+    "required": false
+  },
+  {
+    "destKey": "phoneNumber",
+    "sourceKeys": "phone",
+    "required": false
+  },
+  {
+    "destKey": "addressInfo.givenName",
+    "sourceKeys": "firstName",
+    "required": false
+  },
+  {
+    "destKey": "addressInfo.familyName",
+    "sourceKeys": "lastName",
+    "required": false
+  },
+  {
+    "destKey": "addressInfo.regionCode",
+    "sourceKeys": "country",
+    "required": false
+  },
+  {
+    "destKey": "addressInfo.postalCode",
+    "sourceKeys": "postalCode",
+    "required": false
+  }
+]

@@ -248,4 +248,5 @@ export {
   responseBuilder,
   getOperationAudienceId,
   populateIdentifiersForRecordEvent,
+  GARL_FIELD_CONFIG,
 };

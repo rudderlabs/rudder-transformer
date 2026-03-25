@@ -1,5 +1,5 @@
 import sha256 from 'sha256';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, hashToSha256 } from '@rudderstack/integrations-lib';
 import { processAudienceRecord, AudienceField } from './audienceUtils';
 
 jest.mock('../../util/stats', () => ({
@@ -7,6 +7,8 @@ jest.mock('../../util/stats', () => ({
 }));
 
 import stats from '../../util/stats';
+import { createHash } from 'crypto';
+import md5 from 'md5';
 
 const mockStatsIncrement = stats.increment as jest.Mock;
 
@@ -346,6 +348,67 @@ describe('processAudienceRecord', () => {
       );
       expect(result.email).toBe(sha256('user@example.com'));
       expect(result.custom).toBe('value');
+    });
+  });
+
+  describe('hashing type', () => {
+    const plaintextEmail = 'user@example.com';
+    const sha256HashedEmail = hashToSha256(plaintextEmail);
+    const sha512HashedEmail = createHash('sha512').update(plaintextEmail).digest('hex');
+    const md5HashedEmail = md5(plaintextEmail);
+
+    it('hashes the value using sha256 when hashing type is sha256', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashable: true,
+        hashingType: 'sha256',
+      };
+      const result = processAudienceRecord(
+        { email: sha256HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(sha256HashedEmail);
+    });
+
+    it('hashes the value using sha512 when hashing type is sha512', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashable: true,
+        hashingType: 'sha512',
+      };
+      const result = processAudienceRecord(
+        { email: sha512HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(sha512HashedEmail);
+    });
+
+    it('hashes the value using md5 when hashing type is md5', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashable: true,
+        hashingType: 'md5',
+      };
+      const result = processAudienceRecord(
+        { email: md5HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(md5HashedEmail);
     });
   });
 });

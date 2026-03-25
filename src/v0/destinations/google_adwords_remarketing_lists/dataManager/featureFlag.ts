@@ -1,3 +1,4 @@
+import sha256 from 'sha256';
 import { handleHttpRequest } from '../../../../adapters/network';
 import logger from '../../../../logger';
 import { isDefinedAndNotNull } from '../../../util';
@@ -36,8 +37,10 @@ if (isDefinedAndNotNull(process.env.DEST_GARL_DATA_MANAGER_API_ALLOWED_WORKSPACE
  * the token's expires_in field.
  * Always returns false on any error — the caller silently falls back to the old API.
  */
+const hashToken = (token: string): string => sha256(token);
+
 export const hasDataManagerScope = async (accessToken: string): Promise<boolean> => {
-  const cacheKey = `${REDIS_KEY_PREFIX}${accessToken}`;
+  const cacheKey = `${REDIS_KEY_PREFIX}${hashToken(accessToken)}`;
 
   // 1. Check Redis cache
   try {
@@ -80,7 +83,7 @@ export const hasDataManagerScope = async (accessToken: string): Promise<boolean>
     const hasScope = typeof scope === 'string' && scope.split(' ').includes(DATA_MANAGER_SCOPE);
     const ttl = parseInt(expiresIn ?? '3600', 10) || 3600;
 
-    // 3. Cache result with token TTL
+    // 3. Cache result with token TTLnvm
     try {
       await RedisDB.setVal(cacheKey, String(hasScope), ttl);
     } catch (e) {

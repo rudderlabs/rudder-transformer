@@ -1,4 +1,4 @@
-import { authHeader1, authHeader2, secret2, secret4 } from './maskedSecrets';
+import { authHeader1, authHeader2, authHeader4, secret2, secret4 } from './maskedSecrets';
 const API_VERSION = 'v22';
 
 export const networkCallsData = [
@@ -349,6 +349,243 @@ export const networkCallsData = [
         scope:
           'https://www.googleapis.com/auth/datamanager https://www.googleapis.com/auth/adwords',
         expires_in: '3599',
+      },
+    },
+  },
+
+  // ── Data Manager API mocks ────────────────────────────────────────────────────
+
+  // DM-1: audienceMembers:ingest — 200 success
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: '7090784486',
+          },
+        ],
+        audienceMembers: [
+          {
+            userData: {
+              userIdentifiers: [
+                {
+                  emailAddress: '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                },
+                { phoneNumber: '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f' },
+              ],
+            },
+          },
+        ],
+        encoding: 'HEX',
+        termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      data: { requestId: 'dm-ingest-req-id-001' },
+    },
+  },
+
+  // DM-2: audienceMembers:remove — 200 success
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:remove',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: '7090784486',
+          },
+        ],
+        audienceMembers: [
+          {
+            userData: {
+              userIdentifiers: [
+                {
+                  emailAddress: '85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05',
+                },
+                { phoneNumber: '5a335f50a6bbaffd39b35513350adb4be1e598ab75b9740c2ba82a160862e82f' },
+              ],
+            },
+          },
+        ],
+        encoding: 'HEX',
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 200,
+      data: { requestId: 'dm-remove-req-id-001' },
+    },
+  },
+
+  // DM-3: audienceMembers:ingest — 400 INVALID_ARGUMENT (client error → aborted)
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: 'invalid-audience-id',
+          },
+        ],
+        audienceMembers: [{ userData: { userIdentifiers: [{ emailAddress: 'bad-email' }] } }],
+        encoding: 'HEX',
+        termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 400,
+      data: {
+        error: {
+          code: 400,
+          message: 'There was a problem with the request.',
+          status: 'INVALID_ARGUMENT',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.rpc.ErrorInfo',
+              reason: 'INVALID_ARGUMENT',
+              domain: 'datamanager.googleapis.com',
+              metadata: { requestId: 't-59f8b5bc-d4da-4d55-bf2b-0c6215a21b67' },
+            },
+            {
+              '@type': 'type.googleapis.com/google.rpc.RequestInfo',
+              requestId: 't-59f8b5bc-d4da-4d55-bf2b-0c6215a21b67',
+            },
+            {
+              '@type': 'type.googleapis.com/google.rpc.BadRequest',
+              fieldViolations: [
+                {
+                  field: 'audience_members[0]',
+                  description: 'Type of the user list is not applicable for this request.',
+                  reason: 'INVALID_USER_LIST_TYPE',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    },
+  },
+
+  // DM-4: audienceMembers:ingest — 503 UNAVAILABLE (server error → retryable)
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: '7090784486',
+          },
+        ],
+        audienceMembers: [
+          { userData: { userIdentifiers: [{ emailAddress: 'trigger-503@test.com' }] } },
+        ],
+        encoding: 'HEX',
+        termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 503,
+      data: {
+        error: {
+          code: 503,
+          message: 'The service is currently unavailable.',
+          status: 'UNAVAILABLE',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.rpc.RequestInfo',
+              requestId: 't-503-unavailable-req-id',
+            },
+          ],
+        },
+      },
+    },
+  },
+
+  // DM-5: audienceMembers:ingest — 409 ABORTED (HTTP 409 but retryable per DM API docs)
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: '7090784486',
+          },
+        ],
+        audienceMembers: [
+          { userData: { userIdentifiers: [{ emailAddress: 'trigger-409@test.com' }] } },
+        ],
+        encoding: 'HEX',
+        termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 409,
+      data: {
+        error: {
+          code: 409,
+          message: 'The operation was aborted.',
+          status: 'ABORTED',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.rpc.RequestInfo',
+              requestId: 't-409-aborted-req-id',
+            },
+          ],
+        },
+      },
+    },
+  },
+
+  // DM-6: audienceMembers:ingest — 401 UNAUTHENTICATED (auth error → REFRESH_TOKEN)
+  {
+    httpReq: {
+      url: 'https://datamanager.googleapis.com/v1/audienceMembers:ingest',
+      data: {
+        destinations: [
+          {
+            operatingAccount: { accountId: '7693729833', accountType: 'GOOGLE_ADS' },
+            productDestinationId: '7090784486',
+          },
+        ],
+        audienceMembers: [
+          { userData: { userIdentifiers: [{ emailAddress: 'trigger-401@test.com' }] } },
+        ],
+        encoding: 'HEX',
+        termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
+      },
+      headers: { Authorization: authHeader4, 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        error: {
+          code: 401,
+          message: 'Request had invalid authentication credentials.',
+          status: 'UNAUTHENTICATED',
+          details: [
+            {
+              '@type': 'type.googleapis.com/google.rpc.RequestInfo',
+              requestId: 't-401-unauth-req-id',
+            },
+          ],
+        },
       },
     },
   },

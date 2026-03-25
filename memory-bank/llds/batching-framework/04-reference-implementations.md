@@ -8,86 +8,64 @@ Two destinations serve as reference implementations: **PostHog** (simple, Format
 
 PostHog demonstrates the minimal integration. It:
 
-- Defines a simple body type (`{ api_key, batch }`)
-- Transforms events synchronously in a loop
-- Groups all successes into a single endpoint bucket
-- Uses **default** `postTransform` — no override needed
+- Defines a simple body type (the inner event object)
+- Transforms one event at a time via `transformEvent`
+- Uses **default** `groupBy` (by endpoint — single endpoint)
+- Returns a `chunk(...)` strategy with `wrapBody` for the wrapper envelope
 - Adds a Zod schema requiring `userId` or `anonymousId` and rejecting `record` type
 
 ### Body Type
 
 ```typescript
-type PostHogBody = {
-  api_key: string;
-  batch: PostHogEvent[];
+type PostHogEvent = {
+  distinct_id: string;
+  event: string;
+  properties: Record<string, unknown>;
+  timestamp?: string;
 };
 ```
 
-### batchTransform
+### Full Implementation
 
 ```typescript
-async batchTransform(
-  inputs: RouterTransformationRequestData[],
-  _reqMetadata?: NonNullable<unknown>,
-): Promise<BatchTransformResult<PostHogBody>> {
-  // 1. Extract shared config
-  const apiKey = destination.Config.teamApiKey;
-  const endpoint = `${stripTrailingSlash(destination.Config.yourInstance)}/batch`;
-
-  // 2. Transform each event, collecting payloads and errors
-  for (const input of inputs) {
-    try {
-      const payload = buildPostHogEventPayload(input.message, input.destination);
-      payloads.push(payload);
-      jobIds.push(String(input.metadata.jobId));
-    } catch (e) {
-      errorEvents.push({ error, statusCode, jobId });
-    }
-  }
-
-  // 3. Return single group with all payloads
-  return {
-    groupedEvents: [{
-      endpoint,
+class PostHogIntegration extends RouterIntegration<PostHogEvent> {
+  transformEvent(input: RouterTransformationRequestData): TransformedPayload<PostHogEvent> {
+    return {
+      body: buildPostHogEventPayload(input.message, input.destination),
+      endpoint: `${stripTrailingSlash(input.destination.Config.yourInstance)}/batch`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: { api_key: apiKey, batch: payloads },
-      jobIds,
-    }],
-    errorEvents,
-  };
-}
-```
+    };
+  }
 
-### getBatchConfig
-
-```typescript
-getBatchConfig(): BatchConfig {
-  return {
-    payloadHierarchyPath: 'batch',    // chunkGroup splits body.batch
-    maxChunkSize: 250,                // max events per request
-    maxPayloadSize: '4MB',            // PostHog API limit
-  };
-}
-```
-
-### getIntegrationSchema
-
-```typescript
-getIntegrationSchema(): ZodType | null {
-  return z.object({
-    message: z.object({
-      userId: z.string().optional(),
-      anonymousId: z.string().optional(),
-      type: z.string().refine((val) => val !== 'record', {
-        message: 'messagetype should not be record',
+  getBatchStrategy(): BatchStrategy<PostHogEvent> {
+    return chunk({
+      maxSize: 250,
+      maxBytes: '4MB',
+      wrapBody: (bodies) => ({
+        api_key: this.destination.Config.teamApiKey,
+        batch: bodies,
       }),
-    }).refine((msg) => !!msg.userId || !!msg.anonymousId, {
-      message: 'Either userId or anonymousId must be provided',
-    }),
-  }).passthrough();
+    });
+  }
+
+  getIntegrationSchema(): ZodType | null {
+    return z.object({
+      message: z.object({
+        userId: z.string().optional(),
+        anonymousId: z.string().optional(),
+        type: z.string().refine((val) => val !== 'record', {
+          message: 'messagetype should not be record',
+        }),
+      }).refine((msg) => !!msg.userId || !!msg.anonymousId, {
+        message: 'Either userId or anonymousId must be provided',
+      }),
+    }).passthrough();
+  }
 }
 ```
+
+**~25 lines** of destination-specific code. No iterate/catch boilerplate, no manual `GroupedSuccessEvents` construction.
 
 ### Data Flow
 
@@ -97,12 +75,17 @@ getIntegrationSchema(): ZodType | null {
   ▼ validate() — filters out invalid events
 8 valid events
   │
-  ▼ batchTransform() — builds payloads, catches errors
-7 payloads + 1 error event
+  ▼ batchTransform() [default] — iterates, calls transformEvent(), catches errors
+7 TransformedPayloads + 1 error event
   │
-  ▼ postTransform() [default] → chunkGroup(maxChunkSize=250, maxPayloadSize=4MB)
+  ▼ groupBy() [default] — group by endpoint → 1 group
+7 payloads in 1 group
+  │
+  ▼ getBatchStrategy() → chunk(maxSize=250, maxBytes=4MB, wrapBody)
+  ▼ apply chunk strategy
 1 chunk (7 < 250):
-  body: { api_key: 'key', batch: [p1..p7] }
+  body: wrapBody([p1..p7]) → { api_key: 'key', batch: [p1..p7] }
+  jobIds: ['1'..'7']
   │
   ▼ convertToServerFormat()
 { batchedRequest: { body: { JSON: { api_key, batch }, ... } }, metadata: [...], batched: true }
@@ -117,118 +100,137 @@ getIntegrationSchema(): ZodType | null {
 Braze demonstrates a complex integration that:
 
 - Uses mutable instance state (dedup `userStore`) — hence per-call instantiation
-- Does async bulk dedup lookup before per-event transforms
-- Classifies events into 3 endpoint buckets (track, subscription, merge)
-- Overrides `postTransform` with endpoint-specific chunking and reshaping
+- Overrides `batchTransform` for async bulk dedup lookup before per-event transforms
+- Delegates per-event iteration back to the framework via `super.batchTransform()`
+- Classifies events into 3 endpoint buckets via `transformEvent` (default `groupBy` separates by endpoint)
+- Returns different `BatchStrategy` per endpoint group in `getBatchStrategy`
 - Threads `reqMetadata` to the per-event `process()` function
 
 ### Body Types
 
 ```typescript
-type BrazeTrackContribution = {
-  kind: 'track';
+type BrazeTrackBody = {
   attributes?: BrazeUserAttributes[];
   events?: BrazeEvent[];
   purchases?: BrazePurchase[];
 };
 
-type BrazeSubscriptionContribution = {
-  kind: 'subscription';
-  group: BrazeSubscriptionGroup;
+type BrazeSubscriptionBody = {
+  subscription_groups: BrazeSubscriptionGroup[];
 };
 
-type BrazeMergeContribution = {
-  kind: 'merge';
-  update: BrazeMergeUpdate;
+type BrazeMergeBody = {
+  merge_updates: BrazeMergeUpdate[];
 };
 
 type BrazeBody = BrazeTrackBody | BrazeSubscriptionBody | BrazeMergeBody;
 ```
 
-### batchTransform
+### batchTransform (overridden for pre-batch dedup)
 
 ```typescript
-async batchTransform(inputs, reqMetadata): Promise<BatchTransformResult<BrazeBody>> {
+async batchTransform(inputs, reqMetadata): Promise<TransformResult<BrazeBody>> {
   // 1. Reset per-batch mutable state
   this.userStore = new Map();
   this.failedLookupIdentifiers = new Set();
 
   // 2. Async bulk dedup lookup (if supportDedup is enabled)
-  if (brazeDest.Config.supportDedup) {
+  if (this.destination.Config.supportDedup) {
     const lookupResult = await BrazeDedupUtility.doLookup(inputs);
-    BrazeDedupUtility.updateUserStore(this.userStore, lookupResult.users, brazeDest.ID);
+    BrazeDedupUtility.updateUserStore(this.userStore, lookupResult.users, this.destination.ID);
   }
 
-  // 3. Parallel per-event transformation (userStore is read-only now)
-  const perEventResults = await Promise.all(
-    inputs.map(async (input) => {
-      const result = await process(input, processParams, reqMetadata ?? {});
-      return { jobId, result, error: null };
-    }),
-  );
+  // 3. Delegate iteration to framework — still calls transformEvent() per input
+  const result = await super.batchTransform(inputs, reqMetadata);
 
-  // 4. Identity resolution batch
-  if (identifyCallsArray.length > 0) {
-    await processBatchedIdentify(identifyCallsArray, brazeDest.ID);
+  // 4. Post-transform identity resolution
+  if (this.identifyCallsArray.length > 0) {
+    await processBatchedIdentify(this.identifyCallsArray, this.destination.ID);
   }
 
-  // 5. Classify into endpoint buckets
-  //    - json.subscription_groups → subscription bucket
-  //    - json.merge_updates       → merge bucket
-  //    - else                     → track bucket
-
-  return { groupedEvents: [trackGroup, subscriptionGroup, mergeGroup], errorEvents };
+  return result;
 }
 ```
 
-### postTransform (overridden)
+### transformEvent
 
 ```typescript
-postTransform(group, destination): PostTransformResult[] {
-  // Subscription groups — chunk at 25, combine groups
-  if (group.endpoint === subscriptionEndpoint) {
-    return chunkGroup(group, {
-      payloadHierarchyPath: 'subscription_groups',
-      maxChunkSize: SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,  // 25
-    }).map((chunk) => ({
-      batchRequest: {
-        body: { subscription_groups: combineSubscriptionGroups(chunk...) },
-        ...
-      },
-      jobIds: chunk.jobIds,
-    }));
+transformEvent(input: RouterTransformationRequestData): TransformedPayload<BrazeBody> {
+  const result = process(input, { userStore: this.userStore }, this.reqMetadata);
+  const json = result.batchedRequest.body.JSON;
+
+  if (json.subscription_groups) {
+    return {
+      body: json as BrazeSubscriptionBody,
+      endpoint: getSubscriptionEndpoint(this.destination),
+      method: 'POST',
+      headers: getHeaders(this.destination),
+    };
   }
 
-  // Merge updates — chunk at 50, extract .update from each contribution
-  if (group.endpoint === mergeEndpoint) {
-    return chunkGroup(group, {
-      payloadHierarchyPath: 'merge_updates',
-      maxChunkSize: ALIAS_BRAZE_MAX_REQ_COUNT,  // 50
-    }).map((chunk) => ({
-      batchRequest: {
-        body: { merge_updates: chunk.merge_updates.map(p => p.update) },
-        ...
-      },
-      jobIds: chunk.jobIds,
-    }));
+  if (json.merge_updates) {
+    return {
+      body: json as BrazeMergeBody,
+      endpoint: getMergeEndpoint(this.destination),
+      method: 'POST',
+      headers: getHeaders(this.destination),
+    };
   }
 
-  // Track — flatten contributions, apply V1 or V2 batching algorithm
-  const trackItems = group.body.trackContributions;
-  const attributes = trackItems.flatMap(p => p.attributes ?? []);
-  const events = trackItems.flatMap(p => p.events ?? []);
-  const purchases = trackItems.flatMap(p => p.purchases ?? []);
-
-  const trackChunks = isWorkspaceOnMauPlan(workspaceId)
-    ? batchForTrackAPIV2(attributes, events, purchases)
-    : batchForTrackAPI(attributes, events, purchases);
-
-  return trackChunks.map((chunk) => ({
-    batchRequest: { body: { partner: 'RudderStack', ...chunk }, ... },
-    jobIds: group.jobIds,  // all track jobs on every chunk
-  }));
+  return {
+    body: json as BrazeTrackBody,
+    endpoint: getTrackEndpoint(this.destination),
+    method: 'POST',
+    headers: getHeaders(this.destination),
+  };
 }
 ```
+
+### getBatchStrategy
+
+```typescript
+getBatchStrategy(groupKey: string): BatchStrategy<BrazeBody> {
+  // Subscription groups — chunk at 25, combine groups
+  if (groupKey.includes('/subscription')) {
+    return chunk({
+      maxSize: SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,  // 25
+      wrapBody: (bodies) => ({
+        subscription_groups: combineSubscriptionGroups(
+          bodies.flatMap(b => (b as BrazeSubscriptionBody).subscription_groups),
+        ),
+      }),
+    });
+  }
+
+  // Merge updates — chunk at 50
+  if (groupKey.includes('/merge')) {
+    return chunk({
+      maxSize: ALIAS_BRAZE_MAX_REQ_COUNT,  // 50
+      wrapBody: (bodies) => ({
+        merge_updates: (bodies as BrazeMergeBody[]).flatMap(b => b.merge_updates),
+      }),
+    });
+  }
+
+  // Track — cross-event merge, needs full control
+  return customBatch((payloads) => {
+    const attrs = payloads.flatMap(p => (p.body as BrazeTrackBody).attributes ?? []);
+    const events = payloads.flatMap(p => (p.body as BrazeTrackBody).events ?? []);
+    const purchases = payloads.flatMap(p => (p.body as BrazeTrackBody).purchases ?? []);
+
+    const trackChunks = isWorkspaceOnMauPlan(this.workspaceId)
+      ? batchForTrackAPIV2(attrs, events, purchases)
+      : batchForTrackAPI(attrs, events, purchases);
+
+    return trackChunks.map((trackChunk) => ({
+      body: { partner: 'RudderStack', ...cleanTrackChunk(trackChunk) },
+      jobIds: computeJobIdsForChunk(trackChunk, payloads),  // per-chunk jobIds
+    }));
+  });
+}
+```
+
+**Note on track jobIds**: Each chunk must include only the jobIds of events that contributed to it. The previous design incorrectly assigned all track jobIds to every chunk — this is fixed by `computeJobIdsForChunk` which maps each chunk's attributes/events/purchases back to their originating payloads.
 
 ### getIntegrationSchema
 
@@ -257,14 +259,19 @@ To migrate a destination to the framework:
 
 1. **Identify the batching format** (1–4) from the existing `processRouterDest` implementation
 2. **Create `routerTransform.ts`** in the destination directory
-3. **Define `TBody` type** — the shape of your request body
-4. **Implement `batchTransform`**:
-   - Transform each event (reuse existing `process()` if available)
-   - Group successes by endpoint into `GroupedSuccessEvents<TBody>`
-   - Collect errors into `TransformedErrorEvent[]`
-5. **Override `getBatchConfig`** with your API's limits
-6. **Override `postTransform`** only if Format 3/4 (multi-endpoint or custom merge)
-7. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
-8. **Export `const Integration = YourClass`** (class, not instance)
-9. **Add destination to `batchedDestinationsMap`**
-10. **Update/add component tests** — output format changes from legacy to framework envelope
+3. **Define `TBody` type** — the shape of a single event's body contribution
+4. **Implement `transformEvent`**:
+   - Transform one event (reuse existing `process()` if available)
+   - Return a `TransformedPayload<TBody>` with body, endpoint, method, headers
+   - For multi-endpoint destinations, set endpoint based on event type
+5. **Implement `getBatchStrategy`**:
+   - Simple destinations: `chunk({ maxSize, wrapBody })` — one strategy
+   - Multi-endpoint: inspect `groupKey` and return different strategies per endpoint
+   - Complex merge: `customBatch(...)` for full control
+6. **Override `groupBy`** only if the default (group by endpoint) doesn't work
+7. **Override `batchTransform`** only for pre-batch bulk operations (dedup, identity resolution)
+   - Call `super.batchTransform()` to delegate iteration
+8. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
+9. **Export `const Integration = YourClass`** (class, not instance)
+10. **Add destination to `batchedDestinationsMap`**
+11. **Update/add component tests** — output format changes from legacy to framework envelope

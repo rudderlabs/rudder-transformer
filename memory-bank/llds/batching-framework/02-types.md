@@ -4,90 +4,86 @@ All types are defined in `src/services/destination/routerIntegration.ts`.
 
 ## Framework Types
 
-### GroupedSuccessEvents\<TBody\>
+### TransformedPayload\<TBody\>
 
-One group of successfully transformed events sharing the same endpoint. The `body` is the full destination-specific request body with the chunkable array already embedded.
+One transformed event payload produced by `transformEvent`. Contains the destination-specific body, HTTP details, and the originating jobId.
 
 ```typescript
-type GroupedSuccessEvents<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  endpoint: string; // Full URL: 'https://api.braze.com/users/track'
-  method: string; // HTTP method: 'POST'
-  headers?: Record<string, unknown>; // e.g. { 'Content-Type': 'application/json' }
-  params?: Record<string, unknown>; // Query params
-  body: TBody; // Destination-specific payload
-  jobIds: string[]; // Aligned 1:1 with items at payloadHierarchyPath
+type TransformedPayload<TBody extends Record<string, unknown> = Record<string, unknown>> = {
+  body: TBody;                          // Destination-specific payload (single event's contribution)
+  endpoint: string;                     // Full URL: 'https://app.posthog.com/batch'
+  method: string;                       // HTTP method: 'POST'
+  headers?: Record<string, unknown>;    // e.g. { 'Content-Type': 'application/json' }
+  params?: Record<string, unknown>;     // Query params
+  jobId: string;                        // Originating job ID (set by framework)
 };
 ```
 
-**Key design**: `TBody` is generic — each destination defines its own body shape. The framework only touches the array at `payloadHierarchyPath` during chunking.
+**Key design**: `TBody` is generic — each destination defines its own body shape. The framework only touches `body` when applying the `BatchStrategy`.
 
 ### TransformedErrorEvent
 
-A single event that failed during transformation in `batchTransform`.
+A single event that failed during transformation in `transformEvent` or `batchTransform`.
 
 ```typescript
 type TransformedErrorEvent = {
-  error: string; // Human-readable error message
-  statusCode: number; // HTTP status (400 for instrumentation, 500 for retryable)
-  jobId: string; // Job that failed
-  statTags?: Record<string, unknown>; // Optional metrics tags
+  error: string;                        // Human-readable error message
+  statusCode: number;                   // HTTP status (400 for instrumentation, 500 for retryable)
+  jobId: string;                        // Job that failed
+  statTags?: Record<string, unknown>;   // Optional metrics tags
 };
 ```
 
-### BatchTransformResult\<TBody\>
+### TransformResult\<TBody\>
 
 Return type of `batchTransform` — contains both successes and failures.
 
 ```typescript
-type BatchTransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  groupedEvents: GroupedSuccessEvents<TBody>[]; // Endpoint-grouped successes
-  errorEvents: TransformedErrorEvent[]; // Per-event failures
+type TransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
+  payloads: TransformedPayload<TBody>[];    // Successfully transformed payloads
+  errorEvents: TransformedErrorEvent[];     // Per-event failures
 };
 ```
 
-### BatchConfig
+### BatchStrategy
 
-Chunking configuration returned by `getBatchConfig`.
+Describes how to combine payloads within a group. Created via factory functions.
 
 ```typescript
-type BatchConfig = {
-  payloadHierarchyPath: string; // Dot-notation path to chunkable array in body
-  // Examples: 'batch', 'data.events', 'operations[0].create.ids'
-  maxChunkSize?: number; // Max items per chunk (default: Infinity)
-  maxPayloadSize?: string; // Max bytes per chunk: '4MB', '512KB', '1GB'
+type ChunkStrategy<TBody> = {
+  type: 'chunk';
+  maxSize?: number;                     // Max items per chunk (default: Infinity)
+  maxBytes?: string;                    // Max bytes per chunk: '4MB', '512KB'
+  wrapBody: (bodies: TBody[]) => Record<string, unknown>;  // Construct the final chunked payload
 };
-```
 
-**payloadHierarchyPath** supports:
-
-- Simple keys: `'batch'`
-- Nested paths: `'data.events'`
-- Array index notation: `'operations[0].create.userIdentifiers'`
-
-### BatchRequest
-
-Shape of a single HTTP request after chunking, before the framework wraps it in server format.
-
-```typescript
-type BatchRequest = {
-  body: Record<string, unknown>; // The chunked payload
-  endpoint: string; // Full URL
-  method: string; // HTTP method
-  headers?: Record<string, unknown>;
-  params?: Record<string, unknown>;
-  endpointPath?: string; // Optional suffix for routing
+type CustomBatchStrategy<TBody> = {
+  type: 'customBatch';
+  batch: (payloads: TransformedPayload<TBody>[]) => CustomBatchResult[];
 };
-```
 
-### PostTransformResult
-
-Pairs a `BatchRequest` with its aligned jobIds. Returned by `postTransform`.
-
-```typescript
-type PostTransformResult = {
-  batchRequest: BatchRequest;
+type CustomBatchResult = {
+  body: Record<string, unknown>;
   jobIds: string[];
 };
+
+type BatchStrategy<TBody> = ChunkStrategy<TBody> | CustomBatchStrategy<TBody>;
+```
+
+**Factory functions** (preferred way to construct strategies):
+
+```typescript
+// For Format 1/2/3 — simple array chunking with a body wrapper
+function chunk<TBody>(opts: {
+  maxSize?: number;
+  maxBytes?: string;
+  wrapBody: (bodies: TBody[]) => Record<string, unknown>;
+}): ChunkStrategy<TBody>;
+
+// For Format 4 — full control over batching (cross-event merge, dedup, etc.)
+function customBatch<TBody>(
+  batchFn: (payloads: TransformedPayload<TBody>[]) => CustomBatchResult[],
+): CustomBatchStrategy<TBody>;
 ```
 
 ## Abstract Class: RouterIntegration\<TBody\>
@@ -97,39 +93,55 @@ abstract class RouterIntegration<TBody extends Record<string, unknown> = Record<
   // ─── MUST implement ────────────────────────────────────────────────
 
   /**
-   * Transform ALL events and group them into endpoint buckets.
-   * Each group's body is the full destination request payload.
-   * Async — can do bulk lookups (dedup, identity resolution) first.
+   * Transform ONE event into one or more payloads.
+   * ~5 lines for simple destinations. The framework handles iteration,
+   * try/catch, error collection, and jobId tracking.
    */
-  abstract batchTransform(
-    inputs: RouterTransformationRequestData[],
-    reqMetadata?: NonNullable<unknown>,
-  ): Promise<BatchTransformResult<TBody>>;
+  abstract transformEvent(
+    input: RouterTransformationRequestData,
+  ): TransformedPayload<TBody> | TransformedPayload<TBody>[];
+
+  /**
+   * Return a batch strategy for the given group key.
+   * Receives the groupBy key so per-group limits are easy.
+   */
+  abstract getBatchStrategy(groupKey: string): BatchStrategy<TBody>;
 
   // ─── MAY override ──────────────────────────────────────────────────
 
   /**
-   * Receive one endpoint group, chunk it, return BatchRequests.
-   * Default: reads getBatchConfig(), calls chunkGroup(), returns chunks as-is.
-   * Override for custom post-chunk logic (dedup, field merging, re-grouping).
+   * Partition payloads before batching. Returns a string key —
+   * framework groups payloads with the same key together.
+   * Default: group by endpoint.
    */
-  postTransform(
-    group: GroupedSuccessEvents<TBody>,
-    destination: Destination,
-  ): PostTransformResult[];
+  groupBy(payload: TransformedPayload<TBody>): string {
+    return payload.endpoint;
+  }
 
   /**
-   * Chunking config. Override to set path, max items, max bytes.
-   * Default: { payloadHierarchyPath: 'events', maxChunkSize: 500 }
+   * Iterate inputs, call transformEvent(), catch errors.
+   * Override for pre-batch bulk operations (e.g., Braze dedup lookup).
+   * Call super.batchTransform() to delegate iteration back to framework.
    */
-  getBatchConfig(destination?: Destination): BatchConfig;
+  async batchTransform(
+    inputs: RouterTransformationRequestData[],
+    reqMetadata?: NonNullable<unknown>,
+  ): Promise<TransformResult<TBody>> {
+    // Default implementation:
+    // for each input:
+    //   try { payloads.push(...toArray(this.transformEvent(input))) }
+    //   catch { errorEvents.push({ error, statusCode, jobId }) }
+    // return { payloads, errorEvents }
+  }
 
   /**
    * Destination-specific Zod schema for input validation.
    * Framework fuses with base schema (RudderMessage + metadata + destination).
    * Default: null (no additional rules).
    */
-  getIntegrationSchema(): ZodType | null;
+  getIntegrationSchema(): ZodType | null {
+    return null;
+  }
 
   // ─── Framework-provided (not overridable) ──────────────────────────
 
@@ -186,19 +198,19 @@ The `statTags` are **required** for `handleRouterTransformSuccessEvents` to corr
 
 ## Server Response Format
 
-The framework wraps each `BatchRequest` into the standard server envelope:
+The framework wraps each batch result into the standard server envelope:
 
 ```typescript
 {
   batchedRequest: {
     version: '1',
     type: 'REST',
-    method: batchRequest.method,
-    endpoint: batchRequest.endpoint,
-    headers: batchRequest.headers ?? {},
-    params: batchRequest.params ?? {},
+    method: method,
+    endpoint: endpoint,
+    headers: headers ?? {},
+    params: params ?? {},
     body: {
-      JSON: batchRequest.body,    // ← destination payload goes here
+      JSON: wrappedBody,    // ← output of wrapBody() or customBatch
       JSON_ARRAY: {},
       XML: {},
       FORM: {},
@@ -216,10 +228,7 @@ The framework wraps each `BatchRequest` into the standard server envelope:
 
 | Function                                | Purpose                                                 |
 | --------------------------------------- | ------------------------------------------------------- |
-| `setValueAtPath(obj, path, value)`      | Sets value at dot-notation path (supports `arr[0].key`) |
-| `getValueAtPath(obj, path)`             | Reads value at dot-notation path                        |
 | `parseSizeToBytes(size)`                | Parses `'4MB'`, `'512KB'` → bytes                       |
-| `chunkGroup(group, config)`             | Splits one group into chunks by count/size limits       |
 | `groupByDontBatchDirective(inputs)`     | Splits inputs on `metadata.dontBatch` flag              |
 | `resolveMetadatas(jobIds, metadataMap)` | Maps jobId strings back to full Metadata objects        |
 

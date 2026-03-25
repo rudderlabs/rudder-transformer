@@ -21,16 +21,27 @@ This document catalogues the 4 batching formats found across 50+ destinations in
 
 **Framework mapping**:
 
-- `batchTransform`: Groups all events into one `GroupedSuccessEvents` with body `{ events: [...] }`
-- `getBatchConfig`: `{ payloadHierarchyPath: 'events', maxChunkSize: 500 }`
-- `postTransform`: **Default** — framework's `chunkGroup()` handles everything
-- No override needed
+- `transformEvent`: Returns one `TransformedPayload` per event
+- `groupBy`: **Default** — groups by endpoint (single endpoint, so one group)
+- `getBatchStrategy`: `chunk({ maxSize: 500, wrapBody: (bodies) => ({ events: bodies }) })`
+- No overrides needed
 
-**Example getBatchConfig**:
+**Example**:
 
 ```typescript
-getBatchConfig(): BatchConfig {
-  return { payloadHierarchyPath: 'events', maxChunkSize: 500 };
+class ExampleIntegration extends RouterIntegration<ExampleBody> {
+  transformEvent(input: RouterTransformationRequestData): TransformedPayload<ExampleBody> {
+    return {
+      body: buildEventPayload(input.message),
+      endpoint: 'https://api.example.com/events',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    };
+  }
+
+  getBatchStrategy(): BatchStrategy<ExampleBody> {
+    return chunk({ maxSize: 500, wrapBody: (bodies) => ({ events: bodies }) });
+  }
 }
 ```
 
@@ -56,33 +67,29 @@ getBatchConfig(): BatchConfig {
 
 **Framework mapping**:
 
-- `batchTransform`: Builds body with root-level wrapper fields + array: `{ api_key, batch: [...] }`
-- `getBatchConfig`: `{ payloadHierarchyPath: 'batch', maxChunkSize: 250, maxPayloadSize: '4MB' }`
-- `postTransform`: **Default** — `chunkGroup()` splits `batch`, wrapper fields are preserved via spread
-- No override needed (wrapper fields survive chunking because `chunkGroup` spreads `...group` and only replaces the array at the path)
+- `transformEvent`: Returns one `TransformedPayload` per event (body is the inner event object)
+- `groupBy`: **Default** — groups by endpoint (single endpoint)
+- `getBatchStrategy`: `chunk({ maxSize: 250, maxBytes: '4MB', wrapBody: (bodies) => ({ api_key: apiKey, batch: bodies }) })`
+- The `wrapBody` callback explicitly constructs the wrapper — no implicit spreading
 
 **Example (PostHog)**:
 
 ```typescript
-// batchTransform returns:
-{
-  endpoint: 'https://app.posthog.com/batch',
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: {
-    api_key: 'key123',
-    batch: [event1, event2, event3, event4, event5],
-  },
-  jobIds: ['1', '2', '3', '4', '5'],
-}
+// transformEvent returns:
+{ body: { distinct_id: 'u1', event: 'pageview', properties: { ... } },
+  endpoint: 'https://app.posthog.com/batch', method: 'POST', headers: { ... } }
 
-// getBatchConfig returns:
-{ payloadHierarchyPath: 'batch', maxChunkSize: 2, maxPayloadSize: '4MB' }
+// getBatchStrategy returns:
+chunk({
+  maxSize: 250,
+  maxBytes: '4MB',
+  wrapBody: (bodies) => ({ api_key: 'key123', batch: bodies }),
+})
 
-// chunkGroup produces (maxChunkSize=2):
-// Chunk 1: { api_key: 'key123', batch: [event1, event2] }, jobIds: ['1', '2']
-// Chunk 2: { api_key: 'key123', batch: [event3, event4] }, jobIds: ['3', '4']
-// Chunk 3: { api_key: 'key123', batch: [event5] },         jobIds: ['5']
+// Framework applies chunk strategy (maxSize=2):
+// Chunk 1: wrapBody([event1, event2]) → { api_key: 'key123', batch: [event1, event2] }, jobIds: ['1', '2']
+// Chunk 2: wrapBody([event3, event4]) → { api_key: 'key123', batch: [event3, event4] }, jobIds: ['3', '4']
+// Chunk 3: wrapBody([event5])         → { api_key: 'key123', batch: [event5] },         jobIds: ['5']
 ```
 
 ---
@@ -93,49 +100,44 @@ getBatchConfig(): BatchConfig {
 
 **Destinations (~10)**: Braze, Facebook Conversions, Google Ads Enhanced Conversions, Hubspot, Mailmodo, Optimizely Fullstack, Pinterest, Reddit, Responsys, Sprig
 
-**Payload shape (Braze example)**:
+**Payload shape (Mixpanel example)**:
 
 ```
-POST /users/track     → { attributes: [...], events: [...], purchases: [...] }
-POST /subscription    → { subscription_groups: [...] }
-POST /users/merge     → { merge_updates: [...] }
+POST /engage  → { data: [...engage payloads] }
+POST /groups  → { data: [...group payloads] }
+POST /import  → { data: [...import payloads] }
 ```
 
 **Framework mapping**:
 
-- `batchTransform`: Classifies events into endpoint buckets, returns multiple `GroupedSuccessEvents` — one per endpoint
-- `getBatchConfig`: Not used directly (each endpoint has different limits)
-- `postTransform`: **Must override** — apply endpoint-specific chunking and payload reshaping
+- `transformEvent`: Returns one or more `TransformedPayload`s — each with the appropriate endpoint
+- `groupBy`: **Default** — groups by endpoint, so payloads auto-separate by API path
+- `getBatchStrategy(groupKey)`: Returns different `chunk(...)` strategies per endpoint
 
-**Example (Braze)**:
+**Example (Mixpanel)**:
 
 ```typescript
-// batchTransform returns 3 groups:
-groupedEvents: [
-  {
-    endpoint: 'https://rest.iad-01.braze.com/users/track',
-    body: { trackContributions: [...perEventContributions] },
-    jobIds: ['1', '3', '5'],
-  },
-  {
-    endpoint: 'https://rest.iad-01.braze.com/subscription/status/set',
-    body: { subscription_groups: [...subscriptionContributions] },
-    jobIds: ['2'],
-  },
-  {
-    endpoint: 'https://rest.iad-01.braze.com/users/merge',
-    body: { merge_updates: [...mergeContributions] },
-    jobIds: ['4'],
-  },
-];
+class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
+  transformEvent(input): TransformedPayload<MixpanelBody>[] {
+    const results = CommonUtils.toArray(process(input));
+    return results.map(result => ({
+      body: result.body.JSON,
+      endpoint: `${baseUrl}${extractPath(result.endpoint)}`,
+      method: 'POST',
+      headers: getHeaders(input.destination),
+    }));
+  }
 
-// postTransform inspects group.endpoint and applies endpoint-specific logic:
-// - Track: flatten contributions → batchForTrackAPI/V2 algorithm
-// - Subscription: chunkGroup at 25 → combineSubscriptionGroups
-// - Merge: chunkGroup at 50 → extract .update from each contribution
+  // Default groupBy returns payload.endpoint — works for Mixpanel
+  // Payloads with /engage, /groups, /import auto-separate
+
+  getBatchStrategy(groupKey: string): BatchStrategy<MixpanelBody> {
+    if (groupKey.includes('/engage')) return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
+    if (groupKey.includes('/groups')) return chunk({ maxSize: 200, wrapBody: (b) => ({ data: b }) });
+    return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
+  }
+}
 ```
-
-**Why override postTransform**: The track endpoint requires a complex batching algorithm (V1 or V2 depending on workspace MAU plan) that reorders events by `externalId`. Subscription groups need combining logic. These can't be expressed as simple array chunking.
 
 ---
 
@@ -161,42 +163,61 @@ groupedEvents: [
 
 **Framework mapping**:
 
-- `batchTransform`: May need to deduplicate identifiers across events
-- `getBatchConfig`: `{ payloadHierarchyPath: 'operations[0].create.userIdentifiers', maxChunkSize: 1000 }`
-- `postTransform`: **Override** if merge/dedup logic is needed beyond simple chunking
+- `transformEvent`: Returns per-event payloads with individual identifiers
+- `groupBy`: **Default** or custom (e.g., by operation type)
+- `getBatchStrategy`: `customBatch(...)` — full control over merging/deduplication
 
-**Note**: The `payloadHierarchyPath` supports array index notation (`operations[0].create.userIdentifiers`) to reach deeply nested arrays. `setValueAtPath` and `getValueAtPath` handle the traversal.
+**Example (Google Ads Customer Match)**:
+
+```typescript
+getBatchStrategy(): BatchStrategy<GoogleAdsBody> {
+  return customBatch((payloads) => {
+    const allIds = payloads.flatMap(p => p.body.userIdentifiers);
+    const deduped = deduplicateIdentifiers(allIds);
+    const idChunks = chunkArray(deduped, 1000);
+
+    return idChunks.map(ids => ({
+      body: { operations: [{ create: { userIdentifiers: ids } }] },
+      jobIds: payloads.map(p => p.jobId),  // all jobs contributed to every chunk
+    }));
+  });
+}
+```
+
+**Why `customBatch`**: These destinations need cross-event merging (combining identifiers from multiple events into one request) and deduplication. This can't be expressed as simple array chunking — the `customBatch` callback gives full control.
 
 ---
 
 ## Summary Matrix
 
-| Format | Pattern         | Destinations | Override postTransform? | payloadHierarchyPath example             |
-| ------ | --------------- | :----------: | :---------------------: | ---------------------------------------- |
-| 1      | Simple array    |     ~38      |           No            | `'events'`                               |
-| 2      | Wrapper + array |      ~5      |           No            | `'batch'`, `'data.events'`               |
-| 3      | Multi-endpoint  |     ~10      |           Yes           | N/A (per-endpoint)                       |
-| 4      | Custom merge    |      ~4      |           Yes           | `'operations[0].create.userIdentifiers'` |
+| Format | Pattern         | Destinations | Override batchTransform? | Override groupBy? | getBatchStrategy        |
+| ------ | --------------- | :----------: | :----------------------: | :---------------: | ----------------------- |
+| 1      | Simple array    |     ~38      |            No            |        No         | `chunk(...)` simple     |
+| 2      | Wrapper + array |      ~5      |            No            |        No         | `chunk(...)` + wrapBody |
+| 3      | Multi-endpoint  |     ~10      |         Sometimes        |     Usually No    | `chunk(...)` per group  |
+| 4      | Custom merge    |      ~4      |         Sometimes        |       Maybe       | `customBatch(...)`      |
 
 ## Chunking Algorithm
 
-The `chunkGroup` function handles both count-based and size-based limits:
+When a `chunk(...)` strategy is applied, the framework uses this algorithm:
 
 ```
-for each item in array at payloadHierarchyPath:
-  itemBytes = Buffer.byteLength(JSON.stringify(item))
+for each payload in group:
+  itemBytes = Buffer.byteLength(JSON.stringify(payload.body))
 
-  if current chunk is non-empty AND (count >= maxChunkSize OR bytes + itemBytes > maxPayloadSize):
-    flush current chunk → push to results
+  if current chunk is non-empty AND (count >= maxSize OR bytes + itemBytes > maxBytes):
+    flush current chunk:
+      finalBody = wrapBody(chunk.bodies)
+      emit { body: finalBody, jobIds: chunk.jobIds }
     reset chunk
 
-  add item to current chunk
+  add payload to current chunk
   accumulate bytes
 
-flush remaining items → push to results
+flush remaining items → emit final chunk
 ```
 
-Each chunk preserves all fields from the original group (endpoint, headers, params, non-array body fields) — only the array at `payloadHierarchyPath` is replaced with the chunk's items.
+Each chunk's `jobIds` are aligned 1:1 with the payloads that contributed to it. The `wrapBody` callback constructs the final body shape — making the envelope explicit rather than relying on runtime path traversal.
 
 ## dontBatch Flag
 

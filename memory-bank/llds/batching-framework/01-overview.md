@@ -14,7 +14,7 @@ The `/routerTransform` route handles batching for 50+ destinations, each impleme
 Provide a **generic batching framework** that:
 
 1. Standardises validation, chunking, metadata resolution, and response formatting
-2. Lets each destination focus **only** on per-event transformation and endpoint grouping
+2. Lets each destination focus **only** on per-event transformation and batching strategy
 3. Supports all existing batching patterns without forcing a single payload shape
 4. Is opt-in — destinations migrate incrementally via a registry map
 
@@ -22,11 +22,11 @@ Provide a **generic batching framework** that:
 
 | #   | Requirement                                                                      | Status |
 | --- | -------------------------------------------------------------------------------- | ------ |
-| R1  | Integration does transformation + grouping; framework does chunking + formatting | Done   |
+| R1  | Integration does per-event transformation; framework does iteration, grouping, chunking + formatting | Done   |
 | R2  | Support `dontBatch` metadata flag (single-event batches)                         | Done   |
 | R3  | Zod-based input validation (base spec + destination-specific rules)              | Done   |
 | R4  | Configurable chunking by item count and payload byte size                        | Done   |
-| R5  | Dot-notation `payloadHierarchyPath` for nested chunkable arrays                  | Done   |
+| R5  | `wrapBody` callback for constructing the final chunked payload                   | Done   |
 | R6  | Per-call instantiation to avoid race conditions with mutable state               | Done   |
 | R7  | Thread `reqMetadata` for feature flag support                                    | Done   |
 | R8  | Correct `statTags` on validation errors for metrics accuracy                     | Done   |
@@ -36,13 +36,12 @@ Provide a **generic batching framework** that:
 | Term                       | Definition                                                                                      |
 | -------------------------- | ----------------------------------------------------------------------------------------------- |
 | **RouterIntegration**      | Abstract class a destination extends to opt into the framework                                  |
-| **batchTransform**         | Destination-implemented method: transforms all events and groups them by endpoint               |
-| **postTransform**          | Optional override: receives one endpoint group, applies custom post-chunk logic                 |
-| **getBatchConfig**         | Returns chunking configuration (`payloadHierarchyPath`, `maxChunkSize`, `maxPayloadSize`)       |
-| **GroupedSuccessEvents**   | One bucket of successfully transformed events sharing an endpoint                               |
-| **BatchConfig**            | Chunking parameters — path to the chunkable array, size limits                                  |
-| **BatchRequest**           | Final HTTP request shape before framework wraps it in server format                             |
-| **PostTransformResult**    | Pairing of a `BatchRequest` with aligned `jobIds`                                               |
+| **transformEvent**         | Per-event method: transforms one input into one or more `TransformedPayload`s                   |
+| **batchTransform**         | Framework-provided default that iterates inputs and calls `transformEvent()`; overridable for pre-batch bulk operations |
+| **groupBy**                | Returns a string key to partition payloads before batching (default: by endpoint)                |
+| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given group key                      |
+| **TransformedPayload**     | One transformed event payload with endpoint, method, headers, and body                          |
+| **BatchStrategy**          | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`    |
 | **batchedDestinationsMap** | Registry (`src/constants/batchedDestinationsMap.ts`) that opts a destination into the framework |
 
 ## Architecture — Block Diagram
@@ -84,10 +83,14 @@ Provide a **generic batching framework** that:
                     └─────────┬─────────┘
                               │
               ┌───────────────▼───────────────┐
-              │  For each GroupedSuccessEvents │
-              │    → postTransform()          │
-              │      → chunkGroup()           │
-              │      → custom post-chunk      │
+              │  group by groupBy(payload)     │
+              │  → Map<string, Payload[]>      │
+              └───────────────┬───────────────┘
+                              │
+              ┌───────────────▼───────────────┐
+              │  For each (groupKey, payloads) │
+              │    → getBatchStrategy(groupKey)│
+              │    → apply strategy            │
               └───────────────┬───────────────┘
                               │
               ┌───────────────▼───────────────┐
@@ -101,6 +104,24 @@ Provide a **generic batching framework** that:
               │  SuccessEvents() — metrics    │
               └───────────────────────────────┘
 ```
+
+### Framework Execution Flow (Summary)
+
+```
+1. batchTransform(inputs)                          ← default iterates, calls transformEvent()
+   → flat list of TransformedPayload[]             ← framework catches errors, tracks jobIds
+
+2. group by groupBy(payload)                       ← framework groups payloads by returned key
+   → Map<string, TransformedPayload[]>
+
+3. for each (groupKey, payloads):
+     getBatchStrategy(groupKey)                    ← destination returns chunk/customBatch
+     apply strategy to payloads                    ← framework executes
+
+4. convertToServerFormat()                         ← framework wraps in REST envelope
+```
+
+**Key design decision: grouping happens before batching.** The framework always calls `groupBy()` first to partition payloads, then applies `getBatchStrategy()` within each partition. This ordering is enforced by the framework, not left to the destination.
 
 ## Opt-In Mechanism
 

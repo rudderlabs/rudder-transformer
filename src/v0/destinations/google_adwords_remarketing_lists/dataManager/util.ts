@@ -12,13 +12,7 @@ import logger from '../../../../logger';
 import { GARL_FIELD_CONFIG } from '../util';
 import { TYPEOFLIST, consentConfigMap, destType } from '../config';
 import { populateConsentFromConfig } from '../../../util/googleUtils';
-import {
-  DATA_MANAGER_INGEST_ENDPOINT,
-  DATA_MANAGER_REMOVE_ENDPOINT,
-  DATA_MANAGER_DEFAULT_ACCOUNT_TYPE,
-  DATA_MANAGER_DEFAULT_TOS_STATUS,
-  dmUserIdentifierMapping,
-} from './config';
+import { DATA_MANAGER_DEFAULT_ACCOUNT_TYPE, dmUserIdentifierMapping } from './config';
 import type {
   AudienceMember,
   Consent,
@@ -32,13 +26,19 @@ import type {
 } from './types';
 import type { GARLDestinationConfig } from '../types';
 
-const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
-
 type MappedUserIdentifier = {
   emailAddress?: string;
   phoneNumber?: string;
   addressInfo?: Partial<AddressInfo>;
 };
+
+interface AudienceDestinationContext {
+  workspaceId: string;
+  destinationId: string;
+  isHashRequired: boolean;
+}
+
+const ADDRESS_SCHEMA_FIELDS = ['firstName', 'lastName', 'country', 'postalCode'];
 
 // Mapping from GoogleUtils consent values (GRANTED/DENIED) to DM API values
 const CONSENT_VALUE_MAP: Partial<Record<string, ConsentStatus>> = {
@@ -140,12 +140,6 @@ export const buildAudienceMemberFromProcessedFields = (
 
   return member;
 };
-
-interface AudienceDestinationContext {
-  workspaceId: string;
-  destinationId: string;
-  isHashRequired: boolean;
-}
 
 /**
  * Processes a single raw record through normalization/validation/hashing
@@ -268,45 +262,6 @@ export const buildDataManagerDestination = (
 };
 
 /**
- * Returns the endpoint URL and endpointPath for an ingest or remove operation.
- */
-export const buildDataManagerEndpoint = (
-  isIngest: boolean,
-): { endpoint: string; endpointPath: string } => ({
-  endpoint: isIngest ? DATA_MANAGER_INGEST_ENDPOINT : DATA_MANAGER_REMOVE_ENDPOINT,
-  endpointPath: isIngest ? '/v1/audienceMembers:ingest' : '/v1/audienceMembers:remove',
-});
-
-/**
- * Builds the request body payload for an ingest or remove call.
- * Ingest: destinations, audienceMembers, encoding, consent, termsOfService
- * Remove: destinations, audienceMembers, encoding (no consent / termsOfService)
- */
-export const buildDataManagerPayload = (
-  dest: DataManagerDestination,
-  audienceMembers: AudienceMember[],
-  isIngest: boolean,
-  consentObj?: Consent,
-): GARLIngestAPIPayload | GARLRemoveAPIPayload => {
-  if (isIngest) {
-    return {
-      destinations: [dest],
-      audienceMembers,
-      encoding: 'HEX',
-      consent: consentObj,
-      termsOfService: {
-        customerMatchTermsOfServiceStatus: DATA_MANAGER_DEFAULT_TOS_STATUS,
-      },
-    } as GARLIngestAPIPayload;
-  }
-  return {
-    destinations: [dest],
-    audienceMembers,
-    encoding: 'HEX',
-  } as GARLRemoveAPIPayload;
-};
-
-/**
  * Builds the HTTP headers for a DM API request.
  * Includes Authorization, Content-Type, and the optional login-customer-id header
  * required when accessing through a manager (sub) account.
@@ -328,23 +283,17 @@ export const buildDataManagerHeaders = (
 };
 
 /**
- * Assembles a complete REST request config for the Data Manager ingest or remove API
- * by composing the destination, endpoint, payload, and headers builders.
+ * Assembles the final HTTP request config from an already-built payload.
+ * Endpoint and endpointPath are passed by the caller — responseBuilder has
+ * no knowledge of which operation (ingest vs remove) is being performed.
  */
 export const responseBuilder = (
   accessToken: string,
-  audienceMembers: AudienceMember[],
-  destination: { Config: GARLDestinationConfig; ID?: string },
-  audienceId: string,
-  isIngest: boolean,
-  consentObj?: Consent,
+  payload: GARLIngestAPIPayload | GARLRemoveAPIPayload,
+  endpoint: string,
+  endpointPath: string,
+  Config: GARLDestinationConfig,
 ): GARLBatchRequest => {
-  const { Config } = destination;
-
-  const dest = buildDataManagerDestination(Config, audienceId);
-  const { endpoint, endpointPath } = buildDataManagerEndpoint(isIngest);
-  const payload = buildDataManagerPayload(dest, audienceMembers, isIngest, consentObj);
-
   const response = defaultRequestConfig() as GARLBatchRequest;
   response.endpoint = endpoint;
   response.endpointPath = endpointPath;

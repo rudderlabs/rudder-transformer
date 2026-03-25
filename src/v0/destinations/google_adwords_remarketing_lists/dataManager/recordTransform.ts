@@ -3,6 +3,7 @@ import {
   groupByInBatches,
   mapInBatches,
   reduceInBatches,
+  forEachInBatches,
 } from '@rudderstack/integrations-lib';
 import {
   getAccessToken,
@@ -19,9 +20,18 @@ import type { RecordInput } from '../types';
 import {
   buildAudienceMember,
   buildMemberConsentFromConfig,
+  buildDataManagerDestination,
   responseBuilder,
 } from './util';
-import { DATA_MANAGER_BATCH_SIZE } from './config';
+import {
+  DATA_MANAGER_BATCH_SIZE,
+  DATA_MANAGER_DEFAULT_TOS_STATUS,
+  DATA_MANAGER_INGEST_ENDPOINT,
+  DATA_MANAGER_INGEST_ENDPOINT_PATH,
+  DATA_MANAGER_REMOVE_ENDPOINT,
+  DATA_MANAGER_REMOVE_ENDPOINT_PATH,
+  DATA_MANAGER_DEFAULT_ENCODING,
+} from './config';
 import type {
   AudienceMember,
   GARLBatchRequestOutput,
@@ -39,27 +49,17 @@ interface DataManagerRecordContext {
   isHashRequired: boolean;
 }
 
-/**
- * Processes a batch of records for a single action (insert/update/delete).
- * Each record.message.fields → one AudienceMember with per-record error handling.
- * Valid members are batched in chunks of DATA_MANAGER_BATCH_SIZE (10,000).
- */
-const processRecordEventArray = async (
+type RecordProcessor = (
   records: GARLRouterRequest[],
   context: DataManagerRecordContext,
-  isIngest: boolean,
-  workspaceId: string,
-): Promise<{
+) => Promise<{
   successResponse: GARLBatchRequestOutput | null;
   invalidResponses: ProcessorTransformationResponse[];
-}> => {
-  const { destination, accessToken, audienceId, typeOfList, userSchema, isHashRequired } = context;
+}>;
 
-  const fieldsArray = await mapInBatches<GARLRouterRequest, Record<string, unknown>>(
-    records,
-    (record) => record.message.fields as Record<string, unknown>,
-  );
-  const metadataArray = await mapInBatches(records, (record) => record.metadata);
+const processInsertRecords: RecordProcessor = async (records, context) => {
+  const { destination, accessToken, audienceId, typeOfList, userSchema, isHashRequired } = context;
+  const { workspaceId } = records[0].metadata;
 
   const memberConsent = buildMemberConsentFromConfig(destination.Config);
 
@@ -67,9 +67,9 @@ const processRecordEventArray = async (
   const validMetadata: Metadata[] = [];
   const invalidResponses: ProcessorTransformationResponse[] = [];
 
-  fieldsArray.forEach((rawFields, i) => {
+  await forEachInBatches(records, ({ message: { fields }, metadata }) => {
     const result = buildAudienceMember(
-      rawFields,
+      fields as Record<string, unknown>,
       typeOfList,
       userSchema,
       { workspaceId, destinationId: destination.ID, isHashRequired },
@@ -79,16 +79,11 @@ const processRecordEventArray = async (
     if ('error' in result) {
       const errorObj = generateErrorObject(result.error);
       invalidResponses.push(
-        getErrorRespEvents(
-          [metadataArray[i]],
-          errorObj.status,
-          errorObj.message,
-          errorObj.statTags,
-        ),
+        getErrorRespEvents([metadata], errorObj.status, errorObj.message, errorObj.statTags),
       );
     } else {
       validMembers.push(result.member);
-      validMetadata.push(metadataArray[i]);
+      validMetadata.push(metadata);
     }
   });
 
@@ -96,6 +91,7 @@ const processRecordEventArray = async (
     return { successResponse: null, invalidResponses };
   }
 
+  const dest = buildDataManagerDestination(destination.Config, audienceId);
   const memberChunks: AudienceMember[][] = returnArrayOfSubarrays(
     validMembers,
     DATA_MANAGER_BATCH_SIZE,
@@ -104,11 +100,16 @@ const processRecordEventArray = async (
   const toSendEvents = memberChunks.map((chunk) =>
     responseBuilder(
       accessToken,
-      chunk,
-      destination,
-      audienceId,
-      isIngest,
-      memberConsent,
+      {
+        destinations: [dest],
+        audienceMembers: chunk,
+        encoding: DATA_MANAGER_DEFAULT_ENCODING,
+        consent: memberConsent,
+        termsOfService: { customerMatchTermsOfServiceStatus: DATA_MANAGER_DEFAULT_TOS_STATUS },
+      },
+      DATA_MANAGER_INGEST_ENDPOINT,
+      DATA_MANAGER_INGEST_ENDPOINT_PATH,
+      destination.Config,
     ),
   );
 
@@ -118,13 +119,75 @@ const processRecordEventArray = async (
   };
 };
 
-async function preparePayload(
-  events: GARLRouterRequest[],
-  config: GARLDestinationConfig,
-) {
+const processDeleteRecords: RecordProcessor = async (records, context) => {
+  const { destination, accessToken, audienceId, typeOfList, userSchema, isHashRequired } = context;
+  const { workspaceId } = records[0].metadata;
+
+  const memberConsent = buildMemberConsentFromConfig(destination.Config);
+
+  const validMembers: AudienceMember[] = [];
+  const validMetadata: Metadata[] = [];
+  const invalidResponses: ProcessorTransformationResponse[] = [];
+
+  await forEachInBatches(records, ({ message: { fields }, metadata }) => {
+    const result = buildAudienceMember(
+      fields as Record<string, unknown>,
+      typeOfList,
+      userSchema,
+      { workspaceId, destinationId: destination.ID, isHashRequired },
+      memberConsent,
+    );
+
+    if ('error' in result) {
+      const errorObj = generateErrorObject(result.error);
+      invalidResponses.push(
+        getErrorRespEvents([metadata], errorObj.status, errorObj.message, errorObj.statTags),
+      );
+    } else {
+      validMembers.push(result.member);
+      validMetadata.push(metadata);
+    }
+  });
+
+  if (validMembers.length === 0) {
+    return { successResponse: null, invalidResponses };
+  }
+
+  const dest = buildDataManagerDestination(destination.Config, audienceId);
+  const memberChunks: AudienceMember[][] = returnArrayOfSubarrays(
+    validMembers,
+    DATA_MANAGER_BATCH_SIZE,
+  );
+
+  const toSendEvents = memberChunks.map((chunk) =>
+    responseBuilder(
+      accessToken,
+      {
+        destinations: [dest],
+        audienceMembers: chunk,
+        encoding: DATA_MANAGER_DEFAULT_ENCODING,
+      },
+      DATA_MANAGER_REMOVE_ENDPOINT,
+      DATA_MANAGER_REMOVE_ENDPOINT_PATH,
+      destination.Config,
+    ),
+  );
+
+  return {
+    successResponse: getSuccessRespEvents(toSendEvents, validMetadata, destination, true),
+    invalidResponses,
+  };
+};
+
+const recordActionProcessors: Record<string, RecordProcessor> = {
+  insert: processInsertRecords,
+  update: processInsertRecords,
+  delete: processDeleteRecords,
+};
+
+async function transformRecordEvents(events: GARLRouterRequest[], config: GARLDestinationConfig) {
   const { destination, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
-  const { workspaceId } = metadata;
 
   const context: DataManagerRecordContext = {
     destination,
@@ -134,7 +197,7 @@ async function preparePayload(
 
   const groupedRecordsByAction = await groupByInBatches(
     events,
-    (record) => (record.message.action as string).toLocaleLowerCase() || '',
+    (record) => (record.message.action as string).toLowerCase() || '',
   );
 
   const actionResponses = await reduceInBatches(
@@ -149,19 +212,14 @@ async function preparePayload(
       >,
       action: string,
     ) => {
-      const isIngest = action !== 'delete';
-      if (groupedRecordsByAction[action]) {
-        return {
-          ...responses,
-          [action]: await processRecordEventArray(
-            groupedRecordsByAction[action] as GARLRouterRequest[],
-            context,
-            isIngest,
-            workspaceId,
-          ),
-        };
-      }
-      return responses;
+      if (!groupedRecordsByAction[action]) return responses;
+      return {
+        ...responses,
+        [action]: await recordActionProcessors[action](
+          groupedRecordsByAction[action] as GARLRouterRequest[],
+          context,
+        ),
+      };
     },
     {},
   );
@@ -186,18 +244,16 @@ async function preparePayload(
   return finalResponse;
 }
 
-async function processEventStreamRecordV1Events(
-  groupedRecordInputs: GARLRouterRequest[],
-) {
+async function processEventStreamRecords(groupedRecordInputs: GARLRouterRequest[]) {
   const { destination } = groupedRecordInputs[0];
-  return preparePayload(groupedRecordInputs, destination.Config);
+  return transformRecordEvents(groupedRecordInputs, destination.Config);
 }
 
 async function processVDMV1RecordEvents(groupedRecordInputs: GARLRouterRequest[]) {
   const { destination, message } = groupedRecordInputs[0];
   const { audienceId } = destination.Config;
 
-  return preparePayload(groupedRecordInputs, {
+  return transformRecordEvents(groupedRecordInputs, {
     ...destination.Config,
     audienceId: getOperationAudienceId(audienceId, message),
   });
@@ -205,7 +261,7 @@ async function processVDMV1RecordEvents(groupedRecordInputs: GARLRouterRequest[]
 
 async function processVDMV2RecordEvents(groupedRecordInputs: GARLRouterRequest[]) {
   const { connection, message } = groupedRecordInputs[0];
-  const userSchema = message?.identifiers ? Object.keys(message.identifiers) : undefined;
+  const userSchema = message?.identifiers ? Object.keys(message.identifiers) : [];
 
   const events = await mapInBatches(groupedRecordInputs, (record) => ({
     ...record,
@@ -215,7 +271,7 @@ async function processVDMV2RecordEvents(groupedRecordInputs: GARLRouterRequest[]
     },
   }));
 
-  return preparePayload(events, {
+  return transformRecordEvents(events, {
     ...connection!.config.destination,
     userSchema,
   });
@@ -230,5 +286,5 @@ export async function processRecordInputs(groupedRecordInputs: GARLRouterRequest
   if (isEventSentByVDMV2Flow(event)) {
     return processVDMV2RecordEvents(groupedRecordInputs);
   }
-  return processEventStreamRecordV1Events(groupedRecordInputs);
+  return processEventStreamRecords(groupedRecordInputs);
 }

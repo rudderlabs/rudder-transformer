@@ -11,17 +11,17 @@
   },
   {
     "destKey": "addressInfo.givenName",
-    "sourceKeys": "firstName",
+    "sourceKeys": ["firstName", "hashedFirstName"],
     "required": false
   },
   {
     "destKey": "addressInfo.familyName",
-    "sourceKeys": "lastName",
+    "sourceKeys": ["lastName", "hashedLastName"],
     "required": false
   },
   {
     "destKey": "addressInfo.regionCode",
-    "sourceKeys": "country",
+    "sourceKeys": ["countryCode", "country"],
     "required": false
   },
   {

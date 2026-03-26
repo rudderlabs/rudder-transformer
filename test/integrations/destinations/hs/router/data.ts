@@ -1626,7 +1626,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer hs1',
@@ -1636,6 +1636,9 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'noname@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '1',
                         properties: {
                           email: 'noname@email.com',
                           firstname: 'Test Hubspot44',
@@ -1839,7 +1842,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: 'Bearer hs1',
@@ -1849,6 +1852,9 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'testhubspot@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '4',
                         properties: {
                           email: 'testhubspot@email.com',
                           firstname: 'Test Hubspot44',
@@ -2423,6 +2429,9 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'identify803@test.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '3',
                         properties: {
                           email: 'identify803@test.com',
                           firstname: 'John',
@@ -2431,6 +2440,9 @@ export const data = [
                         },
                       },
                       {
+                        id: 'identify804@test.con',
+                        idProperty: 'email',
+                        objectWriteTraceId: '4',
                         properties: {
                           email: 'identify804@test.con',
                           firstname: 'John',
@@ -2443,7 +2455,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2522,6 +2534,9 @@ export const data = [
                 body: {
                   FORM: {},
                   JSON: {
+                    id: 'identify425@test.com',
+                    idProperty: 'email',
+                    objectWriteTraceId: '1',
                     properties: {
                       email: 'identify425@test.com',
                       firstname: 'John',
@@ -2532,7 +2547,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2602,6 +2617,9 @@ export const data = [
                 body: {
                   FORM: {},
                   JSON: {
+                    id: 'identify425@test.con',
+                    idProperty: 'email',
+                    objectWriteTraceId: '2',
                     properties: {
                       email: 'identify425@test.con',
                       firstname: 'John',
@@ -2612,7 +2630,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -2864,6 +2882,9 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'identify425@test.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '1',
                         properties: {
                           email: 'identify425@test.com',
                           firstname: 'John',
@@ -2872,6 +2893,9 @@ export const data = [
                         },
                       },
                       {
+                        id: 'identify425@test.con',
+                        idProperty: 'email',
+                        objectWriteTraceId: '2',
                         properties: {
                           email: 'identify425@test.con',
                           firstname: 'John',
@@ -2884,7 +2908,7 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader1,
@@ -3232,7 +3256,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3242,12 +3266,18 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'testhubspot1@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '1',
                         properties: {
                           email: 'testhubspot1@email.com',
                           firstname: 'Test Hubspot1',
                         },
                       },
                       {
+                        id: 'testhubspot5@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '9',
                         properties: {
                           email: 'testhubspot5@email.com',
                           firstname: 'Test Hubspot51',
@@ -3448,7 +3478,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 headers: {
                   'Content-Type': 'application/json',
                   Authorization: authHeader1,
@@ -3458,24 +3488,36 @@ export const data = [
                   JSON: {
                     inputs: [
                       {
+                        id: 'testhubspot2@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '4',
                         properties: {
                           email: 'testhubspot2@email.com',
                           firstname: 'Test Hubspot1',
                         },
                       },
                       {
+                        id: 'testhubspot3@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '6',
                         properties: {
                           email: 'testhubspot3@email.com',
                           firstname: 'Test Hubspot1',
                         },
                       },
                       {
+                        id: 'testhubspot4@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '8',
                         properties: {
                           email: 'testhubspot4@email.com',
                           firstname: 'Test Hubspot4',
                         },
                       },
                       {
+                        id: 'testhubspot5@email.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '11',
                         properties: {
                           email: 'testhubspot5@email.com',
                           firstname: 'Test Hubspot5',
@@ -3877,7 +3919,8 @@ export const data = [
   },
   {
     name: 'hs',
-    description: 'if dontBatch is true we should use patch request method for update for retl flow',
+    description:
+      'if dontBatch is true, upsert contact without batching when mappedToDestination is set but operation is missing',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -3997,6 +4040,9 @@ export const data = [
                 body: {
                   FORM: {},
                   JSON: {
+                    id: 'identify425@test.com',
+                    idProperty: 'email',
+                    objectWriteTraceId: '1',
                     properties: {
                       email: 'identify425@test.com',
                       firstname: 'John',
@@ -4007,13 +4053,13 @@ export const data = [
                   JSON_ARRAY: {},
                   XML: {},
                 },
-                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/103604',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
                 files: {},
                 headers: {
                   Authorization: authHeader2,
                   'Content-Type': 'application/json',
                 },
-                method: 'PATCH',
+                method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',

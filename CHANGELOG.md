@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.127.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.4...v1.127.0) (2026-03-24)
+
+
+### Features
+
+* **fb_custom_audience:** add hashing consistency validation ([#5018](https://github.com/rudderlabs/rudder-transformer/issues/5018)) ([98f29cd](https://github.com/rudderlabs/rudder-transformer/commit/98f29cda8557285ba7889a1498d6b910074d2a3c))
+* **fb_custom_audience:** handle invalid fields and events ([#5023](https://github.com/rudderlabs/rudder-transformer/issues/5023)) ([d4d9801](https://github.com/rudderlabs/rudder-transformer/commit/d4d98012867e1d8a1902e4bbfd4e4c30b33c355c))
+* **google_adwords_remarketing_lists:** handle invalid fields and record dropping ([#5051](https://github.com/rudderlabs/rudder-transformer/issues/5051)) ([55ed414](https://github.com/rudderlabs/rudder-transformer/commit/55ed4148d6b6dad727e1c248c881a104f7cc6d2a))
+* **google_adwords_remarketing_lists:** implement Google-specific PII normalization ([#5052](https://github.com/rudderlabs/rudder-transformer/issues/5052)) ([b1b44b3](https://github.com/rudderlabs/rudder-transformer/commit/b1b44b3e6318456a04927208f8a4392daf4c2d39))
+
+
+### Bug Fixes
+
+* **fb_custom_audience:** align normalization logic with Facebook CAPI spec ([#5024](https://github.com/rudderlabs/rudder-transformer/issues/5024)) ([55e7417](https://github.com/rudderlabs/rudder-transformer/commit/55e741754c3e64f722791f1f24e920113fc7855d))
+* **fb_custom_audience:** one invalid event causes entire batch to fail ([#5036](https://github.com/rudderlabs/rudder-transformer/issues/5036)) ([8dca5a2](https://github.com/rudderlabs/rudder-transformer/commit/8dca5a29d2c5678e7b5daf04b0b44cf77a4a260b))
+* validateHashingConsistency is not exported ([#5059](https://github.com/rudderlabs/rudder-transformer/issues/5059)) ([7db369b](https://github.com/rudderlabs/rudder-transformer/commit/7db369bf0e2c0f0967739bd2769b37a005d80424))
+
+### [1.126.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.3...v1.126.4) (2026-03-23)
+
+
+### Bug Fixes
+
+* **mp:** engage/groups API errors silently treated as success ([#5060](https://github.com/rudderlabs/rudder-transformer/issues/5060)) ([a844994](https://github.com/rudderlabs/rudder-transformer/commit/a844994e6fa7ae5ab4b934e92ea7be371771db41))
+
+### [1.126.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.2...v1.126.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* **facebook-lead-ads:** unexpected error during FBLA hydration when field_data entry has no values ([#5053](https://github.com/rudderlabs/rudder-transformer/issues/5053)) ([3e81b33](https://github.com/rudderlabs/rudder-transformer/commit/3e81b33c7819291fd6a25394f4b7750d6c6ff75f))
+
+### [1.126.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.1...v1.126.2) (2026-03-16)
+
+
+### Bug Fixes
+
+* iterable source go tests ([#5046](https://github.com/rudderlabs/rudder-transformer/issues/5046)) ([c2fa1ff](https://github.com/rudderlabs/rudder-transformer/commit/c2fa1ff0691adbbcdbb954ae9e45baa97f78a074))
+
+### [1.126.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.0...v1.126.1) (2026-03-16)
+
+
+### Bug Fixes
+
+* add validation to mixpanel for invalid context ([#5040](https://github.com/rudderlabs/rudder-transformer/issues/5040)) ([af1b713](https://github.com/rudderlabs/rudder-transformer/commit/af1b713ea1e8568436e5d517e410f8e42db62c46))
+* consider email from dataSoruce as well ([#5039](https://github.com/rudderlabs/rudder-transformer/issues/5039)) ([c18e1ac](https://github.com/rudderlabs/rudder-transformer/commit/c18e1acd1f5908a6391b5dc08930b08c0ed8a8ba))
+* **shopify:** extract email to context.traits for pixel app events ([#5041](https://github.com/rudderlabs/rudder-transformer/issues/5041)) ([839a19a](https://github.com/rudderlabs/rudder-transformer/commit/839a19a095707cab2fb2fb585ce3fa4447be452e))
+
+## [1.126.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.125.0...v1.126.0) (2026-03-10)
+
+
+### Features
+
+* update salesforce feature flag to be enabled on destinationDefinitionName and fix soql query ([#4998](https://github.com/rudderlabs/rudder-transformer/issues/4998)) ([40e31db](https://github.com/rudderlabs/rudder-transformer/commit/40e31db6b06ffaa9c9b7a3d5a46956f013f0a2c7))
+
+
+### Bug Fixes
+
+* update team name from 'data-management' to 'pipelines' ([#4995](https://github.com/rudderlabs/rudder-transformer/issues/4995)) ([b94711c](https://github.com/rudderlabs/rudder-transformer/commit/b94711c428bf064509408a346857c55e0e857fcc))
+
 ## [1.125.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.124.4...v1.125.0) (2026-03-09)
 
 

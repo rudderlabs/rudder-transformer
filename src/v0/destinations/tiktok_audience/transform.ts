@@ -1,8 +1,13 @@
 import md5 from 'md5';
-import { hashToSha256, InstrumentationError, formatZodError } from '@rudderstack/integrations-lib';
+import {
+  hashToSha256,
+  InstrumentationError,
+  formatZodError,
+  groupByInBatches,
+} from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
-import type { TiktokAudienceRequest } from './types';
-import { TiktokAudienceRouterRequestSchema } from './types';
+import type { TiktokAudienceListRequest } from './types';
+import { TiktokAudienceListRouterRequestSchema } from './types';
 import { SHA256_TRAITS, ACTION_MAP, ENDPOINT, ENDPOINT_PATH } from './config';
 import {
   defaultRequestConfig,
@@ -10,8 +15,10 @@ import {
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } from '../../util';
+import { processTiktokAudienceRecords } from './recordTransform';
+import { ProcessTiktokAudienceRecordsResponse, TiktokAudienceRecordRequest } from './recordTypes';
 
-function prepareIdentifiersList(event: TiktokAudienceRequest) {
+function prepareIdentifiersList(event: TiktokAudienceListRequest) {
   const { message, destination, metadata } = event;
   const { isHashRequired } = destination.Config;
 
@@ -57,7 +64,7 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
 
 function buildResponseForProcessTransformation(
   identifiersList: any[],
-  event: TiktokAudienceRequest,
+  event: TiktokAudienceListRequest,
 ) {
   const accessToken = event.metadata?.secret?.accessToken;
   const anonymousId = event.message?.anonymousId;
@@ -80,41 +87,70 @@ function buildResponseForProcessTransformation(
   return responses;
 }
 
-function validateEvent(event: unknown) {
-  const result = TiktokAudienceRouterRequestSchema.safeParse(event);
+function validateAudienceListEvent(event: unknown) {
+  const result = TiktokAudienceListRouterRequestSchema.safeParse(event);
   if (!result.success) {
     throw new InstrumentationError(formatZodError(result.error));
   }
   return result.data;
 }
 
-function processTiktokAudience(event: TiktokAudienceRequest) {
+function processTiktokAudienceList(event: TiktokAudienceListRequest) {
   const identifierLists = prepareIdentifiersList(event);
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 
-function process(event: unknown) {
-  return processTiktokAudience(validateEvent(event));
-}
-
-const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
+const processRouterDest = async (
+  events: (TiktokAudienceListRequest | TiktokAudienceRecordRequest)[],
+): Promise<RouterTransformationResponse[]> => {
   if (!events || events.length === 0) return [];
 
-  const successfulResponses: RouterTransformationResponse[] = [];
-  const failedResponses: RouterTransformationResponse[] = [];
+  const groupedEvents = await groupByInBatches<
+    TiktokAudienceListRequest | TiktokAudienceRecordRequest,
+    string
+  >(events, (event) => event.message?.type?.toLowerCase());
 
-  for (const event of events) {
-    try {
-      const tiktokEvent = validateEvent(event);
-      const response = processTiktokAudience(tiktokEvent);
-      successfulResponses.push(
-        getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
+  const supportedEventTypes = ['record', 'audiencelist'];
+  const eventTypes = Object.keys(groupedEvents);
+  const unsupportedEventList = eventTypes.filter(
+    (eventType) => !supportedEventTypes.includes(eventType),
+  );
+
+  const failedResponses: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
+
+  if (groupedEvents.record) {
+    const response: ProcessTiktokAudienceRecordsResponse = processTiktokAudienceRecords(
+      groupedEvents.record,
+    );
+    failedResponses.push(...response.failedResponses);
+    successfulResponses.push(...response.successfulResponses);
+  }
+  if (groupedEvents.audiencelist) {
+    for (const event of groupedEvents.audiencelist) {
+      try {
+        const tiktokEvent = validateAudienceListEvent(event);
+        const response = processTiktokAudienceList(tiktokEvent);
+        successfulResponses.push(
+          getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
+        );
+      } catch (error) {
+        failedResponses.push(handleRtTfSingleEventError(event, error, {}));
+      }
+    }
+  }
+  for (const unsupportedEvent of unsupportedEventList) {
+    for (const event of groupedEvents[unsupportedEvent]) {
+      failedResponses.push(
+        handleRtTfSingleEventError(
+          event,
+          new InstrumentationError(`unsupported event found ${unsupportedEvent}`),
+          {},
+        ),
       );
-    } catch (error) {
-      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
     }
   }
   return [...failedResponses, ...successfulResponses];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

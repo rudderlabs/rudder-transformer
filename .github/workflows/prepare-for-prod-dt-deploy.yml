@@ -99,11 +99,12 @@ jobs:
         run: |
           echo "Transformer: $TAG_NAME"
 
-      - name: Clone Devops Repo
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          gh repo clone rudderlabs/rudder-devops
+      - name: Checkout Devops Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: rudderlabs/rudder-devops
+          token: ${{ steps.generate-token.outputs.token }}
+          path: rudder-devops
 
       - name: Extract branch name
         id: extract_branch_name
@@ -198,11 +199,12 @@ jobs:
           cd rudder-devops
           gh pr create --fill
 
-      - name: Clone Operator Repo
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          gh repo clone rudderlabs/rudderstack-operator
+      - name: Checkout Operator Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: rudderlabs/rudderstack-operator
+          token: ${{ steps.generate-token.outputs.token }}
+          path: rudderstack-operator
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:

@@ -110,6 +110,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       response.headers = {
         'Content-Type': 'application/json',
       };
+      response.params = { verbose: 2 };
   }
   return response;
 };
@@ -258,10 +259,12 @@ const handleUserProfileOperation = (userProfileParams) => {
     return null;
   }
   const operationProperties = parseConfigArray(propertiesConfig, 'property');
-  const segregatedTraits = trimTraits(message.traits, message.context.traits, operationProperties);
+  const segregatedTraits = trimTraits(message.traits, message.context?.traits, operationProperties);
 
   message.traits = segregatedTraits.traits;
-  message.context.traits = segregatedTraits.contextTraits;
+  if (message.context) {
+    message.context.traits = segregatedTraits.contextTraits;
+  }
 
   const finalOperationProperties =
     operation === '$union'

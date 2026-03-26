@@ -20,7 +20,9 @@ const isNonEmptyString = (val) => typeof val === 'string' && isDefinedAndNotNull
  */
 function checkForRequiredFields(event) {
   if (
-    (!isNonEmptyString(event.email) && !isNonEmptyString(event.userId)) ||
+    (!isNonEmptyString(event.email) &&
+      !isNonEmptyString(event.userId) &&
+      !isNonEmptyString(event?.dataFields?.email)) ||
     !isNonEmptyString(event.eventName)
   ) {
     throw new TransformationError('Unknown event type from Iterable');
@@ -55,7 +57,7 @@ function process(payload) {
   // Treating userId as unique identifier
   // If userId is not present, then generating it from email using md5 hash function
   if (!isDefinedAndNotNull(message.userId)) {
-    message.userId = md5(event.email);
+    message.userId = md5(message.context.traits.email);
   }
 
   return message;

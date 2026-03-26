@@ -1,14 +1,11 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
-const get = require('get-value');
-const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
-const { getAuthErrCategory } = require('../../util/googleUtils');
-const { getDeveloperToken } = require('../../util/googleUtils');
+import { NetworkError } from '@rudderstack/integrations-lib';
+import get from 'get-value';
+import { prepareProxyRequest, handleHttpRequest } from '../../../adapters/network';
+import { isHttpStatusSuccess } from '../../util/index';
+import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/utils/networkUtils';
+import tags from '../../util/tags';
+import { getAuthErrCategory, getDeveloperToken } from '../../util/googleUtils';
+import type { OfflineDataJobPayload } from './types';
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -20,9 +17,21 @@ const { getDeveloperToken } = require('../../util/googleUtils');
  * ref: https://developers.google.com/google-ads/api/rest/reference/rest/v15/CustomerMatchUserListMetadata
  */
 
-const createJob = async ({ endpoint, headers, method, params, metadata }) => {
+const createJob = async ({
+  endpoint,
+  headers,
+  method,
+  params,
+  metadata,
+}: {
+  endpoint: string;
+  headers: Record<string, string>;
+  method: string;
+  params: { customerId: string; listId: string; consent: Record<string, string> };
+  metadata: unknown;
+}) => {
   const jobCreatingUrl = `${endpoint}:create`;
-  const customerMatchUserListMetadata = {
+  const customerMatchUserListMetadata: Record<string, unknown> = {
     userList: `customers/${params.customerId}/userLists/${params.listId}`,
   };
   if (Object.keys(params.consent).length > 0) {
@@ -58,7 +67,21 @@ const createJob = async ({ endpoint, headers, method, params, metadata }) => {
  * @param body
  */
 
-const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }) => {
+const addUserToJob = async ({
+  endpoint,
+  headers,
+  method,
+  jobId,
+  body,
+  metadata,
+}: {
+  endpoint: string;
+  headers: Record<string, string>;
+  method: string;
+  jobId: string;
+  body: { JSON: OfflineDataJobPayload };
+  metadata: unknown;
+}) => {
   const jobAddingUrl = `${endpoint}/${jobId}:addOperations`;
   const secondRequest = {
     url: jobAddingUrl,
@@ -84,7 +107,19 @@ const addUserToJob = async ({ endpoint, headers, method, jobId, body, metadata }
  * @param method
  * @param jobId
  */
-const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
+const runTheJob = async ({
+  endpoint,
+  headers,
+  method,
+  jobId,
+  metadata,
+}: {
+  endpoint: string;
+  headers: Record<string, string>;
+  method: string;
+  jobId: string;
+  metadata: unknown;
+}) => {
   const jobRunningUrl = `${endpoint}/${jobId}:run`;
   const thirdRequest = {
     url: jobRunningUrl,
@@ -108,7 +143,14 @@ const runTheJob = async ({ endpoint, headers, method, jobId, metadata }) => {
  * @param {*} request
  * @returns
  */
-const gaAudienceProxyRequest = async (request) => {
+const gaAudienceProxyRequest = async (request: {
+  body: { JSON: OfflineDataJobPayload };
+  method: string;
+  params: { customerId: string; listId: string; consent: Record<string, string> };
+  endpoint: string;
+  metadata: unknown;
+  headers: Record<string, string>;
+}) => {
   const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
 
@@ -129,11 +171,18 @@ const gaAudienceProxyRequest = async (request) => {
   }
 
   // step2: putting users into the job
-  let jobId;
+  let jobId: string | undefined;
   if (firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
-  const secondResponse = await addUserToJob({ endpoint, headers, method, jobId, body, metadata });
+  const secondResponse = await addUserToJob({
+    endpoint,
+    headers,
+    method,
+    jobId: jobId!,
+    body,
+    metadata,
+  });
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
     return secondResponse;
   }
@@ -146,11 +195,14 @@ const gaAudienceProxyRequest = async (request) => {
   }
 
   // step3: running the job
-  const thirdResponse = await runTheJob({ endpoint, headers, method, jobId, metadata });
+  const thirdResponse = await runTheJob({ endpoint, headers, method, jobId: jobId!, metadata });
   return thirdResponse;
 };
 
-const gaAudienceRespHandler = (destResponse, stageMsg) => {
+const gaAudienceRespHandler = (
+  destResponse: { status: number; response: unknown },
+  stageMsg: string,
+) => {
   let { status } = destResponse;
   const { response } = destResponse;
 
@@ -172,7 +224,12 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   );
 };
 
-const responseHandler = (responseParams) => {
+const responseHandler = (responseParams: {
+  destinationResponse: {
+    status: number;
+    response: { partialFailureError?: { code: number } };
+  };
+}) => {
   const { destinationResponse } = responseParams;
   const message = `Request Processed Successfully`;
   const { status, response } = destinationResponse;
@@ -206,10 +263,15 @@ const responseHandler = (responseParams) => {
   return undefined;
 };
 
-function networkHandler() {
+function networkHandler(this: {
+  proxy: typeof gaAudienceProxyRequest;
+  processAxiosResponse: typeof processAxiosResponse;
+  prepareProxy: typeof prepareProxyRequest;
+  responseHandler: typeof responseHandler;
+}) {
   this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
 }
-module.exports = { networkHandler };
+export { networkHandler };

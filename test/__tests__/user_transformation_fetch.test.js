@@ -313,7 +313,7 @@ describe("User transformation fetch tests", () => {
         }
       `
     };
-    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address";
+    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address for abc.xyz.com";
     
     mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 100 }, { address: '3.122.122.122', ttl: 600 }]);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
@@ -498,7 +498,7 @@ describe("User transformation fetch tests with IVM Cache", () => {
         }
       `
     };
-    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address";
+    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address for abc.xyz.com";
     customTransformStore.getTransformationCode.mockResolvedValue(trRevCode);
     mockResolver.mockResolvedValue([{ address: '127.0.0.1', ttl: 100 }, { address: '3.122.122.122', ttl: 600 }]);
     const output = await userTransformHandler(inputData, versionId, []);

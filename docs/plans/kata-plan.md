@@ -617,16 +617,19 @@ Based on grep, approximately 5-10 test files.
 
 #### Recommendation
 
-**Migrate to Bun first, then remove ivm using Bun Workers (Option C).**
+**Combined approach: Migrate to Bun and remove ivm with Bun Workers simultaneously.**
 
 Reasoning:
 
 1. Bun migration is planned — it's not optional.
-2. Sequential approach (Bun first, then ivm removal) is safer: each change can be
-   validated independently.
-3. Skips building a Node.js child process pool that would be discarded after Bun migration.
-4. If timeline pressure demands it, both can be combined into ~9 weeks (vs ~14 weeks
-   sequential) at the cost of harder debugging.
+2. `isolated-vm` is a V8 addon that won't work under Bun (JavaScriptCore), so a
+   sequential "Bun first" approach requires a temporary Node.js sidecar for user
+   transforms — adding operational complexity.
+3. The combined approach avoids the sidecar and skips building a throwaway Node.js
+   child process pool.
+4. De-risk with a 2-day Bun Worker prototype before committing.
+5. New sandbox code written in TypeScript from the start; surviving JS files converted.
+6. Validated via contract tests (~118 scenarios) + A/B mirroring with production traffic.
 
 See [kata-estimations.md](kata-estimations.md) for detailed sequencing options.
 
@@ -638,11 +641,22 @@ See [kata-estimations.md](kata-estimations.md) for detailed sequencing options.
 |----------------------------|----------------------------------------------------------------------------|
 | **Routing**                | Predictable K8s DNS names (Option 1a), provisioned by rudderstack-operator |
 | **Intra-tenant isolation** | Bun Workers (Option C) with capability-restricted sandbox                  |
-| **Bun + ivm removal**      | ~10 weeks combined for one senior engineer                                 |
+| **Bun + ivm removal + TS** | ~11 weeks combined for one senior engineer                                 |
+| **Contract tests**         | ~5 weeks (written during ivm removal)                                      |
+| **A/B mirroring**          | ~4.5 weeks active eng. / 6-8 weeks wall clock (soak periods)               |
 | **1a Routing**             | ~6.5 weeks for one senior engineer                                         |
 | **Scale to zero**          | ~3.5 weeks (optional)                                                      |
-| **Sequencing**             | Combined Bun migration + ivm removal with Bun Workers                      |
-| **Total effort**           | ~10 weeks with 2 engineers in parallel (routing + Bun/ivm)                 |
+| **TypeScript rewrite**     | ~1 week (folded into Bun + ivm work)                                       |
+| **Sequencing**             | Combined Bun migration + ivm removal + TS, then A/B mirroring              |
+| **Total wall clock**       | ~18 weeks with 2-3 engineers (A/B soak is the floor)                       |
+
+**Validation strategy:** The rewrite is validated through two complementary mechanisms:
+
+1. **Contract tests** (~118 scenarios, modeled after `pytransformer_contract`) verify
+   behavioral equivalence between old (ivm) and new (Bun Workers) implementations.
+2. **A/B mirroring** uses rudder-server's existing mirror infrastructure to compare
+   real production traffic responses. Discrepancies are uploaded to S3 with full input
+   context. Sampling ramps from 1% → 5% → 25% → 50% → 100% as confidence grows.
 
 See [kata-estimations.md](kata-estimations.md) for full breakdown, risk factors, and
 parallelization options. Note: `isolated-vm` is V8-only and incompatible with Bun, so

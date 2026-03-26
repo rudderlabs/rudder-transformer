@@ -474,7 +474,212 @@ migration later (6 wks) = 12 weeks total on the safer path.
 
 ---
 
+## 5. A/B mirroring validation
+
+rudder-server already has mirroring infrastructure for user transformations
+(`processor/processor.go`, lines 3027-3173). It runs mirror calls async (no latency
+impact on the primary path), compares responses via `Response.Equal()`, and uploads
+discrepancies to S3 with full input context for investigation.
+
+The existing mirroring system:
+
+- Runs mirror transforms in a goroutine (fire-and-forget or sampled comparison)
+- Compares event counts, failed event counts, and deep-equals on event arrays
+- Uploads diffs + original events to S3 when responses differ
+- Caches mirror-filtered responses (HTTP 297) per version ID to avoid repeated filtering
+- Supports sampling-based activation (`sanitySampling` 0-100%)
+- Emits metrics: `processor_ut_mirroring_responses_count{equal=true/false}`,
+  `processor_ut_mirroring_filtered_count`
+
+### 5.1 What needs to change for A/B validation
+
+The mirroring infrastructure already works. What's needed:
+
+| Change                                                          | Description                                                                                                                                                             |
+|-----------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Deploy new Bun-based transformer alongside existing Node.js one | Two deployments per workspace: primary (Node.js+ivm) and mirror (Bun+Workers)                                                                                           |
+| Configure mirror namespace in rudder-server                     | `TRANSFORMER_MIRROR_NAMESPACE` env var (section 1.1). `userTransformURL()` already derives per-workspace mirror URLs from workspaceId — no per-workspace config needed. |
+| Enable sampled comparison                                       | Start with low sampling (1-5%), increase as confidence grows                                                                                                            |
+| Monitor discrepancy metrics                                     | Dashboard for `processor_ut_mirroring_responses_count{equal=false}`                                                                                                     |
+| Investigate and fix discrepancies                               | Download diff + events from S3, reproduce, fix in Bun transformer                                                                                                       |
+
+### 5.2 Expected discrepancy sources
+
+Based on the pytransformer contract test experience, likely discrepancies:
+
+| Source                                  | Likelihood | Description                                                          |
+|-----------------------------------------|------------|----------------------------------------------------------------------|
+| JSON key ordering differences           | High       | V8 and JavaScriptCore may serialize objects in different key order   |
+| Floating point precision                | Medium     | Different JS engines may produce slightly different float results    |
+| Error message formatting                | High       | Stack traces, error messages will differ between ivm and Bun Workers |
+| `fetch()` behavior differences          | Medium     | Timeout handling, redirect behavior, header normalization            |
+| ES module resolution edge cases         | Medium     | Import order, circular dependencies, library loading                 |
+| `Date` / `Math.random` / nondeterminism | Low        | Timestamps, random values will naturally differ                      |
+| `undefined` vs `null` handling          | Medium     | Edge cases in serialization between engines                          |
+
+### 5.3 Effort breakdown
+
+| Task                                                                                  | Estimate                  |
+|---------------------------------------------------------------------------------------|---------------------------|
+| Deploy mirror environment (Bun transformer in `transformers-mirror` namespace)        | 2 days                    |
+| Configure mirroring in rudder-server for per-workspace mirror URLs                    | 1 day                     |
+| Build monitoring dashboard (Grafana) for discrepancy metrics                          | 1 day                     |
+| **Discrepancy investigation and fixing**                                              |                           |
+| Initial triage: review first batch of S3-uploaded diffs, categorize discrepancy types | 2 days                    |
+| Fix JSON ordering / serialization differences (response normalization)                | 2 days                    |
+| Fix error message / stack trace format differences                                    | 2 days                    |
+| Fix fetch behavior differences                                                        | 2 days                    |
+| Fix ES module edge cases                                                              | 2 days                    |
+| Soak at 5% sampling, fix remaining issues                                             | 3 days                    |
+| Ramp to 25% → 50% → 100% sampling, fix tail issues                                    | 3 days                    |
+| **Cutover validation**                                                                |                           |
+| Run at 100% mirror for 1 week with zero discrepancies                                 | 5 days (wall clock)       |
+| Switch primary to Bun, old Node.js becomes mirror (reverse A/B)                       | 1 day                     |
+| Monitor reverse mirror for 1 week                                                     | 5 days (wall clock)       |
+| Decommission old Node.js deployment                                                   | 1 day                     |
+| **Total active engineering work**                                                     | **~22 days (~4.5 weeks)** |
+| **Total wall clock (including soak periods)**                                         | **~6-8 weeks**            |
+
+---
+
+## 6. Contract tests
+
+The pytransformer contract tests (`../rudder-server/integration_test/pytransformer_contract`)
+are a comprehensive suite of **92+ test scenarios** that verify rudder-pytransformer is a
+drop-in replacement for the old openfaas-flask-base architecture. They:
+
+- Start both old and new transformer Docker containers
+- Send identical events to both via rudder-server's `usertransformer.Client`
+- Compare responses using `Response.Equal()` (order-independent deep comparison)
+- Cover: transformEvent, transformBatch, event expansion, filtering, credentials (10 cases),
+  geolocation (49 cases), error handling, metadata, mirror filtering
+
+We need an equivalent suite for the JS transformer rewrite (ivm → Bun Workers).
+
+### 6.1 What to test
+
+| Category                                                 | Test cases         | Ported from pytransformer?          |
+|----------------------------------------------------------|--------------------|-------------------------------------|
+| Core transformEvent / transformBatch                     | ~10                | Adapted (JS code instead of Python) |
+| Event expansion / filtering / None return                | ~8                 | Adapted                             |
+| Credentials (getCredential)                              | ~12                | Direct port (same API)              |
+| Geolocation                                              | ~49                | Direct port (same API)              |
+| Error handling (syntax errors, runtime errors, timeouts) | ~10                | Adapted                             |
+| Metadata / messageId handling                            | ~8                 | Adapted                             |
+| Library imports (ES modules)                             | ~8                 | New (JS-specific)                   |
+| fetch / fetchV2 behavior                                 | ~8                 | New (JS-specific)                   |
+| Mirror filtering                                         | ~5                 | Direct port                         |
+| **Total**                                                | **~118 scenarios** |                                     |
+
+### 6.2 Infrastructure needed
+
+| Component                                        | Effort   | Notes                                                   |
+|--------------------------------------------------|----------|---------------------------------------------------------|
+| Go test harness (reuse from pytransformer suite) | 2 days   | Extract shared helpers into common package              |
+| Docker management for JS transformer containers  | 2 days   | Old (Node.js+ivm) and new (Bun+Workers)                 |
+| Mock config backend (reuse existing)             | 0.5 days | Already exists, adapt for JS transformation code format |
+| Mock geolocation service (reuse existing)        | 0 days   | Identical                                               |
+| JS transformation code fixtures (118 scenarios)  | 5 days   | Write JS equivalents of Python test transformations     |
+| Response comparison / normalization              | 1.5 days | Handle JSON ordering, engine-specific differences       |
+
+### 6.3 Effort breakdown
+
+| Task                                                                                        | Estimate                |
+|---------------------------------------------------------------------------------------------|-------------------------|
+| Extract shared test infrastructure from pytransformer suite into reusable package           | 3 days                  |
+| Write Go test harness for JS transformer (Docker startup, health checks, dual-client)       | 3 days                  |
+| Write core transformation test cases (transformEvent, transformBatch, expansion, filtering) | 3 days                  |
+| Write credential test cases (port from pytransformer)                                       | 1.5 days                |
+| Write geolocation test cases (port from pytransformer)                                      | 2 days                  |
+| Write JS-specific test cases (ES modules, fetch, library imports)                           | 3 days                  |
+| Write error handling test cases (syntax, runtime, timeout, OOM)                             | 2 days                  |
+| Write metadata / messageId test cases                                                       | 1.5 days                |
+| Write mirror filtering test cases                                                           | 1 day                   |
+| CI/CD integration (Docker image pulls, ECR auth, test timeouts)                             | 2 days                  |
+| Debug and stabilize (flaky tests, timing issues, platform differences)                      | 3 days                  |
+| **Total**                                                                                   | **~25 days (~5 weeks)** |
+
+### 6.4 Recommended phasing
+
+The contract tests should be written **during** the Bun Workers implementation, not after:
+
+1. **Week 1-2 of ivm removal**: Write test harness + first 20 core scenarios
+2. **Week 3-5**: Add scenarios as each feature is implemented (credentials, geolocation, etc.)
+3. **Week 6-8**: Complete remaining scenarios, stabilize, CI/CD integration
+4. **During A/B mirroring**: Contract tests catch regressions; S3 diffs reveal scenarios
+   not covered by contract tests (add them iteratively)
+
+---
+
+## 7. TypeScript rewrite
+
+The ivm-related code is currently plain JavaScript (`.js`). Since the rest of the codebase
+is moving toward TypeScript (controllers, services, routes are already `.ts`), the sandbox
+rewrite should be in TypeScript from the start.
+
+### 7.1 Scope
+
+**New files written directly in TypeScript (no extra cost):**
+
+The new sandbox files (`pool.ts`, `worker.ts`, `protocol.ts`, `timeout.ts`) are already
+estimated as `.ts` in section 4. Writing them in TypeScript vs JavaScript adds negligible
+effort since Bun runs TypeScript natively.
+
+**Existing files to convert from .js to .ts:**
+
+| File                                         | Lines | Conversion effort | Notes                                                  |
+|----------------------------------------------|-------|-------------------|--------------------------------------------------------|
+| `src/util/customTransformer.js`              | 440   | Medium            | Add types to handler interfaces, event/response shapes |
+| `src/util/customTransformerFactory.js`       | 30    | Low               | Simple dispatch, mostly deleted in rewrite             |
+| `src/util/customTransformer-v1.js`           | 137   | Low               | Being rewritten anyway                                 |
+| `src/util/customTransformer-faas.js`         | 186   | None              | Deleted (Python goes to pytransformer)                 |
+| `src/util/ivmFactory.js`                     | 684   | None              | Deleted (replaced by Bun WorkerPool)                   |
+| `src/util/ivmCache/*.js`                     | 694   | None              | Deleted                                                |
+| `src/util/customTransforrmationsStore.js`    | ~200  | Medium            | Transformation code fetching, add types                |
+| `src/util/customTransforrmationsStore-v1.js` | ~200  | Medium            | V1 store, add types                                    |
+
+Most ivm files are deleted in the rewrite. The remaining files that survive (`customTransformer.js`
+as the entry point, the transformation stores) should be converted to TypeScript.
+
+### 7.2 Type definitions needed
+
+| Type                     | Description                                                                       |
+|--------------------------|-----------------------------------------------------------------------------------|
+| `TransformationRequest`  | IPC message from main → worker (code, events, libraries, credentials)             |
+| `TransformationResponse` | IPC message from worker → main (results, logs, errors)                            |
+| `WorkerPoolConfig`       | Pool size, max lifetime, timeout settings                                         |
+| `SandboxAPI`             | Whitelisted APIs injected into user code (fetch, geolocation, getCredential, log) |
+| `TransformationCode`     | Fetched code + metadata (versionId, workspaceId, codeVersion)                     |
+| `TransformationLibrary`  | Library name + code                                                               |
+| `CacheEntry`             | Compiled transformation cache entry (key, compiled fn, expiry)                    |
+
+### 7.3 Effort breakdown
+
+| Task                                                                      | Estimate              |
+|---------------------------------------------------------------------------|-----------------------|
+| Define shared type definitions (`protocol.ts`, `types.ts`)                | 1 day                 |
+| Convert `customTransformer.js` → `.ts` (entry point, survives rewrite)    | 1 day                 |
+| Convert transformation stores (`customTransforrmationsStore*.js` → `.ts`) | 1.5 days              |
+| Convert remaining utility files that reference transformation types       | 1 day                 |
+| Update test files to use typed imports                                    | 0.5 days              |
+| **Total**                                                                 | **~5 days (~1 week)** |
+
+**Note:** This is incremental cost on top of the Bun Workers rewrite. The new sandbox files
+are already written in TypeScript. This estimate covers only the conversion of surviving
+JavaScript files and shared type definitions.
+
+---
+
 ## Summary
+
+| Work item                              | Estimate (active eng.) | Wall clock | Optional? | Dependencies               |
+|----------------------------------------|------------------------|------------|-----------|----------------------------|
+| **1a Routing**                         | 33 days (~6.5 weeks)   | 6.5 weeks  | No        | None                       |
+| **Scale to zero**                      | 18 days (~3.5 weeks)   | 3.5 weeks  | Yes       | 1a routing complete        |
+| **Bun + ivm removal combined (Opt C)** | 50 days (~10 weeks)    | 10 weeks   | No        | None                       |
+| **TypeScript rewrite**                 | 5 days (~1 week)       | 1 week     | No        | Part of Bun + ivm work     |
+| **Contract tests**                     | 25 days (~5 weeks)     | 5 weeks    | No        | Written during ivm removal |
+| **A/B mirroring validation**           | 22 days (~4.5 weeks)   | 6-8 weeks  | No        | Bun + ivm complete         |
 
 | Work item                              | Estimate             | Optional? | Dependencies                      |
 |----------------------------------------|----------------------|-----------|-----------------------------------|
@@ -485,25 +690,45 @@ migration later (6 wks) = 12 weeks total on the safer path.
 
 ### Sequencing options
 
+Contract tests are written during the Bun+ivm phase (overlapping, not sequential).
+TypeScript rewrite is folded into the Bun+ivm work (+1 week).
+A/B mirroring is wall-clock-heavy (soak periods) but light on active engineering.
+
 ```
-Option 1 — Combined Bun + ivm, sequential with routing (1 engineer, ~16.5 weeks):
-  1a Routing (6.5 wks) → Bun + ivm combined (10 wks)
+Option 1 — 2 engineers (recommended, ~18 weeks wall clock):
+  Engineer A: 1a Routing (6.5 wks) → A/B mirroring setup + discrepancy fixes (5 wks)
+  Engineer B: Bun + ivm + TS (11 wks, contract tests written in parallel)
+  ──── week 11: Bun transformer ready, A/B mirroring begins ────
+  Both: A/B soak 1%→5%→25%→50%→100% (6-7 wks wall clock, ~2 wks active eng. for fixes)
+        → cutover + decommission (1 wk)
+  Critical path: 11 wks + 7 wks (A/B) = ~18 weeks wall clock
 
-Option 2 — Parallel routing + combined Bun+ivm (2 engineers, ~10 weeks):
-  Engineer A: 1a Routing (6.5 wks) ──────────────────────────────┐
-  Engineer B: Bun + ivm combined (10 wks) ←── merge after both done
-  Critical path: 10 weeks
+Option 2 — 3 engineers (~18 weeks wall clock, adds scale-to-zero):
+  Engineer A: 1a Routing (6.5 wks) → Scale to zero (3.5 wks, optional) → A/B fixes
+  Engineer B: Bun + ivm + TS combined (11 wks)
+  Engineer C: Contract tests (5 wks, starts week 3) → A/B mirroring active work (4.5 wks)
+  ──── week 11: A/B soak begins (6-7 wks wall clock) ────
+  Critical path: 11 wks + 7 wks (A/B) = ~18 weeks wall clock
+  (3rd engineer doesn't shorten wall clock, but adds scale-to-zero and offloads A/B work)
 
-Option 3 — Parallel + scale to zero (2 engineers, ~13.5 weeks):
-  Engineer A: 1a Routing (6.5 wks) → Scale to zero (3.5 wks) → integration (2 wks)
-  Engineer B: Bun + ivm combined (10 wks) → integration (2 wks)
-  Critical path: 12 weeks
+Option 3 — 1 engineer (sequential, ~26 weeks wall clock):
+  1a Routing (6.5 wks) → Bun + ivm + TS (11 wks, contract tests during)
+    → A/B mirroring (7 wks wall clock, ~4.5 wks active) → cutover (1 wk)
+  Total: 6.5 + 11 + 7 + 1 = ~25.5 weeks
 
-Option 4 — Fallback if Bun Worker prototype fails (2 engineers, ~12.5 weeks):
-  Engineer A: 1a Routing (6.5 wks) ──────────────────────────────┐
-  Engineer B: ivm removal Node.js child_process (6 wks) → Bun migration (6 wks)
-  Critical path: 12 weeks
+Option 4 — Fallback if Bun Worker prototype fails (2 engineers, ~22 weeks):
+  Engineer A: 1a Routing (6.5 wks) → A/B setup + fixes
+  Engineer B: ivm removal Node.js child_process + TS (7 wks) → Bun migration (6 wks)
+              → contract tests written during above (overlapping)
+  ──── week 13: new transformer ready, A/B soak begins ────
+  A/B soak (7 wks wall clock) → cutover (1 wk)
+  Critical path: 13 + 7 + 1 = ~21 weeks wall clock
 ```
+
+**Note:** A/B soak time (6-7 weeks) is the floor — it cannot be compressed because it
+includes mandatory soak periods at each sampling tier (1 week at 100% with zero
+discrepancies before cutover). The critical path for all options is
+`max(routing, Bun+ivm) + A/B soak`.
 
 ### OpenAI Reviewer Feedback
 
@@ -523,3 +748,19 @@ a capability-restricted sandbox (frozen globals, whitelisted API injection).
 **[P2] ES module loading:** `new Function()`/`eval()` can't handle `import`/`export`.
 Current ivm uses `compileModule()` with custom resolvers. Added +2 days for building a
 module pre-bundler that resolves library imports before sending code to the Worker.
+
+#### Second review (after adding A/B mirroring, contract tests, TypeScript rewrite)
+
+**[P2] Wall-clock totals inconsistent:** The sequencing options had totals that didn't
+match the phase durations. Recalculated: A/B soak (6-7 weeks) is incompressible, so the
+critical path for all multi-engineer options is `max(routing, Bun+ivm) + A/B soak = ~18
+weeks`. A 3rd engineer doesn't shorten wall clock but offloads work and adds scale-to-zero.
+
+**[P2] Contradictory recommendation in kata-plan.md:** The sub-question 3 recommendation
+said "migrate to Bun first" (sequential) while the summary table said "combined." Fixed:
+both now recommend the combined approach.
+
+**[P3] Per-workspace mirror URL config reintroduced:** Section 5.1 described configuring
+`USER_TRANSFORM_MIRROR_URL` per workspace, contradicting the 1a design where mirror URLs
+are derived from workspaceId + `TRANSFORMER_MIRROR_NAMESPACE`. Fixed: mirror URLs use
+the same deterministic derivation as primary URLs.

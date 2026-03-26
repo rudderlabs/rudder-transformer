@@ -38,8 +38,7 @@ Provide a **generic batching framework** that:
 | **RouterIntegration**      | Abstract class a destination extends to opt into the framework                                  |
 | **transformEvent**         | Per-event method: transforms one input into one or more `TransformedPayload`s                   |
 | **batchTransform**         | Framework-provided default that iterates inputs and calls `transformEvent()`; overridable for pre-batch bulk operations |
-| **groupBy**                | Returns a string key to partition payloads before batching (default: by endpoint)                |
-| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given group key                      |
+| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                       |
 | **TransformedPayload**     | One transformed event payload with endpoint, method, headers, and body                          |
 | **BatchStrategy**          | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`    |
 | **batchedDestinationsMap** | Registry (`src/constants/batchedDestinationsMap.ts`) that opts a destination into the framework |
@@ -83,13 +82,15 @@ Provide a **generic batching framework** that:
                     └─────────┬─────────┘
                               │
               ┌───────────────▼───────────────┐
-              │  group by groupBy(payload)     │
-              │  → Map<string, Payload[]>      │
+              │  group by composite key        │
+              │  { endpoint, method, headers,  │
+              │    params }  [private]          │
+              │  → Map<key, Payload[]>         │
               └───────────────┬───────────────┘
                               │
               ┌───────────────▼───────────────┐
-              │  For each (groupKey, payloads) │
-              │    → getBatchStrategy(groupKey)│
+              │  For each (group)              │
+              │    → getBatchStrategy(endpoint)│
               │    → apply strategy            │
               └───────────────┬───────────────┘
                               │
@@ -111,17 +112,19 @@ Provide a **generic batching framework** that:
 1. batchTransform(inputs)                          ← default iterates, calls transformEvent()
    → flat list of TransformedPayload[]             ← framework catches errors, tracks jobIds
 
-2. group by groupBy(payload)                       ← framework groups payloads by returned key
-   → Map<string, TransformedPayload[]>
+2. group by { endpoint, method, headers, params }  ← framework groups automatically (private)
+   → Map<compositeKey, TransformedPayload[]>
 
-3. for each (groupKey, payloads):
-     getBatchStrategy(groupKey)                    ← destination returns chunk/customBatch
+3. for each (group):
+     getBatchStrategy(group.endpoint)              ← destination returns chunk/customBatch
      apply strategy to payloads                    ← framework executes
 
 4. convertToServerFormat()                         ← framework wraps in REST envelope
 ```
 
-**Key design decision: grouping happens before batching.** The framework always calls `groupBy()` first to partition payloads, then applies `getBatchStrategy()` within each partition. This ordering is enforced by the framework, not left to the destination.
+**Key design decisions:**
+- **Grouping is a private framework concern.** Payloads are grouped by the composite key `{ endpoint, method, headers, params }` — exactly the set of fields that define "can these share a single HTTP request?". This is not overridable, removing the footgun of incorrect grouping.
+- **Grouping happens before batching.** The framework always groups first, then applies `getBatchStrategy()` within each partition. This ordering is enforced by the framework.
 
 ## Opt-In Mechanism
 

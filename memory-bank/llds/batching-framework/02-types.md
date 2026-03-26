@@ -102,21 +102,14 @@ abstract class RouterIntegration<TBody extends Record<string, unknown> = Record<
   ): TransformedPayload<TBody> | TransformedPayload<TBody>[];
 
   /**
-   * Return a batch strategy for the given group key.
-   * Receives the groupBy key so per-group limits are easy.
+   * Return a batch strategy for the given endpoint.
+   * By the time this is called, all payloads in the group are guaranteed
+   * to share the same endpoint, method, headers, and params — so the
+   * endpoint is the only information needed to pick a strategy.
    */
-  abstract getBatchStrategy(groupKey: string): BatchStrategy<TBody>;
+  abstract getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
 
   // ─── MAY override ──────────────────────────────────────────────────
-
-  /**
-   * Partition payloads before batching. Returns a string key —
-   * framework groups payloads with the same key together.
-   * Default: group by endpoint.
-   */
-  groupBy(payload: TransformedPayload<TBody>): string {
-    return payload.endpoint;
-  }
 
   /**
    * Iterate inputs, call transformEvent(), catch errors.

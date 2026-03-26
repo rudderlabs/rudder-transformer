@@ -22,7 +22,7 @@ This document catalogues the 4 batching formats found across 50+ destinations in
 **Framework mapping**:
 
 - `transformEvent`: Returns one `TransformedPayload` per event
-- `groupBy`: **Default** — groups by endpoint (single endpoint, so one group)
+- Grouping: framework groups by composite key — single endpoint, so one group
 - `getBatchStrategy`: `chunk({ maxSize: 500, wrapBody: (bodies) => ({ events: bodies }) })`
 - No overrides needed
 
@@ -68,7 +68,7 @@ class ExampleIntegration extends RouterIntegration<ExampleBody> {
 **Framework mapping**:
 
 - `transformEvent`: Returns one `TransformedPayload` per event (body is the inner event object)
-- `groupBy`: **Default** — groups by endpoint (single endpoint)
+- Grouping: framework groups by composite key — single endpoint, so one group
 - `getBatchStrategy`: `chunk({ maxSize: 250, maxBytes: '4MB', wrapBody: (bodies) => ({ api_key: apiKey, batch: bodies }) })`
 - The `wrapBody` callback explicitly constructs the wrapper — no implicit spreading
 
@@ -111,8 +111,8 @@ POST /import  → { data: [...import payloads] }
 **Framework mapping**:
 
 - `transformEvent`: Returns one or more `TransformedPayload`s — each with the appropriate endpoint
-- `groupBy`: **Default** — groups by endpoint, so payloads auto-separate by API path
-- `getBatchStrategy(groupKey)`: Returns different `chunk(...)` strategies per endpoint
+- Grouping: framework groups by composite key — payloads auto-separate by endpoint
+- `getBatchStrategy(endpoint)`: Returns different `chunk(...)` strategies per endpoint
 
 **Example (Mixpanel)**:
 
@@ -128,12 +128,12 @@ class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
     }));
   }
 
-  // Default groupBy returns payload.endpoint — works for Mixpanel
+  // Framework groups by { endpoint, method, headers, params }
   // Payloads with /engage, /groups, /import auto-separate
 
-  getBatchStrategy(groupKey: string): BatchStrategy<MixpanelBody> {
-    if (groupKey.includes('/engage')) return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
-    if (groupKey.includes('/groups')) return chunk({ maxSize: 200, wrapBody: (b) => ({ data: b }) });
+  getBatchStrategy(endpoint: string): BatchStrategy<MixpanelBody> {
+    if (endpoint.includes('/engage')) return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
+    if (endpoint.includes('/groups')) return chunk({ maxSize: 200, wrapBody: (b) => ({ data: b }) });
     return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
   }
 }
@@ -164,7 +164,7 @@ class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
 **Framework mapping**:
 
 - `transformEvent`: Returns per-event payloads with individual identifiers
-- `groupBy`: **Default** or custom (e.g., by operation type)
+- Grouping: framework groups by composite key
 - `getBatchStrategy`: `customBatch(...)` — full control over merging/deduplication
 
 **Example (Google Ads Customer Match)**:
@@ -190,12 +190,12 @@ getBatchStrategy(): BatchStrategy<GoogleAdsBody> {
 
 ## Summary Matrix
 
-| Format | Pattern         | Destinations | Override batchTransform? | Override groupBy? | getBatchStrategy        |
-| ------ | --------------- | :----------: | :----------------------: | :---------------: | ----------------------- |
-| 1      | Simple array    |     ~38      |            No            |        No         | `chunk(...)` simple     |
-| 2      | Wrapper + array |      ~5      |            No            |        No         | `chunk(...)` + wrapBody |
-| 3      | Multi-endpoint  |     ~10      |         Sometimes        |     Usually No    | `chunk(...)` per group  |
-| 4      | Custom merge    |      ~4      |         Sometimes        |       Maybe       | `customBatch(...)`      |
+| Format | Pattern         | Destinations | Override batchTransform? | getBatchStrategy           |
+| ------ | --------------- | :----------: | :----------------------: | -------------------------- |
+| 1      | Simple array    |     ~38      |            No            | `chunk(...)` simple        |
+| 2      | Wrapper + array |      ~5      |            No            | `chunk(...)` + wrapBody    |
+| 3      | Multi-endpoint  |     ~10      |         Sometimes        | `chunk(...)` per endpoint  |
+| 4      | Custom merge    |      ~4      |         Sometimes        | `customBatch(...)`         |
 
 ## Chunking Algorithm
 

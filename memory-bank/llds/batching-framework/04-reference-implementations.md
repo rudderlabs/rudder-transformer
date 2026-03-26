@@ -10,7 +10,7 @@ PostHog demonstrates the minimal integration. It:
 
 - Defines a simple body type (the inner event object)
 - Transforms one event at a time via `transformEvent`
-- Uses **default** `groupBy` (by endpoint — single endpoint)
+- Framework groups by composite key (single endpoint, so one group)
 - Returns a `chunk(...)` strategy with `wrapBody` for the wrapper envelope
 - Adds a Zod schema requiring `userId` or `anonymousId` and rejecting `record` type
 
@@ -78,10 +78,10 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
   ▼ batchTransform() [default] — iterates, calls transformEvent(), catches errors
 7 TransformedPayloads + 1 error event
   │
-  ▼ groupBy() [default] — group by endpoint → 1 group
+  ▼ group by { endpoint, method, headers, params } [framework] → 1 group
 7 payloads in 1 group
   │
-  ▼ getBatchStrategy() → chunk(maxSize=250, maxBytes=4MB, wrapBody)
+  ▼ getBatchStrategy(endpoint) → chunk(maxSize=250, maxBytes=4MB, wrapBody)
   ▼ apply chunk strategy
 1 chunk (7 < 250):
   body: wrapBody([p1..p7]) → { api_key: 'key', batch: [p1..p7] }
@@ -102,7 +102,7 @@ Braze demonstrates a complex integration that:
 - Uses mutable instance state (dedup `userStore`) — hence per-call instantiation
 - Overrides `batchTransform` for async bulk dedup lookup before per-event transforms
 - Delegates per-event iteration back to the framework via `super.batchTransform()`
-- Classifies events into 3 endpoint buckets via `transformEvent` (default `groupBy` separates by endpoint)
+- Classifies events into 3 endpoint buckets via `transformEvent` (framework groups by composite key)
 - Returns different `BatchStrategy` per endpoint group in `getBatchStrategy`
 - Threads `reqMetadata` to the per-event `process()` function
 
@@ -189,9 +189,9 @@ transformEvent(input: RouterTransformationRequestData): TransformedPayload<Braze
 ### getBatchStrategy
 
 ```typescript
-getBatchStrategy(groupKey: string): BatchStrategy<BrazeBody> {
+getBatchStrategy(endpoint: string): BatchStrategy<BrazeBody> {
   // Subscription groups — chunk at 25, combine groups
-  if (groupKey.includes('/subscription')) {
+  if (endpoint.includes('/subscription')) {
     return chunk({
       maxSize: SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,  // 25
       wrapBody: (bodies) => ({
@@ -203,7 +203,7 @@ getBatchStrategy(groupKey: string): BatchStrategy<BrazeBody> {
   }
 
   // Merge updates — chunk at 50
-  if (groupKey.includes('/merge')) {
+  if (endpoint.includes('/merge')) {
     return chunk({
       maxSize: ALIAS_BRAZE_MAX_REQ_COUNT,  // 50
       wrapBody: (bodies) => ({
@@ -266,10 +266,9 @@ To migrate a destination to the framework:
    - For multi-endpoint destinations, set endpoint based on event type
 5. **Implement `getBatchStrategy`**:
    - Simple destinations: `chunk({ maxSize, wrapBody })` — one strategy
-   - Multi-endpoint: inspect `groupKey` and return different strategies per endpoint
+   - Multi-endpoint: inspect `endpoint` and return different strategies per endpoint
    - Complex merge: `customBatch(...)` for full control
-6. **Override `groupBy`** only if the default (group by endpoint) doesn't work
-7. **Override `batchTransform`** only for pre-batch bulk operations (dedup, identity resolution)
+6. **Override `batchTransform`** only for pre-batch bulk operations (dedup, identity resolution)
    - Call `super.batchTransform()` to delegate iteration
 8. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
 9. **Export `const Integration = YourClass`** (class, not instance)

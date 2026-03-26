@@ -252,7 +252,7 @@ const getAuthHeader = (authInfo) => {
 // with mismatched data types (e.g. numeric value for a string field). The parameterized
 // REST endpoint is lenient with types, so these workspaces are kept on the older path
 // via DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS. New customers get SOQL by default.
-// See SOQL_FEATURE_FLAG.md for full context.
+// See the "SOQL Lookup Feature Flag" section in README.md for full context.
 const isWorkspaceAndDestTypeSupportedForSoql = (
   destinationDefinitionName = '',
   workspaceId = '',

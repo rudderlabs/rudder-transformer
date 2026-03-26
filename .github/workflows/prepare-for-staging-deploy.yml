@@ -132,9 +132,10 @@ jobs:
 
       - name: Update Helm Charts and Raise Pull Request
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           cd rudder-devops
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/rudderlabs/rudder-devops.git
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
           BRANCH_NAME="shared-transformer-$TAG_NAME"

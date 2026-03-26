@@ -337,15 +337,15 @@ the new architecture is simpler than ivm).
 
 ### 4.4 Risk factors
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Bun Worker `postMessage` has size limits or perf issues with large event batches | Medium | Benchmark early in prototype phase; fall back to `child_process` if needed |
-| No per-worker memory limits in Bun | Medium | Kata VM cgroup limits as safety net; monitor RSS per worker |
-| Bun Worker crash recovery edge cases | Medium | Extensive testing in prototype phase |
-| `fetch()` inside Bun Worker may behave differently than in main thread | Low | Test all fetch patterns (proxy, timeout, redirect, streaming) |
-| **Worker sandbox: user code has access to Worker globals** | **High** | See section 4.4.1 below |
-| **ES module loading: `new Function()`/`eval()` can't handle `import`/`export`** | **High** | See section 4.4.2 below |
-| **isolated-vm is V8-only — won't work during Bun migration phase** | **High** | See section 4.4.3 below |
+| Risk                                                                             | Impact   | Mitigation                                                                 |
+|----------------------------------------------------------------------------------|----------|----------------------------------------------------------------------------|
+| Bun Worker `postMessage` has size limits or perf issues with large event batches | Medium   | Benchmark early in prototype phase; fall back to `child_process` if needed |
+| No per-worker memory limits in Bun                                               | Medium   | Kata VM cgroup limits as safety net; monitor RSS per worker                |
+| Bun Worker crash recovery edge cases                                             | Medium   | Extensive testing in prototype phase                                       |
+| `fetch()` inside Bun Worker may behave differently than in main thread           | Low      | Test all fetch patterns (proxy, timeout, redirect, streaming)              |
+| **Worker sandbox: user code has access to Worker globals**                       | **High** | See section 4.4.1 below                                                    |
+| **ES module loading: `new Function()`/`eval()` can't handle `import`/`export`**  | **High** | See section 4.4.2 below                                                    |
+| **isolated-vm is V8-only — won't work during Bun migration phase**               | **High** | See section 4.4.3 below                                                    |
 
 #### 4.4.1 Worker sandbox (OpenAI reviewer P1)
 
@@ -360,13 +360,14 @@ runtime globals and module system — this is a security regression.
 **Mitigation: Build a capability-restricted sandbox inside each worker.**
 
 The worker entry point (`worker.ts`) must:
+
 1. Create a restricted execution environment where user code can only access whitelisted APIs.
 2. Use a combination of:
-   - **Frozen/sealed global proxy**: Intercept all global access, only expose whitelisted
-     functions (`fetch`, `geolocation`, `getCredential`, `log`, `metadata`).
-   - **Bun's `vm`-like API or `new Function()` with controlled scope**: Compile user code
-     in a closure that receives only the whitelisted APIs as arguments.
-   - **`Object.freeze(globalThis)` before user code runs**: Prevent modification of globals.
+    - **Frozen/sealed global proxy**: Intercept all global access, only expose whitelisted
+      functions (`fetch`, `geolocation`, `getCredential`, `log`, `metadata`).
+    - **Bun's `vm`-like API or `new Function()` with controlled scope**: Compile user code
+      in a closure that receives only the whitelisted APIs as arguments.
+    - **`Object.freeze(globalThis)` before user code runs**: Prevent modification of globals.
 3. Strip or shadow dangerous APIs: `Bun.spawn`, `Bun.file`, `Bun.write`, `process`, `require`,
    dynamic `import()`.
 
@@ -384,6 +385,7 @@ transformations that `import` libraries. `new Function()` and `eval()` cannot ha
 **Mitigation: Build a module bundler/resolver in the worker.**
 
 Options:
+
 1. **Pre-bundle user code + libraries** in the main process before sending to the worker:
    concatenate library code with user code, replacing `import` statements with inlined
    module references. This is what ivm already does conceptually (compiles each library
@@ -426,19 +428,19 @@ else). Updated in sequencing table below.
 
 ### 4.5 Comparison: Option A (Node.js child_process) vs Option C (Bun Workers)
 
-| Aspect                                       | Option A                                                         | Option C                                                                          |
-|----------------------------------------------|------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| **Total effort**                             | ~31 days (ivm removal) + ~30 days (Bun migration) = **~61 days** | ~30 days (Bun migration) + ~44 days (ivm removal with Workers) = **~74 days**            |
-| **If done in sequence**                      | 12 weeks                                                         | 15 weeks (+ ~1 wk dual-deployment overhead, see 4.4.3)                                   |
-| **If Bun migration first, then ivm removal** | Bun (6 wks) → child_process pool (6 wks) = 12 wks                | Bun (7 wks, needs Node.js sidecar for user transforms) → Bun Workers (9 wks) = 16 wks    |
-| **If ivm removal first, then Bun**           | child_process pool (6 wks) → Bun (6 wks) = 12 wks                | N/A (Option C requires Bun)                                                              |
-| **Combined (do both at once)**               | Not applicable                                                   | **~50 days (~10 wks)** — saves dual-deployment overhead, higher risk                     |
-| **IPC performance**                          | JSON serialization over IPC channel                              | Structured clone via `postMessage` (faster)                                       |
-| **Startup per worker**                       | ~30-50ms (process fork)                                          | ~1-5ms (thread)                                                                   |
-| **Memory per worker**                        | Higher (full V8 + Node.js per process)                           | Lower (shared Bun runtime, separate JS heap)                                      |
-| **Memory limits**                            | Yes (`--max-old-space-size`)                                     | No (Bun limitation) — rely on Kata cgroup                                         |
-| **Battle-tested**                            | Very (Node.js child_process is decades old)                      | Less (Bun Workers are newer)                                                      |
-| **Long-term maintenance**                    | Two patterns (child_process pool + Bun runtime)                  | One pattern (native Bun Workers)                                                  |
+| Aspect                                       | Option A                                                         | Option C                                                                              |
+|----------------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| **Total effort**                             | ~31 days (ivm removal) + ~30 days (Bun migration) = **~61 days** | ~30 days (Bun migration) + ~44 days (ivm removal with Workers) = **~74 days**         |
+| **If done in sequence**                      | 12 weeks                                                         | 15 weeks (+ ~1 wk dual-deployment overhead, see 4.4.3)                                |
+| **If Bun migration first, then ivm removal** | Bun (6 wks) → child_process pool (6 wks) = 12 wks                | Bun (7 wks, needs Node.js sidecar for user transforms) → Bun Workers (9 wks) = 16 wks |
+| **If ivm removal first, then Bun**           | child_process pool (6 wks) → Bun (6 wks) = 12 wks                | N/A (Option C requires Bun)                                                           |
+| **Combined (do both at once)**               | Not applicable                                                   | **~50 days (~10 wks)** — saves dual-deployment overhead, higher risk                  |
+| **IPC performance**                          | JSON serialization over IPC channel                              | Structured clone via `postMessage` (faster)                                           |
+| **Startup per worker**                       | ~30-50ms (process fork)                                          | ~1-5ms (thread)                                                                       |
+| **Memory per worker**                        | Higher (full V8 + Node.js per process)                           | Lower (shared Bun runtime, separate JS heap)                                          |
+| **Memory limits**                            | Yes (`--max-old-space-size`)                                     | No (Bun limitation) — rely on Kata cgroup                                             |
+| **Battle-tested**                            | Very (Node.js child_process is decades old)                      | Less (Bun Workers are newer)                                                          |
+| **Long-term maintenance**                    | Two patterns (child_process pool + Bun runtime)                  | One pattern (native Bun Workers)                                                      |
 
 ### 4.6 Recommended sequencing
 
@@ -446,12 +448,12 @@ else). Updated in sequencing table below.
 This means a sequential "Bun first, ivm later" approach requires running a Node.js sidecar
 deployment for user transforms during the Bun migration phase.
 
-| Phase | Duration | Description |
-|-------|----------|-------------|
-| **Sequential: Phase 1 (Bun migration)** | 7 weeks | Migrate rudder-transformer to Bun. User transforms routed to a parallel Node.js deployment (feature flag). Adds ~1 week for dual-deployment setup/maintenance. |
-| **Sequential: Phase 2 (Bun Workers)** | 9 weeks | Build WorkerPool with sandbox + module bundler. Remove ivm and Node.js sidecar. |
-| **Total sequential** | **16 weeks** | |
-| **Combined (recommended)** | **~10 weeks** | Migrate to Bun and build Bun WorkerPool simultaneously. No Node.js sidecar needed. Higher risk but avoids dual-deployment complexity. |
+| Phase                                   | Duration      | Description                                                                                                                                                    |
+|-----------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Sequential: Phase 1 (Bun migration)** | 7 weeks       | Migrate rudder-transformer to Bun. User transforms routed to a parallel Node.js deployment (feature flag). Adds ~1 week for dual-deployment setup/maintenance. |
+| **Sequential: Phase 2 (Bun Workers)**   | 9 weeks       | Build WorkerPool with sandbox + module bundler. Remove ivm and Node.js sidecar.                                                                                |
+| **Total sequential**                    | **16 weeks**  |                                                                                                                                                                |
+| **Combined (recommended)**              | **~10 weeks** | Migrate to Bun and build Bun WorkerPool simultaneously. No Node.js sidecar needed. Higher risk but avoids dual-deployment complexity.                          |
 
 **Recommendation: Combined approach.** The sequential path requires maintaining a
 dual-deployment (Bun for everything except user transforms, Node.js for user transforms)
@@ -461,6 +463,7 @@ this overhead.
 
 **De-risk the combined approach with a 2-day prototype (included in estimate):**
 Before committing, spend 2 days building a minimal Bun Worker prototype that:
+
 1. Receives user code via `postMessage`
 2. Executes it in a capability-restricted sandbox
 3. Handles `import`/`export` via pre-bundled code
@@ -473,12 +476,12 @@ migration later (6 wks) = 12 weeks total on the safer path.
 
 ## Summary
 
-| Work item                               | Estimate              | Optional? | Dependencies                      |
-|-----------------------------------------|-----------------------|-----------|-----------------------------------|
-| **1a Routing**                          | 33 days (~6.5 weeks)  | No        | None                              |
-| **Scale to zero**                       | 18 days (~3.5 weeks)  | Yes       | 1a routing complete               |
-| **Bun + ivm removal combined (Opt C)** | 50 days (~10 weeks)   | No        | None (self-contained)             |
-| **Bun + ivm removal sequential**       | 80 days (~16 weeks)   | No        | Requires Node.js sidecar in Ph. 1 |
+| Work item                              | Estimate             | Optional? | Dependencies                      |
+|----------------------------------------|----------------------|-----------|-----------------------------------|
+| **1a Routing**                         | 33 days (~6.5 weeks) | No        | None                              |
+| **Scale to zero**                      | 18 days (~3.5 weeks) | Yes       | 1a routing complete               |
+| **Bun + ivm removal combined (Opt C)** | 50 days (~10 weeks)  | No        | None (self-contained)             |
+| **Bun + ivm removal sequential**       | 80 days (~16 weeks)  | No        | Requires Node.js sidecar in Ph. 1 |
 
 ### Sequencing options
 

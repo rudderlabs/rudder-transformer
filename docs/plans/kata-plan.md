@@ -638,7 +638,7 @@ See [kata-estimations.md](kata-estimations.md) for detailed sequencing options.
 |----------------------------|----------------------------------------------------------------------------|
 | **Routing**                | Predictable K8s DNS names (Option 1a), provisioned by rudderstack-operator |
 | **Intra-tenant isolation** | Bun Workers (Option C) with capability-restricted sandbox                  |
-| **Bun + ivm removal**     | ~10 weeks combined for one senior engineer                                 |
+| **Bun + ivm removal**      | ~10 weeks combined for one senior engineer                                 |
 | **1a Routing**             | ~6.5 weeks for one senior engineer                                         |
 | **Scale to zero**          | ~3.5 weeks (optional)                                                      |
 | **Sequencing**             | Combined Bun migration + ivm removal with Bun Workers                      |

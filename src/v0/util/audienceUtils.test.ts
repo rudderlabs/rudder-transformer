@@ -1,12 +1,14 @@
 import sha256 from 'sha256';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { processAudienceRecord, AudienceField } from './audienceUtils';
+import { InstrumentationError, hashToSha256 } from '@rudderstack/integrations-lib';
+import { processAudienceRecord, AudienceField, HashingType } from './audienceUtils';
 
 jest.mock('../../util/stats', () => ({
   increment: jest.fn(),
 }));
 
 import stats from '../../util/stats';
+import { createHash } from 'crypto';
+import md5 from 'md5';
 
 const mockStatsIncrement = stats.increment as jest.Mock;
 
@@ -29,18 +31,18 @@ const makeDestination = (
 const emailField: AudienceField = {
   normalize: (v) => v.toLowerCase().trim(),
   validate: (v) => v.includes('@'),
-  hashable: true,
+  hashingType: HashingType.SHA256,
 };
 
 const phoneField: AudienceField = {
   normalize: (v) => v.replace(/\D/g, ''),
   validate: (v) => v.length >= 7,
-  hashable: true,
+  hashingType: HashingType.SHA256,
 };
 
 const idField: AudienceField = {
   normalize: (v) => v,
-  hashable: false,
+  hashingType: HashingType.NONE,
 };
 
 beforeEach(() => {
@@ -78,7 +80,7 @@ describe('processAudienceRecord', () => {
     it('drops fields that normalize to an empty string', () => {
       const emptyNormalize: AudienceField = {
         normalize: () => '',
-        hashable: false,
+        hashingType: HashingType.NONE,
       };
       const result = processAudienceRecord(
         { email: 'user@example.com' },
@@ -91,7 +93,7 @@ describe('processAudienceRecord', () => {
       const result = processAudienceRecord(
         { age: 42 },
         {
-          fieldConfigs: { age: { normalize: (v) => v, hashable: false } },
+          fieldConfigs: { age: { normalize: (v) => v, hashingType: HashingType.NONE } },
           destination: makeDestination(),
         },
       );
@@ -180,7 +182,7 @@ describe('processAudienceRecord', () => {
     });
 
     it('uses a permissive default validator for fields without validate function', () => {
-      const noValidate: AudienceField = { normalize: (v) => v, hashable: false };
+      const noValidate: AudienceField = { normalize: (v) => v, hashingType: HashingType.NONE };
       const result = processAudienceRecord(
         { custom: 'anything' },
         { fieldConfigs: { custom: noValidate }, destination: makeDestination() },
@@ -194,12 +196,14 @@ describe('processAudienceRecord', () => {
   });
 
   describe('hashing consistency validation', () => {
-    const hashedValue = 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267'; // 64 hex chars
     const plaintextEmail = 'user@example.com';
+    const sha256HashedEmail = hashToSha256(plaintextEmail);
+    const sha512HashedEmail = createHash('sha512').update(plaintextEmail).digest('hex');
+    const md5HashedEmail = md5(plaintextEmail);
 
     it('emits audience_hashing_inconsistency metric when hashing ON but value already hashed', () => {
       processAudienceRecord(
-        { email: hashedValue },
+        { email: sha256HashedEmail },
         {
           fieldConfigs: { email: emailField },
           destination: makeDestination({ isHashRequired: true }),
@@ -235,7 +239,7 @@ describe('processAudienceRecord', () => {
       process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
       expect(() =>
         processAudienceRecord(
-          { email: hashedValue },
+          { email: sha256HashedEmail },
           {
             fieldConfigs: { email: emailField },
             destination: makeDestination({ isHashRequired: true }),
@@ -244,7 +248,7 @@ describe('processAudienceRecord', () => {
       ).toThrow(InstrumentationError);
       expect(() =>
         processAudienceRecord(
-          { email: hashedValue },
+          { email: sha256HashedEmail },
           {
             fieldConfigs: { email: emailField },
             destination: makeDestination({ isHashRequired: true }),
@@ -268,7 +272,7 @@ describe('processAudienceRecord', () => {
 
     it('does not emit hashing inconsistency metric for non-hashable fields', () => {
       processAudienceRecord(
-        { extern_id: hashedValue },
+        { extern_id: sha256HashedEmail },
         {
           fieldConfigs: { extern_id: idField },
           destination: makeDestination({ isHashRequired: true }),
@@ -296,7 +300,7 @@ describe('processAudienceRecord', () => {
 
     it('does not emit metric when hashing OFF and value is pre-hashed (consistent)', () => {
       processAudienceRecord(
-        { email: hashedValue },
+        { email: sha256HashedEmail },
         {
           fieldConfigs: { email: emailField },
           destination: makeDestination({ isHashRequired: false }),
@@ -306,6 +310,57 @@ describe('processAudienceRecord', () => {
         'audience_hashing_inconsistency',
         expect.anything(),
       );
+    });
+
+    it('dont throw error when hashing type is sha256 and value is already hashed', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashingType: HashingType.SHA256,
+      };
+      const result = processAudienceRecord(
+        { email: sha256HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(sha256HashedEmail);
+    });
+
+    it('dont throw error when hashing type is sha512 and value is already hashed', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashingType: HashingType.SHA512,
+      };
+      const result = processAudienceRecord(
+        { email: sha512HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(sha512HashedEmail);
+    });
+
+    it('dont throw error when hashing type is md5 and value is already hashed', () => {
+      process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+
+      const emailField: AudienceField = {
+        normalize: (v) => v,
+        hashingType: HashingType.MD5,
+      };
+      const result = processAudienceRecord(
+        { email: md5HashedEmail },
+        {
+          fieldConfigs: { email: emailField },
+          destination: makeDestination({ isHashRequired: false }),
+        },
+      );
+      expect(result.email).toBe(md5HashedEmail);
     });
   });
 

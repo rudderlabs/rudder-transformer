@@ -3,14 +3,25 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 import stats from '../../util/stats';
 import { isDefinedAndNotNull } from '.';
 
-export interface AudienceField {
-  normalize: ((v: string) => string) | undefined;
-  validate?: (normalized: string) => boolean;
-  /** Whether this field should be hashed when hashing is enabled */
-  hashable: boolean;
+export enum HashingType {
+  SHA256 = 'SHA256',
+  SHA512 = 'SHA512',
+  MD5 = 'MD5',
+  NONE = 'NONE',
 }
 
-export const HASHED_VALUE_REGEX = /^[\dA-Fa-f]{64}$/;
+const HashingTypeToRegex = {
+  [HashingType.SHA256]: /^[\dA-Fa-f]{64}$/,
+  [HashingType.SHA512]: /^[\dA-Fa-f]{128}$/,
+  [HashingType.MD5]: /^[\dA-Fa-f]{32}$/,
+};
+
+export interface AudienceField {
+  hashingType: HashingType;
+  normalize: ((v: string) => string) | undefined;
+  validate?: (normalized: string) => boolean;
+}
+
 const PHONE_NUMBER_REGEX = /^\+?\d+$/;
 
 /**
@@ -40,10 +51,11 @@ export const validateHashingConsistency = (
   propertyName: string,
   sourceValue: string,
   destination: AudienceDestination,
+  hashingType: HashingType,
 ): void => {
   const { workspaceId, id: destinationId, type: destType, config } = destination;
   const { isHashRequired } = config;
-  const isAlreadyHashed = HASHED_VALUE_REGEX.test(sourceValue);
+  const isAlreadyHashed = HashingTypeToRegex[hashingType]?.test(sourceValue) ?? false;
   if (isHashRequired && isAlreadyHashed) {
     stats.increment('audience_hashing_inconsistency', {
       propertyName,
@@ -105,12 +117,12 @@ export const processAudienceRecord = (
 
     const fieldConfig = fieldConfigs[fieldName];
 
-    const isHashable = fieldConfig?.hashable;
+    const isHashable = fieldConfig?.hashingType && fieldConfig?.hashingType !== HashingType.NONE;
     const sourceValue = String(rawValue);
 
     // Hashing consistency check runs on the source value before normalization
     if (isHashable) {
-      validateHashingConsistency(fieldName, sourceValue, destination);
+      validateHashingConsistency(fieldName, sourceValue, destination, fieldConfig?.hashingType);
     }
 
     // Pre-hashed values are passed through as-is: skip normalization and validation

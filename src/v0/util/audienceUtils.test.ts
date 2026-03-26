@@ -403,6 +403,4 @@ describe('processAudienceRecord', () => {
       expect(result.custom).toBe('value');
     });
   });
-
-  describe('hashing type', () => {});
 });

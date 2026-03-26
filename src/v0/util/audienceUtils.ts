@@ -42,10 +42,6 @@ function isHashingValidationEnabled(): boolean {
   return process.env.AUDIENCE_HASHING_VALIDATION_ENABLED === 'true';
 }
 
-function isAlreadyHashedValidation(sourceValue: string, hashingType: HashingType): boolean {
-  return HashingTypeToRegex[hashingType]?.test(sourceValue) ?? false;
-}
-
 /**
  * Validates that the hashing configuration is consistent with the actual data.
  * Emits a metric when inconsistency is detected.
@@ -59,7 +55,7 @@ export const validateHashingConsistency = (
 ): void => {
   const { workspaceId, id: destinationId, type: destType, config } = destination;
   const { isHashRequired } = config;
-  const isAlreadyHashed = isAlreadyHashedValidation(sourceValue, hashingType);
+  const isAlreadyHashed = HashingTypeToRegex[hashingType]?.test(sourceValue) ?? false;
   if (isHashRequired && isAlreadyHashed) {
     stats.increment('audience_hashing_inconsistency', {
       propertyName,

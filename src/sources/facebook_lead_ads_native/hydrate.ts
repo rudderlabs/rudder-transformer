@@ -112,7 +112,8 @@ async function fetchLeadData(
   }
   logger.error(`[facebook_lead_ads_native] Non-OK response from Facebook API`, {
     status: processedResponse.status,
-    response: JSON.stringify(JsonSchemaGenerator.generate(processedResponse)),
+    responseSchema: JSON.stringify(JsonSchemaGenerator.generate(processedResponse)),
+    response: processedResponse.response,
   });
   // This should never be reached since errorResponseHandler always throws for errors
   throw new Error('Unexpected: errorResponseHandler did not throw for non-OK response');

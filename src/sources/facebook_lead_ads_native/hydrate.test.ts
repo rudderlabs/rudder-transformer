@@ -471,13 +471,14 @@ describe('Facebook Lead Ads Hydration', () => {
         '[facebook_lead_ads_native] Non-OK response from Facebook API',
         {
           status: 500,
-          response: JSON.stringify({
+          responseSchema: JSON.stringify({
             type: 'object',
             properties: {
               response: { type: 'object', properties: { some_field: { type: 'string' } } },
               status: { type: 'number' },
             },
           }),
+          response: { some_field: 'some_value' },
         },
       );
     });
@@ -500,13 +501,14 @@ describe('Facebook Lead Ads Hydration', () => {
         '[facebook_lead_ads_native] Non-OK response from Facebook API',
         {
           status: 500,
-          response: JSON.stringify({
+          responseSchema: JSON.stringify({
             type: 'object',
             properties: {
               response: { type: 'object', properties: {} },
               status: { type: 'number' },
             },
           }),
+          response: {},
         },
       );
     });
@@ -529,13 +531,14 @@ describe('Facebook Lead Ads Hydration', () => {
         '[facebook_lead_ads_native] Non-OK response from Facebook API',
         {
           status: 500,
-          response: JSON.stringify({
+          responseSchema: JSON.stringify({
             type: 'object',
             properties: {
               response: { type: 'string' },
               status: { type: 'number' },
             },
           }),
+          response: 'Internal Server Error',
         },
       );
     });
@@ -558,13 +561,14 @@ describe('Facebook Lead Ads Hydration', () => {
         '[facebook_lead_ads_native] Non-OK response from Facebook API',
         {
           status: 500,
-          response: JSON.stringify({
+          responseSchema: JSON.stringify({
             type: 'object',
             properties: {
               response: { type: 'object', properties: { error: { type: 'null' } } },
               status: { type: 'number' },
             },
           }),
+          response: { error: null },
         },
       );
     });

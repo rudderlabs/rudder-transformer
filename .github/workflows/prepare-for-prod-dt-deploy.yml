@@ -104,6 +104,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudder-devops
+          git -C rudder-devops remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/rudderlabs/rudder-devops.git
 
       - name: Extract branch name
         id: extract_branch_name
@@ -203,6 +204,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudderstack-operator
+          git -C rudderstack-operator remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/rudderlabs/rudderstack-operator.git
 
       - name: Update helm charts and raise pull request for dedicated transformer from operator
         env:

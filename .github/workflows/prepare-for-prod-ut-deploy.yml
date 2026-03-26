@@ -101,6 +101,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           gh repo clone rudderlabs/rudder-devops
+          git -C rudder-devops remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/rudderlabs/rudder-devops.git
 
       - name: Extract branch name
         id: extract_branch_name

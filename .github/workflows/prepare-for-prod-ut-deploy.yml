@@ -96,12 +96,12 @@ jobs:
         run: |
           echo "User Transformer: $UT_TAG_NAME"
 
-      - name: Clone Devops Repo
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          gh repo clone rudderlabs/rudder-devops
-          git -C rudder-devops remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/rudderlabs/rudder-devops.git
+      - name: Checkout Devops Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: rudderlabs/rudder-devops
+          token: ${{ steps.generate-token.outputs.token }}
+          path: rudder-devops
 
       - name: Extract branch name
         id: extract_branch_name

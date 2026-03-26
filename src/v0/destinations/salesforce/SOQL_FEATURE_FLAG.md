@@ -29,5 +29,6 @@ DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS=ws-abc123,ws-def456
 ## When can this be removed?
 
 This feature flag can be removed once all workspaces in the skip list have either:
+
 1. Fixed their lookup field data types in Salesforce, or
 2. Been confirmed as inactive/decommissioned.

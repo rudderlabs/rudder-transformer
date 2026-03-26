@@ -1,11 +1,10 @@
-const {
+import {
   InstrumentationError,
   groupByInBatches,
   mapInBatches,
   reduceInBatches,
-  isDefinedAndNotNullAndNotEmpty,
-} = require('@rudderstack/integrations-lib');
-const {
+} from '@rudderstack/integrations-lib';
+import {
   getAccessToken,
   constructPayload,
   returnArrayOfSubarrays,
@@ -14,17 +13,19 @@ const {
   isEventSentByVDMV2Flow,
   generateErrorObject,
   getErrorRespEvents,
-} = require('../../util');
-const { populateConsentFromConfig } = require('../../util/googleUtils');
-const {
-  populateIdentifiersForRecordEvent,
-  responseBuilder,
-  getOperationAudienceId,
-} = require('./util');
-const { getErrorResponse, createFinalResponse } = require('../../util/recordUtils');
-const { offlineDataJobsMapping, consentConfigMap } = require('./config');
+} from '../../util';
+import { populateConsentFromConfig } from '../../util/googleUtils';
+import { populateIdentifiersForRecordEvent, responseBuilder, getOperationAudienceId } from './util';
+import { getErrorResponse, createFinalResponse } from '../../util/recordUtils';
+import { offlineDataJobsMapping, consentConfigMap } from './config';
+import type { RecordEventContext, RecordInput } from './types';
 
-const processRecordEventArray = async (records, context, operationType) => {
+const processRecordEventArray = async (
+  records: RecordInput[],
+  context: RecordEventContext,
+  operationType: string,
+  workspaceId: string,
+) => {
   const {
     message,
     destination,
@@ -40,14 +41,36 @@ const processRecordEventArray = async (records, context, operationType) => {
   const fieldsArray = await mapInBatches(records, (record) => record.message.fields);
   const metadata = await mapInBatches(records, (record) => record.metadata);
 
-  const userIdentifiersList = populateIdentifiersForRecordEvent(
+  const recordIdentifiers = populateIdentifiersForRecordEvent(
     fieldsArray,
     typeOfList,
     userSchema,
     isHashRequired,
+    workspaceId,
+    destination.ID,
   );
 
-  const outputPayload = constructPayload(message, offlineDataJobsMapping);
+  const validMetadata: (typeof metadata)[0][] = [];
+  const userIdentifiersList: Record<string, unknown>[] = [];
+  const invalidResponses: unknown[] = [];
+
+  recordIdentifiers.forEach((result, i) => {
+    if ('error' in result) {
+      const errorObj = generateErrorObject(result.error);
+      invalidResponses.push(
+        getErrorRespEvents([metadata[i]], errorObj.status, errorObj.message, errorObj.statTags),
+      );
+    } else {
+      validMetadata.push(metadata[i]);
+      userIdentifiersList.push(...result.identifiers);
+    }
+  });
+
+  if (userIdentifiersList.length === 0) {
+    return { successResponse: null, invalidResponses };
+  }
+
+  const outputPayload = constructPayload(message, offlineDataJobsMapping)!;
 
   const userIdentifierChunks = returnArrayOfSubarrays(userIdentifiersList, 20);
   outputPayload.operations = await mapInBatches(userIdentifierChunks, (chunk) => ({
@@ -63,69 +86,48 @@ const processRecordEventArray = async (records, context, operationType) => {
     responseBuilder(accessToken, data, destination, audienceId, consentObj),
   );
 
-  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
+  return {
+    successResponse: getSuccessRespEvents(toSendEvents, validMetadata, destination, true),
+    invalidResponses,
+  };
 };
 
-async function preparePayload(events, config) {
-  /**
-   * If we are getting invalid identifiers, we are preparing empty object response for that event and that is ending up
-   * as an error from google ads api. So we are validating the identifiers and then processing the events.
-   */
-
-  const { validEvents, invalidEvents } = await reduceInBatches(
-    events,
-    (acc, event) => {
-      const hasValidIdentifiers = Object.values(event.message?.fields || {}).some(
-        isDefinedAndNotNullAndNotEmpty,
-      );
-      if (hasValidIdentifiers) {
-        acc.validEvents.push(event);
-      } else {
-        const error = new InstrumentationError('Event has no valid identifiers');
-        const errorObj = generateErrorObject(error);
-        acc.invalidEvents.push(
-          getErrorRespEvents(
-            [event.metadata],
-            errorObj.status,
-            errorObj.message,
-            errorObj.statTags,
-          ),
-        );
-      }
-      return acc;
-    },
-    { validEvents: [], invalidEvents: [] },
-  );
-
-  if (validEvents.length === 0) {
-    return invalidEvents;
-  }
-
-  const { destination, message, metadata } = validEvents[0];
+async function preparePayload(
+  events: RecordInput[],
+  config: Omit<RecordEventContext, 'message' | 'destination' | 'accessToken'>,
+) {
+  const { destination, message, metadata } = events[0];
   const accessToken = getAccessToken(metadata, 'access_token');
 
-  const context = {
+  const { workspaceId } = metadata;
+
+  const context: RecordEventContext = {
     message,
     destination,
     accessToken,
     ...config,
   };
 
-  const groupedRecordsByAction = await groupByInBatches(validEvents, (record) =>
-    record.message.action?.toLowerCase(),
+  const groupedRecordsByAction = await groupByInBatches(
+    events,
+    (record) => record.message.action?.toLowerCase() || '',
   );
 
   const actionResponses = await reduceInBatches(
     ['delete', 'insert', 'update'],
-    async (responses, action) => {
+    async (
+      responses: Record<string, { successResponse: unknown; invalidResponses: unknown[] }>,
+      action: string,
+    ) => {
       const operationType = action === 'delete' ? 'remove' : 'create';
       if (groupedRecordsByAction[action]) {
         return {
           ...responses,
           [action]: await processRecordEventArray(
-            groupedRecordsByAction[action],
+            groupedRecordsByAction[action] as RecordInput[],
             context,
             operationType,
+            workspaceId,
           ),
         };
       }
@@ -134,11 +136,14 @@ async function preparePayload(events, config) {
     {},
   );
 
-  const errorResponse = [...invalidEvents, ...getErrorResponse(groupedRecordsByAction)];
+  const perRecordInvalidResponses = ['delete', 'insert', 'update'].flatMap(
+    (action) => actionResponses[action]?.invalidResponses ?? [],
+  );
+  const errorResponse = [...perRecordInvalidResponses, ...getErrorResponse(groupedRecordsByAction)];
   const finalResponse = createFinalResponse(
-    actionResponses.delete,
-    actionResponses.insert,
-    actionResponses.update,
+    actionResponses.delete?.successResponse,
+    actionResponses.insert?.successResponse,
+    actionResponses.update?.successResponse,
     errorResponse,
   );
 
@@ -151,7 +156,7 @@ async function preparePayload(events, config) {
   return finalResponse;
 }
 
-async function processEventStreamRecordV1Events(groupedRecordInputs) {
+async function processEventStreamRecordV1Events(groupedRecordInputs: RecordInput[]) {
   const { destination } = groupedRecordInputs[0];
   const {
     audienceId,
@@ -174,7 +179,7 @@ async function processEventStreamRecordV1Events(groupedRecordInputs) {
   return preparePayload(groupedRecordInputs, config);
 }
 
-async function processVDMV1RecordEvents(groupedRecordInputs) {
+async function processVDMV1RecordEvents(groupedRecordInputs: RecordInput[]) {
   const { destination, message } = groupedRecordInputs[0];
   const {
     audienceId,
@@ -197,20 +202,20 @@ async function processVDMV1RecordEvents(groupedRecordInputs) {
   return preparePayload(groupedRecordInputs, config);
 }
 
-async function processVDMV2RecordEvents(groupedRecordInputs) {
+async function processVDMV2RecordEvents(groupedRecordInputs: RecordInput[]) {
   const { connection, message } = groupedRecordInputs[0];
   const { audienceId, typeOfList, isHashRequired, userDataConsent, personalizationConsent } =
     connection.config.destination;
 
   const userSchema = message?.identifiers ? Object.keys(message.identifiers) : undefined;
 
-  const events = await mapInBatches(groupedRecordInputs, (record) => ({
+  const events = (await mapInBatches(groupedRecordInputs, (record) => ({
     ...record,
     message: {
       ...record.message,
       fields: record.message.identifiers,
     },
-  }));
+  }))) as RecordInput[];
 
   const config = {
     audienceId,
@@ -224,7 +229,7 @@ async function processVDMV2RecordEvents(groupedRecordInputs) {
   return preparePayload(events, config);
 }
 
-async function processRecordInputs(groupedRecordInputs) {
+async function processRecordInputs(groupedRecordInputs: RecordInput[]) {
   const event = groupedRecordInputs[0];
 
   if (isEventSentByVDMV1Flow(event)) {
@@ -236,6 +241,4 @@ async function processRecordInputs(groupedRecordInputs) {
   return processEventStreamRecordV1Events(groupedRecordInputs);
 }
 
-module.exports = {
-  processRecordInputs,
-};
+export { processRecordInputs };

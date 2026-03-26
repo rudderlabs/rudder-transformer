@@ -69,6 +69,7 @@ const preparePayload = (
     isHashRequired,
     disableFormat,
     destinationId,
+    workspaceId,
   );
   return batchingWithPayloadSize(prepareFinalPayload, workspaceId);
 };

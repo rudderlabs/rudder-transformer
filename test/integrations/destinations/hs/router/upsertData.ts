@@ -126,9 +126,7 @@ export const upsertData = [
         },
       },
     },
-    envOverrides: {
-      HUBSPOT_UPSERT_ENABLED_WORKSPACES: 'ws-upsert-enabled',
-    },
+    envOverrides: {},
   },
   {
     name: 'hs',
@@ -238,9 +236,7 @@ export const upsertData = [
         },
       },
     },
-    envOverrides: {
-      HUBSPOT_UPSERT_ENABLED_WORKSPACES: 'ws-upsert-enabled',
-    },
+    envOverrides: {},
   },
   {
     name: 'hs',
@@ -441,9 +437,7 @@ export const upsertData = [
         },
       },
     },
-    envOverrides: {
-      HUBSPOT_UPSERT_ENABLED_WORKSPACES: 'ws-upsert-enabled',
-    },
+    envOverrides: {},
   },
   {
     name: 'hs',
@@ -552,9 +546,7 @@ export const upsertData = [
         },
       },
     },
-    envOverrides: {
-      HUBSPOT_UPSERT_ENABLED_WORKSPACES: 'ws-upsert-enabled',
-    },
+    envOverrides: {},
   },
   {
     name: 'hs',
@@ -699,8 +691,6 @@ export const upsertData = [
         },
       },
     },
-    envOverrides: {
-      HUBSPOT_UPSERT_ENABLED_WORKSPACES: 'ws-upsert-enabled',
-    },
+    envOverrides: {},
   },
 ];

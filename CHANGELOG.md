@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.127.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.4...v1.127.0) (2026-03-24)
+
+
+### Features
+
+* **fb_custom_audience:** add hashing consistency validation ([#5018](https://github.com/rudderlabs/rudder-transformer/issues/5018)) ([98f29cd](https://github.com/rudderlabs/rudder-transformer/commit/98f29cda8557285ba7889a1498d6b910074d2a3c))
+* **fb_custom_audience:** handle invalid fields and events ([#5023](https://github.com/rudderlabs/rudder-transformer/issues/5023)) ([d4d9801](https://github.com/rudderlabs/rudder-transformer/commit/d4d98012867e1d8a1902e4bbfd4e4c30b33c355c))
+* **google_adwords_remarketing_lists:** handle invalid fields and record dropping ([#5051](https://github.com/rudderlabs/rudder-transformer/issues/5051)) ([55ed414](https://github.com/rudderlabs/rudder-transformer/commit/55ed4148d6b6dad727e1c248c881a104f7cc6d2a))
+* **google_adwords_remarketing_lists:** implement Google-specific PII normalization ([#5052](https://github.com/rudderlabs/rudder-transformer/issues/5052)) ([b1b44b3](https://github.com/rudderlabs/rudder-transformer/commit/b1b44b3e6318456a04927208f8a4392daf4c2d39))
+
+
+### Bug Fixes
+
+* **fb_custom_audience:** align normalization logic with Facebook CAPI spec ([#5024](https://github.com/rudderlabs/rudder-transformer/issues/5024)) ([55e7417](https://github.com/rudderlabs/rudder-transformer/commit/55e741754c3e64f722791f1f24e920113fc7855d))
+* **fb_custom_audience:** one invalid event causes entire batch to fail ([#5036](https://github.com/rudderlabs/rudder-transformer/issues/5036)) ([8dca5a2](https://github.com/rudderlabs/rudder-transformer/commit/8dca5a29d2c5678e7b5daf04b0b44cf77a4a260b))
+* validateHashingConsistency is not exported ([#5059](https://github.com/rudderlabs/rudder-transformer/issues/5059)) ([7db369b](https://github.com/rudderlabs/rudder-transformer/commit/7db369bf0e2c0f0967739bd2769b37a005d80424))
+
 ### [1.126.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.3...v1.126.4) (2026-03-23)
 
 

@@ -10,7 +10,7 @@ export enum HashingType {
   NONE = 'NONE',
 }
 
-export const HashingTypeToRegex = {
+const HashingTypeToRegex = {
   [HashingType.SHA256]: /^[\dA-Fa-f]{64}$/,
   [HashingType.SHA512]: /^[\dA-Fa-f]{128}$/,
   [HashingType.MD5]: /^[\dA-Fa-f]{32}$/,
@@ -43,16 +43,7 @@ function isHashingValidationEnabled(): boolean {
 }
 
 function isAlreadyHashedValidation(sourceValue: string, hashingType: HashingType): boolean {
-  switch (hashingType) {
-    case HashingType.SHA256:
-      return HashingTypeToRegex[HashingType.SHA256].test(sourceValue);
-    case HashingType.SHA512:
-      return HashingTypeToRegex[HashingType.SHA512].test(sourceValue);
-    case HashingType.MD5:
-      return HashingTypeToRegex[HashingType.MD5].test(sourceValue);
-    default:
-      return false;
-  }
+  return HashingTypeToRegex[hashingType]?.test(sourceValue) ?? false;
 }
 
 /**

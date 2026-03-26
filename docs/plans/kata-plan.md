@@ -405,6 +405,129 @@ this if retry-based wake-up proves too slow or unreliable.
 
 ---
 
+## Issue 3: CPU metering and billing
+
+With one Kata pod per tenant, we have clean CPU attribution per workspace — no
+shared-process accounting needed. This enables charging customers based on actual
+CPU computation consumed by their transformations.
+
+### Metering options
+
+#### Option A: K8s cgroup metrics (infrastructure-level)
+
+Each Kata pod's CPU usage is tracked by kubelet and exposed via cAdvisor. Prometheus
+scrapes `container_cpu_usage_seconds_total{pod="transformer-{wsId}"}`.
+
+```
+kubelet/cAdvisor → Prometheus → aggregation service → billing API
+```
+
+| Pros                                         | Cons                                                                |
+|----------------------------------------------|---------------------------------------------------------------------|
+| Zero application changes                     | Includes non-transformation CPU (HTTP serving, health checks, idle) |
+| Works for any runtime (Bun, Node.js, Python) | Granularity is per-pod, not per-request                             |
+| Standard K8s observability stack             | Doesn't attribute CPU to specific transformations                   |
+
+#### Option B: Application-level metering (per-request)
+
+The transformer measures CPU time per transformation execution and reports it.
+In Bun/Node.js: `process.cpuUsage()` before/after each transformation.
+
+```
+transformer pod → emits cpu_seconds_per_request metric with workspace_id label
+  → Prometheus → aggregation service → billing API
+```
+
+| Pros                                               | Cons                                                        |
+|----------------------------------------------------|-------------------------------------------------------------|
+| Precise: only counts actual transformation CPU     | Requires code changes in transformer                        |
+| Per-transformation granularity                     | Doesn't capture overhead (HTTP parsing, serialization)      |
+| Can expose per-request CPU in API response headers | Need to verify `process.cpuUsage()` accuracy in Bun Workers |
+
+#### Option C: Hybrid (recommended)
+
+Use **cgroup metrics for billing** (total CPU consumed by the tenant's pod = what we
+pay for on infra) and **application-level metrics for visibility** (per-request CPU
+for the customer's dashboard and debugging).
+
+```
+Billing:    cgroup container_cpu_usage_seconds_total → monthly aggregation → invoice
+Visibility: per-request cpu_time_ms metric → customer dashboard → "your transformEvent
+            on avg uses 12ms CPU per event"
+```
+
+This way customers pay for what they actually consume (including overhead), but can
+also see per-transformation breakdowns to optimize their code.
+
+### Industry reference: Cloudflare Workers vs AWS Lambda
+
+| Dimension           | AWS Lambda                                        | Cloudflare Workers          |
+|---------------------|---------------------------------------------------|-----------------------------|
+| **Bills for**       | Wall-clock duration x memory (GB-seconds)         | CPU time only               |
+| **I/O wait time**   | Billed                                            | Free                        |
+| **Price**           | ~$0.0000167/GB-s                                  | $0.02 per million CPU-ms    |
+| **Memory**          | 128 MB - 10 GB (configurable, CPU scales with it) | 128 MB (fixed)              |
+| **Granularity**     | 1 ms                                              | 1 ms                        |
+| **Execution model** | Dedicated microVM per invocation                  | V8 isolate (shared process) |
+
+**Key insight:** For transformations that make external HTTP calls (`fetch`), the billing
+models diverge dramatically. A request doing 10ms CPU + 190ms I/O wait: Lambda bills
+200ms x memory, Workers bills only 10ms. A DBOS study found a 53x cost difference for
+I/O-heavy workloads.
+
+For **CPU-bound transformations** (our dominant case: data mapping, filtering), both
+models converge — wall-clock time ≈ CPU time, so the per-unit cost matters more than
+the metering model.
+
+**Recommendation: CPU-time-based metering (Cloudflare model).**
+
+- Fairer: a tenant waiting 2s on a slow external API isn't charged the same as one
+  doing 2s of CPU-intensive JSON transformation.
+- Aligns with cgroup CPU accounting (`cpuacct.usage`) which is what Kata/Firecracker
+  naturally provides.
+- Simpler to reason about for customers ("my transformation uses X ms of CPU per event").
+- For our CPU-bound dominant case, it produces similar results to wall-clock billing
+  but is more defensible when customers do make external calls.
+
+### Billing model options
+
+| Model                              | Description                                                                        | Fit                                                         |
+|------------------------------------|------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| **CPU credits (Cloudflare-style)** | Bill per CPU-millisecond consumed. Include a free tier (e.g., 30M CPU-ms/month).   | Best fit — aligns with metering, fair for I/O-heavy tenants |
+| **GB-seconds (Lambda-style)**      | Bill wall-clock duration x memory allocated.                                       | Simpler but penalizes tenants who make external HTTP calls  |
+| **Tiered allocation**              | Fixed CPU-hours/month per plan tier (e.g., 100h Standard, 1000h Pro)               | Good for predictable pricing                                |
+| **Reserved + burst**               | Base allocation in plan, overage billed per CPU-ms                                 | Good balance of predictability and flexibility              |
+| **Per-event pricing**              | Flat rate per transformation event (simpler, but doesn't account for CPU variance) | Simplest, but penalizes efficient transformations           |
+
+### Implementation components
+
+| Component               | Description                                                                        |
+|-------------------------|------------------------------------------------------------------------------------|
+| **Metrics collection**  | Prometheus scraping per-workspace pod CPU metrics (cgroup + app-level)             |
+| **Usage aggregation**   | Service that queries Prometheus, aggregates per workspace per billing period       |
+| **Quota enforcement**   | When credits/allocation exhausted: throttle (429), degrade (slower pool), or block |
+| **Usage API**           | Expose current usage to customers (REST API + dashboard)                           |
+| **Alerts**              | Notify customers approaching quota (80%, 90%, 100% thresholds)                     |
+| **Billing integration** | Feed aggregated usage into billing system for invoicing                            |
+
+### Quota enforcement strategies
+
+When a workspace exhausts its CPU allocation:
+
+1. **Hard limit**: Return HTTP 429 (Too Many Requests) with `Retry-After` header.
+   rudder-server queues events until next billing period. Risk: data loss if queue fills.
+2. **Soft limit + overage**: Allow continued processing, bill overage at a premium rate.
+   No data loss, but unpredictable bills.
+3. **Degraded mode**: Scale the workspace pod down (fewer CPU shares via K8s resource
+   limits), so transformations run slower but don't stop. Customer experiences latency
+   increase, not failure.
+4. **Notification only**: No enforcement, just alert. Billing is post-hoc. Simplest to
+   implement, but no spending control.
+
+See [kata-estimations.md](kata-estimations.md) for effort breakdown.
+
+---
+
 ## Issue 2: Removing isolated-vm
 
 ### Sub-question 1: Intra-tenant isolation (between transformations of the same workspace)
@@ -647,6 +770,7 @@ See [kata-estimations.md](kata-estimations.md) for detailed sequencing options.
 | **1a Routing**             | ~6.5 weeks for one senior engineer                                         |
 | **Scale to zero**          | ~3.5 weeks (optional)                                                      |
 | **TypeScript rewrite**     | ~1 week (folded into Bun + ivm work)                                       |
+| **CPU metering**           | ~3 weeks MVP / ~7.5 weeks full (with quota enforcement + dashboard)        |
 | **Sequencing**             | Combined Bun migration + ivm removal + TS, then A/B mirroring              |
 | **Total wall clock**       | ~18 weeks with 2-3 engineers (A/B soak is the floor)                       |
 

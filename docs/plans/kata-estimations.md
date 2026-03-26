@@ -670,6 +670,112 @@ JavaScript files and shared type definitions.
 
 ---
 
+## 8. CPU metering and billing
+
+### 8.1 Metrics collection
+
+**Cgroup metrics (billing source — zero app changes):**
+
+Per-workspace CPU usage is already available via kubelet/cAdvisor:
+
+```promql
+rate(container_cpu_usage_seconds_total{
+  pod=~"transformer-.*",
+  namespace="transformers"
+}[5m])
+```
+
+Labeling: The operator sets a `workspace_id` label on each pod. Prometheus relabeling
+config maps this to a metric label for aggregation.
+
+| Task                                                                       | Estimate     |
+|----------------------------------------------------------------------------|--------------|
+| Add `workspace_id` label to per-workspace pod specs (operator Helm chart)  | 0.5 days     |
+| Configure Prometheus relabeling to expose workspace_id on cAdvisor metrics | 0.5 days     |
+| Verify metrics are queryable per workspace in Grafana                      | 0.5 days     |
+| **Subtotal**                                                               | **1.5 days** |
+
+**Application-level metrics (visibility — per-request granularity):**
+
+Add CPU time measurement in the transformer's request handler:
+
+```typescript
+const before = process.cpuUsage();
+const result = await workerPool.execute(request);
+const after = process.cpuUsage();
+const cpuMs = (after.user - before.user + after.system - before.system) / 1000;
+metrics.observe('transformation_cpu_ms', cpuMs, { workspace_id, transformation_id });
+```
+
+| Task                                                                           | Estimate     |
+|--------------------------------------------------------------------------------|--------------|
+| Add `process.cpuUsage()` instrumentation in transformer request handler        | 1 day        |
+| Verify `process.cpuUsage()` works correctly in Bun (may need Bun-specific API) | 0.5 days     |
+| Add Prometheus histogram metric (`transformation_cpu_milliseconds`)            | 0.5 days     |
+| Add per-request CPU header in response (`X-CPU-Time-Ms`) for debugging         | 0.5 days     |
+| **Subtotal**                                                                   | **2.5 days** |
+
+### 8.2 Usage aggregation service
+
+A service that periodically queries Prometheus, aggregates CPU usage per workspace per
+billing period, and stores it for billing and customer-facing usage APIs.
+
+| Task                                                                       | Estimate   |
+|----------------------------------------------------------------------------|------------|
+| Design aggregation schema (workspace_id, period, cpu_seconds, event_count) | 1 day      |
+| Implement aggregation service (Go or Python, queries Prometheus range API) | 3 days     |
+| Store aggregated usage (PostgreSQL or billing system's data store)         | 1 day      |
+| Backfill / catch-up logic for missed scrape windows                        | 1 day      |
+| Unit + integration tests                                                   | 2 days     |
+| **Subtotal**                                                               | **8 days** |
+
+### 8.3 Quota enforcement
+
+| Task                                                                        | Estimate    |
+|-----------------------------------------------------------------------------|-------------|
+| Design quota model (credits, tiers, or reserved+burst — product decision)   | 2 days      |
+| Implement quota check in rudder-server (before routing to transformer)      | 2 days      |
+| Implement throttling response (HTTP 429 with Retry-After, or degraded mode) | 2 days      |
+| Customer alerts at 80%/90%/100% thresholds (webhook or email)               | 2 days      |
+| Tests                                                                       | 2 days      |
+| **Subtotal**                                                                | **10 days** |
+
+### 8.4 Customer-facing usage API and dashboard
+
+| Task                                                                                 | Estimate   |
+|--------------------------------------------------------------------------------------|------------|
+| Usage API endpoints (current period usage, historical, per-transformation breakdown) | 3 days     |
+| Dashboard UI (usage chart, top transformations by CPU, quota bar)                    | 5 days     |
+| API documentation                                                                    | 1 day      |
+| **Subtotal**                                                                         | **9 days** |
+
+### 8.5 Billing system integration
+
+Depends heavily on the existing billing system (Stripe, internal, etc.). Estimate covers
+the integration layer, not the billing system itself.
+
+| Task                                                                       | Estimate   |
+|----------------------------------------------------------------------------|------------|
+| Design billing events (usage records fed to billing system)                | 1 day      |
+| Implement billing event emission (from aggregation service to billing API) | 2 days     |
+| Invoice line item formatting                                               | 1 day      |
+| End-to-end test with staging billing                                       | 2 days     |
+| **Subtotal**                                                               | **6 days** |
+
+### CPU metering total
+
+| Phase                                         | Estimate                  | Optional?                               |
+|-----------------------------------------------|---------------------------|-----------------------------------------|
+| Metrics collection (cgroup + app-level)       | 4 days                    | No (foundation)                         |
+| Usage aggregation service                     | 8 days                    | No                                      |
+| Quota enforcement                             | 10 days                   | Can start as notification-only (2 days) |
+| Customer dashboard + API                      | 9 days                    | Can defer, start with API only (3 days) |
+| Billing integration                           | 6 days                    | Depends on billing system readiness     |
+| **Total**                                     | **~37 days (~7.5 weeks)** |                                         |
+| **MVP (metrics + aggregation + alerts only)** | **~14 days (~3 weeks)**   |                                         |
+
+---
+
 ## Summary
 
 | Work item                              | Estimate (active eng.) | Wall clock | Optional? | Dependencies               |
@@ -680,13 +786,8 @@ JavaScript files and shared type definitions.
 | **TypeScript rewrite**                 | 5 days (~1 week)       | 1 week     | No        | Part of Bun + ivm work     |
 | **Contract tests**                     | 25 days (~5 weeks)     | 5 weeks    | No        | Written during ivm removal |
 | **A/B mirroring validation**           | 22 days (~4.5 weeks)   | 6-8 weeks  | No        | Bun + ivm complete         |
-
-| Work item                              | Estimate             | Optional? | Dependencies                      |
-|----------------------------------------|----------------------|-----------|-----------------------------------|
-| **1a Routing**                         | 33 days (~6.5 weeks) | No        | None                              |
-| **Scale to zero**                      | 18 days (~3.5 weeks) | Yes       | 1a routing complete               |
-| **Bun + ivm removal combined (Opt C)** | 50 days (~10 weeks)  | No        | None (self-contained)             |
-| **Bun + ivm removal sequential**       | 80 days (~16 weeks)  | No        | Requires Node.js sidecar in Ph. 1 |
+| **CPU metering (full)**                | 37 days (~7.5 weeks)   | 7.5 weeks  | No        | Per-workspace pods live    |
+| **CPU metering (MVP)**                 | 14 days (~3 weeks)     | 3 weeks    | No        | Per-workspace pods live    |
 
 ### Sequencing options
 

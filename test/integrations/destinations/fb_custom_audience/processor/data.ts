@@ -1,4 +1,4 @@
-import config from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import * as config from '../../../../../src/v0/destinations/fb_custom_audience/config';
 import { mockFns } from '../mocks';
 export const data = [
   {
@@ -469,7 +469,7 @@ export const data = [
                       '@09432457768',
                       'f',
                       'Ms.',
-                      'ABC',
+                      'abc',
                       'ZIP ',
                       '123abc ',
                       'IN',
@@ -525,7 +525,7 @@ export const data = [
                       '@09432457768',
                       'f',
                       'Ms.',
-                      'ABC',
+                      'abc',
                       'ZIP ',
                       '123abc ',
                       'IN',
@@ -1044,7 +1044,7 @@ export const data = [
                       '@09432457768',
                       'f',
                       'Ms.',
-                      'ABC',
+                      'abc',
                       'ZIP ',
                       '123abc ',
                       'IN',
@@ -1101,7 +1101,7 @@ export const data = [
                       '@09432457768',
                       'f',
                       'Ms.',
-                      'ABC',
+                      'abc',
                       'ZIP ',
                       '123abc ',
                       'IN',
@@ -1354,7 +1354,7 @@ export const data = [
                       '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
                       '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
                       '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
-                      '',
+                      '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4',
                       'b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b',
                       'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
                       'abc',
@@ -2029,47 +2029,17 @@ export const data = [
         status: 200,
         body: [
           {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
-              endpointPath: 'users',
-              headers: {},
-              userId: '',
-              params: {
-                access_token: 'ABC',
-                payload: {
-                  is_raw: true,
-                  data_source: {
-                    type: 'UNKNOWN',
-                    sub_type: 'ANYTHING',
-                  },
-                  schema: [
-                    'EMAIL',
-                    'DOBM',
-                    'DOBD',
-                    'DOBY',
-                    'PHONE',
-                    'GEN',
-                    'FI',
-                    'MADID',
-                    'ZIP',
-                    'ST',
-                    'COUNTRY',
-                  ],
-                  data: [['', '', '', '', '', '', '', '', '', '', '']],
-                },
-              },
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
+            error:
+              'All user properties [EMAIL, DOBM, DOBD, DOBY, PHONE, GEN, FI, MADID, ZIP, ST, COUNTRY] are invalid or null. At least one valid field is required.',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
             },
-            statusCode: 200,
+            statusCode: 400,
           },
         ],
       },
@@ -2480,7 +2450,7 @@ export const data = [
     },
     mockFns: () => {
       jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
-      jest.replaceProperty(config, 'maxPayloadSize', 400 as typeof config.maxPayloadSize);
+      jest.spyOn(config, 'getMaxPayloadSize').mockReturnValue(400);
     },
   },
   {
@@ -2605,7 +2575,7 @@ export const data = [
                       '@09432457768',
                       'f',
                       'Ms.',
-                      'ABC',
+                      'abc',
                       'ZIP ',
                       '123abc ',
                       'IN',

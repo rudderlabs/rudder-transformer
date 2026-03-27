@@ -631,7 +631,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: { jobId: 1, userId: 'u1' },
+              metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-soql-skip' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -698,7 +698,12 @@ export const data = [
                 },
               ],
               metadata: [
-                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 1, userId: 'u1' },
+                {
+                  destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' },
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-soql-skip',
+                },
               ],
               batched: false,
               statusCode: 200,
@@ -722,6 +727,9 @@ export const data = [
           ],
         },
       },
+    },
+    envOverrides: {
+      DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS: 'ws-soql-skip',
     },
   },
   {
@@ -788,7 +796,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: { jobId: 1, userId: 'u1' },
+              metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-soql-skip' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -856,7 +864,12 @@ export const data = [
                 },
               ],
               metadata: [
-                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 1, userId: 'u1' },
+                {
+                  destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' },
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-soql-skip',
+                },
               ],
               batched: false,
               statusCode: 200,
@@ -880,6 +893,9 @@ export const data = [
           ],
         },
       },
+    },
+    envOverrides: {
+      DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS: 'ws-soql-skip',
     },
   },
   {
@@ -946,7 +962,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: { jobId: 1, userId: 'u1' },
+              metadata: { jobId: 1, userId: 'u1', workspaceId: 'ws-soql-skip' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -1014,7 +1030,12 @@ export const data = [
                 },
               ],
               metadata: [
-                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 1, userId: 'u1' },
+                {
+                  destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' },
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-soql-skip',
+                },
               ],
               batched: false,
               statusCode: 200,
@@ -1038,6 +1059,9 @@ export const data = [
           ],
         },
       },
+    },
+    envOverrides: {
+      DEST_SALESFORCE_SOQL_SKIP_WORKSPACE_IDS: 'ws-soql-skip',
     },
   },
 ];

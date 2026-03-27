@@ -1,7 +1,13 @@
 import md5 from 'md5';
-import { hashToSha256, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  hashToSha256,
+  InstrumentationError,
+  formatZodError,
+  groupByInBatches,
+} from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
-import type { TiktokAudienceMessage, TiktokAudienceRequest } from './types';
+import type { TiktokAudienceListRequest } from './types';
+import { TiktokAudienceListRouterRequestSchema } from './types';
 import { SHA256_TRAITS, ACTION_MAP, ENDPOINT, ENDPOINT_PATH } from './config';
 import {
   defaultRequestConfig,
@@ -9,30 +15,10 @@ import {
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } from '../../util';
-import { validateAudienceListMessageType } from '../../util/validate';
+import { processTiktokAudienceRecords } from './recordTransform';
+import { ProcessTiktokAudienceRecordsResponse, TiktokAudienceRecordRequest } from './recordTypes';
 
-function validateInput(message: TiktokAudienceMessage) {
-  const { type, properties } = message;
-
-  validateAudienceListMessageType(type);
-
-  if (!properties) {
-    throw new InstrumentationError('Message properties is not present. Aborting message.');
-  }
-
-  const { listData } = properties;
-  if (!listData) {
-    throw new InstrumentationError('listData is not present inside properties. Aborting message.');
-  }
-
-  for (const key of Object.keys(listData)) {
-    if (!ACTION_MAP[key]) {
-      throw new InstrumentationError(`unsupported action type ${key}. Aborting message.`);
-    }
-  }
-}
-
-function prepareIdentifiersList(event: TiktokAudienceRequest) {
+function prepareIdentifiersList(event: TiktokAudienceListRequest) {
   const { message, destination, metadata } = event;
   const { isHashRequired } = destination.Config;
 
@@ -53,12 +39,12 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
     return trait;
   };
 
-  const hashTraits = (traits: Record<string, string>[]) =>
+  const hashTraits = (traits: Record<string, string | null>[]) =>
     traits.map((trait) =>
       destinationFields.map((destinationField) =>
         trait[destinationField]
           ? {
-              id: hashIdentifier(destinationField, trait[destinationField]),
+              id: hashIdentifier(destinationField, trait[destinationField]!),
               audience_ids: [audienceId],
             }
           : {},
@@ -78,7 +64,7 @@ function prepareIdentifiersList(event: TiktokAudienceRequest) {
 
 function buildResponseForProcessTransformation(
   identifiersList: any[],
-  event: TiktokAudienceRequest,
+  event: TiktokAudienceListRequest,
 ) {
   const accessToken = event.metadata?.secret?.accessToken;
   const anonymousId = event.message?.anonymousId;
@@ -101,31 +87,70 @@ function buildResponseForProcessTransformation(
   return responses;
 }
 
-function process(event: TiktokAudienceRequest) {
-  validateInput(event.message);
+function validateAudienceListEvent(event: unknown) {
+  const result = TiktokAudienceListRouterRequestSchema.safeParse(event);
+  if (!result.success) {
+    throw new InstrumentationError(formatZodError(result.error));
+  }
+  return result.data;
+}
+
+function processTiktokAudienceList(event: TiktokAudienceListRequest) {
   const identifierLists = prepareIdentifiersList(event);
   return buildResponseForProcessTransformation(identifierLists, event);
 }
 
 const processRouterDest = async (
-  requests: TiktokAudienceRequest[],
+  events: (TiktokAudienceListRequest | TiktokAudienceRecordRequest)[],
 ): Promise<RouterTransformationResponse[]> => {
-  if (requests?.length === 0) return [];
+  if (!events || events.length === 0) return [];
 
-  const successResponseList: RouterTransformationResponse[] = [];
-  const failedResponseList: RouterTransformationResponse[] = [];
+  const groupedEvents = await groupByInBatches<
+    TiktokAudienceListRequest | TiktokAudienceRecordRequest,
+    string
+  >(events, (event) => event.message?.type?.toLowerCase());
 
-  for (const request of requests) {
-    try {
-      const response = process(request);
-      successResponseList.push(
-        getSuccessRespEvents(response, [request.metadata], request.destination, true),
-      );
-    } catch (error) {
-      failedResponseList.push(handleRtTfSingleEventError(request, error, {}));
+  const supportedEventTypes = ['record', 'audiencelist'];
+  const eventTypes = Object.keys(groupedEvents);
+  const unsupportedEventList = eventTypes.filter(
+    (eventType) => !supportedEventTypes.includes(eventType),
+  );
+
+  const failedResponses: RouterTransformationResponse[] = [];
+  const successfulResponses: RouterTransformationResponse[] = [];
+
+  if (groupedEvents.record) {
+    const response: ProcessTiktokAudienceRecordsResponse = processTiktokAudienceRecords(
+      groupedEvents.record,
+    );
+    failedResponses.push(...response.failedResponses);
+    successfulResponses.push(...response.successfulResponses);
+  }
+  if (groupedEvents.audiencelist) {
+    for (const event of groupedEvents.audiencelist) {
+      try {
+        const tiktokEvent = validateAudienceListEvent(event);
+        const response = processTiktokAudienceList(tiktokEvent);
+        successfulResponses.push(
+          getSuccessRespEvents(response, [tiktokEvent.metadata], tiktokEvent.destination, true),
+        );
+      } catch (error) {
+        failedResponses.push(handleRtTfSingleEventError(event, error, {}));
+      }
     }
   }
-  return [...failedResponseList, ...successResponseList];
+  for (const unsupportedEvent of unsupportedEventList) {
+    for (const event of groupedEvents[unsupportedEvent]) {
+      failedResponses.push(
+        handleRtTfSingleEventError(
+          event,
+          new InstrumentationError(`unsupported event found ${unsupportedEvent}`),
+          {},
+        ),
+      );
+    }
+  }
+  return [...failedResponses, ...successfulResponses];
 };
 
-export { process, processRouterDest };
+export { processRouterDest };

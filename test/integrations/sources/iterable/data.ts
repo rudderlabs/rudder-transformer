@@ -105,16 +105,32 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Unknown event type from Iterable',
-            statTags: {
-              destinationId: 'Non determinable',
-              errorCategory: 'transformation',
-              implementation: 'native',
-              module: 'source',
-              srcType: 'iterable',
-              workspaceId: 'Non determinable',
+            output: {
+              batch: [
+                {
+                  userId: '7c904adb430b791c0abd432442374b17',
+                  context: {
+                    integration: { name: 'Iterable', version: '1.0.0' },
+                    library: { name: 'unknown', version: 'unknown' },
+                    traits: { email: 'test@abcd.com' },
+                  },
+                  event: 'emailSubscribe',
+                  integrations: { Iterable: false },
+                  properties: {
+                    channelIds: [],
+                    createdAt: '2022-04-19 03:33:50 +00:00',
+                    emailListIds: [1589748],
+                    messageTypeIds: [],
+                    profileUpdatedAt: '2022-04-19 03:33:50 +00:00',
+                    publicIdString: 'ad474bf7-e785-480f-b9d0-861b85ab5bf5',
+                    signupSource: 'WebForm',
+                  },
+                  receivedAt: '2022-04-19T03:33:50.000Z',
+                  timestamp: '2022-04-19T03:33:50.000Z',
+                  type: 'track',
+                },
+              ],
             },
-            statusCode: 400,
           },
         ],
       },
@@ -2355,6 +2371,69 @@ export const data = [
               batch: [
                 {
                   userId: '0e13848b1c7e27eb5d88c5d35b70783e',
+                  context: {
+                    integration: { name: 'Iterable', version: '1.0.0' },
+                    library: { name: 'unknown', version: 'unknown' },
+                    traits: { email: 'docs@iterable.com' },
+                  },
+                  event: 'webPushSendSkip',
+                  integrations: { Iterable: false },
+                  properties: {
+                    createdAt: '2019-08-07 23:43:48 +00:00',
+                    reason: 'DuplicateMarketingMessage',
+                    campaignId: 723636,
+                    messageId: '4238c918b20a41dfbe9a910275b76f12',
+                  },
+                  receivedAt: '2019-08-07T23:43:48.000Z',
+                  timestamp: '2019-08-07T23:43:48.000Z',
+                  type: 'track',
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'iterable',
+    description: 'test-30',
+    module: 'source',
+    version: 'v2',
+    input: {
+      request: {
+        body: [
+          {
+            request: {
+              body: JSON.stringify({
+                userId: '12345',
+                eventName: 'webPushSendSkip',
+                dataFields: {
+                  createdAt: '2019-08-07 23:43:48 +00:00',
+                  reason: 'DuplicateMarketingMessage',
+                  campaignId: 723636,
+                  messageId: '4238c918b20a41dfbe9a910275b76f12',
+                  email: 'docs@iterable.com',
+                },
+              }),
+            },
+            source: {},
+          },
+        ],
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              batch: [
+                {
+                  userId: '12345',
                   context: {
                     integration: { name: 'Iterable', version: '1.0.0' },
                     library: { name: 'unknown', version: 'unknown' },

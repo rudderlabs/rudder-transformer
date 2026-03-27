@@ -47,6 +47,7 @@ export type BatchedRequest<
   type: string;
   method: string;
   endpoint: string;
+  endpointPath?: string;
   headers: THeaders;
   params: TParams;
   files: Record<string, never>;

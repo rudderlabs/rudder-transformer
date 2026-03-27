@@ -1,8 +1,15 @@
 import { hydrate } from './hydrate';
 import * as network from '../../adapters/network';
+import logger from '../../logger';
 import { SourceHydrationOutput, SourceHydrationRequest } from '../../types/sourceHydration';
 
 jest.mock('../../adapters/network');
+jest.mock('../../logger', () => ({
+  debug: jest.fn(),
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn(),
+}));
 
 const mockHttpGET = network.httpGET as jest.MockedFunction<typeof network.httpGET>;
 
@@ -73,6 +80,29 @@ describe('Facebook Lead Ads Hydration', () => {
         },
         expectedStatusCode: 200,
         verifyHttpCall: true,
+      },
+      {
+        name: 'should skip field and log warning when field_data entry is missing values',
+        mockResponse: {
+          success: true,
+          response: {
+            data: {
+              id: '123456',
+              field_data: [
+                { name: 'full_name', values: ['John Doe'] },
+                { name: 'missing_values_field' },
+                { name: 'phone', values: ['+1234567890'] },
+              ],
+            },
+            status: 200,
+          },
+        },
+        input: createValidInput(['123456']),
+        expectedTraits: {
+          full_name: 'John Doe',
+          phone: '+1234567890',
+        },
+        expectedStatusCode: 200,
       },
       {
         name: 'should handle field_data with empty values array',
@@ -268,6 +298,38 @@ describe('Facebook Lead Ads Hydration', () => {
       },
     );
 
+    it('should log a warning when a field_data entry has no values property', async () => {
+      mockHttpGET.mockResolvedValue({
+        success: true,
+        response: {
+          data: {
+            id: '123456',
+            field_data: [
+              { name: 'full_name', values: ['John Doe'] },
+              { name: 'missing_values_field' },
+            ],
+          },
+          status: 200,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+      const result = (await hydrate(input)) as SuccessResponse;
+
+      expect(result.batch[0].event?.context?.traits).toEqual({ full_name: 'John Doe' });
+      expect(logger.warn).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] field values is not an array',
+        {
+          fieldSchema: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+            },
+          },
+        },
+      );
+    });
+
     it('should handle empty batch array', async () => {
       const input = {
         batch: [],
@@ -387,6 +449,129 @@ describe('Facebook Lead Ads Hydration', () => {
     // Unknown error without code mapping defaults to 500 and stringifies the error
     expect(result.batch[1].statusCode).toBe(500);
     expect(result.batch[1].errorMessage).toBe('{"message":"Lead not found"}');
+  });
+
+  describe('errorResponseHandler does not throw', () => {
+    it('should throw and log schema when response has no error property', async () => {
+      // Simulates a 500 from Facebook with no `error` in the body
+      mockHttpGET.mockResolvedValue({
+        success: false,
+        response: {
+          data: { some_field: 'some_value' },
+          status: 500,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+
+      await expect(hydrate(input)).rejects.toThrow(
+        'Unexpected: errorResponseHandler did not throw for non-OK response',
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] Non-OK response from Facebook API',
+        {
+          status: 500,
+          responseSchema: JSON.stringify({
+            type: 'object',
+            properties: {
+              response: { type: 'object', properties: { some_field: { type: 'string' } } },
+              status: { type: 'number' },
+            },
+          }),
+          response: { some_field: 'some_value' },
+        },
+      );
+    });
+
+    it('should throw and log schema when response body is an empty object', async () => {
+      mockHttpGET.mockResolvedValue({
+        success: false,
+        response: {
+          data: {},
+          status: 500,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+
+      await expect(hydrate(input)).rejects.toThrow(
+        'Unexpected: errorResponseHandler did not throw for non-OK response',
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] Non-OK response from Facebook API',
+        {
+          status: 500,
+          responseSchema: JSON.stringify({
+            type: 'object',
+            properties: {
+              response: { type: 'object', properties: {} },
+              status: { type: 'number' },
+            },
+          }),
+          response: {},
+        },
+      );
+    });
+
+    it('should throw and log schema when response body is a string', async () => {
+      mockHttpGET.mockResolvedValue({
+        success: false,
+        response: {
+          data: 'Internal Server Error',
+          status: 500,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+
+      await expect(hydrate(input)).rejects.toThrow(
+        'Unexpected: errorResponseHandler did not throw for non-OK response',
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] Non-OK response from Facebook API',
+        {
+          status: 500,
+          responseSchema: JSON.stringify({
+            type: 'object',
+            properties: {
+              response: { type: 'string' },
+              status: { type: 'number' },
+            },
+          }),
+          response: 'Internal Server Error',
+        },
+      );
+    });
+
+    it('should throw and log schema when response error is null', async () => {
+      mockHttpGET.mockResolvedValue({
+        success: false,
+        response: {
+          data: { error: null },
+          status: 500,
+        },
+      });
+
+      const input = createValidInput(['123456']);
+
+      await expect(hydrate(input)).rejects.toThrow(
+        'Unexpected: errorResponseHandler did not throw for non-OK response',
+      );
+      expect(logger.error).toHaveBeenCalledWith(
+        '[facebook_lead_ads_native] Non-OK response from Facebook API',
+        {
+          status: 500,
+          responseSchema: JSON.stringify({
+            type: 'object',
+            properties: {
+              response: { type: 'object', properties: { error: { type: 'null' } } },
+              status: { type: 'number' },
+            },
+          }),
+          response: { error: null },
+        },
+      );
+    });
   });
 
   describe('Input validation', () => {

@@ -1,7 +1,11 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { generateErrorObject, getErrorRespEvents } = require('./index');
 
-const eventTypes = ['update', 'insert', 'delete'];
+const EVENT_TYPES = {
+  INSERT: 'insert',
+  DELETE: 'delete',
+  UPDATE: 'update',
+};
 
 function getErrorMetaData(inputs, acceptedOperations) {
   const metadata = [];
@@ -18,7 +22,7 @@ function getErrorMetaData(inputs, acceptedOperations) {
 
 function getErrorResponse(groupedRecordsByAction) {
   const errorMetaData = [];
-  const errorMetaDataObject = getErrorMetaData(groupedRecordsByAction, eventTypes);
+  const errorMetaDataObject = getErrorMetaData(groupedRecordsByAction, Object.values(EVENT_TYPES));
   if (errorMetaDataObject.length > 0) {
     errorMetaData.push(errorMetaDataObject);
   }
@@ -52,4 +56,5 @@ function createFinalResponse(deleteResponse, insertResponse, updateResponse, err
 module.exports = {
   getErrorResponse,
   createFinalResponse,
+  EVENT_TYPES,
 };

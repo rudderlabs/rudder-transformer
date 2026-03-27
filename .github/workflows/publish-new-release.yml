@@ -37,8 +37,10 @@ jobs:
 
       - name: Extract Version
         id: extract-version
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
         run: |
-          branch_name="${{ github.event.pull_request.head.ref }}"
+          branch_name="$PR_HEAD_REF"
           version=${branch_name#hotfix-}
           version=${version#release/v}
 

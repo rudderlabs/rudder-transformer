@@ -53,13 +53,15 @@ jobs:
 
       - name: Check actor
         id: check
+        env:
+          GITHUB_ACTOR_NAME: ${{ github.actor }}
         run: |
-          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+          if [[ "$GITHUB_ACTOR_NAME" == "dependabot[bot]" ]]; then
             echo "is_dependabot=true" >> $GITHUB_OUTPUT
             echo "Actor is dependabot[bot] - skipping certain steps"
           else
             echo "is_dependabot=false" >> $GITHUB_OUTPUT
-            echo "Actor is ${{ github.actor }} - proceeding normally"
+            echo "Actor is $GITHUB_ACTOR_NAME - proceeding normally"
           fi
 
   get_sha:

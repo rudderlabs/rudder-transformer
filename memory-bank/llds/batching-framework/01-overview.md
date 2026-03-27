@@ -20,28 +20,28 @@ Provide a **generic batching framework** that:
 
 ## Requirements
 
-| #   | Requirement                                                                      | Status |
-| --- | -------------------------------------------------------------------------------- | ------ |
+| #   | Requirement                                                                                          | Status |
+| --- | ---------------------------------------------------------------------------------------------------- | ------ |
 | R1  | Integration does per-event transformation; framework does iteration, grouping, chunking + formatting | Done   |
-| R2  | Support `dontBatch` metadata flag (single-event batches)                         | Done   |
-| R3  | Zod-based input validation (base spec + destination-specific rules)              | Done   |
-| R4  | Configurable chunking by item count and payload byte size                        | Done   |
-| R5  | `wrapBody` callback for constructing the final chunked payload                   | Done   |
-| R6  | Per-call instantiation to avoid race conditions with mutable state               | Done   |
-| R7  | Thread `reqMetadata` for feature flag support                                    | Done   |
-| R8  | Correct `statTags` on validation errors for metrics accuracy                     | Done   |
+| R2  | Support `dontBatch` metadata flag (single-event batches)                                             | Done   |
+| R3  | Zod-based input validation (base spec + destination-specific rules)                                  | Done   |
+| R4  | Configurable chunking by item count and payload byte size                                            | Done   |
+| R5  | `wrapBody` callback for constructing the final chunked payload                                       | Done   |
+| R6  | Per-call instantiation to avoid race conditions with mutable state                                   | Done   |
+| R7  | Thread `reqMetadata` for feature flag support                                                        | Done   |
+| R8  | Correct `statTags` on validation errors for metrics accuracy                                         | Done   |
 
 ## Terminology
 
-| Term                       | Definition                                                                                      |
-| -------------------------- | ----------------------------------------------------------------------------------------------- |
-| **RouterIntegration**      | Abstract class a destination extends to opt into the framework                                  |
-| **transformEvent**         | Per-event method: transforms one input into one or more `TransformedPayload`s                   |
+| Term                       | Definition                                                                                                              |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **RouterIntegration**      | Abstract class a destination extends to opt into the framework                                                          |
+| **transformEvent**         | Per-event method: transforms one input into one or more `TransformedPayload`s                                           |
 | **batchTransform**         | Framework-provided default that iterates inputs and calls `transformEvent()`; overridable for pre-batch bulk operations |
-| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                       |
-| **TransformedPayload**     | One transformed event payload with endpoint, method, headers, and body                          |
-| **BatchStrategy**          | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`    |
-| **batchedDestinationsMap** | Registry (`src/constants/batchedDestinationsMap.ts`) that opts a destination into the framework |
+| **getBatchStrategy**       | Returns a `BatchStrategy` (`chunk` or `customBatch`) for a given endpoint                                               |
+| **TransformedPayload**     | One transformed event payload with endpoint, method, headers, and body                                                  |
+| **BatchStrategy**          | Describes how to combine payloads within a group — either `chunk(...)` or `customBatch(...)`                            |
+| **batchedDestinationsMap** | Registry (`src/constants/batchedDestinationsMap.ts`) that opts a destination into the framework                         |
 
 ## Architecture — Block Diagram
 
@@ -123,6 +123,7 @@ Provide a **generic batching framework** that:
 ```
 
 **Key design decisions:**
+
 - **Grouping is a private framework concern.** Payloads are grouped by the composite key `{ endpoint, method, headers, params }` — exactly the set of fields that define "can these share a single HTTP request?". This is not overridable, removing the footgun of incorrect grouping.
 - **Grouping happens before batching.** The framework always groups first, then applies `getBatchStrategy()` within each partition. This ordering is enforced by the framework.
 

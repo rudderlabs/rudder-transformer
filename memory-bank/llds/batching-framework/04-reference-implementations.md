@@ -50,17 +50,21 @@ class PostHogIntegration extends RouterIntegration<PostHogEvent> {
   }
 
   getIntegrationSchema(): ZodType | null {
-    return z.object({
-      message: z.object({
-        userId: z.string().optional(),
-        anonymousId: z.string().optional(),
-        type: z.string().refine((val) => val !== 'record', {
-          message: 'messagetype should not be record',
-        }),
-      }).refine((msg) => !!msg.userId || !!msg.anonymousId, {
-        message: 'Either userId or anonymousId must be provided',
-      }),
-    }).passthrough();
+    return z
+      .object({
+        message: z
+          .object({
+            userId: z.string().optional(),
+            anonymousId: z.string().optional(),
+            type: z.string().refine((val) => val !== 'record', {
+              message: 'messagetype should not be record',
+            }),
+          })
+          .refine((msg) => !!msg.userId || !!msg.anonymousId, {
+            message: 'Either userId or anonymousId must be provided',
+          }),
+      })
+      .passthrough();
   }
 }
 ```
@@ -270,7 +274,7 @@ To migrate a destination to the framework:
    - Complex merge: `customBatch(...)` for full control
 6. **Override `batchTransform`** only for pre-batch bulk operations (dedup, identity resolution)
    - Call `super.batchTransform()` to delegate iteration
-8. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
-9. **Export `const Integration = YourClass`** (class, not instance)
-10. **Add destination to `batchedDestinationsMap`**
-11. **Update/add component tests** — output format changes from legacy to framework envelope
+7. **Add Zod schema** via `getIntegrationSchema` for destination-specific rules
+8. **Export `const Integration = YourClass`** (class, not instance)
+9. **Add destination to `batchedDestinationsMap`**
+10. **Update/add component tests** — output format changes from legacy to framework envelope

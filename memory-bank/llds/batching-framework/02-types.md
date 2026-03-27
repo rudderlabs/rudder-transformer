@@ -10,12 +10,12 @@ One transformed event payload produced by `transformEvent`. Contains the destina
 
 ```typescript
 type TransformedPayload<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  body: TBody;                          // Destination-specific payload (single event's contribution)
-  endpoint: string;                     // Full URL: 'https://app.posthog.com/batch'
-  method: string;                       // HTTP method: 'POST'
-  headers?: Record<string, unknown>;    // e.g. { 'Content-Type': 'application/json' }
-  params?: Record<string, unknown>;     // Query params
-  jobId: string;                        // Originating job ID (set by framework)
+  body: TBody; // Destination-specific payload (single event's contribution)
+  endpoint: string; // Full URL: 'https://app.posthog.com/batch'
+  method: string; // HTTP method: 'POST'
+  headers?: Record<string, unknown>; // e.g. { 'Content-Type': 'application/json' }
+  params?: Record<string, unknown>; // Query params
+  jobId: string; // Originating job ID (set by framework)
 };
 ```
 
@@ -27,10 +27,10 @@ A single event that failed during transformation in `transformEvent` or `batchTr
 
 ```typescript
 type TransformedErrorEvent = {
-  error: string;                        // Human-readable error message
-  statusCode: number;                   // HTTP status (400 for instrumentation, 500 for retryable)
-  jobId: string;                        // Job that failed
-  statTags?: Record<string, unknown>;   // Optional metrics tags
+  error: string; // Human-readable error message
+  statusCode: number; // HTTP status (400 for instrumentation, 500 for retryable)
+  jobId: string; // Job that failed
+  statTags?: Record<string, unknown>; // Optional metrics tags
 };
 ```
 
@@ -40,8 +40,8 @@ Return type of `batchTransform` — contains both successes and failures.
 
 ```typescript
 type TransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  payloads: TransformedPayload<TBody>[];    // Successfully transformed payloads
-  errorEvents: TransformedErrorEvent[];     // Per-event failures
+  payloads: TransformedPayload<TBody>[]; // Successfully transformed payloads
+  errorEvents: TransformedErrorEvent[]; // Per-event failures
 };
 ```
 
@@ -52,9 +52,9 @@ Describes how to combine payloads within a group. Created via factory functions.
 ```typescript
 type ChunkStrategy<TBody> = {
   type: 'chunk';
-  maxSize?: number;                     // Max items per chunk (default: Infinity)
-  maxBytes?: string;                    // Max bytes per chunk: '4MB', '512KB'
-  wrapBody: (bodies: TBody[]) => Record<string, unknown>;  // Construct the final chunked payload
+  maxSize?: number; // Max items per chunk (default: Infinity)
+  maxBytes?: string; // Max bytes per chunk: '4MB', '512KB'
+  wrapBody: (bodies: TBody[]) => Record<string, unknown>; // Construct the final chunked payload
 };
 
 type CustomBatchStrategy<TBody> = {
@@ -219,11 +219,11 @@ The framework wraps each batch result into the standard server envelope:
 
 ## Helper Functions
 
-| Function                                | Purpose                                                 |
-| --------------------------------------- | ------------------------------------------------------- |
-| `parseSizeToBytes(size)`                | Parses `'4MB'`, `'512KB'` → bytes                       |
-| `groupByDontBatchDirective(inputs)`     | Splits inputs on `metadata.dontBatch` flag              |
-| `resolveMetadatas(jobIds, metadataMap)` | Maps jobId strings back to full Metadata objects        |
+| Function                                | Purpose                                          |
+| --------------------------------------- | ------------------------------------------------ |
+| `parseSizeToBytes(size)`                | Parses `'4MB'`, `'512KB'` → bytes                |
+| `groupByDontBatchDirective(inputs)`     | Splits inputs on `metadata.dontBatch` flag       |
+| `resolveMetadatas(jobIds, metadataMap)` | Maps jobId strings back to full Metadata objects |
 
 ## Export Pattern
 

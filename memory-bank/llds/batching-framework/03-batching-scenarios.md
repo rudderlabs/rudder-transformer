@@ -120,7 +120,7 @@ POST /import  → { data: [...import payloads] }
 class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
   transformEvent(input): TransformedPayload<MixpanelBody>[] {
     const results = CommonUtils.toArray(process(input));
-    return results.map(result => ({
+    return results.map((result) => ({
       body: result.body.JSON,
       endpoint: `${baseUrl}${extractPath(result.endpoint)}`,
       method: 'POST',
@@ -132,8 +132,10 @@ class MixpanelIntegration extends RouterIntegration<MixpanelBody> {
   // Payloads with /engage, /groups, /import auto-separate
 
   getBatchStrategy(endpoint: string): BatchStrategy<MixpanelBody> {
-    if (endpoint.includes('/engage')) return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
-    if (endpoint.includes('/groups')) return chunk({ maxSize: 200, wrapBody: (b) => ({ data: b }) });
+    if (endpoint.includes('/engage'))
+      return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
+    if (endpoint.includes('/groups'))
+      return chunk({ maxSize: 200, wrapBody: (b) => ({ data: b }) });
     return chunk({ maxSize: 2000, wrapBody: (b) => ({ data: b }) });
   }
 }
@@ -190,12 +192,12 @@ getBatchStrategy(): BatchStrategy<GoogleAdsBody> {
 
 ## Summary Matrix
 
-| Format | Pattern         | Destinations | Override batchTransform? | getBatchStrategy           |
-| ------ | --------------- | :----------: | :----------------------: | -------------------------- |
-| 1      | Simple array    |     ~38      |            No            | `chunk(...)` simple        |
-| 2      | Wrapper + array |      ~5      |            No            | `chunk(...)` + wrapBody    |
-| 3      | Multi-endpoint  |     ~10      |         Sometimes        | `chunk(...)` per endpoint  |
-| 4      | Custom merge    |      ~4      |         Sometimes        | `customBatch(...)`         |
+| Format | Pattern         | Destinations | Override batchTransform? | getBatchStrategy          |
+| ------ | --------------- | :----------: | :----------------------: | ------------------------- |
+| 1      | Simple array    |     ~38      |            No            | `chunk(...)` simple       |
+| 2      | Wrapper + array |      ~5      |            No            | `chunk(...)` + wrapBody   |
+| 3      | Multi-endpoint  |     ~10      |        Sometimes         | `chunk(...)` per endpoint |
+| 4      | Custom merge    |      ~4      |        Sometimes         | `customBatch(...)`        |
 
 ## Chunking Algorithm
 

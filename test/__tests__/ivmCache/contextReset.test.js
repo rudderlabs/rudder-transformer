@@ -549,7 +549,7 @@ describe('Context Reset Utilities', () => {
       expect(mockFetch).not.toHaveBeenCalled();
       expect(mockReject.applyIgnored).toHaveBeenCalledWith(
         undefined,
-        [expect.any(Object)] // ExternalCopy error
+        [expect.objectContaining({ message: 'invalid ip address' })]
       );
     });
 

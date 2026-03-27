@@ -145,7 +145,6 @@ const productsToContentsMapping = (message) => {
       item_price: product?.price,
       quantity: product?.quantity,
       delivery_category: product?.delivery_category,
-      brand: product?.brand,
     });
 
   // Handle case where products array is empty or doesn't exist
@@ -160,6 +159,9 @@ const productsToContentsMapping = (message) => {
   products.forEach((product) => {
     if (isObject(product)) {
       const content = mapProductToContent(product);
+      if (product?.brand) {
+        content.brand = product.brand;
+      }
       if (!isEmptyObject(content)) {
         result.push(content);
       }

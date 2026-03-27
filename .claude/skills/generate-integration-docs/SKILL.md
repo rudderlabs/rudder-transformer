@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 ## Guide
 
-Follow the guide at `memory-bank/22_integration_specific_docs_guide.md` (or `memory-banks/rudder-transformer/22_integration_specific_docs_guide.md` if the first doesn't exist). Thoroughly address every point mentioned in the guide. If parts of the guide are not easily addressable, highlight those sections with `NEEDS REVIEW`.
+Follow the guide at [integration-docs-guide.md](integration-docs-guide.md) bundled with this skill. Thoroughly address every point mentioned in the guide. If parts of the guide are not easily addressable, highlight those sections with `NEEDS REVIEW`.
 
 ## Reference Example
 
@@ -57,16 +57,16 @@ Create the following files in the destination folder:
   - Destination config keys used in code (from `destination.Config`)
   - Implementation language (JS/TS or CDK v2)
   - Supported message types
+  - Validations (restrictions, required fields per event type)
+  - Rate limits (from destination API docs)
   - Batching support (which message types, batch sizes)
   - Intermediate calls (per event type, endpoints, why necessary)
   - Proxy delivery (`networkHandler.js` presence)
+    - Partial batching response handling
   - User deletion (`deleteUsers.js` presence)
-  - OAuth support (`auth.type` in db-config)
+  - OAuth support (`auth.type` in db-config or accounts sub-directory)
   - Processor vs Router (`transformAtV1` in db-config)
-  - Partial batching response handling
   - Additional functionalities (dedupe, custom logic, etc.)
-  - Validations (restrictions, required fields per event type)
-  - Rate limits (from destination API docs)
 
 - **General Queries**
 

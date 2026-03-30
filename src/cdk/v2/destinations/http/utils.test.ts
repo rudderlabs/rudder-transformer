@@ -1,12 +1,11 @@
-const {
+import {
   enhanceMappings,
   prepareEndpoint,
   prepareBody,
   stringifyFirstLevelValues,
-} = require('./utils');
-
-const { XMLBuilder } = require('fast-xml-parser');
-const jsonpath = require('rs-jsonpath');
+  validateHeaders,
+} from './utils';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 
 describe('Utils Functions', () => {
   describe('prepareEndpoint', () => {
@@ -146,7 +145,7 @@ describe('Utils Functions', () => {
     });
 
     test('should return an empty array if input is an empty array', () => {
-      const input = [];
+      const input: { to: string; from: string }[] = [];
       const output = enhanceMappings(input);
       expect(output).toEqual([]);
     });
@@ -164,5 +163,76 @@ describe('Utils Functions', () => {
         { to: 'p', from: '$.q' },
       ]);
     });
+  });
+
+  describe('validateHeaders', () => {
+    const validCases: { description: string; input: Record<string, unknown> }[] = [
+      {
+        description: 'all string values',
+        input: { h1: 'value1', h2: 'value2', 'content-type': 'application/json' },
+      },
+      {
+        description: 'empty object',
+        input: {},
+      },
+    ];
+
+    test.each(validCases)('should not throw for $description', ({ input }) => {
+      expect(() => validateHeaders(input)).not.toThrow();
+    });
+
+    test.each([
+      { description: 'null input', input: null },
+      { description: 'undefined input', input: undefined },
+    ])('should not throw for $description', ({ input }) => {
+      expect(() => validateHeaders(input as unknown as Record<string, unknown>)).not.toThrow();
+    });
+
+    const invalidCases: {
+      description: string;
+      input: Record<string, unknown>;
+      errorMessageType: string;
+    }[] = [
+      {
+        description: 'object value',
+        input: { h1: 'value1', h2: { nested: 'object' } },
+        errorMessageType: 'object',
+      },
+      {
+        description: 'array value',
+        input: { h1: 'value1', h2: ['array', 'value'] },
+        errorMessageType: 'object',
+      },
+      {
+        description: 'number value',
+        input: { h1: 'value1', h2: 12345 },
+        errorMessageType: 'number',
+      },
+      {
+        description: 'boolean value',
+        input: { h1: 'value1', h2: true },
+        errorMessageType: 'boolean',
+      },
+      {
+        description: 'undefined value',
+        input: { h1: 'value1', h2: undefined },
+        errorMessageType: 'undefined',
+      },
+      {
+        description: 'null value',
+        input: { h1: 'value1', h2: null },
+        errorMessageType: 'object',
+      },
+    ];
+
+    test.each(invalidCases)(
+      'should throw InstrumentationError for $description',
+      ({ input, errorMessageType }) => {
+        expect(() => validateHeaders(input)).toThrow(InstrumentationError);
+        expect(() => validateHeaders(input)).toThrow(
+          `Header "h2" has a non-string value of type "${errorMessageType}"`,
+        );
+      },
+    );
   });
 });

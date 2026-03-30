@@ -1,15 +1,16 @@
-const { XMLBuilder } = require('fast-xml-parser');
-const { groupBy } = require('lodash');
-const { createHash } = require('crypto');
-const { ConfigurationError } = require('@rudderstack/integrations-lib');
-const { BatchUtils } = require('@rudderstack/workflow-engine');
-const jsonpath = require('rs-jsonpath');
-const {
+import { XMLBuilder } from 'fast-xml-parser';
+import { groupBy } from 'lodash';
+import { createHash } from 'crypto';
+import { ConfigurationError, InstrumentationError, isDefined } from '@rudderstack/integrations-lib';
+import { BatchUtils } from '@rudderstack/workflow-engine';
+import jsonpath from 'rs-jsonpath';
+import {
   base64Convertor,
   applyCustomMappings,
   isEmptyObject,
   removeUndefinedAndNullRecurse,
-} = require('../../../../v0/util');
+} from '../../../../v0/util';
+import type { Mapping, PathParam, BatchEvent } from './types';
 
 const CONTENT_TYPES_MAP = {
   JSON: 'JSON',
@@ -17,8 +18,8 @@ const CONTENT_TYPES_MAP = {
   FORM: 'FORM',
 };
 
-const getAuthHeaders = (config) => {
-  let headers;
+const getAuthHeaders = (config: Record<string, unknown>): Record<string, string> => {
+  let headers: Record<string, string>;
   switch (config.auth) {
     case 'basicAuth': {
       const credentials = `${config.username}:${config.password}`;
@@ -32,7 +33,7 @@ const getAuthHeaders = (config) => {
       headers = { Authorization: `Bearer ${config.bearerToken}` };
       break;
     case 'apiKeyAuth':
-      headers = { [config.apiKeyName]: `${config.apiKeyValue}` };
+      headers = { [config.apiKeyName as string]: `${config.apiKeyValue}` };
       break;
     default:
       headers = {};
@@ -40,7 +41,7 @@ const getAuthHeaders = (config) => {
   return headers;
 };
 
-const enhanceMappings = (mappings) => {
+const enhanceMappings = (mappings: Mapping[]): Mapping[] => {
   let enhancedMappings = mappings;
   if (Array.isArray(mappings)) {
     enhancedMappings = mappings.map((mapping) => {
@@ -58,16 +59,16 @@ const enhanceMappings = (mappings) => {
   return enhancedMappings;
 };
 
-const getCustomMappings = (message, mapping) => {
+const getCustomMappings = (message: Record<string, unknown>, mapping: Mapping[]) => {
   const enhancedMappings = enhanceMappings(mapping);
   try {
     return applyCustomMappings(message, enhancedMappings);
-  } catch (e) {
+  } catch (e: any) {
     throw new ConfigurationError(`Error in custom mappings: ${e.message}`);
   }
 };
 
-const validateQueryParams = (params) => {
+const validateQueryParams = (params: Record<string, unknown>): Record<string, unknown> => {
   if (!params || typeof params !== 'object' || Array.isArray(params)) {
     return {}; // Return an empty object if input is null, undefined, or not an object
   }
@@ -75,15 +76,15 @@ const validateQueryParams = (params) => {
   return Object.fromEntries(filteredKeys.map((key) => [key, params[key]]));
 };
 
-const getPathValueFromJsonpath = (message, path) => {
-  let finalPath = path;
+const getPathValueFromJsonpath = (message: Record<string, unknown>, path: string) => {
+  let finalPath: string | null = path;
   if (path.includes('/')) {
     throw new ConfigurationError('Path value cannot contain "/"');
   }
   if (path.includes('$')) {
     try {
       [finalPath = null] = jsonpath.query(message, path);
-    } catch (error) {
+    } catch (error: any) {
       throw new ConfigurationError(
         `An error occurred while querying the JSON path: ${error.message}`,
       );
@@ -95,7 +96,7 @@ const getPathValueFromJsonpath = (message, path) => {
   return finalPath;
 };
 
-const getPathParamsSubString = (message, pathParamsArray) => {
+const getPathParamsSubString = (message: Record<string, unknown>, pathParamsArray: PathParam[]) => {
   if (pathParamsArray.length === 0) {
     return '';
   }
@@ -105,7 +106,11 @@ const getPathParamsSubString = (message, pathParamsArray) => {
   return `/${pathParamsValuesArray.join('/')}`;
 };
 
-const prepareEndpoint = (message, apiUrl, pathParams) => {
+const prepareEndpoint = (
+  message: Record<string, unknown>,
+  apiUrl: string,
+  pathParams: PathParam[],
+) => {
   if (!Array.isArray(pathParams)) {
     return apiUrl;
   }
@@ -113,12 +118,12 @@ const prepareEndpoint = (message, apiUrl, pathParams) => {
   return `${apiUrl}${pathParamsSubString}`.replace(/([^:]\/)\/+/g, '$1');
 };
 
-const sanitizeKey = (key) =>
+const sanitizeKey = (key: string) =>
   key
     .replace(/[^\w.-]/g, '_') // Replace invalid characters with underscores
     .replace(/^[^A-Z_a-z]/, '_'); // Ensure key starts with a letter or underscore
 
-const preprocessJson = (obj) => {
+const preprocessJson = (obj: unknown): unknown => {
   if (typeof obj !== 'object' || obj === null) {
     return obj; // Return primitive values as is
   }
@@ -127,14 +132,14 @@ const preprocessJson = (obj) => {
     return obj.map(preprocessJson);
   }
 
-  return Object.entries(obj).reduce((acc, [key, value]) => {
+  return Object.entries(obj).reduce((acc: Record<string, unknown>, [key, value]) => {
     const sanitizedKey = sanitizeKey(key);
     acc[sanitizedKey] = preprocessJson(value);
     return acc;
   }, {});
 };
 
-const getXMLPayload = (payload, rootKey = 'root') => {
+const getXMLPayload = (payload: Record<string, unknown>, rootKey = 'root') => {
   const builderOptions = {
     ignoreAttributes: false,
     suppressEmptyNode: true,
@@ -143,14 +148,14 @@ const getXMLPayload = (payload, rootKey = 'root') => {
   const builder = new XMLBuilder(builderOptions);
   const processesPayload = {
     [rootKey]: {
-      ...preprocessJson(payload),
+      ...(preprocessJson(payload) as Record<string, unknown>),
     },
   };
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
-const getMergedEvents = (batch) => {
-  const events = [];
+const getMergedEvents = (batch: BatchEvent[]) => {
+  const events: Record<string, unknown>[] = [];
   batch.forEach((event) => {
     if (!isEmptyObject(event.batchedRequest.body.JSON)) {
       events.push(event.batchedRequest.body.JSON);
@@ -159,7 +164,7 @@ const getMergedEvents = (batch) => {
   return events;
 };
 
-const metadataHeaders = (contentType) => {
+const metadataHeaders = (contentType: string): Record<string, string> => {
   switch (contentType) {
     case CONTENT_TYPES_MAP.XML:
       return { 'Content-Type': 'application/xml' };
@@ -170,15 +175,19 @@ const metadataHeaders = (contentType) => {
   }
 };
 
-function stringifyFirstLevelValues(obj) {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
+function stringifyFirstLevelValues(obj: Record<string, unknown>): Record<string, string> {
+  return Object.entries(obj).reduce((acc: Record<string, string>, [key, value]) => {
     acc[key] = typeof value === 'string' ? value : JSON.stringify(value);
     return acc;
   }, {});
 }
 
-const prepareBody = (payload, contentType, xmlRootKey) => {
-  let responseBody;
+const prepareBody = (
+  payload: Record<string, unknown>,
+  contentType: string,
+  xmlRootKey?: string,
+) => {
+  let responseBody: Record<string, unknown> | string;
   removeUndefinedAndNullRecurse(payload);
   if (contentType === CONTENT_TYPES_MAP.XML && !isEmptyObject(payload)) {
     responseBody = {
@@ -192,9 +201,13 @@ const prepareBody = (payload, contentType, xmlRootKey) => {
   return responseBody;
 };
 
-const mergeMetadata = (batch) => batch.map((event) => event.metadata[0]);
+const mergeMetadata = (batch: BatchEvent[]) => batch.map((event) => event.metadata[0]);
 
-const createHashKey = (endpoint, headers, params) => {
+const createHashKey = (
+  endpoint: string,
+  headers: Record<string, string>,
+  params: Record<string, unknown>,
+) => {
   const hash = createHash('sha256');
   hash.update(endpoint);
   hash.update(JSON.stringify(headers));
@@ -202,7 +215,7 @@ const createHashKey = (endpoint, headers, params) => {
   return hash.digest('hex');
 };
 
-const buildBatchedRequest = (batch) => ({
+const buildBatchedRequest = (batch: BatchEvent[]) => ({
   batchedRequest: {
     body: {
       JSON: {},
@@ -224,8 +237,8 @@ const buildBatchedRequest = (batch) => ({
   destination: batch[0].destination,
 });
 
-const batchSuccessfulEvents = (events, batchSize) => {
-  const response = [];
+const batchSuccessfulEvents = (events: BatchEvent[], batchSize: number) => {
+  const response: ReturnType<typeof buildBatchedRequest>[] = [];
   // group events by endpoint, headers and query params
   const groupedEvents = groupBy(events, (event) => {
     const { endpoint, headers, params } = event.batchedRequest;
@@ -237,19 +250,35 @@ const batchSuccessfulEvents = (events, batchSize) => {
     const batches = BatchUtils.chunkArrayBySizeAndLength(groupedEvents[groupKey], {
       maxItems: batchSize,
     }).items;
-    batches.forEach((batch) => {
+    batches.forEach((batch: BatchEvent[]) => {
       response.push(buildBatchedRequest(batch));
     });
   });
   return response;
 };
 
-module.exports = {
+// rudder-server unmarshals headers into map[string]string, so all values must be strings.
+// Non-string values (including numbers and booleans) will cause unmarshalling to fail.
+const validateHeaders = (headers: Record<string, unknown>): void => {
+  if (!headers || typeof headers !== 'object' || Array.isArray(headers)) {
+    return;
+  }
+  Object.entries(headers).forEach(([key, value]) => {
+    if (isDefined(value) && typeof value !== 'string') {
+      throw new InstrumentationError(
+        `Header "${key}" has a non-string value of type "${typeof value}"`,
+      );
+    }
+  });
+};
+
+export {
   CONTENT_TYPES_MAP,
   getAuthHeaders,
   enhanceMappings,
   getCustomMappings,
   validateQueryParams,
+  validateHeaders,
   prepareEndpoint,
   metadataHeaders,
   prepareBody,

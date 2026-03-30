@@ -11,6 +11,7 @@ const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
+const eventSchemaCacheDisabled = process.env.DISABLE_EVENT_SCHEMA_CACHE === 'true';
 const eventSchemaCache = new NodeCache();
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
@@ -182,10 +183,12 @@ async function validate(event) {
       }
     }
 
-    let validateEvent = eventSchemaCache.get(schemaHash);
+    let validateEvent = eventSchemaCacheDisabled ? undefined : eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
-      eventSchemaCache.set(schemaHash, validateEvent);
+      if (!eventSchemaCacheDisabled) {
+        eventSchemaCache.set(schemaHash, validateEvent);
+      }
     }
 
     const valid = validateEvent(event.message);

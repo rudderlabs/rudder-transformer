@@ -180,4 +180,4 @@ const processRouterDest = async (
   return respList;
 };
 
-export { process, processRouterDest };
+export { process, processEvent, processRouterDest };

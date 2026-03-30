@@ -1,4 +1,406 @@
+const batchingFrameworkTests = [
+  {
+    name: 'posthog',
+    description: 'Batching Framework: Single alias event produces batched output with wrapper',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                Config: {
+                  teamApiKey: 'dummyApiKey',
+                  yourInstance: 'https://app.posthog.com/',
+                },
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                workspaceId: 'ws-bf-test',
+                sourceId: 'src-1',
+                sourceType: 'web',
+                sourceCategory: 'cloud',
+                destinationId: 'dest-1',
+                destinationType: 'POSTHOG',
+                messageId: 'msg-2',
+              },
+              message: {
+                event: 'event-alias',
+                context: {
+                  ip: '0.0.0.0',
+                  device: {
+                    id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                    manufacturer: 'Xiaomi',
+                    model: 'Redmi 6',
+                    name: 'xiaomi',
+                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.7',
+                  },
+                  traits: {
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
+                    anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                  },
+                },
+                type: 'alias',
+                timestamp: '2020-11-04T13:21:09.712Z',
+                userId: 'uid-1',
+                previousId: 'prevId_1',
+                anonymousId: 'f3cf54d8-f237-45d2-89f7-ccd70d42cf31',
+              },
+            },
+          ],
+          destType: 'posthog',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://app.posthog.com/batch',
+                headers: { 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    api_key: 'dummyApiKey',
+                    batch: [
+                      {
+                        properties: {
+                          $set: {
+                            address: { city: 'Dhaka', country: 'Bangladesh' },
+                            anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                          },
+                          $os: 'android',
+                          $time: '2020-11-04T13:21:09.712Z',
+                          $device_id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                          $ip: '0.0.0.0',
+                          $timestamp: '2020-11-04T13:21:09.712Z',
+                          $anon_distinct_id: 'f3cf54d8-f237-45d2-89f7-ccd70d42cf31',
+                          distinct_id: 'uid-1',
+                          $device_manufacturer: 'Xiaomi',
+                          $os_version: '8.1.0',
+                          $app_version: '1.1.7',
+                          $device_name: 'xiaomi',
+                          $network_carrier: 'Banglalink',
+                          $app_name: 'RudderLabs JavaScript SDK',
+                          $device_model: 'Redmi 6',
+                          $app_namespace: 'com.rudderlabs.javascript',
+                          $app_build: '1.0.0',
+                          alias: 'prevId_1',
+                        },
+                        timestamp: '2020-11-04T13:21:09.712Z',
+                        event: '$create_alias',
+                        type: 'alias',
+                      },
+                    ],
+                  },
+                  XML: {},
+                  JSON_ARRAY: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  workspaceId: 'ws-bf-test',
+                  sourceId: 'src-1',
+                  sourceType: 'web',
+                  sourceCategory: 'cloud',
+                  destinationId: 'dest-1',
+                  destinationType: 'POSTHOG',
+                  messageId: 'msg-2',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  teamApiKey: 'dummyApiKey',
+                  yourInstance: 'https://app.posthog.com/',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {
+      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+    },
+  },
+  {
+    name: 'posthog',
+    description:
+      'Batching Framework: Multiple track events batched into single request with wrapper',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                Config: { teamApiKey: 'dummyApiKey' },
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+                workspaceId: 'ws-bf-test',
+                sourceId: 'src-1',
+                sourceType: 'web',
+                sourceCategory: 'cloud',
+                destinationId: 'dest-1',
+                destinationType: 'POSTHOG',
+                messageId: 'msg-1',
+              },
+              message: {
+                anonymousId: 'anon-1',
+                event: 'Product Viewed',
+                context: { ip: '1.2.3.4', traits: { name: 'Test User' } },
+                type: 'track',
+                properties: { product_id: 'p1', price: 10 },
+                timestamp: '2024-01-01T00:00:00.000Z',
+                userId: 'uid-1',
+                messageId: 'msg-1',
+              },
+            },
+            {
+              destination: {
+                Config: { teamApiKey: 'dummyApiKey' },
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u2',
+                workspaceId: 'ws-bf-test',
+                sourceId: 'src-1',
+                sourceType: 'web',
+                sourceCategory: 'cloud',
+                destinationId: 'dest-1',
+                destinationType: 'POSTHOG',
+                messageId: 'msg-2',
+              },
+              message: {
+                anonymousId: 'anon-2',
+                event: 'Product Purchased',
+                context: { ip: '5.6.7.8', traits: { name: 'Another User' } },
+                type: 'track',
+                properties: { product_id: 'p2', price: 20 },
+                timestamp: '2024-01-01T00:01:00.000Z',
+                userId: 'uid-2',
+                messageId: 'msg-2',
+              },
+            },
+          ],
+          destType: 'posthog',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://app.posthog.com/batch',
+                headers: { 'Content-Type': 'application/json' },
+                params: {},
+                body: {
+                  JSON: {
+                    api_key: 'dummyApiKey',
+                    batch: [
+                      {
+                        distinct_id: 'uid-1',
+                        event: 'Product Viewed',
+                        messageId: 'msg-1',
+                        properties: {
+                          $set: { name: 'Test User' },
+                          $ip: '1.2.3.4',
+                          $timestamp: '2024-01-01T00:00:00.000Z',
+                          $time: '2024-01-01T00:00:00.000Z',
+                          $anon_distinct_id: 'anon-1',
+                          distinct_id: 'uid-1',
+                          product_id: 'p1',
+                          price: 10,
+                        },
+                        timestamp: '2024-01-01T00:00:00.000Z',
+                        type: 'capture',
+                      },
+                      {
+                        distinct_id: 'uid-2',
+                        event: 'Product Purchased',
+                        messageId: 'msg-2',
+                        properties: {
+                          $set: { name: 'Another User' },
+                          $ip: '5.6.7.8',
+                          $timestamp: '2024-01-01T00:01:00.000Z',
+                          $time: '2024-01-01T00:01:00.000Z',
+                          $anon_distinct_id: 'anon-2',
+                          distinct_id: 'uid-2',
+                          product_id: 'p2',
+                          price: 20,
+                        },
+                        timestamp: '2024-01-01T00:01:00.000Z',
+                        type: 'capture',
+                      },
+                    ],
+                  },
+                  XML: {},
+                  JSON_ARRAY: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-bf-test',
+                  sourceId: 'src-1',
+                  sourceType: 'web',
+                  sourceCategory: 'cloud',
+                  destinationId: 'dest-1',
+                  destinationType: 'POSTHOG',
+                  messageId: 'msg-1',
+                },
+                {
+                  jobId: 2,
+                  userId: 'u2',
+                  workspaceId: 'ws-bf-test',
+                  sourceId: 'src-1',
+                  sourceType: 'web',
+                  sourceCategory: 'cloud',
+                  destinationId: 'dest-1',
+                  destinationType: 'POSTHOG',
+                  messageId: 'msg-2',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { teamApiKey: 'dummyApiKey' },
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {
+      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+    },
+  },
+  {
+    name: 'posthog',
+    description:
+      'Batching Framework: Event without userId or anonymousId rejected with validation error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                Config: { teamApiKey: 'dummyApiKey' },
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+                workspaceId: 'ws-bf-test',
+                sourceId: 'src-1',
+                sourceType: 'web',
+                sourceCategory: 'cloud',
+                destinationId: 'dest-1',
+                destinationType: 'POSTHOG',
+                messageId: 'msg-1',
+              },
+              message: {
+                event: 'Test Event',
+                context: { ip: '1.2.3.4' },
+                type: 'track',
+                properties: {},
+                timestamp: '2024-01-01T00:00:00.000Z',
+                messageId: 'msg-1',
+              },
+            },
+          ],
+          destType: 'posthog',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  workspaceId: 'ws-bf-test',
+                  sourceId: 'src-1',
+                  sourceType: 'web',
+                  sourceCategory: 'cloud',
+                  destinationId: 'dest-1',
+                  destinationType: 'POSTHOG',
+                  messageId: 'msg-1',
+                },
+              ],
+              destination: {
+                Config: { teamApiKey: 'dummyApiKey' },
+              },
+              batched: false,
+              statusCode: 400,
+              error: 'message: Either userId or anonymousId must be provided',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'POSTHOG',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'dest-1',
+                workspaceId: 'ws-bf-test',
+              },
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: {
+      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+    },
+  },
+];
+
 export const data = [
+  ...batchingFrameworkTests,
   {
     name: 'posthog',
     description: 'Successfull Alias Call batching',

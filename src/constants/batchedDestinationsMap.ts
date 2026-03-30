@@ -1,4 +1,6 @@
-export const batchedDestinationsMap: Record<string, true> = {};
+export const batchedDestinationsMap: Record<string, true> = {
+  POSTHOG: true,
+};
 
 // Env var: BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces

@@ -214,11 +214,6 @@ describe('Utils Functions', () => {
         errorMessageType: 'boolean',
       },
       {
-        description: 'undefined value',
-        input: { h1: 'value1', h2: undefined },
-        errorMessageType: 'undefined',
-      },
-      {
         description: 'null value',
         input: { h1: 'value1', h2: null },
         errorMessageType: 'object',

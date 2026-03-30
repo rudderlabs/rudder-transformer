@@ -1,3 +1,4 @@
+import { RouterIntegrationConstructor } from '../services/destination/routerIntegration';
 import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {
@@ -8,6 +9,8 @@ export class FetchHandler {
   private static destHandlerMap: Map<string, any> = new Map();
 
   private static deletionHandlerMap: Map<string, any> = new Map();
+
+  private static routerTransformHandlerMap: Map<string, RouterIntegrationConstructor> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -39,6 +42,17 @@ export class FetchHandler {
     const newSourceHydrateHandler = MiscService.getSourceHydrateHandler(source);
     this.sourceHydrateHandlerMap.set(source, newSourceHydrateHandler);
     return newSourceHydrateHandler;
+  }
+
+  public static getRouterTransformHandler(dest: string): RouterIntegrationConstructor {
+    const key = dest.toLowerCase();
+    const routerTransformHandler = this.routerTransformHandlerMap.get(key);
+    if (routerTransformHandler) {
+      return routerTransformHandler;
+    }
+    const handler = MiscService.getRouterTransformHandler(key);
+    this.routerTransformHandlerMap.set(key, handler);
+    return handler;
   }
 
   public static getDeletionHandler(dest: string, version: string) {

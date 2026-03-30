@@ -28,6 +28,8 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
+import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
+import { processBatchedDestination } from './processBatchedDestination';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -102,9 +104,19 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const destHandler = FetchHandler.getDestHandler(destinationType, version);
+    const workspaceId = events[0].metadata.workspaceId;
+    const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
+
+    const destHandler = useBatchingFramework
+      ? null
+      : FetchHandler.getDestHandler(destinationType, version);
+    const IntegrationClass = useBatchingFramework
+      ? FetchHandler.getRouterTransformHandler(destinationType)
+      : null;
+
     const groupedEvents: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);
+
     const response: RouterTransformationResponse[][] = await mapInBatches(
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {
@@ -116,10 +128,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
         );
         try {
           metaTO.metadata = destInputArray[0].metadata;
-          const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray, requestMetadata);
+          const transformedResponse: RouterTransformationResponse[] = IntegrationClass
+            ? await processBatchedDestination(destInputArray, IntegrationClass, requestMetadata)
+            : await destHandler.processRouterDest(destInputArray, requestMetadata);
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
-            doRouterTransformationResponse,
+            transformedResponse,
             destHandler,
             metaTO,
             tags.IMPLEMENTATIONS.NATIVE,

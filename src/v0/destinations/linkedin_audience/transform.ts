@@ -4,7 +4,12 @@ import {
   formatZodError,
 } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
-import { defaultRequestConfig, getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
+import {
+  defaultRequestConfig,
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
+  removeNullValues,
+} from '../../util';
 import {
   LinkedinAudienceRecordRequest,
   LinkedinAudienceRouterRequestSchema,
@@ -13,7 +18,7 @@ import {
   LinkedinAudienceConfigParams,
   LinkedinAudiencePayload,
 } from './types';
-import { prepareUserIds, hashIdentifiers, generateEndpoint, prepareNonNullRecord } from './utils';
+import { prepareUserIds, hashIdentifiers, generateEndpoint } from './utils';
 import { ACTION_RECORD_MAP, API_PROTOCOL_VERSION, API_VERSION } from './config';
 
 function validateLinkedinAudienceEvent(event: unknown): LinkedinAudienceRecordRequest {
@@ -29,7 +34,7 @@ function prepareUserTypePayload(event: LinkedinAudienceRecordRequest): LinkedinA
   const { action, identifiers, fields } = event.message;
   const hashedIdentifiers = isHashRequired ? hashIdentifiers(identifiers) : identifiers;
   const userIds = prepareUserIds(hashedIdentifiers);
-  const nonNullFields = prepareNonNullRecord(fields);
+  const nonNullFields = removeNullValues(fields);
   const payload: LinkedinAudienceUserPayload = {
     action: ACTION_RECORD_MAP[action],
     userIds,
@@ -42,8 +47,8 @@ function prepareCompanyTypePayload(
   event: LinkedinAudienceRecordRequest,
 ): LinkedinAudienceCompanyPayload {
   const { action, identifiers, fields } = event.message;
-  const nonNullFields = prepareNonNullRecord(fields);
-  const nonNullIdentifiers = prepareNonNullRecord(identifiers);
+  const nonNullFields = removeNullValues(fields);
+  const nonNullIdentifiers = removeNullValues(identifiers);
   const payload: LinkedinAudienceCompanyPayload = {
     action: ACTION_RECORD_MAP[action],
     ...nonNullIdentifiers,
@@ -99,9 +104,7 @@ function processLinkedinAudienceRecord(
   }
 }
 
-const processRouterDest = async (
-  events: LinkedinAudienceRecordRequest[],
-): Promise<RouterTransformationResponse[]> => {
+const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
   if (!events || events.length === 0) return [];
 
   const failedResponses: RouterTransformationResponse[] = [];
@@ -126,10 +129,10 @@ const processRouterDest = async (
         existingGroup.payloads.push(linkedinAudiencePayload);
       } else {
         const configParams: LinkedinAudienceConfigParams = {
-          audienceType: event.connection.config.destination.audienceType,
-          audienceId: event.connection.config.destination.audienceId,
-          accessToken: event.metadata.secret.accessToken,
-          isHashRequired: event.connection.config.destination.isHashRequired,
+          audienceType: recordEvent.connection.config.destination.audienceType,
+          audienceId: recordEvent.connection.config.destination.audienceId,
+          accessToken: recordEvent.metadata.secret.accessToken,
+          isHashRequired: recordEvent.connection.config.destination.isHashRequired,
         };
         groupedPayloads.push({
           action: linkedinAudiencePayload.payload.action,
@@ -142,19 +145,20 @@ const processRouterDest = async (
     }
   }
   for (const group of groupedPayloads) {
+    const { payloads, configParams } = group;
     try {
       const elementsPayload = {
-        elements: group.payloads.map((payload) => payload.payload),
+        elements: payloads.map((payload) => payload.payload),
       };
-      const metadataList = group.payloads.map((payload) => payload.event.metadata);
-      const response = preparePayloadForProcessTransformation(elementsPayload, group.configParams);
+      const metadataList = payloads.map((payload) => payload.event.metadata);
+      const response = preparePayloadForProcessTransformation(elementsPayload, configParams);
 
       successfulResponses.push(
-        getSuccessRespEvents(response, metadataList, group.payloads[0].event.destination, true),
+        getSuccessRespEvents(response, metadataList, payloads[0].event.destination, true),
       );
     } catch (error) {
       failedResponses.push(
-        ...group.payloads.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
+        ...payloads.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),
       );
     }
   }

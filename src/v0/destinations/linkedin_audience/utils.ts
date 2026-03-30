@@ -30,7 +30,7 @@ export function hashIdentifiers(
 export function prepareUserIds(
   identifiers: Record<string, string | null>,
 ): { idType: string; idValue: string }[] {
-  const userIds: { idType: string; idValue: string }[] = [];
+  const userIds: { idType: (typeof FIELD_MAP)[keyof typeof FIELD_MAP]; idValue: string }[] = [];
   Object.keys(identifiers).forEach((key) => {
     const value = identifiers[key];
     if (value) {
@@ -38,18 +38,6 @@ export function prepareUserIds(
     }
   });
   return userIds;
-}
-
-export function prepareNonNullRecord(
-  records: Record<string, string | null>,
-): Record<string, string> {
-  const nonNullRecords: Record<string, string> = {};
-  for (const [key, value] of Object.entries(records)) {
-    if (value !== null) {
-      nonNullRecords[key] = value;
-    }
-  }
-  return nonNullRecords;
 }
 
 export function generateEndpoint(audienceType: string, audienceId: string) {

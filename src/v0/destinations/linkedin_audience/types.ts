@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ACTION_RECORD_MAP } from './config';
 
 const LinkedinAudienceConnectionSchema = z
   .object({
@@ -61,12 +62,12 @@ export const LinkedinAudienceRouterRequestSchema = z
 export type LinkedinAudienceRecordRequest = z.infer<typeof LinkedinAudienceRouterRequestSchema>;
 
 export type LinkedinAudienceUserPayload = {
-  action: string;
+  action: (typeof ACTION_RECORD_MAP)[keyof typeof ACTION_RECORD_MAP];
   userIds: { idType: string; idValue: string }[];
 };
 
 export type LinkedinAudienceCompanyPayload = {
-  action: string;
+  action: (typeof ACTION_RECORD_MAP)[keyof typeof ACTION_RECORD_MAP];
 };
 
 export type LinkedinAudiencePayload = {

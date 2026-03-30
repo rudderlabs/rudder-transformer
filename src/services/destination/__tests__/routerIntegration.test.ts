@@ -141,11 +141,12 @@ describe('resolveMetadatas', () => {
     expect(result[0]).toEqual({ jobId: 1, userId: 'u1' });
   });
 
-  it('filters out missing entries', () => {
+  it('throws on unknown jobId', () => {
     const map = new Map<number, any>();
     map.set(1, { jobId: 1 });
-    const result = resolveMetadatas(new Set([1, 999]), map);
-    expect(result).toHaveLength(1);
+    expect(() => resolveMetadatas(new Set([1, 999]), map)).toThrow(
+      'Missing metadata for jobId 999',
+    );
   });
 });
 

@@ -31,7 +31,6 @@ function applyChunkStrategy<TBody extends Record<string, unknown>>(
 
   let currentBodies: TBody[] = [];
   let currentJobIds = new Set<number>();
-  let currentBytes = 0;
 
   const flush = () => {
     if (currentBodies.length > 0) {
@@ -41,23 +40,27 @@ function applyChunkStrategy<TBody extends Record<string, unknown>>(
       });
       currentBodies = [];
       currentJobIds = new Set();
-      currentBytes = 0;
     }
   };
 
   for (const payload of payloads) {
-    const itemBytes = Buffer.byteLength(JSON.stringify(payload.body));
-
-    if (
-      currentBodies.length > 0 &&
-      (currentBodies.length >= maxSize || currentBytes + itemBytes > maxBytes)
-    ) {
+    // Check maxSize before adding
+    if (currentBodies.length > 0 && currentBodies.length >= maxSize) {
       flush();
+    }
+
+    // Check maxBytes by measuring the prospective wrapped body size
+    if (maxBytes < Infinity && currentBodies.length > 0) {
+      const prospectiveBytes = Buffer.byteLength(
+        JSON.stringify(strategy.wrapBody([...currentBodies, payload.body])),
+      );
+      if (prospectiveBytes > maxBytes) {
+        flush();
+      }
     }
 
     currentBodies.push(payload.body);
     currentJobIds.add(payload.jobId);
-    currentBytes += itemBytes;
   }
 
   flush();
@@ -126,6 +129,9 @@ export async function processBatchedDestination<
   IntegrationClass: RouterIntegrationConstructor<TBody>,
   reqMetadata?: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
+  if (events.length === 0) {
+    return [];
+  }
   const { destination } = events[0];
   const integration = new IntegrationClass(destination);
   const results: RouterTransformationResponse[] = [];
@@ -146,36 +152,54 @@ export async function processBatchedDestination<
   // 3. Split on dontBatch flag
   const { batchable, nonBatchable } = groupByDontBatchDirective(validInputs);
 
-  // 4. Transform
-  const allPayloads: TransformedPayload<TBody>[] = [];
+  // 4. Transform batchable events
+  const batchablePayloads: TransformedPayload<TBody>[] = [];
   const allErrors: TransformResult<TBody>['errorEvents'] = [];
 
   if (batchable.length > 0) {
     const batchResult = await integration.batchTransform(batchable, reqMetadata);
-    allPayloads.push(...batchResult.payloads);
+    batchablePayloads.push(...batchResult.payloads);
     allErrors.push(...batchResult.errorEvents);
   }
 
+  // 5. Transform nonBatchable events individually and convert each to its own response
   for (const single of nonBatchable) {
     // eslint-disable-next-line no-await-in-loop
     const singleResult = await integration.batchTransform([single], reqMetadata);
-    allPayloads.push(...singleResult.payloads);
     allErrors.push(...singleResult.errorEvents);
+
+    for (const payload of singleResult.payloads) {
+      const strategy = integration.getBatchStrategy(payload.endpoint);
+      const wrappedBody =
+        strategy.type === 'chunk' ? strategy.wrapBody([payload.body]) : { ...payload.body };
+      results.push(
+        convertToServerFormat(
+          { body: wrappedBody, jobIds: new Set([payload.jobId]) },
+          payload.endpoint,
+          payload.method,
+          payload.headers,
+          payload.params,
+          metadataMap,
+          destination,
+          integration,
+        ),
+      );
+    }
   }
 
-  // 5. Convert error events to responses
+  // 6. Convert error events to responses
   if (allErrors.length > 0) {
     results.push(...convertErrorEventsToResponses(allErrors, metadataMap, destination));
   }
 
-  if (allPayloads.length === 0) {
+  if (batchablePayloads.length === 0) {
     return results;
   }
 
-  // 6. Group payloads by composite key
-  const groups = groupPayloadsByCompositeKey(allPayloads);
+  // 7. Group batchable payloads by composite key
+  const groups = groupPayloadsByCompositeKey(batchablePayloads);
 
-  // 7. Apply batch strategy to each group
+  // 8. Apply batch strategy to each group
   for (const group of groups) {
     const strategy = integration.getBatchStrategy(group.endpoint);
 
@@ -187,7 +211,7 @@ export async function processBatchedDestination<
       batchResults = strategy.batch(group.payloads);
     }
 
-    // 8. Convert to server format
+    // 9. Convert to server format
     for (const batchResult of batchResults) {
       results.push(
         convertToServerFormat(
@@ -204,6 +228,6 @@ export async function processBatchedDestination<
     }
   }
 
-  // 9. Merge responses that share jobIds (multiplexed events across groups)
+  // 10. Merge responses that share jobIds (multiplexed events across groups)
   return combineBatchRequestsWithSameJobIds(results);
 }

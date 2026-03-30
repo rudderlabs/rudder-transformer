@@ -125,9 +125,13 @@ export function resolveMetadatas(
   jobIds: Set<number>,
   metadataMap: Map<number, Partial<Metadata>>,
 ): Partial<Metadata>[] {
-  return Array.from(jobIds)
-    .map((id) => metadataMap.get(id)!)
-    .filter(Boolean);
+  return Array.from(jobIds).map((id) => {
+    const metadata = metadataMap.get(id);
+    if (!metadata) {
+      throw new Error(`Missing metadata for jobId ${id}`);
+    }
+    return metadata;
+  });
 }
 
 type PayloadGroup<TBody extends Record<string, unknown>> = {
@@ -211,10 +215,9 @@ export abstract class RouterIntegration<
 
   async batchTransform(
     inputs: RouterTransformationRequestData[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<TBody>> {
-    // TODO: remove this
-    console.log(_reqMetadata);
     const payloads: TransformedPayload<TBody>[] = [];
     const errorEvents: TransformedErrorEvent[] = [];
 

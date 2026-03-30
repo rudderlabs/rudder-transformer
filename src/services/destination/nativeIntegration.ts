@@ -104,22 +104,21 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const workspaceId = events[0].metadata.workspaceId;
-    const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
-
-    const destHandler = useBatchingFramework
-      ? null
-      : FetchHandler.getDestHandler(destinationType, version);
-    const IntegrationClass = useBatchingFramework
-      ? FetchHandler.getRouterTransformHandler(destinationType)
-      : null;
-
     const groupedEvents: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);
 
     const response: RouterTransformationResponse[][] = await mapInBatches(
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {
+        const workspaceId = destInputArray[0].metadata?.workspaceId;
+        const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
+        const destHandler = useBatchingFramework
+          ? null
+          : FetchHandler.getDestHandler(destinationType, version);
+        const IntegrationClass = useBatchingFramework
+          ? FetchHandler.getRouterTransformHandler(destinationType)
+          : null;
+
         const metaTO = this.getTags(
           destinationType,
           destInputArray[0].metadata?.destinationId,

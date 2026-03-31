@@ -10,7 +10,8 @@ import {
   isEmptyObject,
   removeUndefinedAndNullRecurse,
 } from '../../../../v0/util';
-import type { Mapping, PathParam, BatchEvent } from './types';
+import type { Mapping, PathParam } from './types';
+import { BatchRequestOutput } from '../../../../types';
 
 const CONTENT_TYPES_MAP = {
   JSON: 'JSON',
@@ -154,8 +155,8 @@ const getXMLPayload = (payload: Record<string, unknown>, rootKey = 'root') => {
   return `<?xml version="1.0" encoding="UTF-8"?>${builder.build(processesPayload)}`;
 };
 
-const getMergedEvents = (batch: BatchEvent[]) => {
-  const events: Record<string, unknown>[] = [];
+const getMergedEvents = (batch: BatchRequestOutput[]) => {
+  const events: BatchRequestOutput['batchedRequest']['body']['JSON'][] = [];
   batch.forEach((event) => {
     if (!isEmptyObject(event.batchedRequest.body.JSON)) {
       events.push(event.batchedRequest.body.JSON);
@@ -201,12 +202,12 @@ const prepareBody = (
   return responseBody;
 };
 
-const mergeMetadata = (batch: BatchEvent[]) => batch.map((event) => event.metadata[0]);
+const mergeMetadata = (batch: BatchRequestOutput[]) => batch.map((event) => event.metadata[0]);
 
 const createHashKey = (
   endpoint: string,
-  headers: Record<string, string>,
-  params: Record<string, unknown>,
+  headers: BatchRequestOutput['batchedRequest']['headers'],
+  params: BatchRequestOutput['batchedRequest']['params'],
 ) => {
   const hash = createHash('sha256');
   hash.update(endpoint);
@@ -215,7 +216,7 @@ const createHashKey = (
   return hash.digest('hex');
 };
 
-const buildBatchedRequest = (batch: BatchEvent[]) => ({
+const buildBatchedRequest = (batch: BatchRequestOutput[]) => ({
   batchedRequest: {
     body: {
       JSON: {},
@@ -237,7 +238,7 @@ const buildBatchedRequest = (batch: BatchEvent[]) => ({
   destination: batch[0].destination,
 });
 
-const batchSuccessfulEvents = (events: BatchEvent[], batchSize: number) => {
+const batchSuccessfulEvents = (events: BatchRequestOutput[], batchSize: number) => {
   const response: ReturnType<typeof buildBatchedRequest>[] = [];
   // group events by endpoint, headers and query params
   const groupedEvents = groupBy(events, (event) => {
@@ -250,7 +251,7 @@ const batchSuccessfulEvents = (events: BatchEvent[], batchSize: number) => {
     const batches = BatchUtils.chunkArrayBySizeAndLength(groupedEvents[groupKey], {
       maxItems: batchSize,
     }).items;
-    batches.forEach((batch: BatchEvent[]) => {
+    batches.forEach((batch: BatchRequestOutput[]) => {
       response.push(buildBatchedRequest(batch));
     });
   });

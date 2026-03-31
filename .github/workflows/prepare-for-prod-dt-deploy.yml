@@ -143,11 +143,11 @@ jobs:
           git push -u origin shared-transformer-$TAG_NAME
 
       - name: Create verified commit for shared transformers
-        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          working-directory: rudder-devops
+          repository: rudderlabs/rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade shared transformers to ${{ env.TAG_NAME }}'
           files: |
@@ -182,11 +182,11 @@ jobs:
           git push -u origin hosted-transformer-$TAG_NAME
 
       - name: Create verified commit for hosted transformer
-        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          working-directory: rudder-devops
+          repository: rudderlabs/rudder-devops
           branch-name: hosted-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade hosted transformer to ${{ env.TAG_NAME }}'
           files: |
@@ -225,11 +225,11 @@ jobs:
           git push -u origin dedicated-transformer-$TAG_NAME
 
       - name: Create verified commit for dedicated transformer
-        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          working-directory: rudderstack-operator
+          repository: rudderlabs/rudderstack-operator
           branch-name: dedicated-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade dedicated transformer default version to ${{ env.TAG_NAME }}'
           files: |

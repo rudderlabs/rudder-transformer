@@ -6,6 +6,7 @@ import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/uti
 import tags from '../../util/tags';
 import { getAuthErrCategory, getDeveloperToken } from '../../util/googleUtils';
 import type { OfflineDataJobPayload } from './types';
+import { DATA_MANAGER_HOST } from './dataManager/config';
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -151,6 +152,13 @@ const gaAudienceProxyRequest = async (request: {
   metadata: unknown;
   headers: Record<string, string>;
 }) => {
+  // Route to Data Manager API handler when transform layer has selected it.
+  // The endpoint URL is the single signal — scope was already verified at transform time.
+  // INT-6118: dataManagerProxyRequest will be implemented and imported here.
+  if (request.endpoint.includes(DATA_MANAGER_HOST)) {
+    throw new Error('[GARL] Data Manager proxy handler not yet implemented (INT-6118)');
+  }
+
   const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
 

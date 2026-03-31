@@ -12,10 +12,12 @@ import {
   fieldStrippingRequest,
   allFieldsInvalidRequest,
 } from './record';
+import { dmRouterData } from './dataManager';
 
 const API_VERSION = 'v22';
 
 export const data = [
+  ...dmRouterData,
   {
     name: 'google_adwords_remarketing_lists record event tests EventStream',
     description: 'Test EventStream',

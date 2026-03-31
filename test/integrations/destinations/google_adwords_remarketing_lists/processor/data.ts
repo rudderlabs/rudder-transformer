@@ -1,7 +1,10 @@
 import { authHeader1, secret1 } from '../maskedSecrets';
+import { dataManagerData } from './dataManager';
+
 const API_VERSION = 'v22';
 
 export const data = [
+  ...dataManagerData,
   {
     name: 'google_adwords_remarketing_lists',
     description: 'Test 0',

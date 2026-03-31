@@ -163,7 +163,7 @@ const process = async (event: {
   const { metadata, message, destination } = event;
   const accessToken = getAccessToken(metadata, 'access_token');
 
-  if (await isDataManagerAPIEnabled(metadata.workspaceId, accessToken)) {
+  if (await isDataManagerAPIEnabled(metadata.workspaceId, metadata.destinationId, accessToken)) {
     return dataManagerTransformAudienceListEvent({
       metadata,
       message: message as unknown as DMGARLAudienceMessage,
@@ -175,13 +175,13 @@ const process = async (event: {
 };
 
 const processRouterDest = async (inputs: { message: Message }[], reqMetadata: unknown) => {
-  const { workspaceId } = (inputs[0] as unknown as RecordInput).metadata;
+  const { workspaceId, destinationId } = (inputs[0] as unknown as RecordInput).metadata;
   const accessToken = getAccessToken(
     (inputs[0] as unknown as RecordInput).metadata,
     'access_token',
   );
 
-  if (await isDataManagerAPIEnabled(workspaceId, accessToken)) {
+  if (await isDataManagerAPIEnabled(workspaceId, destinationId, accessToken)) {
     return dataManagerProcessRouterDest(inputs as unknown as DMGARLRouterRequest[], reqMetadata);
   }
 

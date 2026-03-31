@@ -89,7 +89,7 @@ jobs:
 
       - name: Create verified tag
         if: steps.check_tag.outputs.tag_exists == 'false'
-        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:

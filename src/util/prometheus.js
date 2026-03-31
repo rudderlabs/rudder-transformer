@@ -809,6 +809,18 @@ class Prometheus {
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
+      {
+        name: 'node_cache_keys',
+        help: 'node_cache_keys',
+        type: 'gauge',
+        labelNames: ['name'],
+      },
+      {
+        name: 'node_cache_memory_usage_bytes',
+        help: 'node_cache_memory_usage_bytes',
+        type: 'gauge',
+        labelNames: ['name'],
+      },
       // User transform metrics
       // counter
       {

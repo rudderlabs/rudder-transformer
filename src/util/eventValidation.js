@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* Ajv meta load to support draft-04/06/07/2019 */
 const Ajv2019 = require('ajv/dist/2019');
 const Ajv = require('ajv-draft-04');
@@ -15,6 +16,7 @@ const eventSchemaCache = new NodeCache();
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const { isEmptyObject } = require('../v0/util');
+const stats = require('./stats');
 
 const defaultOptions = {
   strictRequired: true,
@@ -110,6 +112,11 @@ function eventSchemaHash(tpId, tpVersion, eventType, eventName, isDraft4 = false
   return `${tpId}::${tpVersion}::${eventType}::${eventName}::${isDraft4 ? 4 : 19}`;
 }
 
+function getCachedValidatorFunction(tpId, tpVersion, eventType, eventName) {
+  const schemaHash = eventSchemaHash(tpId, tpVersion, eventType, eventName, false);
+  return eventSchemaCache.get(schemaHash);
+}
+
 /**
  * @param {*} event
  * @returns {validationErrors}
@@ -123,11 +130,24 @@ async function validate(event) {
     checkForPropertyMissing(event.metadata.workspaceId);
 
     const { sourceTpConfig, trackingPlanId, trackingPlanVersion, workspaceId } = event.metadata;
+    const eventType = event.message.type;
+    const eventName = event.message.type === 'track' ? event.message.event : '';
+    // if event schema is found in cache, validate event and return validationErrors.
+    const validateEventFunc = getCachedValidatorFunction(
+      trackingPlanId,
+      trackingPlanVersion,
+      eventType,
+      eventName,
+    );
+    if (validateEventFunc) {
+      return validateEventAndTransformErrors(event.message, validateEventFunc);
+    }
+
     const eventSchema = await trackingPlan.getEventSchema(
       trackingPlanId,
       trackingPlanVersion,
-      event.message.type,
-      event.message.type === 'track' ? event.message.event : '',
+      eventType,
+      eventName,
       workspaceId,
     );
 
@@ -156,14 +176,8 @@ async function validate(event) {
     // Current json schema is injected with version for non-track events in config-be, need to remove ot parse it succesfully
     delete eventSchema.version;
 
-    const schemaHash = eventSchemaHash(
-      trackingPlanId,
-      trackingPlanVersion,
-      event.message.type,
-      event.message.event,
-      isDraft4,
-    );
-    const eventTypeAjvOptions = sourceTpConfig[event.message.type]?.ajvOptions || {};
+    const schemaHash = eventSchemaHash(trackingPlanId, trackingPlanVersion, eventType, eventName);
+    const eventTypeAjvOptions = sourceTpConfig[eventType]?.ajvOptions || {};
     const globalAjvOptions = (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
     const merged = {
       ...defaultOptions,
@@ -179,6 +193,11 @@ async function validate(event) {
       if (!ajv) {
         ajv = getAjv(merged, isDraft4);
         ajvCache.set(configHash, ajv);
+        const { keys, vsize } = ajvCache.getStats();
+        stats.gauge('node_cache_keys', keys, { name: isDraft4 ? 'ajv4_cache' : 'ajv19_cache' });
+        stats.gauge('node_cache_memory_usage_bytes', vsize, {
+          name: isDraft4 ? 'ajv4_cache' : 'ajv19_cache',
+        });
       }
     }
 
@@ -186,89 +205,100 @@ async function validate(event) {
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
+      const { keys, vsize } = eventSchemaCache.getStats();
+      stats.gauge('node_cache_keys', keys, { name: 'event_schema_cache' });
+      stats.gauge('node_cache_memory_usage_bytes', vsize, { name: 'event_schema_cache' });
     }
 
-    const valid = validateEvent(event.message);
-    if (valid) {
-      return [];
-    }
-
-    const validationErrors = validateEvent.errors.map((error) => {
-      let rudderValidationError;
-      switch (error.keyword) {
-        case 'required':
-          rudderValidationError = {
-            type: violationTypes.RequiredMissing,
-            message: error.message,
-            property: error.params.missingProperty,
-            meta: {
-              instancePath: error.instancePath,
-              schemaPath: error.schemaPath,
-            },
-          };
-          break;
-        case 'type':
-          rudderValidationError = {
-            type: violationTypes.DatatypeMismatch,
-            message: error.message,
-            meta: {
-              instancePath: error.instancePath,
-              schemaPath: error.schemaPath,
-            },
-          };
-          break;
-        case 'additionalProperties':
-        case 'unevaluatedProperties':
-          rudderValidationError = {
-            type: violationTypes.AdditionalProperties,
-            message: `${error.message} '${error.params.additionalProperty || error.params.unevaluatedProperty}'`,
-            property: error.params.additionalProperty || error.params.unevaluatedProperty,
-            meta: {
-              instancePath: error.instancePath,
-              schemaPath: error.schemaPath,
-            },
-          };
-          break;
-        case 'minLength':
-        case 'maxLength':
-        case 'pattern':
-        case 'format':
-        case 'multipleOf':
-        case 'minimum':
-        case 'maximum':
-        case 'exclusiveMinimum':
-        case 'exclusiveMaximum':
-        case 'minItems':
-        case 'maxItems':
-        case 'uniqueItems':
-        case 'enum':
-        case 'if':
-          rudderValidationError = {
-            type: violationTypes.AdvanceRulesViolation,
-            message: error.message,
-            meta: {
-              instancePath: error.instancePath,
-              schemaPath: error.schemaPath,
-            },
-          };
-          break;
-        default:
-          rudderValidationError = {
-            type: violationTypes.UnknownViolation,
-            message: error.message,
-            meta: {
-              instancePath: error.instancePath,
-              schemaPath: error.schemaPath,
-            },
-          };
-      }
-      return rudderValidationError;
-    });
-    return validationErrors;
+    return validateEventAndTransformErrors(event.message, validateEvent);
   } catch (error) {
     logger.error(`TP event validation error: ${error.message}`);
     throw error;
   }
+}
+
+/**
+ * validateEvent: ajv compiled function to validate the message against the schema.
+ * Validates the message against the schema and returns validationErrors.
+ * @returns { validationErrors }
+ */
+function validateEventAndTransformErrors(message, validateEvent) {
+  const valid = validateEvent(message);
+  if (valid) {
+    return [];
+  }
+  const validationErrors = validateEvent.errors.map((error) => {
+    let rudderValidationError;
+    switch (error.keyword) {
+      case 'required':
+        rudderValidationError = {
+          type: violationTypes.RequiredMissing,
+          message: error.message,
+          property: error.params.missingProperty,
+          meta: {
+            instancePath: error.instancePath,
+            schemaPath: error.schemaPath,
+          },
+        };
+        break;
+      case 'type':
+        rudderValidationError = {
+          type: violationTypes.DatatypeMismatch,
+          message: error.message,
+          meta: {
+            instancePath: error.instancePath,
+            schemaPath: error.schemaPath,
+          },
+        };
+        break;
+      case 'additionalProperties':
+      case 'unevaluatedProperties':
+        rudderValidationError = {
+          type: violationTypes.AdditionalProperties,
+          message: `${error.message} '${error.params.additionalProperty || error.params.unevaluatedProperty}'`,
+          property: error.params.additionalProperty || error.params.unevaluatedProperty,
+          meta: {
+            instancePath: error.instancePath,
+            schemaPath: error.schemaPath,
+          },
+        };
+        break;
+      case 'minLength':
+      case 'maxLength':
+      case 'pattern':
+      case 'format':
+      case 'multipleOf':
+      case 'minimum':
+      case 'maximum':
+      case 'exclusiveMinimum':
+      case 'exclusiveMaximum':
+      case 'minItems':
+      case 'maxItems':
+      case 'uniqueItems':
+      case 'enum':
+      case 'if':
+        rudderValidationError = {
+          type: violationTypes.AdvanceRulesViolation,
+          message: error.message,
+          meta: {
+            instancePath: error.instancePath,
+            schemaPath: error.schemaPath,
+          },
+        };
+        break;
+      default:
+        rudderValidationError = {
+          type: violationTypes.UnknownViolation,
+          message: error.message,
+          meta: {
+            instancePath: error.instancePath,
+            schemaPath: error.schemaPath,
+          },
+        };
+    }
+    return rudderValidationError;
+  });
+  return validationErrors;
 }
 
 function handleValidationErrors(validationErrors, metadata, curDropEvent, curViolationType) {

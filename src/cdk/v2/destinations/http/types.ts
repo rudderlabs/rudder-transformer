@@ -1,6 +1,6 @@
 export interface Mapping {
   from: string;
-  to: string
+  to: string;
 }
 
 export interface PathParam {

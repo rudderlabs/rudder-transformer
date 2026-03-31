@@ -80,7 +80,7 @@ export function customBatch<TBody extends Record<string, unknown> = Record<strin
 
 const baseInputSchema = z.object({
   message: RudderMessageSchema,
-  metadata: MetadataSchema,
+  metadata: MetadataSchema.partial().extend({ jobId: z.number() }),
   destination: z.object({}).passthrough(),
 });
 

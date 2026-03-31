@@ -1,3 +1,13 @@
+import {
+  BatchedRequest,
+  BatchRequestOutput,
+  Destination,
+  Connection,
+  RouterTransformationRequestData,
+  RudderMessage,
+  RudderRecordV2,
+} from '../../../../types';
+
 export type ConsentStatus = 'CONSENT_STATUS_UNSPECIFIED' | 'CONSENT_GRANTED' | 'CONSENT_DENIED';
 
 export type Encoding = 'ENCODING_UNSPECIFIED' | 'HEX' | 'BASE64';
@@ -80,3 +90,48 @@ export interface GARLRemoveAPIPayload {
   validateOnly?: boolean;
   encoding?: Encoding;
 }
+
+export interface GARLDestinationConfig {
+  customerId: string;
+  audienceId: string;
+  loginCustomerId?: string;
+  subAccount?: boolean;
+  typeOfList: string;
+  userSchema: string[];
+  isHashRequired: boolean;
+  userDataConsent?: string;
+  personalizationConsent?: string;
+}
+
+export type GARLDestination = Destination<GARLDestinationConfig>;
+
+export type GARLConnection = Connection<{
+  destination: GARLDestinationConfig;
+}>;
+
+export interface GARLAudienceMessage extends RudderMessage {
+  type: 'audiencelist';
+  properties: {
+    listData: Record<string, Record<string, unknown>[]>;
+  };
+}
+
+export type GARLMessage = RudderRecordV2 | GARLAudienceMessage;
+
+export type GARLRouterRequest = RouterTransformationRequestData<
+  GARLMessage,
+  GARLDestination,
+  GARLConnection
+>;
+
+export type GARLBatchRequest = BatchedRequest<
+  GARLIngestAPIPayload | GARLRemoveAPIPayload,
+  Record<string, string>,
+  Record<string, string>
+>;
+
+export type GARLBatchRequestOutput = BatchRequestOutput<
+  GARLIngestAPIPayload | GARLRemoveAPIPayload,
+  Record<string, string>,
+  Record<string, string>
+>;

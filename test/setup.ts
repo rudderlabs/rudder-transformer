@@ -4,4 +4,5 @@ process.env.DEST_ZOHO_DELETION_BATCHING_SUPPORTED_WORKSPACE_IDS = 'workspaceId2'
 process.env.DEST_BRAZE_MAU_WORKSPACE_IDS_SKIP_LIST = 'workspace-non-mau';
 process.env.DISABLE_TIKTOK_AUDIENCE_CDK_V2 = 'workspace-disable-cdkv2';
 process.env.DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS = 'workspaceId1,workspaceId2';
+process.env.DEST_GARL_DATA_MANAGER_API_ALLOWED_WORKSPACE_IDS = 'dm-enabled-workspaceId';
 process.env.DISABLE_LINKEDIN_AUDIENCE_CDK_V2 = 'workspace-disable-cdkv2';

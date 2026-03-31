@@ -16,7 +16,7 @@ disable-model-invocation: true
 
 ## Guide
 
-Follow the guide at [integration-docs-guide.md](integration-docs-guide.md) bundled with this skill. Thoroughly address every point mentioned in the guide. If parts of the guide are not easily addressable, highlight those sections with `NEEDS REVIEW`.
+Follow the guide at [references/integration-docs-guide.md](references/integration-docs-guide.md) bundled with this skill. Thoroughly address every point mentioned in the guide. If parts of the guide are not easily addressable, highlight those sections with `NEEDS REVIEW`.
 
 ## Reference Example
 

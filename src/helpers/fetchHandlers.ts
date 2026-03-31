@@ -1,4 +1,4 @@
-import { RouterIntegrationConstructor } from '../services/destination/routerIntegration';
+import { BatchDestinationConstructor } from '../services/destination/routerIntegration';
 import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {
@@ -10,7 +10,7 @@ export class FetchHandler {
 
   private static deletionHandlerMap: Map<string, any> = new Map();
 
-  private static routerTransformHandlerMap: Map<string, RouterIntegrationConstructor> = new Map();
+  private static routerTransformHandlerMap: Map<string, BatchDestinationConstructor> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -44,7 +44,7 @@ export class FetchHandler {
     return newSourceHydrateHandler;
   }
 
-  public static getRouterTransformHandler(dest: string): RouterIntegrationConstructor {
+  public static getRouterTransformHandler(dest: string): BatchDestinationConstructor {
     const key = dest.toLowerCase();
     const routerTransformHandler = this.routerTransformHandlerMap.get(key);
     if (routerTransformHandler) {

@@ -1,7 +1,8 @@
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { processBatchedDestination } from '../processBatchedDestination';
 import {
-  RouterIntegration,
-  TransformedPayload,
+  BatchDestination,
+  TransformedEvent,
   BatchStrategy,
   chunk,
   customBatch,
@@ -21,10 +22,10 @@ const mockDestination = {
   DestinationDefinition: { Name: 'TEST' },
 } as unknown as Destination;
 
-class SimpleIntegration extends RouterIntegration<TestBody> {
+class SimpleIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     return {
       body: { value: (input.message as any).data },
       endpoint: 'https://api.test.com/events',
@@ -35,16 +36,16 @@ class SimpleIntegration extends RouterIntegration<TestBody> {
 
   getBatchStrategy(): BatchStrategy<TestBody> {
     return chunk({
-      maxSize: 3,
+      maxItems: 3,
       wrapBody: (bodies) => ({ events: bodies }),
     });
   }
 }
 
-class MultiEndpointIntegration extends RouterIntegration<TestBody> {
+class MultiEndpointIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     const type = (input.message as any).type;
     return {
       body: { value: (input.message as any).data },
@@ -55,16 +56,16 @@ class MultiEndpointIntegration extends RouterIntegration<TestBody> {
 
   getBatchStrategy(endpoint: string): BatchStrategy<TestBody> {
     if (endpoint.includes('/track')) {
-      return chunk({ maxSize: 2, wrapBody: (bodies) => ({ tracks: bodies }) });
+      return chunk({ maxItems: 2, wrapBody: (bodies) => ({ tracks: bodies }) });
     }
-    return chunk({ maxSize: 2, wrapBody: (bodies) => ({ identifies: bodies }) });
+    return chunk({ maxItems: 2, wrapBody: (bodies) => ({ identifies: bodies }) });
   }
 }
 
-class PartialFailIntegration extends RouterIntegration<TestBody> {
+class PartialFailIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     if (input.message.shouldFail) {
       throw new Error('Transform failed');
     }
@@ -80,10 +81,10 @@ class PartialFailIntegration extends RouterIntegration<TestBody> {
   }
 }
 
-class CustomBatchIntegration extends RouterIntegration<TestBody> {
+class CustomBatchIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     return {
       body: { value: (input.message as any).data },
       endpoint: 'https://api.test.com/merge',
@@ -132,7 +133,7 @@ function makeInput(
 
 describe('processBatchedDestination', () => {
   describe('chunk strategy', () => {
-    it('batches events into chunks respecting maxSize', async () => {
+    it('batches events into chunks respecting maxItems', async () => {
       const inputs = [
         makeInput(1, 'a'),
         makeInput(2, 'b'),
@@ -143,7 +144,7 @@ describe('processBatchedDestination', () => {
 
       const results = await processBatchedDestination(inputs, SimpleIntegration);
 
-      // maxSize=3 → 2 chunks: [a,b,c] and [d,e]
+      // maxItems=3 → 2 chunks: [a,b,c] and [d,e]
       expect(results).toHaveLength(2);
 
       const chunk1 = results[0];
@@ -190,8 +191,8 @@ describe('processBatchedDestination', () => {
 
       const results = await processBatchedDestination(inputs, MultiEndpointIntegration);
 
-      // track: 3 events, maxSize=2 → 2 chunks
-      // identify: 2 events, maxSize=2 → 1 chunk
+      // track: 3 events, maxItems=2 → 2 chunks
+      // identify: 2 events, maxItems=2 → 1 chunk
       expect(results).toHaveLength(3);
 
       const trackResults = results.filter((r) =>
@@ -226,7 +227,7 @@ describe('processBatchedDestination', () => {
 
       const results = await processBatchedDestination(inputs, SimpleIntegration);
 
-      // All 3 events share the same endpoint, and maxSize=3 fits them all
+      // All 3 events share the same endpoint, and maxItems=3 fits them all
       const allJobIds = results.flatMap((r) => r.metadata.map((m) => m.jobId));
       expect(allJobIds).toContain(1);
       expect(allJobIds).toContain(2);
@@ -294,8 +295,70 @@ describe('processBatchedDestination', () => {
 
   describe('empty input', () => {
     it('returns empty array for no events', async () => {
-      const results = await processBatchedDestination([makeInput(1, 'a')], SimpleIntegration);
-      expect(results.length).toBeGreaterThan(0);
+      const results = await processBatchedDestination([], SimpleIntegration);
+      expect(results).toEqual([]);
+    });
+  });
+
+  describe('error taxonomy with typed errors', () => {
+    class TypedErrorIntegration extends BatchDestination<TestBody> {
+      transformEvent(
+        input: RouterTransformationRequestData,
+      ): Omit<TransformedEvent<TestBody>, 'jobId'> {
+        if ((input.message as any).shouldFail) {
+          throw new InstrumentationError('missing required field');
+        }
+        return {
+          body: { value: 'ok' },
+          endpoint: 'https://api.test.com/events',
+          method: 'POST',
+        };
+      }
+
+      getBatchStrategy(): BatchStrategy<TestBody> {
+        return chunk({ wrapBody: (bodies) => ({ events: bodies }) });
+      }
+    }
+
+    it('produces proper statTags from InstrumentationError via generateErrorObject', async () => {
+      const inputs = [makeInput(1, 'ok'), makeInput(2, 'fail', { shouldFail: true })];
+      const results = await processBatchedDestination(inputs, TypedErrorIntegration);
+
+      const errors = results.filter((r) => r.statusCode !== 200);
+      expect(errors).toHaveLength(1);
+      expect(errors[0].statusCode).toBe(400);
+      expect(errors[0].error).toContain('missing required field');
+      expect(errors[0].statTags).toMatchObject({
+        errorCategory: 'dataValidation',
+        errorType: 'instrumentation',
+      });
+    });
+  });
+
+  describe('failed jobIds removed from success responses', () => {
+    it('excludes failed jobIds from success response metadata', async () => {
+      // PartialFailIntegration throws for events with shouldFail=true
+      // jobId 2 fails, jobIds 1 and 3 succeed
+      const inputs = [
+        makeInput(1, 'ok'),
+        makeInput(2, 'fail', { shouldFail: true }),
+        makeInput(3, 'ok2'),
+      ];
+
+      const results = await processBatchedDestination(inputs, PartialFailIntegration);
+
+      const successes = results.filter((r) => r.statusCode === 200);
+      const errors = results.filter((r) => r.statusCode !== 200);
+
+      // jobId 2 failed — should only appear in error responses
+      expect(errors).toHaveLength(1);
+      expect(errors[0].metadata[0].jobId).toBe(2);
+
+      // jobId 2 should NOT appear in any success response metadata
+      const successJobIds = successes.flatMap((r) => r.metadata.map((m) => m.jobId));
+      expect(successJobIds).not.toContain(2);
+      expect(successJobIds).toContain(1);
+      expect(successJobIds).toContain(3);
     });
   });
 });

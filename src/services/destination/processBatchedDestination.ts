@@ -5,14 +5,14 @@ import type {
   RouterTransformationResponse,
 } from '../../types/destinationTransformation';
 import {
-  RouterIntegration,
-  RouterIntegrationConstructor,
-  TransformedPayload,
+  BatchDestination,
+  BatchDestinationConstructor,
+  TransformedEvent,
   TransformResult,
   ChunkStrategy,
   groupByDontBatchDirective,
   groupPayloadsByCompositeKey,
-  resolveMetadatas,
+  resolveMetadata,
   parseSizeToBytes,
 } from './routerIntegration';
 import { combineBatchRequestsWithSameJobIds } from '../../v0/util';
@@ -22,11 +22,13 @@ import { combineBatchRequestsWithSameJobIds } from '../../v0/util';
 // ---------------------------------------------------------------------------
 
 function applyChunkStrategy<TBody extends Record<string, unknown>>(
-  payloads: TransformedPayload<TBody>[],
+  payloads: TransformedEvent<TBody>[],
   strategy: ChunkStrategy<TBody>,
 ): { body: Record<string, unknown>; jobIds: Set<number> }[] {
-  const maxSize = strategy.maxSize ?? Infinity;
-  const maxBytes = strategy.maxBytes ? parseSizeToBytes(strategy.maxBytes) : Infinity;
+  const maxItems = strategy.maxItems ?? Infinity;
+  const maxPayloadSize = strategy.maxPayloadSize
+    ? parseSizeToBytes(strategy.maxPayloadSize)
+    : Infinity;
   const results: { body: Record<string, unknown>; jobIds: Set<number> }[] = [];
 
   let currentBodies: TBody[] = [];
@@ -44,17 +46,17 @@ function applyChunkStrategy<TBody extends Record<string, unknown>>(
   };
 
   for (const payload of payloads) {
-    // Check maxSize before adding
-    if (currentBodies.length > 0 && currentBodies.length >= maxSize) {
+    // Check maxItems before adding
+    if (currentBodies.length > 0 && currentBodies.length >= maxItems) {
       flush();
     }
 
-    // Check maxBytes by measuring the prospective wrapped body size
-    if (maxBytes < Infinity && currentBodies.length > 0) {
+    // Check maxPayloadSize by measuring the prospective wrapped body size
+    if (maxPayloadSize < Infinity && currentBodies.length > 0) {
       const prospectiveBytes = Buffer.byteLength(
         JSON.stringify(strategy.wrapBody([...currentBodies, payload.body])),
       );
-      if (prospectiveBytes > maxBytes) {
+      if (prospectiveBytes > maxPayloadSize) {
         flush();
       }
     }
@@ -79,7 +81,7 @@ function convertToServerFormat<TBody extends Record<string, unknown>>(
   params: Record<string, unknown> | undefined,
   metadataMap: Map<number, Partial<Metadata>>,
   destination: Destination,
-  integration: RouterIntegration<TBody>,
+  integration: BatchDestination<TBody>,
 ): RouterTransformationResponse {
   return {
     batchedRequest: {
@@ -89,10 +91,10 @@ function convertToServerFormat<TBody extends Record<string, unknown>>(
       endpoint,
       headers: headers ?? {},
       params: params ?? {},
-      body: integration.buildRequestBody(batchResult.body),
+      body: integration.wrapRequestBody(batchResult.body),
       files: {},
     },
-    metadata: resolveMetadatas(batchResult.jobIds, metadataMap),
+    metadata: resolveMetadata(batchResult.jobIds, metadataMap),
     destination,
     batched: true,
     statusCode: 200,
@@ -109,7 +111,7 @@ function convertErrorEventsToResponses(
   destination: Destination,
 ): RouterTransformationResponse[] {
   return errorEvents.map((err) => ({
-    metadata: resolveMetadatas(new Set([err.jobId]), metadataMap),
+    metadata: resolveMetadata(new Set([err.jobId]), metadataMap),
     destination,
     batched: false,
     statusCode: err.statusCode,
@@ -126,7 +128,7 @@ export async function processBatchedDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
 >(
   events: RouterTransformationRequestData[],
-  IntegrationClass: RouterIntegrationConstructor<TBody>,
+  IntegrationClass: BatchDestinationConstructor<TBody>,
   reqMetadata?: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (events.length === 0) {
@@ -144,7 +146,8 @@ export async function processBatchedDestination<
   }
 
   // 2. Validate inputs
-  const validInputs = integration.validate(events, results);
+  const { valid: validInputs, errors: validationErrors } = integration.validate(events);
+  results.push(...validationErrors);
   if (validInputs.length === 0) {
     return results;
   }
@@ -153,11 +156,11 @@ export async function processBatchedDestination<
   const { batchable, nonBatchable } = groupByDontBatchDirective(validInputs);
 
   // 4. Transform batchable events
-  const batchablePayloads: TransformedPayload<TBody>[] = [];
+  const batchablePayloads: TransformedEvent<TBody>[] = [];
   const allErrors: TransformResult<TBody>['errorEvents'] = [];
 
   if (batchable.length > 0) {
-    const batchResult = await integration.batchTransform(batchable, reqMetadata);
+    const batchResult = await integration.transformEvents(batchable, reqMetadata);
     batchablePayloads.push(...batchResult.payloads);
     allErrors.push(...batchResult.errorEvents);
   }
@@ -165,7 +168,7 @@ export async function processBatchedDestination<
   // 5. Transform nonBatchable events individually and convert each to its own response
   for (const single of nonBatchable) {
     // eslint-disable-next-line no-await-in-loop
-    const singleResult = await integration.batchTransform([single], reqMetadata);
+    const singleResult = await integration.transformEvents([single], reqMetadata);
     allErrors.push(...singleResult.errorEvents);
 
     for (const payload of singleResult.payloads) {
@@ -228,6 +231,35 @@ export async function processBatchedDestination<
     }
   }
 
-  // 10. Merge responses that share jobIds (multiplexed events across groups)
-  return combineBatchRequestsWithSameJobIds(results);
+  // 10. Separate success and error responses
+  const successResults = results.filter((r) => !('error' in r));
+  const errorResults = results.filter((r) => 'error' in r);
+
+  // 11. For multiplexed events: if any output failed, the entire event should fail.
+  // Collect all jobIds that appear in error responses.
+  const failedJobIds = new Set<number>();
+  for (const errResp of errorResults) {
+    for (const meta of errResp.metadata) {
+      if (meta.jobId != null) {
+        failedJobIds.add(meta.jobId);
+      }
+    }
+  }
+
+  // Remove failed jobIds from success responses. If a success response loses
+  // all its metadata entries, drop it entirely.
+  const cleanedSuccessResults: RouterTransformationResponse[] = [];
+  if (failedJobIds.size > 0) {
+    for (const resp of successResults) {
+      const cleanedMetadata = resp.metadata.filter((m) => !failedJobIds.has(m.jobId!));
+      if (cleanedMetadata.length > 0) {
+        cleanedSuccessResults.push({ ...resp, metadata: cleanedMetadata });
+      }
+    }
+  } else {
+    cleanedSuccessResults.push(...successResults);
+  }
+
+  // 12. Merge success responses that share jobIds (multiplexed events across groups)
+  return [...combineBatchRequestsWithSameJobIds(cleanedSuccessResults), ...errorResults];
 }

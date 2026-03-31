@@ -9,12 +9,13 @@ import type {
   RouterTransformationResponse,
 } from '../../types/destinationTransformation';
 import tags from '../../v0/util/tags';
+import { generateErrorObject } from '../../v0/util';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type TransformedPayload<TBody extends Record<string, unknown> = Record<string, unknown>> = {
+export type TransformedEvent<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   body: TBody;
   endpoint: string;
   method: string;
@@ -23,7 +24,7 @@ export type TransformedPayload<TBody extends Record<string, unknown> = Record<st
   jobId: number;
 };
 
-export type TransformedErrorEvent = {
+export type TransformError = {
   error: string;
   statusCode: number;
   jobId: number;
@@ -31,25 +32,25 @@ export type TransformedErrorEvent = {
 };
 
 export type TransformResult<TBody extends Record<string, unknown> = Record<string, unknown>> = {
-  payloads: TransformedPayload<TBody>[];
-  errorEvents: TransformedErrorEvent[];
+  payloads: TransformedEvent<TBody>[];
+  errorEvents: TransformError[];
 };
 
 export type ChunkStrategy<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   type: 'chunk';
-  maxSize?: number;
-  maxBytes?: string;
+  maxItems?: number;
+  maxPayloadSize?: string;
   wrapBody: (bodies: TBody[]) => Record<string, unknown>;
 };
 
-export type CustomBatchResult = {
+export type BatchGroup = {
   body: Record<string, unknown>;
   jobIds: Set<number>;
 };
 
 export type CustomBatchStrategy<TBody extends Record<string, unknown> = Record<string, unknown>> = {
   type: 'customBatch';
-  batch: (payloads: TransformedPayload<TBody>[]) => CustomBatchResult[];
+  batch: (payloads: TransformedEvent<TBody>[]) => BatchGroup[];
 };
 
 export type BatchStrategy<TBody extends Record<string, unknown> = Record<string, unknown>> =
@@ -61,15 +62,15 @@ export type BatchStrategy<TBody extends Record<string, unknown> = Record<string,
 // ---------------------------------------------------------------------------
 
 export function chunk<TBody extends Record<string, unknown> = Record<string, unknown>>(opts: {
-  maxSize?: number;
-  maxBytes?: string;
+  maxItems?: number;
+  maxPayloadSize?: string;
   wrapBody: (bodies: TBody[]) => Record<string, unknown>;
 }): ChunkStrategy<TBody> {
   return { type: 'chunk', ...opts };
 }
 
 export function customBatch<TBody extends Record<string, unknown> = Record<string, unknown>>(
-  batchFn: (payloads: TransformedPayload<TBody>[]) => CustomBatchResult[],
+  batchFn: (payloads: TransformedEvent<TBody>[]) => BatchGroup[],
 ): CustomBatchStrategy<TBody> {
   return { type: 'customBatch', batch: batchFn };
 }
@@ -121,7 +122,7 @@ export function groupByDontBatchDirective(inputs: RouterTransformationRequestDat
   return { batchable, nonBatchable };
 }
 
-export function resolveMetadatas(
+export function resolveMetadata(
   jobIds: Set<number>,
   metadataMap: Map<number, Partial<Metadata>>,
 ): Partial<Metadata>[] {
@@ -134,18 +135,18 @@ export function resolveMetadatas(
   });
 }
 
-type PayloadGroup<TBody extends Record<string, unknown>> = {
+type RequestGroup<TBody extends Record<string, unknown>> = {
   endpoint: string;
   method: string;
   headers: Record<string, unknown> | undefined;
   params: Record<string, unknown> | undefined;
-  payloads: TransformedPayload<TBody>[];
+  payloads: TransformedEvent<TBody>[];
 };
 
 export function groupPayloadsByCompositeKey<
   TBody extends Record<string, unknown> = Record<string, unknown>,
->(payloads: TransformedPayload<TBody>[]): PayloadGroup<TBody>[] {
-  const map = new Map<string, PayloadGroup<TBody>>();
+>(payloads: TransformedEvent<TBody>[]): RequestGroup<TBody>[] {
+  const map = new Map<string, RequestGroup<TBody>>();
 
   for (const payload of payloads) {
     const key = stableStringify({
@@ -173,15 +174,15 @@ export function groupPayloadsByCompositeKey<
 }
 
 // ---------------------------------------------------------------------------
-// Abstract class: RouterIntegration<TBody>
+// Abstract class: BatchDestination<TBody>
 // ---------------------------------------------------------------------------
 
-// Constructor type for RouterIntegration subclasses — used by the framework to instantiate per request
-export type RouterIntegrationConstructor<
+// Constructor type for BatchDestination subclasses — used by the framework to instantiate per request
+export type BatchDestinationConstructor<
   TBody extends Record<string, unknown> = Record<string, unknown>,
-> = new (destination: Destination) => RouterIntegration<TBody>;
+> = new (destination: Destination) => BatchDestination<TBody>;
 
-export abstract class RouterIntegration<
+export abstract class BatchDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
 > {
   protected destination: Destination;
@@ -194,7 +195,7 @@ export abstract class RouterIntegration<
 
   abstract transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TBody>, 'jobId'> | Omit<TransformedPayload<TBody>, 'jobId'>[];
+  ): Omit<TransformedEvent<TBody>, 'jobId'> | Omit<TransformedEvent<TBody>, 'jobId'>[];
 
   abstract getBatchStrategy(endpoint?: string): BatchStrategy<TBody>;
 
@@ -204,7 +205,7 @@ export abstract class RouterIntegration<
    * Wraps the batched body into the BatchedRequestBody envelope.
    * Default places body in JSON. Override for JSON_ARRAY, XML, FORM, etc.
    */
-  buildRequestBody(body: Record<string, unknown>): BatchedRequestBody {
+  wrapRequestBody(body: Record<string, unknown>): BatchedRequestBody {
     return {
       JSON: body,
       JSON_ARRAY: {},
@@ -213,13 +214,13 @@ export abstract class RouterIntegration<
     };
   }
 
-  async batchTransform(
+  async transformEvents(
     inputs: RouterTransformationRequestData[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _reqMetadata?: NonNullable<unknown>,
   ): Promise<TransformResult<TBody>> {
-    const payloads: TransformedPayload<TBody>[] = [];
-    const errorEvents: TransformedErrorEvent[] = [];
+    const payloads: TransformedEvent<TBody>[] = [];
+    const errorEvents: TransformError[] = [];
 
     for (const input of inputs) {
       const jobId = input.metadata?.jobId;
@@ -232,11 +233,12 @@ export abstract class RouterIntegration<
           payloads.push({ ...result, jobId });
         }
       } catch (error: any) {
+        const errObj = generateErrorObject(error);
         errorEvents.push({
-          error: error.message || 'Unknown error during transformation',
-          statusCode: error.statusCode || 500,
+          error: errObj.message || 'Unknown error during transformation',
+          statusCode: errObj.status,
           jobId,
-          statTags: error.statTags,
+          statTags: errObj.statTags,
         });
       }
     }
@@ -244,20 +246,21 @@ export abstract class RouterIntegration<
     return { payloads, errorEvents };
   }
 
-  getIntegrationSchema(): ZodType | null {
+  getInputSchema(): ZodType | null {
     return null;
   }
 
   // --- Framework-provided (not meant to be overridden) ---
 
-  validate(
-    inputs: RouterTransformationRequestData[],
-    errorResults: RouterTransformationResponse[],
-  ): RouterTransformationRequestData[] {
-    const integrationSchema = this.getIntegrationSchema();
+  validate(inputs: RouterTransformationRequestData[]): {
+    valid: RouterTransformationRequestData[];
+    errors: RouterTransformationResponse[];
+  } {
+    const integrationSchema = this.getInputSchema();
     const schema = integrationSchema ? baseInputSchema.and(integrationSchema) : baseInputSchema;
 
-    const validInputs: RouterTransformationRequestData[] = [];
+    const valid: RouterTransformationRequestData[] = [];
+    const errors: RouterTransformationResponse[] = [];
 
     for (const input of inputs) {
       const parseResult = schema.safeParse(input);
@@ -270,7 +273,7 @@ export abstract class RouterIntegration<
             }),
           ),
         ].join('; ');
-        errorResults.push({
+        errors.push({
           metadata: [input.metadata],
           destination: input.destination,
           batched: false,
@@ -282,10 +285,10 @@ export abstract class RouterIntegration<
           },
         });
       } else {
-        validInputs.push(input);
+        valid.push(input);
       }
     }
 
-    return validInputs;
+    return { valid, errors };
   }
 }

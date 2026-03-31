@@ -4,11 +4,23 @@ export const batchedDestinationsMap: Record<string, true> = {};
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces
 // Example: "workspace1,workspace2" or "ALL"
 // If not set or empty → disabled for all (legacy path)
-// Read at call time (not module load) to support runtime overrides and testing.
-const getEnabledWorkspaceIds = (): string[] =>
-  process.env.BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS?.split(',')
-    ?.map((s) => s.trim())
-    ?.filter((s) => s) ?? [];
+// Cached to avoid repeated string parsing on every call.
+// Re-parses automatically if the env var value changes (e.g. in tests).
+let cachedWorkspaceIds: string[] | null = null;
+let cachedEnvValue: string | undefined;
+
+const getEnabledWorkspaceIds = (): string[] => {
+  const envValue = process.env.BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS;
+  if (cachedWorkspaceIds === null || envValue !== cachedEnvValue) {
+    cachedEnvValue = envValue;
+    cachedWorkspaceIds =
+      envValue
+        ?.split(',')
+        ?.map((s) => s.trim())
+        ?.filter((s) => s) ?? [];
+  }
+  return cachedWorkspaceIds;
+};
 
 export const isBatchingFrameworkEnabled = (destType: string, workspaceId?: string): boolean => {
   if (!batchedDestinationsMap[destType.toUpperCase()]) {

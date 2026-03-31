@@ -3,7 +3,7 @@ import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
-import { RouterIntegrationConstructor } from './destination/routerIntegration';
+import { BatchDestinationConstructor } from './destination/routerIntegration';
 
 export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
@@ -29,7 +29,7 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/deleteUsers`);
   }
 
-  public static getRouterTransformHandler(dest: string): RouterIntegrationConstructor {
+  public static getRouterTransformHandler(dest: string): BatchDestinationConstructor {
     return require(`../v0/destinations/${dest}/routerTransform`).Integration;
   }
 

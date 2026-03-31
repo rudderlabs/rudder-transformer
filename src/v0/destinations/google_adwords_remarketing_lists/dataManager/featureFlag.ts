@@ -1,4 +1,3 @@
-import sha256 from 'sha256';
 import { handleHttpRequest } from '../../../../adapters/network';
 import logger from '../../../../logger';
 import { isDefinedAndNotNull } from '../../../util';
@@ -8,7 +7,7 @@ const { RedisDB } = require('../../../../util/redis/redisConnector');
 
 const DATA_MANAGER_SCOPE = 'https://www.googleapis.com/auth/datamanager';
 const TOKEN_INFO_ENDPOINT = 'https://www.googleapis.com/oauth2/v3/tokeninfo';
-const REDIS_KEY_PREFIX = 'garl_dm_scope:';
+const REDIS_KEY_PREFIX = 'garl_dm_destinationId:';
 
 /**
  * Parsed once at module load from DEST_GARL_DATA_MANAGER_API_ALLOWED_WORKSPACE_IDS.
@@ -31,16 +30,11 @@ if (isDefinedAndNotNull(process.env.DEST_GARL_DATA_MANAGER_API_ALLOWED_WORKSPACE
   }
 }
 
-/**
- * Returns true if the OAuth access token includes the Data Manager scope.
- * Result is cached in Redis keyed by accessToken with TTL derived from
- * the token's expires_in field.
- * Always returns false on any error — the caller silently falls back to the old API.
- */
-const hashToken = (token: string): string => sha256(token);
-
-export const hasDataManagerScope = async (accessToken: string): Promise<boolean> => {
-  const cacheKey = `${REDIS_KEY_PREFIX}${hashToken(accessToken)}`;
+export const hasDataManagerScope = async (
+  destinationId: string,
+  accessToken: string,
+): Promise<boolean> => {
+  const cacheKey = `${REDIS_KEY_PREFIX}${destinationId}`;
 
   // 1. Check Redis cache
   try {
@@ -78,12 +72,15 @@ export const hasDataManagerScope = async (accessToken: string): Promise<boolean>
       return false;
     }
 
-    const { scope, expires_in: expiresIn } = httpResponse.response.data;
+    const { scope } = httpResponse.response.data;
 
     const hasScope = typeof scope === 'string' && scope.split(' ').includes(DATA_MANAGER_SCOPE);
-    const ttl = parseInt(expiresIn ?? '3600', 10) || 3600;
+    const ttl = parseInt(
+      process.env.DEST_GARL_DATA_MANAGER_API_SCOPE_CACHE_TTL_SECONDS || '3600',
+      10,
+    );
 
-    // 3. Cache result with token TTLnvm
+    // 3. Cache result with token TTL
     try {
       await RedisDB.setVal(cacheKey, String(hasScope), ttl);
     } catch (e) {
@@ -99,15 +96,16 @@ export const hasDataManagerScope = async (accessToken: string): Promise<boolean>
 
 export const isDataManagerAPIEnabled = async (
   workspaceId: string,
+  destinationId: string,
   accessToken: string,
 ): Promise<boolean> => {
   switch (allowedWorkspaces) {
     case 'NONE':
       return false;
     case 'ALL':
-      return hasDataManagerScope(accessToken);
+      return hasDataManagerScope(destinationId, accessToken);
     default:
       if (!(allowedWorkspaces as Map<string, boolean>).has(workspaceId)) return false;
-      return hasDataManagerScope(accessToken);
+      return hasDataManagerScope(destinationId, accessToken);
   }
 };

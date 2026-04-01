@@ -47,6 +47,8 @@ interface DataManagerRecordContext {
   typeOfList: string;
   userSchema?: string[];
   isHashRequired: boolean;
+  userDataConsent?: string;
+  personalizationConsent?: string;
 }
 
 type RecordProcessor = (
@@ -58,10 +60,22 @@ type RecordProcessor = (
 }>;
 
 const processInsertRecords: RecordProcessor = async (records, context) => {
-  const { destination, accessToken, audienceId, typeOfList, userSchema, isHashRequired } = context;
+  const {
+    destination,
+    accessToken,
+    audienceId,
+    typeOfList,
+    userSchema,
+    isHashRequired,
+    userDataConsent,
+    personalizationConsent,
+  } = context;
   const { workspaceId } = records[0].metadata;
 
-  const memberConsent = buildMemberConsentFromConfig(destination.Config);
+  const memberConsent = buildMemberConsentFromConfig({
+    userDataConsent,
+    personalizationConsent,
+  });
 
   const validMembers: AudienceMember[] = [];
   const validMetadata: Metadata[] = [];
@@ -120,10 +134,22 @@ const processInsertRecords: RecordProcessor = async (records, context) => {
 };
 
 const processDeleteRecords: RecordProcessor = async (records, context) => {
-  const { destination, accessToken, audienceId, typeOfList, userSchema, isHashRequired } = context;
+  const {
+    destination,
+    accessToken,
+    audienceId,
+    typeOfList,
+    userSchema,
+    isHashRequired,
+    userDataConsent,
+    personalizationConsent,
+  } = context;
   const { workspaceId } = records[0].metadata;
 
-  const memberConsent = buildMemberConsentFromConfig(destination.Config);
+  const memberConsent = buildMemberConsentFromConfig({
+    userDataConsent,
+    personalizationConsent,
+  });
 
   const validMembers: AudienceMember[] = [];
   const validMetadata: Metadata[] = [];

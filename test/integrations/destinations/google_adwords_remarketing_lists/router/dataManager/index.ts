@@ -1015,16 +1015,16 @@ export const dmRouterData = [
                       audienceMembers: [
                         {
                           consent: {
-                            adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
-                            adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                            adPersonalization: 'CONSENT_GRANTED',
+                            adUserData: 'CONSENT_GRANTED',
                           },
                           userIdData: { userId: 'useri1234' },
                         },
                       ],
                       encoding: 'HEX',
                       consent: {
-                        adPersonalization: 'CONSENT_STATUS_UNSPECIFIED',
-                        adUserData: 'CONSENT_STATUS_UNSPECIFIED',
+                        adPersonalization: 'CONSENT_GRANTED',
+                        adUserData: 'CONSENT_GRANTED',
                       },
                       termsOfService: { customerMatchTermsOfServiceStatus: 'ACCEPTED' },
                     },

@@ -163,7 +163,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
-          repository: rudderlabs/rudder-devops
+          repository: rudderlabs/rudder-
+          workspace: ./rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade staging env transformers to ${{ env.TAG_NAME }}'
           files: |

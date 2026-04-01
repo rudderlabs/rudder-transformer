@@ -92,6 +92,7 @@ jobs:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest
     # needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
+    needs: [generate-tag-names]
 
     permissions:
       contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)

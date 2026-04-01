@@ -9,11 +9,8 @@ import {
   resolveMetadata,
   groupPayloadsByCompositeKey,
 } from '../routerIntegration';
-import type {
-  RouterTransformationRequestData,
-  RouterTransformationResponse,
-} from '../../../types/destinationTransformation';
-import type { Destination } from '../../../types/controlPlaneConfig';
+import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import type { Destination } from '../../../../types/controlPlaneConfig';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -117,7 +114,8 @@ describe('parseSizeToBytes', () => {
 describe('groupByDontBatchDirective', () => {
   it('separates batchable and nonBatchable', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b', true), makeInput(3, 'c')];
-    const { batchable, nonBatchable } = groupByDontBatchDirective(inputs);
+    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
+      groupByDontBatchDirective(inputs);
     expect(batchable).toHaveLength(2);
     expect(nonBatchable).toHaveLength(1);
     expect((nonBatchable[0].metadata as any).jobId).toBe(2);
@@ -125,7 +123,8 @@ describe('groupByDontBatchDirective', () => {
 
   it('returns all batchable when no dontBatch flag', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b')];
-    const { batchable, nonBatchable } = groupByDontBatchDirective(inputs);
+    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
+      groupByDontBatchDirective(inputs);
     expect(batchable).toHaveLength(2);
     expect(nonBatchable).toHaveLength(0);
   });
@@ -205,7 +204,7 @@ describe('BatchDestination.transformEvents', () => {
   it('iterates inputs and calls transformEvent', async () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello'), makeInput(2, 'world')];
-    const result = await integration.transformEvents(inputs);
+    const result = await integration.transformEvents(inputs, {});
     expect(result.payloads).toHaveLength(2);
     expect(result.errorEvents).toHaveLength(0);
     expect(result.payloads[0].body.value).toBe('hello');
@@ -227,7 +226,7 @@ describe('BatchDestination.transformEvents', () => {
         destination: mockDestination,
       } as RouterTransformationRequestData,
     ];
-    const result = await integration.transformEvents(inputs);
+    const result = await integration.transformEvents(inputs, {});
     expect(result.payloads).toHaveLength(1);
     expect(result.errorEvents).toHaveLength(1);
     expect(result.errorEvents[0].error).toBe('Transform failed');

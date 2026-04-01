@@ -7,8 +7,8 @@ import {
   chunk,
   customBatch,
 } from '../routerIntegration';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
-import type { Destination } from '../../../types/controlPlaneConfig';
+import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import type { Destination } from '../../../../types/controlPlaneConfig';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -142,7 +142,7 @@ describe('processBatchedDestination', () => {
         makeInput(5, 'e'),
       ];
 
-      const results = await processBatchedDestination(inputs, SimpleIntegration);
+      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
       // maxItems=3 → 2 chunks: [a,b,c] and [d,e]
       expect(results).toHaveLength(2);
@@ -160,7 +160,7 @@ describe('processBatchedDestination', () => {
 
     it('produces correct server format envelope', async () => {
       const inputs = [makeInput(1, 'hello')];
-      const results = await processBatchedDestination(inputs, SimpleIntegration);
+      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
       expect(results).toHaveLength(1);
       const resp = results[0];
@@ -189,7 +189,7 @@ describe('processBatchedDestination', () => {
         makeInput(5, 'e', { type: 'track' }),
       ];
 
-      const results = await processBatchedDestination(inputs, MultiEndpointIntegration);
+      const results = await processBatchedDestination(inputs, MultiEndpointIntegration, {});
 
       // track: 3 events, maxItems=2 → 2 chunks
       // identify: 2 events, maxItems=2 → 1 chunk
@@ -210,7 +210,7 @@ describe('processBatchedDestination', () => {
   describe('customBatch strategy', () => {
     it('uses custom batch function for merging', async () => {
       const inputs = [makeInput(1, 'a'), makeInput(2, 'b'), makeInput(3, 'c')];
-      const results = await processBatchedDestination(inputs, CustomBatchIntegration);
+      const results = await processBatchedDestination(inputs, CustomBatchIntegration, {});
 
       expect(results).toHaveLength(1);
       expect((results[0].batchedRequest as any).body.JSON).toEqual({ merged: 'a,b,c' });
@@ -225,7 +225,7 @@ describe('processBatchedDestination', () => {
       // all payloads are grouped by composite key for final batching
       const inputs = [makeInput(1, 'a'), makeInput(2, 'b', { dontBatch: true }), makeInput(3, 'c')];
 
-      const results = await processBatchedDestination(inputs, SimpleIntegration);
+      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
       // All 3 events share the same endpoint, and maxItems=3 fits them all
       const allJobIds = results.flatMap((r) => r.metadata.map((m) => m.jobId));
@@ -245,7 +245,7 @@ describe('processBatchedDestination', () => {
         makeInput(3, 'ok2'),
       ];
 
-      const results = await processBatchedDestination(inputs, PartialFailIntegration);
+      const results = await processBatchedDestination(inputs, PartialFailIntegration, {});
 
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode !== 200);
@@ -268,7 +268,7 @@ describe('processBatchedDestination', () => {
         } as unknown as RouterTransformationRequestData,
       ];
 
-      const results = await processBatchedDestination(inputs, SimpleIntegration);
+      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode === 400);
@@ -285,7 +285,7 @@ describe('processBatchedDestination', () => {
   describe('metadata resolution', () => {
     it('resolves correct metadata for each chunk', async () => {
       const inputs = [makeInput(10, 'a'), makeInput(20, 'b')];
-      const results = await processBatchedDestination(inputs, SimpleIntegration);
+      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
       expect(results).toHaveLength(1);
       const jobIds = results[0].metadata.map((m) => m.jobId);
@@ -295,7 +295,7 @@ describe('processBatchedDestination', () => {
 
   describe('empty input', () => {
     it('returns empty array for no events', async () => {
-      const results = await processBatchedDestination([], SimpleIntegration);
+      const results = await processBatchedDestination([], SimpleIntegration, {});
       expect(results).toEqual([]);
     });
   });
@@ -322,7 +322,7 @@ describe('processBatchedDestination', () => {
 
     it('produces proper statTags from InstrumentationError via generateErrorObject', async () => {
       const inputs = [makeInput(1, 'ok'), makeInput(2, 'fail', { shouldFail: true })];
-      const results = await processBatchedDestination(inputs, TypedErrorIntegration);
+      const results = await processBatchedDestination(inputs, TypedErrorIntegration, {});
 
       const errors = results.filter((r) => r.statusCode !== 200);
       expect(errors).toHaveLength(1);
@@ -345,7 +345,7 @@ describe('processBatchedDestination', () => {
         makeInput(3, 'ok2'),
       ];
 
-      const results = await processBatchedDestination(inputs, PartialFailIntegration);
+      const results = await processBatchedDestination(inputs, PartialFailIntegration, {});
 
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode !== 200);

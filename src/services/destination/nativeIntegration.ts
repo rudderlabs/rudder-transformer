@@ -29,7 +29,7 @@ import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
 import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
-import { processBatchedDestination } from './processBatchedDestination';
+import { processBatchedDestination } from './nativeBatchingFramework/processBatchedDestination';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}

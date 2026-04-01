@@ -1,9 +1,9 @@
-import type { Destination } from '../../types/controlPlaneConfig';
-import type { Metadata } from '../../types/rudderEvents';
+import type { Destination } from '../../../types/controlPlaneConfig';
+import type { Metadata } from '../../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
-} from '../../types/destinationTransformation';
+} from '../../../types/destinationTransformation';
 import {
   BatchDestination,
   BatchDestinationConstructor,
@@ -15,7 +15,7 @@ import {
   resolveMetadata,
   parseSizeToBytes,
 } from './routerIntegration';
-import { combineBatchRequestsWithSameJobIds } from '../../v0/util';
+import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 
 // ---------------------------------------------------------------------------
 // Chunk strategy application
@@ -129,14 +129,13 @@ export async function processBatchedDestination<
 >(
   events: RouterTransformationRequestData[],
   IntegrationClass: BatchDestinationConstructor<TBody>,
-  reqMetadata?: NonNullable<unknown>,
+  reqMetadata: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (events.length === 0) {
     return [];
   }
   const { destination } = events[0];
   const integration = new IntegrationClass(destination);
-  const results: RouterTransformationResponse[] = [];
 
   // 1. Build metadata map
   const metadataMap = new Map<number, Partial<Metadata>>();
@@ -147,119 +146,101 @@ export async function processBatchedDestination<
 
   // 2. Validate inputs
   const { valid: validInputs, errors: validationErrors } = integration.validate(events);
-  results.push(...validationErrors);
+  const allErrors: TransformResult<TBody>['errorEvents'] = [...validationErrors];
+
   if (validInputs.length === 0) {
-    return results;
+    return convertErrorEventsToResponses(allErrors, metadataMap, destination);
   }
 
   // 3. Split on dontBatch flag
-  const { batchable, nonBatchable } = groupByDontBatchDirective(validInputs);
+  const { batchableEvents, nonBatchableEvents } = groupByDontBatchDirective(validInputs);
 
-  // 4. Transform batchable events
-  const batchablePayloads: TransformedEvent<TBody>[] = [];
-  const allErrors: TransformResult<TBody>['errorEvents'] = [];
+  // 4. Transform all events (batchable + nonBatchable)
+  let batchablePayloads: TransformedEvent<TBody>[] = [];
+  let nonBatchablePayloads: TransformedEvent<TBody>[] = [];
 
-  if (batchable.length > 0) {
-    const batchResult = await integration.transformEvents(batchable, reqMetadata);
+  if (batchableEvents.length > 0) {
+    const batchResult = await integration.transformEvents(batchableEvents, reqMetadata);
     batchablePayloads.push(...batchResult.payloads);
     allErrors.push(...batchResult.errorEvents);
   }
 
-  // 5. Transform nonBatchable events individually and convert each to its own response
-  for (const single of nonBatchable) {
+  for (const nonBatchableEvent of nonBatchableEvents) {
     // eslint-disable-next-line no-await-in-loop
-    const singleResult = await integration.transformEvents([single], reqMetadata);
+    const singleResult = await integration.transformEvents([nonBatchableEvent], reqMetadata);
+    nonBatchablePayloads.push(...singleResult.payloads);
     allErrors.push(...singleResult.errorEvents);
-
-    for (const payload of singleResult.payloads) {
-      const strategy = integration.getBatchStrategy(payload.endpoint);
-      const wrappedBody =
-        strategy.type === 'chunk' ? strategy.wrapBody([payload.body]) : { ...payload.body };
-      results.push(
-        convertToServerFormat(
-          { body: wrappedBody, jobIds: new Set([payload.jobId]) },
-          payload.endpoint,
-          payload.method,
-          payload.headers,
-          payload.params,
-          metadataMap,
-          destination,
-          integration,
-        ),
-      );
-    }
   }
 
-  // 6. Convert error events to responses
-  if (allErrors.length > 0) {
-    results.push(...convertErrorEventsToResponses(allErrors, metadataMap, destination));
-  }
+  // 5. Convert all errors to responses
+  const errorResponses = convertErrorEventsToResponses(allErrors, metadataMap, destination);
 
-  if (batchablePayloads.length === 0) {
-    return results;
-  }
-
-  // 7. Group batchable payloads by composite key
-  const groups = groupPayloadsByCompositeKey(batchablePayloads);
-
-  // 8. Apply batch strategy to each group
-  for (const group of groups) {
-    const strategy = integration.getBatchStrategy(group.endpoint);
-
-    let batchResults: { body: Record<string, unknown>; jobIds: Set<number> }[];
-
-    if (strategy.type === 'chunk') {
-      batchResults = applyChunkStrategy(group.payloads, strategy);
-    } else {
-      batchResults = strategy.batch(group.payloads);
-    }
-
-    // 9. Convert to server format
-    for (const batchResult of batchResults) {
-      results.push(
-        convertToServerFormat(
-          batchResult,
-          group.endpoint,
-          group.method,
-          group.headers,
-          group.params,
-          metadataMap,
-          destination,
-          integration,
-        ),
-      );
-    }
-  }
-
-  // 10. Separate success and error responses
-  const successResults = results.filter((r) => !('error' in r));
-  const errorResults = results.filter((r) => 'error' in r);
-
-  // 11. For multiplexed events: if any output failed, the entire event should fail.
-  // Collect all jobIds that appear in error responses.
-  const failedJobIds = new Set<number>();
-  for (const errResp of errorResults) {
-    for (const meta of errResp.metadata) {
-      if (meta.jobId != null) {
-        failedJobIds.add(meta.jobId);
-      }
-    }
-  }
-
-  // Remove failed jobIds from success responses. If a success response loses
-  // all its metadata entries, drop it entirely.
-  const cleanedSuccessResults: RouterTransformationResponse[] = [];
+  // 6. Remove failed jobIds from payloads before building success responses.
+  // This handles the multiplexing case: if transformEvent for jobId=1 produces
+  // payloads for both /track and /identify endpoints, and the /identify payload
+  // fails, jobId=1 must be removed from the /track payloads too — a partially
+  // delivered multiplexed event is invalid. Without this filter, the failed
+  // event's body would still appear in the batched request for the other endpoint.
+  const failedJobIds = new Set(allErrors.map((e) => e.jobId));
   if (failedJobIds.size > 0) {
-    for (const resp of successResults) {
-      const cleanedMetadata = resp.metadata.filter((m) => !failedJobIds.has(m.jobId!));
-      if (cleanedMetadata.length > 0) {
-        cleanedSuccessResults.push({ ...resp, metadata: cleanedMetadata });
-      }
-    }
-  } else {
-    cleanedSuccessResults.push(...successResults);
+    batchablePayloads = batchablePayloads.filter((p) => !failedJobIds.has(p.jobId));
+    nonBatchablePayloads = nonBatchablePayloads.filter((p) => !failedJobIds.has(p.jobId));
   }
 
-  // 12. Merge success responses that share jobIds (multiplexed events across groups)
-  return [...combineBatchRequestsWithSameJobIds(cleanedSuccessResults), ...errorResults];
+  // 7. Convert nonBatchable payloads to individual responses
+  const successResponses: RouterTransformationResponse[] = [];
+  for (const payload of nonBatchablePayloads) {
+    const strategy = integration.getBatchStrategy(payload.endpoint);
+    let wrappedBody: Record<string, unknown>;
+    if (strategy.type === 'chunk') {
+      wrappedBody = strategy.wrapBody([payload.body]);
+    } else {
+      const [result] = strategy.batch([payload]);
+      wrappedBody = result.body;
+    }
+    successResponses.push(
+      convertToServerFormat(
+        { body: wrappedBody, jobIds: new Set([payload.jobId]) },
+        payload.endpoint,
+        payload.method,
+        payload.headers,
+        payload.params,
+        metadataMap,
+        destination,
+        integration,
+      ),
+    );
+  }
+
+  // 8. Group batchable payloads by composite key and apply batch strategy
+  if (batchablePayloads.length > 0) {
+    const groups = groupPayloadsByCompositeKey(batchablePayloads);
+
+    for (const group of groups) {
+      const strategy = integration.getBatchStrategy(group.endpoint);
+
+      const batchResults =
+        strategy.type === 'chunk'
+          ? applyChunkStrategy(group.payloads, strategy)
+          : strategy.batch(group.payloads);
+
+      for (const batchResult of batchResults) {
+        successResponses.push(
+          convertToServerFormat(
+            batchResult,
+            group.endpoint,
+            group.method,
+            group.headers,
+            group.params,
+            metadataMap,
+            destination,
+            integration,
+          ),
+        );
+      }
+    }
+  }
+
+  // 9. Merge success responses that share jobIds (multiplexed events across groups)
+  return [...combineBatchRequestsWithSameJobIds(successResponses), ...errorResponses];
 }

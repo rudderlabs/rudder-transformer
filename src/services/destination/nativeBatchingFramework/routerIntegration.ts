@@ -1,15 +1,14 @@
 import { z, ZodType } from 'zod';
 import stableStringify from 'fast-json-stable-stringify';
-import type { Destination } from '../../types/controlPlaneConfig';
-import { RudderMessageSchema, MetadataSchema } from '../../types/rudderEvents';
-import type { Metadata } from '../../types/rudderEvents';
+import type { Destination } from '../../../types/controlPlaneConfig';
+import { RudderMessageSchema, MetadataSchema } from '../../../types/rudderEvents';
+import type { Metadata } from '../../../types/rudderEvents';
 import type {
   BatchedRequestBody,
   RouterTransformationRequestData,
-  RouterTransformationResponse,
-} from '../../types/destinationTransformation';
-import tags from '../../v0/util/tags';
-import { generateErrorObject } from '../../v0/util';
+} from '../../../types/destinationTransformation';
+import tags from '../../../v0/util/tags';
+import { generateErrorObject } from '../../../v0/util';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -107,19 +106,19 @@ export function parseSizeToBytes(size: string): number {
 }
 
 export function groupByDontBatchDirective(inputs: RouterTransformationRequestData[]): {
-  batchable: RouterTransformationRequestData[];
-  nonBatchable: RouterTransformationRequestData[];
+  batchableEvents: RouterTransformationRequestData[];
+  nonBatchableEvents: RouterTransformationRequestData[];
 } {
-  const batchable: RouterTransformationRequestData[] = [];
-  const nonBatchable: RouterTransformationRequestData[] = [];
+  const batchableEvents: RouterTransformationRequestData[] = [];
+  const nonBatchableEvents: RouterTransformationRequestData[] = [];
   for (const input of inputs) {
     if (input.metadata?.dontBatch === true) {
-      nonBatchable.push(input);
+      nonBatchableEvents.push(input);
     } else {
-      batchable.push(input);
+      batchableEvents.push(input);
     }
   }
-  return { batchable, nonBatchable };
+  return { batchableEvents, nonBatchableEvents };
 }
 
 export function resolveMetadata(
@@ -197,7 +196,7 @@ export abstract class BatchDestination<
     input: RouterTransformationRequestData,
   ): Omit<TransformedEvent<TBody>, 'jobId'> | Omit<TransformedEvent<TBody>, 'jobId'>[];
 
-  abstract getBatchStrategy(endpoint?: string): BatchStrategy<TBody>;
+  abstract getBatchStrategy(endpoint: string): BatchStrategy<TBody>;
 
   // --- MAY override ---
 
@@ -217,7 +216,7 @@ export abstract class BatchDestination<
   async transformEvents(
     inputs: RouterTransformationRequestData[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _reqMetadata?: NonNullable<unknown>,
+    _reqMetadata: NonNullable<unknown>,
   ): Promise<TransformResult<TBody>> {
     const payloads: TransformedEvent<TBody>[] = [];
     const errorEvents: TransformError[] = [];
@@ -254,13 +253,13 @@ export abstract class BatchDestination<
 
   validate(inputs: RouterTransformationRequestData[]): {
     valid: RouterTransformationRequestData[];
-    errors: RouterTransformationResponse[];
+    errors: TransformError[];
   } {
     const integrationSchema = this.getInputSchema();
     const schema = integrationSchema ? baseInputSchema.and(integrationSchema) : baseInputSchema;
 
     const valid: RouterTransformationRequestData[] = [];
-    const errors: RouterTransformationResponse[] = [];
+    const errors: TransformError[] = [];
 
     for (const input of inputs) {
       const parseResult = schema.safeParse(input);
@@ -274,11 +273,9 @@ export abstract class BatchDestination<
           ),
         ].join('; ');
         errors.push({
-          metadata: [input.metadata],
-          destination: input.destination,
-          batched: false,
-          statusCode: 400,
+          jobId: (input.metadata as Partial<Metadata>)?.jobId ?? 0,
           error: errorMessage,
+          statusCode: 400,
           statTags: {
             errorCategory: tags.ERROR_CATEGORIES.DATA_VALIDATION,
             errorType: tags.ERROR_TYPES.INSTRUMENTATION,

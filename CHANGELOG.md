@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.128.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.128.0...v1.128.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* **garl:** use connection config to set consent object ([fd3cf05](https://github.com/rudderlabs/rudder-transformer/commit/fd3cf05fa7a06998b5d1c407f96ae9a9918bf660))
+
 ## [1.128.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.127.0...v1.128.0) (2026-03-31)
 
 

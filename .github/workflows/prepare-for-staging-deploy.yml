@@ -123,14 +123,6 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           path: rudder-devops
 
-      - name: Log devops checkout path
-        run: |
-          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
-          echo "rudder-devops path: $GITHUB_WORKSPACE/rudder-devops"
-          echo "git status in rudder-devops:"
-          git -C "$GITHUB_WORKSPACE/rudder-devops" status
-          echo "process.cwd equivalent: $(pwd)"
-
       - name: Check if staging branch already exists
         id: check-branch
         env:
@@ -176,8 +168,8 @@ jobs:
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade staging env transformers to ${{ env.TAG_NAME }}'
           files: |
-            rudder-devops/helm-charts/shared-services/per-az/environment/staging/staging.yaml
-            rudder-devops/helm-charts/config-be-rudder-transformer/environment/staging/base.yaml
+            helm-charts/shared-services/per-az/environment/staging/staging.yaml
+            helm-charts/config-be-rudder-transformer/environment/staging/base.yaml
 
       - name: Create PR for staging
         if: steps.check-branch.outputs.exists == 'false'

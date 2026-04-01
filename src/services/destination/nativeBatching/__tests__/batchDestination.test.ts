@@ -1,14 +1,19 @@
+import { z } from 'zod';
 import {
   BatchDestination,
   TransformedEvent,
-  BatchStrategy,
-  chunk,
-  customBatch,
+  ChunkBatchStrategy,
+  CustomBatchStrategy,
   parseSizeToBytes,
+} from '../batchDestination';
+import type { BatchStrategy } from '../batchDestination';
+import {
+  validateInputs,
   groupByDontBatchDirective,
   resolveMetadata,
   groupPayloadsByCompositeKey,
-} from '../routerIntegration';
+} from '../processBatchedDestination';
+import type { TransformResult } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
 
@@ -37,10 +42,14 @@ class TestIntegration extends BatchDestination<TestBody> {
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
-    return chunk({
+    return new ChunkBatchStrategy({
       maxItems: 3,
       wrapBody: (bodies) => ({ events: bodies }),
     });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -59,7 +68,11 @@ class FailingIntegration extends BatchDestination<TestBody> {
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
-    return chunk({ wrapBody: (bodies) => ({ events: bodies }) });
+    return new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -149,7 +162,7 @@ describe('resolveMetadata', () => {
 
 describe('groupPayloadsByCompositeKey', () => {
   it('groups payloads with same endpoint/method/headers/params', () => {
-    const payloads: TransformedEvent<TestBody>[] = [
+    const payloads: TransformResult<TestBody>['successPayloads'] = [
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
@@ -179,7 +192,7 @@ describe('groupPayloadsByCompositeKey', () => {
   });
 
   it('separates payloads with different headers', () => {
-    const payloads: TransformedEvent<TestBody>[] = [
+    const payloads: TransformResult<TestBody>['successPayloads'] = [
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
@@ -205,11 +218,11 @@ describe('BatchDestination.transformEvents', () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello'), makeInput(2, 'world')];
     const result = await integration.transformEvents(inputs, {});
-    expect(result.payloads).toHaveLength(2);
-    expect(result.errorEvents).toHaveLength(0);
-    expect(result.payloads[0].body.value).toBe('hello');
-    expect(result.payloads[0].jobId).toBe(1);
-    expect(result.payloads[1].jobId).toBe(2);
+    expect(result.successPayloads).toHaveLength(2);
+    expect(result.errorPayloads).toHaveLength(0);
+    expect(result.successPayloads[0].body.value).toBe('hello');
+    expect(result.successPayloads[0].jobId).toBe(1);
+    expect(result.successPayloads[1].jobId).toBe(2);
   });
 
   it('catches errors and adds to errorEvents', async () => {
@@ -227,18 +240,18 @@ describe('BatchDestination.transformEvents', () => {
       } as RouterTransformationRequestData,
     ];
     const result = await integration.transformEvents(inputs, {});
-    expect(result.payloads).toHaveLength(1);
-    expect(result.errorEvents).toHaveLength(1);
-    expect(result.errorEvents[0].error).toBe('Transform failed');
-    expect(result.errorEvents[0].jobId).toBe(2);
+    expect(result.successPayloads).toHaveLength(1);
+    expect(result.errorPayloads).toHaveLength(1);
+    expect(result.errorPayloads[0].error).toBe('Transform failed');
+    expect(result.errorPayloads[0].jobId).toBe(2);
   });
 });
 
-describe('BatchDestination.validate', () => {
+describe('validateInputs', () => {
   it('passes valid inputs', () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello')];
-    const { valid, errors } = integration.validate(inputs);
+    const { valid, errors } = validateInputs(inputs, integration);
     expect(valid).toHaveLength(1);
     expect(errors).toHaveLength(0);
   });
@@ -252,7 +265,7 @@ describe('BatchDestination.validate', () => {
         destination: mockDestination,
       } as unknown as RouterTransformationRequestData,
     ];
-    const { valid, errors } = integration.validate(inputs);
+    const { valid, errors } = validateInputs(inputs, integration);
     expect(valid).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0].statusCode).toBe(400);
@@ -271,26 +284,25 @@ describe('BatchDestination.validate', () => {
         destination: mockDestination,
       } as unknown as RouterTransformationRequestData,
     ];
-    const { valid, errors } = integration.validate(inputs);
+    const { valid, errors } = validateInputs(inputs, integration);
     expect(valid).toHaveLength(0);
     expect(errors).toHaveLength(1);
   });
 });
 
-describe('chunk and customBatch factories', () => {
-  it('chunk creates a ChunkStrategy', () => {
-    const strategy = chunk<TestBody>({
+describe('strategy classes', () => {
+  it('ChunkBatchStrategy creates a strategy with batch method', () => {
+    const strategy = new ChunkBatchStrategy<TestBody>({
       maxItems: 10,
       wrapBody: (bodies) => ({ events: bodies }),
     });
-    expect(strategy.type).toBe('chunk');
-    expect(strategy.maxItems).toBe(10);
+    expect(strategy).toHaveProperty('batch');
   });
 
-  it('customBatch creates a CustomBatchStrategy', () => {
-    const strategy = customBatch<TestBody>((payloads) => [
+  it('CustomBatchStrategy creates a strategy with batch method', () => {
+    const strategy = new CustomBatchStrategy<TestBody>((payloads) => [
       { body: { merged: true }, jobIds: new Set(payloads.map((p) => p.jobId)) },
     ]);
-    expect(strategy.type).toBe('customBatch');
+    expect(strategy).toHaveProperty('batch');
   });
 });

@@ -1,4 +1,4 @@
-import { BatchDestinationConstructor } from '../services/destination/nativeBatchingFramework/routerIntegration';
+import { BatchDestinationConstructor } from '../services/destination/nativeBatching/batchDestination';
 import { Hydrator, MiscService } from '../services/misc';
 
 export class FetchHandler {

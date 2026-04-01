@@ -3,7 +3,7 @@ import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
-import { BatchDestinationConstructor } from './destination/nativeBatchingFramework/routerIntegration';
+import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';
 
 export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;

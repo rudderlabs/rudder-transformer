@@ -14,6 +14,8 @@ import type {
   WrappedResponse,
 } from './types';
 import { typeFields, subTypeFields, getEndPoint, DESTINATION } from './config';
+
+const PAYLOAD_IN_BODY_FLAG = 'FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -21,6 +23,7 @@ import {
 } from '../../util';
 import stats from '../../../util/stats';
 import * as config from './config';
+import { isFeatureEnabled } from '../../../util/featureFlags';
 import {
   processAudienceRecord,
   isValidPhoneNumber,
@@ -52,6 +55,9 @@ const batchingWithPayloadSize = (
   payload: FbCustomAudiencePayload,
   workspaceId: string,
 ): FbCustomAudiencePayload[] => {
+  if (isFeatureEnabled(PAYLOAD_IN_BODY_FLAG, workspaceId)) {
+    return [payload];
+  }
   const maxPayloadSize = config.getMaxPayloadSize(workspaceId);
   const payloadSize = jsonSize(payload);
   if (payloadSize > maxPayloadSize) {
@@ -294,9 +300,12 @@ const getDataSource = (type: string | undefined, subType: string | undefined): D
   return dataSource;
 };
 
-const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId: string) => {
+const responseBuilderSimple = (
+  payload: WrappedResponse | undefined,
+  audienceId: string,
+  workspaceId: string,
+) => {
   if (payload) {
-    const responseParams = payload.responseField;
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
     response.endpointPath = config.ENDPOINT_PATH;
@@ -308,7 +317,13 @@ const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId:
       response.method = defaultDeleteRequestConfig.requestMethod;
     }
 
-    response.params = responseParams;
+    if (isFeatureEnabled(PAYLOAD_IN_BODY_FLAG, workspaceId)) {
+      const { payload: fbPayload, ...authParams } = payload.responseField;
+      response.params = authParams;
+      response.body.JSON = { payload: fbPayload };
+    } else {
+      response.params = payload.responseField;
+    }
     return response;
   }
   // fail-safety for developer error

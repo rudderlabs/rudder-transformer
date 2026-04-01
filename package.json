@@ -87,7 +87,7 @@
     "form-data": "^4.0.0",
     "fs-extra": "^11.3.1",
     "get-value": "^3.0.1",
-    "handlebars": "^4.7.7",
+    "handlebars": "^4.7.9",
     "http-graceful-shutdown": "^3.1.13",
     "https-proxy-agent": "^5.0.1",
     "ioredis": "^5.3.2",

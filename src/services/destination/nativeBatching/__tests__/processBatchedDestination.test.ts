@@ -1,12 +1,13 @@
+import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { processBatchedDestination } from '../processBatchedDestination';
 import {
   BatchDestination,
   TransformedEvent,
-  BatchStrategy,
-  chunk,
-  customBatch,
-} from '../routerIntegration';
+  ChunkBatchStrategy,
+  CustomBatchStrategy,
+} from '../batchDestination';
+import type { BatchStrategy } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
 
@@ -35,10 +36,14 @@ class SimpleIntegration extends BatchDestination<TestBody> {
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
-    return chunk({
+    return new ChunkBatchStrategy({
       maxItems: 3,
       wrapBody: (bodies) => ({ events: bodies }),
     });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -56,9 +61,13 @@ class MultiEndpointIntegration extends BatchDestination<TestBody> {
 
   getBatchStrategy(endpoint: string): BatchStrategy<TestBody> {
     if (endpoint.includes('/track')) {
-      return chunk({ maxItems: 2, wrapBody: (bodies) => ({ tracks: bodies }) });
+      return new ChunkBatchStrategy({ maxItems: 2, wrapBody: (bodies) => ({ tracks: bodies }) });
     }
-    return chunk({ maxItems: 2, wrapBody: (bodies) => ({ identifies: bodies }) });
+    return new ChunkBatchStrategy({ maxItems: 2, wrapBody: (bodies) => ({ identifies: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -77,7 +86,11 @@ class PartialFailIntegration extends BatchDestination<TestBody> {
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
-    return chunk({ wrapBody: (bodies) => ({ events: bodies }) });
+    return new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -93,7 +106,7 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
   }
 
   getBatchStrategy(): BatchStrategy<TestBody> {
-    return customBatch((payloads) => {
+    return new CustomBatchStrategy((payloads) => {
       const merged = payloads.map((p) => p.body.value).join(',');
       return [
         {
@@ -102,6 +115,10 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
         },
       ];
     });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
   }
 }
 
@@ -316,7 +333,11 @@ describe('processBatchedDestination', () => {
       }
 
       getBatchStrategy(): BatchStrategy<TestBody> {
-        return chunk({ wrapBody: (bodies) => ({ events: bodies }) });
+        return new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
+      }
+
+      getInputSchema() {
+        return z.object({}).passthrough();
       }
     }
 

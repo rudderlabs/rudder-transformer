@@ -1,17 +1,15 @@
 import { z, ZodType } from 'zod';
 import {
-  RouterIntegration,
-  TransformedPayload,
+  BatchDestination,
+  TransformedEvent,
   BatchStrategy,
   chunk,
-} from '../../../services/destination/routerIntegration';
+} from '../../../services/destination/nativeBatchingFramework/routerIntegration';
 import { processEvent } from './transform';
 import type { PostHogPayload, PostHogProcessorRequest } from './types';
 
-class PostHogIntegration extends RouterIntegration<PostHogPayload> {
-  transformEvent(
-    input: PostHogProcessorRequest,
-  ): Omit<TransformedPayload<PostHogPayload>, 'jobId'> {
+class PostHogIntegration extends BatchDestination<PostHogPayload> {
+  transformEvent(input: PostHogProcessorRequest): Omit<TransformedEvent<PostHogPayload>, 'jobId'> {
     const result = processEvent(input.message, input.destination);
     // Strip api_key from the body — it belongs in the wrapBody wrapper
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -26,7 +24,7 @@ class PostHogIntegration extends RouterIntegration<PostHogPayload> {
 
   getBatchStrategy(): BatchStrategy<PostHogPayload> {
     return chunk({
-      maxBytes: '10MB',
+      maxPayloadSize: '10MB',
       wrapBody: (bodies) => ({
         api_key: this.destination.Config.teamApiKey,
         batch: bodies,
@@ -34,7 +32,7 @@ class PostHogIntegration extends RouterIntegration<PostHogPayload> {
     });
   }
 
-  getIntegrationSchema(): ZodType | null {
+  getInputSchema(): ZodType | null {
     return z
       .object({
         message: z

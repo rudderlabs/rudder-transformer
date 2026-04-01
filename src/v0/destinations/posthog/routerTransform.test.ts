@@ -1,4 +1,4 @@
-import { processBatchedDestination } from '../../../services/destination/processBatchedDestination';
+import { processBatchedDestination } from '../../../services/destination/nativeBatchingFramework/processBatchedDestination';
 import { Integration as PostHogIntegration } from './routerTransform';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 
@@ -49,7 +49,7 @@ describe('PostHog Batching Framework Integration', () => {
   describe('single event', () => {
     it('produces a batch of 1 with wrapper envelope', async () => {
       const inputs = [makeEvent(1, 'track')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
 
       expect(results).toHaveLength(1);
       const resp = results[0];
@@ -82,7 +82,7 @@ describe('PostHog Batching Framework Integration', () => {
         makeEvent(2, 'track', { event: 'purchase' }),
         makeEvent(3, 'track', { event: 'signup' }),
       ];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
 
       expect(results).toHaveLength(1);
       const body = (results[0].batchedRequest as any).body.JSON;
@@ -96,7 +96,7 @@ describe('PostHog Batching Framework Integration', () => {
   describe('event type coverage', () => {
     it('handles track events', async () => {
       const inputs = [makeEvent(1, 'track')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(200);
       expect((results[0].batchedRequest as any).body.JSON.batch).toHaveLength(1);
@@ -104,21 +104,21 @@ describe('PostHog Batching Framework Integration', () => {
 
     it('handles page events', async () => {
       const inputs = [makeEvent(1, 'page')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(200);
     });
 
     it('handles screen events', async () => {
       const inputs = [makeEvent(1, 'screen')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(200);
     });
 
     it('handles alias events', async () => {
       const inputs = [makeEvent(1, 'alias', { previousId: 'prev-1' })];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(200);
     });
@@ -147,7 +147,7 @@ describe('PostHog Batching Framework Integration', () => {
         } as RouterTransformationRequestData,
       ];
 
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
 
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(400);
@@ -156,7 +156,7 @@ describe('PostHog Batching Framework Integration', () => {
 
     it('rejects record type events', async () => {
       const inputs = [makeEvent(1, 'record')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any);
+      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
 
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(400);
@@ -175,6 +175,7 @@ describe('PostHog Batching Framework Integration', () => {
       const results = await processBatchedDestination(
         [validEvent, invalidEvent],
         PostHogIntegration as any,
+        {},
       );
 
       const successes = results.filter((r) => r.statusCode === 200);

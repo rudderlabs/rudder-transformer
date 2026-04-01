@@ -143,7 +143,7 @@ const batchingFrameworkTests = [
       },
     },
     envOverrides: {
-      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+      POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
     },
   },
   {
@@ -309,7 +309,7 @@ const batchingFrameworkTests = [
       },
     },
     envOverrides: {
-      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+      POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
     },
   },
   {
@@ -394,7 +394,7 @@ const batchingFrameworkTests = [
       },
     },
     envOverrides: {
-      BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
+      POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
     },
   },
 ];

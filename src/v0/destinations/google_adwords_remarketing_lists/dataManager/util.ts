@@ -215,9 +215,10 @@ export const buildAudienceMembersFromListData = (
 /**
  * Resolves member-level consent from destination config using populateConsentFromConfig.
  */
-export const buildMemberConsentFromConfig = (
-  config: GARLDestinationConfig,
-): Consent | undefined => {
+export const buildMemberConsentFromConfig = (config: {
+  userDataConsent?: string;
+  personalizationConsent?: string;
+}): Consent | undefined => {
   const raw = populateConsentFromConfig(config, consentConfigMap) as
     | Record<string, string>
     | undefined;

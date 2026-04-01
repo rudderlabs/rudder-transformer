@@ -1,19 +1,16 @@
 import {
-  RouterIntegration,
-  TransformedPayload,
+  BatchDestination,
+  TransformedEvent,
   BatchStrategy,
   chunk,
   customBatch,
   parseSizeToBytes,
   groupByDontBatchDirective,
-  resolveMetadatas,
+  resolveMetadata,
   groupPayloadsByCompositeKey,
 } from '../routerIntegration';
-import type {
-  RouterTransformationRequestData,
-  RouterTransformationResponse,
-} from '../../../types/destinationTransformation';
-import type { Destination } from '../../../types/controlPlaneConfig';
+import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import type { Destination } from '../../../../types/controlPlaneConfig';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -27,10 +24,10 @@ const mockDestination = {
   DestinationDefinition: { Name: 'TEST' },
 } as unknown as Destination;
 
-class TestIntegration extends RouterIntegration<TestBody> {
+class TestIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     return {
       body: { value: (input.message as any).data },
       endpoint: 'https://api.test.com/events',
@@ -41,16 +38,16 @@ class TestIntegration extends RouterIntegration<TestBody> {
 
   getBatchStrategy(): BatchStrategy<TestBody> {
     return chunk({
-      maxSize: 3,
+      maxItems: 3,
       wrapBody: (bodies) => ({ events: bodies }),
     });
   }
 }
 
-class FailingIntegration extends RouterIntegration<TestBody> {
+class FailingIntegration extends BatchDestination<TestBody> {
   transformEvent(
     input: RouterTransformationRequestData,
-  ): Omit<TransformedPayload<TestBody>, 'jobId'> {
+  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
     if ((input.message as any).shouldFail) {
       throw new Error('Transform failed');
     }
@@ -117,7 +114,8 @@ describe('parseSizeToBytes', () => {
 describe('groupByDontBatchDirective', () => {
   it('separates batchable and nonBatchable', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b', true), makeInput(3, 'c')];
-    const { batchable, nonBatchable } = groupByDontBatchDirective(inputs);
+    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
+      groupByDontBatchDirective(inputs);
     expect(batchable).toHaveLength(2);
     expect(nonBatchable).toHaveLength(1);
     expect((nonBatchable[0].metadata as any).jobId).toBe(2);
@@ -125,18 +123,19 @@ describe('groupByDontBatchDirective', () => {
 
   it('returns all batchable when no dontBatch flag', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b')];
-    const { batchable, nonBatchable } = groupByDontBatchDirective(inputs);
+    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
+      groupByDontBatchDirective(inputs);
     expect(batchable).toHaveLength(2);
     expect(nonBatchable).toHaveLength(0);
   });
 });
 
-describe('resolveMetadatas', () => {
+describe('resolveMetadata', () => {
   it('resolves jobIds to metadata objects', () => {
     const map = new Map<number, any>();
     map.set(1, { jobId: 1, userId: 'u1' });
     map.set(2, { jobId: 2, userId: 'u2' });
-    const result = resolveMetadatas(new Set([1, 2]), map);
+    const result = resolveMetadata(new Set([1, 2]), map);
     expect(result).toHaveLength(2);
     expect(result[0]).toEqual({ jobId: 1, userId: 'u1' });
   });
@@ -144,15 +143,13 @@ describe('resolveMetadatas', () => {
   it('throws on unknown jobId', () => {
     const map = new Map<number, any>();
     map.set(1, { jobId: 1 });
-    expect(() => resolveMetadatas(new Set([1, 999]), map)).toThrow(
-      'Missing metadata for jobId 999',
-    );
+    expect(() => resolveMetadata(new Set([1, 999]), map)).toThrow('Missing metadata for jobId 999');
   });
 });
 
 describe('groupPayloadsByCompositeKey', () => {
   it('groups payloads with same endpoint/method/headers/params', () => {
-    const payloads: TransformedPayload<TestBody>[] = [
+    const payloads: TransformedEvent<TestBody>[] = [
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
@@ -182,7 +179,7 @@ describe('groupPayloadsByCompositeKey', () => {
   });
 
   it('separates payloads with different headers', () => {
-    const payloads: TransformedPayload<TestBody>[] = [
+    const payloads: TransformedEvent<TestBody>[] = [
       {
         body: { value: 'a' },
         endpoint: 'https://a.com',
@@ -203,11 +200,11 @@ describe('groupPayloadsByCompositeKey', () => {
   });
 });
 
-describe('RouterIntegration.batchTransform', () => {
+describe('BatchDestination.transformEvents', () => {
   it('iterates inputs and calls transformEvent', async () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello'), makeInput(2, 'world')];
-    const result = await integration.batchTransform(inputs);
+    const result = await integration.transformEvents(inputs, {});
     expect(result.payloads).toHaveLength(2);
     expect(result.errorEvents).toHaveLength(0);
     expect(result.payloads[0].body.value).toBe('hello');
@@ -229,7 +226,7 @@ describe('RouterIntegration.batchTransform', () => {
         destination: mockDestination,
       } as RouterTransformationRequestData,
     ];
-    const result = await integration.batchTransform(inputs);
+    const result = await integration.transformEvents(inputs, {});
     expect(result.payloads).toHaveLength(1);
     expect(result.errorEvents).toHaveLength(1);
     expect(result.errorEvents[0].error).toBe('Transform failed');
@@ -237,12 +234,11 @@ describe('RouterIntegration.batchTransform', () => {
   });
 });
 
-describe('RouterIntegration.validate', () => {
+describe('BatchDestination.validate', () => {
   it('passes valid inputs', () => {
     const integration = new TestIntegration(mockDestination);
     const inputs = [makeInput(1, 'hello')];
-    const errors: RouterTransformationResponse[] = [];
-    const valid = integration.validate(inputs, errors);
+    const { valid, errors } = integration.validate(inputs);
     expect(valid).toHaveLength(1);
     expect(errors).toHaveLength(0);
   });
@@ -256,8 +252,7 @@ describe('RouterIntegration.validate', () => {
         destination: mockDestination,
       } as unknown as RouterTransformationRequestData,
     ];
-    const errors: RouterTransformationResponse[] = [];
-    const valid = integration.validate(inputs, errors);
+    const { valid, errors } = integration.validate(inputs);
     expect(valid).toHaveLength(0);
     expect(errors).toHaveLength(1);
     expect(errors[0].statusCode).toBe(400);
@@ -276,8 +271,7 @@ describe('RouterIntegration.validate', () => {
         destination: mockDestination,
       } as unknown as RouterTransformationRequestData,
     ];
-    const errors: RouterTransformationResponse[] = [];
-    const valid = integration.validate(inputs, errors);
+    const { valid, errors } = integration.validate(inputs);
     expect(valid).toHaveLength(0);
     expect(errors).toHaveLength(1);
   });
@@ -286,11 +280,11 @@ describe('RouterIntegration.validate', () => {
 describe('chunk and customBatch factories', () => {
   it('chunk creates a ChunkStrategy', () => {
     const strategy = chunk<TestBody>({
-      maxSize: 10,
+      maxItems: 10,
       wrapBody: (bodies) => ({ events: bodies }),
     });
     expect(strategy.type).toBe('chunk');
-    expect(strategy.maxSize).toBe(10);
+    expect(strategy.maxItems).toBe(10);
   });
 
   it('customBatch creates a CustomBatchStrategy', () => {

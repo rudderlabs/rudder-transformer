@@ -1,4 +1,4 @@
-import { processBatchedDestination } from '../../../services/destination/nativeBatchingFramework/processBatchedDestination';
+import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
 import { Integration as PostHogIntegration } from './routerTransform';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 

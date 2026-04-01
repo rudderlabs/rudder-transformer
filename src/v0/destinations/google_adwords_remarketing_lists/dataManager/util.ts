@@ -236,6 +236,10 @@ export const buildDataManagerDestination = (
   Config: GARLDestinationConfig,
   audienceId: string,
 ): DataManagerDestination => {
+  if (!isDefinedAndNotNullAndNotEmpty(Config.customerId)) {
+    throw new ConfigurationError('Customer ID is a mandatory field');
+  }
+
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }

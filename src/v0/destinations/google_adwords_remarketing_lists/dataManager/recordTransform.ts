@@ -195,9 +195,8 @@ async function transformRecordEvents(events: GARLRouterRequest[], config: GARLDe
     ...config,
   };
 
-  const groupedRecordsByAction = await groupByInBatches(
-    events,
-    (record) => (record.message.action as string).toLowerCase() || '',
+  const groupedRecordsByAction = await groupByInBatches(events, (record) =>
+    typeof record.message.action === 'string' ? record.message.action.toLowerCase() : '',
   );
 
   const actionResponses = await reduceInBatches(

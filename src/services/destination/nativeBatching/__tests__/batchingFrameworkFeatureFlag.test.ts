@@ -17,55 +17,95 @@ describe('isBatchingFrameworkEnabled', () => {
   });
 
   describe('pre-GA: env var based rollout', () => {
-    it('returns false when env var is not set', () => {
-      delete process.env[envKey];
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-1')).toBe(false);
-    });
-
-    it('returns false when env var is empty string', () => {
-      process.env[envKey] = '';
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-1')).toBe(false);
-    });
-
-    it('returns true for a listed workspace', () => {
-      process.env[envKey] = 'ws-1,ws-2';
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-1')).toBe(true);
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-2')).toBe(true);
-    });
-
-    it('returns false for a non-listed workspace', () => {
-      process.env[envKey] = 'ws-1,ws-2';
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-3')).toBe(false);
-    });
-
-    it('returns true for all workspaces when set to ALL', () => {
-      process.env[envKey] = 'ALL';
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'any-workspace')).toBe(true);
-    });
-
-    it('handles whitespace in workspace IDs', () => {
-      process.env[envKey] = ' ws-1 , ws-2 ';
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-1')).toBe(true);
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-2')).toBe(true);
-    });
-
-    it('is case-insensitive for destination type', () => {
-      process.env[envKey] = 'ALL';
-      expect(isBatchingFrameworkEnabled('test_dest', 'ws-1')).toBe(true);
-      expect(isBatchingFrameworkEnabled('Test_Dest', 'ws-1')).toBe(true);
+    it.each([
+      {
+        description: 'returns false when env var is not set',
+        envValue: undefined,
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-1',
+        expected: false,
+      },
+      {
+        description: 'returns false when env var is empty string',
+        envValue: '',
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-1',
+        expected: false,
+      },
+      {
+        description: 'returns true for a listed workspace',
+        envValue: 'ws-1,ws-2',
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-1',
+        expected: true,
+      },
+      {
+        description: 'returns false for a non-listed workspace',
+        envValue: 'ws-1,ws-2',
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-3',
+        expected: false,
+      },
+      {
+        description: 'returns true for all workspaces when set to ALL',
+        envValue: 'ALL',
+        destType: 'TEST_DEST',
+        workspaceId: 'any-workspace',
+        expected: true,
+      },
+      {
+        description: 'handles whitespace in workspace IDs',
+        envValue: ' ws-1 , ws-2 ',
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-1',
+        expected: true,
+      },
+      {
+        description: 'is case-insensitive for destination type (lowercase)',
+        envValue: 'ALL',
+        destType: 'test_dest',
+        workspaceId: 'ws-1',
+        expected: true,
+      },
+      {
+        description: 'is case-insensitive for destination type (mixed case)',
+        envValue: 'ALL',
+        destType: 'Test_Dest',
+        workspaceId: 'ws-1',
+        expected: true,
+      },
+    ])('$description', ({ envValue, destType, workspaceId, expected }) => {
+      if (envValue === undefined) {
+        delete process.env[envKey];
+      } else {
+        process.env[envKey] = envValue;
+      }
+      expect(isBatchingFrameworkEnabled(destType, workspaceId)).toBe(expected);
     });
   });
 
   describe('GA: batchedDestinationsMap based', () => {
-    it('returns true when destination is in map regardless of env var', () => {
-      batchedDestinationsMap['TEST_DEST'] = true;
+    it.each([
+      {
+        description: 'returns true when destination is in map regardless of env var',
+        inMap: true,
+        destType: 'TEST_DEST',
+        workspaceId: 'ws-1',
+        expected: true,
+      },
+      {
+        description: 'returns false for a destination not in map and no env var',
+        inMap: false,
+        destType: 'UNKNOWN_DEST',
+        workspaceId: 'ws-1',
+        expected: false,
+      },
+    ])('$description', ({ inMap, destType, workspaceId, expected }) => {
+      if (inMap) {
+        batchedDestinationsMap['TEST_DEST'] = true;
+      }
       delete process.env[envKey];
-      expect(isBatchingFrameworkEnabled('TEST_DEST', 'ws-1')).toBe(true);
-    });
-
-    it('returns false for a destination not in map and no env var', () => {
-      delete process.env[envKey];
-      expect(isBatchingFrameworkEnabled('UNKNOWN_DEST', 'ws-1')).toBe(false);
+      expect(isBatchingFrameworkEnabled(destType, workspaceId)).toBe(expected);
     });
   });
 });

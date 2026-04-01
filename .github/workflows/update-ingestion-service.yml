@@ -39,9 +39,19 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-transformer,rudder-ingestion-svc # include current repo for tag push
 
-      - name: Checkout
+      - name: Checkout (main)
+        if: github.event_name != 'workflow_dispatch'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: refs/heads/main
+          fetch-depth: 1
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Checkout (dispatch branch)
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.ref }}
           fetch-depth: 1
           token: ${{ steps.generate-token.outputs.token }}
 

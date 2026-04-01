@@ -111,13 +111,8 @@ export class NativeIntegrationDestinationService implements DestinationService {
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {
         const workspaceId = destInputArray[0].metadata?.workspaceId;
-        const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
-        const destHandler = useBatchingFramework
-          ? null
-          : FetchHandler.getDestHandler(destinationType, version);
-        const IntegrationClass = useBatchingFramework
-          ? FetchHandler.getRouterTransformHandler(destinationType)
-          : null;
+        const useBatchingFramework =
+          workspaceId && isBatchingFrameworkEnabled(destinationType, workspaceId);
 
         const metaTO = this.getTags(
           destinationType,
@@ -127,9 +122,22 @@ export class NativeIntegrationDestinationService implements DestinationService {
         );
         try {
           metaTO.metadata = destInputArray[0].metadata;
-          const transformedResponse: RouterTransformationResponse[] = IntegrationClass
-            ? await processBatchedDestination(destInputArray, IntegrationClass, requestMetadata)
-            : await destHandler.processRouterDest(destInputArray, requestMetadata);
+          let transformedResponse: RouterTransformationResponse[];
+          let destHandler: any = null;
+          if (useBatchingFramework) {
+            const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
+            transformedResponse = await processBatchedDestination(
+              destInputArray,
+              IntegrationClass,
+              requestMetadata,
+            );
+          } else {
+            destHandler = FetchHandler.getDestHandler(destinationType, version);
+            transformedResponse = await destHandler.processRouterDest(
+              destInputArray,
+              requestMetadata,
+            );
+          }
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             transformedResponse,
             destHandler,

@@ -29,7 +29,7 @@ export class MiscService {
     return require(`../${version}/destinations/${dest}/deleteUsers`);
   }
 
-  public static getRouterTransformHandler(dest: string): BatchDestinationConstructor {
+  public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
     return require(`../v0/destinations/${dest}/routerTransform`).Integration;
   }
 

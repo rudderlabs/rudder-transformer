@@ -98,6 +98,9 @@ jobs:
           files: ''
           tag-only-if-file-changes: false
 
+      - name: Fetch tags after creation
+        run: git fetch --tags origin
+
       - name: Create GitHub Release
         id: create_release
         env:

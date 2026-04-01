@@ -123,6 +123,14 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
           path: rudder-devops
 
+      - name: Log devops checkout path
+        run: |
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          echo "rudder-devops path: $GITHUB_WORKSPACE/rudder-devops"
+          echo "git status in rudder-devops:"
+          git -C "$GITHUB_WORKSPACE/rudder-devops" status
+          echo "process.cwd equivalent: $(pwd)"
+
       - name: Check if staging branch already exists
         id: check-branch
         env:
@@ -164,7 +172,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudder-devops
-          workspace: ./rudder-devops
+          workspace: ${{ github.workspace }}/rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade staging env transformers to ${{ env.TAG_NAME }}'
           files: |

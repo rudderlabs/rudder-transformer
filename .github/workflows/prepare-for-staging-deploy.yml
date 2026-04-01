@@ -52,7 +52,8 @@ jobs:
       id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
       contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    # if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    if: false 
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
@@ -72,7 +73,8 @@ jobs:
       id-token: write # to pass OIDC token to reusable workflow (build-push-docker-image.yml)
       contents: read # to checkout repository code and call reusable workflow (actions/checkout)
     # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    # if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    if: false
 
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
@@ -165,8 +167,8 @@ jobs:
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade staging env transformers to ${{ env.TAG_NAME }}'
           files: |
-            helm-charts/shared-services/per-az/environment/staging/staging.yaml
-            helm-charts/config-be-rudder-transformer/environment/staging/base.yaml
+            rudder-devops/helm-charts/shared-services/per-az/environment/staging/staging.yaml
+            rudder-devops/helm-charts/config-be-rudder-transformer/environment/staging/base.yaml
 
       - name: Create PR for staging
         if: steps.check-branch.outputs.exists == 'false'

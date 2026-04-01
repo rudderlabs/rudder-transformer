@@ -121,7 +121,6 @@ jobs:
         with:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
-          path: rudder-devops
 
       - name: Check if staging branch already exists
         id: check-branch
@@ -139,7 +138,7 @@ jobs:
       - name: Update image tags in devops repo for staging
         if: steps.check-branch.outputs.exists == 'false'
         run: |
-          cd rudder-devops/helm-charts/shared-services/per-az/environment/staging
+          cd helm-charts/shared-services/per-az/environment/staging
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
           cd ../../../../config-be-rudder-transformer/environment/staging
@@ -151,7 +150,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          BASE_SHA=$(cd rudder-devops && git rev-parse HEAD)
+          BASE_SHA=$(git rev-parse HEAD)
           gh api repos/rudderlabs/rudder-devops/git/refs \
             --method POST \
             -f ref="refs/heads/shared-transformer-$TAG_NAME" \
@@ -164,7 +163,6 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudder-devops
-          workspace: ${{ github.workspace }}/rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade staging env transformers to ${{ env.TAG_NAME }}'
           files: |

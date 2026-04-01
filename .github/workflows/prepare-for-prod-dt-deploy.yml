@@ -122,7 +122,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudder-devops
-          workspace: rudder-devops
+          workspace: ${{ github.workspace }}/rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade shared transformers to ${{ env.TAG_NAME }}'
           files: |
@@ -165,7 +165,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudder-devops
-          workspace: rudder-devops
+          workspace: ${{ github.workspace }}/rudder-devops
           branch-name: hosted-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade hosted transformer to ${{ env.TAG_NAME }}'
           files: |
@@ -212,7 +212,7 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudderstack-operator
-          workspace: rudderstack-operator
+          workspace: ${{ github.workspace }}/rudderstack-operator
           branch-name: dedicated-transformer-${{ env.TAG_NAME }}
           commit-message: 'chore: upgrade dedicated transformer default version to ${{ env.TAG_NAME }}'
           files: |

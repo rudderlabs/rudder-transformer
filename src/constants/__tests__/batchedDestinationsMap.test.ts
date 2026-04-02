@@ -1,7 +1,4 @@
-import {
-  batchedDestinationsMap,
-  isBatchingFrameworkEnabled,
-} from '../../../../constants/batchedDestinationsMap';
+import { batchedDestinationsMap, isBatchingFrameworkEnabled } from '../batchedDestinationsMap';
 
 describe('isBatchingFrameworkEnabled', () => {
   const envKey = 'TEST_DEST_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS';

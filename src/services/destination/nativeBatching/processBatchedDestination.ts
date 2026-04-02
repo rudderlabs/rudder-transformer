@@ -1,8 +1,6 @@
-import { z } from 'zod';
 import stableStringify from 'fast-json-stable-stringify';
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata } from '../../../types/rudderEvents';
-import { RudderMessageSchema, MetadataSchema } from '../../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
@@ -18,12 +16,6 @@ import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 // Base Zod schema for input validation
 // ---------------------------------------------------------------------------
 
-const baseInputSchema = z.object({
-  message: RudderMessageSchema,
-  metadata: MetadataSchema.partial().extend({ jobId: z.number() }),
-  destination: z.object({}).passthrough(),
-});
-
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
@@ -32,7 +24,7 @@ export function validateInputs<TBody extends Record<string, unknown>>(
   inputs: RouterTransformationRequestData[],
   integration: BatchDestination<TBody>,
 ): { valid: RouterTransformationRequestData[]; errors: (TransformError & { jobId: number })[] } {
-  const schema = baseInputSchema.and(integration.getInputSchema());
+  const schema = integration.getInputSchema();
 
   const valid: RouterTransformationRequestData[] = [];
   const errors: (TransformError & { jobId: number })[] = [];
@@ -236,18 +228,19 @@ export async function processBatchedDestination<
   }
 
   // 4. Transform all events (batchable + nonBatchable)
-  const successPayloads: TransformResult<TBody>['successPayloads'] = [];
+  const batchablePayloads: TransformResult<TBody>['successPayloads'] = [];
+  const nonBatchablePayloads: TransformResult<TBody>['successPayloads'] = [];
 
   if (batchableEvents.length > 0) {
     const batchResult = await integration.transformEvents(batchableEvents, reqMetadata);
-    successPayloads.push(...batchResult.successPayloads);
+    batchablePayloads.push(...batchResult.successPayloads);
     allErrors.push(...batchResult.errorPayloads);
   }
 
   for (const nonBatchableEvent of nonBatchableEvents) {
     // eslint-disable-next-line no-await-in-loop
     const singleResult = await integration.transformEvents([nonBatchableEvent], reqMetadata);
-    successPayloads.push(...singleResult.successPayloads);
+    nonBatchablePayloads.push(...singleResult.successPayloads);
     allErrors.push(...singleResult.errorPayloads);
   }
 
@@ -261,40 +254,43 @@ export async function processBatchedDestination<
   // delivered multiplexed event is invalid. Without this filter, the failed
   // event's body would still appear in the batched request for the other endpoint.
   const failedJobIds = new Set(allErrors.map((e) => e.jobId));
-  const allPayloads = successPayloads.filter((p) => !failedJobIds.has(p.jobId));
+  const successBatchablePayloads = batchablePayloads.filter((p) => !failedJobIds.has(p.jobId));
+  const successNonBatchablePayloads = nonBatchablePayloads.filter(
+    (p) => !failedJobIds.has(p.jobId),
+  );
 
-  // 7. Group all payloads by composite key and apply batch strategy
+  // 7. Build request groups:
+  // - Batchable payloads are grouped by composite key (endpoint, method, headers, params)
+  // - NonBatchable payloads each form their own group to prevent merging with other events
+  const batchableGroups = groupPayloadsByCompositeKey(successBatchablePayloads);
+  const nonBatchableGroups = successNonBatchablePayloads.flatMap((payload) =>
+    groupPayloadsByCompositeKey([payload]),
+  );
+  const allGroups = [...batchableGroups, ...nonBatchableGroups];
+
+  // 8. Apply batch strategy to each group and convert to server format
   const successResponses: RouterTransformationResponse[] = [];
-  if (allPayloads.length > 0) {
-    const groups = groupPayloadsByCompositeKey(allPayloads);
+  for (const group of allGroups) {
+    const strategy = integration.getBatchStrategy(group.endpoint);
+    const batchResults = strategy.batch(group.payloads);
 
-    for (const group of groups) {
-      const strategy = integration.getBatchStrategy(group.endpoint);
-      const batchResults = strategy.batch(group.payloads);
+    for (const batchResult of batchResults) {
+      stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
 
-      for (const batchResult of batchResults) {
-        // Metric: batch size distribution
-        stats.histogram('batch_size', batchResult.jobIds.size, metricTags);
-
-        successResponses.push(
-          mapSuccessPayloadToServerFormat(
-            batchResult,
-            group.endpoint,
-            group.method,
-            group.headers,
-            group.params,
-            metadataMap,
-            destination,
-            strategy.bodyFormat,
-          ),
-        );
-      }
+      successResponses.push(
+        mapSuccessPayloadToServerFormat(
+          batchResult,
+          group.endpoint,
+          group.method,
+          group.headers,
+          group.params,
+          metadataMap,
+          destination,
+          strategy.bodyFormat,
+        ),
+      );
     }
   }
-
-  // Metric: output batches — counted before merge since each entry is one HTTP request.
-  // After merge, a single response can contain multiple batchedRequests (multiplexed events).
-  stats.counter('output_batches', successResponses.length, metricTags);
 
   // 9. Merge success responses that share jobIds (multiplexed events across groups)
 

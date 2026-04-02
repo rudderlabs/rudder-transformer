@@ -8,27 +8,43 @@ import {
   CustomBatchStrategy,
 } from '../batchDestination';
 import type { BatchStrategy } from '../batchDestination';
-import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
+import type {
+  ProcessorTransformationOutput,
+  RouterTransformationRequestData,
+} from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
+import type { MessageType, Metadata, RudderMessage } from '../../../../types/rudderEvents';
+
+// ---------------------------------------------------------------------------
+// Test types
+// ---------------------------------------------------------------------------
+
+type TestBody = { value: string };
+
+interface TestMessage extends RudderMessage {
+  data?: string;
+  shouldFail?: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
 
-type TestBody = { value: string };
-
-const mockDestination = {
+const mockDestination: Destination = {
   ID: 'dest-1',
   Config: { apiKey: 'test-key' },
-  DestinationDefinition: { Name: 'TEST' },
-} as unknown as Destination;
+  DestinationDefinition: { ID: 'destDef-1', Name: 'TEST', DisplayName: 'Test', Config: {} },
+  Name: 'test-dest',
+  Enabled: true,
+  WorkspaceID: 'ws-1',
+  Transformations: [],
+};
 
 class SimpleIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
-      body: { value: (input.message as any).data },
+      body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/events',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -48,13 +64,12 @@ class SimpleIntegration extends BatchDestination<TestBody> {
 }
 
 class MultiEndpointIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
-    const type = (input.message as any).type;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
-      body: { value: (input.message as any).data },
-      endpoint: type === 'track' ? 'https://api.test.com/track' : 'https://api.test.com/identify',
+      body: { value: message.data ?? '' },
+      endpoint:
+        message.type === 'track' ? 'https://api.test.com/track' : 'https://api.test.com/identify',
       method: 'POST',
     };
   }
@@ -72,10 +87,9 @@ class MultiEndpointIntegration extends BatchDestination<TestBody> {
 }
 
 class PartialFailIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
-    if (input.message.shouldFail) {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
+    if (message.shouldFail) {
       throw new Error('Transform failed');
     }
     return {
@@ -95,11 +109,10 @@ class PartialFailIntegration extends BatchDestination<TestBody> {
 }
 
 class CustomBatchIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
-      body: { value: (input.message as any).data },
+      body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/merge',
       method: 'POST',
     };
@@ -122,26 +135,71 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
   }
 }
 
+class TypedErrorIntegration extends BatchDestination<TestBody> {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
+    if (message.shouldFail) {
+      throw new InstrumentationError('missing required field');
+    }
+    return {
+      body: { value: 'ok' },
+      endpoint: 'https://api.test.com/events',
+      method: 'POST',
+    };
+  }
+
+  getBatchStrategy(): BatchStrategy<TestBody> {
+    return new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
+  }
+
+  getInputSchema() {
+    return z.object({}).passthrough();
+  }
+}
+
 function makeInput(
   jobId: number,
   data: string,
-  opts?: { type?: string; dontBatch?: boolean; shouldFail?: boolean },
-): RouterTransformationRequestData {
-  return {
-    message: { data, type: opts?.type || 'track', shouldFail: opts?.shouldFail } as any,
-    metadata: {
-      jobId,
-      workspaceId: 'ws-1',
-      sourceId: 'src-1',
-      sourceType: 'web',
-      sourceCategory: 'cloud',
-      destinationId: 'dest-1',
-      destinationType: 'TEST',
-      messageId: `msg-${jobId}`,
-      dontBatch: opts?.dontBatch,
-    } as any,
-    destination: mockDestination,
-  } as RouterTransformationRequestData;
+  opts?: { type?: MessageType; dontBatch?: boolean; shouldFail?: boolean },
+): RouterTransformationRequestData<TestMessage> {
+  const message: TestMessage = {
+    data,
+    type: opts?.type || 'track',
+    shouldFail: opts?.shouldFail,
+  };
+  const metadata: Metadata = {
+    jobId,
+    workspaceId: 'ws-1',
+    sourceId: 'src-1',
+    sourceType: 'web',
+    sourceCategory: 'cloud',
+    destinationId: 'dest-1',
+    destinationType: 'TEST',
+    messageId: `msg-${jobId}`,
+    dontBatch: opts?.dontBatch,
+  };
+  return { message, metadata, destination: mockDestination };
+}
+
+function getSingleBatchedRequest(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}): ProcessorTransformationOutput {
+  if (Array.isArray(result.batchedRequest)) {
+    return result.batchedRequest[0];
+  }
+  return result.batchedRequest!;
+}
+
+function getBatchedRequestBody(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}) {
+  return getSingleBatchedRequest(result).body?.JSON;
+}
+
+function getBatchedRequestEndpoint(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}) {
+  return getSingleBatchedRequest(result).endpoint;
 }
 
 // ---------------------------------------------------------------------------
@@ -167,11 +225,11 @@ describe('processBatchedDestination', () => {
       const chunk1 = results[0];
       expect(chunk1.statusCode).toBe(200);
       expect(chunk1.batched).toBe(true);
-      expect((chunk1.batchedRequest as any).body.JSON.events).toHaveLength(3);
+      expect(getBatchedRequestBody(chunk1)!.events).toHaveLength(3);
       expect(chunk1.metadata).toHaveLength(3);
 
       const chunk2 = results[1];
-      expect((chunk2.batchedRequest as any).body.JSON.events).toHaveLength(2);
+      expect(getBatchedRequestBody(chunk2)!.events).toHaveLength(2);
       expect(chunk2.metadata).toHaveLength(2);
     });
 
@@ -181,16 +239,16 @@ describe('processBatchedDestination', () => {
 
       expect(results).toHaveLength(1);
       const resp = results[0];
-      const req = resp.batchedRequest as any;
+      const req = getSingleBatchedRequest(resp);
       expect(req.version).toBe('1');
       expect(req.type).toBe('REST');
       expect(req.method).toBe('POST');
       expect(req.endpoint).toBe('https://api.test.com/events');
       expect(req.headers).toEqual({ 'Content-Type': 'application/json' });
-      expect(req.body.JSON).toEqual({ events: [{ value: 'hello' }] });
-      expect(req.body.JSON_ARRAY).toEqual({});
-      expect(req.body.XML).toEqual({});
-      expect(req.body.FORM).toEqual({});
+      expect(req.body?.JSON).toEqual({ events: [{ value: 'hello' }] });
+      expect(req.body?.JSON_ARRAY).toEqual({});
+      expect(req.body?.XML).toEqual({});
+      expect(req.body?.FORM).toEqual({});
       expect(req.files).toEqual({});
       expect(resp.destination).toBe(mockDestination);
     });
@@ -212,11 +270,9 @@ describe('processBatchedDestination', () => {
       // identify: 2 events, maxItems=2 → 1 chunk
       expect(results).toHaveLength(3);
 
-      const trackResults = results.filter((r) =>
-        (r.batchedRequest as any)?.endpoint?.includes('/track'),
-      );
+      const trackResults = results.filter((r) => getBatchedRequestEndpoint(r)?.includes('/track'));
       const identifyResults = results.filter((r) =>
-        (r.batchedRequest as any)?.endpoint?.includes('/identify'),
+        getBatchedRequestEndpoint(r)?.includes('/identify'),
       );
 
       expect(trackResults).toHaveLength(2);
@@ -230,26 +286,21 @@ describe('processBatchedDestination', () => {
       const results = await processBatchedDestination(inputs, CustomBatchIntegration, {});
 
       expect(results).toHaveLength(1);
-      expect((results[0].batchedRequest as any).body.JSON).toEqual({ merged: 'a,b,c' });
+      expect(getBatchedRequestBody(results[0])).toEqual({ merged: 'a,b,c' });
       expect(results[0].metadata).toHaveLength(3);
     });
   });
 
   describe('dontBatch flag', () => {
-    it('processes dontBatch events via individual batchTransform calls', async () => {
-      // dontBatch ensures each nonBatchable event gets its own batchTransform() call
-      // (important for pre-batch operations like dedup), but after transformation
-      // all payloads are grouped by composite key for final batching
+    it('processes dontBatch events individually', async () => {
       const inputs = [makeInput(1, 'a'), makeInput(2, 'b', { dontBatch: true }), makeInput(3, 'c')];
 
       const results = await processBatchedDestination(inputs, SimpleIntegration, {});
 
-      // All 3 events share the same endpoint, and maxItems=3 fits them all
       const allJobIds = results.flatMap((r) => r.metadata.map((m) => m.jobId));
       expect(allJobIds).toContain(1);
       expect(allJobIds).toContain(2);
       expect(allJobIds).toContain(3);
-      // All events are present in the output
       expect(allJobIds).toHaveLength(3);
     });
   });
@@ -274,31 +325,6 @@ describe('processBatchedDestination', () => {
     });
   });
 
-  describe('validation', () => {
-    it('rejects events failing base schema and returns error responses', async () => {
-      const inputs = [
-        makeInput(1, 'valid'),
-        {
-          message: {}, // missing type
-          metadata: { jobId: 2 },
-          destination: mockDestination,
-        } as unknown as RouterTransformationRequestData,
-      ];
-
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
-
-      const successes = results.filter((r) => r.statusCode === 200);
-      const errors = results.filter((r) => r.statusCode === 400);
-
-      expect(successes).toHaveLength(1);
-      expect(errors).toHaveLength(1);
-      expect(errors[0].statTags).toMatchObject({
-        errorCategory: 'dataValidation',
-        errorType: 'instrumentation',
-      });
-    });
-  });
-
   describe('metadata resolution', () => {
     it('resolves correct metadata for each chunk', async () => {
       const inputs = [makeInput(10, 'a'), makeInput(20, 'b')];
@@ -318,29 +344,6 @@ describe('processBatchedDestination', () => {
   });
 
   describe('error taxonomy with typed errors', () => {
-    class TypedErrorIntegration extends BatchDestination<TestBody> {
-      transformEvent(
-        input: RouterTransformationRequestData,
-      ): Omit<TransformedEvent<TestBody>, 'jobId'> {
-        if ((input.message as any).shouldFail) {
-          throw new InstrumentationError('missing required field');
-        }
-        return {
-          body: { value: 'ok' },
-          endpoint: 'https://api.test.com/events',
-          method: 'POST',
-        };
-      }
-
-      getBatchStrategy(): BatchStrategy<TestBody> {
-        return new ChunkBatchStrategy({ wrapBody: (bodies) => ({ events: bodies }) });
-      }
-
-      getInputSchema() {
-        return z.object({}).passthrough();
-      }
-    }
-
     it('produces proper statTags from InstrumentationError via generateErrorObject', async () => {
       const inputs = [makeInput(1, 'ok'), makeInput(2, 'fail', { shouldFail: true })];
       const results = await processBatchedDestination(inputs, TypedErrorIntegration, {});
@@ -358,8 +361,6 @@ describe('processBatchedDestination', () => {
 
   describe('failed jobIds removed from success responses', () => {
     it('excludes failed jobIds from success response metadata', async () => {
-      // PartialFailIntegration throws for events with shouldFail=true
-      // jobId 2 fails, jobIds 1 and 3 succeed
       const inputs = [
         makeInput(1, 'ok'),
         makeInput(2, 'fail', { shouldFail: true }),
@@ -371,11 +372,9 @@ describe('processBatchedDestination', () => {
       const successes = results.filter((r) => r.statusCode === 200);
       const errors = results.filter((r) => r.statusCode !== 200);
 
-      // jobId 2 failed — should only appear in error responses
       expect(errors).toHaveLength(1);
       expect(errors[0].metadata[0].jobId).toBe(2);
 
-      // jobId 2 should NOT appear in any success response metadata
       const successJobIds = successes.flatMap((r) => r.metadata.map((m) => m.jobId));
       expect(successJobIds).not.toContain(2);
       expect(successJobIds).toContain(1);

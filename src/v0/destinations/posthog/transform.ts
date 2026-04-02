@@ -7,7 +7,6 @@ import {
 import { EventType } from '../../../constants';
 import { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY } from './config';
 import {
-  defaultRequestConfig,
   getBrowserInfo,
   getDeviceModel,
   constructPayload,
@@ -28,6 +27,7 @@ import type {
   PostHogProcessorRequest,
   PostHogResponseBody,
   PostHogRouterRequest,
+  PostHogTransformOutput,
 } from './types';
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
@@ -142,22 +142,32 @@ const responseBuilderSimple = (
     api_key: destination.Config.teamApiKey,
     type: category.type,
   };
-  const response = defaultRequestConfig();
-  response.endpoint = `${
-    stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
-  }/batch`;
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
+  return {
+    version: '1',
+    type: 'REST',
+    method: defaultPostRequestConfig.requestMethod,
+    endpoint: `${
+      stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
+    }/batch`,
+    headers: { 'Content-Type': JSON_MIME_TYPE },
+    params: {},
+    body: {
+      JSON: responseBody,
+      JSON_ARRAY: {},
+      XML: {},
+      FORM: {},
+    },
+    files: {},
   };
-  response.body.JSON = responseBody;
-  return response;
 };
 
 const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>
   key in CONFIG_CATEGORIES;
 
-const processEvent = (message: RudderMessage, destination: PostHogDestination) => {
+const processEvent = (
+  message: RudderMessage,
+  destination: PostHogDestination,
+): PostHogTransformOutput => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }

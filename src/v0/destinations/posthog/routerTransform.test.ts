@@ -1,21 +1,14 @@
-import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
-import { Integration as PostHogIntegration } from './routerTransform';
-import type {
-  ProcessorTransformationOutput,
-  RouterTransformationRequestData,
-} from '../../../types/destinationTransformation';
-import type { Destination } from '../../../types/controlPlaneConfig';
-import type { MessageType, Metadata, RudderMessage } from '../../../types/rudderEvents';
+import { Integration } from './routerTransform';
+import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/batchDestination';
+import type { Metadata, RudderMessage } from '../../../types/rudderEvents';
+import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
+import type { PostHogMessage, PostHogDestination } from './types';
 
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
 
-interface PostHogTestMessage extends RudderMessage {
-  previousId?: string;
-}
-
-const destination: Destination = {
+const destination: PostHogDestination = {
   ID: 'posthog-dest-1',
   Config: {
     teamApiKey: 'dummyApiKey',
@@ -28,19 +21,18 @@ const destination: Destination = {
   Transformations: [],
 };
 
-function makeEvent(
+function makeInput(
   jobId: number,
-  type: MessageType,
-  overrides?: Partial<PostHogTestMessage>,
-): RouterTransformationRequestData<PostHogTestMessage> {
-  const message: PostHogTestMessage = {
+  type: RudderMessage['type'],
+  overrides?: Partial<PostHogMessage>,
+): RouterTransformationRequestData<PostHogMessage, PostHogDestination, undefined, Metadata> {
+  const message: PostHogMessage = {
     type,
     userId: 'uid-1',
     anonymousId: 'anon-1',
     messageId: `msgid-${jobId}`,
     timestamp: '2024-01-01T00:00:00.000Z',
     context: {
-      ip: '1.2.3.4',
       traits: { name: 'Test User' },
     },
     event: 'test-event',
@@ -60,140 +52,110 @@ function makeEvent(
   return { message, metadata, destination };
 }
 
-function getBatchBody(result: {
-  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
-}) {
-  const req = Array.isArray(result.batchedRequest)
-    ? result.batchedRequest[0]
-    : result.batchedRequest;
-  return req?.body?.JSON ?? {};
-}
-
-function getBatchItems(result: {
-  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
-}): Record<string, unknown>[] {
-  const body = getBatchBody(result);
-  return Array.isArray(body.batch) ? body.batch : [];
-}
-
-function getBatchedRequest(result: {
-  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
-}): ProcessorTransformationOutput {
-  if (Array.isArray(result.batchedRequest)) {
-    return result.batchedRequest[0];
-  }
-  return result.batchedRequest!;
-}
-
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('PostHog Batching Framework Integration', () => {
-  describe('single event', () => {
-    it('produces a batch of 1 with wrapper envelope', async () => {
-      const inputs = [makeEvent(1, 'track')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
+describe('Integration', () => {
+  const integration = new Integration(destination);
 
-      expect(results).toHaveLength(1);
-      const resp = results[0];
-      expect(resp.statusCode).toBe(200);
-      expect(resp.batched).toBe(true);
-
-      const req = getBatchedRequest(resp);
-      expect(req.version).toBe('1');
-      expect(req.type).toBe('REST');
-      expect(req.method).toBe('POST');
-      expect(req.endpoint).toBe('https://app.posthog.com/batch');
-      expect(req.headers).toEqual({ 'Content-Type': 'application/json' });
-
-      const body = getBatchBody(resp);
-      const batchItems = getBatchItems(resp);
-      expect(body.api_key).toBe('dummyApiKey');
-      expect(batchItems).toHaveLength(1);
-      expect(batchItems[0].api_key).toBeUndefined();
-      expect(batchItems[0].type).toBeDefined();
-    });
-  });
-
-  describe('multiple events batched', () => {
-    it('batches multiple events into a single request', async () => {
-      const inputs = [
-        makeEvent(1, 'track', { event: 'click' }),
-        makeEvent(2, 'track', { event: 'purchase' }),
-        makeEvent(3, 'track', { event: 'signup' }),
-      ];
-      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
-
-      expect(results).toHaveLength(1);
-      const body = getBatchBody(results[0]);
-      expect(body.api_key).toBe('dummyApiKey');
-      expect(getBatchItems(results[0])).toHaveLength(3);
-      expect(results[0].metadata).toHaveLength(3);
-      expect(results[0].metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
-    });
-  });
-
-  describe('event type coverage', () => {
-    it.each<{ type: MessageType; overrides: Partial<PostHogTestMessage> }>([
-      { type: 'track', overrides: {} },
-      { type: 'page', overrides: {} },
-      { type: 'screen', overrides: {} },
+  describe('transformEvent', () => {
+    it.each<{ type: RudderMessage['type']; overrides?: Partial<PostHogMessage> }>([
+      { type: 'track' },
+      { type: 'page' },
+      { type: 'screen' },
       { type: 'alias', overrides: { previousId: 'prev-1' } },
-    ])('handles $type events', async ({ type, overrides }) => {
-      const inputs = [makeEvent(1, type, overrides)];
-      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(200);
-      expect(getBatchItems(results[0])).toHaveLength(1);
+    ])('transforms $type event correctly', ({ type, overrides }) => {
+      const input = makeInput(1, type, overrides);
+      const result = integration.transformEvent(input);
+
+      expect(result.endpoint).toBe('https://app.posthog.com/batch');
+      expect(result.method).toBe('POST');
+      expect(result.headers).toEqual({ 'Content-Type': 'application/json' });
+      // api_key should be stripped from the event body
+      expect(result.body).not.toHaveProperty('api_key');
+      // type (e.g. 'capture', 'alias') should remain in the event body
+      expect(result.body.type).toBeDefined();
+    });
+
+    it('throws for unsupported event type', () => {
+      const input = makeInput(1, 'track');
+      Reflect.deleteProperty(input.message, 'type');
+
+      expect(() => integration.transformEvent(input)).toThrow('Event type is required');
     });
   });
 
-  describe('validation errors', () => {
-    it.each([
-      {
-        description: 'rejects events missing both userId and anonymousId',
-        makeInputFn: () => {
-          const input = makeEvent(1, 'track');
-          Reflect.deleteProperty(input.message, 'userId');
-          Reflect.deleteProperty(input.message, 'anonymousId');
-          return input;
-        },
-        expectedError: 'userId',
-      },
-      {
-        description: 'rejects record type events',
-        makeInputFn: () => makeEvent(1, 'record'),
-        expectedError: 'record',
-      },
-    ])('$description', async ({ makeInputFn, expectedError }) => {
-      const results = await processBatchedDestination([makeInputFn()], PostHogIntegration, {});
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(400);
-      expect(results[0].error).toContain(expectedError);
+  describe('getBatchStrategy', () => {
+    it('returns a ChunkBatchStrategy', () => {
+      const strategy = integration.getBatchStrategy();
+
+      expect(strategy).toBeInstanceOf(ChunkBatchStrategy);
     });
-  });
 
-  describe('mixed valid and invalid events', () => {
-    it('processes valid events and returns errors for invalid ones', async () => {
-      const validEvent = makeEvent(1, 'track');
-      const invalidEvent = makeEvent(2, 'track');
-      Reflect.deleteProperty(invalidEvent.message, 'userId');
-      Reflect.deleteProperty(invalidEvent.message, 'anonymousId');
+    it('wraps bodies with api_key and batch array', () => {
+      const strategy = integration.getBatchStrategy();
+      const testBodies = [
+        { distinct_id: 'u1', event: 'click', type: 'capture' },
+        { distinct_id: 'u2', event: 'view', type: 'capture' },
+      ];
 
-      const results = await processBatchedDestination(
-        [validEvent, invalidEvent],
-        PostHogIntegration,
-        {},
+      const [result] = strategy.batch(
+        testBodies.map((body, i) => ({ body, endpoint: '', method: 'POST', jobId: i + 1 })),
       );
 
-      const successes = results.filter((r) => r.statusCode === 200);
-      const errors = results.filter((r) => r.statusCode === 400);
+      expect(result.body).toEqual({
+        api_key: 'dummyApiKey',
+        batch: testBodies,
+      });
+      expect(result.jobIds).toEqual(new Set([1, 2]));
+    });
+  });
 
-      expect(successes).toHaveLength(1);
-      expect(errors).toHaveLength(1);
-      expect(successes[0].metadata[0].jobId).toBe(1);
-      expect(errors[0].metadata[0].jobId).toBe(2);
+  describe('getInputSchema', () => {
+    it('accepts valid track event', () => {
+      const input = makeInput(1, 'track');
+      const schema = integration.getInputSchema();
+      const parseResult = schema.safeParse(input);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it.each(['record', 'audiencelist', 'unknown'] as const)('rejects %s event type', (type) => {
+      const input = makeInput(1, 'track');
+      (input.message as Record<string, unknown>).type = type;
+      const schema = integration.getInputSchema();
+      const parseResult = schema.safeParse(input);
+
+      expect(parseResult.success).toBe(false);
+    });
+
+    it('rejects events missing both userId and anonymousId', () => {
+      const input = makeInput(1, 'track');
+      Reflect.deleteProperty(input.message, 'userId');
+      Reflect.deleteProperty(input.message, 'anonymousId');
+      const schema = integration.getInputSchema();
+      const parseResult = schema.safeParse(input);
+
+      expect(parseResult.success).toBe(false);
+    });
+
+    it('accepts events with only userId', () => {
+      const input = makeInput(1, 'track');
+      Reflect.deleteProperty(input.message, 'anonymousId');
+      const schema = integration.getInputSchema();
+      const parseResult = schema.safeParse(input);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it('accepts events with only anonymousId', () => {
+      const input = makeInput(1, 'track');
+      Reflect.deleteProperty(input.message, 'userId');
+      const schema = integration.getInputSchema();
+      const parseResult = schema.safeParse(input);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 });

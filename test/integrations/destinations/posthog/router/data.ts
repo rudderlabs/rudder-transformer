@@ -1,4 +1,4 @@
-const batchingFrameworkTests = [
+export const data = [
   {
     name: 'posthog',
     description: 'Batching Framework: Single alias event produces batched output with wrapper',
@@ -397,10 +397,6 @@ const batchingFrameworkTests = [
       POSTHOG_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS: 'ws-bf-test',
     },
   },
-];
-
-export const data = [
-  ...batchingFrameworkTests,
   {
     name: 'posthog',
     description: 'Successfull Alias Call batching',

@@ -13,7 +13,7 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
     const result = processEvent(input.message, input.destination);
     // Strip api_key from the body — it belongs in the wrapBody wrapper
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { api_key, ...eventBody } = result.body.JSON;
+    const { api_key, ...eventBody } = result.body.JSON!;
     return {
       body: eventBody,
       endpoint: result.endpoint,
@@ -39,9 +39,7 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
           .object({
             userId: z.union([z.string(), z.number()]).optional(),
             anonymousId: z.union([z.string(), z.number()]).optional(),
-            type: z.string().refine((val) => val !== 'record', {
-              message: 'message type should not be record',
-            }),
+            type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
           })
           .passthrough()
           .refine((msg) => !!msg.userId || !!msg.anonymousId, {

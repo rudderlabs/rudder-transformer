@@ -6,10 +6,10 @@ import {
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { processEvent } from './transform';
-import type { PostHogPayload, PostHogProcessorRequest } from './types';
+import type { PostHogPayload, PostHogRouterRequest } from './types';
 
 class PostHogIntegration extends BatchDestination<PostHogPayload> {
-  transformEvent(input: PostHogProcessorRequest): TransformedEvent<PostHogPayload> {
+  transformEvent(input: PostHogRouterRequest): TransformedEvent<PostHogPayload> {
     const result = processEvent(input.message, input.destination);
     // Strip api_key from the body — it belongs in the wrapBody wrapper
     // eslint-disable-next-line @typescript-eslint/naming-convention

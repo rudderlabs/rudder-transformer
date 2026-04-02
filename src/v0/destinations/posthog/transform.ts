@@ -143,7 +143,7 @@ const responseBuilderSimple = (
     api_key: destination.Config.teamApiKey,
     type: category.type,
   };
-  const response = defaultRequestConfig();
+  const response = defaultRequestConfig() as PostHogTransformOutput;
   response.endpoint = `${
     stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
   }/batch`;
@@ -152,7 +152,7 @@ const responseBuilderSimple = (
     'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = responseBody;
-  return response as PostHogTransformOutput;
+  return response;
 };
 
 const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>

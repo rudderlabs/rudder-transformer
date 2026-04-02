@@ -69,15 +69,14 @@ describe('Integration', () => {
       const input = makeInput(1, type, overrides);
       const result = integration.transformEvent(input);
 
-      expect(result).toMatchObject({
+      expect(result).toEqual({
         endpoint: 'https://app.posthog.com/batch',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: expect.objectContaining({ type: expect.any(String) }),
       });
       // api_key should be stripped — it belongs in the wrapBody wrapper
       expect(result.body).not.toHaveProperty('api_key');
-      // type (e.g. 'capture', 'alias') should remain in each event body
-      expect(result.body.type).toBeDefined();
     });
 
     it('throws for unsupported event type', () => {

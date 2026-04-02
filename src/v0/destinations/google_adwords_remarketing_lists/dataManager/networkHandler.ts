@@ -51,14 +51,13 @@ const dataManagerProxyRequest = async (request: {
 };
 
 /**
- * Response handler for the Data Manager API path.
+ * Handles the DM API response: returns a success object on 2xx, or throws a
+ * {@link NetworkError} using `error.code` from the response body as the authoritative
+ * status (falls back to transport-level status when absent).
  *
- * Key differences from the legacy OfflineUserDataJobs handler:
- * - No `partialFailureError` check (not part of the DM API response contract).
- * - No CONCURRENT_MODIFICATION 400→500 conversion (OfflineUserDataJobs-specific).
- * - requestId is extracted from error.details and logged for support tracing.
- * - Error type is determined from gRPC status string (error.status) to correctly
- *   classify ABORTED (HTTP 409) as retryable per DM API docs.
+ * @param responseParams - Holds `destinationResponse` (status + response body).
+ * @returns `{ status, message, destinationResponse }` on success.
+ * @throws {NetworkError} On non-2xx, with error code, type tag, and auth category.
  */
 const dataManagerResponseHandler = (responseParams: ResponseHandlerParams) => {
   const { destinationResponse } = responseParams;

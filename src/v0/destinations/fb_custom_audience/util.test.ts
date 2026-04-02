@@ -8,7 +8,7 @@ jest.mock('../../../util/stats', () => ({
 import stats from '../../../util/stats';
 import type { WrappedResponse } from './types';
 
-const basePayload = {
+const basePayload: WrappedResponse = {
   responseField: {
     access_token: 'ABC',
     payload: {
@@ -23,6 +23,8 @@ const basePayload = {
   },
   operationCategory: '',
 };
+
+const TEST_PAYLOAD_WORKSPACE_ID = 'test-workspace';
 
 const baseResponse = {
   version: '1',
@@ -434,7 +436,9 @@ describe('FB_custom_audience utils test', () => {
       payload.operationCategory = 'add';
       const expectedResponse = baseResponse;
       expectedResponse.method = 'POST';
-      expect(responseBuilderSimple(payload, '23848494844100489')).toEqual(expectedResponse);
+      expect(
+        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
+      ).toEqual(expectedResponse);
     });
 
     it('returns correct response for delete payload', () => {
@@ -442,17 +446,33 @@ describe('FB_custom_audience utils test', () => {
       payload.operationCategory = 'remove';
       const expectedResponse = baseResponse;
       expectedResponse.method = 'DELETE';
-      expect(responseBuilderSimple(payload, '23848494844100489')).toEqual(expectedResponse);
+      expect(
+        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
+      ).toEqual(expectedResponse);
     });
 
     it('throws when payload is empty', () => {
       let emptyPayload: WrappedResponse | undefined;
       expect.assertions(1);
       try {
-        responseBuilderSimple(emptyPayload, '');
+        responseBuilderSimple(emptyPayload, '', '');
       } catch (error: any) {
         expect(error.message).toEqual('Payload could not be constructed');
       }
+    });
+
+    it('puts payload in body.JSON and keeps only auth params when flag is ALL', () => {
+      process.env.FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY = 'ALL';
+      const payload: WrappedResponse = { ...basePayload, operationCategory: 'add' };
+      expect(
+        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
+      ).toEqual({
+        ...baseResponse,
+        params: { access_token: 'ABC' },
+        body: { ...baseResponse.body, JSON: { payload: basePayload.responseField.payload } },
+        method: 'POST',
+      });
+      delete process.env.FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY;
     });
   });
 });

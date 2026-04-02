@@ -1,77 +1,118 @@
 import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
 import { Integration as PostHogIntegration } from './routerTransform';
-import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
+import type {
+  ProcessorTransformationOutput,
+  RouterTransformationRequestData,
+} from '../../../types/destinationTransformation';
+import type { Destination } from '../../../types/controlPlaneConfig';
+import type { MessageType, Metadata, RudderMessage } from '../../../types/rudderEvents';
 
-const destination = {
+// ---------------------------------------------------------------------------
+// Test helpers
+// ---------------------------------------------------------------------------
+
+interface PostHogTestMessage extends RudderMessage {
+  previousId?: string;
+}
+
+const destination: Destination = {
   ID: 'posthog-dest-1',
   Config: {
     teamApiKey: 'dummyApiKey',
     yourInstance: 'https://app.posthog.com/',
   },
-  DestinationDefinition: { Name: 'POSTHOG' },
+  DestinationDefinition: { ID: 'destDef-1', Name: 'POSTHOG', DisplayName: 'PostHog', Config: {} },
+  Name: 'posthog',
+  Enabled: true,
+  WorkspaceID: 'ws-1',
+  Transformations: [],
 };
 
 function makeEvent(
   jobId: number,
-  type: string,
-  overrides?: Record<string, unknown>,
-): RouterTransformationRequestData {
-  return {
-    message: {
-      type,
-      userId: 'uid-1',
-      anonymousId: 'anon-1',
-      messageId: `msgid-${jobId}`,
-      timestamp: '2024-01-01T00:00:00.000Z',
-      context: {
-        ip: '1.2.3.4',
-        traits: { name: 'Test User' },
-      },
-      event: 'test-event',
-      properties: { key: 'value' },
-      ...overrides,
-    } as any,
-    metadata: {
-      jobId,
-      workspaceId: 'ws-1',
-      destinationId: 'posthog-dest-1',
-      sourceId: 'src-1',
-      sourceType: 'web',
-      sourceCategory: 'cloud',
-      destinationType: 'POSTHOG',
-      messageId: `msg-${jobId}`,
-    } as any,
-    destination: destination as any,
-  } as RouterTransformationRequestData;
+  type: MessageType,
+  overrides?: Partial<PostHogTestMessage>,
+): RouterTransformationRequestData<PostHogTestMessage> {
+  const message: PostHogTestMessage = {
+    type,
+    userId: 'uid-1',
+    anonymousId: 'anon-1',
+    messageId: `msgid-${jobId}`,
+    timestamp: '2024-01-01T00:00:00.000Z',
+    context: {
+      ip: '1.2.3.4',
+      traits: { name: 'Test User' },
+    },
+    event: 'test-event',
+    properties: { key: 'value' },
+    ...overrides,
+  };
+  const metadata: Metadata = {
+    jobId,
+    workspaceId: 'ws-1',
+    destinationId: 'posthog-dest-1',
+    sourceId: 'src-1',
+    sourceType: 'web',
+    sourceCategory: 'cloud',
+    destinationType: 'POSTHOG',
+    messageId: `msg-${jobId}`,
+  };
+  return { message, metadata, destination };
 }
+
+function getBatchBody(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}) {
+  const req = Array.isArray(result.batchedRequest)
+    ? result.batchedRequest[0]
+    : result.batchedRequest;
+  return req?.body?.JSON ?? {};
+}
+
+function getBatchItems(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}): Record<string, unknown>[] {
+  const body = getBatchBody(result);
+  return Array.isArray(body.batch) ? body.batch : [];
+}
+
+function getBatchedRequest(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}): ProcessorTransformationOutput {
+  if (Array.isArray(result.batchedRequest)) {
+    return result.batchedRequest[0];
+  }
+  return result.batchedRequest!;
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
 
 describe('PostHog Batching Framework Integration', () => {
   describe('single event', () => {
     it('produces a batch of 1 with wrapper envelope', async () => {
       const inputs = [makeEvent(1, 'track')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
+      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
 
       expect(results).toHaveLength(1);
       const resp = results[0];
       expect(resp.statusCode).toBe(200);
       expect(resp.batched).toBe(true);
 
-      const req = resp.batchedRequest as any;
+      const req = getBatchedRequest(resp);
       expect(req.version).toBe('1');
       expect(req.type).toBe('REST');
       expect(req.method).toBe('POST');
       expect(req.endpoint).toBe('https://app.posthog.com/batch');
       expect(req.headers).toEqual({ 'Content-Type': 'application/json' });
 
-      // Verify wrapper: api_key at top level, batch array
-      const body = req.body.JSON;
+      const body = getBatchBody(resp);
+      const batchItems = getBatchItems(resp);
       expect(body.api_key).toBe('dummyApiKey');
-      expect(body.batch).toHaveLength(1);
-
-      // api_key is in the wrapper, not in individual events
-      expect(body.batch[0].api_key).toBeUndefined();
-      // type (e.g. 'capture') belongs in each event
-      expect(body.batch[0].type).toBeDefined();
+      expect(batchItems).toHaveLength(1);
+      expect(batchItems[0].api_key).toBeUndefined();
+      expect(batchItems[0].type).toBeDefined();
     });
   });
 
@@ -82,99 +123,67 @@ describe('PostHog Batching Framework Integration', () => {
         makeEvent(2, 'track', { event: 'purchase' }),
         makeEvent(3, 'track', { event: 'signup' }),
       ];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
+      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
 
       expect(results).toHaveLength(1);
-      const body = (results[0].batchedRequest as any).body.JSON;
+      const body = getBatchBody(results[0]);
       expect(body.api_key).toBe('dummyApiKey');
-      expect(body.batch).toHaveLength(3);
+      expect(getBatchItems(results[0])).toHaveLength(3);
       expect(results[0].metadata).toHaveLength(3);
       expect(results[0].metadata.map((m) => m.jobId)).toEqual([1, 2, 3]);
     });
   });
 
   describe('event type coverage', () => {
-    it('handles track events', async () => {
-      const inputs = [makeEvent(1, 'track')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
+    it.each<{ type: MessageType; overrides: Partial<PostHogTestMessage> }>([
+      { type: 'track', overrides: {} },
+      { type: 'page', overrides: {} },
+      { type: 'screen', overrides: {} },
+      { type: 'alias', overrides: { previousId: 'prev-1' } },
+    ])('handles $type events', async ({ type, overrides }) => {
+      const inputs = [makeEvent(1, type, overrides)];
+      const results = await processBatchedDestination(inputs, PostHogIntegration, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(200);
-      expect((results[0].batchedRequest as any).body.JSON.batch).toHaveLength(1);
-    });
-
-    it('handles page events', async () => {
-      const inputs = [makeEvent(1, 'page')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(200);
-    });
-
-    it('handles screen events', async () => {
-      const inputs = [makeEvent(1, 'screen')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(200);
-    });
-
-    it('handles alias events', async () => {
-      const inputs = [makeEvent(1, 'alias', { previousId: 'prev-1' })];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(200);
+      expect(getBatchItems(results[0])).toHaveLength(1);
     });
   });
 
   describe('validation errors', () => {
-    it('rejects events missing both userId and anonymousId', async () => {
-      const inputs = [
-        {
-          message: {
-            type: 'track',
-            event: 'test',
-            properties: {},
-          } as any,
-          metadata: {
-            jobId: 1,
-            workspaceId: 'ws-1',
-            destinationId: 'dest-1',
-            sourceId: 'src-1',
-            sourceType: 'web',
-            sourceCategory: 'cloud',
-            destinationType: 'POSTHOG',
-            messageId: 'msg-1',
-          } as any,
-          destination: destination as any,
-        } as RouterTransformationRequestData,
-      ];
-
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
-
+    it.each([
+      {
+        description: 'rejects events missing both userId and anonymousId',
+        makeInputFn: () => {
+          const input = makeEvent(1, 'track');
+          Reflect.deleteProperty(input.message, 'userId');
+          Reflect.deleteProperty(input.message, 'anonymousId');
+          return input;
+        },
+        expectedError: 'userId',
+      },
+      {
+        description: 'rejects record type events',
+        makeInputFn: () => makeEvent(1, 'record'),
+        expectedError: 'record',
+      },
+    ])('$description', async ({ makeInputFn, expectedError }) => {
+      const results = await processBatchedDestination([makeInputFn()], PostHogIntegration, {});
       expect(results).toHaveLength(1);
       expect(results[0].statusCode).toBe(400);
-      expect(results[0].error).toContain('userId');
-    });
-
-    it('rejects record type events', async () => {
-      const inputs = [makeEvent(1, 'record')];
-      const results = await processBatchedDestination(inputs, PostHogIntegration as any, {});
-
-      expect(results).toHaveLength(1);
-      expect(results[0].statusCode).toBe(400);
-      expect(results[0].error).toContain('record');
+      expect(results[0].error).toContain(expectedError);
     });
   });
 
   describe('mixed valid and invalid events', () => {
     it('processes valid events and returns errors for invalid ones', async () => {
       const validEvent = makeEvent(1, 'track');
-      // Invalid: missing both userId and anonymousId (fails integration schema)
       const invalidEvent = makeEvent(2, 'track');
-      delete (invalidEvent.message as any).userId;
-      delete (invalidEvent.message as any).anonymousId;
+      Reflect.deleteProperty(invalidEvent.message, 'userId');
+      Reflect.deleteProperty(invalidEvent.message, 'anonymousId');
 
       const results = await processBatchedDestination(
         [validEvent, invalidEvent],
-        PostHogIntegration as any,
+        PostHogIntegration,
         {},
       );
 

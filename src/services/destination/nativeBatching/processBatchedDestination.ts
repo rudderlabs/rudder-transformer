@@ -1,8 +1,6 @@
-import { z } from 'zod';
 import stableStringify from 'fast-json-stable-stringify';
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata } from '../../../types/rudderEvents';
-import { RudderMessageSchema, MetadataSchema } from '../../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
   RouterTransformationResponse,
@@ -18,12 +16,6 @@ import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 // Base Zod schema for input validation
 // ---------------------------------------------------------------------------
 
-const baseInputSchema = z.object({
-  message: RudderMessageSchema,
-  metadata: MetadataSchema.partial().extend({ jobId: z.number() }),
-  destination: z.object({}).passthrough(),
-});
-
 // ---------------------------------------------------------------------------
 // Validation
 // ---------------------------------------------------------------------------
@@ -32,7 +24,7 @@ export function validateInputs<TBody extends Record<string, unknown>>(
   inputs: RouterTransformationRequestData[],
   integration: BatchDestination<TBody>,
 ): { valid: RouterTransformationRequestData[]; errors: (TransformError & { jobId: number })[] } {
-  const schema = baseInputSchema.and(integration.getInputSchema());
+  const schema = integration.getInputSchema();
 
   const valid: RouterTransformationRequestData[] = [];
   const errors: (TransformError & { jobId: number })[] = [];
@@ -271,13 +263,9 @@ export async function processBatchedDestination<
   // - Batchable payloads are grouped by composite key (endpoint, method, headers, params)
   // - NonBatchable payloads each form their own group to prevent merging with other events
   const batchableGroups = groupPayloadsByCompositeKey(successBatchablePayloads);
-  const nonBatchableGroups = successNonBatchablePayloads.map((payload) => ({
-    endpoint: payload.endpoint,
-    method: payload.method,
-    headers: payload.headers,
-    params: payload.params,
-    payloads: [payload],
-  }));
+  const nonBatchableGroups = successNonBatchablePayloads.flatMap((payload) =>
+    groupPayloadsByCompositeKey([payload]),
+  );
   const allGroups = [...batchableGroups, ...nonBatchableGroups];
 
   // 8. Apply batch strategy to each group and convert to server format
@@ -287,7 +275,7 @@ export async function processBatchedDestination<
     const batchResults = strategy.batch(group.payloads);
 
     for (const batchResult of batchResults) {
-      stats.histogram('batch_size', batchResult.jobIds.size, metricTags);
+      stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);
 
       successResponses.push(
         mapSuccessPayloadToServerFormat(
@@ -303,10 +291,6 @@ export async function processBatchedDestination<
       );
     }
   }
-
-  // Metric: output batches — counted before merge since each entry is one HTTP request.
-  // After merge, a single response can contain multiple batchedRequests (multiplexed events).
-  stats.counter('output_batches', successResponses.length, metricTags);
 
   // 9. Merge success responses that share jobIds (multiplexed events across groups)
 

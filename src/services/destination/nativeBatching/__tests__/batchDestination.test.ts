@@ -16,25 +16,37 @@ import {
 import type { TransformResult } from '../batchDestination';
 import type { RouterTransformationRequestData } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
+import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
+
+// ---------------------------------------------------------------------------
+// Test types
+// ---------------------------------------------------------------------------
+
+type TestBody = { value: string };
+
+interface TestMessage extends RudderMessage {
+  data?: string;
+  shouldFail?: boolean;
+}
 
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
 
-type TestBody = { value: string };
-
-const mockDestination = {
+const mockDestination: Destination = {
   ID: 'dest-1',
   Config: { apiKey: 'test-key' },
-  DestinationDefinition: { Name: 'TEST' },
-} as unknown as Destination;
+  DestinationDefinition: { ID: 'destDef-1', Name: 'TEST', DisplayName: 'Test', Config: {} },
+  Name: 'test-dest',
+  Enabled: true,
+  WorkspaceID: 'ws-1',
+  Transformations: [],
+};
 
 class TestIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
     return {
-      body: { value: (input.message as any).data },
+      body: { value: input.message.data ?? '' },
       endpoint: 'https://api.test.com/events',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -54,10 +66,8 @@ class TestIntegration extends BatchDestination<TestBody> {
 }
 
 class FailingIntegration extends BatchDestination<TestBody> {
-  transformEvent(
-    input: RouterTransformationRequestData,
-  ): Omit<TransformedEvent<TestBody>, 'jobId'> {
-    if ((input.message as any).shouldFail) {
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    if (input.message.shouldFail) {
       throw new Error('Transform failed');
     }
     return {
@@ -81,21 +91,39 @@ function makeInput(
   data: string,
   dontBatch?: boolean,
 ): RouterTransformationRequestData {
-  return {
-    message: { data, type: 'track' } as any,
-    metadata: {
+  const message: TestMessage = { data, type: 'track' };
+  const metadata: Metadata = {
+    jobId,
+    workspaceId: 'ws-1',
+    sourceId: 'src-1',
+    sourceType: 'web',
+    sourceCategory: 'cloud',
+    destinationId: 'dest-1',
+    destinationType: 'TEST',
+    messageId: `msg-${jobId}`,
+    dontBatch,
+  };
+  return { message, metadata, destination: mockDestination };
+}
+
+function makeMetadataMap(
+  entries: Array<{ jobId: number; [key: string]: unknown }>,
+): Map<number, Metadata> {
+  const map = new Map<number, Metadata>();
+  for (const { jobId, ...rest } of entries) {
+    map.set(jobId, {
       jobId,
-      workspaceId: 'ws-1',
       sourceId: 'src-1',
+      workspaceId: 'ws-1',
       sourceType: 'web',
       sourceCategory: 'cloud',
       destinationId: 'dest-1',
       destinationType: 'TEST',
       messageId: `msg-${jobId}`,
-      dontBatch,
-    } as any,
-    destination: mockDestination,
-  } as RouterTransformationRequestData;
+      ...rest,
+    });
+  }
+  return map;
 }
 
 // ---------------------------------------------------------------------------
@@ -103,20 +131,13 @@ function makeInput(
 // ---------------------------------------------------------------------------
 
 describe('parseSizeToBytes', () => {
-  it('parses MB', () => {
-    expect(parseSizeToBytes('4MB')).toBe(4 * 1024 * 1024);
-  });
-
-  it('parses KB', () => {
-    expect(parseSizeToBytes('512KB')).toBe(512 * 1024);
-  });
-
-  it('parses GB', () => {
-    expect(parseSizeToBytes('1GB')).toBe(1024 * 1024 * 1024);
-  });
-
-  it('parses B', () => {
-    expect(parseSizeToBytes('100B')).toBe(100);
+  it.each([
+    { input: '4MB', expected: 4 * 1024 * 1024 },
+    { input: '512KB', expected: 512 * 1024 },
+    { input: '1GB', expected: 1024 * 1024 * 1024 },
+    { input: '100B', expected: 100 },
+  ])('parses $input', ({ input, expected }) => {
+    expect(parseSizeToBytes(input)).toBe(expected);
   });
 
   it('throws on invalid format', () => {
@@ -127,35 +148,33 @@ describe('parseSizeToBytes', () => {
 describe('groupByDontBatchDirective', () => {
   it('separates batchable and nonBatchable', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b', true), makeInput(3, 'c')];
-    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
-      groupByDontBatchDirective(inputs);
-    expect(batchable).toHaveLength(2);
-    expect(nonBatchable).toHaveLength(1);
-    expect((nonBatchable[0].metadata as any).jobId).toBe(2);
+    const { batchableEvents, nonBatchableEvents } = groupByDontBatchDirective(inputs);
+    expect(batchableEvents).toHaveLength(2);
+    expect(nonBatchableEvents).toHaveLength(1);
+    expect(nonBatchableEvents[0].metadata.jobId).toBe(2);
   });
 
   it('returns all batchable when no dontBatch flag', () => {
     const inputs = [makeInput(1, 'a'), makeInput(2, 'b')];
-    const { batchableEvents: batchable, nonBatchableEvents: nonBatchable } =
-      groupByDontBatchDirective(inputs);
-    expect(batchable).toHaveLength(2);
-    expect(nonBatchable).toHaveLength(0);
+    const { batchableEvents, nonBatchableEvents } = groupByDontBatchDirective(inputs);
+    expect(batchableEvents).toHaveLength(2);
+    expect(nonBatchableEvents).toHaveLength(0);
   });
 });
 
 describe('resolveMetadata', () => {
   it('resolves jobIds to metadata objects', () => {
-    const map = new Map<number, any>();
-    map.set(1, { jobId: 1, userId: 'u1' });
-    map.set(2, { jobId: 2, userId: 'u2' });
+    const map = makeMetadataMap([
+      { jobId: 1, userId: 'u1' },
+      { jobId: 2, userId: 'u2' },
+    ]);
     const result = resolveMetadata(new Set([1, 2]), map);
     expect(result).toHaveLength(2);
-    expect(result[0]).toEqual({ jobId: 1, userId: 'u1' });
+    expect(result[0].jobId).toBe(1);
   });
 
   it('throws on unknown jobId', () => {
-    const map = new Map<number, any>();
-    map.set(1, { jobId: 1 });
+    const map = makeMetadataMap([{ jobId: 1 }]);
     expect(() => resolveMetadata(new Set([1, 999]), map)).toThrow('Missing metadata for jobId 999');
   });
 });
@@ -225,21 +244,14 @@ describe('BatchDestination.transformEvents', () => {
     expect(result.successPayloads[1].jobId).toBe(2);
   });
 
-  it('catches errors and adds to errorEvents', async () => {
+  it('catches errors and adds to errorPayloads', async () => {
     const integration = new FailingIntegration(mockDestination);
-    const inputs = [
-      {
-        message: { shouldFail: false } as any,
-        metadata: { jobId: 1 } as any,
-        destination: mockDestination,
-      } as RouterTransformationRequestData,
-      {
-        message: { shouldFail: true } as any,
-        metadata: { jobId: 2 } as any,
-        destination: mockDestination,
-      } as RouterTransformationRequestData,
-    ];
-    const result = await integration.transformEvents(inputs, {});
+    const successInput = makeInput(1, 'ok');
+    successInput.message.shouldFail = false;
+    const failInput = makeInput(2, 'fail');
+    failInput.message.shouldFail = true;
+
+    const result = await integration.transformEvents([successInput, failInput], {});
     expect(result.successPayloads).toHaveLength(1);
     expect(result.errorPayloads).toHaveLength(1);
     expect(result.errorPayloads[0].error).toBe('Transform failed');
@@ -254,39 +266,6 @@ describe('validateInputs', () => {
     const { valid, errors } = validateInputs(inputs, integration);
     expect(valid).toHaveLength(1);
     expect(errors).toHaveLength(0);
-  });
-
-  it('rejects inputs missing metadata.jobId', () => {
-    const integration = new TestIntegration(mockDestination);
-    const inputs = [
-      {
-        message: { type: 'track' },
-        metadata: {},
-        destination: mockDestination,
-      } as unknown as RouterTransformationRequestData,
-    ];
-    const { valid, errors } = validateInputs(inputs, integration);
-    expect(valid).toHaveLength(0);
-    expect(errors).toHaveLength(1);
-    expect(errors[0].statusCode).toBe(400);
-    expect(errors[0].statTags).toMatchObject({
-      errorCategory: 'dataValidation',
-      errorType: 'instrumentation',
-    });
-  });
-
-  it('rejects inputs missing message.type', () => {
-    const integration = new TestIntegration(mockDestination);
-    const inputs = [
-      {
-        message: {},
-        metadata: { jobId: 1 },
-        destination: mockDestination,
-      } as unknown as RouterTransformationRequestData,
-    ];
-    const { valid, errors } = validateInputs(inputs, integration);
-    expect(valid).toHaveLength(0);
-    expect(errors).toHaveLength(1);
   });
 });
 

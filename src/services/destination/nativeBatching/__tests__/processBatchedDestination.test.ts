@@ -13,7 +13,7 @@ import type {
   RouterTransformationRequestData,
 } from '../../../../types/destinationTransformation';
 import type { Destination } from '../../../../types/controlPlaneConfig';
-import type { Metadata, RudderMessage } from '../../../../types/rudderEvents';
+import type { MessageType, Metadata, RudderMessage } from '../../../../types/rudderEvents';
 
 // ---------------------------------------------------------------------------
 // Test types
@@ -41,8 +41,8 @@ const mockDestination: Destination = {
 };
 
 class SimpleIntegration extends BatchDestination<TestBody> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TestBody> {
-    const message = input.message as TestMessage;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
       body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/events',
@@ -64,8 +64,8 @@ class SimpleIntegration extends BatchDestination<TestBody> {
 }
 
 class MultiEndpointIntegration extends BatchDestination<TestBody> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TestBody> {
-    const message = input.message as TestMessage;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
       body: { value: message.data ?? '' },
       endpoint:
@@ -87,8 +87,8 @@ class MultiEndpointIntegration extends BatchDestination<TestBody> {
 }
 
 class PartialFailIntegration extends BatchDestination<TestBody> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TestBody> {
-    const message = input.message as TestMessage;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     if (message.shouldFail) {
       throw new Error('Transform failed');
     }
@@ -109,8 +109,8 @@ class PartialFailIntegration extends BatchDestination<TestBody> {
 }
 
 class CustomBatchIntegration extends BatchDestination<TestBody> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TestBody> {
-    const message = input.message as TestMessage;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     return {
       body: { value: message.data ?? '' },
       endpoint: 'https://api.test.com/merge',
@@ -136,8 +136,8 @@ class CustomBatchIntegration extends BatchDestination<TestBody> {
 }
 
 class TypedErrorIntegration extends BatchDestination<TestBody> {
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TestBody> {
-    const message = input.message as TestMessage;
+  transformEvent(input: RouterTransformationRequestData<TestMessage>): TransformedEvent<TestBody> {
+    const { message } = input;
     if (message.shouldFail) {
       throw new InstrumentationError('missing required field');
     }
@@ -160,11 +160,11 @@ class TypedErrorIntegration extends BatchDestination<TestBody> {
 function makeInput(
   jobId: number,
   data: string,
-  opts?: { type?: string; dontBatch?: boolean; shouldFail?: boolean },
-): RouterTransformationRequestData {
+  opts?: { type?: MessageType; dontBatch?: boolean; shouldFail?: boolean },
+): RouterTransformationRequestData<TestMessage> {
   const message: TestMessage = {
     data,
-    type: (opts?.type || 'track') as TestMessage['type'],
+    type: opts?.type || 'track',
     shouldFail: opts?.shouldFail,
   };
   const metadata: Metadata = {
@@ -181,18 +181,25 @@ function makeInput(
   return { message, metadata, destination: mockDestination };
 }
 
+function getSingleBatchedRequest(result: {
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
+}): ProcessorTransformationOutput {
+  if (Array.isArray(result.batchedRequest)) {
+    return result.batchedRequest[0];
+  }
+  return result.batchedRequest!;
+}
+
 function getBatchedRequestBody(result: {
   batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
 }) {
-  const req = result.batchedRequest as ProcessorTransformationOutput;
-  return req?.body?.JSON;
+  return getSingleBatchedRequest(result).body?.JSON;
 }
 
 function getBatchedRequestEndpoint(result: {
   batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
 }) {
-  const req = result.batchedRequest as ProcessorTransformationOutput;
-  return req?.endpoint;
+  return getSingleBatchedRequest(result).endpoint;
 }
 
 // ---------------------------------------------------------------------------
@@ -232,7 +239,7 @@ describe('processBatchedDestination', () => {
 
       expect(results).toHaveLength(1);
       const resp = results[0];
-      const req = resp.batchedRequest as ProcessorTransformationOutput;
+      const req = getSingleBatchedRequest(resp);
       expect(req.version).toBe('1');
       expect(req.type).toBe('REST');
       expect(req.method).toBe('POST');
@@ -315,31 +322,6 @@ describe('processBatchedDestination', () => {
       expect(errors).toHaveLength(1);
       expect(errors[0].error).toBe('Transform failed');
       expect(errors[0].metadata[0].jobId).toBe(2);
-    });
-  });
-
-  describe('validation', () => {
-    it('rejects events failing base schema and returns error responses', async () => {
-      const inputs = [
-        makeInput(1, 'valid'),
-        {
-          message: {},
-          metadata: { jobId: 2 },
-          destination: mockDestination,
-        } as unknown as RouterTransformationRequestData,
-      ];
-
-      const results = await processBatchedDestination(inputs, SimpleIntegration, {});
-
-      const successes = results.filter((r) => r.statusCode === 200);
-      const errors = results.filter((r) => r.statusCode === 400);
-
-      expect(successes).toHaveLength(1);
-      expect(errors).toHaveLength(1);
-      expect(errors[0].statTags).toMatchObject({
-        errorCategory: 'dataValidation',
-        errorType: 'instrumentation',
-      });
     });
   });
 

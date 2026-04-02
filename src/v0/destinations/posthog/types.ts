@@ -1,6 +1,8 @@
 import type { RudderMessage, Metadata } from '../../../types';
 import type { Destination } from '../../../types/controlPlaneConfig';
 import type {
+  BatchedRequestBody,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   RouterTransformationRequestData,
 } from '../../../types/destinationTransformation';
@@ -40,12 +42,13 @@ export type PostHogResponseBody = {
   [key: string]: unknown;
 };
 
-// Payload shape before api_key and type are added
+// Payload shape for each item in the PostHog /batch array
 export type PostHogPayload = {
   distinct_id?: string;
   event?: string;
   timestamp?: string;
   properties?: PostHogProperties;
+  type?: string;
 };
 
 export type PostHogCategory = {
@@ -75,3 +78,7 @@ export type PostHogRouterRequest = RouterTransformationRequestData<
   undefined,
   Metadata
 >;
+
+export type PostHogTransformOutput = Omit<ProcessorTransformationOutput, 'body'> & {
+  body: BatchedRequestBody<PostHogResponseBody>;
+};

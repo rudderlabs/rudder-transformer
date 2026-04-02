@@ -28,6 +28,7 @@ import type {
   PostHogProcessorRequest,
   PostHogResponseBody,
   PostHogRouterRequest,
+  PostHogTransformOutput,
 } from './types';
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
@@ -142,7 +143,7 @@ const responseBuilderSimple = (
     api_key: destination.Config.teamApiKey,
     type: category.type,
   };
-  const response = defaultRequestConfig();
+  const response = defaultRequestConfig() as PostHogTransformOutput;
   response.endpoint = `${
     stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
   }/batch`;
@@ -157,7 +158,10 @@ const responseBuilderSimple = (
 const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>
   key in CONFIG_CATEGORIES;
 
-const processEvent = (message: RudderMessage, destination: PostHogDestination) => {
+const processEvent = (
+  message: RudderMessage,
+  destination: PostHogDestination,
+): PostHogTransformOutput => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -180,4 +184,4 @@ const processRouterDest = async (
   return respList;
 };
 
-export { process, processRouterDest };
+export { process, processEvent, processRouterDest };

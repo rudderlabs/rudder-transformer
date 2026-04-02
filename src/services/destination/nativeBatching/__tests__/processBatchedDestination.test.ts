@@ -1,13 +1,19 @@
 import { z } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { processBatchedDestination } from '../processBatchedDestination';
+import {
+  processBatchedDestination,
+  validateInputs,
+  groupByDontBatchDirective,
+  resolveMetadata,
+  groupPayloadsByCompositeKey,
+} from '../processBatchedDestination';
 import {
   BatchDestination,
   TransformedEvent,
   ChunkBatchStrategy,
   CustomBatchStrategy,
 } from '../batchDestination';
-import type { BatchStrategy } from '../batchDestination';
+import type { BatchStrategy, TransformResult } from '../batchDestination';
 import type {
   ProcessorTransformationOutput,
   RouterTransformationRequestData,
@@ -380,5 +386,126 @@ describe('processBatchedDestination', () => {
       expect(successJobIds).toContain(1);
       expect(successJobIds).toContain(3);
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Helper function tests (moved from batchDestination.test.ts)
+// ---------------------------------------------------------------------------
+
+function makeMetadataMap(
+  entries: Array<{ jobId: number; [key: string]: unknown }>,
+): Map<number, Metadata> {
+  const map = new Map<number, Metadata>();
+  for (const { jobId, ...rest } of entries) {
+    map.set(jobId, {
+      jobId,
+      sourceId: 'src-1',
+      workspaceId: 'ws-1',
+      sourceType: 'web',
+      sourceCategory: 'cloud',
+      destinationId: 'dest-1',
+      destinationType: 'TEST',
+      messageId: `msg-${jobId}`,
+      ...rest,
+    });
+  }
+  return map;
+}
+
+describe('groupByDontBatchDirective', () => {
+  it('separates batchable and nonBatchable', () => {
+    const inputs = [makeInput(1, 'a'), makeInput(2, 'b', { dontBatch: true }), makeInput(3, 'c')];
+    const { batchableEvents, nonBatchableEvents } = groupByDontBatchDirective(inputs);
+    expect(batchableEvents).toHaveLength(2);
+    expect(nonBatchableEvents).toHaveLength(1);
+    expect(nonBatchableEvents[0].metadata.jobId).toBe(2);
+  });
+
+  it('returns all batchable when no dontBatch flag', () => {
+    const inputs = [makeInput(1, 'a'), makeInput(2, 'b')];
+    const { batchableEvents, nonBatchableEvents } = groupByDontBatchDirective(inputs);
+    expect(batchableEvents).toHaveLength(2);
+    expect(nonBatchableEvents).toHaveLength(0);
+  });
+});
+
+describe('resolveMetadata', () => {
+  it('resolves jobIds to metadata objects', () => {
+    const map = makeMetadataMap([
+      { jobId: 1, userId: 'u1' },
+      { jobId: 2, userId: 'u2' },
+    ]);
+    const result = resolveMetadata(new Set([1, 2]), map);
+    expect(result).toHaveLength(2);
+    expect(result[0].jobId).toBe(1);
+  });
+
+  it('throws on unknown jobId', () => {
+    const map = makeMetadataMap([{ jobId: 1 }]);
+    expect(() => resolveMetadata(new Set([1, 999]), map)).toThrow('Missing metadata for jobId 999');
+  });
+});
+
+describe('groupPayloadsByCompositeKey', () => {
+  it('groups payloads with same endpoint/method/headers/params', () => {
+    const payloads: TransformResult<TestBody>['successPayloads'] = [
+      {
+        body: { value: 'a' },
+        endpoint: 'https://a.com',
+        method: 'POST',
+        headers: { h: '1' },
+        jobId: 1,
+      },
+      {
+        body: { value: 'b' },
+        endpoint: 'https://a.com',
+        method: 'POST',
+        headers: { h: '1' },
+        jobId: 2,
+      },
+      {
+        body: { value: 'c' },
+        endpoint: 'https://b.com',
+        method: 'POST',
+        headers: { h: '1' },
+        jobId: 3,
+      },
+    ];
+    const groups = groupPayloadsByCompositeKey(payloads);
+    expect(groups).toHaveLength(2);
+    expect(groups[0].payloads).toHaveLength(2);
+    expect(groups[1].payloads).toHaveLength(1);
+  });
+
+  it('separates payloads with different headers', () => {
+    const payloads: TransformResult<TestBody>['successPayloads'] = [
+      {
+        body: { value: 'a' },
+        endpoint: 'https://a.com',
+        method: 'POST',
+        headers: { h: '1' },
+        jobId: 1,
+      },
+      {
+        body: { value: 'b' },
+        endpoint: 'https://a.com',
+        method: 'POST',
+        headers: { h: '2' },
+        jobId: 2,
+      },
+    ];
+    const groups = groupPayloadsByCompositeKey(payloads);
+    expect(groups).toHaveLength(2);
+  });
+});
+
+describe('validateInputs', () => {
+  it('passes valid inputs', () => {
+    const integration = new SimpleIntegration(mockDestination);
+    const inputs = [makeInput(1, 'hello')];
+    const { valid, errors } = validateInputs(inputs, integration);
+    expect(valid).toHaveLength(1);
+    expect(errors).toHaveLength(0);
   });
 });

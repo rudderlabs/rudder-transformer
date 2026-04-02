@@ -69,19 +69,20 @@ describe('Integration', () => {
       const input = makeInput(1, type, overrides);
       const result = integration.transformEvent(input);
 
-      expect(result.endpoint).toBe('https://app.posthog.com/batch');
-      expect(result.method).toBe('POST');
-      expect(result.headers).toEqual({ 'Content-Type': 'application/json' });
-      // api_key should be stripped from the event body
+      expect(result).toMatchObject({
+        endpoint: 'https://app.posthog.com/batch',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      // api_key should be stripped — it belongs in the wrapBody wrapper
       expect(result.body).not.toHaveProperty('api_key');
-      // type (e.g. 'capture', 'alias') should remain in the event body
+      // type (e.g. 'capture', 'alias') should remain in each event body
       expect(result.body.type).toBeDefined();
     });
 
     it('throws for unsupported event type', () => {
       const input = makeInput(1, 'track');
-      Reflect.deleteProperty(input.message, 'type');
-
+      delete (input.message as Record<string, unknown>).type;
       expect(() => integration.transformEvent(input)).toThrow('Event type is required');
     });
   });
@@ -132,8 +133,8 @@ describe('Integration', () => {
 
     it('rejects events missing both userId and anonymousId', () => {
       const input = makeInput(1, 'track');
-      Reflect.deleteProperty(input.message, 'userId');
-      Reflect.deleteProperty(input.message, 'anonymousId');
+      delete (input.message as Record<string, unknown>).userId;
+      delete (input.message as Record<string, unknown>).anonymousId;
       const schema = integration.getInputSchema();
       const parseResult = schema.safeParse(input);
 
@@ -142,7 +143,7 @@ describe('Integration', () => {
 
     it('accepts events with only userId', () => {
       const input = makeInput(1, 'track');
-      Reflect.deleteProperty(input.message, 'anonymousId');
+      delete (input.message as Record<string, unknown>).anonymousId;
       const schema = integration.getInputSchema();
       const parseResult = schema.safeParse(input);
 
@@ -151,7 +152,7 @@ describe('Integration', () => {
 
     it('accepts events with only anonymousId', () => {
       const input = makeInput(1, 'track');
-      Reflect.deleteProperty(input.message, 'userId');
+      delete (input.message as Record<string, unknown>).userId;
       const schema = integration.getInputSchema();
       const parseResult = schema.safeParse(input);
 

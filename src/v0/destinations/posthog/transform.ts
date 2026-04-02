@@ -7,6 +7,7 @@ import {
 import { EventType } from '../../../constants';
 import { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY } from './config';
 import {
+  defaultRequestConfig,
   getBrowserInfo,
   getDeviceModel,
   constructPayload,
@@ -142,23 +143,16 @@ const responseBuilderSimple = (
     api_key: destination.Config.teamApiKey,
     type: category.type,
   };
-  return {
-    version: '1',
-    type: 'REST',
-    method: defaultPostRequestConfig.requestMethod,
-    endpoint: `${
-      stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
-    }/batch`,
-    headers: { 'Content-Type': JSON_MIME_TYPE },
-    params: {},
-    body: {
-      JSON: responseBody,
-      JSON_ARRAY: {},
-      XML: {},
-      FORM: {},
-    },
-    files: {},
+  const response = defaultRequestConfig();
+  response.endpoint = `${
+    stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
+  }/batch`;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
   };
+  response.body.JSON = responseBody;
+  return response as PostHogTransformOutput;
 };
 
 const isValidCategoryKey = (key: string): key is keyof typeof CONFIG_CATEGORIES =>

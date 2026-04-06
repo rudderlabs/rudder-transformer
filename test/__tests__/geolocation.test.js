@@ -1,6 +1,6 @@
-const { validateGeolocationIp } = require('../../src/util/geolocation');
+const { validateIp } = require('../../src/util/utils');
 
-describe('validateGeolocationIp', () => {
+describe('validateIp', () => {
   describe('valid IPs', () => {
     const validIps = [
       '192.168.1.1',
@@ -17,13 +17,13 @@ describe('validateGeolocationIp', () => {
     ];
 
     test.each(validIps)('should accept valid IP: %s', (ip) => {
-      expect(() => validateGeolocationIp(ip)).not.toThrow();
+      expect(() => validateIp(ip)).not.toThrow();
     });
   });
 
   describe('missing IP', () => {
     test.each([undefined, null, ''])('should throw for missing IP: %p', (ip) => {
-      expect(() => validateGeolocationIp(ip)).toThrow('ip address is required');
+      expect(() => validateIp(ip)).toThrow('ip address is required');
     });
   });
 
@@ -36,7 +36,7 @@ describe('validateGeolocationIp', () => {
     ];
 
     test.each(invalidIps)('should throw for invalid IP: %s', (ip) => {
-      expect(() => validateGeolocationIp(ip)).toThrow('invalid ip address');
+      expect(() => validateIp(ip)).toThrow('invalid ip address');
     });
   });
 
@@ -51,7 +51,7 @@ describe('validateGeolocationIp', () => {
     ];
 
     test.each(traversalAttempts)('should throw for path traversal: %s', (ip) => {
-      expect(() => validateGeolocationIp(ip)).toThrow('invalid ip address');
+      expect(() => validateIp(ip)).toThrow('invalid ip address');
     });
   });
 });

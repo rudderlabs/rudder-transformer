@@ -2,4 +2,4 @@
 __tests__/ @rudderlabs/integrations @rudderlabs/data-management
 src/util/ @rudderlabs/integrations @rudderlabs/data-management @rudderlabs/server_team
 **/trackingPlan.ts @rudderlabs/data-management
-**/userTransform.ts @rudderlabs/data-management
+**/userTransform.ts @rudderlabs/server_team

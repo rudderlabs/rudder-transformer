@@ -54,7 +54,8 @@ const buildBaseEvent = (
 };
 
 describe('processTiktokAudienceRecords hashing validation for tiktok_audience', () => {
-  const hashedValue = 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267'; // sha256 of 'test'
+  const sha256HashedValue = 'b94d27b9934d3e08a52e52d7da7dabfac484efe04294e576ca48e1cb0d7d6267'; // sha256 of 'test'
+  const md5HashedValue = '098f6bcd4621d373cade4e832627b4f6'; // md5 of 'test'
   const plaintextEmail = 'user@example.com';
   const mockStatsIncrement = stats.increment as jest.Mock;
 
@@ -71,7 +72,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
     const event = buildBaseEvent({
       identifiers: {
-        EMAIL_SHA256: hashedValue,
+        EMAIL_SHA256: sha256HashedValue,
       },
     });
 
@@ -110,7 +111,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     const event = buildBaseEvent(
       {
         identifiers: {
-          EMAIL_SHA256: hashedValue,
+          EMAIL_SHA256: sha256HashedValue,
         },
       },
       false,
@@ -126,7 +127,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
     const event = buildBaseEvent(
       {
         identifiers: {
-          EMAIL_SHA256: hashedValue,
+          EMAIL_SHA256: sha256HashedValue,
         },
       },
       false,
@@ -141,7 +142,7 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
   it('Validation disabled (default) + hashing ON + pre-hashed value → emits metric but no failed responses', () => {
     const event = buildBaseEvent({
       identifiers: {
-        EMAIL_SHA256: hashedValue,
+        EMAIL_SHA256: sha256HashedValue,
       },
     });
 
@@ -178,6 +179,26 @@ describe('processTiktokAudienceRecords hashing validation for tiktok_audience', 
       destinationId: TEST_DESTINATION_ID,
       destType: 'tiktok_audience',
     });
+  });
+
+  it('Validation enabled + hashing OFF + pre-hashed value → no error, one successful response', () => {
+    process.env.AUDIENCE_HASHING_VALIDATION_ENABLED = 'true';
+    const event = buildBaseEvent(
+      {
+        identifiers: {
+          IDFA_SHA256: sha256HashedValue,
+          AAID_SHA256: sha256HashedValue,
+          IDFA_MD5: md5HashedValue,
+          AAID_MD5: md5HashedValue,
+          EMAIL_SHA256: sha256HashedValue,
+        },
+      },
+      false,
+    );
+
+    const { failedResponses, successfulResponses } = processTiktokAudienceRecords([event]);
+    expect(failedResponses).toHaveLength(0);
+    expect(successfulResponses).toHaveLength(1);
   });
 });
 

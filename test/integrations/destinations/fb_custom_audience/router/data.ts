@@ -44,7 +44,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -96,7 +96,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -169,7 +169,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -221,7 +221,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -317,7 +317,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -381,7 +381,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -429,7 +429,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -561,7 +561,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -653,7 +653,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -729,7 +729,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -891,7 +891,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -1146,7 +1146,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {

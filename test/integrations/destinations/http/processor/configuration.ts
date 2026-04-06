@@ -584,4 +584,47 @@ export const configuration: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'http-configuration-test-12',
+    name: destType,
+    description:
+      'Identify call with header mapped to an object value should return 400 instrumentation error',
+    scenario: 'Business',
+    successCriteria:
+      'Should return 400 error when a header value resolves to a non-string (object)',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destinations[15],
+            message: {
+              type: 'identify',
+              userId: 'userId123',
+              anonymousId: 'anonId123',
+              traits,
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Header "header_access_token" has a non-string value of type "object": Workflow: procWorkflow, Step: buildHeaders, ChildStep: undefined, OriginalError: Header "header_access_token" has a non-string value of type "object"',
+            statusCode: 400,
+            statTags: processorInstrumentationErrorStatTags,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
 ];

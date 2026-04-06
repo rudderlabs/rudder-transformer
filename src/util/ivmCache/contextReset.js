@@ -1,6 +1,7 @@
 const { isNil, isObject } = require('lodash');
 const fetch = require('node-fetch');
 const ivm = require('isolated-vm');
+const { validateIp } = require('../utils');
 const logger = require('../../logger');
 const stats = require('../stats');
 const { fetchWithDnsWrapper, extractStackTraceUptoLastSubstringMatch } = require('../utils');
@@ -108,9 +109,7 @@ async function injectFreshApis(jail, cachedIsolate, credentials) {
       const geoStartTime = new Date();
       const geoTags = { ...trTags };
       try {
-        if (args.length === 0) {
-          throw new Error('ip address is required');
-        }
+        validateIp(args[0]);
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
         const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
           timeout: GEOLOCATION_TIMEOUT_IN_MS,

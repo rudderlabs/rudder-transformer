@@ -229,7 +229,7 @@ const processEvent = (
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, audienceId));
+    respList.push(responseBuilderSimple(sendEvent, audienceId, workspaceId));
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {

@@ -153,7 +153,7 @@ const processRecordEventArray = async (
         operationCategory: operation,
       };
 
-      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId);
+      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId, workspaceId!);
       toSendEvents.push(builtResponse);
     });
   });

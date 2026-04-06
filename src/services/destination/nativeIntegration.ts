@@ -28,6 +28,8 @@ import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import { groupRouterTransformEvents } from '../../v0/util';
+import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
+import { processBatchedDestination } from './nativeBatching/processBatchedDestination';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -102,12 +104,15 @@ export class NativeIntegrationDestinationService implements DestinationService {
     version: string,
     requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
-    const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const groupedEvents: RouterTransformationRequestData[][] =
       await groupRouterTransformEvents(events);
+
     const response: RouterTransformationResponse[][] = await mapInBatches(
       groupedEvents,
       async (destInputArray: RouterTransformationRequestData[]) => {
+        const { workspaceId } = destInputArray[0].metadata;
+        const useBatchingFramework = isBatchingFrameworkEnabled(destinationType, workspaceId);
+
         const metaTO = this.getTags(
           destinationType,
           destInputArray[0].metadata?.destinationId,
@@ -116,10 +121,26 @@ export class NativeIntegrationDestinationService implements DestinationService {
         );
         try {
           metaTO.metadata = destInputArray[0].metadata;
-          const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray, requestMetadata);
+          let transformedResponse: RouterTransformationResponse[];
+          // destHandler is null for the batching framework path — handleRouterTransformSuccessEvents
+          // handles this safely via optional chaining on destHandler?.processMetadataForRouter
+          let destHandler: any = null;
+          if (useBatchingFramework) {
+            const IntegrationClass = FetchHandler.getBatchDestinationHandler(destinationType);
+            transformedResponse = await processBatchedDestination(
+              destInputArray,
+              IntegrationClass,
+              requestMetadata,
+            );
+          } else {
+            destHandler = FetchHandler.getDestHandler(destinationType, version);
+            transformedResponse = await destHandler.processRouterDest(
+              destInputArray,
+              requestMetadata,
+            );
+          }
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
-            doRouterTransformationResponse,
+            transformedResponse,
             destHandler,
             metaTO,
             tags.IMPLEMENTATIONS.NATIVE,

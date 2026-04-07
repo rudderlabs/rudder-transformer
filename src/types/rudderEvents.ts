@@ -59,7 +59,7 @@ export enum RecordAction {
 
 export const RudderRecordV2Schema = RudderMessageSchema.extend({
   type: z.literal('record'),
-  action: z.nativeEnum(RecordAction),
+  action: z.enum(['insert', 'update', 'delete']),
   fields: z.record(z.string(), z.any()).optional(),
   identifiers: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   recordId: z.string().optional(),

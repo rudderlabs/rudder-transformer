@@ -17,6 +17,16 @@ import { processRecordInputs } from './recordTransform';
 import { populateIdentifiers, responseBuilder, getOperationAudienceId } from './util';
 import type { GARLDestination, Message, OfflineDataJobPayload, RecordInput } from './types';
 import { Metadata } from '../../../types';
+import { isDataManagerAPIEnabled } from './dataManager/featureFlag';
+import {
+  processRouterDest as dataManagerProcessRouterDest,
+  transformAudienceListEvent as dataManagerTransformAudienceListEvent,
+} from './dataManager/transform';
+import type {
+  GARLAudienceMessage as DMGARLAudienceMessage,
+  GARLDestination as DMGARLDestination,
+  GARLRouterRequest as DMGARLRouterRequest,
+} from './dataManager/types';
 
 function extraKeysPresent(dictionary: Record<string, unknown>, keyList: string[]) {
   // eslint-disable-next-line no-restricted-syntax
@@ -149,9 +159,32 @@ const process = async (event: {
   metadata: Metadata;
   message: Message;
   destination: GARLDestination;
-}) => processEvent(event.metadata, event.message, event.destination);
+}) => {
+  const { metadata, message, destination } = event;
+  const accessToken = getAccessToken(metadata, 'access_token');
+
+  if (await isDataManagerAPIEnabled(metadata.workspaceId, metadata.destinationId, accessToken)) {
+    return dataManagerTransformAudienceListEvent({
+      metadata,
+      message: message as unknown as DMGARLAudienceMessage,
+      destination: destination as unknown as DMGARLDestination,
+    });
+  }
+
+  return processEvent(metadata, message, destination);
+};
 
 const processRouterDest = async (inputs: { message: Message }[], reqMetadata: unknown) => {
+  const { workspaceId, destinationId } = (inputs[0] as unknown as RecordInput).metadata;
+  const accessToken = getAccessToken(
+    (inputs[0] as unknown as RecordInput).metadata,
+    'access_token',
+  );
+
+  if (await isDataManagerAPIEnabled(workspaceId, destinationId, accessToken)) {
+    return dataManagerProcessRouterDest(inputs as unknown as DMGARLRouterRequest[], reqMetadata);
+  }
+
   const respList: unknown[] = [];
   const groupedInputs = await groupByInBatches(inputs, (input) =>
     input.message.type?.toLowerCase(),

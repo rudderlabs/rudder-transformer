@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.128.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.128.2...v1.128.3) (2026-04-01)
+
+### [1.128.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.128.1...v1.128.2) (2026-04-01)
+
+### [1.128.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.128.0...v1.128.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* **garl:** use connection config to set consent object ([fd3cf05](https://github.com/rudderlabs/rudder-transformer/commit/fd3cf05fa7a06998b5d1c407f96ae9a9918bf660))
+
+## [1.128.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.127.0...v1.128.0) (2026-03-31)
+
+
+### Features
+
+* **garl:** add mapping for data Manager api ([#5075](https://github.com/rudderlabs/rudder-transformer/issues/5075)) ([903865b](https://github.com/rudderlabs/rudder-transformer/commit/903865b01085bb9eccbac3074b798487ed9ff31b))
+* **garl:** add type and config for data manager API ([#5063](https://github.com/rudderlabs/rudder-transformer/issues/5063)) ([7283e71](https://github.com/rudderlabs/rudder-transformer/commit/7283e713c1049fa6ebd78610ccddf9a385330cb6))
+* **garl:** proxy handler for data Manager API ([#5076](https://github.com/rudderlabs/rudder-transformer/issues/5076)) ([f7f79c5](https://github.com/rudderlabs/rudder-transformer/commit/f7f79c59ddc32c247d284035eb3c88eacdb37c32))
+
 ## [1.127.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.126.4...v1.127.0) (2026-03-24)
 
 

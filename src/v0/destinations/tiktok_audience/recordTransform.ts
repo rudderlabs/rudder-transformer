@@ -26,7 +26,7 @@ import {
   handleRtTfSingleEventError,
   isDefinedAndNotNullAndNotEmpty,
 } from '../../util';
-import { validateHashingConsistency } from '../../util/audienceUtils';
+import { HashingType, validateHashingConsistency } from '../../util/audienceUtils';
 import stats from '../../../util/stats';
 
 function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): IdentifiersPayload {
@@ -80,12 +80,24 @@ function prepareIdentifiersPayload(event: TiktokAudienceRecordRequest): Identifi
       throw new Error(`Invalid identifier key ${fieldName} for TikTok Audience.`);
     }
     if (value) {
-      validateHashingConsistency(fieldName, value, {
-        workspaceId: metadata.workspaceId,
-        id: destination.ID,
-        type: DESTINATION_TYPE,
-        config: { isHashRequired },
-      });
+      let hashingType: HashingType = HashingType.NONE;
+      if (SHA256_TRAITS.includes(fieldName)) {
+        hashingType = HashingType.SHA256;
+      } else if (MD5_TRAITS.includes(fieldName)) {
+        hashingType = HashingType.MD5;
+      }
+
+      validateHashingConsistency(
+        fieldName,
+        value,
+        {
+          workspaceId: metadata.workspaceId,
+          id: destination.ID,
+          type: DESTINATION_TYPE,
+          config: { isHashRequired },
+        },
+        hashingType,
+      );
 
       if (isHashRequired) {
         const normalizedFieldValue = normalizedValue(fieldName, value);

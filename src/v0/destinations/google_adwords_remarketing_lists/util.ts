@@ -27,6 +27,7 @@ import {
   destType,
 } from './config';
 import type { GARLDestinationConfig } from './types';
+import { HashingType } from '../../util/audienceUtils';
 
 const COUNTRY_CODE_REGEX = /^[A-Za-z]{2,3}$/;
 const GMAIL_DOMAINS = new Set(['gmail.com', 'googlemail.com']);
@@ -57,24 +58,36 @@ const normalizePhone = (v: string): string => {
  * https://developers.google.com/google-ads/api/docs/remarketing/audience-segments/customer-match/get-started
  */
 const GARL_FIELD_CONFIG: Record<string, AudienceField> = {
-  email: { normalize: normalizeEmail, validate: validator.isEmail, hashable: true },
-  phone: { normalize: normalizePhone, validate: isValidPhoneNumber, hashable: true },
+  email: {
+    normalize: normalizeEmail,
+    validate: validator.isEmail,
+    hashingType: HashingType.SHA256,
+  },
+  phone: {
+    normalize: normalizePhone,
+    validate: isValidPhoneNumber,
+    hashingType: HashingType.SHA256,
+  },
   firstName: {
     normalize: (v) => v.trim().toLowerCase(),
     validate: (v) => v.length > 0,
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
   lastName: {
     normalize: (v) => v.trim().toLowerCase(),
     validate: (v) => v.length > 0,
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
   country: {
     normalize: (v) => v.trim(),
     validate: (v) => COUNTRY_CODE_REGEX.test(v),
-    hashable: false,
+    hashingType: HashingType.NONE,
   },
-  postalCode: { normalize: (v) => v.trim(), validate: (v) => v.length > 0, hashable: false },
+  postalCode: {
+    normalize: (v) => v.trim(),
+    validate: (v) => v.length > 0,
+    hashingType: HashingType.NONE,
+  },
 };
 
 const responseBuilder = (

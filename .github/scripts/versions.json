@@ -204,10 +204,10 @@
   },
   {
     "Destination": "Linkedin Audience",
-    "Version currently referred in CloudMode Services": "/rest/dmpSegments/:audienceId/users (API version header: 202509)",
+    "Version currently referred in CloudMode Services": "/rest/dmpSegments/:audienceId/users, /rest/dmpSegments/:audienceId/companies (API version header: 202603)",
     "Link to check Versions documentation": "https://learn.microsoft.com/en-us/linkedin/marketing/integrations/recent-changes",
-    "Latest Version rolled out": "202511 (November 2025)",
-    "Sunset Date Current Version used in backend": "September 2026 (version 202509 released September 2025, supported for minimum 12 months)"
+    "Latest Version rolled out": "202603 (March 2026)",
+    "Sunset Date Current Version used in backend": "March 2027 (version 202603 released March 2026, supported for minimum 12 months)"
   },
   {
     "Destination": "Mailchimp",

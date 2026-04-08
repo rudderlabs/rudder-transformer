@@ -40,6 +40,7 @@ const LinkedinAudienceMessageSchema = z
 
 const LinkedinAudienceMetadataSchema = z
   .object({
+    workspaceId: z.string(),
     secret: z
       .object({
         accessToken: z.string({
@@ -51,11 +52,18 @@ const LinkedinAudienceMetadataSchema = z
   })
   .passthrough();
 
+const LinkedinAudienceDestinationSchema = z
+  .object({
+    ID: z.string(),
+  })
+  .passthrough();
+
 export const LinkedinAudienceRouterRequestSchema = z
   .object({
     message: LinkedinAudienceMessageSchema,
     connection: LinkedinAudienceConnectionSchema,
     metadata: LinkedinAudienceMetadataSchema,
+    destination: LinkedinAudienceDestinationSchema,
   })
   .passthrough();
 

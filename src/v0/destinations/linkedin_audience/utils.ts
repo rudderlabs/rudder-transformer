@@ -40,7 +40,7 @@ export function prepareUserIds(
   return userIds;
 }
 
-export function generateEndpoint(audienceType: string, audienceId: string) {
+export function generateEndpoint(audienceType: string, audienceId: string | number) {
   if (audienceType === 'user') {
     return { endpoint: USER_ENDPOINT(audienceId), endpointPath: USER_ENDPOINT_PATH };
   }

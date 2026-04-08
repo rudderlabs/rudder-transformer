@@ -16,8 +16,9 @@ export const FIELD_MAP = {
 } as const;
 
 const BASE_URL = 'https://api.linkedin.com/rest';
-export const USER_ENDPOINT = (audienceId: string) => `${BASE_URL}/dmpSegments/${audienceId}/users`;
+export const USER_ENDPOINT = (audienceId: string | number) =>
+  `${BASE_URL}/dmpSegments/${audienceId}/users`;
 export const USER_ENDPOINT_PATH = '/dmpSegments/<audienceId>/users';
-export const COMPANY_ENDPOINT = (audienceId: string) =>
+export const COMPANY_ENDPOINT = (audienceId: string | number) =>
   `${BASE_URL}/dmpSegments/${audienceId}/companies`;
 export const COMPANY_ENDPOINT_PATH = '/dmpSegments/<audienceId>/companies';

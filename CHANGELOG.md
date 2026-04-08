@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.129.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.0...v1.129.1) (2026-04-08)
+
+
+### Bug Fixes
+
+* linkedin audince id as string or number ([#5118](https://github.com/rudderlabs/rudder-transformer/issues/5118)) ([fd3253f](https://github.com/rudderlabs/rudder-transformer/commit/fd3253f98a37a36d387c519b81ebd6279f7fa048))
+
 ## [1.129.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.128.3...v1.129.0) (2026-04-07)
 
 

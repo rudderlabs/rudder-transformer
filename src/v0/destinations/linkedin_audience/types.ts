@@ -7,7 +7,7 @@ const LinkedinAudienceConnectionSchema = z
       .object({
         destination: z
           .object({
-            audienceId: z.string({
+            audienceId: z.union([z.string(), z.number()], {
               required_error: 'audienceId is not present. Aborting',
             }),
             audienceType: z.enum(['user', 'company'], {
@@ -77,7 +77,7 @@ export type LinkedinAudiencePayload = {
 
 export type LinkedinAudienceConfigParams = {
   audienceType: string;
-  audienceId: string;
+  audienceId: string | number;
   accessToken: string;
   isHashRequired: boolean;
 };

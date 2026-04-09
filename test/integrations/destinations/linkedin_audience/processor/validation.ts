@@ -128,7 +128,7 @@ export const validationTestData: ProcessorTestData[] = [
               headers: {
                 Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
-                'LinkedIn-Version': '202509',
+                'LinkedIn-Version': '202603',
                 'X-RestLi-Method': 'BATCH_CREATE',
                 'X-Restli-Protocol-Version': '2.0.0',
               },
@@ -375,7 +375,7 @@ export const validationTestData: ProcessorTestData[] = [
               headers: {
                 Authorization: defaultAccessTokenAuthHeader,
                 'Content-Type': 'application/json',
-                'LinkedIn-Version': '202509',
+                'LinkedIn-Version': '202603',
                 'X-RestLi-Method': 'BATCH_CREATE',
                 'X-Restli-Protocol-Version': '2.0.0',
               },

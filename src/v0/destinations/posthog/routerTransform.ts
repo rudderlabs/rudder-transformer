@@ -37,8 +37,8 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
       .object({
         message: z
           .object({
-            userId: z.union([z.string(), z.number()]).optional(),
-            anonymousId: z.union([z.string(), z.number()]).optional(),
+            userId: z.union([z.string(), z.number()]).nullish(),
+            anonymousId: z.union([z.string(), z.number()]).nullish(),
             type: z.enum(['track', 'page', 'screen', 'identify', 'alias', 'group']),
           })
           .passthrough()

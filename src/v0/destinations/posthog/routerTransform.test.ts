@@ -113,49 +113,77 @@ describe('Integration', () => {
   });
 
   describe('getInputSchema', () => {
-    it('accepts valid track event', () => {
+    const schemaTestCases: {
+      name: string;
+      mutate: (msg: Record<string, unknown>) => void;
+      expected: boolean;
+    }[] = [
+      {
+        name: 'accepts valid track event with both userId and anonymousId',
+        mutate: () => {},
+        expected: true,
+      },
+      {
+        name: 'accepts events with only userId',
+        mutate: (msg) => delete msg.anonymousId,
+        expected: true,
+      },
+      {
+        name: 'accepts events with only anonymousId',
+        mutate: (msg) => delete msg.userId,
+        expected: true,
+      },
+      {
+        name: 'accepts events with non-empty anonymousId and null userId',
+        mutate: (msg) => {
+          msg.userId = null;
+        },
+        expected: true,
+      },
+      {
+        name: 'accepts events with non-empty userId and null anonymousId',
+        mutate: (msg) => {
+          msg.anonymousId = null;
+        },
+        expected: true,
+      },
+      {
+        name: 'rejects events missing both userId and anonymousId',
+        mutate: (msg) => {
+          delete msg.userId;
+          delete msg.anonymousId;
+        },
+        expected: false,
+      },
+      {
+        name: 'rejects record event type',
+        mutate: (msg) => {
+          msg.type = 'record';
+        },
+        expected: false,
+      },
+      {
+        name: 'rejects audiencelist event type',
+        mutate: (msg) => {
+          msg.type = 'audiencelist';
+        },
+        expected: false,
+      },
+      {
+        name: 'rejects unknown event type',
+        mutate: (msg) => {
+          msg.type = 'unknown';
+        },
+        expected: false,
+      },
+    ];
+
+    it.each(schemaTestCases)('$name', ({ mutate, expected }) => {
       const input = makeInput(1, 'track');
-      const schema = integration.getInputSchema();
-      const parseResult = schema.safeParse(input);
+      mutate(input.message as Record<string, unknown>);
+      const parseResult = integration.getInputSchema().safeParse(input);
 
-      expect(parseResult.success).toBe(true);
-    });
-
-    it.each(['record', 'audiencelist', 'unknown'] as const)('rejects %s event type', (type) => {
-      const input = makeInput(1, 'track');
-      (input.message as Record<string, unknown>).type = type;
-      const schema = integration.getInputSchema();
-      const parseResult = schema.safeParse(input);
-
-      expect(parseResult.success).toBe(false);
-    });
-
-    it('rejects events missing both userId and anonymousId', () => {
-      const input = makeInput(1, 'track');
-      delete (input.message as Record<string, unknown>).userId;
-      delete (input.message as Record<string, unknown>).anonymousId;
-      const schema = integration.getInputSchema();
-      const parseResult = schema.safeParse(input);
-
-      expect(parseResult.success).toBe(false);
-    });
-
-    it('accepts events with only userId', () => {
-      const input = makeInput(1, 'track');
-      delete (input.message as Record<string, unknown>).anonymousId;
-      const schema = integration.getInputSchema();
-      const parseResult = schema.safeParse(input);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it('accepts events with only anonymousId', () => {
-      const input = makeInput(1, 'track');
-      delete (input.message as Record<string, unknown>).userId;
-      const schema = integration.getInputSchema();
-      const parseResult = schema.safeParse(input);
-
-      expect(parseResult.success).toBe(true);
+      expect(parseResult.success).toBe(expected);
     });
   });
 });

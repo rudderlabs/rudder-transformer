@@ -70,41 +70,38 @@ export function generateEndpoint(audienceType: string, audienceId: string | numb
   return { endpoint: COMPANY_ENDPOINT(audienceId), endpointPath: COMPANY_ENDPOINT_PATH };
 }
 
+const prepareUserIds = (
+  ids: Record<string, string>,
+): {
+  idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
+  idValue: string;
+}[] => {
+  const userIds: {
+    idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
+    idValue: string;
+  }[] = [];
+  Object.keys(ids).forEach((key) => {
+    const value = ids[key];
+    if (value) {
+      userIds.push({ idType: USER_IDENTIFIER_MAP[key], idValue: value });
+    }
+  });
+  return userIds;
+};
+
 function prepareUserTypePayload(event: LinkedinAudienceRecordRequest): LinkedinAudienceUserPayload {
   const { message, connection, destination, metadata } = event;
   const { isHashRequired } = connection.config.destination;
   const { action, identifiers, fields } = message;
 
-  const prepareUserIds = (
-    ids: Record<string, string>,
-  ): {
-    idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
-    idValue: string;
-  }[] => {
-    const userIds: {
-      idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
-      idValue: string;
-    }[] = [];
-    Object.keys(ids).forEach((key) => {
-      const value = ids[key];
-      if (value) {
-        userIds.push({ idType: USER_IDENTIFIER_MAP[key], idValue: value });
-      }
-    });
-    return userIds;
-  };
-
-  const fieldConfigs: Record<string, AudienceField> = {};
-  Object.keys(USERS_IDENTIFIER_CONFIG).forEach((fieldName) => {
-    const fieldConfig = USERS_IDENTIFIER_CONFIG[fieldName];
-    if (!fieldConfig) {
-      throw new Error(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
+  Object.keys(identifiers).forEach((fieldName) => {
+    if (!USERS_IDENTIFIER_CONFIG[fieldName]) {
+      throw new InstrumentationError(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
     }
-    fieldConfigs[fieldName] = fieldConfig;
   });
 
   const processedIdentifiers = processAudienceRecord(identifiers, {
-    fieldConfigs,
+    fieldConfigs: USERS_IDENTIFIER_CONFIG,
     destination: {
       workspaceId: metadata.workspaceId,
       id: destination.ID,
@@ -130,11 +127,12 @@ function prepareCompanyTypePayload(
   event: LinkedinAudienceRecordRequest,
 ): LinkedinAudienceCompanyPayload {
   const { action, identifiers, fields } = event.message;
-  for (const fieldName of Object.keys(identifiers)) {
+
+  Object.keys(identifiers).forEach((fieldName) => {
     if (!COMPANY_TRAITS.includes(fieldName)) {
-      throw new Error(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
+      throw new InstrumentationError(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
     }
-  }
+  });
 
   const nonNullIdentifiers = removeNullValues(identifiers);
   if (Object.keys(nonNullIdentifiers).length === 0) {

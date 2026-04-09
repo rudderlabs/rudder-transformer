@@ -1,3 +1,5 @@
+import * as config from '../../../../../src/v0/destinations/linkedin_audience/config';
+
 export const nativeData = [
   {
     name: 'linkedin_audience',
@@ -344,7 +346,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -759,7 +761,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -955,7 +957,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -1162,7 +1164,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -1365,7 +1367,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -1738,7 +1740,7 @@ export const nativeData = [
                 headers: {
                   Authorization: 'Bearer commonAccessToken',
                   'Content-Type': 'application/json',
-                  'LinkedIn-Version': '202509',
+                  'LinkedIn-Version': '202603',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
                 },
@@ -2907,6 +2909,326 @@ export const nativeData = [
           ],
         },
       },
+    },
+  },
+  {
+    id: 'linkedin_audience-native-max-batch-size-2',
+    name: 'linkedin_audience',
+    description: 'Record call : splits same-action events by MAX_BATCH_SIZE=2',
+    scenario: 'Business',
+    successCriteria: 'should create two ADD batched requests with 2+1 elements',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        method: 'POST',
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                identifiers: { sha256Email: 'random@rudderstack.com' },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'commonAccessToken' },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: { connectionMode: 'cloud', rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu' },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                identifiers: { sha256Email: 'random@rudderstack.com' },
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'commonAccessToken' },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: { connectionMode: 'cloud', rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu' },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {},
+                channel: 'sources',
+                identifiers: { sha256Email: 'random@rudderstack.com' },
+              },
+              metadata: {
+                jobId: 3,
+                attemptNum: 1,
+                userId: 'default-userId',
+                sourceId: 'default-sourceId',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-disable-cdkv2',
+                secret: { accessToken: 'commonAccessToken' },
+                dontBatch: false,
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: { connectionMode: 'cloud', rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu' },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              connection: {
+                sourceId: 'randomSourceId',
+                destinationId: 'randomDestinationId',
+                enabled: true,
+                config: {
+                  destination: {
+                    audienceId: '32589526',
+                    audienceType: 'user',
+                    isHashRequired: true,
+                  },
+                  source: {},
+                },
+              },
+            },
+          ],
+          destType: 'linkedin_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                        ],
+                      },
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202603',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: { connectionMode: 'cloud', rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu' },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'commonAccessToken' },
+                  dontBatch: false,
+                },
+                {
+                  jobId: 2,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'commonAccessToken' },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  FORM: {},
+                  JSON: {
+                    elements: [
+                      {
+                        action: 'ADD',
+                        userIds: [
+                          {
+                            idType: 'SHA256_EMAIL',
+                            idValue:
+                              '52ac4b9ef8f745e007c19fac81ddb0a3f50b20029f6699ca1406225fc217f392',
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                },
+                endpoint: 'https://api.linkedin.com/rest/dmpSegments/32589526/users',
+                endpointPath: '/dmpSegments/<audienceId>/users',
+                files: {},
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                  'LinkedIn-Version': '202603',
+                  'X-RestLi-Method': 'BATCH_CREATE',
+                  'X-Restli-Protocol-Version': '2.0.0',
+                },
+                method: 'POST',
+                params: {},
+                type: 'REST',
+                version: '1',
+              },
+              destination: {
+                ID: '123',
+                Name: 'Linkedin Audience',
+                DestinationDefinition: {
+                  ID: '2njmJIfG6JH3guvFHSjLQNiIYh5',
+                  Name: 'LINKEDIN_AUDIENCE',
+                  DisplayName: 'Linkedin Audience',
+                  Config: {},
+                },
+                Config: { connectionMode: 'cloud', rudderAccountId: '2nmIV6FMXvyyqRM9Ifj8V92yElu' },
+                Enabled: true,
+                WorkspaceID: 'workspace-disable-cdkv2',
+                Transformations: [],
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  sourceId: 'default-sourceId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'workspace-disable-cdkv2',
+                  secret: { accessToken: 'commonAccessToken' },
+                  dontBatch: false,
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: () => {
+      jest.replaceProperty(config, 'MAX_BATCH_SIZE', 2);
     },
   },
 ];

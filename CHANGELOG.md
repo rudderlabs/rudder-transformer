@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.129.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.1...v1.129.2) (2026-04-09)
+
+
+### Bug Fixes
+
+* **posthog:** schema rejects valid events when userId/anonymousId is null ([#5122](https://github.com/rudderlabs/rudder-transformer/issues/5122)) ([8fe857b](https://github.com/rudderlabs/rudder-transformer/commit/8fe857bc4386074e1ad28e97264c047258c1bc6c))
+
 ### [1.129.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.0...v1.129.1) (2026-04-08)
 
 

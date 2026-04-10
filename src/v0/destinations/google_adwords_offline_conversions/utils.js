@@ -605,8 +605,9 @@ const batchFetchConversionActions = async ({ Config, customerId, conversionNames
   }
 
   // Build query to fetch multiple conversion actions at once
+  // owner_customer is needed to disambiguate when MCC returns actions from both parent and child accounts
   const queryString = SqlString.format(
-    'SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN (?)',
+    'SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN (?)',
     [conversionNames],
   );
   const headers = getReqHeaders(Config, metadata, true);
@@ -648,11 +649,16 @@ const batchFetchConversionActions = async ({ Config, customerId, conversionNames
   const results = get(searchStreamResponse, 'response.0.results') || [];
   const conversionMap = {};
 
-  // Build result map from API response
+  // When using MCC (sub-account), the API may return conversion actions from both the
+  // target account (customerId) and the manager account (loginCustomerId).
+  // We prefer the action owned by customerId since conversions are uploaded to that account.
   for (const resultItem of results) {
     const { conversionAction } = resultItem;
     if (conversionAction?.name && conversionAction?.resourceName) {
-      conversionMap[conversionAction.name] = conversionAction.resourceName;
+      const ownedByCustomer = conversionAction.ownerCustomer?.endsWith(`/${customerId}`);
+      if (!conversionMap[conversionAction.name] || ownedByCustomer) {
+        conversionMap[conversionAction.name] = conversionAction.resourceName;
+      }
     }
   }
 

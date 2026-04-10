@@ -3,6 +3,8 @@ import {
   InstrumentationError,
   formatZodError,
 } from '@rudderstack/integrations-lib';
+import validator from 'validator';
+import lodash from 'lodash';
 import type { RouterTransformationResponse } from '../../../types';
 import {
   defaultRequestConfig,
@@ -18,8 +20,40 @@ import {
   LinkedinAudienceConfigParams,
   LinkedinAudiencePayload,
 } from './types';
-import { prepareUserIds, hashIdentifiers, generateEndpoint } from './utils';
-import { ACTION_RECORD_MAP, API_PROTOCOL_VERSION, API_VERSION } from './config';
+import {
+  COMPANY_ENDPOINT,
+  COMPANY_ENDPOINT_PATH,
+  USER_ENDPOINT,
+  USER_ENDPOINT_PATH,
+  ACTION_RECORD_MAP,
+  DESTINATION_TYPE,
+  API_PROTOCOL_VERSION,
+  API_VERSION,
+  REMOVE_SPACES_REGEX,
+  USER_IDENTIFIER_MAP,
+  COMPANY_TRAITS,
+  MAX_BATCH_SIZE,
+} from './config';
+
+import { AudienceField, HashingType, processAudienceRecord } from '../../util/audienceUtils';
+
+const USERS_IDENTIFIER_CONFIG: Record<string, AudienceField> = {
+  sha256Email: {
+    hashingType: HashingType.SHA256,
+    normalize: (value: string) => value.replace(REMOVE_SPACES_REGEX, '').toLowerCase(),
+    validate: (normalized: string) => validator.isEmail(normalized),
+  },
+  sha512Email: {
+    hashingType: HashingType.SHA512,
+    normalize: (value: string) => value.replace(REMOVE_SPACES_REGEX, '').toLowerCase(),
+    validate: (normalized: string) => validator.isEmail(normalized),
+  },
+  googleAid: {
+    hashingType: HashingType.NONE,
+    normalize: (value: string) => value.trim(),
+    validate: (normalized: string) => normalized.length > 0,
+  },
+};
 
 function validateLinkedinAudienceEvent(event: unknown): LinkedinAudienceRecordRequest {
   const result = LinkedinAudienceRouterRequestSchema.safeParse(event);
@@ -29,11 +63,57 @@ function validateLinkedinAudienceEvent(event: unknown): LinkedinAudienceRecordRe
   return result.data;
 }
 
+export function generateEndpoint(audienceType: string, audienceId: string | number) {
+  if (audienceType === 'user') {
+    return { endpoint: USER_ENDPOINT(audienceId), endpointPath: USER_ENDPOINT_PATH };
+  }
+  return { endpoint: COMPANY_ENDPOINT(audienceId), endpointPath: COMPANY_ENDPOINT_PATH };
+}
+
+const prepareUserIds = (
+  ids: Record<string, string>,
+): {
+  idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
+  idValue: string;
+}[] => {
+  const userIds: {
+    idType: (typeof USER_IDENTIFIER_MAP)[keyof typeof USER_IDENTIFIER_MAP];
+    idValue: string;
+  }[] = [];
+  Object.keys(ids).forEach((key) => {
+    const value = ids[key];
+    if (value) {
+      userIds.push({ idType: USER_IDENTIFIER_MAP[key], idValue: value });
+    }
+  });
+  return userIds;
+};
+
 function prepareUserTypePayload(event: LinkedinAudienceRecordRequest): LinkedinAudienceUserPayload {
-  const { isHashRequired } = event.connection.config.destination;
-  const { action, identifiers, fields } = event.message;
-  const hashedIdentifiers = isHashRequired ? hashIdentifiers(identifiers) : identifiers;
-  const userIds = prepareUserIds(hashedIdentifiers);
+  const { message, connection, destination, metadata } = event;
+  const { isHashRequired } = connection.config.destination;
+  const { action, identifiers, fields } = message;
+
+  Object.keys(identifiers).forEach((fieldName) => {
+    if (!USERS_IDENTIFIER_CONFIG[fieldName]) {
+      throw new InstrumentationError(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
+    }
+  });
+
+  const processedIdentifiers = processAudienceRecord(identifiers, {
+    fieldConfigs: USERS_IDENTIFIER_CONFIG,
+    destination: {
+      workspaceId: metadata.workspaceId,
+      id: destination.ID,
+      type: DESTINATION_TYPE,
+      config: { isHashRequired },
+    },
+  });
+  if (Object.keys(processedIdentifiers).length === 0) {
+    throw new InstrumentationError('No identifiers found, aborting event.');
+  }
+
+  const userIds = prepareUserIds(processedIdentifiers);
   const nonNullFields = removeNullValues(fields);
   const payload: LinkedinAudienceUserPayload = {
     action: ACTION_RECORD_MAP[action],
@@ -47,8 +127,19 @@ function prepareCompanyTypePayload(
   event: LinkedinAudienceRecordRequest,
 ): LinkedinAudienceCompanyPayload {
   const { action, identifiers, fields } = event.message;
-  const nonNullFields = removeNullValues(fields);
+
+  Object.keys(identifiers).forEach((fieldName) => {
+    if (!COMPANY_TRAITS.includes(fieldName)) {
+      throw new InstrumentationError(`Invalid identifier key ${fieldName} for LinkedIn Audience.`);
+    }
+  });
+
   const nonNullIdentifiers = removeNullValues(identifiers);
+  if (Object.keys(nonNullIdentifiers).length === 0) {
+    throw new InstrumentationError('No identifiers found, aborting event.');
+  }
+
+  const nonNullFields = removeNullValues(fields);
   const payload: LinkedinAudienceCompanyPayload = {
     action: ACTION_RECORD_MAP[action],
     ...nonNullIdentifiers,
@@ -145,17 +236,20 @@ const processRouterDest = async (events: unknown[]): Promise<RouterTransformatio
     }
   }
   for (const group of groupedPayloads) {
-    const { payloads, configParams } = group;
+    const { configParams, payloads } = group;
     try {
-      const elementsPayload = {
-        elements: payloads.map((payload) => payload.payload),
-      };
-      const metadataList = payloads.map((payload) => payload.event.metadata);
-      const response = preparePayloadForProcessTransformation(elementsPayload, configParams);
+      const chunkedPayloads = lodash.chunk(payloads, MAX_BATCH_SIZE);
+      for (const chunk of chunkedPayloads) {
+        const elementsPayload = {
+          elements: chunk.map((payload) => payload.payload),
+        };
+        const metadataList = chunk.map((payload) => payload.event.metadata);
+        const response = preparePayloadForProcessTransformation(elementsPayload, configParams);
 
-      successfulResponses.push(
-        getSuccessRespEvents(response, metadataList, payloads[0].event.destination, true),
-      );
+        successfulResponses.push(
+          getSuccessRespEvents(response, metadataList, chunk[0].event.destination, true),
+        );
+      }
     } catch (error) {
       failedResponses.push(
         ...payloads.map((payload) => handleRtTfSingleEventError(payload.event, error, {})),

@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
+const ipaddr = require('ipaddr.js');
 const { AsyncLocalStorage } = require('node:async_hooks');
 
 const util = require('util');
@@ -298,6 +299,15 @@ function shouldGroupByDestinationConfig(destination) {
   return destination?.hasDynamicConfig !== false;
 }
 
+function validateIp(ip) {
+  if (!ip) {
+    throw new Error('ip address is required');
+  }
+  if (!ipaddr.isValid(ip)) {
+    throw new Error('invalid ip address');
+  }
+}
+
 module.exports = {
   RespStatusError,
   RetryRequestError,
@@ -312,4 +322,5 @@ module.exports = {
   dnsCallbackStorage,
   shouldSkipDynamicConfigProcessing,
   shouldGroupByDestinationConfig,
+  validateIp,
 };

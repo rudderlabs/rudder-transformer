@@ -2981,6 +2981,7 @@ describe("Geolocation function", () => {
     process.env.GEOLOCATION_URL = undefined;
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -3004,12 +3005,8 @@ describe("Geolocation function", () => {
         status: 200,
         json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
       });
-    when(fetch)
-      .calledWith("https://dummyUrl.com/geoip/invalid", { timeout: 1000 })
-      .mockResolvedValue({ status: 400 });
-
     const output = await userTransformHandler(inputData, versionId, []);
-    expect(output[0].transformedEvent.context.geoerror).toBe("request to fetch geolocation failed with status code: 400");
+    expect(output[0].transformedEvent.context.geoerror).toBe("invalid ip address");
   });
 
   it("Should enrich context when geo request succeedes", async () => {

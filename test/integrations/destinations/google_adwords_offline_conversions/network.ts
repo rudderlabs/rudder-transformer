@@ -784,7 +784,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('cost', 'revenue')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('cost', 'revenue')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -820,7 +820,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -856,7 +856,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -892,7 +892,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -928,7 +928,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,

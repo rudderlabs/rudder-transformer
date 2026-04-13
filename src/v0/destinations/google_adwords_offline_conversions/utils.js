@@ -591,6 +591,26 @@ const getListCustomVariable = ({ properties, conversionCustomVariableMap, custom
 };
 
 /**
+ * Build a name→resourceName map from SearchStream results, preferring entries owned by customerId.
+ * When using MCC (sub-account), the API may return resources from both the target account
+ * (customerId) and the manager account. We prefer the one owned by customerId; if none exists
+ * we fall back to the first (MCC-owned) entry.
+ */
+const buildOwnerPreferredMap = (results, resultKey, customerId) => {
+  const map = {};
+  for (const resultItem of results) {
+    const resource = resultItem[resultKey];
+    if (resource?.name && resource?.resourceName) {
+      const ownedByCustomer = resource.ownerCustomer?.endsWith(`/${customerId}`);
+      if (!map[resource.name] || ownedByCustomer) {
+        map[resource.name] = resource.resourceName;
+      }
+    }
+  }
+  return map;
+};
+
+/**
  * Batch fetch multiple conversion actions in a single API call
  * Returns a map of conversion names to resource names (does not cache - caller should handle caching)
  * @param {string} customerId - The customer ID
@@ -647,22 +667,7 @@ const batchFetchConversionActions = async ({ Config, customerId, conversionNames
   }
 
   const results = get(searchStreamResponse, 'response.0.results') || [];
-  const conversionMap = {};
-
-  // When using MCC (sub-account), the API may return conversion actions from both the
-  // target account (customerId) and the manager account (loginCustomerId).
-  // We prefer the action owned by customerId since conversions are uploaded to that account.
-  for (const resultItem of results) {
-    const { conversionAction } = resultItem;
-    if (conversionAction?.name && conversionAction?.resourceName) {
-      const ownedByCustomer = conversionAction.ownerCustomer?.endsWith(`/${customerId}`);
-      if (!conversionMap[conversionAction.name] || ownedByCustomer) {
-        conversionMap[conversionAction.name] = conversionAction.resourceName;
-      }
-    }
-  }
-
-  return conversionMap;
+  return buildOwnerPreferredMap(results, 'conversionAction', customerId);
 };
 
 /**
@@ -743,8 +748,9 @@ const batchFetchConversionCustomVariablesMap = async ({
   }
 
   // Build query to fetch multiple variables at once
+  // owner_customer is needed to disambiguate when MCC returns variables from both parent and child accounts
   const queryString = SqlString.format(
-    'SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN (?)',
+    'SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN (?)',
     [variableNames],
   );
   const headers = getReqHeaders(Config, metadata, true);
@@ -780,15 +786,7 @@ const batchFetchConversionCustomVariablesMap = async ({
   }
 
   const results = get(searchStreamResponse, 'response.0.results') || [];
-  const variableMap = {};
-
-  // Build result map from API response
-  for (const resultItem of results) {
-    const variable = resultItem.conversionCustomVariable;
-    if (variable?.name && variable?.resourceName) {
-      variableMap[variable.name] = variable.resourceName;
-    }
-  }
+  const variableMap = buildOwnerPreferredMap(results, 'conversionCustomVariable', customerId);
 
   return variableMap;
 };

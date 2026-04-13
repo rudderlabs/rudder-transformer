@@ -251,6 +251,11 @@ const process = (event: {
 }) => processEvent(event.message, event.destination, event.metadata?.workspaceId as string);
 
 const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
+  const { accessToken } = inputs[0].destination.Config;
+  if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
+    throw new ConfigurationError('Missing required configuration field: accessToken');
+  }
+
   const respList: unknown[] = [];
   const groupedInputs = await groupByInBatches(inputs, (input) =>
     (input.message.type ?? '').toLowerCase(),

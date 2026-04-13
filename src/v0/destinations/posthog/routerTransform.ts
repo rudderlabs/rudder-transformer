@@ -1,4 +1,5 @@
 import { z, ZodType } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   TransformedEvent,
@@ -7,6 +8,7 @@ import {
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import { processEvent } from './transform';
 import type { PostHogPayload, PostHogRouterRequest } from './types';
+import { MAX_EVENT_SIZE_BYTES } from './config';
 
 class PostHogIntegration extends BatchDestination<PostHogPayload> {
   transformEvent(input: PostHogRouterRequest): TransformedEvent<PostHogPayload> {
@@ -14,6 +16,14 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
     // Strip api_key from the body — it belongs in the wrapBody wrapper
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { api_key, ...eventBody } = result.body.JSON!;
+
+    const eventSize = Buffer.byteLength(JSON.stringify(eventBody), 'utf8');
+    if (eventSize > MAX_EVENT_SIZE_BYTES) {
+      throw new InstrumentationError(
+        `Event size (${eventSize} bytes) exceeds PostHog's 1 MB limit. PostHog will reject this event with "maximum event size exceeded". Reduce the properties payload.`,
+      );
+    }
+
     return {
       body: eventBody,
       endpoint: result.endpoint,

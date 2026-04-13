@@ -3,6 +3,7 @@ import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching
 import type { Metadata, RudderMessage } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import type { PostHogMessage, PostHogDestination } from './types';
+import { MAX_EVENT_SIZE_BYTES } from './config';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -83,6 +84,24 @@ describe('Integration', () => {
       const input = makeInput(1, 'track');
       delete (input.message as Record<string, unknown>).type;
       expect(() => integration.transformEvent(input)).toThrow('Event type is required');
+    });
+
+    it('throws when event size exceeds PostHog 1 MB limit', () => {
+      // Generate a large string that pushes the event body over 1 MB
+      const largeValue = 'x'.repeat(MAX_EVENT_SIZE_BYTES + 1);
+      const input = makeInput(1, 'track', {
+        properties: { hugeField: largeValue },
+      });
+      expect(() => integration.transformEvent(input)).toThrow(/exceeds PostHog's 1 MB limit/);
+    });
+
+    it('accepts events just under the 1 MB limit', () => {
+      // A moderately large payload that stays under 1 MB
+      const value = 'x'.repeat(500_000);
+      const input = makeInput(1, 'track', {
+        properties: { largeField: value },
+      });
+      expect(() => integration.transformEvent(input)).not.toThrow();
     });
   });
 

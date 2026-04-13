@@ -173,13 +173,17 @@ const processEvent = (
   const respList: unknown[] = [];
   let toSendEvents: WrappedResponse[] = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, audienceId } = destination.Config;
+  const { isHashRequired, audienceId, accessToken } = destination.Config;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
+  }
+
+  if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
+    throw new ConfigurationError('Missing required configuration field: accessToken');
   }
 
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {

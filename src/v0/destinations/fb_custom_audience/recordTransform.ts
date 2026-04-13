@@ -209,6 +209,9 @@ async function preparePayload(
 
   const cleanUserSchema = userSchema.map((field) => field.trim());
 
+  if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
+    throw new ConfigurationError('Missing required configuration field: accessToken');
+  }
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }

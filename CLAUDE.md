@@ -5,8 +5,8 @@
 After making code changes, always run these checks before committing:
 
 1. **Lint & format**: `npm run lint` (runs prettier + eslint --fix). If it produces diffs, stage and commit them.
-2. **Unit tests**: `npx jest --testPathPattern="<destination_name>" --no-coverage` for the affected destination.
-3. **Integration tests**: `npx jest test/integrations/component.test.ts --no-coverage -t "<destination_name>"` for the affected destination.
+2. **Unit tests**: `npm test -- --testPathPattern="<destination_name>" --no-coverage` for the affected destination.
+3. **Integration tests**: `npm run test:ts -- component --destination=<destination_name>` for the affected destination.
 
 ## Project Structure
 

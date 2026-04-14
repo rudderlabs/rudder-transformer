@@ -306,7 +306,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Missing required configuration field: accessToken',
+            error: 'Access Token is a mandatory field',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               errorCategory: 'dataValidation',

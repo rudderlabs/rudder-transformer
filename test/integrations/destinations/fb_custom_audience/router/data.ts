@@ -1632,7 +1632,7 @@ export const data = [
               metadata: [generateMetadata(1)],
               batched: false,
               statusCode: 400,
-              error: 'Missing required configuration field: accessToken',
+              error: 'Access Token is a mandatory field',
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',

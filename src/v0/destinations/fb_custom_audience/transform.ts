@@ -183,7 +183,7 @@ const processEvent = (
   }
 
   if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
-    throw new ConfigurationError('Missing required configuration field: accessToken');
+    throw new ConfigurationError('Access Token is a mandatory field');
   }
 
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
@@ -253,7 +253,7 @@ const process = (event: {
 const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
   const { accessToken } = inputs[0].destination.Config;
   if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
-    throw new ConfigurationError('Missing required configuration field: accessToken');
+    throw new ConfigurationError('Access Token is a mandatory field');
   }
 
   const respList: unknown[] = [];

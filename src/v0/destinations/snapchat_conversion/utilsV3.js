@@ -145,6 +145,7 @@ const productsToContentsMapping = (message) => {
       item_price: product?.price,
       quantity: product?.quantity,
       delivery_category: product?.delivery_category,
+      brand: product?.brand,
     });
 
   // Handle case where products array is empty or doesn't exist

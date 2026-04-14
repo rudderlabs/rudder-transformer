@@ -410,6 +410,9 @@ export const newpixelCheckoutStepsScenarios = [
                       type: 'standard',
                     },
                     topic: 'checkout_address_info_submitted',
+                    traits: {
+                      email: 'test-user@sampleemail.com',
+                    },
                   },
                   integrations: {
                     SHOPIFY: true,
@@ -806,6 +809,9 @@ export const newpixelCheckoutStepsScenarios = [
                       type: 'standard',
                     },
                     topic: 'checkout_contact_info_submitted',
+                    traits: {
+                      email: 'test-user@sampleemail.com',
+                    },
                   },
                   integrations: {
                     SHOPIFY: true,
@@ -1234,6 +1240,9 @@ export const newpixelCheckoutStepsScenarios = [
                       type: 'standard',
                     },
                     topic: 'checkout_shipping_info_submitted',
+                    traits: {
+                      email: 'test-user@sampleemail.com',
+                    },
                   },
                   integrations: {
                     SHOPIFY: true,
@@ -1662,6 +1671,9 @@ export const newpixelCheckoutStepsScenarios = [
                       type: 'standard',
                     },
                     topic: 'payment_info_submitted',
+                    traits: {
+                      email: 'test-user@sampleemail.com',
+                    },
                   },
                   integrations: {
                     SHOPIFY: true,

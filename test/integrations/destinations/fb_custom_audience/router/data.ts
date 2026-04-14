@@ -1,6 +1,7 @@
 import {
   rETLRecordV1RouterRequest,
   rETLRecordV2RouterRequest,
+  rETLRecordV2AllNullRouterRequest,
   rETLRecordV2RouterInvalidRequest,
   rETLRecordV2RouterRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
@@ -43,7 +44,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -75,7 +76,7 @@ export const data = [
                           '@09432457768',
                           'f',
                           'Ms.',
-                          'ABC',
+                          'abc',
                           'ZIP ',
                           '123abc ',
                           'IN',
@@ -95,7 +96,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -127,7 +128,7 @@ export const data = [
                           '@09432457768',
                           'f',
                           'Ms.',
-                          'ABC',
+                          'abc',
                           'ZIP ',
                           '123abc ',
                           'IN',
@@ -168,7 +169,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -200,7 +201,7 @@ export const data = [
                           '@09432457768',
                           'f',
                           'Ms.',
-                          'ABC',
+                          'abc',
                           'ZIP ',
                           '123abc ',
                           'IN',
@@ -220,7 +221,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/aud1/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -252,7 +253,7 @@ export const data = [
                           '@09432457768',
                           'f',
                           'Ms.',
-                          'ABC',
+                          'abc',
                           'ZIP ',
                           '123abc ',
                           'IN',
@@ -316,7 +317,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -380,7 +381,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -428,7 +429,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -560,7 +561,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'DELETE',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -652,7 +653,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -728,7 +729,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -884,59 +885,134 @@ export const data = [
         body: {
           output: [
             {
+              batched: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(1), generateMetadata(2), generateMetadata(3)],
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                },
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                Name: 'FB_CUSTOM_AUDIENCE',
+                Enabled: true,
+                WorkspaceID: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                DestinationDefinition: {
+                  ID: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  Name: 'FB_CUSTOM_AUDIENCE',
+                  DisplayName: 'FB_CUSTOM_AUDIENCE',
+                  Config: {},
+                },
+                Transformations: [],
+                IsConnectionEnabled: true,
+                IsProcessorEnabled: true,
+              },
+              statusCode: 200,
+            },
+            {
               batched: false,
               error:
                 'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
-              metadata: [
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 2,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 3,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-                {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 4,
-                  secret: {
-                    accessToken: defaultAccessToken,
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
-              ],
+              metadata: [generateMetadata(4)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 all events have null user data',
+    scenario: 'Framework',
+    successCriteria:
+      'all record events should return individual error responses when all user properties are null',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2AllNullRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(1)],
+              statusCode: 400,
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+            {
+              batched: false,
+              error:
+                'All user properties [EMAIL, FI] are invalid or null. At least one valid field is required.',
+              metadata: [generateMetadata(2)],
               statusCode: 400,
               statTags: {
                 errorCategory: 'dataValidation',
@@ -1070,7 +1146,7 @@ export const data = [
                   version: '1',
                   type: 'REST',
                   method: 'POST',
-                  endpoint: 'https://graph.facebook.com/v23.0/23848494844100489/users',
+                  endpoint: 'https://graph.facebook.com/v24.0/23848494844100489/users',
                   endpointPath: 'users',
                   headers: {},
                   params: {
@@ -1288,5 +1364,249 @@ export const data = [
       },
     },
     envOverrides: { AUDIENCE_HASHING_VALIDATION_ENABLED: 'true' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'payload in request body when FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY flag is enabled',
+    scenario: 'business',
+    successCriteria: 'payload should be in body.JSON and only auth params should remain in params',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: eventStreamAudienceListRouterRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: { sub_type: 'ANYTHING' },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: { sub_type: 'ANYTHING' },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 200,
+              destination: esDestinationAudience,
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: { sub_type: 'ANYTHING' },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v24.0/aud1/users',
+                  endpointPath: 'users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                  },
+                  body: {
+                    JSON: {
+                      payload: {
+                        is_raw: true,
+                        data_source: { sub_type: 'ANYTHING' },
+                        schema: [
+                          'EMAIL',
+                          'DOBM',
+                          'DOBD',
+                          'DOBY',
+                          'PHONE',
+                          'GEN',
+                          'FI',
+                          'MADID',
+                          'ZIP',
+                          'ST',
+                          'COUNTRY',
+                        ],
+                        data: [
+                          [
+                            'shrouti@abc.com',
+                            '2',
+                            '13',
+                            '2013',
+                            '@09432457768',
+                            'f',
+                            'Ms.',
+                            'abc',
+                            'ZIP ',
+                            '123abc ',
+                            'IN',
+                          ],
+                        ],
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [generateMetadata(2)],
+              batched: false,
+              statusCode: 200,
+              destination: esDestinationAudience,
+            },
+          ],
+        },
+      },
+    },
+    envOverrides: { FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY: 'ALL' },
   },
 ].map((d) => ({ ...d, mockFns }));

@@ -1,4 +1,5 @@
 const ivm = require('isolated-vm');
+const { validateIp } = require('./utils');
 const fetch = require('node-fetch');
 const { isNil, isObject, camelCase } = require('lodash');
 
@@ -278,9 +279,7 @@ async function createIvm(
       const geoStartTime = new Date();
       const geoTags = { ...trTags };
       try {
-        if (args.length < 1) {
-          throw new Error('ip address is required');
-        }
+        validateIp(args[0]);
         if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
         const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
           timeout: GEOLOCATION_TIMEOUT_IN_MS,

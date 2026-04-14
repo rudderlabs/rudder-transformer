@@ -56,15 +56,15 @@ Facebook Custom Audience supports the following user identifier fields:
 
 #### Name Fields (LN, FN, FI)
 
-- **LN/FN**: Remove special characters except `#$%&'*+/`, convert to lowercase
-- **FI**: Remove special characters except `!"#$%&'()*+,-./`, convert to lowercase
+- **LN/FN**: Trim, lowercase, remove ASCII punctuation (`!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~` and backtick). Spaces, digits, accented letters, and non-ASCII (UTF-8) characters are preserved.
+- **FI**: Trim, lowercase, remove special characters except `!"#$%&'()*+,-./`
 - **Hashing**: SHA-256 applied
 
 #### Geographic Fields (CT, ST, ZIP, COUNTRY)
 
-- **CT/ST**: Remove non-alphabetic characters, remove spaces, lowercase
-- **ZIP**: Remove spaces, lowercase
-- **COUNTRY**: Lowercase
+- **CT/ST**: Trim, remove non-alphabetic characters, remove spaces, lowercase
+- **ZIP**: Trim, remove spaces and dashes, lowercase
+- **COUNTRY**: Trim, lowercase
 - **Hashing**: SHA-256 applied
 
 #### Special Fields
@@ -169,13 +169,8 @@ if (!checkSubsetOfArray(schemaFields, userSchema)) {
 ### Step 3: Data Formatting
 
 ```javascript
-// Apply formatting rules
-if (isHashRequired && !disableFormat) {
-  updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-}
-
-// Apply hashing
-dataElement = getUpdatedDataElement(dataElement, isHashRequired, eachProperty, updatedProperty);
+// Apply formatting and hashing
+dataElement = processAndAppendDataElement(dataElement, isHashRequired, eachProperty, userProperty);
 ```
 
 ### Step 4: Batching

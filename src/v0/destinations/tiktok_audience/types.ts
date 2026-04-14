@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ACTION_MAP } from './config';
 
-export const TiktokAudienceDestinationSchema = z
+const TiktokAudienceDestinationSchema = z
   .object({
     Config: z
       .object({
@@ -11,7 +11,7 @@ export const TiktokAudienceDestinationSchema = z
   })
   .passthrough();
 
-export const TiktokAudienceMessageSchema = z
+const TiktokAudienceMessageSchema = z
   .object({
     type: z.enum(['audienceList'], {
       required_error: 'message Type is not present. Aborting message.',
@@ -59,7 +59,7 @@ export const TiktokAudienceMessageSchema = z
   })
   .passthrough();
 
-export const TiktokAudienceMetadataSchema = z
+const TiktokAudienceMetadataSchema = z
   .object({
     secret: z
       .object({
@@ -70,7 +70,7 @@ export const TiktokAudienceMetadataSchema = z
   })
   .passthrough();
 
-export const TiktokAudienceRouterRequestSchema = z
+export const TiktokAudienceListRouterRequestSchema = z
   .object({
     message: TiktokAudienceMessageSchema,
     destination: TiktokAudienceDestinationSchema,
@@ -78,4 +78,4 @@ export const TiktokAudienceRouterRequestSchema = z
   })
   .passthrough();
 
-export type TiktokAudienceRequest = z.infer<typeof TiktokAudienceRouterRequestSchema>;
+export type TiktokAudienceListRequest = z.infer<typeof TiktokAudienceListRouterRequestSchema>;

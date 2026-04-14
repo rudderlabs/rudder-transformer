@@ -97,7 +97,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click', 'Page view', 'search')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click', 'Page view', 'search')`,
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
@@ -116,18 +116,21 @@ export const networkCallsData = [
               conversionAction: {
                 resourceName: 'customers/1112223333/conversionActions/848898416',
                 name: 'Sign-up - click',
+                ownerCustomer: 'customers/1112223333',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/1112223333/conversionActions/111222333',
                 name: 'Page view',
+                ownerCustomer: 'customers/1112223333',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/1112223333/conversionActions/444555666',
                 name: 'search',
+                ownerCustomer: 'customers/1112223333',
               },
             },
           ],
@@ -142,7 +145,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click')`,
       },
       params: { destination: 'google_adwords_offline_conversion' },
       headers: {
@@ -161,6 +164,7 @@ export const networkCallsData = [
               conversionAction: {
                 resourceName: 'customers/1112223333/conversionActions/848898416',
                 name: 'Sign-up - click',
+                ownerCustomer: 'customers/1112223333',
               },
             },
           ],
@@ -175,7 +179,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click', 'Page view', 'search')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Sign-up - click', 'Page view', 'search')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -191,18 +195,21 @@ export const networkCallsData = [
               conversionAction: {
                 resourceName: 'customers/9625812972/conversionActions/848898416',
                 name: 'Sign-up - click',
+                ownerCustomer: 'customers/9625812972',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/9625812972/conversionActions/111222333',
                 name: 'Page view',
+                ownerCustomer: 'customers/9625812972',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/9625812972/conversionActions/444555666',
                 name: 'search',
+                ownerCustomer: 'customers/9625812972',
               },
             },
           ],
@@ -217,7 +224,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Data Reading Guide', 'Order Completed', 'Sign-up - click', 'Outbound click (rudderstack.com)', 'Page view', 'Store sales')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Data Reading Guide', 'Order Completed', 'Sign-up - click', 'Outbound click (rudderstack.com)', 'Page view', 'Store sales')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -233,36 +240,42 @@ export const networkCallsData = [
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/568898416',
                 name: 'Data Reading Guide',
+                ownerCustomer: 'customers/7693729833',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/948898416',
                 name: 'Order Completed',
+                ownerCustomer: 'customers/7693729833',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/848898416',
                 name: 'Sign-up - click',
+                ownerCustomer: 'customers/7693729833',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/848898416',
                 name: 'Outbound click (rudderstack.com)',
+                ownerCustomer: 'customers/7693729833',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/111222333',
                 name: 'Page view',
+                ownerCustomer: 'customers/7693729833',
               },
             },
             {
               conversionAction: {
                 resourceName: 'customers/7693729833/conversionActions/444555666',
                 name: 'Store sales',
+                ownerCustomer: 'customers/7693729833',
               },
             },
           ],
@@ -277,7 +290,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234556775/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Store sales')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Store sales')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -293,6 +306,7 @@ export const networkCallsData = [
               conversionAction: {
                 resourceName: 'customers/1234556775/conversionActions/948898416',
                 name: 'Store sales',
+                ownerCustomer: 'customers/1234556775',
               },
             },
           ],
@@ -770,7 +784,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('cost', 'revenue')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('cost', 'revenue')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -806,7 +820,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/9625812972/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -842,7 +856,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/7693729833/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -878,7 +892,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1112223333/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -914,7 +928,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/1234567891/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
+        query: `SELECT conversion_custom_variable.name, conversion_custom_variable.resource_name, conversion_custom_variable.owner_customer FROM conversion_custom_variable WHERE conversion_custom_variable.name IN ('revenue', 'cost')`,
       },
       headers: {
         Authorization: authHeader1,
@@ -1472,7 +1486,7 @@ export const networkCallsData = [
     httpReq: {
       url: `https://googleads.googleapis.com/${API_VERSION}/customers/9998887777/googleAds:searchStream`,
       data: {
-        query: `SELECT conversion_action.name, conversion_action.resource_name FROM conversion_action WHERE conversion_action.name IN ('Purchase Conversion')`,
+        query: `SELECT conversion_action.name, conversion_action.resource_name, conversion_action.owner_customer FROM conversion_action WHERE conversion_action.name IN ('Purchase Conversion')`,
       },
       headers: {
         Authorization: authHeader401Test,

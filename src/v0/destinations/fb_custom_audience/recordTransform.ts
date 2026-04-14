@@ -5,7 +5,6 @@ import {
   ConfigurationError,
   groupByInBatches,
   forEachInBatches,
-  mapInBatches,
 } from '@rudderstack/integrations-lib';
 import type { Metadata } from '../../../types';
 import type {
@@ -22,14 +21,15 @@ import {
   checkSubsetOfArray,
   returnArrayOfSubarrays,
   getSuccessRespEvents,
+  getErrorRespEvents,
+  generateErrorObject,
   isEventSentByVDMV2Flow,
   isEventSentByVDMV1Flow,
   isDefinedAndNotNullAndNotEmpty,
 } from '../../util';
 import { getErrorResponse, createFinalResponse } from '../../util/recordUtils';
 import {
-  ensureApplicableFormat,
-  getUpdatedDataElement,
+  processAndAppendDataElement,
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
   responseBuilderSimple,
@@ -49,45 +49,42 @@ const processRecord = (
   record: FbRecordEvent,
   userSchema: string[],
   isHashRequired: boolean,
-  disableFormat: boolean | undefined,
-  workspaceId: string,
-  destinationId: string,
-): { dataElement: unknown[]; metadata: Metadata } => {
+  disableFormat: boolean,
+): { metadata: Metadata } & ({ dataElement: unknown[] } | { error: string }) => {
   const fields = record.message.fields!;
   let dataElement: unknown[] = [];
   let nullUserData = true;
 
-  userSchema.forEach((eachProperty) => {
-    const userProperty = fields[eachProperty];
-    let updatedProperty: unknown = userProperty;
+  try {
+    userSchema.forEach((eachProperty) => {
+      const userProperty = fields[eachProperty];
 
-    if (isHashRequired && !disableFormat) {
-      updatedProperty = ensureApplicableFormat(
+      dataElement = processAndAppendDataElement(
+        dataElement,
+        isHashRequired,
+        disableFormat,
         eachProperty,
         userProperty,
-        workspaceId,
-        destinationId,
+        record.metadata.workspaceId,
+        record.destination.ID,
       );
-    }
 
-    dataElement = getUpdatedDataElement(
-      dataElement,
-      isHashRequired,
-      eachProperty,
-      updatedProperty,
-      record.metadata.workspaceId,
-      record.destination.ID,
-    );
-
-    if (dataElement[dataElement.length - 1]) {
-      nullUserData = false;
-    }
-  });
+      if (dataElement[dataElement.length - 1]) {
+        nullUserData = false;
+      }
+    });
+  } catch (err) {
+    return {
+      metadata: record.metadata,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 
   if (nullUserData) {
-    throw new InstrumentationError(
-      `All user properties [${userSchema.join(', ')}] are invalid or null. At least one valid field is required.`,
-    );
+    return {
+      error: `All user properties [${userSchema.join(', ')}] are invalid or null. At least one valid field is required.`,
+      metadata: record.metadata,
+    };
   }
 
   return { dataElement, metadata: record.metadata };
@@ -112,20 +109,32 @@ const processRecordEventArray = async (
   const { userSchema, isHashRequired, disableFormat, paramsPayload, prepareParams } = config;
   const toSendEvents: unknown[] = [];
   const metadata: Metadata[] = [];
+  const invalidEvents: unknown[] = [];
 
   await forEachInBatches(recordChunksArray, async (recordArray) => {
-    const data = await mapInBatches(recordArray, async (input) => {
-      const { dataElement, metadata: recordMetadata } = processRecord(
-        input,
-        userSchema,
-        isHashRequired,
-        disableFormat,
-        input.metadata.workspaceId,
-        destination.ID,
-      );
-      metadata.push(recordMetadata);
-      return dataElement;
+    const data: unknown[][] = [];
+    await forEachInBatches(recordArray, async (input) => {
+      const result = processRecord(input, userSchema, isHashRequired, disableFormat);
+      if ('error' in result) {
+        const error = new InstrumentationError(result.error);
+        const errorObj = generateErrorObject(error);
+        invalidEvents.push(
+          getErrorRespEvents(
+            [result.metadata],
+            errorObj.status,
+            errorObj.message,
+            errorObj.statTags,
+          ),
+        );
+      } else {
+        data.push(result.dataElement!);
+        metadata.push(result.metadata);
+      }
     });
+
+    if (data.length === 0) {
+      return;
+    }
 
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
     prepareFinalPayload.schema = userSchema;
@@ -144,12 +153,17 @@ const processRecordEventArray = async (
         operationCategory: operation,
       };
 
-      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId);
+      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId, workspaceId!);
       toSendEvents.push(builtResponse);
     });
   });
 
-  return getSuccessRespEvents(toSendEvents, metadata, destination, true);
+  const successResponse =
+    toSendEvents.length > 0
+      ? getSuccessRespEvents(toSendEvents, metadata, destination, true)
+      : null;
+
+  return { successResponse, invalidEvents };
 };
 
 /**
@@ -167,7 +181,7 @@ async function preparePayload(
     type?: string;
     subType?: string;
     isHashRequired: boolean;
-    disableFormat?: boolean;
+    disableFormat: boolean;
     isValueBasedAudience?: boolean;
   },
 ) {
@@ -258,14 +272,20 @@ async function preparePayload(
   const insertResponse = await processAction('insert', 'add');
   const updateResponse = await processAction('update', 'add');
 
-  const errorResponse = getErrorResponse(groupedRecordsByAction);
+  const errorResponse = [
+    ...getErrorResponse(groupedRecordsByAction),
+    ...(deleteResponse?.invalidEvents || []),
+    ...(insertResponse?.invalidEvents || []),
+    ...(updateResponse?.invalidEvents || []),
+  ];
 
   const finalResponse = createFinalResponse(
-    deleteResponse,
-    insertResponse,
-    updateResponse,
+    deleteResponse?.successResponse,
+    insertResponse?.successResponse,
+    updateResponse?.successResponse,
     errorResponse,
   );
+
   if (finalResponse.length === 0) {
     throw new InstrumentationError(
       'Missing valid parameters, unable to generate transformed payload',

@@ -647,6 +647,35 @@ const destinations: Destination[] = [
     Transformations: [],
     WorkspaceID: 'test-workspace-id',
   },
+  {
+    Config: {
+      apiUrl: 'http://abc.com/contacts',
+      auth: 'noAuth',
+      method: 'POST',
+      format: 'JSON',
+      headers: [
+        {
+          to: '$.h1',
+          from: "'val1'",
+        },
+        {
+          to: '$.header_access_token',
+          from: '$.traits.address',
+        },
+      ],
+    },
+    DestinationDefinition: {
+      DisplayName: displayName,
+      ID: '123',
+      Name: destTypeInUpperCase,
+      Config: {},
+    },
+    Enabled: true,
+    ID: '123',
+    Name: destTypeInUpperCase,
+    Transformations: [],
+    WorkspaceID: 'test-workspace-id',
+  },
 ];
 
 const traits = {
@@ -698,7 +727,7 @@ const properties = {
 const processorInstrumentationErrorStatTags = {
   destType: destTypeInUpperCase,
   errorCategory: 'dataValidation',
-  errorType: 'configuration',
+  errorType: 'instrumentation',
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',

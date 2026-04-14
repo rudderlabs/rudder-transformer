@@ -1,5 +1,11 @@
 import { z } from 'zod';
-import { BaseError, formatZodError, InstrumentationError } from '@rudderstack/integrations-lib';
+import {
+  BaseError,
+  formatZodError,
+  InstrumentationError,
+  JsonSchemaGenerator,
+} from '@rudderstack/integrations-lib';
+import logger from '../../logger';
 import { httpGET } from '../../adapters/network';
 import { processAxiosResponse } from '../../adapters/utils/networkUtils';
 import {
@@ -12,6 +18,7 @@ import {
 } from '../../types/sourceHydration';
 import { HTTP_STATUS_CODES } from '../../v0/util/constant';
 import { errorResponseHandler } from '../../v0/util/facebookUtils/networkHandler';
+import { isHttpStatusSuccess } from '../../v0/util';
 
 // Complete schema
 const FacebookLeadAdsHydrationInputSchema = SourceHydrationRequestSchema.extend({
@@ -81,7 +88,7 @@ async function fetchLeadData(
 
   const processedResponse = processAxiosResponse(clientResponse);
 
-  if (processedResponse.status === HTTP_STATUS_CODES.OK) {
+  if (isHttpStatusSuccess(processedResponse.status)) {
     return {
       data: processedResponse.response,
       statusCode: HTTP_STATUS_CODES.OK,
@@ -103,6 +110,11 @@ async function fetchLeadData(
     }
     throw new Error(`Unexpected: unknown error type ${error}`);
   }
+  logger.error(`[facebook_lead_ads_native] Non-OK response from Facebook API`, {
+    status: processedResponse.status,
+    responseSchema: JSON.stringify(JsonSchemaGenerator.generate(processedResponse)),
+    response: processedResponse.response,
+  });
   // This should never be reached since errorResponseHandler always throws for errors
   throw new Error('Unexpected: errorResponseHandler did not throw for non-OK response');
 }
@@ -149,7 +161,11 @@ export async function hydrate(input: SourceHydrationRequest): Promise<SourceHydr
 
       // Convert field_data array to traits object
       result.data.field_data?.forEach((field) => {
-        if (field.values.length > 0) {
+        if (!Array.isArray(field.values)) {
+          logger.warn('[facebook_lead_ads_native] field values is not an array', {
+            fieldSchema: JsonSchemaGenerator.generate(field),
+          });
+        } else if (field.values.length > 0) {
           const [firstValue] = field.values;
           traits[field.name] = firstValue;
         }

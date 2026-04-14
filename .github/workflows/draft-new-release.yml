@@ -27,7 +27,7 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/'))
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -47,7 +47,7 @@ jobs:
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Setup Node
-        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -103,7 +103,7 @@ jobs:
           npm run release -- --skip.commit --skip.tag --no-verify
 
       - name: Create verified commit via API
-        uses: ryancyq/github-signed-commit@e9f3b28c80da7be66d24b8f501a5abe82a6b855f # v1.2.0
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:

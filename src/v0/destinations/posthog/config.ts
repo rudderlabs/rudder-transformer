@@ -42,4 +42,10 @@ const PROPERTY = {
 
 const MAPPING_CONFIG = getMappingConfig({ ...CONFIG_CATEGORIES, PROPERTY }, __dirname);
 
-export { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY };
+// PostHog documents a 1 MB event size limit, but through trial and error we found
+// that events under 1 MB are also rejected. To keep headroom we set the limit to
+// 900,000 bytes (~100 KB buffer).
+// https://posthog.com/docs/data/ingestion-warnings
+const MAX_EVENT_SIZE_BYTES = 900_000;
+
+export { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG, PROPERTY, MAX_EVENT_SIZE_BYTES };

@@ -3,7 +3,14 @@ const { prepareProxyRequest, httpSend } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
 const errorResponseHandler = (destinationResponse, dest) => {
-  const { status } = destinationResponse;
+  const { status, response } = destinationResponse;
+  if (status === 409) {
+    throw new RetryableError(
+      `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}. ${JSON.stringify(response)}`,
+      500,
+      destinationResponse,
+    );
+  }
   if (status === 408) {
     throw new RetryableError(
       `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}`,

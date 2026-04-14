@@ -11,7 +11,9 @@ const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
-const eventSchemaCache = new NodeCache();
+const eventSchemaCacheTTL =
+  parseInt(process.env.EVENT_SCHEMA_CACHE_TTL_SECS, 10) || 2 * SECONDS_IN_DAY;
+const eventSchemaCache = new NodeCache({ stdTTL: eventSchemaCacheTTL });
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const { isEmptyObject } = require('../v0/util');
@@ -186,6 +188,10 @@ async function validate(event) {
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
+      // ajv.compile() stores the schema in ajv's internal _cache (Map) and refs (Object) on every call.
+      // Since eventSchemaCache already holds the compiled validator, ajv doesn't need to retain the schema.
+      // Without this cleanup, the ajv instance accumulates unbounded memory
+      ajv.removeSchema(eventSchema);
     }
 
     const valid = validateEvent(event.message);

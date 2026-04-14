@@ -15,6 +15,7 @@ jest.mock('../../../src/util/stats', () => ({
 jest.mock('../../../src/util/utils', () => ({
   fetchWithDnsWrapper: jest.fn(),
   extractStackTraceUptoLastSubstringMatch: jest.fn((trace) => trace),
+  validateIp: jest.requireActual('../../../src/util/utils').validateIp,
 }));
 
 jest.mock('node-fetch', () => jest.fn());
@@ -533,6 +534,23 @@ describe('Context Reset Utilities', () => {
       expect(mockReject.applyIgnored).toHaveBeenCalledWith(
         undefined,
         [expect.any(Object)] // ExternalCopy error
+      );
+    });
+
+    test('should reject invalid IP address', async () => {
+      const mockResolve = {
+        applyIgnored: jest.fn(),
+      };
+      const mockReject = {
+        applyIgnored: jest.fn(),
+      };
+
+      await geolocationCallback(mockResolve, mockReject, '../../metrics');
+
+      expect(mockFetch).not.toHaveBeenCalled();
+      expect(mockReject.applyIgnored).toHaveBeenCalledWith(
+        undefined,
+        [expect.objectContaining({ message: 'invalid ip address' })]
       );
     });
 

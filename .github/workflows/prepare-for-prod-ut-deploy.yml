@@ -23,7 +23,7 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -63,8 +63,8 @@ jobs:
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
-  create-pull-request:
-    name: Update Helm Charts For Production and Create Pull Request
+  create-pull-request-shared-user-transformers:
+    name: Create PR for Shared User-Transformers (devops)
     runs-on: ubuntu-latest
     needs: [generate-tag-names, build-user-transformer-image]
 
@@ -73,10 +73,11 @@ jobs:
 
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
+    outputs:
+      pr_url: ${{ steps.shared-pr.outputs.pr_url }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -90,87 +91,169 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-devops # to access cross-repo
 
-      - name: Checkout
+      - name: Checkout Devops Repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 1
+          repository: rudderlabs/rudder-devops
+          token: ${{ steps.generate-token.outputs.token }}
 
-      - name: Print Docker Image Tags
+      - name: Update image tags in devops repo for shared user-transformers
         run: |
-          echo "User Transformer: $UT_TAG_NAME"
+          cd helm-charts/shared-services/per-az/environment/production
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" production.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" enterprise/enterprise.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" multi-tenant/multi-tenant.yaml
+          cd ../../../../config-be-rudder-transformer/environment/prod
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" base.yaml
 
-      - name: Clone Devops Repo
+      - name: Create shared user-transformers branch on remote
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          gh repo clone rudderlabs/rudder-devops
+          BASE_SHA=$(git rev-parse HEAD)
+          gh api repos/rudderlabs/rudder-devops/git/refs \
+            --method POST \
+            -f ref="refs/heads/shared-user-transformer-$UT_TAG_NAME" \
+            -f sha="$BASE_SHA"
 
-      - name: Extract branch name
-        id: extract_branch_name
-        run: |
-          cd rudder-devops
-          branch_name=$(git rev-parse --abbrev-ref HEAD)
-          echo "branch_name=$branch_name"
-          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
-
-      - name: Update Helm Charts and Raise Pull Request
+      - name: Create verified commit for shared user-transformers
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          cd rudder-devops
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
-          git checkout -b shared-user-transformer-$UT_TAG_NAME
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          repository: rudderlabs/rudder-devops
+          branch-name: shared-user-transformer-${{ env.UT_TAG_NAME }}
+          commit-message: 'chore: upgrade shared user-transformers to ${{ env.UT_TAG_NAME }}'
+          files: |
+            helm-charts/shared-services/per-az/environment/production/production.yaml
+            helm-charts/shared-services/per-az/environment/production/enterprise/enterprise.yaml
+            helm-charts/shared-services/per-az/environment/production/multi-tenant/multi-tenant.yaml
+            helm-charts/config-be-rudder-transformer/environment/prod/base.yaml
 
-          cd helm-charts/shared-services/per-az/environment/production
-          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" production.yaml
-          git add production.yaml
-
-          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" enterprise/enterprise.yaml
-          git add enterprise/enterprise.yaml
-
-          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          git add multi-tenant/multi-tenant.yaml
-
-          cd -
-          cd helm-charts/config-be-rudder-transformer/environment/prod
-          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" base.yaml
-          git add base.yaml
-
-          git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
-          git push -u origin shared-user-transformer-$UT_TAG_NAME
-
-          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
-          echo "SHARED_PR_URL=$PR_URL" >> $GITHUB_ENV
-
-      - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
+      - name: Create PR for shared user-transformers
+        id: shared-pr
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          cd rudder-devops
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
-          git checkout -b hosted-user-transformer-$UT_TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
+          PR_URL=$(gh pr create \
+            --repo rudderlabs/rudder-devops \
+            --base master \
+            --head "shared-user-transformer-$UT_TAG_NAME" \
+            --title "chore: upgrade shared user-transformers to $UT_TAG_NAME" \
+            --body "Automated PR to update production shared user-transformers image to $UT_TAG_NAME")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
+  create-pull-request-hosted-user-transformer:
+    name: Create PR for Hosted User-Transformer (devops)
+    runs-on: ubuntu-latest
+    needs: [generate-tag-names, build-user-transformer-image]
+
+    permissions:
+      contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)
+
+    env:
+      UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+    outputs:
+      pr_url: ${{ steps.hosted-pr.outputs.pr_url }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        with:
+          egress-policy: audit
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits and push branches
+          permission-pull-requests: write # to create and update PRs
+          repositories: rudder-devops # to access cross-repo
+
+      - name: Checkout Devops Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: rudderlabs/rudder-devops
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Update image tag in devops repo for hosted user-transformer
+        run: |
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          git add hostedmtedmt.yaml
 
-          git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
-          git push -u origin hosted-user-transformer-$UT_TAG_NAME
-
-          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
-          echo "HOSTED_PR_URL=$PR_URL" >> $GITHUB_ENV
-
-      - name: Update helm charts and raise pull request for enterprise customers on dedicated transformers
+      - name: Create hosted user-transformer branch on remote
         env:
-          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          cd rudder-devops
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
-          git checkout -b dedicated-user-transformer-$TAG_NAME
+          BASE_SHA=$(git rev-parse HEAD)
+          gh api repos/rudderlabs/rudder-devops/git/refs \
+            --method POST \
+            -f ref="refs/heads/hosted-user-transformer-$UT_TAG_NAME" \
+            -f sha="$BASE_SHA"
 
+      - name: Create verified commit for hosted user-transformer
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          repository: rudderlabs/rudder-devops
+          branch-name: hosted-user-transformer-${{ env.UT_TAG_NAME }}
+          commit-message: 'chore: upgrade hosted user-transformer to ${{ env.UT_TAG_NAME }}'
+          files: |
+            customer-objects/multi-tenant-us/hostedmtedmt.yaml
+
+      - name: Create PR for hosted user-transformer
+        id: hosted-pr
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr create \
+            --repo rudderlabs/rudder-devops \
+            --base master \
+            --head "hosted-user-transformer-$UT_TAG_NAME" \
+            --title "chore: upgrade hosted user-transformer to $UT_TAG_NAME" \
+            --body "Automated PR to update production hosted user-transformer image to $UT_TAG_NAME")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
+  create-pull-request-dedicated-user-transformers:
+    name: Create PR for Dedicated User-Transformers (devops)
+    runs-on: ubuntu-latest
+    needs: [generate-tag-names, build-user-transformer-image]
+
+    permissions:
+      contents: read # to checkout repository code; cross-repo writes use app token (create-github-app-token)
+
+    env:
+      UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
+    outputs:
+      pr_url: ${{ steps.dedicated-pr.outputs.pr_url }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        with:
+          egress-policy: audit
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+          permission-contents: write # to create commits and push branches
+          permission-pull-requests: write # to create and update PRs
+          repositories: rudder-devops # to access cross-repo
+
+      - name: Checkout Devops Repo
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          repository: rudderlabs/rudder-devops
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Collect dedicated user-transformer files and update tags
+        id: collect-dedicated-files
+        run: |
           cd customer-objects
 
           declare -a enabled_ut_customers=()
@@ -182,23 +265,78 @@ jobs:
               [[ -f $f ]] || continue
 
               enabled="$(yq e '.spec.user-transformer.enabled' $f)"
-              if [ $enabled == "true" ]; then
-                  enabled_ut_customers+=( $f )
+              if [ "$enabled" == "true" ]; then
+                enabled_ut_customers+=( $f )
               fi
             done
           done
 
-          # bump up the customers version and repository information
+          # bump up the customers version
+          files_list=""
           for customer in "${enabled_ut_customers[@]}"; do
             yq eval -i ".spec.user-transformer.image.version=\"$UT_TAG_NAME\"" $customer
-            git add $customer
+            # Convert relative path (./enterprise-us/foo.yaml) to repo-root path
+            files_list="${files_list}customer-objects/${customer#./}\n"
           done
 
-          git commit -m "chore: upgrade dedicated user transformers to $TAG_NAME"
-          git push -u origin dedicated-user-transformer-$TAG_NAME
+          # Write files list to a temp file for use by signed commit action
+          printf "%b" "$files_list" > /tmp/dedicated_files.txt
+          echo "Files to commit:"
+          cat /tmp/dedicated_files.txt
 
-          PR_URL=$(gh pr create --fill | grep -o 'https://github.com/[^/]*/[^/]*/pull/[0-9]*')
-          echo "DEDICATED_PR_URL=$PR_URL" >> $GITHUB_ENV
+          # Store as multiline output
+          {
+            echo "files<<EOF"
+            cat /tmp/dedicated_files.txt
+            echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Create dedicated user-transformer branch on remote
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          BASE_SHA=$(git rev-parse HEAD)
+          gh api repos/rudderlabs/rudder-devops/git/refs \
+            --method POST \
+            -f ref="refs/heads/dedicated-user-transformer-$TAG_NAME" \
+            -f sha="$BASE_SHA"
+
+      - name: Create verified commit for dedicated user-transformers
+        uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        with:
+          repository: rudderlabs/rudder-devops
+          branch-name: dedicated-user-transformer-${{ env.TAG_NAME }}
+          commit-message: 'chore: upgrade dedicated user transformers to ${{ env.TAG_NAME }}'
+          files: ${{ steps.collect-dedicated-files.outputs.files }}
+
+      - name: Create PR for dedicated user-transformers
+        id: dedicated-pr
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr create \
+            --repo rudderlabs/rudder-devops \
+            --base master \
+            --head "dedicated-user-transformer-$TAG_NAME" \
+            --title "chore: upgrade dedicated user transformers to $TAG_NAME" \
+            --body "Automated PR to update dedicated user transformer default version to $TAG_NAME")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
+  notify-control-plane:
+    name: Notify Control Plane Team
+    runs-on: ubuntu-latest
+    needs:
+      - generate-tag-names
+      - create-pull-request-shared-user-transformers
+      - create-pull-request-hosted-user-transformer
+      - create-pull-request-dedicated-user-transformers
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
+        with:
+          egress-policy: audit
 
       - name: Notify Control Plane Team
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
@@ -214,7 +352,7 @@ jobs:
                 {
                   "type": "header",
                   "text": {
-                    "type": "plain_text", 
+                    "type": "plain_text",
                     "text": "🚀 User Transformer Deployment - DevOps PRs Ready"
                   }
                 },
@@ -222,7 +360,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Version: `${{ needs.generate-tag-names.outputs.tag_name_ut }}`\n\nPRs created for review:\n• <${{ env.SHARED_PR_URL }}|Shared User Transformer>\n• <${{ env.HOSTED_PR_URL }}|Hosted User Transformer>\n• <${{ env.DEDICATED_PR_URL }}|Dedicated User Transformer>\n\nPlease review and merge the DevOps PRs."
+                    "text": "Version: `${{ needs.generate-tag-names.outputs.tag_name_ut }}`\n\nPRs created for review:\n• <${{ needs.create-pull-request-shared-user-transformers.outputs.pr_url }}|Shared User Transformer>\n• <${{ needs.create-pull-request-hosted-user-transformer.outputs.pr_url }}|Hosted User Transformer>\n• <${{ needs.create-pull-request-dedicated-user-transformers.outputs.pr_url }}|Dedicated User Transformer>\n\nPlease review and merge the DevOps PRs."
                   }
                 }
               ]

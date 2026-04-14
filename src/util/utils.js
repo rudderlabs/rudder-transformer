@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
+const ipaddr = require('ipaddr.js');
 const { AsyncLocalStorage } = require('node:async_hooks');
 
 const util = require('util');
@@ -15,8 +16,18 @@ const dnsCallbackStorage = new AsyncLocalStorage();
 
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
-const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
+const LOCAL_HOST_NAMES_LIST = [
+  'localhost',
+  '127.0.0.1',
+  '0.0.0.0',
+  '[::]',
+  '[::1]',
+  '[::ffff:127.0.0.1]',
+  '[::ffff:7f00:1]',
+];
 const LOCALHOST_OCTET = '127.';
+
+const isBlockedIP = (address) => !address || address.startsWith('127.') || address === '0.0.0.0';
 const RECORD_TYPE_A = 4; // ipv4
 const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
 const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;
@@ -58,10 +69,8 @@ const staticLookup =
           onDnsResolved({ resolveStartTime, cacheHit, error: false });
         }
 
-        if (!address) {
-          cb(new Error(`resolved empty list of IP address for ${hostname}`), null);
-        } else if (address.startsWith(LOCALHOST_OCTET)) {
-          cb(new Error(`cannot use ${address} as IP address`), null);
+        if (isBlockedIP(address)) {
+          cb(new Error(`cannot use ${address || 'empty'} as IP address for ${hostname}`), null);
         } else if (options?.all) {
           cb(null, [{ address, family: RECORD_TYPE_A }]);
         } else {
@@ -290,6 +299,15 @@ function shouldGroupByDestinationConfig(destination) {
   return destination?.hasDynamicConfig !== false;
 }
 
+function validateIp(ip) {
+  if (!ip) {
+    throw new Error('ip address is required');
+  }
+  if (!ipaddr.isValid(ip)) {
+    throw new Error('invalid ip address');
+  }
+}
+
 module.exports = {
   RespStatusError,
   RetryRequestError,
@@ -304,4 +322,5 @@ module.exports = {
   dnsCallbackStorage,
   shouldSkipDynamicConfigProcessing,
   shouldGroupByDestinationConfig,
+  validateIp,
 };

@@ -18,4 +18,3 @@ After making code changes, always run these checks before committing:
 ## Conventions
 
 - Commit messages follow conventional commits: `type(scope): description` (e.g., `feat(fb_custom_audience): ...`, `fix(gaoc): ...`)
-- Config fields coming from the dashboard are always defined; only check for non-empty values, not null/undefined.

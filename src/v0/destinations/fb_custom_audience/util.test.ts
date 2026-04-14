@@ -24,8 +24,6 @@ const basePayload: WrappedResponse = {
   operationCategory: '',
 };
 
-const TEST_PAYLOAD_WORKSPACE_ID = 'test-workspace';
-
 const baseResponse = {
   version: '1',
   type: 'REST',
@@ -34,18 +32,19 @@ const baseResponse = {
   headers: {},
   params: {
     access_token: 'ABC',
-    payload: {
-      schema: ['EMAIL', 'FI'],
-      data: [
-        [
-          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-        ],
-      ],
-    },
   },
   body: {
-    JSON: {},
+    JSON: {
+      payload: {
+        schema: ['EMAIL', 'FI'],
+        data: [
+          [
+            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+          ],
+        ],
+      },
+    },
     JSON_ARRAY: {},
     XML: {},
     FORM: {},
@@ -437,7 +436,7 @@ describe('FB_custom_audience utils test', () => {
       const expectedResponse = baseResponse;
       expectedResponse.method = 'POST';
       expect(
-        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
+        responseBuilderSimple(payload, '23848494844100489'),
       ).toEqual(expectedResponse);
     });
 
@@ -447,7 +446,7 @@ describe('FB_custom_audience utils test', () => {
       const expectedResponse = baseResponse;
       expectedResponse.method = 'DELETE';
       expect(
-        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
+        responseBuilderSimple(payload, '23848494844100489'),
       ).toEqual(expectedResponse);
     });
 
@@ -455,24 +454,10 @@ describe('FB_custom_audience utils test', () => {
       let emptyPayload: WrappedResponse | undefined;
       expect.assertions(1);
       try {
-        responseBuilderSimple(emptyPayload, '', '');
+        responseBuilderSimple(emptyPayload, '');
       } catch (error: any) {
         expect(error.message).toEqual('Payload could not be constructed');
       }
-    });
-
-    it('puts payload in body.JSON and keeps only auth params when flag is ALL', () => {
-      process.env.FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY = 'ALL';
-      const payload: WrappedResponse = { ...basePayload, operationCategory: 'add' };
-      expect(
-        responseBuilderSimple(payload, '23848494844100489', TEST_PAYLOAD_WORKSPACE_ID),
-      ).toEqual({
-        ...baseResponse,
-        params: { access_token: 'ABC' },
-        body: { ...baseResponse.body, JSON: { payload: basePayload.responseField.payload } },
-        method: 'POST',
-      });
-      delete process.env.FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY;
     });
   });
 });

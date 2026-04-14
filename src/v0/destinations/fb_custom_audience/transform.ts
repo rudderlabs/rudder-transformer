@@ -71,7 +71,7 @@ const preparePayload = (
     destinationId,
     workspaceId,
   );
-  return batchingWithPayloadSize(prepareFinalPayload, workspaceId);
+  return batchingWithPayloadSize(prepareFinalPayload);
 };
 
 // Function responsible for building the parameters for each event calls
@@ -229,7 +229,7 @@ const processEvent = (
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, audienceId, workspaceId));
+    respList.push(responseBuilderSimple(sendEvent, audienceId));
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {

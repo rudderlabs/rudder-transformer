@@ -271,7 +271,7 @@ export const testScenariosForV0API = [
     id: 'intercom_v0_other_scenario_5',
     name: 'intercom',
     description: '[Proxy v0 API] :: Scenario to test Conflict User Handling from Destination',
-    successCriteria: 'Should return 409 status code with error message',
+    successCriteria: 'Should return 500 status code with retryable error for 409 conflict',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -291,21 +291,35 @@ export const testScenariosForV0API = [
     },
     output: {
       response: {
-        status: 409,
+        status: 500,
         body: {
           output: {
+            status: 500,
+            message:
+              '[Intercom Response Handler] Request failed for destination intercom with status: 409. {"type":"error.list","request_id":"request126","errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test1"}]}',
             destinationResponse: {
-              errors: [
-                {
-                  code: 'conflict',
-                  message: 'A contact matching those details already exists with id=test1',
-                },
-              ],
-              request_id: 'request126',
-              type: 'error.list',
+              response: {
+                type: 'error.list',
+                request_id: 'request126',
+                errors: [
+                  {
+                    code: 'conflict',
+                    message: 'A contact matching those details already exists with id=test1',
+                  },
+                ],
+              },
+              status: 409,
             },
-            message: 'Request Processed Successfully',
-            status: 409,
+            statTags: {
+              destType: 'INTERCOM',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
           },
         },
       },
@@ -543,7 +557,7 @@ export const testScenariosForV1API = [
     id: 'intercom_v1_other_scenario_5',
     name: 'intercom',
     description: '[Proxy v1 API] :: Scenario to test Conflict User Handling from Destination',
-    successCriteria: 'Should return 409 status code with error message',
+    successCriteria: 'Should return 500 status code with retryable error for 409 conflict',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -569,7 +583,8 @@ export const testScenariosForV1API = [
         status: 200,
         body: {
           output: {
-            message: 'Request Processed Successfully',
+            message:
+              '[Intercom Response Handler] Request failed for destination intercom with status: 409. {"type":"error.list","request_id":"request126","errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test1"}]}',
             response: [
               {
                 error: JSON.stringify({
@@ -583,10 +598,20 @@ export const testScenariosForV1API = [
                   ],
                 }),
                 metadata: generateMetadata(1),
-                statusCode: 409,
+                statusCode: 500,
               },
             ],
-            status: 409,
+            statTags: {
+              destType: 'INTERCOM',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 500,
           },
         },
       },

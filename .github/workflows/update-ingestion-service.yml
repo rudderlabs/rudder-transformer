@@ -1,7 +1,7 @@
 name: Update Ingestion Service with Latest Transformer Version
 
 on:
-  workflow_run:
+  workflow_run: # zizmor: ignore[dangerous-triggers]
     workflows: ['Publish New GitHub Release']
     types:
       - completed

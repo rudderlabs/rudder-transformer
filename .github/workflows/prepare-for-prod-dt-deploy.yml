@@ -88,7 +88,21 @@ jobs:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
 
+      - name: Check if shared transformers branch already exists
+        id: check-shared-branch
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          BRANCH_NAME="shared-transformer-$TAG_NAME"
+          if gh api repos/rudderlabs/rudder-devops/git/ref/heads/$BRANCH_NAME > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Shared transformers branch $BRANCH_NAME already exists. Skipping."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Update image tags in devops repo for shared transformers
+        if: steps.check-shared-branch.outputs.exists == 'false'
         run: |
           cd helm-charts/shared-services/per-az/environment/production
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" production.yaml
@@ -98,6 +112,7 @@ jobs:
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
 
       - name: Create shared transformers branch on remote
+        if: steps.check-shared-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
@@ -108,6 +123,7 @@ jobs:
             -f sha="$BASE_SHA"
 
       - name: Create verified commit for shared transformers
+        if: steps.check-shared-branch.outputs.exists == 'false'
         uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -122,6 +138,7 @@ jobs:
             helm-charts/config-be-rudder-transformer/environment/prod/base.yaml
 
       - name: Create PR for shared transformers
+        if: steps.check-shared-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
@@ -164,12 +181,27 @@ jobs:
           repository: rudderlabs/rudder-devops
           token: ${{ steps.generate-token.outputs.token }}
 
+      - name: Check if hosted transformer branch already exists
+        id: check-hosted-branch
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          BRANCH_NAME="hosted-transformer-$TAG_NAME"
+          if gh api repos/rudderlabs/rudder-devops/git/ref/heads/$BRANCH_NAME > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Hosted transformer branch $BRANCH_NAME already exists. Skipping."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Update image tag in devops repo for hosted transformer
+        if: steps.check-hosted-branch.outputs.exists == 'false'
         run: |
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
 
       - name: Create hosted transformer branch on remote
+        if: steps.check-hosted-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
@@ -180,6 +212,7 @@ jobs:
             -f sha="$BASE_SHA"
 
       - name: Create verified commit for hosted transformer
+        if: steps.check-hosted-branch.outputs.exists == 'false'
         uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -191,6 +224,7 @@ jobs:
             customer-objects/multi-tenant-us/hostedmtedmt.yaml
 
       - name: Create PR for hosted transformer
+        if: steps.check-hosted-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
@@ -233,12 +267,27 @@ jobs:
           repository: rudderlabs/rudderstack-operator
           token: ${{ steps.generate-token.outputs.token }}
 
+      - name: Check if dedicated transformer branch already exists
+        id: check-dedicated-branch
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          BRANCH_NAME="dedicated-transformer-$TAG_NAME"
+          if gh api repos/rudderlabs/rudderstack-operator/git/ref/heads/$BRANCH_NAME > /dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Dedicated transformer branch $BRANCH_NAME already exists. Skipping."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Update image tag in operator repo for dedicated transformer
+        if: steps.check-dedicated-branch.outputs.exists == 'false'
         run: |
           cd operator-helm/valuefiles
           yq eval -i ".transformer.image.version=\"$TAG_NAME\"" values.yaml
 
       - name: Create dedicated transformer branch on remote
+        if: steps.check-dedicated-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
@@ -249,6 +298,7 @@ jobs:
             -f sha="$BASE_SHA"
 
       - name: Create verified commit for dedicated transformer
+        if: steps.check-dedicated-branch.outputs.exists == 'false'
         uses: ryancyq/github-signed-commit@d046f1493ec46c6df96e7c5a76ccbf2b1786bdf7 # use main branch with repository support
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
@@ -260,6 +310,7 @@ jobs:
             operator-helm/valuefiles/values.yaml
 
       - name: Create PR for dedicated transformer
+        if: steps.check-dedicated-branch.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |

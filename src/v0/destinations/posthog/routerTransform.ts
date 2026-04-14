@@ -20,7 +20,7 @@ class PostHogIntegration extends BatchDestination<PostHogPayload> {
     const eventSize = Buffer.byteLength(JSON.stringify(eventBody), 'utf8');
     if (eventSize > MAX_EVENT_SIZE_BYTES) {
       throw new InstrumentationError(
-        `Event size (${eventSize} bytes) exceeds PostHog's 1 MB limit. PostHog will reject this event with "maximum event size exceeded". Reduce the properties payload.`,
+        `Event size (${eventSize} bytes) exceeds PostHog's 1 MB limit. PostHog will reject this event with "maximum event size exceeded". Please reduce the size of the event properties to stay within the limit.`,
       );
     }
 

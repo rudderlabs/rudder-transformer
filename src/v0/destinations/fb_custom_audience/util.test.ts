@@ -435,9 +435,7 @@ describe('FB_custom_audience utils test', () => {
       payload.operationCategory = 'add';
       const expectedResponse = baseResponse;
       expectedResponse.method = 'POST';
-      expect(
-        responseBuilderSimple(payload, '23848494844100489'),
-      ).toEqual(expectedResponse);
+      expect(responseBuilderSimple(payload, '23848494844100489')).toEqual(expectedResponse);
     });
 
     it('returns correct response for delete payload', () => {
@@ -445,9 +443,7 @@ describe('FB_custom_audience utils test', () => {
       payload.operationCategory = 'remove';
       const expectedResponse = baseResponse;
       expectedResponse.method = 'DELETE';
-      expect(
-        responseBuilderSimple(payload, '23848494844100489'),
-      ).toEqual(expectedResponse);
+      expect(responseBuilderSimple(payload, '23848494844100489')).toEqual(expectedResponse);
     });
 
     it('throws when payload is empty', () => {

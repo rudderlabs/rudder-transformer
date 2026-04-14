@@ -45,9 +45,9 @@ const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
               ]
             ]
 } */
-const batchingWithPayloadSize = (
-  payload: FbCustomAudiencePayload,
-): FbCustomAudiencePayload[] => [payload];
+const batchingWithPayloadSize = (payload: FbCustomAudiencePayload): FbCustomAudiencePayload[] => [
+  payload,
+];
 
 const getSchemaForEventMappedToDest = (message: FbRecordMessage): string[] => {
   const mappedSchema = message?.context?.destinationFields;
@@ -275,10 +275,7 @@ const getDataSource = (type: string | undefined, subType: string | undefined): D
   return dataSource;
 };
 
-const responseBuilderSimple = (
-  payload: WrappedResponse | undefined,
-  audienceId: string,
-) => {
+const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId: string) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);

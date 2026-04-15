@@ -185,9 +185,6 @@ const processBatchRouter = async (
   // For dontBatch=true events, route them through the same batching logic
   // as individual single-event batches so they get proper endpoint rewriting
   // and { inputs: [...] } wrapping via batchIdentify().
-  // Previously these went through convertToResponseFormat() which copied
-  // processor output directly — breaking operations like upsertContacts and
-  // createAssociations whose processor sets batch endpoints.
   let dontBatchEvents: HubSpotRouterTransformationOutput[] = [];
   if (dontBatchTrueResponses.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {

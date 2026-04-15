@@ -1,9 +1,7 @@
-import { nativeData } from './data-native';
-
-const cdkData = [
+export const data = [
   {
     name: 'tiktok_audience',
-    description: 'Test 1: Containing SHA256 traits only',
+    description: 'Native Test 1: Containing SHA256 traits only',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -14,7 +12,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -41,10 +39,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 1,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -73,6 +73,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -115,6 +116,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -155,6 +157,7 @@ const cdkData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -167,6 +170,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 1,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -180,7 +184,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 2: Containing SHA256 and MD5 traits',
+    description: 'Native Test 2: Containing SHA256 and MD5 traits',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -191,7 +195,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -217,11 +221,13 @@ const cdkData = [
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
               metadata: {
-                jobId: 1,
+                jobId: 2,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -250,6 +256,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -304,6 +311,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -356,6 +364,7 @@ const cdkData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -367,7 +376,8 @@ const cdkData = [
               },
               metadata: [
                 {
-                  jobId: 1,
+                  jobId: 2,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -381,7 +391,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 3: Containing all possible traits',
+    description: 'Native Test 3: Containing all possible traits',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -392,7 +402,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -427,11 +437,13 @@ const cdkData = [
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
               metadata: {
-                jobId: 1,
+                jobId: 3,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -459,6 +471,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -530,6 +543,7 @@ const cdkData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -541,7 +555,8 @@ const cdkData = [
               },
               metadata: [
                 {
-                  jobId: 1,
+                  jobId: 3,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -555,7 +570,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 4: Considering some null values',
+    description: 'Native Test 4: Considering some null values',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -566,7 +581,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -597,11 +612,13 @@ const cdkData = [
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
               metadata: {
-                jobId: 1,
+                jobId: 4,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -629,6 +646,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -688,6 +706,7 @@ const cdkData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -699,7 +718,8 @@ const cdkData = [
               },
               metadata: [
                 {
-                  jobId: 1,
+                  jobId: 4,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -713,7 +733,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 5: message type missing',
+    description: 'Native Test 5: message type missing',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -739,11 +759,12 @@ const cdkData = [
                 userId: 'u1',
                 sourceId: 'default-sourceId',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -760,9 +781,10 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'message Type is not present. Aborting message.',
+              error: 'unsupported event found undefined',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -773,7 +795,7 @@ const cdkData = [
                   userId: 'u1',
                   sourceId: 'default-sourceId',
                   destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   dontBatch: false,
                 },
@@ -783,10 +805,10 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
-                destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                implementation: 'native',
                 module: 'destination',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -797,7 +819,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 6: unsupported message type',
+    description: 'Native Test 6: unsupported message type',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -824,11 +846,12 @@ const cdkData = [
                 userId: 'u1',
                 sourceId: 'default-sourceId',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -845,9 +868,10 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'Event type identify is not supported. Aborting message.',
+              error: 'unsupported event found identify',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -858,7 +882,7 @@ const cdkData = [
                   userId: 'u1',
                   sourceId: 'default-sourceId',
                   destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   dontBatch: false,
                 },
@@ -868,10 +892,10 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -882,7 +906,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 7: properties missing',
+    description: 'Native Test 7: properties missing',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -893,7 +917,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 context: {
                   externalId: [
                     { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
@@ -908,11 +932,12 @@ const cdkData = [
                 userId: 'u1',
                 sourceId: 'default-sourceId',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -929,9 +954,10 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'Message properties is not present. Aborting message.',
+              error: 'message.properties: Message properties is not present. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -942,7 +968,7 @@ const cdkData = [
                   userId: 'u1',
                   sourceId: 'default-sourceId',
                   destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   dontBatch: false,
                 },
@@ -952,10 +978,10 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -966,7 +992,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 8: listData missing',
+    description: 'Native Test 8: listData missing',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -977,7 +1003,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {},
                 context: {
                   externalId: [
@@ -993,11 +1019,12 @@ const cdkData = [
                 userId: 'u1',
                 sourceId: 'default-sourceId',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1014,9 +1041,11 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'listData is not present inside properties. Aborting message.',
+              error:
+                'message.properties.listData: listData is not present inside properties. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1027,7 +1056,7 @@ const cdkData = [
                   userId: 'u1',
                   sourceId: 'default-sourceId',
                   destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   dontBatch: false,
                 },
@@ -1035,12 +1064,12 @@ const cdkData = [
               statTags: {
                 destType: 'TIKTOK_AUDIENCE',
                 errorCategory: 'dataValidation',
-                destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
+                destinationId: 'default-destinationId',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -1051,7 +1080,7 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 9: unsupported action key in listData',
+    description: 'Native Test 9: unsupported action key in listData',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1062,7 +1091,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: { listData: { update: [{ EMAIL_SHA256: 'alex@email.com' }] } },
                 context: {
                   externalId: [
@@ -1078,11 +1107,12 @@ const cdkData = [
                 userId: 'u1',
                 sourceId: 'default-sourceId',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 dontBatch: false,
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1099,9 +1129,11 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'unsupported action type. Aborting message.',
+              error:
+                'message.properties.listData: unsupported action type update. Aborting message.',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: { isHashRequired: true },
               },
@@ -1112,7 +1144,7 @@ const cdkData = [
                   userId: 'u1',
                   sourceId: 'default-sourceId',
                   destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   dontBatch: false,
                 },
@@ -1122,10 +1154,10 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
                 destinationId: 'default-destinationId',
-                workspaceId: 'default-workspaceId',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -1136,7 +1168,313 @@ const cdkData = [
   },
   {
     name: 'tiktok_audience',
-    description: 'Test 10: Multiple jobs with different metadata',
+    description: 'Native Test 10: record insert action',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                userId: 'user 1',
+                identifiers: { EMAIL_SHA256: 'alex@email.com' },
+                fields: {},
+              },
+              metadata: {
+                jobId: 201,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              metadata: [
+                {
+                  jobId: 201,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 11: record delete action',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'delete',
+                userId: 'user 1',
+                identifiers: { EMAIL_SHA256: 'alex@email.com' },
+                fields: {},
+              },
+              metadata: {
+                jobId: 202,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'delete',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              metadata: [
+                {
+                  jobId: 202,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 12: record update action',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                userId: 'user 1',
+                identifiers: { EMAIL_SHA256: 'alex@email.com' },
+                fields: {},
+              },
+              metadata: {
+                jobId: 203,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              metadata: [
+                {
+                  jobId: 203,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 13: Multiple jobs with different metadata',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1147,7 +1485,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -1174,10 +1512,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 1,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1191,7 +1531,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -1218,10 +1558,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 2,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1235,7 +1577,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -1271,10 +1613,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 3,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1288,7 +1632,7 @@ const cdkData = [
             {
               message: {
                 userId: 'user 1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [
@@ -1320,10 +1664,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 4,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1368,10 +1714,12 @@ const cdkData = [
               },
               metadata: {
                 jobId: 1524545,
+                workspaceId: 'workspace-1',
                 secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                 userId: 'u1',
               },
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1394,9 +1742,10 @@ const cdkData = [
         body: {
           output: [
             {
-              error: 'message Type is not present. Aborting message.',
+              error: 'unsupported event found undefined',
               batched: false,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1409,6 +1758,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 1524545,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -1418,8 +1768,9 @@ const cdkData = [
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
-                implementation: 'cdkV2',
+                implementation: 'native',
                 module: 'destination',
+                workspaceId: 'workspace-1',
               },
               statusCode: 400,
             },
@@ -1430,6 +1781,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -1472,6 +1824,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -1512,6 +1865,7 @@ const cdkData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1526,6 +1880,7 @@ const cdkData = [
                   jobId: 1,
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
+                  workspaceId: 'workspace-1',
                 },
               ],
               statusCode: 200,
@@ -1537,6 +1892,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -1591,6 +1947,7 @@ const cdkData = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                  endpointPath: '/segment/mapping/',
                   headers: {
                     'Access-Token': 'dummyAccessToken',
                     'Content-Type': 'application/json',
@@ -1643,6 +2000,7 @@ const cdkData = [
               ],
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1655,6 +2013,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 2,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -1667,6 +2026,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -1735,6 +2095,7 @@ const cdkData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1747,6 +2108,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 3,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -1759,6 +2121,7 @@ const cdkData = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
                 headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
@@ -1818,6 +2181,7 @@ const cdkData = [
               },
               batched: true,
               destination: {
+                ID: 'dummyDestinationId',
                 DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
                 Config: {
                   isHashRequired: true,
@@ -1830,6 +2194,7 @@ const cdkData = [
               metadata: [
                 {
                   jobId: 4,
+                  workspaceId: 'workspace-1',
                   secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
                   userId: 'u1',
                 },
@@ -1841,6 +2206,548 @@ const cdkData = [
       },
     },
   },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 14: record events: insert, delete, update actions',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 5,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 6,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'delete',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 7,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 5,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+                {
+                  jobId: 6,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['EMAIL_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'delete',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 7,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 17: record missing action',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                },
+                fields: {},
+              },
+              metadata: {
+                jobId: 206,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'message.action: action is not present. Aborting message.',
+              batched: false,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 206,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statTags: {
+                destType: 'TIKTOK_AUDIENCE',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-1',
+              },
+              statusCode: 400,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'tiktok_audience',
+    description: 'Native Test 18: record events: invalid identifiers',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: 'alex@email.com',
+                  PHONE_SHA256: '1234567890',
+                  IDFA_SHA256: null,
+                  AAID_SHA256: null,
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 1,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+            {
+              message: {
+                type: 'record',
+                action: 'update',
+                userId: 'user 1',
+                identifiers: {
+                  EMAIL_SHA256: null,
+                  PHONE_SHA256: null,
+                  IDFA_SHA256: null,
+                  AAID_SHA256: null,
+                },
+                fields: {},
+                context: {
+                  sources: {
+                    job_id: '38FFCLxl3eMTUFU3XY9o7dhlT0v',
+                    job_run_id: 'd5jn6pn3a8bc73cdd0v0',
+                    task_run_id: 'd5jn6pn3a8bc73cdd0vg',
+                    version: 'v1.79.0',
+                  },
+                },
+              },
+              metadata: {
+                jobId: 2,
+                workspaceId: 'workspace-1',
+                secret: { accessToken: 'dummyAccessToken' },
+                userId: 'u1',
+              },
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              connection: {
+                config: {
+                  destination: {
+                    schemaVersion: '1.1',
+                    isHashRequired: true,
+                    audienceId: '23856594064540489',
+                  },
+                },
+              },
+            },
+          ],
+          destType: 'tiktok_audience',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'No identifiers found, aborting event.',
+              batched: false,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: { advertiserId: 'dummyAdverTiserID' },
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                },
+              ],
+              statTags: {
+                destType: 'TIKTOK_AUDIENCE',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+                workspaceId: 'workspace-1',
+              },
+              statusCode: 400,
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
+                endpointPath: '/segment/mapping/',
+                headers: {
+                  'Access-Token': 'dummyAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    batch_data: [
+                      [
+                        {
+                          id: 'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                          audience_ids: ['23856594064540489'],
+                        },
+                        {
+                          id: 'c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646',
+                          audience_ids: ['23856594064540489'],
+                        },
+                      ],
+                    ],
+                    id_schema: ['AAID_SHA256', 'EMAIL_SHA256', 'IDFA_SHA256', 'PHONE_SHA256'],
+                    advertiser_ids: ['dummyAdverTiserID'],
+                    action: 'add',
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                userId: 'user 1',
+              },
+              batched: true,
+              destination: {
+                ID: 'dummyDestinationId',
+                DestinationDefinition: { Name: 'TIKTOK_AUDIENCE', Config: {} },
+                Config: {
+                  advertiserId: 'dummyAdverTiserID',
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  workspaceId: 'workspace-1',
+                  secret: { accessToken: 'dummyAccessToken' },
+                  userId: 'u1',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
 ];
-
-export const data = [...cdkData, ...nativeData];

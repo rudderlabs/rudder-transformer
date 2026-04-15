@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.130.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.2...v1.130.0) (2026-04-15)
+
+
+### Features
+
+* **snapchat_conversion:** add brand field to product contents mapping ([#5139](https://github.com/rudderlabs/rudder-transformer/issues/5139)) ([e80d967](https://github.com/rudderlabs/rudder-transformer/commit/e80d967bb1762a2c6cec7d9aa6310fa0e9e6bc52))
+
+
+### Bug Fixes
+
+* add validation to posthog to fail events more than 1mb ([#5132](https://github.com/rudderlabs/rudder-transformer/issues/5132)) ([fa207e0](https://github.com/rudderlabs/rudder-transformer/commit/fa207e052e83840b80186ca0f1fb0ee71c4719d5))
+* check endpoint before updating 409 to 500 for intercom ([#5140](https://github.com/rudderlabs/rudder-transformer/issues/5140)) ([9de01ef](https://github.com/rudderlabs/rudder-transformer/commit/9de01ef7dabf16a14701e55b07511a1906bda670))
+* **fb_custom_audience:** add accessToken config validation ([#5133](https://github.com/rudderlabs/rudder-transformer/issues/5133)) ([49ffc5e](https://github.com/rudderlabs/rudder-transformer/commit/49ffc5e7f5d19dd950e76167e53d055e8b8b0c0e))
+* **gaoc:** wrong conversion action used when MCC returns duplicate actions ([#5126](https://github.com/rudderlabs/rudder-transformer/issues/5126)) ([fb09202](https://github.com/rudderlabs/rudder-transformer/commit/fb092024d59a17fb716bded60bffe44d502d66d4))
+* handle 409 conflict as retryable error in intercom network handler ([#5137](https://github.com/rudderlabs/rudder-transformer/issues/5137)) ([538283d](https://github.com/rudderlabs/rudder-transformer/commit/538283d4e644d5e99cc56bbbee5a7ac27cf53a7a))
+* **vuln:** pin and bump action refs (SEC-171) ([15c4875](https://github.com/rudderlabs/rudder-transformer/commit/15c48750d430b0f38cf8adbcbbeae343a921af86))
+
 ### [1.129.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.1...v1.129.2) (2026-04-09)
 
 

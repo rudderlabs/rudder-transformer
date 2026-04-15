@@ -6,6 +6,7 @@ import {
   rETLRecordV2RouterRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithValueBasedAudience,
   rETLRecordV2RouterInvalidRequestWithLookalikeValue,
+  rETLRecordV2RouterMissingAccessTokenRequest,
 } from './rETL';
 import { mockFns } from '../mocks';
 import { defaultAccessToken } from '../../../common/secrets';
@@ -1608,5 +1609,44 @@ export const data = [
       },
     },
     envOverrides: { FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY: 'ALL' },
+  },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record V2 missing accessToken tests',
+    scenario: 'Framework',
+    successCriteria: 'All the record V2 events should fail with missing accessToken error',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: rETLRecordV2RouterMissingAccessTokenRequest,
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [generateMetadata(1)],
+              batched: false,
+              statusCode: 400,
+              error: 'Access Token is a mandatory field',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'FB_CUSTOM_AUDIENCE',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+                destinationId: 'default-destinationId',
+                workspaceId: 'default-workspaceId',
+              },
+            },
+          ],
+        },
+      },
+    },
   },
 ].map((d) => ({ ...d, mockFns }));

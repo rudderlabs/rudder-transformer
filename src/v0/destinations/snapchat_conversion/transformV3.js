@@ -167,6 +167,9 @@ const buildBasePayload = (message, event) => {
 
   const contents = productsToContentsMapping(message);
   if (contents.length > 0) {
+    if (!payload.data[0].custom_data) {
+      payload.data[0].custom_data = {};
+    }
     payload.data[0].custom_data.contents = contents;
   }
   return payload;

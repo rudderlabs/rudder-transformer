@@ -2529,20 +2529,24 @@ export const data = [
               statusCode: 200,
             },
             {
-              batched: false,
+              batched: true,
               batchedRequest: {
                 body: {
                   FORM: {},
                   JSON: {
-                    id: 'identify425@test.com',
-                    idProperty: 'email',
-                    objectWriteTraceId: '1',
-                    properties: {
-                      email: 'identify425@test.com',
-                      firstname: 'John',
-                      lastname: 'Sparrow',
-                      phone: '9112340425',
-                    },
+                    inputs: [
+                      {
+                        id: 'identify425@test.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '1',
+                        properties: {
+                          email: 'identify425@test.com',
+                          firstname: 'John',
+                          lastname: 'Sparrow',
+                          phone: '9112340425',
+                        },
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -2612,20 +2616,24 @@ export const data = [
               statusCode: 200,
             },
             {
-              batched: false,
+              batched: true,
               batchedRequest: {
                 body: {
                   FORM: {},
                   JSON: {
-                    id: 'identify425@test.con',
-                    idProperty: 'email',
-                    objectWriteTraceId: '2',
-                    properties: {
-                      email: 'identify425@test.con',
-                      firstname: 'John',
-                      lastname: 'Sparrow738',
-                      phone: '9112340738',
-                    },
+                    inputs: [
+                      {
+                        id: 'identify425@test.con',
+                        idProperty: 'email',
+                        objectWriteTraceId: '2',
+                        properties: {
+                          email: 'identify425@test.con',
+                          firstname: 'John',
+                          lastname: 'Sparrow738',
+                          phone: '9112340738',
+                        },
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -4035,20 +4043,24 @@ export const data = [
         body: {
           output: [
             {
-              batched: false,
+              batched: true,
               batchedRequest: {
                 body: {
                   FORM: {},
                   JSON: {
-                    id: 'identify425@test.com',
-                    idProperty: 'email',
-                    objectWriteTraceId: '1',
-                    properties: {
-                      email: 'identify425@test.com',
-                      firstname: 'John',
-                      lastname: 'Sparrow',
-                      phone: '9112340425',
-                    },
+                    inputs: [
+                      {
+                        id: 'identify425@test.com',
+                        idProperty: 'email',
+                        objectWriteTraceId: '1',
+                        properties: {
+                          email: 'identify425@test.com',
+                          firstname: 'John',
+                          lastname: 'Sparrow',
+                          phone: '9112340425',
+                        },
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},

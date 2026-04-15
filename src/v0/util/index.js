@@ -1795,11 +1795,15 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
     resp.authErrorCategory = error.authErrorCategory;
   }
 
-  errNotificationClient.notify(error, 'Router Transformation (event level)', {
+  const notifyMetadata = {
     ...resp,
     ...reqMetadata,
     ...getEventReqMetadata(input),
-  });
+    // metadata contains secret which should not be sent to error notifier
+    metadata: undefined,
+  }
+
+  errNotificationClient.notify(error, 'Router Transformation (event level)', notifyMetadata);
 
   return { ...resp, destination: input?.destination };
 };

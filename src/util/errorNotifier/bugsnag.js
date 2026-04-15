@@ -26,6 +26,7 @@ const {
   BUGSNAG_API_KEY: apiKey,
   transformer_build_version: imageVersion,
   git_commit_sha: gitCommitSHA,
+  PYROSCOPE_CLUSTER_NAME: clusterName,
 } = process.env;
 
 const errorTypesDenyList = [
@@ -65,6 +66,7 @@ function init() {
         source: {
           gitCommitSHA,
         },
+        cluster: clusterName,
       },
       onError(event) {
         event.severity = 'error';

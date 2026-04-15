@@ -5,8 +5,8 @@ export class ErrorReportingService {
     const metadata = {
       ...errorResp,
       // metadata contains secret which should not be sent to error notifier
-      metadata: undefined
-    }
+      metadata: undefined,
+    };
     client.notify(error, context, metadata);
   }
 }

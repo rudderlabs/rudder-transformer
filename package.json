@@ -130,7 +130,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-personalize": "^3.894.0",
-    "@aws-sdk/credential-providers": "^3.894.0",
+    "@aws-sdk/credential-providers": "^3.1030.0",
     "@commitlint/config-conventional": "^19.8.0",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
     "@linear/sdk": "^68.0.0",

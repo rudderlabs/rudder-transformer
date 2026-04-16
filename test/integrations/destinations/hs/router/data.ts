@@ -4134,5 +4134,355 @@ export const data = [
       },
     },
   },
+  {
+    name: 'hs',
+    description:
+      'dontBatch true with rETL createObject and updateObject events should get proper inputs wrapping',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'buisness',
+    id: 'dontbatch-retl-create-update',
+    successCriteria:
+      'dontBatch=true rETL events should be routed through batchEvents with inputs wrapper',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  mappedToDestination: true,
+                  externalId: [
+                    { identifierType: 'email', id: 'testhubspot@email.com', type: 'HS-lead' },
+                  ],
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                },
+                type: 'identify',
+                traits: {
+                  firstname: 'Test Create',
+                  anonymousId: '123451',
+                  country: 'India',
+                },
+                messageId: 'msg-create-1',
+                originalTimestamp: '2024-05-23T16:49:57.070+05:30',
+                anonymousId: 'anon-create-1',
+                userId: 'user-create-1',
+                sentAt: '2024-05-23T16:49:57.461+05:30',
+              },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'u1',
+                dontBatch: true,
+              },
+            },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  mappedToDestination: true,
+                  externalId: [
+                    { identifierType: 'email', id: 'testhubspot2@email.com', type: 'HS-lead' },
+                  ],
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                },
+                type: 'identify',
+                traits: {
+                  firstname: 'Test Update',
+                  anonymousId: '12345',
+                  country: 'India',
+                },
+                messageId: 'msg-update-1',
+                originalTimestamp: '2024-05-23T16:49:57.070+05:30',
+                anonymousId: 'anon-update-1',
+                userId: 'user-update-1',
+                sentAt: '2024-05-23T16:49:57.461+05:30',
+              },
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+                dontBatch: true,
+              },
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: {
+                          firstname: 'Test Create',
+                          anonymousId: '123451',
+                          country: 'India',
+                          email: 'testhubspot@email.com',
+                        },
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'u1',
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
+                body: {
+                  JSON: {
+                    inputs: [
+                      {
+                        properties: {
+                          firstname: 'Test Update',
+                          anonymousId: '12345',
+                          country: 'India',
+                          email: 'testhubspot2@email.com',
+                        },
+                        id: '103605',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'dontBatch true with track event should pass through without inputs wrapping',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    scenario: 'buisness',
+    id: 'dontbatch-track-event',
+    successCriteria:
+      'dontBatch=true track events should be sent individually to events/v3/send without inputs wrapping',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  traits: { email: 'user1@test.com' },
+                },
+                type: 'track',
+                anonymousId: '',
+                userId: 'user1',
+                event: 'Purchase',
+                properties: {
+                  Revenue: 100,
+                  Price: 50,
+                },
+                sentAt: '2024-05-23T16:49:57.461+05:30',
+              },
+              metadata: {
+                jobId: 1,
+                userId: 'user1',
+                dontBatch: true,
+              },
+              destination,
+            },
+          ],
+          destType: 'hs',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://api.hubapi.com/events/v3/send',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: authHeader1,
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    email: 'user1@test.com',
+                    eventName: 'pedummy-hubId_rs_hub_test',
+                    properties: {
+                      value: 100,
+                      cost: 50,
+                    },
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  userId: 'user1',
+                  dontBatch: true,
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination,
+            },
+          ],
+        },
+      },
+    },
+  },
   ...upsertData,
 ];

@@ -28,6 +28,30 @@ const endpoints = {
     device: `https://api-03.moengage.com/v1/${endpointPaths.device}/`,
     alias: `https://api-03.moengage.com/v1/${endpointPaths.alias}?app_id=`,
   },
+  'US-DC-04': {
+    identify: `https://api-04.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-04.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-04.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-04.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
+  'SGP-DC-05': {
+    identify: `https://api-05.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-05.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-05.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-05.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
+  'IDN-DC-06': {
+    identify: `https://api-06.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-06.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-06.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-06.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
+  'DC-101': {
+    identify: `https://api-101.moengage.com/v1/${endpointPaths.identify}/`,
+    track: `https://api-101.moengage.com/v1/${endpointPaths.track}/`,
+    device: `https://api-101.moengage.com/v1/${endpointPaths.device}/`,
+    alias: `https://api-101.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+  },
 };
 
 // moengage supports object types, we added a new mapping for identify, track and device to support object data type

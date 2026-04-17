@@ -1,6 +1,8 @@
 // Destinations that have completed GA for the batching framework.
 // Once a destination is added here, it always uses the new path regardless of env var.
-export const batchedDestinationsMap: Record<string, true> = {};
+export const batchedDestinationsMap: Record<string, true> = {
+  POSTHOG: true,
+};
 
 // Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS
 // Values: comma-separated workspace IDs, or 'ALL' for all workspaces

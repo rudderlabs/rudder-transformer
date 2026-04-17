@@ -2,20 +2,8 @@ const { RetryableError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpSend } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
-const errorResponseHandler = (destinationResponse, dest, destinationRequest) => {
-  const { status, response } = destinationResponse;
-  const endpoint = destinationRequest?.endpoint || '';
-  // Intercom's search index is eventually consistent. A contact created may not
-  // appear in searchContact() results immediately, causing the transformer to attempt POST /contacts
-  // which returns 409 (contact already exists). Retrying allows the search index to catch up so the
-  // contact is found and updated via PUT on the next attempt.
-  if (status === 409 && endpoint.endsWith('/contacts')) {
-    throw new RetryableError(
-      `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}. ${JSON.stringify(response)}`,
-      500,
-      destinationResponse,
-    );
-  }
+const errorResponseHandler = (destinationResponse, dest) => {
+  const { status } = destinationResponse;
   if (status === 408) {
     throw new RetryableError(
       `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}`,
@@ -26,8 +14,8 @@ const errorResponseHandler = (destinationResponse, dest, destinationRequest) => 
 };
 
 const destResponseHandler = (responseParams) => {
-  const { destinationResponse, destType, destinationRequest } = responseParams;
-  errorResponseHandler(destinationResponse, destType, destinationRequest);
+  const { destinationResponse, destType } = responseParams;
+  errorResponseHandler(destinationResponse, destType);
   return {
     destinationResponse: destinationResponse.response,
     message: 'Request Processed Successfully',
@@ -40,6 +28,32 @@ const prepareIntercomProxyRequest = async (request) => {
   const preparedRequest = await prepareProxyRequest(request);
   preparedRequest.headers['User-Agent'] = process.env.INTERCOM_USER_AGENT_HEADER ?? 'RudderStack';
   return { ...preparedRequest, metadata };
+};
+
+const getContactIdFromConflictResponse = (response) => {
+  const errorMessage = response.response?.response?.data?.errors?.[0]?.message || '';
+  const match = errorMessage.match(/id=([\da-f]+)/);
+  return match ? match[1] : null;
+};
+
+const retryAsUpdateContact = async (requestOptions, endpoint, contactId, metadata) => {
+  const updatedRequestOptions = {
+    ...requestOptions,
+    url: `${endpoint}/${contactId}`,
+    method: 'PUT',
+  };
+  return httpSend(
+    updatedRequestOptions,
+    {
+      destType: 'intercom',
+      feature: 'proxy',
+      endpointPath: '/proxy',
+      requestMethod: 'PUT',
+      module: 'router',
+      metadata,
+    },
+    true,
+  );
 };
 
 /**
@@ -59,7 +73,7 @@ const intercomProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(
+  let response = await httpSend(
     requestOptions,
     {
       destType: 'intercom',
@@ -71,6 +85,14 @@ const intercomProxyRequest = async (request) => {
     },
     true,
   );
+
+  if (response.response.status === 409 && endpoint.endsWith('/contacts')) {
+    const contactId = getContactIdFromConflictResponse(response);
+    if (contactId) {
+      response = await retryAsUpdateContact(requestOptions, endpoint, contactId, metadata);
+    }
+  }
+
   return response;
 };
 

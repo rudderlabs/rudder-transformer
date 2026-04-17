@@ -639,7 +639,71 @@ const deliveryCallsData = [
         errors: [
           {
             code: 'conflict',
-            message: 'A contact matching those details already exists with id=test1',
+            message:
+              'A contact matching those details already exists with id=69e1b410318253cacf5db743',
+          },
+        ],
+      },
+      status: 409,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/contacts/69e1b410318253cacf5db743',
+      data: {
+        email: 'test_1@test.com',
+        name: 'Rudder Labs',
+        signed_up_at: 1601496060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'test_user_id_2',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: v1VersionHeaders,
+      method: 'PUT',
+    },
+    httpRes: {
+      data: {
+        type: 'contact',
+        id: '69e1b410318253cacf5db743',
+        external_id: 'test_user_id_2',
+        email: 'test_1@test.com',
+        name: 'Rudder Labs',
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/contacts',
+      data: {
+        email: 'test_1@test.com',
+        name: 'Rudder Labs',
+        signed_up_at: 1601496060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'test_user_id_3',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: v1VersionHeaders,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request130',
+        errors: [
+          {
+            code: 'conflict',
+            message: 'A contact matching those details already exists',
           },
         ],
       },

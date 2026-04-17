@@ -80,6 +80,19 @@ const sendMessagePayload = {
   referer: 'https://twitter.com/bob',
 };
 
+const conflictUserNoIdPayload = {
+  email: 'test_1@test.com',
+  name: 'Rudder Labs',
+  signed_up_at: 1601496060,
+  last_seen_user_agent: 'unknown',
+  update_last_request_at: true,
+  user_id: 'test_user_id_3',
+  custom_attributes: {
+    'address.city': 'Kolkata',
+    'address.state': 'West Bengal',
+  },
+};
+
 const createUserRequestParameters = {
   JSON: createUserPayload,
   headers: commonHeaders,
@@ -270,8 +283,10 @@ export const testScenariosForV0API = [
   {
     id: 'intercom_v0_other_scenario_5',
     name: 'intercom',
-    description: '[Proxy v0 API] :: Scenario to test Conflict User Handling from Destination',
-    successCriteria: 'Should return 500 status code with retryable error for 409 conflict',
+    description:
+      '[Proxy v0 API] :: Scenario to test Conflict User Handling from Destination with retry as PUT',
+    successCriteria:
+      'Should extract contact ID from 409 response and retry with PUT, returning 200',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -291,35 +306,64 @@ export const testScenariosForV0API = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
-            status: 500,
-            message:
-              '[Intercom Response Handler] Request failed for destination intercom with status: 409. {"type":"error.list","request_id":"request126","errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test1"}]}',
             destinationResponse: {
-              response: {
-                type: 'error.list',
-                request_id: 'request126',
-                errors: [
-                  {
-                    code: 'conflict',
-                    message: 'A contact matching those details already exists with id=test1',
-                  },
-                ],
-              },
-              status: 409,
+              type: 'contact',
+              id: '69e1b410318253cacf5db743',
+              external_id: 'test_user_id_2',
+              email: 'test_1@test.com',
+              name: 'Rudder Labs',
             },
-            statTags: {
-              destType: 'INTERCOM',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
+            message: 'Request Processed Successfully',
+            status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v0_other_scenario_5b',
+    name: 'intercom',
+    description:
+      '[Proxy v0 API] :: Scenario to test 409 Conflict without extractable contact ID in error message',
+    successCriteria:
+      'Should return 409 status as-is when contact ID cannot be extracted from error response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          JSON: conflictUserNoIdPayload,
+          headers: {
+            ...commonHeaders,
+            'Intercom-Version': '2.10',
+          },
+          endpoint: 'https://api.intercom.io/contacts',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 409,
+        body: {
+          output: {
+            destinationResponse: {
+              type: 'error.list',
+              request_id: 'request130',
+              errors: [
+                {
+                  code: 'conflict',
+                  message: 'A contact matching those details already exists',
+                },
+              ],
             },
+            message: 'Request Processed Successfully',
+            status: 409,
           },
         },
       },
@@ -556,8 +600,10 @@ export const testScenariosForV1API = [
   {
     id: 'intercom_v1_other_scenario_5',
     name: 'intercom',
-    description: '[Proxy v1 API] :: Scenario to test Conflict User Handling from Destination',
-    successCriteria: 'Should return 500 status code with retryable error for 409 conflict',
+    description:
+      '[Proxy v1 API] :: Scenario to test Conflict User Handling from Destination with retry as PUT',
+    successCriteria:
+      'Should extract contact ID from 409 response and retry with PUT, returning 200',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -583,35 +629,76 @@ export const testScenariosForV1API = [
         status: 200,
         body: {
           output: {
-            message:
-              '[Intercom Response Handler] Request failed for destination intercom with status: 409. {"type":"error.list","request_id":"request126","errors":[{"code":"conflict","message":"A contact matching those details already exists with id=test1"}]}',
+            message: 'Request Processed Successfully',
+            response: [
+              {
+                error: JSON.stringify({
+                  type: 'contact',
+                  id: '69e1b410318253cacf5db743',
+                  external_id: 'test_user_id_2',
+                  email: 'test_1@test.com',
+                  name: 'Rudder Labs',
+                }),
+                metadata: generateMetadata(1),
+                statusCode: 200,
+              },
+            ],
+            status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v1_other_scenario_5b',
+    name: 'intercom',
+    description:
+      '[Proxy v1 API] :: Scenario to test 409 Conflict without extractable contact ID in error message',
+    successCriteria:
+      'Should return 409 status as-is when contact ID cannot be extracted from error response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            JSON: conflictUserNoIdPayload,
+            headers: {
+              ...commonHeaders,
+              'Intercom-Version': '2.10',
+            },
+            endpoint: 'https://api.intercom.io/contacts',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message: 'Request Processed Successfully',
             response: [
               {
                 error: JSON.stringify({
                   type: 'error.list',
-                  request_id: 'request126',
+                  request_id: 'request130',
                   errors: [
                     {
                       code: 'conflict',
-                      message: 'A contact matching those details already exists with id=test1',
+                      message: 'A contact matching those details already exists',
                     },
                   ],
                 }),
                 metadata: generateMetadata(1),
-                statusCode: 500,
+                statusCode: 409,
               },
             ],
-            statTags: {
-              destType: 'INTERCOM',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
-            status: 500,
+            status: 409,
           },
         },
       },

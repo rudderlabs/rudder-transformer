@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.131.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.130.0...v1.131.0) (2026-04-20)
+
+
+### Features
+
+* add new region and datacenters to Moengage ([#5150](https://github.com/rudderlabs/rudder-transformer/issues/5150)) ([df9099f](https://github.com/rudderlabs/rudder-transformer/commit/df9099fc5eacceb5f9fd37f3b550ffc18143eaad))
+
+
+### Bug Fixes
+
+* add inputs wrapper for dontBatch true events for hubspot ([#5147](https://github.com/rudderlabs/rudder-transformer/issues/5147)) ([d1d2df8](https://github.com/rudderlabs/rudder-transformer/commit/d1d2df8a656e68c34099d6694b6796d01ae32de5))
+* **errorNotifier:** remove secret metadata from bugsnag reports ([#5141](https://github.com/rudderlabs/rudder-transformer/issues/5141)) ([0d7657a](https://github.com/rudderlabs/rudder-transformer/commit/0d7657a4208ff2cde1bc5411b5e4d21a09a3f3e3))
+
 ## [1.130.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.129.2...v1.130.0) (2026-04-15)
 
 

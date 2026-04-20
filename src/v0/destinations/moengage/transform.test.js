@@ -108,6 +108,102 @@ describe('getCommonDestinationEndpoint', () => {
       expectedEndpoint: endpoints.IND.alias + 'testApiId',
       expectedPath: endpointPaths.alias,
     },
+    {
+      description: 'should return US-DC-04 endpoint for identify',
+      input: { apiId: 'testApiId', region: 'US-DC-04', category: { type: 'identify' } },
+      expectedEndpoint: endpoints['US-DC-04'].identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return US-DC-04 endpoint for track',
+      input: { apiId: 'testApiId', region: 'US-DC-04', category: { type: 'track' } },
+      expectedEndpoint: endpoints['US-DC-04'].track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return US-DC-04 endpoint for device',
+      input: { apiId: 'testApiId', region: 'US-DC-04', category: { type: 'device' } },
+      expectedEndpoint: endpoints['US-DC-04'].device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return US-DC-04 endpoint for alias',
+      input: { apiId: 'testApiId', region: 'US-DC-04', category: { type: 'alias' } },
+      expectedEndpoint: endpoints['US-DC-04'].alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+    {
+      description: 'should return SGP-DC-05 endpoint for identify',
+      input: { apiId: 'testApiId', region: 'SGP-DC-05', category: { type: 'identify' } },
+      expectedEndpoint: endpoints['SGP-DC-05'].identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return SGP-DC-05 endpoint for track',
+      input: { apiId: 'testApiId', region: 'SGP-DC-05', category: { type: 'track' } },
+      expectedEndpoint: endpoints['SGP-DC-05'].track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return SGP-DC-05 endpoint for device',
+      input: { apiId: 'testApiId', region: 'SGP-DC-05', category: { type: 'device' } },
+      expectedEndpoint: endpoints['SGP-DC-05'].device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return SGP-DC-05 endpoint for alias',
+      input: { apiId: 'testApiId', region: 'SGP-DC-05', category: { type: 'alias' } },
+      expectedEndpoint: endpoints['SGP-DC-05'].alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+    {
+      description: 'should return IDN-DC-06 endpoint for identify',
+      input: { apiId: 'testApiId', region: 'IDN-DC-06', category: { type: 'identify' } },
+      expectedEndpoint: endpoints['IDN-DC-06'].identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return IDN-DC-06 endpoint for track',
+      input: { apiId: 'testApiId', region: 'IDN-DC-06', category: { type: 'track' } },
+      expectedEndpoint: endpoints['IDN-DC-06'].track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return IDN-DC-06 endpoint for device',
+      input: { apiId: 'testApiId', region: 'IDN-DC-06', category: { type: 'device' } },
+      expectedEndpoint: endpoints['IDN-DC-06'].device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return IDN-DC-06 endpoint for alias',
+      input: { apiId: 'testApiId', region: 'IDN-DC-06', category: { type: 'alias' } },
+      expectedEndpoint: endpoints['IDN-DC-06'].alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
+    {
+      description: 'should return DC-101 endpoint for identify',
+      input: { apiId: 'testApiId', region: 'DC-101', category: { type: 'identify' } },
+      expectedEndpoint: endpoints['DC-101'].identify + 'testApiId',
+      expectedPath: endpointPaths.identify,
+    },
+    {
+      description: 'should return DC-101 endpoint for track',
+      input: { apiId: 'testApiId', region: 'DC-101', category: { type: 'track' } },
+      expectedEndpoint: endpoints['DC-101'].track + 'testApiId',
+      expectedPath: endpointPaths.track,
+    },
+    {
+      description: 'should return DC-101 endpoint for device',
+      input: { apiId: 'testApiId', region: 'DC-101', category: { type: 'device' } },
+      expectedEndpoint: endpoints['DC-101'].device + 'testApiId',
+      expectedPath: endpointPaths.device,
+    },
+    {
+      description: 'should return DC-101 endpoint for alias',
+      input: { apiId: 'testApiId', region: 'DC-101', category: { type: 'alias' } },
+      expectedEndpoint: endpoints['DC-101'].alias + 'testApiId',
+      expectedPath: endpointPaths.alias,
+    },
   ])('$description', ({ input, expectedEndpoint, expectedPath }) => {
     const result = getCommonDestinationEndpoint(input);
     expect(result.endpoint).toBe(expectedEndpoint);

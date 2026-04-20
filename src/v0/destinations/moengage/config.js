@@ -6,29 +6,27 @@ const endpointPaths = {
   device: 'device',
   alias: 'customer/merge',
 };
-const endpoints = {
-  US: {
-    // track properties, | Track
-    identify: `https://api-01.moengage.com/v1/${endpointPaths.identify}/`,
-    // identify a user| Identify
-    track: `https://api-01.moengage.com/v1/${endpointPaths.track}/`,
-    // identify a user| Device
-    device: `https://api-01.moengage.com/v1/${endpointPaths.device}/`,
-    alias: `https://api-01.moengage.com/v1/${endpointPaths.alias}?app_id=`,
-  },
-  EU: {
-    identify: `https://api-02.moengage.com/v1/${endpointPaths.identify}/`,
-    track: `https://api-02.moengage.com/v1/${endpointPaths.track}/`,
-    device: `https://api-02.moengage.com/v1/${endpointPaths.device}/`,
-    alias: `https://api-02.moengage.com/v1/${endpointPaths.alias}?app_id=`,
-  },
-  IND: {
-    identify: `https://api-03.moengage.com/v1/${endpointPaths.identify}/`,
-    track: `https://api-03.moengage.com/v1/${endpointPaths.track}/`,
-    device: `https://api-03.moengage.com/v1/${endpointPaths.device}/`,
-    alias: `https://api-03.moengage.com/v1/${endpointPaths.alias}?app_id=`,
-  },
+const regionApiMap = {
+  US: '01',
+  EU: '02',
+  IND: '03',
+  'US-DC-04': '04',
+  'SGP-DC-05': '05',
+  'IDN-DC-06': '06',
+  'DC-101': '101',
 };
+
+const endpoints = Object.fromEntries(
+  Object.entries(regionApiMap).map(([region, apiNum]) => [
+    region,
+    {
+      identify: `https://api-${apiNum}.moengage.com/v1/${endpointPaths.identify}/`,
+      track: `https://api-${apiNum}.moengage.com/v1/${endpointPaths.track}/`,
+      device: `https://api-${apiNum}.moengage.com/v1/${endpointPaths.device}/`,
+      alias: `https://api-${apiNum}.moengage.com/v1/${endpointPaths.alias}?app_id=`,
+    },
+  ]),
+);
 
 // moengage supports object types, we added a new mapping for identify, track and device to support object data type
 const CONFIG_CATEGORIES = {

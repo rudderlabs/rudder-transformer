@@ -14,7 +14,6 @@ import {
   fetchFinalSetOfTraits,
   getProperties,
   validateDestinationConfig,
-  convertToResponseFormat,
 } from './util';
 import type {
   HubSpotPropertyMap,
@@ -182,11 +181,23 @@ const processBatchRouter = async (
       batchedResponseList = legacyBatchEvents(dontBatchFalseOrUndefinedResponses);
     }
   }
+
+  // For dontBatch=true events, route them through the same batching logic
+  // as individual single-event batches so they get proper endpoint rewriting
+  // and { inputs: [...] } wrapping via batchIdentify().
+  let dontBatchEvents: HubSpotRouterTransformationOutput[] = [];
+  if (dontBatchTrueResponses.length > 0) {
+    if (destination.Config.apiVersion === API_VERSION.v3) {
+      dontBatchEvents = dontBatchTrueResponses.flatMap((event) => batchEvents([event]));
+    } else {
+      dontBatchEvents = dontBatchTrueResponses.flatMap((event) => legacyBatchEvents([event]));
+    }
+  }
+
   return {
     batchedResponseList,
     errorRespList,
-    // if there are any events where dontbatch set to true we need to update them according to the response format
-    dontBatchEvents: convertToResponseFormat(dontBatchTrueResponses),
+    dontBatchEvents,
   };
 };
 

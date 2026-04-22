@@ -225,6 +225,103 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
+    description: 'Missing accessToken in config',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              anonymousId: 'anon-id-new',
+              type: 'audiencelist',
+              event: 'event1',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      EMAIL: 'shrouti@abc.com',
+                      DOBM: '2',
+                      DOBD: '13',
+                      DOBY: '2013',
+                      PHONE: '@09432457768',
+                      GEN: 'f',
+                      FI: 'Ms.',
+                      MADID: 'ABC',
+                      ZIP: 'ZIP ',
+                      ST: '123abc ',
+                      COUNTRY: 'IN',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                accessToken: '',
+                userSchema: [
+                  'EMAIL',
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                isHashRequired: false,
+                disableFormat: false,
+                audienceId: 'aud1',
+                isRaw: true,
+                type: 'UNKNOWN',
+                subType: 'ANYTHING',
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            libraries: [],
+            request: {
+              query: {},
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Access Token is a mandatory field',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'fb_custom_audience',
     description: 'Audience ID Empty Event',
     feature: 'processor',
     module: 'destination',

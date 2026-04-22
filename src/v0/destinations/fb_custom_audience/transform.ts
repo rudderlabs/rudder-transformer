@@ -173,13 +173,17 @@ const processEvent = (
   const respList: unknown[] = [];
   let toSendEvents: WrappedResponse[] = [];
   let { userSchema } = destination.Config;
-  const { isHashRequired, audienceId } = destination.Config;
+  const { isHashRequired, audienceId, accessToken } = destination.Config;
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
+  }
+
+  if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
+    throw new ConfigurationError('Access Token is a mandatory field');
   }
 
   if (!isDefinedAndNotNullAndNotEmpty(audienceId)) {
@@ -247,6 +251,11 @@ const process = (event: {
 }) => processEvent(event.message, event.destination, event.metadata?.workspaceId as string);
 
 const processRouterDest = async (inputs: FbRecordEvent[], reqMetadata: unknown) => {
+  const { accessToken } = inputs[0].destination.Config;
+  if (!isDefinedAndNotNullAndNotEmpty(accessToken)) {
+    throw new ConfigurationError('Access Token is a mandatory field');
+  }
+
   const respList: unknown[] = [];
   const groupedInputs = await groupByInBatches(inputs, (input) =>
     (input.message.type ?? '').toLowerCase(),

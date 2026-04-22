@@ -26,6 +26,7 @@ const {
   BUGSNAG_API_KEY: apiKey,
   transformer_build_version: imageVersion,
   git_commit_sha: gitCommitSHA,
+  // Reused from Pyroscope config — already reflects the deployment cluster name
   PYROSCOPE_CLUSTER_NAME: clusterName,
 } = process.env;
 
@@ -66,7 +67,7 @@ function init() {
         source: {
           gitCommitSHA,
         },
-        cluster: clusterName,
+        cluster: { name: clusterName },
       },
       onError(event) {
         event.severity = 'error';

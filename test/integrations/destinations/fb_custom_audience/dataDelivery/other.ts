@@ -1,6 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
-import { statTags, testParams2 as testParams } from './business';
+import { statTags, testParams2 as testParams, testBodyJson2 as testBodyJson } from './business';
 
 export const otherScenariosV1: ProxyV1TestData[] = [
   {
@@ -22,6 +22,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             'test-dest-response-key': 'tooManyCallsError',
           },
           params: testParams,
+          JSON: testBodyJson,
         }),
         method: 'POST',
       },
@@ -69,6 +70,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             'test-dest-response-key': 'htmlResponse',
           },
           params: testParams,
+          JSON: testBodyJson,
         }),
         method: 'POST',
       },

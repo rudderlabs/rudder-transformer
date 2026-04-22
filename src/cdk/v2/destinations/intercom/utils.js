@@ -303,7 +303,9 @@ const searchContact = async (message, destination, metadata) => {
       lookupFieldValue = lookupFieldValue.toLowerCase();
     }
     addLookup(lookupField, lookupFieldValue);
-    addLookup('external_id', getFieldValueFromMessage(message, 'userIdOnly'));
+    if (lookupField !== 'external_id') {
+      addLookup('external_id', getFieldValueFromMessage(message, 'userIdOnly'));
+    }
   }
 
   if (lookups.length === 0) {

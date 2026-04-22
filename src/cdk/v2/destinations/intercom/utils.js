@@ -296,9 +296,10 @@ const searchContact = async (message, destination, metadata) => {
     // In case of email, we convert it to lowercase as INTERCOM API expects email in lowercase
     // If external_id is present, we add it to the lookups
     const lookupField = getLookUpField(message);
-    let lookupFieldValue = getFieldValueFromMessage(message, lookupField) || message?.context?.traits?.[lookupField];
+    let lookupFieldValue =
+      getFieldValueFromMessage(message, lookupField) || message?.context?.traits?.[lookupField];
 
-    if (lookupField === 'email' && lookupFieldValue) {
+    if (lookupField === 'email' && lookupFieldValue && typeof lookupFieldValue === 'string') {
       lookupFieldValue = lookupFieldValue.toLowerCase();
     }
     addLookup(lookupField, lookupFieldValue);

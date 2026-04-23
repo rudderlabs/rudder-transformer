@@ -1,6 +1,4 @@
-import lodash from 'lodash';
 import crypto from 'crypto';
-import jsonSize from 'json-size';
 import validator from 'validator';
 import {
   InstrumentationError,
@@ -13,23 +11,19 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint, DESTINATION } from './config';
+import { typeFields, subTypeFields, getEndPoint, ENDPOINT_PATH, DESTINATION } from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
 } from '../../util';
 import stats from '../../../util/stats';
-import * as config from './config';
-import { isFeatureEnabled } from '../../../util/featureFlags';
 import {
   processAudienceRecord,
   isValidPhoneNumber,
   type AudienceField,
   HashingType,
 } from '../../util/audienceUtils';
-
-const PAYLOAD_IN_BODY_FLAG = 'FB_CUSTOM_AUDIENCE_PAYLOAD_IN_BODY';
 
 // ISO 3166-1 alpha-2: exactly two lowercase letters
 const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
@@ -51,28 +45,9 @@ const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
               ]
             ]
 } */
-const batchingWithPayloadSize = (
-  payload: FbCustomAudiencePayload,
-  workspaceId: string,
-): FbCustomAudiencePayload[] => {
-  if (isFeatureEnabled(PAYLOAD_IN_BODY_FLAG, workspaceId)) {
-    return [payload];
-  }
-  const maxPayloadSize = config.getMaxPayloadSize(workspaceId);
-  const payloadSize = jsonSize(payload);
-  if (payloadSize > maxPayloadSize) {
-    const revisedPayloadArray: FbCustomAudiencePayload[] = [];
-    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
-    const data = payload.data!;
-    const revisedRecordsPerPayload = Math.floor(data.length / noOfBatches);
-    const revisedDataArray = lodash.chunk(data, revisedRecordsPerPayload);
-    revisedDataArray.forEach((chunk) => {
-      revisedPayloadArray.push({ ...payload, data: chunk });
-    });
-    return revisedPayloadArray;
-  }
-  return [payload];
-};
+const batchingWithPayloadSize = (payload: FbCustomAudiencePayload): FbCustomAudiencePayload[] => [
+  payload,
+];
 
 const getSchemaForEventMappedToDest = (message: FbRecordMessage): string[] => {
   const mappedSchema = message?.context?.destinationFields;
@@ -300,15 +275,11 @@ const getDataSource = (type: string | undefined, subType: string | undefined): D
   return dataSource;
 };
 
-const responseBuilderSimple = (
-  payload: WrappedResponse | undefined,
-  audienceId: string,
-  workspaceId: string,
-) => {
+const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId: string) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
-    response.endpointPath = config.ENDPOINT_PATH;
+    response.endpointPath = ENDPOINT_PATH;
 
     if (payload.operationCategory === 'add') {
       response.method = defaultPostRequestConfig.requestMethod;
@@ -317,13 +288,9 @@ const responseBuilderSimple = (
       response.method = defaultDeleteRequestConfig.requestMethod;
     }
 
-    if (isFeatureEnabled(PAYLOAD_IN_BODY_FLAG, workspaceId)) {
-      const { payload: fbPayload, ...authParams } = payload.responseField;
-      response.params = authParams;
-      response.body.JSON = { payload: fbPayload };
-    } else {
-      response.params = payload.responseField;
-    }
+    const { payload: fbPayload, ...authParams } = payload.responseField;
+    response.params = authParams;
+    response.body.JSON = { payload: fbPayload };
     return response;
   }
   // fail-safety for developer error

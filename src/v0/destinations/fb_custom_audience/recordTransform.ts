@@ -139,8 +139,7 @@ const processRecordEventArray = async (
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
     prepareFinalPayload.schema = userSchema;
     prepareFinalPayload.data = data;
-    const workspaceId = recordChunksArray[0]?.[0]?.metadata?.workspaceId;
-    const payloadBatches = batchingWithPayloadSize(prepareFinalPayload, workspaceId);
+    const payloadBatches = batchingWithPayloadSize(prepareFinalPayload);
 
     payloadBatches.forEach((payloadBatch) => {
       const response = {
@@ -153,7 +152,7 @@ const processRecordEventArray = async (
         operationCategory: operation,
       };
 
-      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId, workspaceId!);
+      const builtResponse = responseBuilderSimple(wrappedResponse, audienceId);
       toSendEvents.push(builtResponse);
     });
   });

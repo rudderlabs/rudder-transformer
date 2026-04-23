@@ -276,42 +276,74 @@ const filterCustomAttributes = (payload, type, destination, message) => {
  * @returns
  */
 const searchContact = async (message, destination, metadata) => {
-  let lookupField = getLookUpField(message);
-  let lookupFieldValue = getFieldValueFromMessage(message, lookupField);
-  if (!lookupFieldValue) {
-    lookupFieldValue = message?.context?.traits?.[lookupField];
-  }
+  const lookups = [];
+  const addLookup = (field, value) => {
+    if (value) {
+      lookups.push({
+        field,
+        value,
+      });
+    }
+  };
+
   // we are mapping user_id to external_id in the message for rEtl flow when email is not present in traits
-  if (
-    message.context?.mappedToDestination &&
-    message.traits?.external_id &&
-    !message.traits?.email
-  ) {
-    lookupField = 'external_id';
-    lookupFieldValue = message.traits.external_id;
+  const isRetlExternalIdMapping =
+    message.context?.mappedToDestination && message.traits?.external_id && !message.traits?.email;
+  if (isRetlExternalIdMapping) {
+    addLookup('external_id', message.traits.external_id);
+  } else {
+    // Get lookup field and value from message and traits
+    // In case of email, we convert it to lowercase as INTERCOM API expects email in lowercase
+    // If external_id is present, we add it to the lookups
+    const lookupField = getLookUpField(message);
+    let lookupFieldValue =
+      getFieldValueFromMessage(message, lookupField) || message?.context?.traits?.[lookupField];
+
+    if (lookupField === 'email' && lookupFieldValue && typeof lookupFieldValue === 'string') {
+      lookupFieldValue = lookupFieldValue.toLowerCase();
+    }
+    addLookup(lookupField, lookupFieldValue);
+    if (lookupField !== 'external_id') {
+      addLookup('external_id', getFieldValueFromMessage(message, 'userIdOnly'));
+    }
   }
-  // if lookup field value is not present, we are returning null
-  if (
-    !isDefinedAndNotNull(lookupFieldValue) ||
-    (typeof lookupFieldValue !== 'string' &&
-      typeof lookupFieldValue !== 'number' &&
-      typeof lookupFieldValue !== 'boolean')
-  ) {
-    warn('[INTERCOM] Lookup field value is not defined or not a string, number, or boolean', {
-      lookupField,
+
+  if (lookups.length === 0) {
+    warn('[INTERCOM] No lookups found in the message', {
+      sourceId: metadata.sourceId,
+      destinationId: metadata.destinationId,
+      workspaceId: metadata.workspaceId,
     });
     return null;
   }
+
+  const invalidLookups = lookups.filter(
+    (lookup) =>
+      !isDefinedAndNotNull(lookup.value) ||
+      (typeof lookup.value !== 'string' &&
+        typeof lookup.value !== 'number' &&
+        typeof lookup.value !== 'boolean'),
+  );
+  if (invalidLookups.length > 0) {
+    warn('[INTERCOM] Invalid lookups found in the message', {
+      sourceId: metadata.sourceId,
+      destinationId: metadata.destinationId,
+      workspaceId: metadata.workspaceId,
+      invalidLookups,
+    });
+    return null;
+  }
+
+  const lookupOperator = lookups.length > 1 ? 'OR' : 'AND';
+  const lookupQueries = lookups.map((lookup) => ({
+    field: lookup.field,
+    operator: '=',
+    value: lookup.value,
+  }));
   const data = JSON.stringify({
     query: {
-      operator: 'AND',
-      value: [
-        {
-          field: lookupField,
-          operator: '=',
-          value: lookupFieldValue,
-        },
-      ],
+      operator: lookupOperator,
+      value: lookupQueries,
     },
   });
 
@@ -335,6 +367,13 @@ const searchContact = async (message, destination, metadata) => {
   );
   const processedUserResponse = processAxiosResponse(response);
   if (isHttpStatusSuccess(processedUserResponse.status)) {
+    if (processedUserResponse.response?.data.length > 1) {
+      warn('[INTERCOM] Multiple contacts found for the message', {
+        sourceId: metadata.sourceId,
+        destinationId: metadata.destinationId,
+        workspaceId: metadata.workspaceId,
+      });
+    }
     return processedUserResponse.response?.data.length > 0
       ? processedUserResponse.response?.data[0]?.id
       : null;

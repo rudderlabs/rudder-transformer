@@ -90,17 +90,12 @@ jobs:
 
       - name: Check if shared transformers branch already exists
         id: check-shared-branch
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          BRANCH_NAME="shared-transformer-$TAG_NAME"
-          ref_count=$(gh api "repos/rudderlabs/rudder-devops/git/matching-refs/heads/$BRANCH_NAME" --jq 'length')
-          if [ "$ref_count" -gt 0 ]; then
-             echo "exists=true" >> $GITHUB_OUTPUT
-             echo "Shared transformers branch $BRANCH_NAME already exists. Skipping."
-           else
-             echo "exists=false" >> $GITHUB_OUTPUT
-           fi
+        uses: ./.github/actions/check-branch-exists
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          repository: rudderlabs/rudder-devops
+          branch-name: shared-transformer-${{ env.TAG_NAME }}
+          branch-description: Shared transformers
 
       - name: Update image tags in devops repo for shared transformers
         if: steps.check-shared-branch.outputs.exists == 'false'
@@ -184,17 +179,12 @@ jobs:
 
       - name: Check if hosted transformer branch already exists
         id: check-hosted-branch
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          BRANCH_NAME="hosted-transformer-$TAG_NAME"
-          ref_count=$(gh api "repos/rudderlabs/rudder-devops/git/matching-refs/heads/$BRANCH_NAME" --jq 'length')
-          if [ "$ref_count" -gt 0 ]; then
-             echo "exists=true" >> $GITHUB_OUTPUT
-             echo "Hosted transformer branch $BRANCH_NAME already exists. Skipping."
-           else
-             echo "exists=false" >> $GITHUB_OUTPUT
-           fi
+        uses: ./.github/actions/check-branch-exists
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          repository: rudderlabs/rudder-devops
+          branch-name: hosted-transformer-${{ env.TAG_NAME }}
+          branch-description: Hosted transformer
 
       - name: Update image tag in devops repo for hosted transformer
         if: steps.check-hosted-branch.outputs.exists == 'false'
@@ -271,17 +261,12 @@ jobs:
 
       - name: Check if dedicated transformer branch already exists
         id: check-dedicated-branch
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          BRANCH_NAME="dedicated-transformer-$TAG_NAME"
-          ref_count=$(gh api "repos/rudderlabs/rudderstack-operator/git/matching-refs/heads/$BRANCH_NAME" --jq 'length')
-          if [ "$ref_count" -gt 0 ]; then
-             echo "exists=true" >> $GITHUB_OUTPUT
-             echo "Dedicated transformer branch $BRANCH_NAME already exists. Skipping."
-           else
-             echo "exists=false" >> $GITHUB_OUTPUT
-           fi
+        uses: ./.github/actions/check-branch-exists
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          repository: rudderlabs/rudderstack-operator
+          branch-name: dedicated-transformer-${{ env.TAG_NAME }}
+          branch-description: Dedicated transformer
 
       - name: Update image tag in operator repo for dedicated transformer
         if: steps.check-dedicated-branch.outputs.exists == 'false'

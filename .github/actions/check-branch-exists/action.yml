@@ -1,0 +1,40 @@
+name: 'Check Branch Exists'
+description: 'Check whether a branch already exists in a GitHub repository'
+
+inputs:
+  github-token:
+    required: true
+    description: 'GitHub token with permission to read refs from the target repository'
+  repository:
+    required: true
+    description: 'Repository in owner/name format'
+  branch-name:
+    required: true
+    description: 'Branch name to check'
+  branch-description:
+    required: false
+    default: 'Branch'
+    description: 'Label used in the log message when the branch already exists'
+
+outputs:
+  exists:
+    description: 'Whether the branch already exists'
+    value: ${{ steps.check.outputs.exists }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: check
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        if err=$(gh api "repos/${{ inputs.repository }}/git/ref/heads/${{ inputs.branch-name }}" 2>&1 >/dev/null); then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+          echo "${{ inputs.branch-description }} branch ${{ inputs.branch-name }} already exists. Skipping."
+        elif echo "$err" | grep -q "HTTP 404"; then
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "::error::Failed to check ${{ inputs.branch-description }} branch ${{ inputs.branch-name }}: $err"
+          exit 1
+        fi

@@ -17,7 +17,7 @@ jobs:
       contents: read # to checkout repository code and read package.json (actions/checkout)
     outputs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
-      tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
+      repository: ${{ steps.gen_tag_names.outputs.tag_name }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
@@ -249,7 +249,6 @@ jobs:
 
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
     outputs:
       pr_url: ${{ steps.dedicated-pr.outputs.pr_url }}
     steps:
@@ -332,7 +331,7 @@ jobs:
           BASE_SHA=$(git rev-parse HEAD)
           gh api repos/rudderlabs/rudder-devops/git/refs \
             --method POST \
-            -f ref="refs/heads/dedicated-user-transformer-$TAG_NAME" \
+            -f ref="refs/heads/dedicated-user-transformer-$UT_TAG_NAME" \
             -f sha="$BASE_SHA"
 
       - name: Create verified commit for dedicated user-transformers
@@ -342,8 +341,8 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:
           repository: rudderlabs/rudder-devops
-          branch-name: dedicated-user-transformer-${{ env.TAG_NAME }}
-          commit-message: 'chore: upgrade dedicated user transformers to ${{ env.TAG_NAME }}'
+          branch-name: dedicated-user-transformer-${{ env.UT_TAG_NAME }}
+          commit-message: 'chore: upgrade dedicated user transformers to ${{ env.UT_TAG_NAME }}'
           files: ${{ steps.collect-dedicated-files.outputs.files }}
 
       - name: Create PR for dedicated user-transformers
@@ -355,9 +354,9 @@ jobs:
           PR_URL=$(gh pr create \
             --repo rudderlabs/rudder-devops \
             --base master \
-            --head "dedicated-user-transformer-$TAG_NAME" \
-            --title "chore: upgrade dedicated user transformers to $TAG_NAME" \
-            --body "Automated PR to update dedicated user transformer default version to $TAG_NAME")
+            --head "dedicated-user-transformer-$UT_TAG_NAME" \
+            --title "chore: upgrade dedicated user transformers to $UT_TAG_NAME" \
+            --body "Automated PR to update dedicated user transformer default version to $UT_TAG_NAME")
           echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
   notify-control-plane:

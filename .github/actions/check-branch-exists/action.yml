@@ -28,13 +28,16 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
+        REPOSITORY: ${{ inputs.repository }}
+        BRANCH_NAME: ${{ inputs.branch-name }}
+        BRANCH_DESCRIPTION: ${{ inputs.branch-description }}
       run: |
-        if err=$(gh api "repos/${{ inputs.repository }}/git/ref/heads/${{ inputs.branch-name }}" 2>&1 >/dev/null); then
+        if err=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH_NAME}" 2>&1 >/dev/null); then
           echo "exists=true" >> "$GITHUB_OUTPUT"
-          echo "${{ inputs.branch-description }} branch ${{ inputs.branch-name }} already exists. Skipping."
+          echo "${BRANCH_DESCRIPTION} branch ${BRANCH_NAME} already exists. Skipping."
         elif echo "$err" | grep -q "HTTP 404"; then
           echo "exists=false" >> "$GITHUB_OUTPUT"
         else
-          echo "::error::Failed to check ${{ inputs.branch-description }} branch ${{ inputs.branch-name }}: $err"
+          echo "::error::Failed to check ${BRANCH_DESCRIPTION} branch ${BRANCH_NAME}: $err"
           exit 1
         fi

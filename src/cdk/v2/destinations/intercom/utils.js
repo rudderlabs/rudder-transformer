@@ -372,7 +372,6 @@ const searchContact = async (message, destination, metadata) => {
         sourceId: metadata.sourceId,
         destinationId: metadata.destinationId,
         workspaceId: metadata.workspaceId,
-        lookups,
       });
     }
     return processedUserResponse.response?.data.length > 0

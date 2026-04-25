@@ -88,6 +88,45 @@ type UpsertResponse = {
   errors?: UpsertError[];
 };
 
+const SILENT_FAILURE_ERROR_MESSAGE =
+  '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).';
+
+// Only new API v3 batch endpoints (e.g., /crm/v3/objects/contacts/batch/upsert)
+// require the silent-failure check. Legacy /contacts/v1/contact/batch/ returns
+// empty body by design (202 Accepted) and must be excluded.
+const isBatchEndpoint = (endpoint?: string): boolean =>
+  typeof endpoint === 'string' && endpoint.includes('/crm/v3/') && endpoint.includes('/batch/');
+
+/**
+ * Detects silent failure on HubSpot batch endpoints.
+ * HubSpot accepts malformed batch payloads and returns 2xx with empty results+errors,
+ * which previously caused events to be marked as delivered when nothing was actually
+ * written. When errors are present, the 207 multi-status handler preserves the
+ * specific error messages from HubSpot, so we only flag as silent failure when both
+ * results and errors are empty.
+ */
+const isSilentFailure = (response: Response, endpoint?: string): boolean => {
+  if (!isBatchEndpoint(endpoint)) {
+    return false;
+  }
+  const results = response?.results ?? [];
+  const errors = response?.errors ?? [];
+  return results.length === 0 && errors.length === 0;
+};
+
+const buildSilentFailureResponse = (
+  rudderJobMetadata: ProxyMetdata[],
+  status: number,
+): DeliveryV1Response => ({
+  status,
+  message: '[HUBSPOT Response V1 Handler] - Silent failure detected',
+  response: rudderJobMetadata.map((metadata) => ({
+    statusCode: 400,
+    metadata,
+    error: SILENT_FAILURE_ERROR_MESSAGE,
+  })),
+});
+
 /**
  * Handles 207 Multi-Status responses from HubSpot batch upsert API.
  * Events with objectWriteTraceId in errors are marked as failed (400).
@@ -155,6 +194,17 @@ const responseHandler = (responseParams: {
     'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation';
   const responseWithIndividualEvents: DeliveryJobState[] = [];
   const { response, status } = destinationResponse;
+
+  // Detect silent failures on batch endpoints: HubSpot returned 2xx but the
+  // response indicates no records were processed (empty results and errors).
+  // Mark all events as 400 since retrying with the same payload would produce
+  // the same silent no-op.
+  if (
+    (status === 207 || isHttpStatusSuccess(status)) &&
+    isSilentFailure(response, destinationRequest?.endpoint)
+  ) {
+    return buildSilentFailureResponse(rudderJobMetadata, status);
+  }
 
   // Handle 207 Multi-Status response from batch upsert API
   if (status === 207) {

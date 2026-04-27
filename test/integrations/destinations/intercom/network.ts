@@ -255,6 +255,7 @@ const deleteNwData = [
     },
   },
 ];
+
 const deliveryCallsData = [
   {
     httpReq: {
@@ -290,8 +291,42 @@ const deliveryCallsData = [
       url: 'https://api.intercom.io/contacts/search',
       data: {
         query: {
-          operator: 'AND',
-          value: [{ field: 'email', operator: '=', value: 'test+2@rudderlabs.com' }],
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@1' },
+          ],
+        },
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+2@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@2' },
+          ],
         },
       },
       headers: commonHeaders,
@@ -327,8 +362,91 @@ const deliveryCallsData = [
       url: 'https://api.eu.intercom.io/contacts/search',
       data: {
         query: {
-          operator: 'AND',
-          value: [{ field: 'email', operator: '=', value: 'test+5@rudderlabs.com' }],
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+5@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@5' },
+          ],
+        },
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '70701240741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@5',
+            role: 'user',
+            email: 'test+5@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+5@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@6' },
+          ],
+        },
+      },
+      headers: commonHeaders,
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '70701240741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@5',
+            role: 'user',
+            email: 'test+5@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+5@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@1' },
+          ],
         },
       },
       headers: commonHeaders,
@@ -401,8 +519,11 @@ const deliveryCallsData = [
       url: 'https://api.intercom.io/contacts/search',
       data: {
         query: {
-          operator: 'AND',
-          value: [{ field: 'email', operator: '=', value: 'test+4@rudderlabs.com' }],
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+4@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@4' },
+          ],
         },
       },
       headers: commonHeaders,
@@ -429,8 +550,11 @@ const deliveryCallsData = [
       url: 'https://api.intercom.io/contacts/search',
       data: {
         query: {
-          operator: 'AND',
-          value: [{ field: 'email', operator: '=', value: 'test+3@rudderlabs.com' }],
+          operator: 'OR',
+          value: [
+            { field: 'email', operator: '=', value: 'test+3@rudderlabs.com' },
+            { field: 'external_id', operator: '=', value: 'user@3' },
+          ],
         },
       },
       headers: {
@@ -1086,6 +1210,35 @@ const deliveryCallsData = [
       data: {
         query: {
           operator: 'AND',
+          value: [{ field: 'external_id', operator: '=', value: 'user@7' }],
+        },
+      },
+      headers: { ...commonHeaders, 'Intercom-Version': '2.10', 'User-Agent': 'RudderStack' },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        status: 200,
+        statusText: 'ok',
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
           value: [{ field: 'external_id', operator: '=', value: 'user@1' }],
         },
       },
@@ -1159,4 +1312,5 @@ const deliveryCallsData = [
     },
   },
 ];
+
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

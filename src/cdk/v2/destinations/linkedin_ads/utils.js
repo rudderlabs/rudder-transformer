@@ -85,7 +85,7 @@ function checkIfPricePresent(properties) {
     const hasPrice = properties.products.some((product) => product.hasOwnProperty('price'));
     return hasPrice;
   }
-  return !!properties?.price;
+  return isDefinedAndNotNullAndNotEmpty(properties?.price);
 }
 
 const calculateConversionObject = (message) => {

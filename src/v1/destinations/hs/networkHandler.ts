@@ -199,10 +199,7 @@ const responseHandler = (responseParams: {
   // response indicates no records were processed (empty results and errors).
   // Mark all events as 400 since retrying with the same payload would produce
   // the same silent no-op.
-  if (
-    (status === 207 || isHttpStatusSuccess(status)) &&
-    isSilentFailure(response, destinationRequest?.endpoint)
-  ) {
+  if (isHttpStatusSuccess(status) && isSilentFailure(response, destinationRequest?.endpoint)) {
     return buildSilentFailureResponse(rudderJobMetadata, status);
   }
 

@@ -7,6 +7,7 @@ const {
   getHashFromArrayWithDuplicate,
   isDefinedAndNotNullAndNotEmpty,
   ConfigurationError,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const {
   getFieldValueFromMessage,
@@ -85,7 +86,7 @@ function checkIfPricePresent(properties) {
     const hasPrice = properties.products.some((product) => product.hasOwnProperty('price'));
     return hasPrice;
   }
-  return isDefinedAndNotNullAndNotEmpty(properties?.price);
+  return isDefinedAndNotNull(properties?.price);
 }
 
 const calculateConversionObject = (message) => {

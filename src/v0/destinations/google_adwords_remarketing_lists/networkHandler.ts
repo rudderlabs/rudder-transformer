@@ -6,6 +6,10 @@ import { processAxiosResponse, getDynamicErrorType } from '../../../adapters/uti
 import tags from '../../util/tags';
 import { getAuthErrCategory, getDeveloperToken } from '../../util/googleUtils';
 import type { OfflineDataJobPayload } from './types';
+import type { GARLIngestAPIPayload, GARLRemoveAPIPayload } from './dataManager/types';
+import type { ResponseHandlerParams } from '../../../types/destinationTransformation';
+import { DATA_MANAGER_HOST } from './dataManager/config';
+import { dataManagerProxyRequest, dataManagerResponseHandler } from './dataManager/networkHandler';
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -144,13 +148,20 @@ const runTheJob = async ({
  * @returns
  */
 const gaAudienceProxyRequest = async (request: {
-  body: { JSON: OfflineDataJobPayload };
+  body: { JSON: OfflineDataJobPayload | GARLIngestAPIPayload | GARLRemoveAPIPayload };
   method: string;
   params: { customerId: string; listId: string; consent: Record<string, string> };
   endpoint: string;
   metadata: unknown;
   headers: Record<string, string>;
+  endpointPath?: string;
 }) => {
+  // Route to Data Manager API handler when transform layer has selected it.
+  // The endpoint URL is the single signal — scope was already verified at transform time.
+  if (request.endpoint.includes(DATA_MANAGER_HOST)) {
+    return dataManagerProxyRequest(request);
+  }
+
   const { body, method, params, endpoint, metadata } = request;
   const { headers } = request;
 
@@ -180,7 +191,7 @@ const gaAudienceProxyRequest = async (request: {
     headers,
     method,
     jobId: jobId!,
-    body,
+    body: body as { JSON: OfflineDataJobPayload },
     metadata,
   });
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
@@ -224,15 +235,21 @@ const gaAudienceRespHandler = (
   );
 };
 
-const responseHandler = (responseParams: {
-  destinationResponse: {
+const responseHandler = (responseParams: ResponseHandlerParams) => {
+  // Delegate to the Data Manager response handler when the request was sent to the DM API.
+  // destinationRequest is passed by the framework (nativeIntegration.ts) and carries the endpoint.
+  const endpoint = responseParams.destinationRequest?.endpoint ?? '';
+  if (endpoint.includes(DATA_MANAGER_HOST)) {
+    return dataManagerResponseHandler(responseParams);
+  }
+
+  // Legacy OfflineUserDataJobs path
+  const { destinationResponse } = responseParams;
+  const message = `Request Processed Successfully`;
+  const { status, response } = destinationResponse as {
     status: number;
     response: { partialFailureError?: { code: number } };
   };
-}) => {
-  const { destinationResponse } = responseParams;
-  const message = `Request Processed Successfully`;
-  const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // for google ads offline conversions the partialFailureError returns with status 200
     const { partialFailureError } = response;
@@ -259,7 +276,10 @@ const responseHandler = (responseParams: {
     };
   }
   // else successfully return status, message and original destination response
-  gaAudienceRespHandler(destinationResponse, 'during ga_audience response transformation');
+  gaAudienceRespHandler(
+    destinationResponse as { status: number; response: unknown },
+    'during ga_audience response transformation',
+  );
   return undefined;
 };
 

@@ -651,14 +651,14 @@ export const validateStreamTestWithZOD = (testPayload: TestCaseData, response: a
 // -----------------------------
 // Helper functions
 
-export const generateMetadata = (jobId: number, userId?: string): any => {
+export const generateMetadata = (jobId: number, userId?: string, workspaceId?: string): any => {
   return {
     jobId,
     attemptNum: 1,
     userId: userId || 'default-userId',
     sourceId: 'default-sourceId',
     destinationId: 'default-destinationId',
-    workspaceId: 'default-workspaceId',
+    workspaceId: workspaceId || 'default-workspaceId',
     secret: {
       accessToken: defaultAccessToken,
     },

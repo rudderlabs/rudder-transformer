@@ -36,7 +36,8 @@ steps:
   - name: buildHeaders
     template: |
       const configAuthHeaders = $.getAuthHeaders(.destination.Config);
-      const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);   
+      const additionalConfigHeaders = $.getCustomMappings(.message, .destination.Config.headers);
+      $.validateHeaders(additionalConfigHeaders);
       const metadataHeaders = $.metadataHeaders($.context.format);
       $.context.headers = {
         ...configAuthHeaders,

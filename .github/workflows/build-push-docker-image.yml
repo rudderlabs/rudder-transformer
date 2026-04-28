@@ -37,6 +37,9 @@ on:
 env:
   DOCKERHUB_USERNAME: rudderlabs
 
+permissions:
+  contents: read
+
 jobs:
   check_actor:
     runs-on: ubuntu-latest
@@ -47,19 +50,21 @@ jobs:
       is_dependabot: ${{ steps.check.outputs.is_dependabot }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
       - name: Check actor
         id: check
+        env:
+          GITHUB_ACTOR_NAME: ${{ github.actor }}
         run: |
-          if [[ "${{ github.actor }}" == "dependabot[bot]" ]]; then
+          if [[ "$GITHUB_ACTOR_NAME" == "dependabot[bot]" ]]; then
             echo "is_dependabot=true" >> $GITHUB_OUTPUT
             echo "Actor is dependabot[bot] - skipping certain steps"
           else
             echo "is_dependabot=false" >> $GITHUB_OUTPUT
-            echo "Actor is ${{ github.actor }} - proceeding normally"
+            echo "Actor is $GITHUB_ACTOR_NAME - proceeding normally"
           fi
 
   get_sha:
@@ -71,7 +76,7 @@ jobs:
       sha: ${{steps.getSHA.outputs.SHA}}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -95,7 +100,7 @@ jobs:
       should_execute_tests: ${{ steps.processing.outputs.should_execute_tests }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -142,7 +147,7 @@ jobs:
     runs-on: ${{ matrix.build-config.os }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -176,7 +181,7 @@ jobs:
           docker run --rm $BUILD_TAG npm run test:ts:ci
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
@@ -184,10 +189,10 @@ jobs:
 
       - name: Login to ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # 2.0.1
+        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # 2.1.2
 
       - name: Build and Push Multi-platform Images to ECR
-        uses: rudderlabs/build-scan-push-action@96d7bfca912dd2e8805dbb322dc2540504ecac1e # v2.1.0
+        uses: rudderlabs/build-scan-push-action@865b4253caa57f8f20cd109e0efc1affe3a64939 # v2.2.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -207,7 +212,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and Push Multi-platform Images to DockerHub
-        uses: rudderlabs/build-scan-push-action@96d7bfca912dd2e8805dbb322dc2540504ecac1e # v2.1.0
+        uses: rudderlabs/build-scan-push-action@865b4253caa57f8f20cd109e0efc1affe3a64939 # v2.2.0
         if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
         with:
           context: .
@@ -230,7 +235,7 @@ jobs:
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -238,7 +243,7 @@ jobs:
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           aws-region: ${{ vars.AWS_ECR_REGION }}
           role-to-assume: ${{ vars.AWS_ECR_IAM_ROLE_ARN }}
@@ -246,7 +251,7 @@ jobs:
 
       - name: Login to ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # 2.0.1
+        uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # 2.1.2
 
       - name: Create multi-arch manifest for ECR
         run: |
@@ -269,7 +274,7 @@ jobs:
     if: ${{ needs.check_actor.outputs.is_dependabot == 'false' }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 

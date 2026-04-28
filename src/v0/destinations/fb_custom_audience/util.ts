@@ -1,6 +1,4 @@
-import lodash from 'lodash';
 import crypto from 'crypto';
-import jsonSize from 'json-size';
 import validator from 'validator';
 import {
   InstrumentationError,
@@ -13,18 +11,18 @@ import type {
   FbRecordMessage,
   WrappedResponse,
 } from './types';
-import { typeFields, subTypeFields, getEndPoint, DESTINATION } from './config';
+import { typeFields, subTypeFields, getEndPoint, ENDPOINT_PATH, DESTINATION } from './config';
 import {
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
 } from '../../util';
 import stats from '../../../util/stats';
-import * as config from './config';
 import {
   processAudienceRecord,
   isValidPhoneNumber,
   type AudienceField,
+  HashingType,
 } from '../../util/audienceUtils';
 
 // ISO 3166-1 alpha-2: exactly two lowercase letters
@@ -47,25 +45,9 @@ const COUNTRY_CODE_REGEX = /^[a-z]{2}$/;
               ]
             ]
 } */
-const batchingWithPayloadSize = (
-  payload: FbCustomAudiencePayload,
-  workspaceId: string,
-): FbCustomAudiencePayload[] => {
-  const maxPayloadSize = config.getMaxPayloadSize(workspaceId);
-  const payloadSize = jsonSize(payload);
-  if (payloadSize > maxPayloadSize) {
-    const revisedPayloadArray: FbCustomAudiencePayload[] = [];
-    const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
-    const data = payload.data!;
-    const revisedRecordsPerPayload = Math.floor(data.length / noOfBatches);
-    const revisedDataArray = lodash.chunk(data, revisedRecordsPerPayload);
-    revisedDataArray.forEach((chunk) => {
-      revisedPayloadArray.push({ ...payload, data: chunk });
-    });
-    return revisedPayloadArray;
-  }
-  return [payload];
-};
+const batchingWithPayloadSize = (payload: FbCustomAudiencePayload): FbCustomAudiencePayload[] => [
+  payload,
+];
 
 const getSchemaForEventMappedToDest = (message: FbRecordMessage): string[] => {
   const mappedSchema = message?.context?.destinationFields;
@@ -113,46 +95,49 @@ const FB_FIELD_CONFIG: Record<string, AudienceField> = {
   EMAIL: {
     normalize: (v) => v.trim().toLowerCase(),
     validate: (v) => validator.isEmail(v),
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
   PHONE: {
     // Remove all non-numerical characters, then remove all leading zeros.
     // Note: libphonenumber-js is not used here as it requires a country code to validate.
     normalize: (v) => v.trim().replace(/\D/g, '').replace(/^0+/g, ''),
     validate: isValidPhoneNumber,
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
   GEN: {
     normalize: (v) => {
       const lower = v.trim().toLowerCase();
       return lower === 'f' || lower === 'female' ? 'f' : 'm';
     },
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
-  DOBY: { normalize: (v) => v.trim().replace(/\./g, ''), hashable: true },
-  DOBM: { normalize: normalizeDobPart, hashable: true },
-  DOBD: { normalize: normalizeDobPart, hashable: true },
-  LN: { normalize: normalizeNameField, hashable: true },
-  FN: { normalize: normalizeNameField, hashable: true },
+  DOBY: { normalize: (v) => v.trim().replace(/\./g, ''), hashingType: HashingType.SHA256 },
+  DOBM: { normalize: normalizeDobPart, hashingType: HashingType.SHA256 },
+  DOBD: { normalize: normalizeDobPart, hashingType: HashingType.SHA256 },
+  LN: { normalize: normalizeNameField, hashingType: HashingType.SHA256 },
+  FN: { normalize: normalizeNameField, hashingType: HashingType.SHA256 },
   FI: {
     normalize: (v) =>
       v
         .trim()
         .toLowerCase()
         .replace(/[^!"#$%&'()*+,-./a-z]/g, ''),
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
-  MADID: { normalize: (v) => v.trim().toLowerCase(), hashable: false },
+  MADID: { normalize: (v) => v.trim().toLowerCase(), hashingType: HashingType.NONE },
   COUNTRY: {
     normalize: (v) => v.trim().toLowerCase(),
     validate: (v) => COUNTRY_CODE_REGEX.test(v),
-    hashable: true,
+    hashingType: HashingType.SHA256,
   },
-  ZIP: { normalize: (v) => v.trim().replace(/[\s-]/g, '').toLowerCase(), hashable: true },
-  ST: { normalize: normalizeLocationTextField, hashable: true },
-  CT: { normalize: normalizeLocationTextField, hashable: true },
-  EXTERN_ID: { normalize: (v) => v, hashable: false },
-  LOOKALIKE_VALUE: { normalize: (v) => v, hashable: false },
+  ZIP: {
+    normalize: (v) => v.trim().replace(/[\s-]/g, '').toLowerCase(),
+    hashingType: HashingType.SHA256,
+  },
+  ST: { normalize: normalizeLocationTextField, hashingType: HashingType.SHA256 },
+  CT: { normalize: normalizeLocationTextField, hashingType: HashingType.SHA256 },
+  EXTERN_ID: { normalize: (v) => v, hashingType: HashingType.NONE },
+  LOOKALIKE_VALUE: { normalize: (v) => v, hashingType: HashingType.NONE },
 };
 
 /**
@@ -292,10 +277,9 @@ const getDataSource = (type: string | undefined, subType: string | undefined): D
 
 const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId: string) => {
   if (payload) {
-    const responseParams = payload.responseField;
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
-    response.endpointPath = config.ENDPOINT_PATH;
+    response.endpointPath = ENDPOINT_PATH;
 
     if (payload.operationCategory === 'add') {
       response.method = defaultPostRequestConfig.requestMethod;
@@ -304,7 +288,9 @@ const responseBuilderSimple = (payload: WrappedResponse | undefined, audienceId:
       response.method = defaultDeleteRequestConfig.requestMethod;
     }
 
-    response.params = responseParams;
+    const { payload: fbPayload, ...authParams } = payload.responseField;
+    response.params = authParams;
+    response.body.JSON = { payload: fbPayload };
     return response;
   }
   // fail-safety for developer error

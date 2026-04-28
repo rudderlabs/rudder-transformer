@@ -3,6 +3,7 @@ import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata, SourceHydrationRequest, SourceHydrationOutput } from '../types';
 import defaultFeaturesConfig from '../features';
+import { BatchDestinationConstructor } from './destination/nativeBatching/batchDestination';
 
 export interface Hydrator {
   hydrate(input: SourceHydrationRequest): Promise<SourceHydrationOutput>;
@@ -26,6 +27,10 @@ export class MiscService {
 
   public static getDeletionHandler(dest: string, version: string) {
     return require(`../${version}/destinations/${dest}/deleteUsers`);
+  }
+
+  public static getBatchDestinationHandler(dest: string): BatchDestinationConstructor {
+    return require(`../v0/destinations/${dest}/routerTransform`).Integration;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

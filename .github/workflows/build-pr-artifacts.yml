@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.sha }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@58077d3c7e43986b6b15fba718e8ea69e387dfcc # v2.15.1
+        uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
 
@@ -36,8 +39,10 @@ jobs:
       # Replace problematic characters in branch name (like '/') with safe characters (like '.')
       - name: Generate Tag Names
         id: gen_tag_names
+        env:
+          HEAD_REF: ${{ github.head_ref }}
         run: |
-          tag_name=$(echo ${{ github.head_ref }} | tr "/" .)
+          tag_name=$(echo "$HEAD_REF" | tr "/" .)
           echo "Tag Name: branch-$tag_name"
           echo "tag_name=branch-$tag_name" >> $GITHUB_OUTPUT
 

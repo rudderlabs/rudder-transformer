@@ -14,7 +14,7 @@ const {
 
 const { trackMapping } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { isCustomAdjustmentTypeSupported } = require('./utils');
+const { isFeatureEnabled } = require('../../../util/featureFlags');
 
 /**
  * This function is helping to update the mappingJson.
@@ -111,7 +111,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.conversionAdjustments[0].userIdentifiers = arr.filter((item) => !!item);
 
   if (
-    isCustomAdjustmentTypeSupported(metadata?.workspaceId) &&
+    isFeatureEnabled('DEST_GAEC_ADJUSTMENT_TYPE_SUPPORTED_WORKSPACE_IDS', metadata?.workspaceId) &&
     adjustmentType &&
     adjustmentType === 'RESTATEMENT'
   ) {

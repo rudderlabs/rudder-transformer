@@ -8,7 +8,7 @@ jest.mock('../../../util/stats', () => ({
 import stats from '../../../util/stats';
 import type { WrappedResponse } from './types';
 
-const basePayload = {
+const basePayload: WrappedResponse = {
   responseField: {
     access_token: 'ABC',
     payload: {
@@ -32,18 +32,19 @@ const baseResponse = {
   headers: {},
   params: {
     access_token: 'ABC',
-    payload: {
-      schema: ['EMAIL', 'FI'],
-      data: [
-        [
-          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
-          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
-        ],
-      ],
-    },
   },
   body: {
-    JSON: {},
+    JSON: {
+      payload: {
+        schema: ['EMAIL', 'FI'],
+        data: [
+          [
+            'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+            '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+          ],
+        ],
+      },
+    },
     JSON_ARRAY: {},
     XML: {},
     FORM: {},

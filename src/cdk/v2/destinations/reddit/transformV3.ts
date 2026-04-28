@@ -102,6 +102,8 @@ const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventM
       id: product.product_id,
       name: product.name,
       category: product.category,
+      item_price: product.price,
+      quantity: product.quantity,
     }));
 
     return {
@@ -117,6 +119,8 @@ const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventM
         id: eventProperties?.product_id,
         name: eventProperties?.name,
         category: eventProperties?.category,
+        item_price: eventProperties?.price,
+        quantity: eventProperties?.quantity,
       },
     ],
   };

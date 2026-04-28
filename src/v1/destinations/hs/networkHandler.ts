@@ -1,6 +1,7 @@
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 import { isHttpStatusSuccess, getAuthErrCategoryFromStCode } from '../../../v0/util/index';
+import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import {
   DeliveryV1Response,
   DeliveryJobState,
@@ -88,25 +89,15 @@ type UpsertResponse = {
   errors?: UpsertError[];
 };
 
-const SILENT_FAILURE_ERROR_MESSAGE =
-  '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).';
+const isNewBatchEndpoint = (endpoint?: string): boolean => {
+  if (!endpoint) {
+    return false;
+  }
+  return endpoint.includes('/crm/v3/') && endpoint.includes('/batch/');
+};
 
-// Only new API v3 batch endpoints (e.g., /crm/v3/objects/contacts/batch/upsert)
-// require the silent-failure check. Legacy /contacts/v1/contact/batch/ returns
-// empty body by design (202 Accepted) and must be excluded.
-const isBatchEndpoint = (endpoint?: string): boolean =>
-  typeof endpoint === 'string' && endpoint.includes('/crm/v3/') && endpoint.includes('/batch/');
-
-/**
- * Detects silent failure on HubSpot batch endpoints.
- * HubSpot accepts malformed batch payloads and returns 2xx with empty results+errors,
- * which previously caused events to be marked as delivered when nothing was actually
- * written. When errors are present, the 207 multi-status handler preserves the
- * specific error messages from HubSpot, so we only flag as silent failure when both
- * results and errors are empty.
- */
 const isSilentFailure = (response: Response, endpoint?: string): boolean => {
-  if (!isBatchEndpoint(endpoint)) {
+  if (!isNewBatchEndpoint(endpoint)) {
     return false;
   }
   const results = response?.results ?? [];
@@ -121,9 +112,10 @@ const buildSilentFailureResponse = (
   status,
   message: '[HUBSPOT Response V1 Handler] - Silent failure detected',
   response: rudderJobMetadata.map((metadata) => ({
-    statusCode: 400,
+    statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
     metadata,
-    error: SILENT_FAILURE_ERROR_MESSAGE,
+    error:
+      '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).',
   })),
 });
 
@@ -195,11 +187,15 @@ const responseHandler = (responseParams: {
   const responseWithIndividualEvents: DeliveryJobState[] = [];
   const { response, status } = destinationResponse;
 
-  // Detect silent failures on batch endpoints: HubSpot returned 2xx but the
-  // response indicates no records were processed (empty results and errors).
+  // Detect silent failures on new API v3 batch endpoints: HubSpot returned 2xx
+  // but the response indicates no records were processed (empty results and
+  // errors). When errors are present, the 207 multi-status handler below
+  // preserves the specific error messages from HubSpot. Legacy batch endpoint
+  // /contacts/v1/contact/batch/ returns empty body by design (202 Accepted)
+  // and is excluded.
   // Mark all events as 400 since retrying with the same payload would produce
   // the same silent no-op.
-  if (isHttpStatusSuccess(status) && isSilentFailure(response, destinationRequest?.endpoint)) {
+  if (isHttpStatusSuccess(status) && isSilentFailure(response, destinationRequest.endpoint)) {
     return buildSilentFailureResponse(rudderJobMetadata, status);
   }
 

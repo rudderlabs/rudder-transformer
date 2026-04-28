@@ -89,11 +89,25 @@ type UpsertResponse = {
   errors?: UpsertError[];
 };
 
+const SILENT_FAILURE_MESSAGE = '[HUBSPOT Response V1 Handler] - Silent failure detected';
+const SILENT_FAILURE_ERROR =
+  '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).';
+
+// Explicit list of new API v3 batch write endpoints. Using regex (not substring
+// match) keeps this deterministic — only known write endpoints are matched, so
+// new batch verbs (e.g., batch/read) added later won't accidentally trigger
+// silent-failure detection. Dynamic segments (:objectType, :from, :to) are
+// matched via [^/]+.
+const NEW_BATCH_ENDPOINT_PATTERNS: RegExp[] = [
+  /\/crm\/v3\/objects\/[^/]+\/batch\/(upsert|create|update)(\?|$)/,
+  /\/crm\/v3\/associations\/[^/]+\/[^/]+\/batch\/create(\?|$)/,
+];
+
 const isNewBatchEndpoint = (endpoint?: string): boolean => {
   if (!endpoint) {
     return false;
   }
-  return endpoint.includes('/crm/v3/') && endpoint.includes('/batch/');
+  return NEW_BATCH_ENDPOINT_PATTERNS.some((pattern) => pattern.test(endpoint));
 };
 
 const isSilentFailure = (response: Response, endpoint?: string): boolean => {
@@ -110,12 +124,11 @@ const buildSilentFailureResponse = (
   status: number,
 ): DeliveryV1Response => ({
   status,
-  message: '[HUBSPOT Response V1 Handler] - Silent failure detected',
+  message: SILENT_FAILURE_MESSAGE,
   response: rudderJobMetadata.map((metadata) => ({
     statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
     metadata,
-    error:
-      '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).',
+    error: SILENT_FAILURE_ERROR,
   })),
 });
 
@@ -278,4 +291,4 @@ function networkHandler(this: any) {
   this.responseHandler = responseHandler;
 }
 
-module.exports = { networkHandler };
+module.exports = { networkHandler, SILENT_FAILURE_MESSAGE, SILENT_FAILURE_ERROR };

@@ -1,10 +1,10 @@
 import { authHeader1 } from '../maskedSecrets';
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 
-const SILENT_FAILURE_ERROR =
-  '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).';
-
-const SILENT_FAILURE_MESSAGE = '[HUBSPOT Response V1 Handler] - Silent failure detected';
+const {
+  SILENT_FAILURE_MESSAGE,
+  SILENT_FAILURE_ERROR,
+} = require('../../../../../src/v1/destinations/hs/networkHandler');
 
 /**
  * Test data for HubSpot silent failure detection on batch endpoints.

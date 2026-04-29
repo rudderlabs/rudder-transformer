@@ -254,16 +254,25 @@ jobs:
         uses: aws-actions/amazon-ecr-login@f2e9fc6c2b355c1890b65e6f6f0e2ac3e6e22f78 # 2.1.2
 
       - name: Create multi-arch manifest for ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_REPO: ${{ inputs.image_repo }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          tag=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t $tag $tag-amd64 $tag-arm64
+          tag="$ECR_REGISTRY/$IMAGE_REPO:$IMAGE_TAG"
+          docker buildx imagetools create -t "$tag" "$tag-amd64" "$tag-arm64"
 
       - name: Create latest multi-arch manifest for ECR
         # To be triggered only for release/hotfix PR merges
         if: ${{ inputs.create_latest_tag == true }}
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_REPO: ${{ inputs.image_repo }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          BUILD_PREFIX: ${{ inputs.build_type == 'ut' && 'ut-' || '' }}
         run: |
-          tag=${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t ${{ steps.login-ecr.outputs.registry }}/${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64
+          tag="$ECR_REGISTRY/$IMAGE_REPO:$IMAGE_TAG"
+          docker buildx imagetools create -t "$ECR_REGISTRY/$IMAGE_REPO:${BUILD_PREFIX}latest" "$tag-amd64" "$tag-arm64"
 
   create-manifest-dockerhub:
     name: Create multi-arch manifest for DockerHub
@@ -288,13 +297,20 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Create multi-arch manifest
+        env:
+          IMAGE_REPO: ${{ inputs.image_repo }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          tag=${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t $tag $tag-amd64 $tag-arm64
+          tag="$IMAGE_REPO:$IMAGE_TAG"
+          docker buildx imagetools create -t "$tag" "$tag-amd64" "$tag-arm64"
 
       - name: Create latest multi-arch manifest
         # To be triggered only for release/hotfix PR merges
         if: ${{ inputs.create_latest_tag == true }}
+        env:
+          IMAGE_REPO: ${{ inputs.image_repo }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          BUILD_PREFIX: ${{ inputs.build_type == 'ut' && 'ut-' || '' }}
         run: |
-          tag=${{ inputs.image_repo }}:${{ inputs.image_tag }}
-          docker buildx imagetools create -t ${{ inputs.image_repo }}:${{ inputs.build_type == 'ut' && 'ut-' || '' }}latest $tag-amd64 $tag-arm64
+          tag="$IMAGE_REPO:$IMAGE_TAG"
+          docker buildx imagetools create -t "$IMAGE_REPO:${BUILD_PREFIX}latest" "$tag-amd64" "$tag-arm64"

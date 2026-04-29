@@ -26,8 +26,12 @@ jobs:
           egress-policy: audit
 
       - id: get_url
+        env:
+          REPOSITORY: ${{ github.repository }}
+          WORKFLOW: ${{ github.workflow }}
+          RUN_ID: ${{ github.run_id }}
         run: |
-          curl -s https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/runs/${{ github.run_id }} | jq -r .html_url >> workflow_url.txt
+          curl -s "https://api.github.com/repos/$REPOSITORY/actions/workflows/$WORKFLOW/runs/$RUN_ID" | jq -r .html_url >> workflow_url.txt
           echo "::set-output name=workflow_url::$(cat workflow_url.txt)"
     outputs:
       url: ${{ steps.get_url.outputs.workflow_url }}

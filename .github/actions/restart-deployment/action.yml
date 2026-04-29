@@ -32,18 +32,18 @@ runs:
 
     - name: Update Kubeconfig
       shell: bash
-      run: aws eks update-kubeconfig --name ${{ inputs.k8s-cluster }} --region ${{ inputs.aws-region }}
+      run: aws eks update-kubeconfig --name "$INPUT_K8S_CLUSTER" --region "$INPUT_AWS_REGION"
 
     - name: Restart Pods in the provided Namespaces
       shell: bash
       run: |
         # Split comma-separated namespaces and restart deployment in each
-        IFS=',' read -ra NAMESPACES <<< "${{ inputs.k8s-namespace }}"
-        IFS=',' read -ra DEPLOYMENTS <<< "${{ inputs.deployment-name }}"
+        IFS=',' read -ra NAMESPACES <<< "$INPUT_K8S_NAMESPACE"
+        IFS=',' read -ra DEPLOYMENTS <<< "$INPUT_DEPLOYMENT_NAME"
 
         echo "🚀 Starting deployment restart process..."
-        echo "Deployment: ${{ inputs.deployment-name }}"
-        echo "Namespaces: ${{ inputs.k8s-namespace }}"
+        echo "Deployment: $INPUT_DEPLOYMENT_NAME"
+        echo "Namespaces: $INPUT_K8S_NAMESPACE"
         echo ""
 
         for namespace in "${NAMESPACES[@]}"; do

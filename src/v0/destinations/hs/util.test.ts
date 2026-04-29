@@ -16,6 +16,7 @@ import {
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
   isLookupFieldUnique,
+  populateTraits,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
@@ -296,6 +297,162 @@ describe('removeHubSpotSystemField utility test cases', () => {
 
     const result = removeHubSpotSystemField(properties);
     expect(result).toEqual(expectedOutput);
+  });
+});
+
+describe('populateTraits', () => {
+  const mockDestination = {
+    ID: 'dest-123',
+    Config: {
+      authorizationType: 'newPrivateAppApi' as const,
+      accessToken: 'test-token',
+    },
+  };
+  const mockMetadata = { jobId: 1 };
+
+  const propMap = {
+    status: 'string',
+    score: 'number',
+    created_date: 'date',
+    migrated_at: 'datetime',
+    is_active: 'bool',
+  };
+
+  const UTC_MIDNIGHT_2024_03_15 = new Date('2024-03-15').setUTCHours(0, 0, 0, 0);
+  const UTC_MIDNIGHT_2024_01_01 = new Date('2024-01-01').setUTCHours(0, 0, 0, 0);
+
+  describe('when propertyMap is provided', () => {
+    it.each([
+      {
+        description: 'null string field → empty string (clears HS property)',
+        traits: { status: null },
+        expected: { status: '' },
+      },
+      {
+        description: 'null number field → empty string (clears HS property)',
+        traits: { score: null },
+        expected: { score: '' },
+      },
+      {
+        description: 'null date field → empty string (null takes priority over date conversion)',
+        traits: { created_date: null },
+        expected: { created_date: '' },
+      },
+      {
+        description: 'null datetime field → empty string',
+        traits: { migrated_at: null },
+        expected: { migrated_at: '' },
+      },
+      {
+        description: 'empty string on date field → passed through as-is (not treated as null)',
+        traits: { created_date: '' },
+        expected: { created_date: '' },
+      },
+      {
+        description: 'valid date string → converted to UTC midnight timestamp',
+        traits: { created_date: '2024-03-15T12:00:00Z' },
+        expected: { created_date: UTC_MIDNIGHT_2024_03_15 },
+      },
+      {
+        description:
+          'datetime field with valid date → not converted (only "date" type is converted)',
+        traits: { migrated_at: '2024-03-15T12:00:00Z' },
+        expected: { migrated_at: '2024-03-15T12:00:00Z' },
+      },
+      {
+        description: 'false value → passed through unchanged (not treated as null)',
+        traits: { is_active: false },
+        expected: { is_active: false },
+      },
+      {
+        description: '0 value → passed through unchanged (not treated as null)',
+        traits: { score: 0 },
+        expected: { score: 0 },
+      },
+      {
+        description: 'non-null string → passed through unchanged',
+        traits: { status: 'active' },
+        expected: { status: 'active' },
+      },
+      {
+        description: 'empty traits → returns empty object',
+        traits: {},
+        expected: {},
+      },
+      {
+        description: 'mix of null, 0, false, valid date, and datetime null',
+        traits: {
+          status: null,
+          score: 0,
+          is_active: false,
+          created_date: '2024-01-01',
+          migrated_at: null,
+        },
+        expected: {
+          status: '',
+          score: 0,
+          is_active: false,
+          created_date: UTC_MIDNIGHT_2024_01_01,
+          migrated_at: '',
+        },
+      },
+    ])('$description', async ({ traits, expected }) => {
+      const result = await populateTraits(
+        propMap,
+        traits as Record<string, unknown>,
+        mockDestination as any,
+        mockMetadata as any,
+      );
+      expect(result).toEqual(expected);
+    });
+
+    it('returns a new object and does not mutate the input traits', async () => {
+      const traits = { status: null, score: 42 };
+      const result = await populateTraits(
+        propMap,
+        traits,
+        mockDestination as any,
+        mockMetadata as any,
+      );
+      expect(result).not.toBe(traits);
+      expect(traits).toEqual({ status: null, score: 42 });
+    });
+  });
+
+  describe('when propertyMap is not provided — fetches from API', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      (httpGET as jest.Mock).mockResolvedValue({
+        success: true,
+        response: {
+          data: [{ name: 'created_date', type: 'date' }],
+          status: 200,
+          headers: {},
+        },
+      });
+    });
+
+    it.each([
+      {
+        description: 'fetches from API and converts date field to UTC midnight timestamp',
+        traits: { created_date: '2024-06-01' },
+        expected: { created_date: new Date('2024-06-01').setUTCHours(0, 0, 0, 0) },
+      },
+      {
+        description: 'fetches from API and converts null fields to empty string',
+        traits: { created_date: null, status: null },
+        expected: { created_date: '', status: '' },
+      },
+    ])('$description', async ({ traits, expected }) => {
+      const result = await populateTraits(
+        undefined,
+        traits as Record<string, unknown>,
+        mockDestination as any,
+        mockMetadata as any,
+      );
+      expect(httpGET).toHaveBeenCalled();
+      expect(result).toEqual(expected);
+    });
   });
 });
 

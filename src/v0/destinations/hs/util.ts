@@ -297,9 +297,9 @@ const getTransformedJSON = async (
       const hsSupportedKey = formatKey(traitsKey);
       if (!rawPayload[traitsKey] && propMap && propMap[hsSupportedKey]) {
         // HS accepts empty string to remove the property from contact
-        // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
+        // https://developers.hubspot.com/docs/api-reference/legacy/crm/properties/guide#clear-a-property-value
         let propValue: unknown = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
-        if (propMap[hsSupportedKey] === 'date' && isDateLike(propValue)) {
+        if (propMap[hsSupportedKey] === 'date' && propValue !== '' && isDateLike(propValue)) {
           propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
@@ -943,15 +943,24 @@ const populateTraits = async (
     propertyToTypeMap = await getProperties(destination, metadata);
   }
 
-  const keys = Object.keys(populatedTraits);
-  keys.forEach((key) => {
-    const value = populatedTraits[key];
-    if (propertyToTypeMap && propertyToTypeMap[key] === 'date' && isDateLike(value)) {
-      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
-    }
-  });
-
-  return populatedTraits;
+  return Object.fromEntries(
+    Object.keys(populatedTraits).map((key) => {
+      if (isNull(populatedTraits[key])) {
+        // HS accepts empty string to remove the property from contact
+        // https://developers.hubspot.com/docs/api-reference/legacy/crm/properties/guide#clear-a-property-value
+        return [key, ''];
+      }
+      if (
+        propertyToTypeMap &&
+        propertyToTypeMap[key] === 'date' &&
+        populatedTraits[key] !== '' &&
+        isDateLike(populatedTraits[key])
+      ) {
+        return [key, getUTCMidnightTimeStampValue(populatedTraits[key])];
+      }
+      return [key, populatedTraits[key]];
+    }),
+  );
 };
 
 const addExternalIdToHSTraits = (message: HubspotRudderMessage): void => {

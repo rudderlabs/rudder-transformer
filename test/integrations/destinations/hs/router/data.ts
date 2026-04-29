@@ -1005,6 +1005,97 @@ export const data = [
               },
               metadata: { jobId: 4, userId: 'u1' },
             },
+            {
+              message: {
+                channel: 'web',
+                context: {
+                  mappedToDestination: true,
+                  externalId: [
+                    {
+                      identifierType: 'email',
+                      id: 'testhubspotnull@email.com',
+                      type: 'HS-lead',
+                    },
+                  ],
+                  sources: {
+                    job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
+                    task_id: 'vw_rs_mailchimp_mocked_hg_data',
+                    version: 'v1.8.1',
+                    batch_id: 'f252c69d-c40d-450e-bcd2-2cf26cb62762',
+                    job_run_id: 'c8el40l6e87v0c4hkbl0',
+                    task_run_id: 'c8el40l6e87v0c4hkblg',
+                  },
+                },
+                type: 'identify',
+                traits: {
+                  firstname: 'Test Null Fields',
+                  country: 'India',
+                  // null on a regular field → should become ""
+                  degree: null,
+                  // null on a date field → should become "" (not NaN)
+                  date_submitted: null,
+                  // empty string on a date field → should stay "" (not NaN)
+                  date_created: '',
+                  hs_email_recipient_fatigue_recovery_time: null,
+                },
+                messageId: '60360b9c-ea8d-409c-b672-c9230f91cce6',
+                originalTimestamp: '2019-10-15T09:35:31.288Z',
+                anonymousId: '00000000000000000000000000',
+                userId: '12346',
+                integrations: { All: true },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              destination: {
+                Config: {
+                  authorizationType: 'newPrivateAppApi',
+                  accessToken: secret1,
+                  hubID: 'dummy-hubId',
+                  apiKey: 'dummy-apikey',
+                  apiVersion: 'newApi',
+                  lookupField: 'lookupField',
+                  hubspotEvents: [
+                    {
+                      rsEventName: 'Purchase',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_test',
+                      eventProperties: [
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
+                      ],
+                    },
+                    {
+                      rsEventName: 'Order Complete',
+                      hubspotEventName: 'pedummy-hubId_rs_hub_chair',
+                      eventProperties: [
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
+                      ],
+                    },
+                  ],
+                  eventFilteringOption: 'disable',
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'Hubspot',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'HS',
+                  displayName: 'Hubspot',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              metadata: { jobId: 5, userId: 'u1' },
+            },
           ],
           destType: 'hs',
         },
@@ -1132,6 +1223,17 @@ export const data = [
                           date_submitted: 1695600000000,
                         },
                       },
+                      {
+                        properties: {
+                          firstname: 'Test Null Fields',
+                          country: 'India',
+                          email: 'testhubspotnull@email.com',
+                          degree: '',
+                          date_submitted: '',
+                          date_created: '',
+                          hs_email_recipient_fatigue_recovery_time: '',
+                        },
+                      },
                     ],
                   },
                   JSON_ARRAY: {},
@@ -1143,6 +1245,7 @@ export const data = [
               metadata: [
                 { jobId: 3, userId: 'u1' },
                 { jobId: 4, userId: 'u1' },
+                { jobId: 5, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,

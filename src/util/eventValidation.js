@@ -5,15 +5,24 @@ const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
 const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
 const addFormats = require('ajv-formats');
 
+const { LRUCache } = require('lru-cache');
 const NodeCache = require('node-cache');
 const hash = require('object-hash');
 const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
+const stats = require('./stats');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
 const eventSchemaCacheTTL =
   parseInt(process.env.EVENT_SCHEMA_CACHE_TTL_SECS, 10) || 2 * SECONDS_IN_DAY;
-const eventSchemaCache = new NodeCache({ stdTTL: eventSchemaCacheTTL });
+const eventSchemaCacheMaxSize = parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_SIZE, 10) || 500;
+const eventSchemaCache = new LRUCache({
+  max: eventSchemaCacheMaxSize,
+  ttl: eventSchemaCacheTTL * 1000,
+  updateAgeOnGet: true,
+  maxSize: parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_PAYLOAD_SIZE, 10) || 2 * 1024 * 1024 * 1024,
+});
+
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const { isEmptyObject } = require('../v0/util');
@@ -187,11 +196,14 @@ async function validate(event) {
     let validateEvent = eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
-      eventSchemaCache.set(schemaHash, validateEvent);
+      const schemaSize = JSON.stringify(eventSchema).length;
+      eventSchemaCache.set(schemaHash, validateEvent, { size: schemaSize });
       // ajv.compile() stores the schema in ajv's internal _cache (Map) and refs (Object) on every call.
       // Since eventSchemaCache already holds the compiled validator, ajv doesn't need to retain the schema.
       // Without this cleanup, the ajv instance accumulates unbounded memory
       ajv.removeSchema(eventSchema);
+      stats.gauge('event_schema_cache_size', eventSchemaCache.size);
+      stats.gauge('event_schema_cache_payload_size', eventSchemaCache.calculatedSize);
     }
 
     const valid = validateEvent(event.message);

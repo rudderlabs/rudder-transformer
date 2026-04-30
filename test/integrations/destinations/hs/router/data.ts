@@ -858,7 +858,12 @@ export const data = [
                   },
                 },
                 type: 'identify',
-                traits: { firstname: 'Test Hubspot 1', anonymousId: '123451', country: 'India 1' },
+                traits: {
+                  firstname: 'Test Hubspot 1',
+                  anonymousId: '123451',
+                  country: 'India 1',
+                  test_date: '',
+                },
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
@@ -1119,6 +1124,7 @@ export const data = [
                           anonymousId: '123451',
                           country: 'India 1',
                           email: 'testhubspot@email.com',
+                          test_date: '',
                         },
                       },
                       {

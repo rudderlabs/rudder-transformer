@@ -16,6 +16,7 @@ import {
   getObjectAndIdentifierType,
   removeHubSpotSystemField,
   isLookupFieldUnique,
+  getUTCMidnightTimeStampValue,
 } from './util';
 import { primaryToSecondaryFields } from './config';
 import { HubspotRudderMessage } from './types';
@@ -404,5 +405,53 @@ describe('isLookupFieldUnique utility test cases', () => {
     );
 
     expect(result).toBe(false);
+  });
+});
+
+describe('getUTCMidnightTimeStampValue', () => {
+  const testCases: {
+    description: string;
+    input: string | number | Date | null;
+    expected: string | number | Date | null;
+  }[] = [
+    {
+      description: 'ISO date string with time component',
+      input: '2023-06-15T10:30:00Z',
+      expected: 1686787200000,
+    },
+    {
+      description: 'plain date string',
+      input: '2023-06-15',
+      expected: 1686787200000,
+    },
+    {
+      description: 'Date object',
+      input: new Date('2023-06-15T14:00:00Z'),
+      expected: 1686787200000,
+    },
+    {
+      description: 'numeric timestamp',
+      input: new Date('2023-06-15T14:00:00Z').getTime(),
+      expected: 1686787200000,
+    },
+    {
+      description: 'empty string (customer intentionally clears the field)',
+      input: '',
+      expected: '',
+    },
+    {
+      description: 'unparseable string',
+      input: 'not-a-date',
+      expected: 'not-a-date',
+    },
+    {
+      description: 'null (customer intentionally clears the field)',
+      input: null,
+      expected: null,
+    },
+  ];
+
+  it.each(testCases)('$description', ({ input, expected }) => {
+    expect(getUTCMidnightTimeStampValue(input)).toBe(expected);
   });
 });

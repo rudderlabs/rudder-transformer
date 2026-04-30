@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.131.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.1...v1.131.2) (2026-04-30)
+
+
+### Bug Fixes
+
+* **hs:** prevent NaN when date property cannot be parsed ([#5175](https://github.com/rudderlabs/rudder-transformer/issues/5175)) ([0eb2e60](https://github.com/rudderlabs/rudder-transformer/commit/0eb2e60f0ee507beb1bc05506883f8895ff13dca))
+
 ### [1.131.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.0...v1.131.1) (2026-04-23)
 
 

@@ -341,36 +341,28 @@ function parseAndValidate(template: string): { ast: Expression } | { errors: str
   return { ast };
 }
 
+type ParseTemplateResult =
+  | { valid: true; recordFields: string[] }
+  | { valid: false; errors: string[] };
+
 /**
- * Validate a user-provided template string.
+ * Parse, validate, and extract record fields from a user-provided template.
  *
- * Parses the template into an AST and walks every node against a whitelist.
- * Returns all validation errors (not fail-fast) so users can fix everything
- * in one pass.
+ * Parses the template into an AST, walks every node against a whitelist
+ * (returning all errors so users can fix everything in one pass), then
+ * extracts deduplicated record field names from `$.records.()` iteration
+ * blocks.
+ *
+ * Example: `{ "data": $.records.([.email, .phone]) }`
+ *   → { valid: true, fields: ["email", "phone"] }
  */
-export function validateTemplate(template: string): { valid: boolean; errors?: string[] } {
+export function parseTemplate(template: string): ParseTemplateResult {
   const result = parseAndValidate(template);
   if ('errors' in result) {
     return { valid: false, errors: result.errors };
   }
-  return { valid: true };
-}
-
-/**
- * Extract record field names referenced in a template.
- *
- * Returns deduplicated field names accessed inside `$.records.()` iteration
- * blocks.  Unsupported syntax returns errors instead of fields.
- *
- * Example: `{ "data": $.records.([.email, .phone]) }` → { fields: ["email", "phone"] }
- */
-export function extractInputFields(template: string): { fields: string[]; errors?: string[] } {
-  const result = parseAndValidate(template);
-  if ('errors' in result) {
-    return { fields: [], errors: result.errors };
-  }
 
   const fields = new Set<string>();
   collectFields(result.ast, false, fields);
-  return { fields: [...fields] };
+  return { valid: true, recordFields: [...fields] };
 }

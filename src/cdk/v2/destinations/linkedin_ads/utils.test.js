@@ -295,4 +295,11 @@ describe('checkIfPricePresent', () => {
     const result = checkIfPricePresent(properties);
     expect(result).toBe(false);
   });
+
+  // Returns false if properties object is undefined
+  it('should return false when properties object is undefined', () => {
+    const properties = null;
+    const result = checkIfPricePresent(properties);
+    expect(result).toBe(false);
+  });
 });

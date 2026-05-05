@@ -13,6 +13,9 @@ export const statTags = {
 
 const testParams1 = {
   access_token: 'ABC',
+};
+
+const testBodyJson1 = {
   payload: {
     is_raw: true,
     data_source: {
@@ -51,6 +54,9 @@ const testParams1 = {
 
 export const testParams2 = {
   access_token: 'ABC',
+};
+
+export const testBodyJson2 = {
   payload: {
     is_raw: true,
     data_source: {
@@ -63,6 +69,9 @@ export const testParams2 = {
 
 const testParams3 = {
   access_token: 'BCD',
+};
+
+const testBodyJson3 = {
   payload: {
     is_raw: true,
     data_source: {
@@ -92,6 +101,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'successResponse',
           },
           params: testParams1,
+          JSON: testBodyJson1,
         }),
         method: 'POST',
       },
@@ -139,6 +149,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'permissionMissingError',
           },
           params: testParams3,
+          JSON: testBodyJson3,
         }),
         method: 'POST',
       },
@@ -183,6 +194,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'audienceUnavailableError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -227,6 +239,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'audienceDeletedError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -271,6 +284,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -316,6 +330,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'parameterExceededError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -360,6 +375,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'code200PermissionError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -404,6 +420,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'accessTokenInvalidError',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },
@@ -453,6 +470,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             'test-dest-response-key': 'validAccessToken',
           },
           params: testParams2,
+          JSON: testBodyJson2,
         }),
         method: 'POST',
       },

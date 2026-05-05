@@ -38,3 +38,45 @@ type Result = { valid: true; recordFields: string[] } | { valid: false; errors: 
 // Bad
 type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };
 ```
+
+## Prefer `unknown` Over `any` for Generic Containers
+
+Use `unknown` instead of `any` for `Map`, `Promise`, or collection types where the container doesn't need to know the value's shape. Callers can narrow with `as T` at the point of use.
+
+```ts
+// Good
+private pendingCreations = new Map<string, Promise<unknown>>();
+private cache = new Map<string, unknown>();
+
+// Bad
+private pendingCreations = new Map<string, Promise<any>>();
+private cache = new Map<string, any>();
+```
+
+## Use `.finally()` for Shared Cleanup in Promise Chains
+
+When `.then()` and `.catch()` both need the same cleanup, move it to `.finally()` and keep only the success-path logic in `.then()`.
+
+```ts
+// Good — cleanup in one place
+pending = this.createEntry()
+  .then((entry) => {
+    this.cache.set(cacheKey, entry);
+    return entry;
+  })
+  .finally(() => {
+    this.pendingCreations.delete(cacheKey);
+  });
+
+// Bad — duplicated cleanup
+pending = this.createEntry()
+  .then((entry) => {
+    this.pendingCreations.delete(cacheKey);
+    this.cache.set(cacheKey, entry);
+    return entry;
+  })
+  .catch((err) => {
+    this.pendingCreations.delete(cacheKey);
+    throw err;
+  });
+```

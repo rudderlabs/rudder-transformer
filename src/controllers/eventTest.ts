@@ -4,10 +4,11 @@ import { z } from 'zod';
 import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
-import { parseTemplate } from '../v0/destinations/custom_audience/templateValidator';
+import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateParserSandbox';
 
 const parseTemplateBodySchema = z.object({
   requestBody: z.string().min(1, 'requestBody must be a non-empty string'),
+  workspaceId: z.string().min(1, 'workspaceId must be a non-empty string'),
 });
 
 export class EventTestController {
@@ -34,13 +35,13 @@ export class EventTestController {
     ctx.body = 'OK';
   }
 
-  public static parseCustomAudienceTemplate(ctx: Context) {
+  public static async parseCustomAudienceTemplate(ctx: Context) {
     const parsed = parseTemplateBodySchema.safeParse(ctx.request.body);
     if (!parsed.success) {
       ctx.status = 400;
       ctx.body = { error: formatZodError(parsed.error) };
       return;
     }
-    ctx.body = parseTemplate(parsed.data.requestBody);
+    ctx.body = await sandboxedParseTemplate(parsed.data.requestBody, parsed.data.workspaceId);
   }
 }

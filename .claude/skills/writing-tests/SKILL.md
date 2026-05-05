@@ -13,10 +13,10 @@ Never use `/.+/` or other catch-all patterns in test assertions. Run the code to
 
 ```ts
 // Good
-errorMatch: /Unexpected token/
+errorMatch: /Unexpected token/;
 
 // Bad
-errorMatch: /.+/
+errorMatch: /.+/;
 ```
 
 ## No Redundant If-Guards After Assertions
@@ -70,17 +70,3 @@ it('should reject variable declarations', () => {
 ## Consistent Test Data Scoping
 
 All test data arrays within a `describe` block should live at the same scope — either all inside or all outside. Don't mix.
-
-## Discriminated Unions in Return Types
-
-When a function returns success/failure outcomes, use a union type discriminated on a literal field — not a single type with optional fields.
-
-```ts
-// Good
-type Result =
-  | { valid: true; recordFields: string[] }
-  | { valid: false; errors: string[] };
-
-// Bad
-type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };
-```

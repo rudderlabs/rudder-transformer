@@ -26,3 +26,15 @@ order: {
   },
 },
 ```
+
+## Discriminated Unions in Return Types
+
+When a function returns success/failure outcomes, use a union type discriminated on a literal field — not a single type with optional fields.
+
+```ts
+// Good
+type Result = { valid: true; recordFields: string[] } | { valid: false; errors: string[] };
+
+// Bad
+type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };
+```

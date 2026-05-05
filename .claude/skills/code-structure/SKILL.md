@@ -49,20 +49,26 @@ When multiple functions need per-type behavior, use a single handler map rather 
 // Good — one map entry per type, both behaviors co-located
 const EVENT_HANDLERS: Record<string, { validate: ValidateFn; transform?: TransformFn }> = {
   purchase: {
-    validate: (event, ctx) => { /* ... */ },
-    transform: (event, output) => { /* ... */ },
+    validate: (event, ctx) => {
+      /* ... */
+    },
+    transform: (event, output) => {
+      /* ... */
+    },
   },
 };
 
 // Bad — parallel switches that must stay in sync
 function validateEvent(event: Event) {
   switch (event.type) {
-    case 'purchase': /* ... */ break;
+    case 'purchase':
+      /* ... */ break;
   }
 }
 function transformEvent(event: Event) {
   switch (event.type) {
-    case 'purchase': /* ... */ break;
+    case 'purchase':
+      /* ... */ break;
   }
 }
 ```
@@ -87,7 +93,10 @@ const ROUTE_HANDLERS = {
 
 function processRequest(request: Request, ctx: Context): void {
   const handler = ROUTE_HANDLERS[request.type];
-  if (!handler) { ctx.errors.push(`Unknown type: ${request.type}`); return; }
+  if (!handler) {
+    ctx.errors.push(`Unknown type: ${request.type}`);
+    return;
+  }
   handler.process(request, ctx);
 }
 
@@ -98,7 +107,10 @@ function processRequest(request: Request, ctx: Context): void {
     return;
   }
   const handler = ROUTE_HANDLERS[request.type];
-  if (!handler) { ctx.errors.push(`Unknown type: ${request.type}`); return; }
+  if (!handler) {
+    ctx.errors.push(`Unknown type: ${request.type}`);
+    return;
+  }
   handler.process(request, ctx);
 }
 ```

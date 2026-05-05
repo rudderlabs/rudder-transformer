@@ -131,6 +131,23 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
         return;
       }
 
+      // Reject nested iteration under $.records (e.g. `$.records.foo.({...})`).
+      // Only `$.records.({...})` is allowed — deeper paths would produce
+      // incorrect recordFields since the relative fields refer to nested data.
+      const hasBlockExpr = parts.some((part: Expression) => part.type === SyntaxType.BLOCK_EXPR);
+      if (
+        hasBlockExpr &&
+        root === INTERNAL_ROOT &&
+        parts[0]?.type === SyntaxType.SELECTOR &&
+        parts[0].prop?.value === RECORDS_FIELD &&
+        !(parts.length === 2 && parts[1].type === SyntaxType.BLOCK_EXPR)
+      ) {
+        ctx.errors.push(
+          'Nested iteration under $.records is not supported. Use $.records.({...}) directly.',
+        );
+        return;
+      }
+
       // Validate each part (selector, block_expr) with insidePathParts=true
       // so block_expr is treated as iteration, not standalone.
       parts.forEach((part: Expression) => walk(part, { ...ctx, insidePathParts: true }));

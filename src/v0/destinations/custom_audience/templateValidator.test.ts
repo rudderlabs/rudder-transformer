@@ -66,6 +66,11 @@ describe('parseTemplate', () => {
       }`,
       expectedFields: ['email'],
     },
+    {
+      name: 'iteration on non-records path (no record fields extracted)',
+      template: '{ "data": $.connection.({ "id": .email }) }',
+      expectedFields: [],
+    },
   ];
 
   const invalidTemplates = [
@@ -93,11 +98,27 @@ describe('parseTemplate', () => {
     { name: 'bare identifier (process)', template: 'process', errorMatch: /Bare identifiers/ },
     { name: 'bare identifier (Object)', template: 'Object', errorMatch: /Bare identifiers/ },
     { name: 'bracket notation', template: '$["records"]', errorMatch: /Bracket notation/ },
-    { name: 'standalone block expressions', template: '($.a; $.b)', errorMatch: /Standalone block/ },
+    {
+      name: 'standalone block expressions',
+      template: '($.a; $.b)',
+      errorMatch: /Standalone block/,
+    },
     { name: 'assignment expressions', template: 'let x = 1; x = 2', errorMatch: /not supported/ },
-    { name: 'return expressions (parser level)', template: 'return $.records', errorMatch: /return, throw, continue and break/ },
-    { name: 'throw expressions (parser level)', template: 'throw "error"', errorMatch: /return, throw, continue and break/ },
-    { name: 'unparseable syntax', template: '{ invalid :: syntax }', errorMatch: /Unexpected token/ },
+    {
+      name: 'return expressions (parser level)',
+      template: 'return $.records',
+      errorMatch: /return, throw, continue and break/,
+    },
+    {
+      name: 'throw expressions (parser level)',
+      template: 'throw "error"',
+      errorMatch: /return, throw, continue and break/,
+    },
+    {
+      name: 'unparseable syntax',
+      template: '{ invalid :: syntax }',
+      errorMatch: /Unexpected token/,
+    },
     {
       name: 'relative path outside iteration',
       template: '{ "a": .field }',
@@ -108,13 +129,21 @@ describe('parseTemplate', () => {
       template: '{ "a": String($.records) }',
       errorMatch: /Only Number\(\) casting/,
     },
+    {
+      name: 'nested iteration under $.records',
+      template: '{ "data": $.records.foo.({ "id": .email }) }',
+      errorMatch: /Nested iteration under \$\.records/,
+    },
   ];
 
-  it.each(validTemplates)('should accept and extract fields: $name', ({ template, expectedFields }) => {
-    const result = parseTemplate(template);
-    expect(result.valid).toBe(true);
-    expect('recordFields' in result && result.recordFields.sort()).toEqual(expectedFields);
-  });
+  it.each(validTemplates)(
+    'should accept and extract fields: $name',
+    ({ template, expectedFields }) => {
+      const result = parseTemplate(template);
+      expect(result.valid).toBe(true);
+      expect('recordFields' in result && result.recordFields.sort()).toEqual(expectedFields);
+    },
+  );
 
   it.each(invalidTemplates)('should reject: $name', ({ template, errorMatch }) => {
     const result = parseTemplate(template);

@@ -115,6 +115,11 @@ describe('parseTemplate', () => {
       errorMatch: /return, throw, continue and break/,
     },
     {
+      name: 'recursive descent (..field)',
+      template: `{ "data": $.records.({ "email": ..email, "phone": .phone_sha256 }) }`,
+      errorMatch: /Recursive descent/,
+    },
+    {
       name: 'unparseable syntax',
       template: '{ invalid :: syntax }',
       errorMatch: /Unexpected token/,

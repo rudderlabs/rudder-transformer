@@ -163,6 +163,29 @@ const isRecordsPath =
   parts[0].prop?.value === 'records';
 ```
 
+## Use `formatZodError` for Zod Validation Errors
+
+When returning Zod validation errors in controllers or utilities, use `formatZodError` from `@rudderstack/integrations-lib` instead of manually formatting `error.issues`.
+
+```ts
+// Good
+import { formatZodError } from '@rudderstack/integrations-lib';
+
+const parsed = schema.safeParse(ctx.request.body);
+if (!parsed.success) {
+  ctx.body = { error: formatZodError(parsed.error) };
+  ctx.status = 400;
+  return;
+}
+
+// Bad — manual formatting duplicates what the util already does
+if (!parsed.success) {
+  ctx.body = { error: parsed.error.issues.map((i) => i.message).join('; ') };
+  ctx.status = 400;
+  return;
+}
+```
+
 ## Inline Single-Use Wrapper Functions
 
 Don't extract a function that's called from exactly one place and adds no clarity. Inline it.

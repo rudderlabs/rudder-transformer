@@ -37,23 +37,24 @@ if (result.valid) {
 
 ## Table-Driven Tests With `it.each()`
 
-When multiple test cases share the same assertion structure, use `it.each()` with a data table instead of individual `it()` blocks. Keep test data arrays at the top of the file or describe block for easy scanning.
+When two or more test cases share the same assertion structure, group them into an `it.each()` data table. When a describe block has cases with different assertion shapes, use one `it.each()` per shape. Keep test data arrays at the top of the describe block for easy scanning.
 
 ```ts
-// Good — data table + single runner
-const invalidTemplates = [
+// Good — cases grouped by assertion shape, each group gets its own it.each()
+const validCases = [
+  { name: 'objects', template: '$.records.({ "e": .email })', expectedFields: ['email'] },
+  { name: 'arrays', template: '$.records.([.email, .phone])', expectedFields: ['email', 'phone'] },
+];
+
+const invalidCases = [
   { name: 'spread operator', template: '{ ...$.records }', errorMatch: /spread_expr/ },
-  { name: 'variable declarations', template: 'let x = 1', errorMatch: /definition_expr/ },
   { name: 'bare identifier', template: 'process', errorMatch: /Bare identifiers/ },
 ];
 
-it.each(invalidTemplates)('should reject: $name', ({ template, errorMatch }) => {
-  const result = validateTemplate(template);
-  expect(result.valid).toBe(false);
-  expect(result.errors?.[0]).toMatch(errorMatch);
-});
+it.each(validCases)('should accept: $name', ({ template, expectedFields }) => { ... });
+it.each(invalidCases)('should reject: $name', ({ template, errorMatch }) => { ... });
 
-// Bad — repetitive individual blocks with identical structure
+// Bad — individual blocks with identical assertion structure
 it('should reject spread operator', () => {
   const result = validateTemplate('{ ...$.records }');
   expect(result.valid).toBe(false);
@@ -65,6 +66,43 @@ it('should reject variable declarations', () => {
   expect(result.valid).toBe(false);
   expect(result.errors?.[0]).toMatch(/definition_expr/);
 });
+```
+
+## Test Depth Should Match Logic Ownership
+
+Thoroughly test the logic a layer owns (e.g., input validation in a controller — cover all invalid shapes). For success/failure paths delegated to another module that has its own tests, one representative case each is enough.
+
+```ts
+// Good — controller owns Zod validation, so test all 400 shapes;
+// one valid + one invalid template case since templateValidator.test.ts covers the rest
+const badRequestCases = [
+  { name: 'missing field', body: {}, expectedError: 'requestBody: Required' },
+  { name: 'empty string', body: { requestBody: '' }, expectedError: '...' },
+  { name: 'wrong type', body: { requestBody: 123 }, expectedError: '...' },
+];
+
+it.each(badRequestCases)('should return 400: $name', async ({ body, expectedError }) => { ... });
+
+it('should return valid=true for a valid template', async () => { ... });
+it('should return valid=false for an invalid template', async () => { ... });
+
+// Bad — controller test re-tests every template validation scenario
+// that templateValidator.test.ts already covers
+it('should reject spread operator', ...);
+it('should reject bare identifiers', ...);
+it('should reject bracket notation', ...);
+```
+
+## Test File Location and Naming
+
+Test files use 1:1 name mapping to the source file. If a `__tests__/` directory already exists at that level, place the test there. Otherwise, co-locate it alongside the source file.
+
+```
+# If __tests__/ exists
+src/controllers/__tests__/eventTest.test.ts
+
+# If no __tests__/ directory
+src/v0/destinations/custom_audience/templateValidator.test.ts
 ```
 
 ## Consistent Test Data Scoping

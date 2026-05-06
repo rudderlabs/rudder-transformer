@@ -1,5 +1,5 @@
 import stableStringify from 'fast-json-stable-stringify';
-import type { Destination } from '../../../types/controlPlaneConfig';
+import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { Metadata } from '../../../types/rudderEvents';
 import type {
   RouterTransformationRequestData,
@@ -20,9 +20,13 @@ import { combineBatchRequestsWithSameJobIds } from '../../../v0/util';
 // Validation
 // ---------------------------------------------------------------------------
 
-export function validateInputs<TBody extends Record<string, unknown>>(
+export function validateInputs<
+  TBody extends Record<string, unknown>,
+  TConfig = Record<string, unknown>,
+  TConnectionConfig = Record<string, unknown>,
+>(
   inputs: RouterTransformationRequestData[],
-  integration: BatchDestination<TBody>,
+  integration: BatchDestination<TBody, TConfig, TConnectionConfig>,
 ): { valid: RouterTransformationRequestData[]; errors: (TransformError & { jobId: number })[] } {
   const schema = integration.getInputSchema();
 
@@ -109,6 +113,7 @@ export function groupPayloadsByCompositeKey<
       method: payload.method,
       headers: payload.headers ?? {},
       params: payload.params ?? {},
+      internalGroupKey: payload.internalGroupKey ?? '',
     });
 
     let group = map.get(key);
@@ -190,16 +195,21 @@ function mapErrorPayloadToServerFormat(
 
 export async function processBatchedDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
+  TConfig = Record<string, unknown>,
+  TConnectionConfig = Record<string, unknown>,
 >(
   events: RouterTransformationRequestData[],
-  IntegrationClass: BatchDestinationConstructor<TBody>,
+  IntegrationClass: BatchDestinationConstructor<TBody, TConfig, TConnectionConfig>,
   reqMetadata: NonNullable<unknown>,
 ): Promise<RouterTransformationResponse[]> {
   if (events.length === 0) {
     return [];
   }
   const { destination } = events[0];
-  const integration = new IntegrationClass(destination);
+  const connection = events.find((event) => event.connection)?.connection as
+    | Connection<TConnectionConfig>
+    | undefined;
+  const integration = new IntegrationClass(destination as Destination<TConfig>, connection);
   const destType = destination.DestinationDefinition?.Name?.toUpperCase() ?? 'unknown';
   const { workspaceId } = events[0].metadata;
   const metricTags = { destType, workspaceId, destinationId: destination.ID };

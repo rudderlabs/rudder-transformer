@@ -1,5 +1,5 @@
 import { ZodType } from 'zod';
-import type { Destination } from '../../../types/controlPlaneConfig';
+import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { generateErrorObject } from '../../../v0/util';
 import type { BatchStrategy, TransformedEvent, TransformResult } from './types';
@@ -16,21 +16,34 @@ export { ChunkBatchStrategy } from './chunkBatchStrategy';
 export { CustomBatchStrategy } from './customBatchStrategy';
 
 // ---------------------------------------------------------------------------
-// Abstract class: BatchDestination<TBody>
+// Abstract class: BatchDestination<TBody, TConfig, TConnectionConfig>
 // ---------------------------------------------------------------------------
 
 // Constructor type for BatchDestination subclasses — used by the framework to instantiate per request
 export type BatchDestinationConstructor<
   TBody extends Record<string, unknown> = Record<string, unknown>,
-> = new (destination: Destination) => BatchDestination<TBody>;
+  TConfig = Record<string, unknown>,
+  TConnectionConfig = Record<string, unknown>,
+> = new (
+  destination: Destination<TConfig>,
+  connection?: Connection<TConnectionConfig>,
+) => BatchDestination<TBody, TConfig, TConnectionConfig>;
 
 export abstract class BatchDestination<
   TBody extends Record<string, unknown> = Record<string, unknown>,
+  TConfig = Record<string, unknown>,
+  TConnectionConfig = Record<string, unknown>,
 > {
-  protected destination: Destination;
+  protected destination: Destination<TConfig>;
 
-  constructor(destination: Destination) {
+  // All inputs in a single router-transform call share the same (source, destination)
+  // connection because rudder-server groups events that way before dispatching, so
+  // it's safe for the framework to inject the connection at construction time.
+  protected connection?: Connection<TConnectionConfig>;
+
+  constructor(destination: Destination<TConfig>, connection?: Connection<TConnectionConfig>) {
     this.destination = destination;
+    this.connection = connection;
   }
 
   // --- MUST implement ---

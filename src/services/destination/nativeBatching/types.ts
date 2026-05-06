@@ -8,6 +8,11 @@ export type TransformedEvent<TBody extends Record<string, unknown> = Record<stri
   method: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
+  // Optional discriminator that adds to the composite grouping key (alongside
+  // endpoint/method/headers/params) so destinations with extra dimensions
+  // (e.g. action type when multiple actions share a URL) can keep groups separate
+  // without polluting the user-visible request fields.
+  internalGroupKey?: string;
 };
 
 export type TransformError = {

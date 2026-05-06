@@ -21,6 +21,132 @@ const crmV3PropertiesResponse = {
 };
 
 export const networkCallsData = [
+  // Silent failure mocks (placed first so they match before broader mocks below)
+  // batch endpoints returning 2xx with empty results+errors → silent failure
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'silent1@test.com',
+            idProperty: 'email',
+            properties: { email: 'silent1@test.com' },
+            objectWriteTraceId: '101',
+          },
+          {
+            id: 'silent2@test.com',
+            idProperty: 'email',
+            properties: { email: 'silent2@test.com' },
+            objectWriteTraceId: '102',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [], errors: [] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/upsert',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [
+          {
+            id: 'silent207@test.com',
+            idProperty: 'email',
+            properties: { email: 'silent207@test.com' },
+            objectWriteTraceId: '201',
+          },
+        ],
+      },
+    },
+    httpRes: {
+      status: 207,
+      data: { status: 'COMPLETE', results: [], errors: [] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [{ properties: { email: 'create-silent@test.com' } }],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [{ id: '999', properties: { firstname: 'X' } }],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        inputs: [{ from: { id: 1 }, to: { id: 2 }, type: 'engineer' }],
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: { status: 'COMPLETE', results: [] },
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/events/v3/send',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader1,
+      },
+      data: {
+        email: 'track@test.com',
+        eventName: 'pe_test',
+        properties: {},
+      },
+    },
+    httpRes: {
+      status: 204,
+      data: {},
+    },
+  },
   // CRM V3 properties API mocks for upsert flow (isLookupFieldUnique)
   ...Array.from({ length: 6 }, () => ({
     httpReq: {
@@ -1012,35 +1138,6 @@ export const networkCallsData = [
         message:
           'Invalid input JSON on line 3, column 9: Cannot deserialize value of type `com.hubspot.inbounddb.publicobject.core.v2.SimplePublicObjectBatchInput$Json` from Array value (token `JsonToken.START_ARRAY`)',
         correlationId: '99df04b9-da11-4504-bd97-2c15f58d0943',
-      },
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://api.hubapi.com/crm/v3/objects/contacts/batch/update',
-      method: 'POST',
-      data: {
-        inputs: [
-          {
-            properties: {
-              firstname: 'testmail12178',
-            },
-            id: '12877907024',
-          },
-          {
-            properties: {
-              firstname: 'test1',
-              email: 'test1@mail.com',
-            },
-            id: '12877907025',
-          },
-        ],
-      },
-    },
-    httpRes: {
-      status: 200,
-      data: {
-        message: 'unknown response',
       },
     },
   },

@@ -20,44 +20,45 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'EMAIL',
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                [
-                  'shrouti@abc.com',
-                  '2',
-                  '13',
-                  '2013',
-                  '@09432457768',
-                  'f',
-                  'Ms.',
-                  'ABC',
-                  'ZIP ',
-                  '123abc ',
-                  'IN',
-                ],
-              ],
-            },
           },
           userId: '',
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: [
+                  'EMAIL',
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                data: [
+                  [
+                    'shrouti@abc.com',
+                    '2',
+                    '13',
+                    '2013',
+                    '@09432457768',
+                    'f',
+                    'Ms.',
+                    'ABC',
+                    'ZIP ',
+                    '123abc ',
+                    'IN',
+                  ],
+                ],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -103,30 +104,31 @@ export const existingTestData = [
           },
           params: {
             access_token: 'BCD',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
-              ],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: [
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                data: [
+                  ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
+                ],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -185,17 +187,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -254,17 +257,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -322,17 +326,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -391,17 +396,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -459,17 +465,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -527,17 +534,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -596,17 +604,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -670,17 +679,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},
@@ -739,17 +749,18 @@ export const existingTestData = [
           },
           params: {
             access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
           },
           body: {
-            JSON: {},
+            JSON: {
+              payload: {
+                is_raw: true,
+                data_source: {
+                  sub_type: 'ANYTHING',
+                },
+                schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+                data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+              },
+            },
             XML: {},
             JSON_ARRAY: {},
             FORM: {},

@@ -14,13 +14,14 @@ const stats = require('./stats');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
 const eventSchemaCacheTTL =
-  parseInt(process.env.EVENT_SCHEMA_CACHE_TTL_SECS, 10) || 2 * SECONDS_IN_DAY;
-const eventSchemaCacheMaxSize = parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_SIZE, 10) || 500;
+  Number.parseInt(process.env.EVENT_SCHEMA_CACHE_TTL_SECS, 10) || 2 * SECONDS_IN_DAY;
+const eventSchemaCacheMaxSize = Number.parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_SIZE, 10) || 500;
 const eventSchemaCache = new LRUCache({
   max: eventSchemaCacheMaxSize,
   ttl: eventSchemaCacheTTL * 1000,
   updateAgeOnGet: true,
-  maxSize: parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_PAYLOAD_SIZE, 10) || 2 * 1024 * 1024 * 1024,
+  maxSize:
+    Number.parseInt(process.env.EVENT_SCHEMA_CACHE_MAX_PAYLOAD_SIZE, 10) || 2 * 1024 * 1024 * 1024,
 });
 
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });

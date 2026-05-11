@@ -347,3 +347,32 @@ describe('Unit test cases for customerio defaultResponseBuilder with userId cont
     });
   });
 });
+
+describe('Unit test cases for customerio defaultResponseBuilder anonymous SCREEN edge cases', () => {
+  it('should not crash when properties is undefined for anonymous screen event', () => {
+    const expectedOutput = {
+      rawPayload: {
+        data: undefined,
+        name: 'Viewed  Screen',
+        type: 'event',
+        anonymous_id: 'anon123',
+      },
+      endpointDetails: {
+        endpoint: 'https://track.customer.io/api/v1/events',
+        path: 'v1/events',
+      },
+      requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
+    };
+
+    const result = defaultResponseBuilder(
+      { anonymousId: 'anon123', type: 'screen' },
+      'Viewed undefined Screen',
+      undefined,
+      'event',
+      { Config: { apiKey: 'test-api-key', siteID: 'test-site-id' } },
+      'screen',
+    );
+
+    expect(result).toEqual(expectedOutput);
+  });
+});

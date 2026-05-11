@@ -40,22 +40,17 @@ jest.mock('../../../../util/stats', () => ({
 jest.mock('isolated-vm', () => {
   class MockContext {
     release() {}
+
+    async evalClosure(code: string) {
+      if (code.includes('parseTemplateInSandbox')) {
+        return { valid: true, recordFields: ['email'] };
+      }
+      return undefined;
+    }
   }
 
   class MockScript {
-    private code: string;
-
-    constructor(code: string) {
-      this.code = code;
-    }
-
     async run() {
-      // Two call sites in IvmScriptRunner hit compileScript + run:
-      //   1. createEntry(): compiles the bundle code ("// mock bundle") → return undefined
-      //   2. execute(): compiles the user expression → return a result
-      if (this.code.includes('parseTemplateInSandbox')) {
-        return { valid: true, recordFields: ['email'] };
-      }
       return undefined;
     }
   }
@@ -76,8 +71,8 @@ jest.mock('isolated-vm', () => {
       return new MockContext();
     }
 
-    async compileScript(code: string) {
-      return new MockScript(code);
+    async compileScript() {
+      return new MockScript();
     }
 
     dispose() {}
@@ -127,7 +122,7 @@ describe('IvmScriptRunner', () => {
       //   5 isolates created independently
       //   Result: isolateCreateCount = 5  ← test fails
       const results = await Promise.all(
-        Array.from({ length: 5 }, () => runner.execute('ws-1', expression)),
+        Array.from({ length: 5 }, () => runner.execute('ws-1', expression, [])),
       );
 
       expect(results).toHaveLength(5);
@@ -144,9 +139,9 @@ describe('IvmScriptRunner', () => {
 
       // Different keys must NOT share isolates — coalescing is per-key only.
       const results = await Promise.all([
-        runner.execute('ws-1', expression),
-        runner.execute('ws-2', expression),
-        runner.execute('ws-3', expression),
+        runner.execute('ws-1', expression, []),
+        runner.execute('ws-2', expression, []),
+        runner.execute('ws-3', expression, []),
       ]);
 
       expect(results).toHaveLength(3);
@@ -168,17 +163,20 @@ describe('IvmScriptRunner', () => {
           throw new Error('transient failure');
         }
         return {
-          isolate: { compileScript: async () => ({ run: async () => 'ok' }), dispose: () => {} },
-          context: { release: () => {} },
+          isolate: {
+            compileScript: async () => ({ run: async () => undefined }),
+            dispose: () => {},
+          },
+          context: { evalClosure: async () => 'ok', release: () => {} },
           destroy: async () => {},
         };
       });
 
       // First call: createEntry rejects → .finally deletes from pendingCreations → throws
-      await expect(runner.execute('ws-fail', '1+1')).rejects.toThrow('transient failure');
+      await expect(runner.execute('ws-fail', '1+1', [])).rejects.toThrow('transient failure');
 
       // Second call: pendingCreations is clean → retries createEntry → succeeds
-      const result = await runner.execute('ws-fail', '1+1');
+      const result = await runner.execute('ws-fail', '1+1', []);
       expect(result).toBe('ok');
       expect(callCount).toBe(2);
     });

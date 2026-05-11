@@ -277,6 +277,34 @@ const lookupActionConfig = (action: string, destConfig: DestConfig) => {
 };
 ```
 
+## Drop Config Knobs Without Varying Callers
+
+If every call site passes the same value (or always falls through to the default), remove the parameter and hardcode the value. Don't keep optional knobs "for flexibility" without a real caller varying them — every unused knob adds an option to read, document, and test.
+
+```ts
+// Good — single caller, hardcode the value
+export class IvmScriptRunner {
+  constructor(options: IvmScriptRunnerOptions) {
+    this.cache = new DisposableCache({ name: 'custom_audience_ivm' });
+    // ...
+  }
+}
+
+// Bad — optional knob with one caller that never varies it
+export interface IvmScriptRunnerOptions {
+  bundlePath: string;
+  memoryLimitMb: number;
+  cacheName?: string; // every instantiation passes nothing or the same value
+}
+
+export class IvmScriptRunner {
+  constructor(options: IvmScriptRunnerOptions) {
+    this.cache = new DisposableCache({ name: options.cacheName ?? 'custom_audience_ivm' });
+    // ...
+  }
+}
+```
+
 ## Don't Wrap a Callee's Existing Try-Catch
 
 If the function you call already converts errors to a project-standard error type (`InstrumentationError`, `ConfigurationError`, etc.), don't wrap the call site in another try-catch that re-throws the same kind of error. The added layer obscures the stack and only changes the message prefix.

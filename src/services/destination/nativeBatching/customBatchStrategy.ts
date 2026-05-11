@@ -6,17 +6,21 @@ export class CustomBatchStrategy<TBody extends Record<string, unknown> = Record<
 {
   bodyFormat: BodyFormat;
 
-  private batchFn: (payloads: (TransformedEvent<TBody> & { jobId: number })[]) => BatchGroup[];
+  private batchFn: (
+    payloads: (TransformedEvent<TBody> & { jobId: number })[],
+  ) => BatchGroup[] | Promise<BatchGroup[]>;
 
   constructor(
-    batchFn: (payloads: (TransformedEvent<TBody> & { jobId: number })[]) => BatchGroup[],
+    batchFn: (
+      payloads: (TransformedEvent<TBody> & { jobId: number })[],
+    ) => BatchGroup[] | Promise<BatchGroup[]>,
     bodyFormat?: BodyFormat,
   ) {
     this.batchFn = batchFn;
     this.bodyFormat = bodyFormat ?? BodyFormat.JSON;
   }
 
-  batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): BatchGroup[] {
+  async batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): Promise<BatchGroup[]> {
     return this.batchFn(payloads);
   }
 }

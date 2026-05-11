@@ -282,7 +282,8 @@ export async function processBatchedDestination<
   const successResponses: RouterTransformationResponse[] = [];
   for (const group of allGroups) {
     const strategy = integration.getBatchStrategy(group.endpoint);
-    const batchResults = strategy.batch(group.payloads);
+    // eslint-disable-next-line no-await-in-loop
+    const batchResults = await strategy.batch(group.payloads);
 
     for (const batchResult of batchResults) {
       stats.histogram('output_batch_size', batchResult.jobIds.size, metricTags);

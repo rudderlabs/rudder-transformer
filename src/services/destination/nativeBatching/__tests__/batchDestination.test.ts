@@ -160,4 +160,18 @@ describe('strategy classes', () => {
     ]);
     expect(strategy).toHaveProperty('batch');
   });
+
+  it('CustomBatchStrategy supports async batch functions', async () => {
+    const strategy = new CustomBatchStrategy<TestBody>(async (payloads) => [
+      { body: { merged: true }, jobIds: new Set(payloads.map((p) => p.jobId)) },
+    ]);
+    const payloads = [
+      { body: { value: 'a' }, endpoint: '/test', method: 'POST' as const, jobId: 1 },
+      { body: { value: 'b' }, endpoint: '/test', method: 'POST' as const, jobId: 2 },
+    ];
+    const result = await strategy.batch(payloads);
+    expect(result).toHaveLength(1);
+    expect(result[0].body).toEqual({ merged: true });
+    expect(result[0].jobIds).toEqual(new Set([1, 2]));
+  });
 });

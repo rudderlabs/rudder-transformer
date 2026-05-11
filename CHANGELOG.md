@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.132.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.3...v1.132.0) (2026-05-06)
+
+
+### Features
+
+* **custom_audience:** add template parser module ([#5178](https://github.com/rudderlabs/rudder-transformer/issues/5178)) ([fbd3700](https://github.com/rudderlabs/rudder-transformer/commit/fbd3700140dbc8df3f53f5d5e96f565b8a401415))
+* **reddit:** map product price and quantity to Reddit event payload ([#5171](https://github.com/rudderlabs/rudder-transformer/issues/5171)) ([1815783](https://github.com/rudderlabs/rudder-transformer/commit/1815783748975040f6e0b8fade02d7a76c9e8f8b))
+
+
+### Bug Fixes
+
+* add handler to detect silent failures on hubspot ([#5167](https://github.com/rudderlabs/rudder-transformer/issues/5167)) ([29a841d](https://github.com/rudderlabs/rudder-transformer/commit/29a841dc21283f4bbb5f0ed8fe4956046a1e3a9d))
+* linkedin ads price ([#5159](https://github.com/rudderlabs/rudder-transformer/issues/5159)) ([5786806](https://github.com/rudderlabs/rudder-transformer/commit/5786806632de0ffd17d0be80d0514ae07f227855))
+
+### [1.131.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.2...v1.131.3) (2026-05-05)
+
+### [1.131.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.1...v1.131.2) (2026-04-30)
+
+
+### Bug Fixes
+
+* **hs:** prevent NaN when date property cannot be parsed ([#5175](https://github.com/rudderlabs/rudder-transformer/issues/5175)) ([0eb2e60](https://github.com/rudderlabs/rudder-transformer/commit/0eb2e60f0ee507beb1bc05506883f8895ff13dca))
+
 ### [1.131.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.0...v1.131.1) (2026-04-23)
 
 

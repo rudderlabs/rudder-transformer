@@ -255,9 +255,16 @@ const validatePayloadDataTypes = (
  * @param {*} propValue
  * @returns
  */
-const getUTCMidnightTimeStampValue = (propValue: string | number | Date): number => {
-  const time = propValue;
-  const date = new Date(time);
+const getUTCMidnightTimeStampValue = (
+  propValue: string | number | Date | null,
+): number | string | Date | null => {
+  if (propValue === null) {
+    return null;
+  }
+  const date = new Date(propValue);
+  if (Number.isNaN(date.getTime())) {
+    return propValue;
+  }
   date.setUTCHours(0, 0, 0, 0);
   return date.getTime();
 };

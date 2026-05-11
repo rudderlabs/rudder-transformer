@@ -1,6 +1,7 @@
 import { TransformerProxyError } from '../../../v0/util/errorTypes';
 import { prepareProxyRequest, proxyRequest } from '../../../adapters/network';
 import { isHttpStatusSuccess, getAuthErrCategoryFromStCode } from '../../../v0/util/index';
+import { HTTP_STATUS_CODES } from '../../../v0/util/constant';
 import {
   DeliveryV1Response,
   DeliveryJobState,
@@ -88,6 +89,49 @@ type UpsertResponse = {
   errors?: UpsertError[];
 };
 
+const SILENT_FAILURE_MESSAGE = '[HUBSPOT Response V1 Handler] - Silent failure detected';
+const SILENT_FAILURE_ERROR =
+  '[HUBSPOT] Silent failure: HubSpot returned 2xx but the response indicates no records were processed (empty results and errors).';
+
+// Explicit list of new API v3 batch write endpoints. Using regex (not substring
+// match) keeps this deterministic — only known write endpoints are matched, so
+// new batch verbs (e.g., batch/read) added later won't accidentally trigger
+// silent-failure detection. Dynamic segments (:objectType, :from, :to) are
+// matched via [^/]+.
+const NEW_BATCH_ENDPOINT_PATTERNS: RegExp[] = [
+  /\/crm\/v3\/objects\/[^/]+\/batch\/(upsert|create|update)(\?|$)/,
+  /\/crm\/v3\/associations\/[^/]+\/[^/]+\/batch\/create(\?|$)/,
+];
+
+const isNewBatchEndpoint = (endpoint?: string): boolean => {
+  if (!endpoint) {
+    return false;
+  }
+  return NEW_BATCH_ENDPOINT_PATTERNS.some((pattern) => pattern.test(endpoint));
+};
+
+const isSilentFailure = (response: Response, endpoint?: string): boolean => {
+  if (!isNewBatchEndpoint(endpoint)) {
+    return false;
+  }
+  const results = response?.results ?? [];
+  const errors = response?.errors ?? [];
+  return results.length === 0 && errors.length === 0;
+};
+
+const buildSilentFailureResponse = (
+  rudderJobMetadata: ProxyMetdata[],
+  status: number,
+): DeliveryV1Response => ({
+  status,
+  message: SILENT_FAILURE_MESSAGE,
+  response: rudderJobMetadata.map((metadata) => ({
+    statusCode: HTTP_STATUS_CODES.BAD_REQUEST,
+    metadata,
+    error: SILENT_FAILURE_ERROR,
+  })),
+});
+
 /**
  * Handles 207 Multi-Status responses from HubSpot batch upsert API.
  * Events with objectWriteTraceId in errors are marked as failed (400).
@@ -155,6 +199,18 @@ const responseHandler = (responseParams: {
     'HUBSPOT: Error in transformer proxy v1 during HUBSPOT response transformation';
   const responseWithIndividualEvents: DeliveryJobState[] = [];
   const { response, status } = destinationResponse;
+
+  // Detect silent failures on new API v3 batch endpoints: HubSpot returned 2xx
+  // but the response indicates no records were processed (empty results and
+  // errors). When errors are present, the 207 multi-status handler below
+  // preserves the specific error messages from HubSpot. Legacy batch endpoint
+  // /contacts/v1/contact/batch/ returns empty body by design (202 Accepted)
+  // and is excluded.
+  // Mark all events as 400 since retrying with the same payload would produce
+  // the same silent no-op.
+  if (isHttpStatusSuccess(status) && isSilentFailure(response, destinationRequest.endpoint)) {
+    return buildSilentFailureResponse(rudderJobMetadata, status);
+  }
 
   // Handle 207 Multi-Status response from batch upsert API
   if (status === 207) {
@@ -235,4 +291,4 @@ function networkHandler(this: any) {
   this.responseHandler = responseHandler;
 }
 
-module.exports = { networkHandler };
+module.exports = { networkHandler, SILENT_FAILURE_MESSAGE, SILENT_FAILURE_ERROR };

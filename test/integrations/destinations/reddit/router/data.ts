@@ -73,10 +73,10 @@ const HASHED_USER_DATA = {
 
 // Common product objects
 const PRODUCTS = {
-  monopoly: { id: '123', name: 'Monopoly' },
-  uno: { id: '345', name: 'UNO' },
-  monopolyLarge: { id: '123456', name: 'Monopoly' },
-  unoLarge: { id: '345678', name: 'UNO' },
+  monopoly: { id: '123', name: 'Monopoly', item_price: 14, quantity: 1 },
+  uno: { id: '345', name: 'UNO', item_price: 3.45, quantity: 2 },
+  monopolyLarge: { id: '123456', name: 'Monopoly', item_price: 140, quantity: 1 },
+  unoLarge: { id: '345678', name: 'UNO', item_price: 345, quantity: 2 },
 };
 
 const v3Data: RouterTestData[] = [

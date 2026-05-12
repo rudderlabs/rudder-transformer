@@ -809,6 +809,18 @@ class Prometheus {
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
+      {
+        name: 'event_schema_cache_size',
+        help: 'Number of entries in the event schema LRU cache',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'event_schema_cache_payload_size',
+        help: 'Total estimated payload size (bytes) of cached event schemas',
+        type: 'gauge',
+        labelNames: [],
+      },
       // User transform metrics
       // counter
       {

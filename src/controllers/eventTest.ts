@@ -1,7 +1,14 @@
 import { Context } from 'koa';
+import { formatZodError } from '@rudderstack/integrations-lib';
+import { z } from 'zod';
 import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
+import { parseTemplate } from '../v0/destinations/custom_audience/templateValidator';
+
+const parseTemplateBodySchema = z.object({
+  requestBody: z.string().min(1, 'requestBody must be a non-empty string'),
+});
 
 export class EventTestController {
   private static API_VERSION = '1';
@@ -25,5 +32,15 @@ export class EventTestController {
   public static status(ctx: Context) {
     ctx.status = 200;
     ctx.body = 'OK';
+  }
+
+  public static parseCustomAudienceTemplate(ctx: Context) {
+    const parsed = parseTemplateBodySchema.safeParse(ctx.request.body);
+    if (!parsed.success) {
+      ctx.status = 400;
+      ctx.body = { error: formatZodError(parsed.error) };
+      return;
+    }
+    ctx.body = parseTemplate(parsed.data.requestBody);
   }
 }

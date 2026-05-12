@@ -58,7 +58,7 @@ jobs:
           cache: 'npm'
 
       - name: Install Dependencies and Build
-        run: npm ci && npm run build:ci
+        run: npm ci && npm run prepare && npm run build:ci
 
       - name: Run Tests
         id: run_tests

@@ -166,6 +166,7 @@ Categorization logic:
     findOpenAuditMasterTicket,
     findOpenSubticketByIntegration,
     listIssuesByParent,
+    updateIssue,
     updateIssueDescription,
   } = require('./.github/scripts/linearApi');
 
@@ -177,7 +178,7 @@ Categorization logic:
   - Reuse it: set `masterTicket = existingMaster`
   - Log: `Reusing existing master ticket: ${existingMaster.identifier} - ${existingMaster.url}`
   - Fetch its existing subtickets: `const existingSubtickets = await listIssuesByParent(existingMaster.id)`
-  - Update the master ticket description with the latest analysis: `await updateIssueDescription(existingMaster.id, masterDescription)`
+  - Do NOT update the master description yet — it will be updated in step 8b after subticket URLs are available
   - Proceed to step 8 (subticket creation with dedup)
 
 - **If no open master ticket exists** (`existingMaster` is null):
@@ -225,9 +226,13 @@ Categorization logic:
     const existingSub = await findOpenSubticketByIntegration(masterTicket.id, integrationName);
 
     if (existingSub) {
-      // Update existing subticket description with latest analysis
+      // Update existing subticket with latest analysis, priority, and due date
       console.log(`Updating existing subticket: ${existingSub.identifier} for ${integrationName}`);
-      await updateIssueDescription(existingSub.id, ticketDescription);
+      await updateIssue(existingSub.id, {
+        description: ticketDescription,
+        priority: calculatedPriority,
+        dueDate: calculatedDueDate,
+      });
       // Track as "updated" (not "created") in summary
     } else {
       // No existing subticket — create a new one
@@ -254,6 +259,17 @@ Categorization logic:
   - Priority and due dates are correctly assigned based on sunset dates and version gaps
   - Ticket descriptions include all relevant information from documentation review
 - **CRITICAL**: If tickets were not created (no ticket URLs in output), the audit has FAILED and must be retried
+
+8b. **Update master ticket description with subticket URLs** (AFTER all subtickets are created/updated)
+
+- The master ticket description template (see below) includes per-integration ticket URLs. These URLs are only available after subtickets are created in step 8.
+- After all subtickets are processed, rebuild the master description using the collected subticket URLs and update:
+  ```javascript
+  // Rebuild masterDescription now that all subticket URLs are known
+  const finalMasterDescription = buildMasterDescription(subticketResults);
+  await updateIssueDescription(masterTicket.id, finalMasterDescription);
+  ```
+- This applies to both new and reused master tickets.
 
 9. **Log analysis summary** (AFTER tickets are created/updated)
 
@@ -429,7 +445,8 @@ Use the existing `.github/scripts/linearApi.js` module for ticket creation and d
     - `assigneeId` (optional) - User ID to assign the ticket to
     - `cycleId` (optional) - Cycle ID to associate the ticket with
 - `listIssuesByParent(parentId, limit)` - List all subtickets for a parent ticket
-- `updateIssueDescription(issueId, description)` - Update an existing ticket's description
+- `updateIssue(issueId, fields)` - Update any fields on an existing ticket (e.g., `{ description, priority, dueDate }`)
+- `updateIssueDescription(issueId, description)` - Convenience wrapper for `updateIssue` that only updates the description
 
 **Duplicate Detection (MUST use before creating tickets):**
 

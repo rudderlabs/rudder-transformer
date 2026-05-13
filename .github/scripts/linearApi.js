@@ -107,10 +107,11 @@ async function findOpenAuditMasterTicket() {
     titleContains: 'Integration Version Audit [Rudder Transformer]',
     states: openStates,
   });
-  // Filter to only top-level tickets (no parent) and sort by most recent
+  // Filter to only top-level tickets (no parent) and sort by highest issue number
+  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
   const masterTickets = results
     .filter((issue) => !issue.parentId)
-    .sort((a, b) => b.identifier.localeCompare(a.identifier));
+    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
   return masterTickets.length > 0 ? masterTickets[0] : null;
 }
 
@@ -195,9 +196,9 @@ async function listIssuesByParent(parentId, limit = 250) {
   }
 }
 
-async function updateIssueDescription(issueId, description) {
+async function updateIssue(issueId, fields) {
   try {
-    const result = await linearClient.updateIssue(issueId, { description });
+    const result = await linearClient.updateIssue(issueId, fields);
     // Linear SDK updateIssue returns { _issue: { id }, success, lastSyncId }
     // Check if result has an 'issue' property (promise/getter) or use _issue.id
     const updatedIssueId = result.issue
@@ -212,14 +213,19 @@ async function updateIssueDescription(issueId, description) {
       url: issue.url,
     };
   } catch (error) {
-    console.error(`Error updating issue description for "${issueId}":`, error.message);
+    console.error(`Error updating issue "${issueId}":`, error.message);
     throw error;
   }
+}
+
+async function updateIssueDescription(issueId, description) {
+  return updateIssue(issueId, { description });
 }
 
 module.exports = {
   createIssue,
   listIssuesByParent,
+  updateIssue,
   updateIssueDescription,
   getStateId,
   getUserId,

@@ -719,67 +719,6 @@ export const data: RouterTestData[] = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                endpointPath: 'events/trackBulk',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: 'dummyApiKey',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        dataFields: {
-                          subject: 'resume validate',
-                          sendtime: '2020-01-01',
-                          sendlocation: 'akashdeep@gmail.com',
-                        },
-                        userId: 'abcdeeeeeeeexxxx102',
-                        eventName: 'Email Opened',
-                        createdAt: 1598631966468,
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(2)],
-              statusCode: 200,
-              destination: {
-                hasDynamicConfig: false,
-                ID: 'default-destination-id',
-                Name: 'Default Destination',
-                DestinationDefinition: {
-                  ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
-                  DisplayName: 'Default Display Name',
-                  Config: {},
-                },
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  mapToSingleEvent: false,
-                  trackAllPages: true,
-                  trackCategorisedPages: false,
-                  trackNamedPages: false,
-                },
-                Enabled: true,
-                WorkspaceID: 'default-workspace',
-                Transformations: [],
-                RevisionID: 'default-revision',
-                IsProcessorEnabled: true,
-                IsConnectionEnabled: true,
-              },
-              batched: true,
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
                 endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
                 endpointPath: 'users/bulkUpdate',
                 headers: {
@@ -847,12 +786,22 @@ export const data: RouterTestData[] = [
                 endpointPath: 'events/trackBulk',
                 headers: {
                   'Content-Type': 'application/json',
-                  api_key: '12345',
+                  api_key: 'dummyApiKey',
                 },
                 params: {},
                 body: {
                   JSON: {
                     events: [
+                      {
+                        dataFields: {
+                          subject: 'resume validate',
+                          sendtime: '2020-01-01',
+                          sendlocation: 'akashdeep@gmail.com',
+                        },
+                        userId: 'abcdeeeeeeeexxxx102',
+                        eventName: 'Email Opened',
+                        createdAt: 1598631966468,
+                      },
                       {
                         email: 'sayan@gmail.com',
                         dataFields: {
@@ -867,6 +816,16 @@ export const data: RouterTestData[] = [
                         eventName: 'ApplicationLoaded page',
                         createdAt: 1571051718299,
                       },
+                      {
+                        dataFields: {
+                          url: 'https://dominos.com',
+                          title: 'Pizza',
+                          referrer: 'https://google.com',
+                        },
+                        userId: 'abcdeeeeeeeexxxx102',
+                        createdAt: 1598631966468,
+                        eventName: 'undefined page',
+                      },
                     ],
                   },
                   JSON_ARRAY: {},
@@ -875,7 +834,7 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(4)],
+              metadata: [generateMetadata(2), generateMetadata(4), generateMetadata(7)],
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
@@ -888,11 +847,10 @@ export const data: RouterTestData[] = [
                   Config: {},
                 },
                 Config: {
-                  apiKey: '12345',
-                  dataCenter: 'USDC',
+                  apiKey: 'dummyApiKey',
                   mapToSingleEvent: false,
-                  trackAllPages: false,
-                  trackCategorisedPages: true,
+                  trackAllPages: true,
+                  trackCategorisedPages: false,
                   trackNamedPages: false,
                 },
                 Enabled: true,
@@ -957,68 +915,7 @@ export const data: RouterTestData[] = [
                 files: {},
               },
               metadata: [generateMetadata(6)],
-              statusCode: 200,
-              destination: {
-                hasDynamicConfig: false,
-                ID: 'default-destination-id',
-                Name: 'Default Destination',
-                DestinationDefinition: {
-                  ID: 'default-dest-def-id',
-                  Name: 'Default Destination Definition',
-                  DisplayName: 'Default Display Name',
-                  Config: {},
-                },
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  dataCenter: 'USDC',
-                  mapToSingleEvent: false,
-                  trackAllPages: true,
-                  trackCategorisedPages: false,
-                  trackNamedPages: false,
-                },
-                Enabled: true,
-                WorkspaceID: 'default-workspace',
-                Transformations: [],
-                RevisionID: 'default-revision',
-                IsProcessorEnabled: true,
-                IsConnectionEnabled: true,
-              },
               batched: false,
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                endpointPath: 'events/trackBulk',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: 'dummyApiKey',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        dataFields: {
-                          url: 'https://dominos.com',
-                          title: 'Pizza',
-                          referrer: 'https://google.com',
-                        },
-                        userId: 'abcdeeeeeeeexxxx102',
-                        createdAt: 1598631966468,
-                        eventName: 'undefined page',
-                      },
-                    ],
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(7)],
               statusCode: 200,
               destination: {
                 hasDynamicConfig: false,
@@ -1045,7 +942,6 @@ export const data: RouterTestData[] = [
                 IsProcessorEnabled: true,
                 IsConnectionEnabled: true,
               },
-              batched: true,
             },
             {
               batchedRequest: {

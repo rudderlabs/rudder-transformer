@@ -69,6 +69,60 @@ async function getCurrentCycleId(teamId) {
   }
 }
 
+async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
+  try {
+    const filter = {
+      team: { id: { eq: teamId || LINEAR_TEAM_ID } },
+      title: { containsIgnoreCase: titleContains },
+    };
+    if (states && states.length > 0) {
+      filter.state = { name: { in: states } };
+    }
+    const issues = await linearClient.issues({ filter, first: limit });
+    return Promise.all(
+      issues.nodes.map(async (issue) => {
+        const state = await issue.state;
+        const parent = await issue.parent;
+        return {
+          id: issue.id,
+          identifier: issue.identifier,
+          title: issue.title,
+          priority: issue.priority,
+          url: issue.url,
+          dueDate: issue.dueDate,
+          state: { name: state?.name },
+          parentId: parent?.id || null,
+        };
+      }),
+    );
+  } catch (error) {
+    console.error(`Error searching issues with title "${titleContains}":`, error.message);
+    return [];
+  }
+}
+
+async function findOpenAuditMasterTicket() {
+  const openStates = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
+  const results = await searchIssues({
+    titleContains: 'Integration Version Audit [Rudder Transformer]',
+    states: openStates,
+  });
+  // Filter to only top-level tickets (no parent) and sort by most recent
+  const masterTickets = results
+    .filter((issue) => !issue.parentId)
+    .sort((a, b) => b.identifier.localeCompare(a.identifier));
+  return masterTickets.length > 0 ? masterTickets[0] : null;
+}
+
+async function findOpenSubticketByIntegration(parentId, integrationName) {
+  const openStates = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
+  const results = await searchIssues({
+    titleContains: `${integrationName} Version Audit`,
+    states: openStates,
+  });
+  return results.find((issue) => issue.parentId === parentId) || null;
+}
+
 async function createIssue({
   title,
   description,
@@ -171,4 +225,7 @@ module.exports = {
   getUserId,
   getCurrentUserId,
   getCurrentCycleId,
+  searchIssues,
+  findOpenAuditMasterTicket,
+  findOpenSubticketByIntegration,
 };

@@ -16,6 +16,11 @@ const linearClient = new LinearClient({ apiKey: LINEAR_API_KEY });
 
 const OPEN_STATES = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
 
+// Hardcoded Linear IDs for master ticket creation
+const MAINTENANCE_PROJECT_ID = 'f99cafb5-7d4a-4549-8c77-afe2644feba9'; // Integrations: Maintenance Project
+const KTLO_LABEL_ID = '68c1ca4f-cc21-4c28-9ce5-618a8b39c788'; // Type: KTLO
+const VERSION_UPGRADE_LABEL_ID = '2ee64e36-d577-4b4b-9ae4-e7292db061d4'; // KTLO Type: VersionUpgrade
+
 async function getStateId(stateName, teamId) {
   try {
     const team = await linearClient.team(teamId);
@@ -260,4 +265,7 @@ module.exports = {
   findOpenAuditMasterTicket,
   findOpenSubticketByIntegration,
   findOpenSubticketGlobally,
+  MAINTENANCE_PROJECT_ID,
+  KTLO_LABEL_ID,
+  VERSION_UPGRADE_LABEL_ID,
 };

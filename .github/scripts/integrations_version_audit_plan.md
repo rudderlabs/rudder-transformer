@@ -166,6 +166,9 @@ Categorization logic:
     listIssuesByParent,
     updateIssue,
     updateIssueDescription,
+    MAINTENANCE_PROJECT_ID,
+    KTLO_LABEL_ID,
+    VERSION_UPGRADE_LABEL_ID,
   } = require('./.github/scripts/linearApi');
 
   // Classify each action-required integration
@@ -232,11 +235,12 @@ Categorization logic:
 
     newMasterTicket = await createIssue({
       title: 'Integration Version Audit [Rudder Transformer] [Current Date in DD/MM/YYYY]',
-      description: '', // Placeholder — updated in step 8c after subticket URLs are available
+      description: '', // Placeholder — updated in step 8b after subticket URLs are available
       priority: 3, // Medium priority
       stateId: statusStateId, // Status: Queued
       cycleId: currentCycleId, // Current cycle
-      labelIds: [],
+      projectId: MAINTENANCE_PROJECT_ID,
+      labelIds: [KTLO_LABEL_ID, VERSION_UPGRADE_LABEL_ID],
     });
     console.log(`Created new master ticket: ${newMasterTicket.identifier} - ${newMasterTicket.url}`);
 
@@ -479,6 +483,12 @@ Use the existing `.github/scripts/linearApi.js` module for ticket creation and d
 - `findOpenAuditMasterTicket()` - Find the most recent open master audit ticket (title contains "Integration Version Audit [Rudder Transformer]", no parent, in open states: Queued/In Progress/Todo/Backlog/Triage). Returns the ticket object or null.
 - `findOpenSubticketByIntegration(parentId, integrationName)` - Find an existing open subticket for a specific integration under a given parent ticket. Returns the ticket object or null.
 - `findOpenSubticketGlobally(integrationName)` - Find an existing open subticket for a specific integration across ALL audit master tickets. Validates that the parent is an audit master (title contains "Integration Version Audit [Rudder Transformer]", no parent). When multiple matches exist, returns the newest one (highest identifier number). Returns the ticket object (including `parentId`) or null. **Use this in step 7 to classify integrations before deciding whether a new master ticket is needed.**
+
+**Hardcoded Constants (for master ticket creation):**
+
+- `MAINTENANCE_PROJECT_ID` - Project ID for the maintenance project
+- `KTLO_LABEL_ID` - Label ID for KTLO under Type
+- `VERSION_UPGRADE_LABEL_ID` - Label ID for VersionUpgrade under KTLO Type
 
 **Querying:**
 

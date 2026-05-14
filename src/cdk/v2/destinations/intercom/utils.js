@@ -367,16 +367,15 @@ const searchContact = async (message, destination, metadata) => {
   );
   const processedUserResponse = processAxiosResponse(response);
   if (isHttpStatusSuccess(processedUserResponse.status)) {
-    if (processedUserResponse.response?.data.length > 1) {
+    const contacts = processedUserResponse.response?.data;
+    if (contacts?.length > 1) {
       warn('[INTERCOM] Multiple contacts found for the message', {
         sourceId: metadata.sourceId,
         destinationId: metadata.destinationId,
         workspaceId: metadata.workspaceId,
       });
     }
-    return processedUserResponse.response?.data.length > 0
-      ? processedUserResponse.response?.data[0]?.id
-      : null;
+    return contacts?.length > 0 ? contacts[0]?.id : null;
   }
 
   throw new NetworkError(

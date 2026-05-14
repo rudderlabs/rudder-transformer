@@ -14,6 +14,8 @@ if (!LINEAR_TEAM_ID) {
 const { LinearClient } = require('@linear/sdk');
 const linearClient = new LinearClient({ apiKey: LINEAR_API_KEY });
 
+const OPEN_STATES = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
+
 async function getStateId(stateName, teamId) {
   try {
     const team = await linearClient.team(teamId);
@@ -102,10 +104,9 @@ async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
 }
 
 async function findOpenAuditMasterTicket() {
-  const openStates = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
   const results = await searchIssues({
     titleContains: 'Integration Version Audit [Rudder Transformer]',
-    states: openStates,
+    states: OPEN_STATES,
   });
   // Filter to only top-level tickets (no parent) and sort by highest issue number
   const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
@@ -116,10 +117,9 @@ async function findOpenAuditMasterTicket() {
 }
 
 async function findOpenSubticketByIntegration(parentId, integrationName) {
-  const openStates = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
   const results = await searchIssues({
     titleContains: `${integrationName} Version Audit`,
-    states: openStates,
+    states: OPEN_STATES,
   });
   return results.find((issue) => issue.parentId === parentId) || null;
 }

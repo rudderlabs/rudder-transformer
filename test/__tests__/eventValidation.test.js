@@ -1765,6 +1765,36 @@ describe("Handle validation with new tracking plan payload", () => {
   });
 });
 
+describe('Handle validation with ephemeral ajv instances', () => {
+  let handleValidationEphemeral;
+
+  beforeAll(() => {
+    process.env.AJV_EPHEMERAL_INSTANCE = 'true';
+    jest.resetModules();
+    jest.mock('node-fetch');
+    const mod = require('../../src/util/eventValidation');
+    handleValidationEphemeral = mod.handleValidation;
+  });
+
+  afterAll(() => {
+    delete process.env.AJV_EPHEMERAL_INSTANCE;
+    jest.resetModules();
+  });
+
+  eventValidationTestCases.forEach((testCase) => {
+    it(`[ephemeral] should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
+      const fetchMock = require('node-fetch');
+      fetchMock.mockResolvedValue({
+        json: jest.fn().mockResolvedValue(testCase.trackingPlan),
+        status: 200,
+      });
+      const { dropEvent, violationType } = await handleValidationEphemeral(testCase.event);
+      expect(dropEvent).toEqual(testCase.output.dropEvent);
+      expect(violationType).toEqual(testCase.output.violationType);
+    });
+  });
+});
+
 describe("HandleValidationErrors", () => {
   validationErrorsTestCases.forEach(testCase => {
     it(`should return dropEvent ${testCase.output} for ${testCase.test}`, () => {

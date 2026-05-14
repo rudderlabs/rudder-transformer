@@ -124,6 +124,15 @@ async function findOpenSubticketByIntegration(parentId, integrationName) {
   return results.find((issue) => issue.parentId === parentId) || null;
 }
 
+async function findOpenSubticketGlobally(integrationName) {
+  const results = await searchIssues({
+    titleContains: `${integrationName} Version Audit`,
+    states: OPEN_STATES,
+  });
+  // Return any open subticket for this integration, regardless of parent
+  return results.find((issue) => issue.parentId) || null;
+}
+
 async function createIssue({
   title,
   description,
@@ -234,4 +243,5 @@ module.exports = {
   searchIssues,
   findOpenAuditMasterTicket,
   findOpenSubticketByIntegration,
+  findOpenSubticketGlobally,
 };

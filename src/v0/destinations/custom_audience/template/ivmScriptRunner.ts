@@ -19,6 +19,19 @@ export interface IvmScriptRunnerOptions {
   execTimeoutMs: number;
 }
 
+function releaseIvmResources(context?: ivm.Context, isolate?: ivm.Isolate) {
+  try {
+    context?.release();
+  } catch {
+    // already released
+  }
+  try {
+    isolate?.dispose();
+  } catch {
+    // already disposed
+  }
+}
+
 export class IvmScriptRunner {
   private cache: InstanceType<typeof DisposableCache>;
 
@@ -74,25 +87,20 @@ export class IvmScriptRunner {
 
   private async createEntry() {
     const isolate = new ivm.Isolate({ memoryLimit: this.memoryLimitMb });
-    const context = await isolate.createContext();
-    const script = await isolate.compileScript(this.getBundleCode());
-    await script.run(context, { timeout: this.initTimeoutMs });
-    return {
-      isolate,
-      context,
-      destroy: async () => {
-        try {
-          context.release();
-        } catch {
-          // already released
-        }
-        try {
-          isolate.dispose();
-        } catch {
-          // already disposed
-        }
-      },
-    };
+    let context: ivm.Context | undefined;
+    try {
+      context = await isolate.createContext();
+      const script = await isolate.compileScript(this.getBundleCode());
+      await script.run(context, { timeout: this.initTimeoutMs });
+      return {
+        isolate,
+        context,
+        destroy: async () => releaseIvmResources(context, isolate),
+      };
+    } catch (err) {
+      releaseIvmResources(context, isolate);
+      throw err;
+    }
   }
 
   private async getOrCreate(cacheKey: string) {

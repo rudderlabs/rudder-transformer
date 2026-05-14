@@ -10,10 +10,9 @@ import { IvmScriptRunner } from './ivmScriptRunner';
 import logger from '../../../../logger';
 import type { ParseTemplateResult } from './templateParser';
 
-// process.cwd() is the project root in both production (npm start) and test (Jest).
-// __dirname is unsuitable here because it resolves to src/ under Jest (ts-jest) but
-// dist/ at runtime, requiring different relative paths for each context.
-const BUNDLE_PATH = path.join(process.cwd(), 'dist', 'sandboxedParse.bundle.js');
+// Resolve relative to __dirname so the path is stable regardless of process.cwd().
+// Works under both ts-jest (src/) and compiled runtime (dist/).
+const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/sandboxedParse.bundle.js');
 
 const runner = new IvmScriptRunner({
   bundlePath: BUNDLE_PATH,

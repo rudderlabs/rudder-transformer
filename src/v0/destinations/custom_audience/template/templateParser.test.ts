@@ -1,4 +1,4 @@
-import { parseTemplate } from './templateValidator';
+import { parseTemplate } from './templateParser';
 
 describe('parseTemplate', () => {
   const validTemplates = [

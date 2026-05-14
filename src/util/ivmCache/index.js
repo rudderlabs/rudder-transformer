@@ -10,6 +10,7 @@ class DisposableCache {
   constructor(options = {}) {
     this.maxSize = Number.parseInt(options.maxSize ?? process.env.IVM_CACHE_MAX_SIZE ?? '10', 10);
     this.ttlMs = Number.parseInt(options.ttlMs ?? process.env.IVM_CACHE_TTL_MS ?? '300000', 10);
+    this.cacheName = options.name ?? 'ivm';
 
     this.cache = new LRUCache({
       max: this.maxSize,
@@ -201,7 +202,7 @@ class DisposableCache {
    */
   emitStats(operation) {
     const tags = {
-      cache: 'ivm',
+      cache: this.cacheName,
       operation,
     };
 

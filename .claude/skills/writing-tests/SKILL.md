@@ -108,3 +108,39 @@ src/v0/destinations/custom_audience/templateValidator.test.ts
 ## Consistent Test Data Scoping
 
 All test data arrays within a `describe` block should live at the same scope — either all inside or all outside. Don't mix.
+
+## Mock Leaf Dependencies, Not Intermediate Modules
+
+Prefer using the real module and mocking only its leaf dependencies (logger, stats) rather than replacing the whole module with a stub. Only mock the module itself if using it makes the test significantly more complex.
+
+```ts
+// Good — real DisposableCache, only leaf deps mocked
+jest.mock('../../../../logger', () => ({
+  info: jest.fn(),
+  debug: jest.fn(),
+  warn: jest.fn(),
+  error: jest.fn(),
+}));
+jest.mock('../../../../util/stats', () => ({
+  increment: jest.fn(),
+  gauge: jest.fn(),
+}));
+
+import { IvmScriptRunner } from './ivmScriptRunner'; // uses real DisposableCache
+
+// Bad — entire intermediate module replaced with a stub
+jest.mock('../../../../util/ivmCache/index', () => {
+  return class MockCache {
+    private store = new Map();
+    get(key: string) {
+      return this.store.get(key);
+    }
+    set(key: string, value: any) {
+      this.store.set(key, value);
+    }
+    delete(key: string) {
+      this.store.delete(key);
+    }
+  };
+});
+```

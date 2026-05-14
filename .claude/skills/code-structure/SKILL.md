@@ -186,6 +186,20 @@ if (!parsed.success) {
 }
 ```
 
+## Keep Utility Error Messages Generic
+
+Error messages in reusable utilities should describe _what_ failed, not prescribe a caller-specific fix. The caller knows its own build commands, scripts, and context.
+
+```ts
+// Good — states what's wrong, the caller can add context
+throw new Error(`IvmScriptRunner: bundle not found at ${this.bundlePath}.`);
+
+// Bad — prescribes a fix that only applies to one caller
+throw new Error(
+  `IvmScriptRunner: bundle not found at ${this.bundlePath}. Run \`npm run build:custom-audience-sandbox\` first.`,
+);
+```
+
 ## Inline Single-Use Wrapper Functions
 
 Don't extract a function that's called from exactly one place and adds no clarity. Inline it.

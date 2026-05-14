@@ -362,7 +362,7 @@ function parseAndValidate(template: string): { ast: Expression } | { errors: str
   return { ast };
 }
 
-type ParseTemplateResult =
+export type ParseTemplateResult =
   | { valid: true; recordFields: string[] }
   | { valid: false; errors: string[] };
 

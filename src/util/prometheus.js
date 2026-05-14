@@ -809,6 +809,12 @@ class Prometheus {
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
+      {
+        name: 'ajv_compile_duration',
+        help: 'Time taken to compile an event schema with ajv',
+        type: 'histogram',
+        labelNames: ['isDraft4', 'useEphemeralAjv'],
+      },
       // User transform metrics
       // counter
       {

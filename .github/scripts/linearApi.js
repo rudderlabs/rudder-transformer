@@ -125,12 +125,28 @@ async function findOpenSubticketByIntegration(parentId, integrationName) {
 }
 
 async function findOpenSubticketGlobally(integrationName) {
+  // Find all open audit master tickets to validate parentage
+  const masterResults = await searchIssues({
+    titleContains: 'Integration Version Audit [Rudder Transformer]',
+    states: OPEN_STATES,
+  });
+  const auditMasterIds = new Set(
+    masterResults.filter((issue) => !issue.parentId).map((issue) => issue.id),
+  );
+
+  // Search for matching subtickets
   const results = await searchIssues({
     titleContains: `${integrationName} Version Audit`,
     states: OPEN_STATES,
   });
-  // Return any open subticket for this integration, regardless of parent
-  return results.find((issue) => issue.parentId) || null;
+
+  // Only accept subtickets whose parent is an audit master, pick newest
+  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
+  const validSubs = results
+    .filter((issue) => issue.parentId && auditMasterIds.has(issue.parentId))
+    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
+
+  return validSubs.length > 0 ? validSubs[0] : null;
 }
 
 async function createIssue({

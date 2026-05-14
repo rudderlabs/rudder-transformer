@@ -163,6 +163,7 @@ Categorization logic:
     getCurrentUserId,
     getCurrentCycleId,
     findOpenSubticketGlobally,
+    listIssuesByParent,
     updateIssue,
     updateIssueDescription,
   } = require('./.github/scripts/linearApi');
@@ -189,8 +190,11 @@ Categorization logic:
 8. **Update existing subtickets in place**
 
 - For each integration with an existing open subticket, update it under its current parent master ticket. Do not move it.
+- Track the parent master IDs of all updated subtickets so their descriptions can be refreshed in step 8b.
 
   ```javascript
+  const affectedMasterIds = new Set(); // parent masters whose subtickets were updated
+
   for (const { integration, existingSub } of updatableIntegrations) {
     const integrationName = integration.Destination;
     console.log(`Updating existing subticket: ${existingSub.identifier} for ${integrationName}`);
@@ -199,7 +203,8 @@ Categorization logic:
       priority: calculatedPriority,
       dueDate: calculatedDueDate,
     });
-    // Track as "updated" in summary
+    affectedMasterIds.add(existingSub.parentId);
+    // Track as "updated" (not "created") in summary — store { identifier, url } for logging
   }
   ```
 
@@ -261,15 +266,25 @@ Categorization logic:
   - Ticket descriptions include all relevant information from documentation review
 - **CRITICAL**: If tickets were not created (no ticket URLs in output), the audit has FAILED and must be retried
 
-8b. **Update new master ticket description with subticket URLs** (AFTER all subtickets are created)
+8b. **Refresh descriptions of all affected master tickets** (AFTER all subtickets are created/updated)
 
-- Only applies if a new master ticket was created in step 8a (`newMasterTicket` is not null).
-- The master ticket description template (see below) includes per-integration ticket URLs. These URLs are only available after subtickets are created.
-- After all subtickets are processed, rebuild the master description using the collected subticket URLs and update:
+- Refresh the description of every master ticket that had subtickets created or updated during this run. This includes:
+  - The new master ticket (if one was created in step 8a)
+  - Any older master tickets whose subtickets were updated in step 8 (tracked via `affectedMasterIds`)
+- For each affected master, fetch its current subtickets via `listIssuesByParent`, rebuild the description using the master description template, and update it.
+
   ```javascript
+  // Collect all master IDs that need a description refresh
+  const mastersToRefresh = new Set(affectedMasterIds);
   if (newMasterTicket) {
-    const finalMasterDescription = buildMasterDescription(subticketResults);
-    await updateIssueDescription(newMasterTicket.id, finalMasterDescription);
+    mastersToRefresh.add(newMasterTicket.id);
+  }
+
+  for (const masterId of mastersToRefresh) {
+    const subtickets = await listIssuesByParent(masterId);
+    const refreshedDescription = buildMasterDescription(subtickets, analysisResults);
+    await updateIssueDescription(masterId, refreshedDescription);
+    console.log(`Refreshed master ticket description: ${masterId}`);
   }
   ```
 
@@ -306,8 +321,13 @@ Categorization logic:
   } else {
     console.log(`  - No new master ticket created (all integrations had existing subtickets)`);
   }
+  console.log(`  - Masters refreshed: ${mastersToRefresh.size}`);
   console.log(`  - Subtickets created: ${subticketsCreated}`);
   console.log(`  - Subtickets updated (existing): ${subticketsUpdated}`);
+  console.log(`\nSubticket URLs:`);
+  for (const sub of allSubticketResults) {
+    console.log(`  - ${sub.integrationName}: ${sub.identifier} - ${sub.url} (${sub.action})`);
+  }
   if (errors.length > 0) {
     console.log(`\nErrors Encountered: ${errors.length}`);
     errors.forEach((err) => console.log(`  - ${err}`));
@@ -458,7 +478,7 @@ Use the existing `.github/scripts/linearApi.js` module for ticket creation and d
 - `searchIssues({ titleContains, teamId, states, limit })` - Search for existing tickets by title substring, optionally filtered by workflow states
 - `findOpenAuditMasterTicket()` - Find the most recent open master audit ticket (title contains "Integration Version Audit [Rudder Transformer]", no parent, in open states: Queued/In Progress/Todo/Backlog/Triage). Returns the ticket object or null.
 - `findOpenSubticketByIntegration(parentId, integrationName)` - Find an existing open subticket for a specific integration under a given parent ticket. Returns the ticket object or null.
-- `findOpenSubticketGlobally(integrationName)` - Find an existing open subticket for a specific integration across ALL parent tickets (not scoped to one master). Returns the ticket object or null. **Use this in step 7 to classify integrations before deciding whether a new master ticket is needed.**
+- `findOpenSubticketGlobally(integrationName)` - Find an existing open subticket for a specific integration across ALL audit master tickets. Validates that the parent is an audit master (title contains "Integration Version Audit [Rudder Transformer]", no parent). When multiple matches exist, returns the newest one (highest identifier number). Returns the ticket object (including `parentId`) or null. **Use this in step 7 to classify integrations before deciding whether a new master ticket is needed.**
 
 **Querying:**
 

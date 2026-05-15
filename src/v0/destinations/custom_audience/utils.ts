@@ -26,21 +26,6 @@ export const lookupActionConfig = (
   return actionConfig;
 };
 
-export const evaluateTemplate = (template: string, input: Record<string, unknown>): unknown => {
-  // TODO: sandbox template evaluation (see INT-6295). Today the template runs
-  // through the json-template-engine in-process, which is unsafe for untrusted
-  // templates. The engine's parse step is already isolated by INT-6296, but
-  // execution is not.
-  try {
-    return JsonTemplateEngine.createAsSync(template, {
-      defaultPathType: PathType.JSON,
-    }).evaluate(input);
-  } catch (err: unknown) {
-    const reason = err instanceof Error ? err.message : String(err);
-    throw new InstrumentationError(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(reason));
-  }
-};
-
 export const resolveEndpoint = (
   endpointTemplate: string,
   baseUrl: string,
@@ -49,8 +34,22 @@ export const resolveEndpoint = (
   // Endpoint is a plain string with `${...}` placeholders (regex-validated upstream
   // to allow only simple connection-field interpolation). Wrap in backticks so the
   // template engine treats it as a string-interpolation expression.
+  //
+  // Evaluated in-process intentionally: there is no record data and no
+  // user-controlled template path. The user-controlled requestBody template
+  // runs inside isolated-vm via templateSandbox.
   const wrapped = `\`${endpointTemplate}\``;
-  const resolved = String(evaluateTemplate(wrapped, { connection }) ?? '');
+  let resolved: string;
+  try {
+    resolved = String(
+      JsonTemplateEngine.createAsSync(wrapped, { defaultPathType: PathType.JSON }).evaluate({
+        connection,
+      }) ?? '',
+    );
+  } catch (err: unknown) {
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new InstrumentationError(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(reason));
+  }
   const trimmedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const joinedPath = resolved.startsWith('/') || resolved === '' ? resolved : `/${resolved}`;
   return `${trimmedBase}${joinedPath}`;

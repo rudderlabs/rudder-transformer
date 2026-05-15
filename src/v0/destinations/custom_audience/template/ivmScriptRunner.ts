@@ -6,6 +6,7 @@
  */
 import ivm from 'isolated-vm';
 import fs from 'fs';
+import path from 'path';
 import DisposableCache from '../../../../util/ivmCache/index';
 
 export interface IvmScriptRunnerOptions {
@@ -56,21 +57,20 @@ export class IvmScriptRunner {
   }
 
   /**
-   * Execute an expression inside a cached isolate.
-   *
-   * The isolate is looked up (or created) by `cacheKey`. The expression is
-   * compiled as a script and run with `copy: true` so the return value is
-   * transferred to the main thread via structured clone.
+   * Execute a closure inside a cached isolate, passing args via structured
+   * clone. Args are scoped to the closure (referenced as $0, $1, $2, …),
+   * avoiding global mutation and race conditions between concurrent calls.
    */
-  async execute<T>(cacheKey: string, expression: string): Promise<T> {
+  async execute<T>(cacheKey: string, expression: string, args: unknown[]): Promise<T> {
     const entry = await this.getOrCreate(cacheKey);
 
     try {
-      const script = await entry.isolate.compileScript(expression);
-      return (await script.run(entry.context, {
+      const result = await entry.context.evalClosure(expression, args, {
+        arguments: { copy: true },
+        result: { copy: true },
         timeout: this.execTimeoutMs,
-        copy: true,
-      })) as T;
+      });
+      return result as T;
     } catch (err: unknown) {
       // Timeout, OOM, or disposed isolate — evict so next call gets a fresh one
       this.cache.delete(cacheKey);
@@ -132,3 +132,22 @@ export class IvmScriptRunner {
     return pending;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Shared runner for custom_audience template operations.
+//
+// One isolate per workspaceId serves both parsing and execution. Memory and
+// timeout are sized for the heavier op (evaluate); the lighter parse op runs
+// comfortably inside the same envelope.
+// ---------------------------------------------------------------------------
+
+// Resolve relative to __dirname so the path is stable regardless of process.cwd().
+// Works under both ts-jest (src/) and compiled runtime (dist/).
+const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
+
+export const templateSandboxRunner = new IvmScriptRunner({
+  bundlePath: BUNDLE_PATH,
+  memoryLimitMb: Number.parseInt(process.env.CUSTOM_AUDIENCE_IVM_MEMORY_MB || '32', 10),
+  initTimeoutMs: Number.parseInt(process.env.CUSTOM_AUDIENCE_IVM_INIT_TIMEOUT_MS || '5000', 10),
+  execTimeoutMs: Number.parseInt(process.env.CUSTOM_AUDIENCE_IVM_EXEC_TIMEOUT_MS || '500', 10),
+});

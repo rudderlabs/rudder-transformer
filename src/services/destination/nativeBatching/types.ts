@@ -40,7 +40,7 @@ export enum BodyFormat {
 
 export interface BatchStrategy<TBody extends Record<string, unknown> = Record<string, unknown>> {
   bodyFormat: BodyFormat;
-  batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): BatchGroup[];
+  batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): Promise<BatchGroup[]>;
 }
 
 const SIZE_UNITS: Record<string, number> = {

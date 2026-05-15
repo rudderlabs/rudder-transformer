@@ -1,17 +1,17 @@
 import { z, ZodType } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
-  ChunkBatchStrategy,
   CustomBatchStrategy,
   TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { EVENT_TYPES } from '../../util/recordUtils';
+import { sandboxedEvaluateTemplate } from './template/templateSandbox';
 import {
   buildRequestHeaders,
-  evaluateTemplate,
   injectCustomMappings,
   lookupActionConfig,
   processFields,
@@ -95,20 +95,41 @@ class CustomAudienceIntegration extends BatchDestination<
   }
 
   getBatchStrategy(): BatchStrategy<Record<string, string>> {
-    const { actions } = this.destination.Config;
+    const { Config, WorkspaceID: workspaceId } = this.destination;
+    const { actions } = Config;
     const { connectionConfig } = this;
 
-    return new CustomBatchStrategy<Record<string, string>>((payloads) => {
+    return new CustomBatchStrategy<Record<string, string>>(async (payloads) => {
       const action = payloads[0].internalGroupKey as Action;
       const actionConfig = actions[action]!;
-      return new ChunkBatchStrategy<Record<string, string>>({
+
+      // Chunk outside the isolate so the existing native-batching split logic
+      // is reused. Each chunk's records are passed through to the isolate
+      // together with the (untrusted) requestBody template.
+      const chunks = chunkPayloads(payloads, {
         maxItems: actionConfig.batchSize,
-        wrapBody: (records) =>
-          evaluateTemplate(actionConfig.requestBody, {
-            records,
-            connection: connectionConfig,
-          }) as Record<string, unknown>,
-      }).batch(payloads);
+        // No maxPayloadSize, so wrapBody is never called for size estimation.
+        wrapBody: () => {
+          throw new Error('wrapBody should not be called without maxPayloadSize');
+        },
+      });
+      const bodies = await sandboxedEvaluateTemplate(
+        actionConfig.requestBody,
+        chunks.map((chunk) => chunk.bodies),
+        connectionConfig,
+        workspaceId,
+      );
+      if (bodies.length !== chunks.length) {
+        throw new PlatformError(
+          `Template evaluation returned ${bodies.length} request bodies but expected ${chunks.length}`,
+          500,
+        );
+      }
+
+      return chunks.map((chunk, i) => ({
+        body: bodies[i],
+        jobIds: chunk.jobIds,
+      }));
     });
   }
 

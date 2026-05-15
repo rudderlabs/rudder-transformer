@@ -112,14 +112,14 @@ describe('Integration', () => {
       expect(strategy).toBeInstanceOf(ChunkBatchStrategy);
     });
 
-    it('wraps bodies with api_key and batch array', () => {
+    it('wraps bodies with api_key and batch array', async () => {
       const strategy = integration.getBatchStrategy();
       const testBodies = [
         { distinct_id: 'u1', event: 'click', type: 'capture' },
         { distinct_id: 'u2', event: 'view', type: 'capture' },
       ];
 
-      const [result] = strategy.batch(
+      const [result] = await strategy.batch(
         testBodies.map((body, i) => ({ body, endpoint: '', method: 'POST', jobId: i + 1 })),
       );
 

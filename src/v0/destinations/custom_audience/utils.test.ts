@@ -3,7 +3,6 @@ import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { HashingType } from '../../util/audienceUtils';
 import {
   buildRequestHeaders,
-  evaluateTemplate,
   injectCustomMappings,
   lookupActionConfig,
   processFields,
@@ -45,37 +44,6 @@ describe('lookupActionConfig', () => {
 
   it('throws InstrumentationError when action key is missing', () => {
     expect(() => lookupActionConfig('delete', baseDestConfig)).toThrow(InstrumentationError);
-  });
-});
-
-describe('evaluateTemplate', () => {
-  const cases = [
-    {
-      name: 'object template with path resolution',
-      template: '{ "name": $.connection.audienceName }',
-      input: { connection: { audienceName: 'My Audience' } },
-      expected: { name: 'My Audience' },
-    },
-    {
-      name: 'iteration over records into objects',
-      template: '$.records.({ "email": .email })',
-      input: { records: [{ email: 'a@b.com' }, { email: 'c@d.com' }] },
-      expected: [{ email: 'a@b.com' }, { email: 'c@d.com' }],
-    },
-    {
-      name: 'single-element iteration returns object, not array (JSONata semantics)',
-      template: '$.records.({ "email": .email })',
-      input: { records: [{ email: 'a@b.com' }] },
-      expected: { email: 'a@b.com' },
-    },
-  ];
-
-  it.each(cases)('evaluates: $name', ({ template, input, expected }) => {
-    expect(evaluateTemplate(template, input)).toEqual(expected);
-  });
-
-  it('throws InstrumentationError on syntax error', () => {
-    expect(() => evaluateTemplate('let x =', {})).toThrow(InstrumentationError);
   });
 });
 

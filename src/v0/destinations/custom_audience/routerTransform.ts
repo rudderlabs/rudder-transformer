@@ -119,6 +119,11 @@ class CustomAudienceIntegration extends BatchDestination<
         connectionConfig,
         workspaceId,
       );
+      if (bodies.length !== chunks.length) {
+        throw new InstrumentationError(
+          `Template evaluation returned ${bodies.length} bodies but expected ${chunks.length}`,
+        );
+      }
 
       return chunks.map((chunk, i) => ({
         body: bodies[i],

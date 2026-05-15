@@ -80,14 +80,16 @@ describe('templateSandbox', () => {
       const result = await sandboxedParseTemplate(template, 'ws-valid');
 
       expect(result.valid).toBe(true);
-      expect('recordFields' in result && result.recordFields.sort()).toEqual(expectedFields);
+      if (!result.valid) throw new Error('Expected valid result');
+      expect(result.recordFields.sort()).toEqual(expectedFields);
     });
 
     it.each(invalidCases)('returns valid=false: $name', async ({ template, errorMatch }) => {
       const result = await sandboxedParseTemplate(template, 'ws-invalid');
 
       expect(result.valid).toBe(false);
-      expect('errors' in result && result.errors[0]).toMatch(errorMatch);
+      if (result.valid) throw new Error('Expected invalid result');
+      expect(result.errors[0]).toMatch(errorMatch);
     });
   });
 
@@ -151,7 +153,7 @@ describe('templateSandbox', () => {
 
     it('throws InstrumentationError for unparseable templates', async () => {
       await expect(sandboxedEvaluateTemplate('{{{{', [[]], {}, 'ws-eval')).rejects.toThrow(
-        /Failed to evaluate requestBody template/,
+        InstrumentationError,
       );
     });
 

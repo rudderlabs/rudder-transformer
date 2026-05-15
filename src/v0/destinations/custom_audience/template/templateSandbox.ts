@@ -37,8 +37,7 @@ export async function sandboxedParseTemplate(
 // Evaluate
 // ---------------------------------------------------------------------------
 
-// Must stay in sync with the EvaluateResult definition in sandboxedTemplate.entry.ts.
-type EvaluateResult =
+export type EvaluateResult =
   | { ok: true; bodies: Record<string, unknown>[] }
   | { ok: false; error: string };
 

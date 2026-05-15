@@ -10,6 +10,7 @@
  */
 import { JsonTemplateEngine, PathType } from '@rudderstack/json-template-engine';
 import { parseTemplate, ParseTemplateResult } from './templateParser';
+import type { EvaluateResult } from './templateSandbox';
 
 declare const globalThis: Record<string, unknown>;
 
@@ -21,11 +22,6 @@ globalThis.parseTemplateInSandbox = (template: string): ParseTemplateResult => {
     return { valid: false, errors: [message] };
   }
 };
-
-// Must stay in sync with the EvaluateResult definition in templateSandbox.ts.
-type EvaluateResult =
-  | { ok: true; bodies: Record<string, unknown>[] }
-  | { ok: false; error: string };
 
 globalThis.evaluateTemplateInSandbox = (
   template: string,

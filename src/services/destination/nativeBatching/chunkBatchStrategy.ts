@@ -1,6 +1,6 @@
 import type { TransformedEvent, BatchGroup, BatchStrategy } from './types';
 import { BodyFormat } from './types';
-import { chunkPayloadsBySize } from './chunkPayloads';
+import { chunkPayloads } from './chunkPayloads';
 
 export class ChunkBatchStrategy<TBody extends Record<string, unknown> = Record<string, unknown>>
   implements BatchStrategy<TBody>
@@ -26,7 +26,7 @@ export class ChunkBatchStrategy<TBody extends Record<string, unknown> = Record<s
   }
 
   async batch(payloads: (TransformedEvent<TBody> & { jobId: number })[]): Promise<BatchGroup[]> {
-    const chunks = chunkPayloadsBySize(payloads, {
+    const chunks = chunkPayloads(payloads, {
       maxItems: this.maxItems,
       maxPayloadSize: this.maxPayloadSize,
       wrapBody: this.wrapBody,

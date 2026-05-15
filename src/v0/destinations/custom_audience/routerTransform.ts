@@ -1,12 +1,12 @@
 import { z, ZodType } from 'zod';
-import { InstrumentationError } from '@rudderstack/integrations-lib';
+import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   CustomBatchStrategy,
   TransformedEvent,
 } from '../../../services/destination/nativeBatching/batchDestination';
 import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
-import { chunkPayloadsBySize } from '../../../services/destination/nativeBatching/chunkPayloads';
+import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { EVENT_TYPES } from '../../util/recordUtils';
 import { sandboxedEvaluateTemplate } from './template/templateSandbox';
@@ -106,7 +106,7 @@ class CustomAudienceIntegration extends BatchDestination<
       // Chunk outside the isolate so the existing native-batching split logic
       // is reused. Each chunk's records are passed through to the isolate
       // together with the (untrusted) requestBody template.
-      const chunks = chunkPayloadsBySize(payloads, {
+      const chunks = chunkPayloads(payloads, {
         maxItems: actionConfig.batchSize,
         // No maxPayloadSize, so wrapBody is never called for size estimation.
         wrapBody: () => {
@@ -120,8 +120,9 @@ class CustomAudienceIntegration extends BatchDestination<
         workspaceId,
       );
       if (bodies.length !== chunks.length) {
-        throw new InstrumentationError(
-          `Template evaluation returned ${bodies.length} bodies but expected ${chunks.length}`,
+        throw new PlatformError(
+          `Template evaluation returned ${bodies.length} request bodies but expected ${chunks.length}`,
+          500,
         );
       }
 

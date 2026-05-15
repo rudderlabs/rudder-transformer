@@ -6,7 +6,7 @@ export type PayloadChunk<TBody extends Record<string, unknown>> = {
   jobIds: Set<number>;
 };
 
-export function chunkPayloadsBySize<TBody extends Record<string, unknown>>(
+export function chunkPayloads<TBody extends Record<string, unknown>>(
   payloads: (TransformedEvent<TBody> & { jobId: number })[],
   opts: {
     maxItems?: number;

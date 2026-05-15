@@ -2,6 +2,7 @@
 // Once a destination is added here, it always uses the new path regardless of env var.
 export const batchedDestinationsMap: Record<string, true> = {
   POSTHOG: true,
+  CUSTOM_AUDIENCE: true,
 };
 
 // Per-destination env var: {DEST}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS

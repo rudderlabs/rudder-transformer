@@ -109,6 +109,76 @@ src/v0/destinations/custom_audience/templateValidator.test.ts
 
 All test data arrays within a `describe` block should live at the same scope — either all inside or all outside. Don't mix.
 
+## Component Test Fixtures Live in `common.ts`
+
+Reusable destination, connection, and override fixtures for component tests under `test/integrations/destinations/<destination>/` go in `common.ts` and are imported by `router/data.ts`, `processor/data.ts`, etc. Don't define them inline at the top of `data.ts`. This includes per-scenario variants (e.g., a destination override that changes a single action's `requestBody`, or a connection variant with `isHashRequired: true`).
+
+```ts
+// Good — variants exported from common.ts alongside the base fixtures
+// common.ts
+export const destination = { /* ... */ };
+export const connection = { /* ... */ };
+export const hashRequiredConnection = {
+  ...connection,
+  config: { destination: { ...connection.config.destination, isHashRequired: true } },
+};
+
+// router/data.ts
+import { destination, connection, hashRequiredConnection } from '../common';
+export const data = [
+  { /* ... */, connection: hashRequiredConnection },
+];
+
+// Bad — variants declared at the top of router/data.ts
+const hashRequiredConnection = { /* ... */ };  // belongs in common.ts
+```
+
+## Component Test Entries Are Plain Object Literals
+
+Each entry in the exported `data` array of `test/integrations/destinations/<destination>/{router,processor}/data.ts` is a plain object literal. Don't wrap an entry in an IIFE just to lift local consts — hoist those to top-level constants in `common.ts` (or near the top of the file if truly local) instead.
+
+```ts
+// Good — plain object entries; overrides hoisted to common.ts or top of file
+import { customMappingsDestination, customMappingsConnection } from '../common';
+
+export const data = [
+  {
+    id: 'test-4',
+    /* ... */,
+    input: { /* uses customMappingsDestination, customMappingsConnection */ },
+  },
+];
+
+// Bad — IIFE inside the array breaks the file's pattern
+export const data = [
+  (() => {
+    const customMappingsDestination = { /* ... */ };
+    const customMappingsConnection = { /* ... */ };
+    return { id: 'test-4', /* ... */ };
+  })(),
+];
+```
+
+## Compute Hashed Expected Values via the Hash Function
+
+When asserting on hashed identifiers in audience-destination tests, invoke the hash function in the test data (`sha256('a@b.com')`) instead of pasting a copied hex string. Generated values stay in sync with input edits and reviewers can scan inputs without decoding hex.
+
+```ts
+// Good
+import sha256 from 'sha256';
+
+users: [
+  { email: sha256('a@b.com') },
+  { email: sha256('c@d.com') },
+],
+
+// Bad — copied hex; rotting risk if the input email is ever changed
+users: [
+  { email: 'fb98d44ad7501a959f3f4f4a3f004fe2d9e581ea6207e218c4b02c08a4d75adf' },
+  { email: '6a4d2afe9d4d6f5cb73d8e3e3a8fa8e5dc1d2a1f64d1b9e0c5b9b1c2d6e3f5a4' },
+],
+```
+
 ## Mock Leaf Dependencies, Not Intermediate Modules
 
 Prefer using the real module and mocking only its leaf dependencies (logger, stats) rather than replacing the whole module with a stub. Only mock the module itself if using it makes the test significantly more complex.

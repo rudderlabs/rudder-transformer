@@ -17,7 +17,6 @@ jobs:
       contents: read # to checkout repository code and read package.json (actions/checkout)
     outputs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
-      repository: ${{ steps.gen_tag_names.outputs.tag_name }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
@@ -71,7 +70,7 @@ jobs:
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     outputs:
-      pr_url: ${{ steps.shared-pr.outputs.pr_url }}
+      pr_url: ${{ steps.shared-pr.outputs.pr_url || steps.existing-shared-pr.outputs.pr_url }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
@@ -153,6 +152,20 @@ jobs:
             --body "Automated PR to update production shared user-transformers image to $UT_TAG_NAME")
           echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
+      - name: Find existing PR for shared user-transformers
+        id: existing-shared-pr
+        if: steps.check-shared-branch.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr list \
+            --repo rudderlabs/rudder-devops \
+            --head "shared-user-transformer-$UT_TAG_NAME" \
+            --state open \
+            --json url \
+            --jq '.[0].url // ""')
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
   create-pull-request-hosted-user-transformer:
     name: Create PR for Hosted User-Transformer (devops)
     runs-on: ubuntu-latest
@@ -164,7 +177,7 @@ jobs:
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     outputs:
-      pr_url: ${{ steps.hosted-pr.outputs.pr_url }}
+      pr_url: ${{ steps.hosted-pr.outputs.pr_url || steps.existing-hosted-pr.outputs.pr_url }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
@@ -239,6 +252,20 @@ jobs:
             --body "Automated PR to update production hosted user-transformer image to $UT_TAG_NAME")
           echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
+      - name: Find existing PR for hosted user-transformer
+        id: existing-hosted-pr
+        if: steps.check-hosted-branch.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr list \
+            --repo rudderlabs/rudder-devops \
+            --head "hosted-user-transformer-$UT_TAG_NAME" \
+            --state open \
+            --json url \
+            --jq '.[0].url // ""')
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
   create-pull-request-dedicated-user-transformers:
     name: Create PR for Dedicated User-Transformers (devops)
     runs-on: ubuntu-latest
@@ -250,7 +277,7 @@ jobs:
     env:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     outputs:
-      pr_url: ${{ steps.dedicated-pr.outputs.pr_url }}
+      pr_url: ${{ steps.dedicated-pr.outputs.pr_url || steps.existing-dedicated-pr.outputs.pr_url }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
@@ -359,6 +386,20 @@ jobs:
             --body "Automated PR to update dedicated user transformer default version to $UT_TAG_NAME")
           echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
 
+      - name: Find existing PR for dedicated user-transformers
+        id: existing-dedicated-pr
+        if: steps.check-dedicated-branch.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        run: |
+          PR_URL=$(gh pr list \
+            --repo rudderlabs/rudder-devops \
+            --head "dedicated-user-transformer-$UT_TAG_NAME" \
+            --state open \
+            --json url \
+            --jq '.[0].url // ""')
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
   notify-control-plane:
     name: Notify Control Plane Team
     runs-on: ubuntu-latest
@@ -372,6 +413,29 @@ jobs:
         uses: step-security/harden-runner@fa2e9d605c4eeb9fcad4c99c224cee0c6c7f3594 # v2.16.0
         with:
           egress-policy: audit
+
+      - name: Build Slack PR links
+        id: slack-links
+        env:
+          SHARED_PR_URL: ${{ needs.create-pull-request-shared-user-transformers.outputs.pr_url }}
+          HOSTED_PR_URL: ${{ needs.create-pull-request-hosted-user-transformer.outputs.pr_url }}
+          DEDICATED_PR_URL: ${{ needs.create-pull-request-dedicated-user-transformers.outputs.pr_url }}
+        run: |
+          format_link() {
+            local url="$1"
+            local label="$2"
+            if [ -n "$url" ]; then
+              echo "<$url|$label>"
+            else
+              echo "$label (no new PR — branch already exists)"
+            fi
+          }
+          shared=$(format_link "$SHARED_PR_URL" "Shared User Transformer")
+          hosted=$(format_link "$HOSTED_PR_URL" "Hosted User Transformer")
+          dedicated=$(format_link "$DEDICATED_PR_URL" "Dedicated User Transformer")
+          echo "shared=$shared" >> $GITHUB_OUTPUT
+          echo "hosted=$hosted" >> $GITHUB_OUTPUT
+          echo "dedicated=$dedicated" >> $GITHUB_OUTPUT
 
       - name: Notify Control Plane Team
         uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
@@ -395,7 +459,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "Version: `${{ needs.generate-tag-names.outputs.tag_name_ut }}`\n\nPRs created for review:\n• <${{ needs.create-pull-request-shared-user-transformers.outputs.pr_url }}|Shared User Transformer>\n• <${{ needs.create-pull-request-hosted-user-transformer.outputs.pr_url }}|Hosted User Transformer>\n• <${{ needs.create-pull-request-dedicated-user-transformers.outputs.pr_url }}|Dedicated User Transformer>\n\nPlease review and merge the DevOps PRs."
+                    "text": "Version: `${{ needs.generate-tag-names.outputs.tag_name_ut }}`\n\nPRs created for review:\n• ${{ steps.slack-links.outputs.shared }}\n• ${{ steps.slack-links.outputs.hosted }}\n• ${{ steps.slack-links.outputs.dedicated }}\n\nPlease review and merge the DevOps PRs."
                   }
                 }
               ]

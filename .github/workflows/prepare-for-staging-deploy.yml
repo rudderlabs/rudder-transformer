@@ -113,6 +113,12 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-devops # to access cross-repo
 
+      - name: Checkout Workflow Actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: rudder-transformer
+          fetch-depth: 1
+
       - name: Checkout Devops Repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -121,16 +127,12 @@ jobs:
 
       - name: Check if staging branch already exists
         id: check-branch
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-        run: |
-          BRANCH_NAME="shared-transformer-$TAG_NAME"
-          if gh api repos/rudderlabs/rudder-devops/git/ref/heads/$BRANCH_NAME > /dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Staging deployment branch $BRANCH_NAME already exists. Skipping."
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+        uses: ./rudder-transformer/.github/actions/check-branch-exists
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          repository: rudderlabs/rudder-devops
+          branch-name: shared-transformer-${{ env.TAG_NAME }}
+          branch-description: Staging deployment
 
       - name: Update image tags in devops repo for staging
         if: steps.check-branch.outputs.exists == 'false'

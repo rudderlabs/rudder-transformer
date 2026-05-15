@@ -9,7 +9,7 @@ import type {
   Action,
   ActionConfig,
   CustomAudienceConnection,
-  CustomAudienceConnectionConfig,
+  CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceDestination,
 } from './types';
@@ -54,7 +54,7 @@ const buildDestination = (
 });
 
 const buildConnection = (
-  destinationOverrides: Partial<CustomAudienceConnectionConfig> = {},
+  destinationOverrides: Partial<CustomAudienceConnectionDestConfig> = {},
 ): CustomAudienceConnection => ({
   sourceId: 'src-1',
   destinationId: 'dest-1',

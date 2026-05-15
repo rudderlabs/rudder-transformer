@@ -9,7 +9,7 @@ import type {
   ActionConfig,
   ActionFieldConfig,
   AuthenticationType,
-  CustomAudienceConnectionConfig,
+  CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceHeader,
   CustomMapping,
@@ -44,7 +44,7 @@ export const evaluateTemplate = (template: string, input: Record<string, unknown
 export const resolveEndpoint = (
   endpointTemplate: string,
   baseUrl: string,
-  connection: CustomAudienceConnectionConfig,
+  connection: CustomAudienceConnectionDestConfig,
 ): string => {
   // Endpoint is a plain string with `${...}` placeholders (regex-validated upstream
   // to allow only simple connection-field interpolation). Wrap in backticks so the

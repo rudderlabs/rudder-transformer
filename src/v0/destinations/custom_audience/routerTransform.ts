@@ -1,4 +1,5 @@
 import { z, ZodType } from 'zod';
+import { InstrumentationError } from '@rudderstack/integrations-lib';
 import {
   BatchDestination,
   ChunkBatchStrategy,
@@ -18,7 +19,7 @@ import {
 } from './utils';
 import type {
   Action,
-  CustomAudienceConnectionConfig,
+  CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
   CustomAudienceRouterRequest,
 } from './types';
@@ -26,7 +27,7 @@ import type {
 class CustomAudienceIntegration extends BatchDestination<
   Record<string, string>,
   CustomAudienceDestConfig,
-  { destination: CustomAudienceConnectionConfig }
+  { destination: CustomAudienceConnectionDestConfig }
 > {
   // Endpoint depends only on action.endpoint + connection (constant per request),
   // so resolve once per configured action — not once per event.
@@ -36,20 +37,31 @@ class CustomAudienceIntegration extends BatchDestination<
 
   constructor(
     destination: Destination<CustomAudienceDestConfig>,
-    connection?: Connection<{ destination: CustomAudienceConnectionConfig }>,
+    connection?: Connection<{ destination: CustomAudienceConnectionDestConfig }>,
   ) {
     super(destination, connection);
+    if (!this.connection) {
+      throw new InstrumentationError('Connection config is required for custom_audience');
+    }
     this.headers = buildRequestHeaders(destination.Config);
-    this.endpointByAction = Object.fromEntries(
-      Object.entries(destination.Config.actions).map(([action, actionConfig]) => [
-        action,
-        resolveEndpoint(actionConfig!.endpoint, destination.Config.baseUrl, this.connectionConfig),
-      ]),
-    ) as Partial<Record<Action, string>>;
+    this.endpointByAction = this.buildEndpointsByAction();
   }
 
-  private get connectionConfig(): CustomAudienceConnectionConfig {
+  private get connectionConfig(): CustomAudienceConnectionDestConfig {
     return this.connection!.config.destination;
+  }
+
+  private buildEndpointsByAction(): Partial<Record<Action, string>> {
+    return Object.fromEntries(
+      Object.entries(this.destination.Config.actions).map(([action, actionConfig]) => [
+        action,
+        resolveEndpoint(
+          actionConfig!.endpoint,
+          this.destination.Config.baseUrl,
+          this.connectionConfig,
+        ),
+      ]),
+    ) as Partial<Record<Action, string>>;
   }
 
   transformEvent(input: CustomAudienceRouterRequest): TransformedEvent<Record<string, string>> {

@@ -12,11 +12,11 @@ import {
 import { AUTHENTICATION_TYPES } from './constants';
 import type {
   ActionConfig,
-  CustomAudienceConnectionConfig,
+  CustomAudienceConnectionDestConfig,
   CustomAudienceDestConfig,
 } from './types';
 
-const baseConnection: CustomAudienceConnectionConfig = {
+const baseConnection: CustomAudienceConnectionDestConfig = {
   audienceId: 'aud-42',
   isHashRequired: false,
 };

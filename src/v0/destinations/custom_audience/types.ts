@@ -49,7 +49,7 @@ export type CustomMapping = {
   to: string;
 };
 
-export type CustomAudienceConnectionConfig = {
+export type CustomAudienceConnectionDestConfig = {
   audienceId: string;
   isHashRequired: boolean;
   customMappings?: CustomMapping[];
@@ -61,7 +61,9 @@ export type CustomAudienceItemBody = {
 
 export type CustomAudienceDestination = Destination<CustomAudienceDestConfig>;
 
-export type CustomAudienceConnection = Connection<{ destination: CustomAudienceConnectionConfig }>;
+export type CustomAudienceConnection = Connection<{
+  destination: CustomAudienceConnectionDestConfig;
+}>;
 
 export type CustomAudienceRouterRequest = RouterTransformationRequestData<
   RudderRecordV2,

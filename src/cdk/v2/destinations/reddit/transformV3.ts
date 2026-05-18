@@ -205,7 +205,7 @@ const processTrackEvent = (event: RedditRouterRequest): RedditConversionEventsPa
       click_id: clickId,
       event_at: eventAt,
       action_source: actionSource,
-      event_source_url: actionSource === 'WEBSITE' ? eventSourceUrl : undefined,
+      event_source_url: actionSource === 'WEBSITE' && eventSourceUrl ? eventSourceUrl : undefined,
       user: userObject,
       type: t,
       metadata: prepareMetadata(message, t.tracking_type),

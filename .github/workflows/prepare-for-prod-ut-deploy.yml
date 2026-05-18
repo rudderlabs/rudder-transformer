@@ -87,6 +87,12 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-devops # to access cross-repo
 
+      - name: Checkout Workflow Actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: rudder-transformer
+          fetch-depth: 1
+
       - name: Checkout Devops Repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -95,12 +101,11 @@ jobs:
 
       - name: Check if shared user-transformers branch already exists
         id: check-shared-branch
-        uses: ./.github/actions/check-branch-exists
+        uses: ./rudder-transformer/.github/actions/check-branch-exists
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
           repository: rudderlabs/rudder-devops
           branch-name: shared-user-transformer-${{ env.UT_TAG_NAME }}
-          branch-description: Shared user-transformers
 
       - name: Update image tags in devops repo for shared user-transformers
         if: steps.check-shared-branch.outputs.exists == 'false'
@@ -194,6 +199,12 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-devops # to access cross-repo
 
+      - name: Checkout Workflow Actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: rudder-transformer
+          fetch-depth: 1
+
       - name: Checkout Devops Repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -202,12 +213,11 @@ jobs:
 
       - name: Check if hosted user-transformer branch already exists
         id: check-hosted-branch
-        uses: ./.github/actions/check-branch-exists
+        uses: ./rudder-transformer/.github/actions/check-branch-exists
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
           repository: rudderlabs/rudder-devops
           branch-name: hosted-user-transformer-${{ env.UT_TAG_NAME }}
-          branch-description: Hosted user-transformer
 
       - name: Update image tag in devops repo for hosted user-transformer
         if: steps.check-hosted-branch.outputs.exists == 'false'
@@ -294,6 +304,12 @@ jobs:
           permission-pull-requests: write # to create and update PRs
           repositories: rudder-devops # to access cross-repo
 
+      - name: Checkout Workflow Actions
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: rudder-transformer
+          fetch-depth: 1
+
       - name: Checkout Devops Repo
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -302,12 +318,11 @@ jobs:
 
       - name: Check if dedicated user-transformer branch already exists
         id: check-dedicated-branch
-        uses: ./.github/actions/check-branch-exists
+        uses: ./rudder-transformer/.github/actions/check-branch-exists
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
           repository: rudderlabs/rudder-devops
           branch-name: dedicated-user-transformer-${{ env.UT_TAG_NAME }}
-          branch-description: Dedicated user-transformer
 
       - name: Collect dedicated user-transformer files and update tags
         id: collect-dedicated-files

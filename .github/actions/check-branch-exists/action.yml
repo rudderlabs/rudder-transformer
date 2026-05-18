@@ -11,10 +11,6 @@ inputs:
   branch-name:
     required: true
     description: 'Branch name to check'
-  branch-description:
-    required: false
-    default: 'Branch'
-    description: 'Label used in the log message when the branch already exists'
 
 outputs:
   exists:
@@ -30,14 +26,13 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
         REPOSITORY: ${{ inputs.repository }}
         BRANCH_NAME: ${{ inputs.branch-name }}
-        BRANCH_DESCRIPTION: ${{ inputs.branch-description }}
       run: |
         if err=$(gh api "repos/${REPOSITORY}/git/ref/heads/${BRANCH_NAME}" 2>&1 >/dev/null); then
           echo "exists=true" >> "$GITHUB_OUTPUT"
-          echo "${BRANCH_DESCRIPTION} branch ${BRANCH_NAME} already exists. Skipping."
+          echo "Branch ${BRANCH_NAME} already exists. Skipping."
         elif echo "$err" | grep -q "HTTP 404"; then
           echo "exists=false" >> "$GITHUB_OUTPUT"
         else
-          echo "::error::Failed to check ${BRANCH_DESCRIPTION} branch ${BRANCH_NAME}: $err"
+          echo "::error::Failed to check branch ${BRANCH_NAME}: $err"
           exit 1
         fi

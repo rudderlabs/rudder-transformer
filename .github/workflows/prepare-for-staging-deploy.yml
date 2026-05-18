@@ -132,7 +132,6 @@ jobs:
           github-token: ${{ steps.generate-token.outputs.token }}
           repository: rudderlabs/rudder-devops
           branch-name: shared-transformer-${{ env.TAG_NAME }}
-          branch-description: Staging deployment
 
       - name: Update image tags in devops repo for staging
         if: steps.check-branch.outputs.exists == 'false'

@@ -23,6 +23,7 @@ const DestCanonicalNames = {
   ],
   ometria: ['Ometria', 'ometria', 'OMETRIA'],
   sendgrid: ['sendgrid', 'Sendgrid', 'SENDGRID'],
+  reddit: ['REDDIT', 'Reddit', 'reddit'],
   dcm_floodlight: [
     'dcm floodlight',
     'dcm_floodlight',

@@ -15,7 +15,14 @@ import {
   EventProperties,
 } from './types';
 import userDataMapping from './data/userDataMapping.json';
-import { constructPayload, defaultRequestConfig, isAppleFamily } from '../../../../v0/util';
+import {
+  constructPayload,
+  defaultRequestConfig,
+  isAppleFamily,
+  getIntegrationsObj,
+  getFieldValueFromMessage,
+  getValueFromMessage,
+} from '../../../../v0/util';
 import { RudderMessage } from '../../../../types';
 import { ecomEventMaps, V3_ENDPOINT } from './config';
 import {
@@ -24,6 +31,28 @@ import {
   generateAndValidateTimestamp,
   hashSHA256,
 } from './utils';
+
+const ACTION_SOURCE_VALUES = ['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER'] as const;
+type ActionSource = (typeof ACTION_SOURCE_VALUES)[number];
+
+const getActionSource = (message: RudderMessage): ActionSource => {
+  const integrationsObj = getIntegrationsObj(message, 'reddit' as any);
+  const rawActionSource = integrationsObj?.action_source;
+  const overriddenActionSource =
+    typeof rawActionSource === 'string' ? rawActionSource.toUpperCase() : rawActionSource;
+  if (
+    overriddenActionSource &&
+    (ACTION_SOURCE_VALUES as readonly string[]).includes(overriddenActionSource)
+  ) {
+    return overriddenActionSource as ActionSource;
+  }
+  const channel = getValueFromMessage(message, 'channel');
+  const os = getValueFromMessage(message, 'context.os.name');
+  if (channel === 'mobile' || os === 'android' || isAppleFamily(os)) {
+    return 'APP';
+  }
+  return 'WEBSITE';
+};
 
 const prepareUserObject = (
   message: RudderMessage,
@@ -163,47 +192,32 @@ const processTrackEvent = (event: RedditRouterRequest): RedditConversionEventsPa
   const { message, destination } = event;
   const { eventsMapping, hashData } = destination.Config;
   const userObject = prepareUserObject(message, hashData);
-  const type = prepareEventType(message, eventsMapping);
-  const finalPayload: RedditConversionEventsPayload[] = [];
+  const eventType = prepareEventType(message, eventsMapping);
+  const types = (Array.isArray(eventType) ? eventType : [eventType]) as RedditEventType[];
   const clickId = (message.properties as { clickId: string })?.clickId;
-  const timestamp = message.timestamp || message.originalTimestamp;
-  const eventAt = generateAndValidateTimestamp(timestamp);
-  const actionSource = 'WEBSITE' as const;
+  const eventAt = generateAndValidateTimestamp(message.timestamp || message.originalTimestamp);
+  const actionSource = getActionSource(message);
+  const eventSourceUrl = getFieldValueFromMessage(message, 'pageUrl');
   const testId = (message.properties as { test_id: string })?.test_id;
-  if (Array.isArray(type)) {
-    for (const t of type) {
-      const metadata = prepareMetadata(message, t.tracking_type);
-      const payload = {
-        click_id: clickId,
-        event_at: eventAt,
-        action_source: actionSource,
-        user: userObject,
-        type: t,
-        metadata,
-      };
-      if (testId) {
-        finalPayload.push({ data: { events: [payload], test_id: testId } });
-      } else {
-        finalPayload.push({ data: { events: [payload] } });
-      }
-    }
-  } else {
-    const metadata = prepareMetadata(message, type.tracking_type);
+
+  return types.map((t) => {
     const payload = {
       click_id: clickId,
       event_at: eventAt,
       action_source: actionSource,
+      event_source_url: actionSource === 'WEBSITE' ? eventSourceUrl : undefined,
       user: userObject,
-      type,
-      metadata,
+      type: t,
+      metadata: prepareMetadata(message, t.tracking_type),
     };
-    if (testId) {
-      finalPayload.push({ data: { events: [payload], test_id: testId } });
-    } else {
-      finalPayload.push({ data: { events: [payload] } });
-    }
-  }
-  return finalPayload;
+    return {
+      data: {
+        partner: 'RUDDERSTACK',
+        ...(testId && { test_id: testId }),
+        events: [payload],
+      },
+    };
+  });
 };
 
 export const process = (event: RedditRouterRequest): RedditResponse[] => {

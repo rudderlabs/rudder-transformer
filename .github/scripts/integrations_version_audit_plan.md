@@ -173,7 +173,7 @@ Categorization logic:
 
   // Classify each action-required integration
   const updatableIntegrations = []; // existing open subticket found
-  const newIntegrations = [];       // no existing subticket
+  const newIntegrations = []; // no existing subticket
 
   for (const integration of actionRequiredIntegrations) {
     const integrationName = integration.Destination;
@@ -225,7 +225,9 @@ Categorization logic:
     const currentCycleId = await getCurrentCycleId(LINEAR_TEAM_ID);
 
     if (!statusStateId)
-      console.warn('Warning: Could not find "Queued" state. Ticket will be created without status.');
+      console.warn(
+        'Warning: Could not find "Queued" state. Ticket will be created without status.',
+      );
     if (!currentUserId)
       console.warn(
         'Warning: Could not retrieve current user ID. Ticket will be created without assignee.',
@@ -242,7 +244,9 @@ Categorization logic:
       projectId: MAINTENANCE_PROJECT_ID,
       labelIds: [KTLO_LABEL_ID, VERSION_UPGRADE_LABEL_ID],
     });
-    console.log(`Created new master ticket: ${newMasterTicket.identifier} - ${newMasterTicket.url}`);
+    console.log(
+      `Created new master ticket: ${newMasterTicket.identifier} - ${newMasterTicket.url}`,
+    );
 
     // Create subtickets for new integrations under the new master
     for (const integration of newIntegrations) {
@@ -253,7 +257,7 @@ Categorization logic:
         description: ticketDescription,
         parentId: newMasterTicket.id,
         priority: calculatedPriority, // 1-4 based on urgency (1=Urgent, 4=Low)
-        dueDate: calculatedDueDate,   // ISO format string (YYYY-MM-DD) or null
+        dueDate: calculatedDueDate, // ISO format string (YYYY-MM-DD) or null
         labelIds: [],
       });
       // Track as "created" in summary

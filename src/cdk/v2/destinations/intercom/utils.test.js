@@ -761,6 +761,37 @@ describe('searchContact utility test', () => {
       }),
     );
   });
+
+  it('Should return null when API returns 200 but response body has no data field', async () => {
+    const message = {
+      context: {
+        traits: { email: 'test@rudderlabs.com' },
+      },
+      metadata: {
+        sourceId: 'source-123',
+        destinationId: 'dest-123',
+        workspaceId: 'workspace-123',
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+      },
+    });
+
+    const result = await searchContact(message, destination, message.metadata);
+    expect(result).toBeNull();
+  });
 });
 
 describe('createOrUpdateCompany utility test', () => {

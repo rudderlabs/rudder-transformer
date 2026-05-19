@@ -199,8 +199,12 @@ const NODE_HANDLERS: Record<string, NodeHandler> = {
   // Note: prop is genuinely optional on SelectorExpression.
   [SyntaxType.SELECTOR]: {
     validate: (node, ctx) => {
-      const { prop } = node;
-      if (prop?.type === SELECTOR_PROP_TYPE_STR) {
+      const { prop, selector } = node;
+      if (selector === '..') {
+        ctx.errors.push(
+          'Recursive descent (..) is not supported. Use single dot notation (.key) instead.',
+        );
+      } else if (prop?.type === SELECTOR_PROP_TYPE_STR) {
         ctx.errors.push(
           'Bracket notation (["key"]) is not supported. Use dot notation (.key) instead.',
         );
@@ -358,7 +362,7 @@ function parseAndValidate(template: string): { ast: Expression } | { errors: str
   return { ast };
 }
 
-type ParseTemplateResult =
+export type ParseTemplateResult =
   | { valid: true; recordFields: string[] }
   | { valid: false; errors: string[] };
 

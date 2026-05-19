@@ -144,91 +144,163 @@ Categorization logic:
   - Missing documentation links
   - Needs manual review to determine status
 
-### Phase 4: Linear Ticket Creation (MUST EXECUTE IMMEDIATELY)
+### Phase 4: Duplicate Detection and Linear Ticket Creation (MUST EXECUTE IMMEDIATELY)
 
 **⚠️ CRITICAL**: This phase MUST be executed during the audit. Do NOT create a script file. Do NOT defer ticket creation. Make Linear API calls directly using the agent's capabilities.
 
-7. **Create master Linear ticket** (EXECUTE NOW - DO NOT DEFER)
+**⚠️ DEDUPLICATION**: Before creating any ticket, always check for existing open tickets. Never create a duplicate.
 
-- Read `.github/scripts/linearApi.js` to understand the Linear API structure
-- **IMMEDIATELY** make Linear API calls using the agent's capabilities:
-  - Call `getStateId('Queued', LINEAR_TEAM_ID)` to get state ID
-  - Call `getCurrentUserId()` to get current user ID
-  - Call `getCurrentCycleId(LINEAR_TEAM_ID)` to get cycle ID
-- **IMMEDIATELY** create the master ticket by calling `createIssue` with the following structure:
+7. **Classify integrations and check for existing subtickets** (EXECUTE FIRST)
 
-  **Reference implementation from linearApi.js (agent uses this structure to make API calls directly):**
+- Read `.github/scripts/linearApi.js` to understand the API structure — including the dedup functions: `findOpenSubticketGlobally`, `findOpenSubticketByIntegration`, and `searchIssues`
+- For each integration categorized as "Action Required", search globally for an existing open subticket using `findOpenSubticketGlobally(integrationName)`. This searches across ALL open master tickets, not just one.
+- Separate integrations into two lists: **updates** (existing subticket found) and **new** (no existing subticket found).
 
   ```javascript
-  // Agent reads this structure and makes Linear API calls directly using its capabilities
-  // DO NOT create a script file - execute API calls immediately
   const {
     createIssue,
     getStateId,
     getCurrentUserId,
     getCurrentCycleId,
+    findOpenSubticketGlobally,
+    listIssuesByParent,
+    updateIssue,
+    updateIssueDescription,
+    MAINTENANCE_PROJECT_ID,
+    KTLO_LABEL_ID,
+    VERSION_UPGRADE_LABEL_ID,
   } = require('./.github/scripts/linearApi');
 
-  // Query for required IDs
-  const statusStateId = await getStateId('Queued', LINEAR_TEAM_ID);
-  const currentUserId = await getCurrentUserId();
-  const currentCycleId = await getCurrentCycleId(LINEAR_TEAM_ID);
+  // Classify each action-required integration
+  const updatableIntegrations = []; // existing open subticket found
+  const newIntegrations = []; // no existing subticket
 
-  // If any IDs are null, log warnings but proceed with ticket creation
-  if (!statusStateId)
-    console.warn('Warning: Could not find "Queued" state. Ticket will be created without status.');
-  if (!currentUserId)
-    console.warn(
-      'Warning: Could not retrieve current user ID. Ticket will be created without assignee.',
-    );
-  if (!currentCycleId)
-    console.warn('Warning: Could not find current cycle. Ticket will be created without cycle.');
+  for (const integration of actionRequiredIntegrations) {
+    const integrationName = integration.Destination;
+    const existingSub = await findOpenSubticketGlobally(integrationName);
 
-  const masterTicket = await createIssue({
-    title: 'Integration Version Audit [Rudder Transformer] [Current Date in DD/MM/YYYY]',
-    description: masterDescription, // Use Master Ticket Description Template (see below)
-    priority: 3, // Medium priority
-    stateId: statusStateId, // Status: Queued
-    cycleId: currentCycleId, // Current cycle
-    labelIds: [], // Optional: add label IDs if labels exist in Linear
-  });
+    if (existingSub) {
+      updatableIntegrations.push({ integration, existingSub });
+    } else {
+      newIntegrations.push(integration);
+    }
+  }
+
+  console.log(`Integrations to update: ${updatableIntegrations.length}`);
+  console.log(`New integrations: ${newIntegrations.length}`);
   ```
 
-  - Store returned ticket ID (`masterTicket.id`) for use as parent in subtickets
-  - The returned object includes: `id`, `identifier` (e.g., "INT-4499"), `title`, and `url`
+8. **Update existing subtickets in place**
 
-8. **Create subtickets for each integration requiring action** (EXECUTE NOW - DO NOT DEFER)
+- For each integration with an existing open subticket, update it under its current parent master ticket. Do not move it.
+- Track the parent master IDs of all updated subtickets so their descriptions can be refreshed in step 8b.
 
-- For each integration categorized as "Action Required":
-- **IMMEDIATELY** create subticket by calling `createIssue` (reference `createIssue` function structure):
-  **Reference implementation from linearApi.js (agent makes API calls directly):**
   ```javascript
-  // Agent reads this structure and makes Linear API calls directly
-  // Execute immediately - do NOT create a script file
-  await createIssue({
-    title: `${integrationName} Version Audit [Rudder Transformer]`, // No brackets needed, Linear will format
-    description: ticketDescription, // Use Individual Integration Ticket Template (see below)
-    parentId: masterTicket.id, // From step 7
-    priority: calculatedPriority, // 1-4 based on urgency (1=Urgent, 4=Low)
-    dueDate: calculatedDueDate, // ISO format string (YYYY-MM-DD) or null
-    labelIds: [], // Optional: add label IDs if labels exist
-  });
-  ```
-- Create all subtickets in batch after analysis completes
-  - Handle errors gracefully: if one ticket creation fails, log the error and continue with remaining integrations
-  - Consider adding a small delay between ticket creations to avoid rate limiting
-  - **Verification**: After all tickets are created, verify that:
-    - Master ticket was created successfully (check for ticket ID and URL) - **MUST have actual ticket URL, not placeholder**
-    - All integrations requiring action have corresponding subtickets - **MUST have actual ticket URLs**
-    - Each subticket contains detailed analysis from codebase search and web_search findings
-    - Priority and due dates are correctly assigned based on sunset dates and version gaps
-    - Ticket descriptions include all relevant information from documentation review
-  - **CRITICAL**: If tickets were not created (no ticket URLs in output), the audit has FAILED and must be retried
+  const affectedMasterIds = new Set(); // parent masters whose subtickets were updated
 
-9. **Log analysis summary** (AFTER tickets are created)
+  for (const { integration, existingSub } of updatableIntegrations) {
+    const integrationName = integration.Destination;
+    console.log(`Updating existing subticket: ${existingSub.identifier} for ${integrationName}`);
+    await updateIssue(existingSub.id, {
+      description: ticketDescription,
+      priority: calculatedPriority,
+      dueDate: calculatedDueDate,
+    });
+    affectedMasterIds.add(existingSub.parentId);
+    // Track as "updated" (not "created") in summary — store { identifier, url } for logging
+  }
+  ```
+
+8a. **Create a new master ticket only if there are new integrations**
+
+- **If `newIntegrations` is empty**: no new master ticket is needed. Log: `No new integrations found — skipping master ticket creation.`
+- **If `newIntegrations` has entries**: create a new master ticket for this audit run, then create subtickets under it.
+
+  ```javascript
+  let newMasterTicket = null;
+
+  if (newIntegrations.length > 0) {
+    const statusStateId = await getStateId('Queued', LINEAR_TEAM_ID);
+    const currentUserId = await getCurrentUserId();
+    const currentCycleId = await getCurrentCycleId(LINEAR_TEAM_ID);
+
+    if (!statusStateId)
+      console.warn(
+        'Warning: Could not find "Queued" state. Ticket will be created without status.',
+      );
+    if (!currentUserId)
+      console.warn(
+        'Warning: Could not retrieve current user ID. Ticket will be created without assignee.',
+      );
+    if (!currentCycleId)
+      console.warn('Warning: Could not find current cycle. Ticket will be created without cycle.');
+
+    newMasterTicket = await createIssue({
+      title: 'Integration Version Audit [Rudder Transformer] [Current Date in DD/MM/YYYY]',
+      description: '', // Placeholder — updated in step 8b after subticket URLs are available
+      priority: 3, // Medium priority
+      stateId: statusStateId, // Status: Queued
+      cycleId: currentCycleId, // Current cycle
+      projectId: MAINTENANCE_PROJECT_ID,
+      labelIds: [KTLO_LABEL_ID, VERSION_UPGRADE_LABEL_ID],
+    });
+    console.log(
+      `Created new master ticket: ${newMasterTicket.identifier} - ${newMasterTicket.url}`,
+    );
+
+    // Create subtickets for new integrations under the new master
+    for (const integration of newIntegrations) {
+      const integrationName = integration.Destination;
+      console.log(`Creating new subticket for ${integrationName}`);
+      await createIssue({
+        title: `${integrationName} Version Audit [Rudder Transformer]`,
+        description: ticketDescription,
+        parentId: newMasterTicket.id,
+        priority: calculatedPriority, // 1-4 based on urgency (1=Urgent, 4=Low)
+        dueDate: calculatedDueDate, // ISO format string (YYYY-MM-DD) or null
+        labelIds: [],
+      });
+      // Track as "created" in summary
+    }
+  }
+  ```
+
+- Handle errors gracefully: if one ticket creation/update fails, log the error and continue with remaining integrations
+- Consider adding a small delay between ticket creations to avoid rate limiting
+- **Verification**: After all tickets are created/updated, verify that:
+  - All integrations requiring action have corresponding subtickets — **MUST have actual ticket URLs**
+  - Each subticket contains detailed analysis from codebase search and web_search findings
+  - Priority and due dates are correctly assigned based on sunset dates and version gaps
+  - Ticket descriptions include all relevant information from documentation review
+- **CRITICAL**: If tickets were not created (no ticket URLs in output), the audit has FAILED and must be retried
+
+8b. **Refresh descriptions of all affected master tickets** (AFTER all subtickets are created/updated)
+
+- Refresh the description of every master ticket that had subtickets created or updated during this run. This includes:
+  - The new master ticket (if one was created in step 8a)
+  - Any older master tickets whose subtickets were updated in step 8 (tracked via `affectedMasterIds`)
+- For each affected master, fetch its current subtickets via `listIssuesByParent`, rebuild the description using the master description template, and update it.
+
+  ```javascript
+  // Collect all master IDs that need a description refresh
+  const mastersToRefresh = new Set(affectedMasterIds);
+  if (newMasterTicket) {
+    mastersToRefresh.add(newMasterTicket.id);
+  }
+
+  for (const masterId of mastersToRefresh) {
+    const subtickets = await listIssuesByParent(masterId);
+    const refreshedDescription = buildMasterDescription(subtickets, analysisResults);
+    await updateIssueDescription(masterId, refreshedDescription);
+    console.log(`Refreshed master ticket description: ${masterId}`);
+  }
+  ```
+
+9. **Log analysis summary** (AFTER tickets are created/updated)
 
 - After all analysis and ticket creation is complete, log a summary of what was done to console:
 - **MUST include actual Linear ticket URLs** - if URLs are missing, ticket creation failed
+- **MUST distinguish** between reused/updated tickets and newly created ones
 
   ```javascript
   console.log('\n=== Integration SDK Version Audit Summary ===');
@@ -251,9 +323,19 @@ Categorization logic:
   console.log(`  - High (2): ${highCount}`);
   console.log(`  - Medium (3): ${mediumCount}`);
   console.log(`  - Low (4): ${lowCount}`);
-  console.log(`\nTickets Created:`);
-  console.log(`  - Master Ticket: ${masterTicket.identifier} - ${masterTicket.url}`);
-  console.log(`  - Subtickets: ${subticketsCreated} tickets created`);
+  console.log(`\nTickets:`);
+  if (newMasterTicket) {
+    console.log(`  - New Master Ticket: ${newMasterTicket.identifier} - ${newMasterTicket.url}`);
+  } else {
+    console.log(`  - No new master ticket created (all integrations had existing subtickets)`);
+  }
+  console.log(`  - Masters refreshed: ${mastersToRefresh.size}`);
+  console.log(`  - Subtickets created: ${subticketsCreated}`);
+  console.log(`  - Subtickets updated (existing): ${subticketsUpdated}`);
+  console.log(`\nSubticket URLs:`);
+  for (const sub of allSubticketResults) {
+    console.log(`  - ${sub.integrationName}: ${sub.identifier} - ${sub.url} (${sub.action})`);
+  }
   if (errors.length > 0) {
     console.log(`\nErrors Encountered: ${errors.length}`);
     errors.forEach((err) => console.log(`  - ${err}`));
@@ -263,7 +345,7 @@ Categorization logic:
 
 10. **Verify analysis completion and ticket creation**
 
-- **CRITICAL**: Verify that all versioned integrations were analyzed AND all required Linear tickets were created successfully
+- **CRITICAL**: Verify that all versioned integrations were analyzed AND all required Linear tickets were created/updated successfully
 - **MUST verify**: Summary log includes actual Linear ticket URLs (not placeholders, not "pending", not "to be created")
 - If ticket URLs are missing from the summary, ticket creation FAILED and the audit is incomplete
 - Ensure the summary log includes any errors encountered during the process
@@ -380,9 +462,11 @@ Handle various date formats when parsing sunset dates. When multiple dates are p
 
 ## Linear API Integration
 
-Use the existing `.github/scripts/linearApi.js` module for ticket creation. Functions are called directly during the AI-assisted analysis process.
+Use the existing `.github/scripts/linearApi.js` module for ticket creation and deduplication. Functions are called directly during the AI-assisted analysis process.
 
 ### Module Exports
+
+**Ticket Creation & Update:**
 
 - `createIssue({ title, description, parentId, priority, labelIds, dueDate, stateId, assigneeId, cycleId })` - Create a new Linear ticket
   - **Note**: Team ID is taken from `LINEAR_TEAM_ID` environment variable (not passed as parameter)
@@ -393,12 +477,29 @@ Use the existing `.github/scripts/linearApi.js` module for ticket creation. Func
     - `stateId` (optional) - State/workflow status ID (e.g., "triage")
     - `assigneeId` (optional) - User ID to assign the ticket to
     - `cycleId` (optional) - Cycle ID to associate the ticket with
+- `listIssuesByParent(parentId, limit)` - List all subtickets for a parent ticket
+- `updateIssue(issueId, fields)` - Update any fields on an existing ticket (e.g., `{ description, priority, dueDate }`)
+- `updateIssueDescription(issueId, description)` - Convenience wrapper for `updateIssue` that only updates the description
+
+**Duplicate Detection (MUST use before creating tickets):**
+
+- `searchIssues({ titleContains, teamId, states, limit })` - Search for existing tickets by title substring, optionally filtered by workflow states
+- `findOpenAuditMasterTicket()` - Find the most recent open master audit ticket (title contains "Integration Version Audit [Rudder Transformer]", no parent, in open states: Queued/In Progress/Todo/Backlog/Triage). Returns the ticket object or null.
+- `findOpenSubticketByIntegration(parentId, integrationName)` - Find an existing open subticket for a specific integration under a given parent ticket. Returns the ticket object or null.
+- `findOpenSubticketGlobally(integrationName)` - Find an existing open subticket for a specific integration across ALL audit master tickets. Validates that the parent is an audit master (title contains "Integration Version Audit [Rudder Transformer]", no parent). When multiple matches exist, returns the newest one (highest identifier number). Returns the ticket object (including `parentId`) or null. **Use this in step 7 to classify integrations before deciding whether a new master ticket is needed.**
+
+**Hardcoded Constants (for master ticket creation):**
+
+- `MAINTENANCE_PROJECT_ID` - Project ID for the maintenance project
+- `KTLO_LABEL_ID` - Label ID for KTLO under Type
+- `VERSION_UPGRADE_LABEL_ID` - Label ID for VersionUpgrade under KTLO Type
+
+**Querying:**
+
 - `getStateId(stateName, teamId)` - Query Linear API to find state ID by name (e.g., "Queued")
 - `getCurrentUserId()` - Query Linear API to get the current authenticated user's ID (uses `viewer` query)
 - `getUserId(userName)` - Query Linear API to find user ID by name (for searching specific users)
 - `getCurrentCycleId(teamId)` - Query Linear API to find the current/active cycle ID
-- `listIssuesByParent(parentId, limit)` - List all subtickets for a parent ticket
-- `updateIssueDescription(issueId, description)` - Update an existing ticket's description
 
 ### Environment Variables Required
 
@@ -414,6 +515,7 @@ Use the existing `.github/scripts/linearApi.js` module for ticket creation. Func
 - **Tickets are created immediately** after analysis completes, not deferred to a script execution
 - The `LINEAR_TEAM_ID` environment variable must be set in the workflow environment
 - If the agent attempts to create a script file instead of making API calls directly, it should be corrected to make the calls immediately
+- **DEDUPLICATION IS MANDATORY**: Before creating any subticket, the agent MUST call `findOpenSubticketGlobally(integrationName)` to check for existing open subtickets across all master tickets. If an open subticket exists, update it in place. Only create a new subticket (under a new master) when no open match is found. A new master ticket is only created when there are new integrations that need subtickets.
 
 ## Notes
 

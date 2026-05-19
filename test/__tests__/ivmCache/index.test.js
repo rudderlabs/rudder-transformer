@@ -162,6 +162,16 @@ describe('IVM LRU Cache with TTL', () => {
       expect(customCache.maxSize).toBe(25);
       expect(customCache.ttlMs).toBe(5000);
     });
+
+    test('should default cacheName to ivm', () => {
+      const defaultCache = new DisposableCache();
+      expect(defaultCache.cacheName).toBe('ivm');
+    });
+
+    test('should accept custom cache name for metrics', () => {
+      const namedCache = new DisposableCache({ name: 'template_ivm' });
+      expect(namedCache.cacheName).toBe('template_ivm');
+    });
   });
 
   describe('basic operations', () => {
@@ -396,6 +406,47 @@ describe('IVM LRU Cache with TTL', () => {
         maxSize: 3,
         ttlMs: 1000,
       });
+    });
+  });
+
+  describe('metric tags use cacheName', () => {
+    test('should emit metrics with default cache tag', () => {
+      const stats = require('../../../src/util/stats');
+      cache.set('k', 'v');
+      expect(stats.increment).toHaveBeenCalledWith(
+        'ivm_cache_sets_total',
+        expect.objectContaining({ cache: 'ivm' }),
+      );
+    });
+
+    test('should emit metrics with custom cache tag', () => {
+      const stats = require('../../../src/util/stats');
+      stats.increment.mockClear();
+      stats.gauge.mockClear();
+
+      const namedCache = new DisposableCache({ name: 'template_ivm', maxSize: 3, ttlMs: 1000 });
+      namedCache.set('k', 'v');
+      namedCache.get('k');
+      namedCache.get('miss');
+
+      expect(stats.increment).toHaveBeenCalledWith(
+        'ivm_cache_sets_total',
+        expect.objectContaining({ cache: 'template_ivm' }),
+      );
+      expect(stats.increment).toHaveBeenCalledWith(
+        'ivm_cache_hits_total',
+        expect.objectContaining({ cache: 'template_ivm' }),
+      );
+      expect(stats.increment).toHaveBeenCalledWith(
+        'ivm_cache_misses_total',
+        expect.objectContaining({ cache: 'template_ivm' }),
+      );
+      expect(stats.gauge).toHaveBeenCalledWith(
+        'ivm_cache_size',
+        expect.any(Number),
+        expect.objectContaining({ cache: 'template_ivm' }),
+      );
+      namedCache.clear();
     });
   });
 

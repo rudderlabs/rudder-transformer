@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.133.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.132.1...v1.133.0) (2026-05-19)
+
+
+### Features
+
+* **custom_audience:** add parse-template endpoint ([#5183](https://github.com/rudderlabs/rudder-transformer/issues/5183)) ([26115f0](https://github.com/rudderlabs/rudder-transformer/commit/26115f0b8f73902de82593f69262855308e14e8d))
+* **custom_audience:** execute requestBody templates inside isolated-vm ([#5193](https://github.com/rudderlabs/rudder-transformer/issues/5193)) ([1e2cec6](https://github.com/rudderlabs/rudder-transformer/commit/1e2cec6b19a2a68da825b5b71fe1727d0fed4c6d)), closes [#5185](https://github.com/rudderlabs/rudder-transformer/issues/5185)
+* **custom_audience:** router transform pipeline ([#5187](https://github.com/rudderlabs/rudder-transformer/issues/5187)) ([9976809](https://github.com/rudderlabs/rudder-transformer/commit/99768093b9eb4fb60428fea280274320f1474f9c))
+* **custom_audience:** sandbox template parsing in isolated-vm ([#5185](https://github.com/rudderlabs/rudder-transformer/issues/5185)) ([fc600d3](https://github.com/rudderlabs/rudder-transformer/commit/fc600d3624ff2343a886ac8ecf05e80730437a8c))
+* **test-router:** support batching-framework destinations ([#5194](https://github.com/rudderlabs/rudder-transformer/issues/5194)) ([975c7b5](https://github.com/rudderlabs/rudder-transformer/commit/975c7b57706212261ca27b73d236f11ee6641364))
+
+
+### Bug Fixes
+
+* add validation to customerIo for undefined properties ([#5189](https://github.com/rudderlabs/rudder-transformer/issues/5189)) ([f47bcf8](https://github.com/rudderlabs/rudder-transformer/commit/f47bcf8e31e361fae7d1b65551e587b154418a53)), closes [/github.com/rudderlabs/rudder-transformer/blob/develop/src/v0/destinations/customerio/util.js#L288](https://github.com/rudderlabs//github.com/rudderlabs/rudder-transformer/blob/develop/src/v0/destinations/customerio/util.js/issues/L288)
+* **intercom:** searchContact crashes when API returns 200 with no data array ([#5198](https://github.com/rudderlabs/rudder-transformer/issues/5198)) ([75693d6](https://github.com/rudderlabs/rudder-transformer/commit/75693d625d8e50be044693ef85acd4a78dae9b56))
+* remove grouping logic of iterable ([#5196](https://github.com/rudderlabs/rudder-transformer/issues/5196)) ([fdd1f2d](https://github.com/rudderlabs/rudder-transformer/commit/fdd1f2de084ef969b039e83288a647a414707def))
+
 ### [1.132.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.132.0...v1.132.1) (2026-05-14)
 
 ## [1.132.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.131.3...v1.132.0) (2026-05-06)

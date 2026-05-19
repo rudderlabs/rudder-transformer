@@ -24,7 +24,6 @@ const {
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
-  groupEventsByType: batchEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
@@ -169,82 +168,36 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const batchedEvents = batchEvents(inputs);
-  const response = await mapInBatches(
-    batchedEvents,
-    async (listOfEvents) => {
-      let transformedPayloads = await mapInBatches(
-        listOfEvents,
-        async (event) => {
-          try {
-            if (event.message.statusCode) {
-              // already transformed event
-              return {
-                message: event.message,
-                metadata: event.metadata,
-                destination: event.destination,
-              };
-            }
+  const transformedPayloads = await mapInBatches(
+    inputs,
+    async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          return {
+            message: event.message,
+            metadata: event.metadata,
+            destination: event.destination,
+          };
+        }
 
-            /**
-             * If not transformed
-             *
-             * responses = [e1_batched_event, e1_non_batched_event] or {e2}
-             *
-             * transformedPayloads =
-             * [
-             *   {
-             *     message: e1_batched_message,
-             *     metadata: m1,
-             *     destination: {}
-             *   },
-             *   {
-             *     message: e1_non_batched_message,
-             *     metadata: m1,
-             *     destination: {}
-             *    }
-             * ]
-             *
-             * or
-             *
-             * transformedPayloads =
-             * [
-             *   {
-             *     message: e2_message,
-             *     metadata: m2,
-             *     destination: {}
-             *   }
-             * ]
-             */
-
-            const responsesFn = process(event);
-            const transformedPayloadsArr = Array.isArray(responsesFn) ? responsesFn : [responsesFn];
-            return transformedPayloadsArr.map((res) => ({
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination,
-            }));
-          } catch (error) {
-            return handleRtTfSingleEventError(event, error, reqMetadata);
-          }
-        },
-        { sequentialProcessing: false }, // concurrent processing
-      );
-
-      /**
-       * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
-       * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
-       */
-      transformedPayloads = lodash.flatMap(transformedPayloads);
-      return filterEventsAndPrepareBatchRequests(transformedPayloads);
+        const responsesFn = process(event);
+        const transformedPayloadsArr = Array.isArray(responsesFn) ? responsesFn : [responsesFn];
+        return transformedPayloadsArr.map((res) => ({
+          message: res,
+          metadata: event.metadata,
+          destination: event.destination,
+        }));
+      } catch (error) {
+        return handleRtTfSingleEventError(event, error, reqMetadata);
+      }
     },
     { sequentialProcessing: false }, // concurrent processing
   );
 
-  // Flatten the response array containing batched events from multiple groups
-  const allBatchedEvents = lodash.flatMap(response);
-
-  return allBatchedEvents;
+  // Iterable's bulk endpoints (users/bulkUpdate, events/trackBulk) do not preserve cross-endpoint
+  // processing order, so we batch directly by endpoint bucket rather than preserving per-user ordering.
+  return filterEventsAndPrepareBatchRequests(lodash.flatMap(transformedPayloads));
 };
 
 module.exports = { process, processRouterDest };

@@ -1,4 +1,4 @@
-import { parseTemplate } from './templateValidator';
+import { parseTemplate } from './templateParser';
 
 describe('parseTemplate', () => {
   const validTemplates = [
@@ -113,6 +113,11 @@ describe('parseTemplate', () => {
       name: 'throw expressions (parser level)',
       template: 'throw "error"',
       errorMatch: /return, throw, continue and break/,
+    },
+    {
+      name: 'recursive descent (..field)',
+      template: `{ "data": $.records.({ "email": ..email, "phone": .phone_sha256 }) }`,
+      errorMatch: /Recursive descent/,
     },
     {
       name: 'unparseable syntax',

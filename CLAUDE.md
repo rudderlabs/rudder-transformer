@@ -15,6 +15,10 @@ After making code changes, always run these checks before committing:
 - **Integration tests**: `test/integrations/destinations/<destination>/` with a single test runner at `test/integrations/component.test.ts`
 - **Integration test sub-folders**: `processor/`, `router/`, `dataDelivery/`, `network.ts`, `mocks.ts`
 
+## Skills
+
+Before writing or modifying code, read all `.claude/skills/*/SKILL.md` files and follow the conventions defined in them.
+
 ## Conventions
 
 - Commit messages follow conventional commits: `type(scope): description` (e.g., `feat(fb_custom_audience): ...`, `fix(gaoc): ...`)

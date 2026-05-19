@@ -1,10 +1,51 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../types';
+import { isBatchingFrameworkEnabled } from '../../constants/batchedDestinationsMap';
+import { FetchHandler } from '../../helpers/fetchHandlers';
+import { processBatchedDestination } from '../destination/nativeBatching/processBatchedDestination';
+import type { RouterTransformationRequestData } from '../../types/destinationTransformation';
+import type { Destination, Connection } from '../../types/controlPlaneConfig';
+import type { Metadata, RudderMessage } from '../../types/rudderEvents';
+
+type DestTransformInput = {
+  message: RudderMessage;
+  destination: Destination & { WorkspaceId: string };
+  connection?: Connection;
+};
 
 export class EventTesterService {
   private static getDestHandler(version, destination) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
+  }
+
+  private static async runDestTransform(
+    version: string,
+    dest: string,
+    ev: DestTransformInput,
+  ): Promise<unknown[]> {
+    const { WorkspaceId: workspaceId } = ev.destination;
+    if (!workspaceId) {
+      throw new Error('destination.WorkspaceId is required');
+    }
+    if (isBatchingFrameworkEnabled(dest, workspaceId)) {
+      const IntegrationClass = FetchHandler.getBatchDestinationHandler(dest);
+      const input: RouterTransformationRequestData = {
+        message: ev.message,
+        // Synthetic minimal metadata — the test endpoint doesn't carry full router metadata.
+        metadata: { workspaceId } as Metadata,
+        destination: ev.destination,
+        connection: ev.connection,
+      };
+      const responses = await processBatchedDestination([input], IntegrationClass, {});
+      const failed = responses.find((r) => r.error);
+      if (failed) {
+        throw new Error(failed.error);
+      }
+      return responses.map((r) => r.batchedRequest);
+    }
+    const output = await this.getDestHandler(version, dest).process(ev);
+    return Array.isArray(output) ? output : [output];
   }
 
   private static transformDestination(dest) {
@@ -47,10 +88,11 @@ export class EventTesterService {
     }
     await Promise.all(
       events.map(async (event) => {
-        const { message, destination, stage, libraries } = event;
+        const { message, destination, connection, stage, libraries } = event;
         const ev = {
           message,
           destination: this.transformDestination(destination),
+          connection,
           libraries,
         };
 
@@ -98,13 +140,7 @@ export class EventTesterService {
         if (stage.dest_transform) {
           if (!errorFound) {
             try {
-              const desthandler = this.getDestHandler(version, dest);
-              const transformedOutput = await desthandler.process(ev);
-              if (Array.isArray(transformedOutput)) {
-                response.dest_transformed_payload = transformedOutput;
-              } else {
-                response.dest_transformed_payload = [transformedOutput];
-              }
+              response.dest_transformed_payload = await this.runDestTransform(version, dest, ev);
             } catch (err: any) {
               errorFound = true;
               response.dest_transformed_payload = {

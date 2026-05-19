@@ -285,7 +285,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     // CustomerIO supports 100byte of event name for anonymous users
     if (messageType === EventType.SCREEN) {
       // 100 - len(`Viewed  Screen`) = 86
-      trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
+      trimmedEvName = `Viewed ${truncate(message.event || message.properties?.name || '', 86)} Screen`;
     } else {
       if (typeof evName !== 'string') {
         throw new InstrumentationError('Event Name type should be a string');

@@ -36,14 +36,11 @@ const ACTION_SOURCE_VALUES = ['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER'] as co
 type ActionSource = (typeof ACTION_SOURCE_VALUES)[number];
 
 const getActionSource = (message: RudderMessage): ActionSource => {
-  const integrationsObj = getIntegrationsObj(message, 'reddit' as any);
+  const integrationsObj = getIntegrationsObj(message, 'reddit');
   const rawActionSource = integrationsObj?.action_source;
   const overriddenActionSource =
     typeof rawActionSource === 'string' ? rawActionSource.toUpperCase() : rawActionSource;
-  if (
-    overriddenActionSource &&
-    (ACTION_SOURCE_VALUES as readonly string[]).includes(overriddenActionSource)
-  ) {
+  if (overriddenActionSource && ACTION_SOURCE_VALUES.includes(overriddenActionSource)) {
     return overriddenActionSource as ActionSource;
   }
   const channel = getValueFromMessage(message, 'channel');
@@ -94,7 +91,7 @@ const prepareUserObject = (
 const prepareEventType = (
   message: RudderMessage,
   eventsMapping: Record<string, string>[],
-): RedditEventType | RedditEventType[] => {
+): RedditEventType[] => {
   const { event } = message;
   if (!event) {
     throw new InstrumentationError('Event name is required in the message');
@@ -106,7 +103,7 @@ const prepareEventType = (
   if (eventNames.size === 0) {
     for (const ecomEventMap of ecomEventMaps) {
       if (ecomEventMap.src.includes(normalizedEvent)) {
-        return { tracking_type: convertToUpperSnakeCase(ecomEventMap.dest) } as RedditEventType;
+        return [{ tracking_type: convertToUpperSnakeCase(ecomEventMap.dest) } as RedditEventType];
       }
     }
   } else {
@@ -119,7 +116,7 @@ const prepareEventType = (
     return eventTypes;
   }
 
-  return { tracking_type: 'CUSTOM', custom_event_name: event };
+  return [{ tracking_type: 'CUSTOM', custom_event_name: event }];
 };
 
 const prepareProductsArrayWithItemCount = (message: RudderMessage): RedditEventMetadata => {
@@ -192,8 +189,7 @@ const processTrackEvent = (event: RedditRouterRequest): RedditConversionEventsPa
   const { message, destination } = event;
   const { eventsMapping, hashData } = destination.Config;
   const userObject = prepareUserObject(message, hashData);
-  const eventType = prepareEventType(message, eventsMapping);
-  const types = (Array.isArray(eventType) ? eventType : [eventType]) as RedditEventType[];
+  const types = prepareEventType(message, eventsMapping);
   const clickId = (message.properties as { clickId: string })?.clickId;
   const eventAt = generateAndValidateTimestamp(message.timestamp || message.originalTimestamp);
   const actionSource = getActionSource(message);

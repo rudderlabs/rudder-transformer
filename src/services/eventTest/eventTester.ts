@@ -15,6 +15,12 @@ type DestTransformInput = {
 
 export class EventTesterService {
   private static getDestHandler(version, destination) {
+    // Guard against path traversal — version and destination are user-provided
+    // and are interpolated into the require() path below.
+    const safePath = /^[\w-]+$/;
+    if (!safePath.test(version) || !safePath.test(destination)) {
+      throw new Error(`Invalid version (${version}) or destination (${destination})`);
+    }
     // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
   }

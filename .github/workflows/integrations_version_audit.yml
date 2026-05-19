@@ -40,8 +40,9 @@ jobs:
           2. You MUST create Linear tickets DIRECTLY using Linear API calls during this execution
           3. DO NOT create any script files (no .js files, no audit.js, no integrations_version_audit.js)
           4. Read @.github/scripts/linearApi.js to understand the API structure
-          5. Make Linear API calls directly using your capabilities to create tickets immediately after analysis
-          6. Your output MUST include actual Linear ticket URLs (like https://linear.app/...)
-          7. If you create a script file instead of creating tickets, the task has FAILED
+          5. Before creating any ticket, check for existing open duplicates and update them instead of creating new ones.
+          6. Make Linear API calls directly using your capabilities to create/update tickets immediately after analysis
+          7. Your output MUST include actual Linear ticket URLs (like https://linear.app/...)
+          8. If you create a script file instead of creating tickets, the task has FAILED
 
-          Execute the audit plan: analyze integrations, then immediately create Linear tickets using direct API calls. Include ticket URLs in your final output." --force
+          Execute the audit plan: analyze integrations, then create or update Linear tickets using direct API calls. Include ticket URLs in your final output." --force

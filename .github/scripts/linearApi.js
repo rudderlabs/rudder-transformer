@@ -14,6 +14,13 @@ if (!LINEAR_TEAM_ID) {
 const { LinearClient } = require('@linear/sdk');
 const linearClient = new LinearClient({ apiKey: LINEAR_API_KEY });
 
+const OPEN_STATES = ['Queued', 'In Progress', 'Todo', 'Backlog', 'Triage'];
+
+// Hardcoded Linear IDs for master ticket creation
+const MAINTENANCE_PROJECT_ID = 'f99cafb5-7d4a-4549-8c77-afe2644feba9'; // Integrations: Maintenance Project
+const KTLO_LABEL_ID = '68c1ca4f-cc21-4c28-9ce5-618a8b39c788'; // Type: KTLO
+const VERSION_UPGRADE_LABEL_ID = '2ee64e36-d577-4b4b-9ae4-e7292db061d4'; // KTLO Type: VersionUpgrade
+
 async function getStateId(stateName, teamId) {
   try {
     const team = await linearClient.team(teamId);
@@ -67,6 +74,84 @@ async function getCurrentCycleId(teamId) {
     console.error('Error fetching current cycle ID:', error.message);
     return null;
   }
+}
+
+async function searchIssues({ titleContains, teamId, states, limit = 50 }) {
+  try {
+    const filter = {
+      team: { id: { eq: teamId || LINEAR_TEAM_ID } },
+      title: { containsIgnoreCase: titleContains },
+    };
+    if (states && states.length > 0) {
+      filter.state = { name: { in: states } };
+    }
+    const issues = await linearClient.issues({ filter, first: limit });
+    return Promise.all(
+      issues.nodes.map(async (issue) => {
+        const state = await issue.state;
+        const parent = await issue.parent;
+        return {
+          id: issue.id,
+          identifier: issue.identifier,
+          title: issue.title,
+          priority: issue.priority,
+          url: issue.url,
+          dueDate: issue.dueDate,
+          state: { name: state?.name },
+          parentId: parent?.id || null,
+        };
+      }),
+    );
+  } catch (error) {
+    console.error(`Error searching issues with title "${titleContains}":`, error.message);
+    return [];
+  }
+}
+
+async function findOpenAuditMasterTicket() {
+  const results = await searchIssues({
+    titleContains: 'Integration Version Audit [Rudder Transformer]',
+    states: OPEN_STATES,
+  });
+  // Filter to only top-level tickets (no parent) and sort by highest issue number
+  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
+  const masterTickets = results
+    .filter((issue) => !issue.parentId)
+    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
+  return masterTickets.length > 0 ? masterTickets[0] : null;
+}
+
+async function findOpenSubticketByIntegration(parentId, integrationName) {
+  const results = await searchIssues({
+    titleContains: `${integrationName} Version Audit`,
+    states: OPEN_STATES,
+  });
+  return results.find((issue) => issue.parentId === parentId) || null;
+}
+
+async function findOpenSubticketGlobally(integrationName) {
+  // Find all open audit master tickets to validate parentage
+  const masterResults = await searchIssues({
+    titleContains: 'Integration Version Audit [Rudder Transformer]',
+    states: OPEN_STATES,
+  });
+  const auditMasterIds = new Set(
+    masterResults.filter((issue) => !issue.parentId).map((issue) => issue.id),
+  );
+
+  // Search for matching subtickets
+  const results = await searchIssues({
+    titleContains: `${integrationName} Version Audit`,
+    states: OPEN_STATES,
+  });
+
+  // Only accept subtickets whose parent is an audit master, pick newest
+  const getNumber = (id) => parseInt(id.replace(/\D+/g, ''), 10) || 0;
+  const validSubs = results
+    .filter((issue) => issue.parentId && auditMasterIds.has(issue.parentId))
+    .sort((a, b) => getNumber(b.identifier) - getNumber(a.identifier));
+
+  return validSubs.length > 0 ? validSubs[0] : null;
 }
 
 async function createIssue({
@@ -141,9 +226,9 @@ async function listIssuesByParent(parentId, limit = 250) {
   }
 }
 
-async function updateIssueDescription(issueId, description) {
+async function updateIssue(issueId, fields) {
   try {
-    const result = await linearClient.updateIssue(issueId, { description });
+    const result = await linearClient.updateIssue(issueId, fields);
     // Linear SDK updateIssue returns { _issue: { id }, success, lastSyncId }
     // Check if result has an 'issue' property (promise/getter) or use _issue.id
     const updatedIssueId = result.issue
@@ -158,17 +243,29 @@ async function updateIssueDescription(issueId, description) {
       url: issue.url,
     };
   } catch (error) {
-    console.error(`Error updating issue description for "${issueId}":`, error.message);
+    console.error(`Error updating issue "${issueId}":`, error.message);
     throw error;
   }
+}
+
+async function updateIssueDescription(issueId, description) {
+  return updateIssue(issueId, { description });
 }
 
 module.exports = {
   createIssue,
   listIssuesByParent,
+  updateIssue,
   updateIssueDescription,
   getStateId,
   getUserId,
   getCurrentUserId,
   getCurrentCycleId,
+  searchIssues,
+  findOpenAuditMasterTicket,
+  findOpenSubticketByIntegration,
+  findOpenSubticketGlobally,
+  MAINTENANCE_PROJECT_ID,
+  KTLO_LABEL_ID,
+  VERSION_UPGRADE_LABEL_ID,
 };

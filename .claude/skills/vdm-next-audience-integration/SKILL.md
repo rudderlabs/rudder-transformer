@@ -12,6 +12,7 @@ description: Create the transformation logic for a new VDM Next audience destina
 This is the transformer step in building a VDM Next audience integration.
 
 Audience destinations share these traits:
+
 - Operations are **add** (insert/update) and **remove** (delete) on audience membership
 - Records contain **identifiers** (email, phone, ad IDs) that may require **normalization and hashing**
 - Batching is by **user count** (destination API limits) and optionally **payload size**
@@ -43,6 +44,7 @@ test/integrations/destinations/<dest_name>/
 ```
 
 For destinations with delivery-layer testing or complex test organization:
+
 ```
 ├── mocks.ts                  # Jest mocks (e.g., fake timers, batch size overrides)
 ├── network.ts                # HTTP mock responses for network handler tests
@@ -64,6 +66,7 @@ Find following VDM audience destinations under `src/v0/destinations/`. Read comp
 - **TikTok Audience** (`src/v0/destinations/tiktok_audience/`) — Two-stage pipeline with `prepareIdentifiersPayload`, Zod schemas with `.passthrough()`
 
 Also read the shared audience utilities:
+
 - `src/v0/util/audienceUtils.ts` — `processAudienceRecord`, `AudienceField`, `HashingType`, `validateHashingConsistency`
 
 ---
@@ -76,8 +79,8 @@ import { EVENT_TYPES } from '../../util/recordUtils';
 // Map record actions to destination API actions
 // insert and update both map to the "add" operation for audience destinations
 export const ACTION_RECORD_MAP: Record<string, string> = {
-  [EVENT_TYPES.INSERT]: 'ADD',    // or destination-specific value
-  [EVENT_TYPES.UPDATE]: 'ADD',    // In majority of destinations, it's upsert API, so both INSERT/UPDATE maps to same endpoint
+  [EVENT_TYPES.INSERT]: 'ADD', // or destination-specific value
+  [EVENT_TYPES.UPDATE]: 'ADD', // In majority of destinations, it's upsert API, so both INSERT/UPDATE maps to same endpoint
   [EVENT_TYPES.DELETE]: 'REMOVE', // or destination-specific value
 };
 
@@ -95,12 +98,11 @@ export function getEndpoint(audienceId: string): string {
 export const MAX_BATCH_SIZE = 10000; // Facebook: 10000, LinkedIn: 5000, TikTok: 50
 
 // Identifier fields supported by the destination
-export const SUPPORTED_IDENTIFIER_FIELDS = [
-  'EMAIL', 'PHONE', 'MADID', 'EXTERN_ID',
-] as const;
+export const SUPPORTED_IDENTIFIER_FIELDS = ['EMAIL', 'PHONE', 'MADID', 'EXTERN_ID'] as const;
 ```
 
 **Reference:**
+
 - `src/v0/destinations/fb_custom_audience/config.ts` — `schemaFields`, `MAX_USER_COUNT`, `getEndPoint()`
 - `src/v0/destinations/linkedin_audience/config.ts` — `ACTION_RECORD_MAP`, `USER_IDENTIFIER_MAP`, `COMPANY_TRAITS`, `MAX_BATCH_SIZE`
 - `src/v0/destinations/tiktok_audience/config.ts` — `ACTION_RECORD_MAP`, `TRAITS_SET`
@@ -204,6 +206,7 @@ export type AudiencePayload = {
 ```
 
 **Reference:**
+
 - `src/v0/destinations/linkedin_audience/types.ts` — Complete Zod schema example with `z.enum`, custom error messages, and `z.infer<>` type derivation
 - `src/v0/destinations/tiktok_audience/recordTypes.ts` — Zod schemas with `.passthrough()` pattern
 
@@ -233,7 +236,7 @@ const IDENTIFIER_FIELD_CONFIG: Record<string, AudienceField> = {
     validate: (normalized: string) => /^\+?\d+$/.test(normalized),
   },
   advertisingId: {
-    hashingType: HashingType.NONE,  // No hashing for device IDs
+    hashingType: HashingType.NONE, // No hashing for device IDs
     normalize: (value: string) => value.trim(),
     validate: (normalized: string) => normalized.length > 0,
   },
@@ -245,18 +248,15 @@ const IDENTIFIER_FIELD_CONFIG: Record<string, AudienceField> = {
 ```typescript
 import { processAudienceRecord } from '../../util/audienceUtils';
 
-const processedIdentifiers = processAudienceRecord(
-  record.identifiers,
-  {
-    fieldConfigs: IDENTIFIER_FIELD_CONFIG,
-    destination: {
-      workspaceId: metadata.workspaceId,
-      id: destination.ID,
-      type: DESTINATION_TYPE,
-      config: { isHashRequired: destConfig.isHashRequired },
-    },
+const processedIdentifiers = processAudienceRecord(record.identifiers, {
+  fieldConfigs: IDENTIFIER_FIELD_CONFIG,
+  destination: {
+    workspaceId: metadata.workspaceId,
+    id: destination.ID,
+    type: DESTINATION_TYPE,
+    config: { isHashRequired: destConfig.isHashRequired },
   },
-);
+});
 // Returns Record<string, string> — normalized, validated, hashed identifiers
 ```
 
@@ -274,6 +274,7 @@ Raw value → Null check → Hashing consistency check → Normalization → Val
 6. **Hash**: Apply SHA-256/SHA-512/MD5 if `isHashRequired=true` and field is hashable
 
 **Reference:**
+
 - `src/v0/util/audienceUtils.ts` — `processAudienceRecord()`, `AudienceField`, `HashingType`, `validateHashingConsistency()`
 - `src/v0/destinations/linkedin_audience/transform.ts` — `USERS_IDENTIFIER_CONFIG` using `processAudienceRecord`
 - `src/v0/destinations/fb_custom_audience/util.ts` — Custom normalization per Facebook field (EMAIL, PHONE, GEN, FN, LN, CT, ST, ZIP, COUNTRY, MADID, EXTERN_ID, LOOKALIKE_VALUE)
@@ -289,22 +290,16 @@ When using the legacy manual approach, `transform.ts` is the router entry point 
 ### Pattern A: Delegate to recordTransform (legacy, for complex destinations)
 
 ```typescript
-import {
-  InstrumentationError,
-  groupByInBatches,
-} from '@rudderstack/integrations-lib';
+import { InstrumentationError, groupByInBatches } from '@rudderstack/integrations-lib';
 import type { RouterTransformationResponse } from '../../../types';
 import { getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
 import { processRecords } from './recordTransform';
 
-const processRouterDest = async (
-  events: unknown[],
-): Promise<RouterTransformationResponse[]> => {
+const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
   if (!events || events.length === 0) return [];
 
-  const groupedEvents = await groupByInBatches(
-    events,
-    (event: any) => event.message?.type?.toLowerCase(),
+  const groupedEvents = await groupByInBatches(events, (event: any) =>
+    event.message?.type?.toLowerCase(),
   );
 
   const failedResponses: RouterTransformationResponse[] = [];
@@ -377,6 +372,7 @@ export async function processRouterDest(
 ```
 
 **Reference:**
+
 - `src/v0/destinations/tiktok_audience/transform.ts` — Pattern A with `groupByInBatches`
 - `src/v0/destinations/linkedin_audience/transform.ts` — Pattern B with inline validation + grouping
 - `src/v0/destinations/fb_custom_audience/transform.ts` — Hybrid pattern supporting both `record` and `audiencelist` message types
@@ -390,6 +386,7 @@ This is where the main business logic lives. The processing follows two stages.
 ### Stage 1: Validate & Extract Per Event
 
 For each event:
+
 1. **Validate** with Zod schema (`safeParse` -> `InstrumentationError` on failure)
 2. **Extract** identifiers and fields from `event.message`
 3. **Process identifiers** via `processAudienceRecord` (normalize, validate, hash)
@@ -401,6 +398,7 @@ For each event:
 **Default approach: Use the native batching framework.** The framework handles grouping, chunking, error wrapping, and response formatting automatically. You only implement per-event transformation and batch strategy configuration.
 
 Instead of writing manual grouping/batching logic, extend the `BatchDestination` abstract class and export it as `Integration` from `routerTransform.ts`. The framework orchestrator (`processBatchedDestination`) takes care of:
+
 1. Input validation via your Zod schema (`getInputSchema()`)
 2. Per-event transformation via your `transformEvent()`
 3. Automatic grouping by composite key (endpoint, method, headers, params, `internalGroupKey`)
@@ -433,7 +431,13 @@ import type { BatchStrategy } from '../../../services/destination/nativeBatching
 import type { RouterTransformationRequestData } from '../../../types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import { RecordRouterRequestSchema, type RecordRequest } from './types';
-import { ACTION_RECORD_MAP, getEndpoint, MAX_BATCH_SIZE, DESTINATION_TYPE, IDENTIFIER_CONFIG } from './config';
+import {
+  ACTION_RECORD_MAP,
+  getEndpoint,
+  MAX_BATCH_SIZE,
+  DESTINATION_TYPE,
+  IDENTIFIER_CONFIG,
+} from './config';
 
 // Payload type for each individual transformed event body
 type AudienceEventPayload = {
@@ -559,12 +563,13 @@ When enabled, the platform routes events through `processBatchedDestination()` i
 
 #### Batch Strategy Options
 
-| Strategy | When to Use | Configuration |
-|----------|------------|---------------|
-| `ChunkBatchStrategy` | Standard chunking by item count and/or payload size (default) | `maxItems`, `maxPayloadSize`, `wrapBody` |
-| `CustomBatchStrategy` | Need full control over batch grouping logic | Custom `batchFn` callback returning `BatchGroup[]` |
+| Strategy              | When to Use                                                   | Configuration                                      |
+| --------------------- | ------------------------------------------------------------- | -------------------------------------------------- |
+| `ChunkBatchStrategy`  | Standard chunking by item count and/or payload size (default) | `maxItems`, `maxPayloadSize`, `wrapBody`           |
+| `CustomBatchStrategy` | Need full control over batch grouping logic                   | Custom `batchFn` callback returning `BatchGroup[]` |
 
 `ChunkBatchStrategy` handles:
+
 - Splitting by `maxItems` (e.g., 10000 users per request)
 - Splitting by `maxPayloadSize` (e.g., `'10MB'`) — serializes with `wrapBody` to measure
 - Returning `BatchGroup[]` with `{ body, jobIds }` for each chunk
@@ -586,16 +591,17 @@ return {
 
 ```typescript
 type TransformedEvent<TBody> = {
-  body: TBody;                    // Individual event payload
-  endpoint: string;               // API endpoint
-  method: string;                 // HTTP method
+  body: TBody; // Individual event payload
+  endpoint: string; // API endpoint
+  method: string; // HTTP method
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
-  internalGroupKey?: string;      // Extra grouping dimension
+  internalGroupKey?: string; // Extra grouping dimension
 };
 ```
 
 **Reference:**
+
 - `src/v0/destinations/posthog/routerTransform.ts` — Complete `BatchDestination` implementation with `ChunkBatchStrategy`
 - `src/services/destination/nativeBatching/batchDestination.ts` — Abstract base class
 - `src/services/destination/nativeBatching/chunkBatchStrategy.ts` — Size/count chunking strategy
@@ -610,6 +616,7 @@ type TransformedEvent<TBody> = {
 Older audience destinations (fb_custom_audience, linkedin_audience, tiktok_audience) use manual grouping and batching in `processRouterDest` / `recordTransform.ts`. This pattern is still functional but new destinations should prefer the batching framework above.
 
 The manual pattern:
+
 1. Loop over events, validate, group into a `Map<string, PreparedPayload[]>` by action
 2. For each group, slice into `MAX_BATCH_SIZE` chunks
 3. Build request with `defaultRequestConfig()`, call `getSuccessRespEvents()`
@@ -633,6 +640,7 @@ for (const [action, payloads] of groupedByAction) {
 ```
 
 **Reference:**
+
 - `src/v0/destinations/linkedin_audience/transform.ts` — Inline two-stage processing with `processAudienceRecord` and action grouping
 - `src/v0/destinations/fb_custom_audience/recordTransform.ts` — VDM v1/v2 flow detection, `preparePayload` with action grouping, payload size batching
 - `src/v0/destinations/tiktok_audience/recordTransform.ts` — Two-stage pipeline with `prepareIdentifiersPayload`
@@ -722,17 +730,17 @@ For destinations with standard REST error responses, no custom network handler i
 ```typescript
 // From src/v0/util/index.js
 import {
-  defaultRequestConfig,      // Creates REST request template
-  getSuccessRespEvents,       // Wraps successful transformation
+  defaultRequestConfig, // Creates REST request template
+  getSuccessRespEvents, // Wraps successful transformation
   handleRtTfSingleEventError, // Wraps error for a single event
 } from '../../util';
 
 // From @rudderstack/integrations-lib
 import {
-  InstrumentationError,  // Bad input data — aborts event, no retry
-  ConfigurationError,     // Bad configuration — aborts event, no retry
-  formatZodError,         // Formats Zod validation errors
-  groupByInBatches,       // Groups events by a key function
+  InstrumentationError, // Bad input data — aborts event, no retry
+  ConfigurationError, // Bad configuration — aborts event, no retry
+  formatZodError, // Formats Zod validation errors
+  groupByInBatches, // Groups events by a key function
 } from '@rudderstack/integrations-lib';
 
 // Record action constants
@@ -753,24 +761,24 @@ import {
 
 ## Error Handling Strategy
 
-| Scenario | Error Type | Handling |
-|----------|-----------|----------|
-| Zod validation failure | `InstrumentationError(formatZodError(...))` | Fails single event |
-| Invalid/unknown identifier keys | `InstrumentationError` | Fails single event |
-| All identifiers empty after processing | `InstrumentationError` | Fails single event |
-| Unsupported audience type | `ConfigurationError` | Fails single event |
-| Unsupported message type | `InstrumentationError` | Fails single event |
-| Group-level error (batch build failure) | Caught in group loop | Fails all events in group |
-| Hashing consistency violation (strict mode) | `InstrumentationError` | Fails single event |
+| Scenario                                    | Error Type                                  | Handling                  |
+| ------------------------------------------- | ------------------------------------------- | ------------------------- |
+| Zod validation failure                      | `InstrumentationError(formatZodError(...))` | Fails single event        |
+| Invalid/unknown identifier keys             | `InstrumentationError`                      | Fails single event        |
+| All identifiers empty after processing      | `InstrumentationError`                      | Fails single event        |
+| Unsupported audience type                   | `ConfigurationError`                        | Fails single event        |
+| Unsupported message type                    | `InstrumentationError`                      | Fails single event        |
+| Group-level error (batch build failure)     | Caught in group loop                        | Fails all events in group |
+| Hashing consistency violation (strict mode) | `InstrumentationError`                      | Fails single event        |
 
 For destinations with custom network handlers at delivery time:
 
-| Scenario | Error Type | Effect |
-|----------|-----------|--------|
+| Scenario                          | Error Type                   | Effect                          |
+| --------------------------------- | ---------------------------- | ------------------------------- |
 | Token expired / invalid (401/190) | Retryable with token refresh | Triggers OAuth re-authorization |
-| Rate limited (429) | Network error with backoff | Retries |
-| Permission denied (294/403) | Abortable error | Permanent failure |
-| Server error (5xx) | Network error | Retries |
+| Rate limited (429)                | Network error with backoff   | Retries                         |
+| Permission denied (294/403)       | Abortable error              | Permanent failure               |
+| Server error (5xx)                | Network error                | Retries                         |
 
 ---
 
@@ -865,6 +873,7 @@ describe('processRecords', () => {
 ```
 
 **Reference:**
+
 - `src/v0/destinations/tiktok_audience/recordTransform.test.ts`
 - `src/v0/destinations/fb_custom_audience/util.test.ts`
 
@@ -893,8 +902,10 @@ export const data = [
                 fields: { name: 'Test User' },
               },
               metadata: {
-                jobId: 1, workspaceId: 'ws-1',
-                secret: { accessToken: 'valid-token' }, userId: 'u1',
+                jobId: 1,
+                workspaceId: 'ws-1',
+                secret: { accessToken: 'valid-token' },
+                userId: 'u1',
               },
               destination: {
                 ID: 'dest-1',
@@ -904,7 +915,9 @@ export const data = [
               connection: {
                 config: {
                   destination: {
-                    audienceId: '12345', isHashRequired: true, schemaVersion: '1.1',
+                    audienceId: '12345',
+                    isHashRequired: true,
+                    schemaVersion: '1.1',
                   },
                 },
               },
@@ -922,15 +935,38 @@ export const data = [
           output: [
             {
               batchedRequest: {
-                version: '1', type: 'REST', method: 'POST',
+                version: '1',
+                type: 'REST',
+                method: 'POST',
                 endpoint: '<EXPECTED_ENDPOINT>',
-                headers: { Authorization: 'Bearer valid-token', 'Content-Type': 'application/json' },
-                body: { JSON: { /* expected body */ }, JSON_ARRAY: {}, XML: {}, FORM: {} },
-                files: {}, params: {},
+                headers: {
+                  Authorization: 'Bearer valid-token',
+                  'Content-Type': 'application/json',
+                },
+                body: {
+                  JSON: {
+                    /* expected body */
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+                params: {},
               },
-              metadata: [{ jobId: 1, workspaceId: 'ws-1', secret: { accessToken: 'valid-token' }, userId: 'u1' }],
-              batched: true, statusCode: 200,
-              destination: { /* destination object */ },
+              metadata: [
+                {
+                  jobId: 1,
+                  workspaceId: 'ws-1',
+                  secret: { accessToken: 'valid-token' },
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                /* destination object */
+              },
             },
           ],
         },
@@ -953,6 +989,7 @@ export const data = [
 ```
 
 **Reference:**
+
 - `test/integrations/destinations/linkedin_audience/router/data.ts`
 - `test/integrations/destinations/fb_custom_audience/router/rETL.ts`
 - `test/integrations/destinations/tiktok_audience/router/data.ts`

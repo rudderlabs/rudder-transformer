@@ -274,7 +274,10 @@ import { ZodType } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { BatchDestination } from '../../../services/destination/nativeBatching/batchDestination';
 import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/chunkBatchStrategy';
-import type { TransformedEvent, BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import type {
+  TransformedEvent,
+  BatchStrategy,
+} from '../../../services/destination/nativeBatching/types';
 import type { RouterTransformationRequestData } from '../../../types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import { RecordRouterRequestSchema, type RecordRequest } from './types';
@@ -513,14 +516,14 @@ import {
 
 Errors thrown in `transformEvent()` are automatically caught by the framework and wrapped into per-event error responses. Other events in the batch are not affected.
 
-| Scenario                                    | Error Type               | Handling                  |
-| ------------------------------------------- | ------------------------ | ------------------------- |
-| Zod validation failure (from `getInputSchema`) | Framework auto-formats | Fails single event        |
-| Invalid/unknown identifier keys             | `InstrumentationError`   | Fails single event        |
-| All identifiers empty after processing      | `InstrumentationError`   | Fails single event        |
-| Unsupported audience type                   | `ConfigurationError`     | Fails single event        |
-| Batch strategy error (wrapBody failure)     | Caught in batch strategy | Fails all events in group |
-| Hashing consistency violation (strict mode) | `InstrumentationError`   | Fails single event        |
+| Scenario                                       | Error Type               | Handling                  |
+| ---------------------------------------------- | ------------------------ | ------------------------- |
+| Zod validation failure (from `getInputSchema`) | Framework auto-formats   | Fails single event        |
+| Invalid/unknown identifier keys                | `InstrumentationError`   | Fails single event        |
+| All identifiers empty after processing         | `InstrumentationError`   | Fails single event        |
+| Unsupported audience type                      | `ConfigurationError`     | Fails single event        |
+| Batch strategy error (wrapBody failure)        | Caught in batch strategy | Fails all events in group |
+| Hashing consistency violation (strict mode)    | `InstrumentationError`   | Fails single event        |
 
 For destinations with custom network handlers at delivery time:
 

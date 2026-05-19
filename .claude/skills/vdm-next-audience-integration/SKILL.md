@@ -1,16 +1,11 @@
 ---
 name: vdm-next-integration
 description: Create the transformation logic for a new VDM Next audience destination. Implements record processing, identifier hashing, batching, and API request building for audience-based integrations.
-argument-hint: <destination-name>
 ---
 
 # VDM Next — Audience Integration (rudder-transformer)
 
 **Objective:** Build the transformation logic for a new VDM Next audience destination — process warehouse record events into HTTP API requests that add/remove users from audience segments, with identifier normalization, hashing, and batching.
-
-## Inputs
-
-- **Destination name**: `$ARGUMENTS[0]` (lowercase, e.g., `fb_custom_audience`, `linkedin_audience`)
 
 ## Context
 

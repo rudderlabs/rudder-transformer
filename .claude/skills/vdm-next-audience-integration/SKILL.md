@@ -1,5 +1,5 @@
 ---
-name: vdm-next-integration
+name: vdm-next-audience-integration
 description: Create the transformation logic for a new VDM Next audience destination. Implements record processing, identifier hashing, batching, and API request building for audience-based integrations.
 ---
 
@@ -20,21 +20,16 @@ Audience destinations share these traits:
 
 ## File Structure
 
-### Source Files
-
 ```
 src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # BatchDestination subclass (default — uses batching framework)
-├── transform.ts              # Per-event transform logic (processEvent), also legacy router entry
+├── routerTransform.ts        # BatchDestination subclass (exported as Integration)
 ├── types.ts                  # Zod schemas + TypeScript types for record events
 ├── config.ts                 # Constants: endpoints, action maps, batch sizes, identifier configs
-├── util.ts                   # (Optional) Normalization, hashing, field processing, API helpers
+├── utils.ts                  # (Optional) Normalization, hashing, field processing, API helpers
 ├── networkHandler.ts         # (Optional) Custom network/delivery handler
 ├── routerTransform.test.ts   # Unit tests for router transform
-└── util.test.ts              # (Optional) Unit tests for utilities
+└── utils.test.ts             # (Optional) Unit tests for utilities
 ```
-
-### Integration Test Files
 
 ```
 test/integrations/destinations/<dest_name>/
@@ -43,31 +38,25 @@ test/integrations/destinations/<dest_name>/
 └── (optional additional test organization below)
 ```
 
-For destinations with delivery-layer testing or complex test organization:
-
-```
-├── mocks.ts                  # Jest mocks (e.g., fake timers, batch size overrides)
-├── network.ts                # HTTP mock responses for network handler tests
-├── router/
-│   ├── data.ts               # Router test data entry point
-│   ├── rETL.ts               # RETL-specific test fixtures
-│   └── eventStream.ts        # (Optional) Event stream test fixtures
-└── dataDelivery/
-    ├── data.ts               # Delivery test entry point
-    └── business.ts           # Business-level delivery tests
-```
-
 ## Reference
 
-Find following VDM audience destinations under `src/v0/destinations/`. Read complete examples to understand the full implementation pattern:
+**Primary reference** — uses the batching framework (the only pattern for new destinations):
 
-- **LinkedIn Audience** (`src/v0/destinations/linkedin_audience/`) — Clean, minimal pattern with Zod schemas, `processAudienceRecord` usage, user vs company audience types
-- **Facebook Custom Audience** (`src/v0/destinations/fb_custom_audience/`) — Full-featured pattern with VDM v1/v2 flow detection, value-based audiences, custom normalization, shared network handler. For new audience integration, VDM v1 support is not needed.
-- **TikTok Audience** (`src/v0/destinations/tiktok_audience/`) — Two-stage pipeline with `prepareIdentifiersPayload`, Zod schemas with `.passthrough()`
+- **Custom Audience** (`src/v0/destinations/custom_audience/`) — `BatchDestination` subclass with `CustomBatchStrategy`, field processing, hashing, auth headers. **Read this first.**
 
-Also read the shared audience utilities:
+For audience-specific domain patterns (identifier schemas, hashing configs, payload formats):
+
+- **LinkedIn Audience** (`src/v0/destinations/linkedin_audience/`) — User vs company audience types, `processAudienceRecord` usage, Zod schemas
+- **Facebook Custom Audience** (`src/v0/destinations/fb_custom_audience/`) — Value-based audiences, custom per-field normalization, shared network handler
+- **TikTok Audience** (`src/v0/destinations/tiktok_audience/`) — `prepareIdentifiersPayload`, Zod schemas with `.passthrough()`
+
+Shared utilities:
 
 - `src/v0/util/audienceUtils.ts` — `processAudienceRecord`, `AudienceField`, `HashingType`, `validateHashingConsistency`
+
+For batching framework internals (abstract class, strategies, orchestrator):
+
+- `.claude/skills/batching-framework/SKILL.md` — Full framework documentation
 
 ---
 
@@ -103,9 +92,9 @@ export const SUPPORTED_IDENTIFIER_FIELDS = ['EMAIL', 'PHONE', 'MADID', 'EXTERN_I
 
 **Reference:**
 
+- `src/v0/destinations/custom_audience/constants.ts` — `SUPPORTED_HTTP_METHODS`, `AUTHENTICATION_TYPES`, `ERROR_MESSAGES`
 - `src/v0/destinations/fb_custom_audience/config.ts` — `schemaFields`, `MAX_USER_COUNT`, `getEndPoint()`
 - `src/v0/destinations/linkedin_audience/config.ts` — `ACTION_RECORD_MAP`, `USER_IDENTIFIER_MAP`, `COMPANY_TRAITS`, `MAX_BATCH_SIZE`
-- `src/v0/destinations/tiktok_audience/config.ts` — `ACTION_RECORD_MAP`, `TRAITS_SET`
 
 ---
 
@@ -115,7 +104,6 @@ Use Zod schemas for runtime validation. Derive TypeScript types with `z.infer<>`
 
 ```typescript
 import { z } from 'zod';
-import { RouterTransformationResponse } from '../../../types';
 
 // Validate destination config
 const DestinationSchema = z
@@ -191,12 +179,6 @@ export const RecordRouterRequestSchema = z
 // Derive TypeScript type from Zod schema
 export type RecordRequest = z.infer<typeof RecordRouterRequestSchema>;
 
-// Response type for the record processor
-export type ProcessRecordsResponse = {
-  failedResponses: RouterTransformationResponse[];
-  successfulResponses: RouterTransformationResponse[];
-};
-
 // Destination-specific payload types
 export type AudiencePayload = {
   action: string;
@@ -209,6 +191,7 @@ export type AudiencePayload = {
 
 - `src/v0/destinations/linkedin_audience/types.ts` — Complete Zod schema example with `z.enum`, custom error messages, and `z.infer<>` type derivation
 - `src/v0/destinations/tiktok_audience/recordTypes.ts` — Zod schemas with `.passthrough()` pattern
+- `src/v0/destinations/custom_audience/types.ts` — TypeScript interfaces for action configs, field configs, connection config
 
 ---
 
@@ -278,156 +261,20 @@ Raw value → Null check → Hashing consistency check → Normalization → Val
 - `src/v0/util/audienceUtils.ts` — `processAudienceRecord()`, `AudienceField`, `HashingType`, `validateHashingConsistency()`
 - `src/v0/destinations/linkedin_audience/transform.ts` — `USERS_IDENTIFIER_CONFIG` using `processAudienceRecord`
 - `src/v0/destinations/fb_custom_audience/util.ts` — Custom normalization per Facebook field (EMAIL, PHONE, GEN, FN, LN, CT, ST, ZIP, COUNTRY, MADID, EXTERN_ID, LOOKALIKE_VALUE)
+- `src/v0/destinations/custom_audience/utils.ts` — `processFields()` with hashing via `processAudienceRecord`
 
 ---
 
-## transform.ts — Per-Event Transform / Legacy Router Entry Point
+## routerTransform.ts — BatchDestination Implementation
 
-When using the batching framework (default), `transform.ts` contains the per-event transformation logic called from `routerTransform.ts`. It does not export `processRouterDest`.
-
-When using the legacy manual approach, `transform.ts` is the router entry point exporting `processRouterDest`.
-
-### Pattern A: Delegate to recordTransform (legacy, for complex destinations)
+All new audience destinations use the native batching framework. Extend `BatchDestination` and implement three methods. For full framework documentation, see `.claude/skills/batching-framework/SKILL.md`.
 
 ```typescript
-import { InstrumentationError, groupByInBatches } from '@rudderstack/integrations-lib';
-import type { RouterTransformationResponse } from '../../../types';
-import { getSuccessRespEvents, handleRtTfSingleEventError } from '../../util';
-import { processRecords } from './recordTransform';
-
-const processRouterDest = async (events: unknown[]): Promise<RouterTransformationResponse[]> => {
-  if (!events || events.length === 0) return [];
-
-  const groupedEvents = await groupByInBatches(events, (event: any) =>
-    event.message?.type?.toLowerCase(),
-  );
-
-  const failedResponses: RouterTransformationResponse[] = [];
-  const successfulResponses: RouterTransformationResponse[] = [];
-
-  if (groupedEvents.record) {
-    const response = processRecords(groupedEvents.record);
-    failedResponses.push(...response.failedResponses);
-    successfulResponses.push(...response.successfulResponses);
-  }
-
-  const unsupported = Object.keys(groupedEvents).filter((t) => t !== 'record');
-  for (const type of unsupported) {
-    for (const event of groupedEvents[type]) {
-      failedResponses.push(
-        handleRtTfSingleEventError(
-          event,
-          new InstrumentationError(`unsupported event type: ${type}`),
-          {},
-        ),
-      );
-    }
-  }
-
-  return [...failedResponses, ...successfulResponses];
-};
-
-export { processRouterDest };
-```
-
-### Pattern B: Inline validation + group + batch (legacy, for simpler destinations)
-
-When the destination is simple enough that a separate `recordTransform.ts` adds no value, the transform logic can live directly in `transform.ts`:
-
-```typescript
-export async function processRouterDest(
-  events: unknown[],
-): Promise<RouterTransformationResponse[]> {
-  const successPayloads: Array<{ payload: AudiencePayload; event: RecordRequest }> = [];
-  const failedResponses: RouterTransformationResponse[] = [];
-
-  // Stage 1: Validate and transform each event
-  for (const event of events) {
-    try {
-      const validated = validateEvent(event);
-      const payload = preparePayload(validated);
-      successPayloads.push({ payload, event: validated });
-    } catch (error) {
-      failedResponses.push(handleRtTfSingleEventError(event, error, {}));
-    }
-  }
-
-  // Stage 2: Group by action, batch, build API requests
-  const grouped = groupBy(successPayloads, (p) => p.payload.action);
-  const successfulResponses: RouterTransformationResponse[] = [];
-
-  for (const [action, payloads] of Object.entries(grouped)) {
-    const batches = chunk(payloads, MAX_BATCH_SIZE);
-    for (const batch of batches) {
-      const request = buildRequest(batch, action);
-      const metadataList = batch.map((p) => p.event.metadata);
-      successfulResponses.push(
-        getSuccessRespEvents(request, metadataList, batch[0].event.destination, true),
-      );
-    }
-  }
-
-  return [...failedResponses, ...successfulResponses];
-}
-```
-
-**Reference:**
-
-- `src/v0/destinations/tiktok_audience/transform.ts` — Pattern A with `groupByInBatches`
-- `src/v0/destinations/linkedin_audience/transform.ts` — Pattern B with inline validation + grouping
-- `src/v0/destinations/fb_custom_audience/transform.ts` — Hybrid pattern supporting both `record` and `audiencelist` message types
-
----
-
-## recordTransform.ts — Core Record Processing
-
-This is where the main business logic lives. The processing follows two stages.
-
-### Stage 1: Validate & Extract Per Event
-
-For each event:
-
-1. **Validate** with Zod schema (`safeParse` -> `InstrumentationError` on failure)
-2. **Extract** identifiers and fields from `event.message`
-3. **Process identifiers** via `processAudienceRecord` (normalize, validate, hash)
-4. **Validate** processed output (e.g., ensure at least one valid identifier remains)
-5. **Map action** to destination API operation (insert/update -> ADD, delete -> REMOVE)
-
-### Stage 2: Group & Batch
-
-**Default approach: Use the native batching framework.** The framework handles grouping, chunking, error wrapping, and response formatting automatically. You only implement per-event transformation and batch strategy configuration.
-
-Instead of writing manual grouping/batching logic, extend the `BatchDestination` abstract class and export it as `Integration` from `routerTransform.ts`. The framework orchestrator (`processBatchedDestination`) takes care of:
-
-1. Input validation via your Zod schema (`getInputSchema()`)
-2. Per-event transformation via your `transformEvent()`
-3. Automatic grouping by composite key (endpoint, method, headers, params, `internalGroupKey`)
-4. Chunking via your batch strategy (`getBatchStrategy()`)
-5. Converting batch groups into `RouterTransformationResponse[]`
-6. Error handling — failed events are wrapped and separated from successes
-
-#### File Structure (Batching Framework)
-
-```
-src/v0/destinations/<dest_name>/
-├── routerTransform.ts        # BatchDestination subclass (exported as Integration)
-├── transform.ts              # Per-event transform logic (processEvent)
-├── types.ts                  # Zod schemas, TypeScript types, payload types
-├── config.ts                 # Constants, endpoints, action maps, batch sizes
-├── util.ts                   # (Optional) Normalization, hashing, API helpers
-└── routerTransform.test.ts   # Unit tests
-```
-
-#### routerTransform.ts — BatchDestination Implementation
-
-```typescript
-import { z, ZodType } from 'zod';
+import { ZodType } from 'zod';
 import { InstrumentationError } from '@rudderstack/integrations-lib';
 import { BatchDestination } from '../../../services/destination/nativeBatching/batchDestination';
 import { ChunkBatchStrategy } from '../../../services/destination/nativeBatching/chunkBatchStrategy';
-import { CustomBatchStrategy } from '../../../services/destination/nativeBatching/customBatchStrategy';
-import type { TransformedEvent } from '../../../services/destination/nativeBatching/types';
-import type { BatchStrategy } from '../../../services/destination/nativeBatching/types';
+import type { TransformedEvent, BatchStrategy } from '../../../services/destination/nativeBatching/types';
 import type { RouterTransformationRequestData } from '../../../types';
 import { processAudienceRecord } from '../../util/audienceUtils';
 import { RecordRouterRequestSchema, type RecordRequest } from './types';
@@ -436,7 +283,7 @@ import {
   getEndpoint,
   MAX_BATCH_SIZE,
   DESTINATION_TYPE,
-  IDENTIFIER_CONFIG,
+  IDENTIFIER_FIELD_CONFIG,
 } from './config';
 
 // Payload type for each individual transformed event body
@@ -447,7 +294,7 @@ type AudienceEventPayload = {
 };
 
 class AudienceIntegration extends BatchDestination<AudienceEventPayload> {
-  // Step 1: Transform a single event into the intermediate payload
+  // Transform a single event into the intermediate payload
   transformEvent(input: RouterTransformationRequestData): TransformedEvent<AudienceEventPayload> {
     const event = input as unknown as RecordRequest;
     const { message, connection, destination, metadata } = event;
@@ -456,7 +303,7 @@ class AudienceIntegration extends BatchDestination<AudienceEventPayload> {
 
     // Process identifiers: normalize, validate, hash
     const processedIdentifiers = processAudienceRecord(identifiers, {
-      fieldConfigs: IDENTIFIER_CONFIG,
+      fieldConfigs: IDENTIFIER_FIELD_CONFIG,
       destination: {
         workspaceId: metadata.workspaceId,
         id: destination.ID,
@@ -484,27 +331,16 @@ class AudienceIntegration extends BatchDestination<AudienceEventPayload> {
     };
   }
 
-  // Step 2: Define how batches are chunked and wrapped
+  // Define how batches are chunked and wrapped into API request bodies
   getBatchStrategy(): BatchStrategy<AudienceEventPayload> {
-    // Option A: ChunkBatchStrategy — size/count-based chunking with a wrapper function
     return new ChunkBatchStrategy<AudienceEventPayload>({
       maxItems: MAX_BATCH_SIZE,
       // maxPayloadSize: '10MB',  // Optional: also limit by total request size
-      wrapBody: (bodies) => {
-        // Build the destination-specific request body from the batch of event payloads
-        // This is where you assemble the final API payload structure
-        return buildRequestBody(bodies);
-      },
+      wrapBody: (bodies) => buildRequestBody(bodies),
     });
-
-    // Option B: CustomBatchStrategy — full control over batching logic
-    // return new CustomBatchStrategy<AudienceEventPayload>((payloads) => {
-    //   // Custom grouping, chunking, and wrapping logic
-    //   // Return: BatchGroup[] = Array<{ body: Record<string, unknown>, jobIds: Set<number> }>
-    // });
   }
 
-  // Step 3: Zod schema for input validation (run before transformEvent)
+  // Zod schema for input validation (run before transformEvent)
   getInputSchema(): ZodType {
     return RecordRouterRequestSchema;
   }
@@ -547,7 +383,7 @@ function buildRequestBody(bodies: AudienceEventPayload[]): Record<string, unknow
 export const Integration = AudienceIntegration;
 ```
 
-#### Enabling the Batching Framework
+### Enabling the Batching Framework
 
 Register the destination in `src/constants/batchedDestinationsMap.ts`:
 
@@ -559,91 +395,10 @@ export const batchedDestinationsMap: Record<string, true> = {
 };
 ```
 
-When enabled, the platform routes events through `processBatchedDestination()` instead of `processRouterDest()`. For gradual rollout before GA, use the env var pattern `{DEST_NAME_UPPER}_BATCHING_FRAMEWORK_ENABLED_WORKSPACE_IDS` (comma-separated workspace IDs or `ALL`).
-
-#### Batch Strategy Options
-
-| Strategy              | When to Use                                                   | Configuration                                      |
-| --------------------- | ------------------------------------------------------------- | -------------------------------------------------- |
-| `ChunkBatchStrategy`  | Standard chunking by item count and/or payload size (default) | `maxItems`, `maxPayloadSize`, `wrapBody`           |
-| `CustomBatchStrategy` | Need full control over batch grouping logic                   | Custom `batchFn` callback returning `BatchGroup[]` |
-
-`ChunkBatchStrategy` handles:
-
-- Splitting by `maxItems` (e.g., 10000 users per request)
-- Splitting by `maxPayloadSize` (e.g., `'10MB'`) — serializes with `wrapBody` to measure
-- Returning `BatchGroup[]` with `{ body, jobIds }` for each chunk
-
-#### The `internalGroupKey` Pattern
-
-Use `internalGroupKey` in `TransformedEvent` to force events into separate batches beyond the default grouping by (endpoint, method, headers, params). For audience destinations, this is typically the action:
-
-```typescript
-return {
-  body: { ... },
-  endpoint: getEndpoint(audienceId),
-  method: 'POST',
-  internalGroupKey: action,  // 'ADD' and 'REMOVE' events get separate batches
-};
-```
-
-#### TransformedEvent Type
-
-```typescript
-type TransformedEvent<TBody> = {
-  body: TBody; // Individual event payload
-  endpoint: string; // API endpoint
-  method: string; // HTTP method
-  headers?: Record<string, unknown>;
-  params?: Record<string, unknown>;
-  internalGroupKey?: string; // Extra grouping dimension
-};
-```
-
 **Reference:**
 
-- `src/v0/destinations/posthog/routerTransform.ts` — Complete `BatchDestination` implementation with `ChunkBatchStrategy`
-- `src/services/destination/nativeBatching/batchDestination.ts` — Abstract base class
-- `src/services/destination/nativeBatching/chunkBatchStrategy.ts` — Size/count chunking strategy
-- `src/services/destination/nativeBatching/customBatchStrategy.ts` — Custom batch logic strategy
-- `src/services/destination/nativeBatching/processBatchedDestination.ts` — Framework orchestrator
-- `src/constants/batchedDestinationsMap.ts` — Feature flag registry
-
----
-
-### Legacy Manual Batching (for reference only)
-
-Older audience destinations (fb_custom_audience, linkedin_audience, tiktok_audience) use manual grouping and batching in `processRouterDest` / `recordTransform.ts`. This pattern is still functional but new destinations should prefer the batching framework above.
-
-The manual pattern:
-
-1. Loop over events, validate, group into a `Map<string, PreparedPayload[]>` by action
-2. For each group, slice into `MAX_BATCH_SIZE` chunks
-3. Build request with `defaultRequestConfig()`, call `getSuccessRespEvents()`
-4. Catch errors per-event with `handleRtTfSingleEventError()`
-
-```typescript
-// Manual Stage 2 (legacy) — see full template in the code block below
-for (const [action, payloads] of groupedByAction) {
-  for (let i = 0; i < payloads.length; i += MAX_BATCH_SIZE) {
-    const batch = payloads.slice(i, i + MAX_BATCH_SIZE);
-    const request = defaultRequestConfig();
-    request.body.JSON = buildRequestBody(batch, action);
-    request.endpoint = getEndpoint(String(destConfig.audienceId));
-    request.method = action === 'REMOVE' ? 'DELETE' : 'POST';
-    request.headers = { Authorization: `Bearer ${accessToken}` };
-    response.successfulResponses.push(
-      getSuccessRespEvents(request, metadataList, destination, true),
-    );
-  }
-}
-```
-
-**Reference:**
-
-- `src/v0/destinations/linkedin_audience/transform.ts` — Inline two-stage processing with `processAudienceRecord` and action grouping
-- `src/v0/destinations/fb_custom_audience/recordTransform.ts` — VDM v1/v2 flow detection, `preparePayload` with action grouping, payload size batching
-- `src/v0/destinations/tiktok_audience/recordTransform.ts` — Two-stage pipeline with `prepareIdentifiersPayload`
+- `src/v0/destinations/custom_audience/routerTransform.ts` — Complete `BatchDestination` implementation with `CustomBatchStrategy`, field processing, auth headers
+- `.claude/skills/batching-framework/SKILL.md` — `BatchDestination` abstract class, `ChunkBatchStrategy`, `CustomBatchStrategy`, `TransformedEvent` type, `internalGroupKey` pattern
 
 ---
 
@@ -651,7 +406,7 @@ for (const [action, payloads] of groupedByAction) {
 
 ### Multiple Audience Types
 
-Some destinations support different audience types with different identifier schemas and endpoints:
+Some destinations support different audience types with different identifier schemas and endpoints. Handle by branching on the audience type in `transformEvent()`:
 
 ```typescript
 const { audienceType } = connection.config.destination;
@@ -690,23 +445,26 @@ if (isValueBasedAudience) {
 
 ```typescript
 // Facebook: POST for add, DELETE for remove
-request.method = action === 'REMOVE' ? 'DELETE' : 'POST';
+method: action === 'REMOVE' ? 'DELETE' : 'POST';
 
 // LinkedIn/TikTok: Always POST, action is inside the payload body
-request.method = 'POST';
+method: 'POST';
 ```
 
 ### Auth Header Patterns
 
 ```typescript
 // Bearer token (LinkedIn)
-request.headers = { Authorization: `Bearer ${accessToken}` };
+headers: { Authorization: `Bearer ${accessToken}` };
 
 // Query parameter (Facebook)
-request.params = { access_token: accessToken };
+params: { access_token: accessToken };
 
 // Custom header (TikTok)
-request.headers = { 'Access-Token': accessToken };
+headers: { 'Access-Token': accessToken };
+
+// API key (custom_audience)
+headers: { 'x-api-key': apiKey };
 ```
 
 ---
@@ -728,19 +486,11 @@ For destinations with standard REST error responses, no custom network handler i
 ## Key Shared Utilities
 
 ```typescript
-// From src/v0/util/index.js
-import {
-  defaultRequestConfig, // Creates REST request template
-  getSuccessRespEvents, // Wraps successful transformation
-  handleRtTfSingleEventError, // Wraps error for a single event
-} from '../../util';
-
 // From @rudderstack/integrations-lib
 import {
   InstrumentationError, // Bad input data — aborts event, no retry
   ConfigurationError, // Bad configuration — aborts event, no retry
   formatZodError, // Formats Zod validation errors
-  groupByInBatches, // Groups events by a key function
 } from '@rudderstack/integrations-lib';
 
 // Record action constants
@@ -761,15 +511,16 @@ import {
 
 ## Error Handling Strategy
 
-| Scenario                                    | Error Type                                  | Handling                  |
-| ------------------------------------------- | ------------------------------------------- | ------------------------- |
-| Zod validation failure                      | `InstrumentationError(formatZodError(...))` | Fails single event        |
-| Invalid/unknown identifier keys             | `InstrumentationError`                      | Fails single event        |
-| All identifiers empty after processing      | `InstrumentationError`                      | Fails single event        |
-| Unsupported audience type                   | `ConfigurationError`                        | Fails single event        |
-| Unsupported message type                    | `InstrumentationError`                      | Fails single event        |
-| Group-level error (batch build failure)     | Caught in group loop                        | Fails all events in group |
-| Hashing consistency violation (strict mode) | `InstrumentationError`                      | Fails single event        |
+Errors thrown in `transformEvent()` are automatically caught by the framework and wrapped into per-event error responses. Other events in the batch are not affected.
+
+| Scenario                                    | Error Type               | Handling                  |
+| ------------------------------------------- | ------------------------ | ------------------------- |
+| Zod validation failure (from `getInputSchema`) | Framework auto-formats | Fails single event        |
+| Invalid/unknown identifier keys             | `InstrumentationError`   | Fails single event        |
+| All identifiers empty after processing      | `InstrumentationError`   | Fails single event        |
+| Unsupported audience type                   | `ConfigurationError`     | Fails single event        |
+| Batch strategy error (wrapBody failure)     | Caught in batch strategy | Fails all events in group |
+| Hashing consistency violation (strict mode) | `InstrumentationError`   | Fails single event        |
 
 For destinations with custom network handlers at delivery time:
 
@@ -788,94 +539,92 @@ For destinations with custom network handlers at delivery time:
 
 ### Unit Tests (co-located)
 
-**routerTransform.test.ts** — Test the `Integration` class methods directly with a `buildBaseEvent()` factory.
+**routerTransform.test.ts** — Test the `Integration` class via the framework's `processBatchedDestination` function.
 
 ```typescript
-import { processRecords } from './recordTransform';
-import stats from '../../../util/stats';
+import { processBatchedDestination } from '../../../services/destination/nativeBatching/processBatchedDestination';
+import { Integration } from './routerTransform';
 
-jest.mock('../../../util/stats', () => ({
-  increment: jest.fn(),
-}));
+const buildDestination = (overrides = {}) => ({
+  ID: 'dest-1',
+  Config: { ...overrides },
+});
 
-const buildBaseEvent = (
-  overrides: Partial<RecordRequest['message']> = {},
-  destConfigOverrides = {},
-): RecordRequest => ({
+const buildConnection = (overrides = {}) => ({
+  config: {
+    destination: {
+      audienceId: '12345',
+      isHashRequired: true,
+      ...overrides,
+    },
+  },
+});
+
+const buildInput = (jobId: number, messageOverrides = {}, connectionOverrides = {}) => ({
   message: {
     type: 'record',
     action: 'insert',
     userId: 'user-1',
     identifiers: { email: 'user@example.com' },
     fields: {},
-    ...overrides,
+    ...messageOverrides,
   },
-  destination: { ID: 'dest-1', Config: {} },
-  connection: {
-    config: {
-      destination: {
-        audienceId: '12345',
-        isHashRequired: true,
-        schemaVersion: '1.1',
-        ...destConfigOverrides,
-      },
-    },
-  },
-  metadata: { workspaceId: 'ws-1', secret: { accessToken: 'token' } },
+  metadata: { jobId, workspaceId: 'ws-1', secret: { accessToken: 'token' } },
+  destination: buildDestination(),
+  connection: buildConnection(connectionOverrides),
 });
 
-describe('processRecords', () => {
-  beforeEach(() => jest.clearAllMocks());
-
-  it('valid insert -> successful response with hashed identifiers', () => {
-    const event = buildBaseEvent();
-    const { failedResponses, successfulResponses } = processRecords([event]);
-    expect(failedResponses).toHaveLength(0);
-    expect(successfulResponses).toHaveLength(1);
+describe('AudienceIntegration via processBatchedDestination', () => {
+  it('valid insert -> successful batched response with hashed identifiers', async () => {
+    const inputs = [buildInput(1), buildInput(2)];
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const successes = results.filter((r) => r.statusCode === 200);
+    expect(successes).toHaveLength(1);
+    expect(successes[0].batched).toBe(true);
+    expect(successes[0].metadata).toHaveLength(2);
+    // Verify hashed values in batchedRequest.body.JSON
   });
 
-  it('invalid identifier key -> failed response', () => {
-    const event = buildBaseEvent({ identifiers: { UNKNOWN_KEY: 'value' } });
-    const { failedResponses } = processRecords([event]);
-    expect(failedResponses).toHaveLength(1);
+  it('mixed actions -> grouped into separate batches', async () => {
+    const inputs = [
+      buildInput(1, { action: 'insert' }),
+      buildInput(2, { action: 'insert' }),
+      buildInput(3, { action: 'delete' }),
+    ];
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const successes = results.filter((r) => r.statusCode === 200);
+    expect(successes).toHaveLength(2); // One ADD batch, one REMOVE batch
   });
 
-  it('all null identifiers -> failed response', () => {
-    const event = buildBaseEvent({ identifiers: { email: null } });
-    const { failedResponses } = processRecords([event]);
-    expect(failedResponses).toHaveLength(1);
+  it('invalid identifier key -> per-event error response', async () => {
+    const inputs = [buildInput(1, { identifiers: { UNKNOWN_KEY: 'value' } })];
+    const results = await processBatchedDestination(inputs, Integration, {});
+    expect(results[0].statusCode).toBe(400);
   });
 
-  it('pre-hashed values pass through when isHashRequired=false', () => {
+  it('missing access token -> Zod validation error', async () => {
+    const input = buildInput(1);
+    delete (input.metadata as any).secret;
+    const results = await processBatchedDestination([input], Integration, {});
+    expect(results[0].statusCode).toBe(400);
+  });
+
+  it('pre-hashed values pass through when isHashRequired=false', async () => {
     const hashedEmail = 'a'.repeat(64);
-    const event = buildBaseEvent(
-      { identifiers: { email: hashedEmail } },
-      { isHashRequired: false },
-    );
-    const { successfulResponses } = processRecords([event]);
-    expect(successfulResponses).toHaveLength(1);
-  });
-
-  it('mixed actions -> grouped into separate requests', () => {
-    const insert = buildBaseEvent({ action: 'insert' });
-    const del = buildBaseEvent({ action: 'delete' });
-    const { successfulResponses } = processRecords([insert, del]);
-    expect(successfulResponses).toHaveLength(2);
-  });
-
-  it('missing access token -> Zod validation error', () => {
-    const event = buildBaseEvent();
-    delete (event.metadata as any).secret;
-    const { failedResponses } = processRecords([event]);
-    expect(failedResponses).toHaveLength(1);
+    const inputs = [
+      buildInput(1, { identifiers: { email: hashedEmail } }, { isHashRequired: false }),
+    ];
+    const results = await processBatchedDestination(inputs, Integration, {});
+    const successes = results.filter((r) => r.statusCode === 200);
+    expect(successes).toHaveLength(1);
+    // Verify value passed through unchanged
   });
 });
 ```
 
 **Reference:**
 
-- `src/v0/destinations/tiktok_audience/recordTransform.test.ts`
-- `src/v0/destinations/fb_custom_audience/util.test.ts`
+- `src/v0/destinations/custom_audience/routerTransform.test.ts` — Complete test suite with `processBatchedDestination`, helper factories, action grouping, hashing, auth, and error cases
 
 ### Integration Tests
 
@@ -945,7 +694,7 @@ export const data = [
                 },
                 body: {
                   JSON: {
-                    /* expected body */
+                    /* expected body with hashed identifiers */
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -1001,19 +750,18 @@ export const data = [
 1. Create `src/v0/destinations/<dest_name>/` folder
 2. Create `config.ts` — action maps (`insert/update -> ADD`, `delete -> REMOVE`), endpoint constants or functions, batch sizes, identifier field configs (`AudienceField` objects with `hashingType`, `normalize`, `validate`), API version constants
 3. Create `types.ts` — Zod schemas for message, destination, connection (with `audienceId`, `isHashRequired`, and any audience-type fields), metadata (with `secret.accessToken`); derive TypeScript types with `z.infer<>`; add destination-specific payload types
-4. Create `transform.ts` — per-event transform logic: validate identifiers, process via `processAudienceRecord`, build the individual event payload
-5. Create `routerTransform.ts` — extend `BatchDestination` with three methods:
-   - `transformEvent()` — call transform logic, return `TransformedEvent` with endpoint, method, headers, `internalGroupKey` (action)
+4. Create `routerTransform.ts` — extend `BatchDestination` with three methods:
+   - `transformEvent()` — validate identifiers, process via `processAudienceRecord`, map action, return `TransformedEvent` with endpoint, method, headers, `internalGroupKey` (action)
    - `getBatchStrategy()` — return `ChunkBatchStrategy` with `maxItems`/`maxPayloadSize` and `wrapBody` that builds the destination-specific request body
    - `getInputSchema()` — return the Zod schema for input validation
    - Export the class as `Integration`
-6. Register in `src/constants/batchedDestinationsMap.ts` — add `<DEST_NAME_UPPER>: true`
-7. Create `networkHandler.ts` (optional) — only if the destination API returns errors in a non-standard format requiring custom parsing
-8. Create `routerTransform.test.ts` — unit tests with `buildBaseEvent()` factory covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
-9. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
-10. Run verification:
-    ```bash
-    npm run lint
-    npm test -- --testPathPattern="<dest_name>" --no-coverage
-    npm run test:ts -- component --destination=<dest_name>
-    ```
+5. Register in `src/constants/batchedDestinationsMap.ts` — add `<DEST_NAME_UPPER>: true`
+6. Create `networkHandler.ts` (optional) — only if the destination API returns errors in a non-standard format requiring custom parsing
+7. Create `routerTransform.test.ts` — unit tests using `processBatchedDestination(inputs, Integration, {})` covering: valid insert/update/delete, invalid identifiers, null identifiers, hashing on/off, batch overflow, mixed actions, missing auth
+8. Create `test/integrations/destinations/<dest_name>/router/data.ts` — integration test cases covering: successful operations, validation errors, unsupported types, batching, audience subtypes, pre-hashed values
+9. Run verification:
+   ```bash
+   npm run lint
+   npm test -- --testPathPattern="<dest_name>" --no-coverage
+   npm run test:ts -- component --destination=<dest_name>
+   ```

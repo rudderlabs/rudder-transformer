@@ -56,7 +56,9 @@ import { BatchDestination } from '../../../services/destination/nativeBatching/b
 class MyIntegration extends BatchDestination<TBody, TConfig, TConnectionConfig> {
   // MUST implement these three methods:
 
-  transformEvent(input: RouterTransformationRequestData): TransformedEvent<TBody> | TransformedEvent<TBody>[];
+  transformEvent(
+    input: RouterTransformationRequestData,
+  ): TransformedEvent<TBody> | TransformedEvent<TBody>[];
   // Transform a single input event into one or more intermediate payloads.
   // Throw InstrumentationError for bad input — framework wraps it into error response.
 
@@ -74,12 +76,12 @@ export const Integration = MyIntegration;
 
 ```typescript
 type TransformedEvent<TBody> = {
-  body: TBody;                    // Individual event payload
-  endpoint: string;               // API endpoint
-  method: string;                 // HTTP method (POST, PUT, DELETE, etc.)
+  body: TBody; // Individual event payload
+  endpoint: string; // API endpoint
+  method: string; // HTTP method (POST, PUT, DELETE, etc.)
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
-  internalGroupKey?: string;      // Extra grouping dimension (see below)
+  internalGroupKey?: string; // Extra grouping dimension (see below)
 };
 ```
 
@@ -88,6 +90,7 @@ The framework groups all `TransformedEvent` objects by a composite key of `(endp
 ### The `internalGroupKey` Pattern
 
 Use `internalGroupKey` to force events into separate batches beyond the default grouping. Common use cases:
+
 - **Action-based grouping**: ADD vs REMOVE events need separate API calls
 - **Schema-based grouping**: Events with different field schemas can't share a batch
 
@@ -96,7 +99,7 @@ return {
   body: payload,
   endpoint: getEndpoint(audienceId),
   method: 'POST',
-  internalGroupKey: action,  // 'ADD' and 'REMOVE' get separate batches
+  internalGroupKey: action, // 'ADD' and 'REMOVE' get separate batches
 };
 ```
 
@@ -124,6 +127,7 @@ getBatchStrategy(): BatchStrategy<TBody> {
 Size strings support: `'10MB'`, `'512KB'`, `'4MB'`, `'1GB'` — parsed via `parseSizeToBytes()`.
 
 The `wrapBody` function:
+
 - Receives an array of `TBody` objects (the individual event payloads)
 - Returns the final `Record<string, unknown>` that becomes `batchedRequest.body.JSON`
 - Is also used for size measurement when `maxPayloadSize` is set
@@ -155,10 +159,11 @@ getBatchStrategy(): BatchStrategy<TBody> {
 ```
 
 Returns `BatchGroup[]`:
+
 ```typescript
 type BatchGroup = {
-  body: Record<string, unknown>;  // Final wrapped body
-  jobIds: Set<number>;            // All jobIds in this batch
+  body: Record<string, unknown>; // Final wrapped body
+  jobIds: Set<number>; // All jobIds in this batch
 };
 ```
 
@@ -173,6 +178,8 @@ export const batchedDestinationsMap: Record<string, true> = {
   <DEST_NAME_UPPER>: true,  // Add your destination here
 };
 ```
+
+To enable destination on routerTransform, feature.ts also needs to be updated with definitionName under defaultFeaturesConfig `src/features.ts`
 
 When enabled, the platform routes events through `processBatchedDestination()` instead of the legacy `processRouterDest()`.
 
@@ -227,6 +234,7 @@ describe('Integration via processBatchedDestination', () => {
 ## Error Handling
 
 The framework handles error wrapping automatically:
+
 - **Zod validation failure** (from `getInputSchema`) → 400 error response with formatted message
 - **Errors thrown in `transformEvent()`** → per-event error response (other events still succeed)
 - **Errors thrown in `getBatchStrategy().batch()`** → affects all events in that batch group
@@ -236,5 +244,6 @@ Use `InstrumentationError` for bad input data (no retry), `ConfigurationError` f
 ## Metrics
 
 The framework emits these metrics automatically:
+
 - `dont_batch_events` — count of events with `dontBatch` flag
 - `output_batch_size` — histogram of events per output batch

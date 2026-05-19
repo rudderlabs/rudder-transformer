@@ -2,7 +2,6 @@
 name: vdm-next-integration
 description: Create the transformation logic for a new VDM Next audience destination. Implements record processing, identifier hashing, batching, and API request building for audience-based integrations.
 argument-hint: <destination-name>
-disable-model-invocation: true
 ---
 
 # VDM Next — Audience Integration (rudder-transformer)

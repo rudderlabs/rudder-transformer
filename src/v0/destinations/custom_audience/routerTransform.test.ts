@@ -83,7 +83,7 @@ const buildMetadata = (jobId: number): Metadata =>
 const buildInput = (
   jobId: number,
   action: Action,
-  fields: Record<string, unknown>,
+  identifiers: Record<string, unknown>,
   destination: CustomAudienceDestination = buildDestination(),
   connection: CustomAudienceConnection = buildConnection(),
 ): RouterTransformationRequestData =>
@@ -91,7 +91,7 @@ const buildInput = (
     message: {
       type: 'record',
       action,
-      fields,
+      identifiers,
       channel: 'sources',
       context: {},
       recordId: String(jobId),

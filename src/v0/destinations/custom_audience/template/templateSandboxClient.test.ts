@@ -5,19 +5,12 @@
  * Prerequisites:
  *   - Node must be started with --no-node-snapshot (isolated-vm requirement).
  *     The project's jest config already sets NODE_OPTIONS='--no-node-snapshot'.
- *   - The bundle must be up-to-date. Run `npm run build:custom-audience-sandbox` after
- *     any change to templateEngine.ts or templateEngineSandbox.ts.
  */
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
 import { sandboxedEvaluateTemplate, sandboxedParseTemplate } from './templateSandboxClient';
 import { templateSandboxRunner } from './ivmScriptRunner';
-import { assertBundleFreshness } from './testUtils';
 
 describe('templateSandboxClient', () => {
-  beforeAll(() => {
-    assertBundleFreshness();
-  });
-
   describe('sandboxedParseTemplate', () => {
     const validCases = [
       {

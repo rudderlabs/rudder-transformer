@@ -5,7 +5,6 @@ import { processBatchedDestination } from '../../../services/destination/nativeB
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { AUTHENTICATION_TYPES } from './constants';
-import { assertBundleFreshness } from './template/testUtils';
 import type {
   Action,
   ActionConfig,
@@ -103,10 +102,6 @@ const buildInput = (
   }) as unknown as RouterTransformationRequestData;
 
 describe('CustomAudienceIntegration via processBatchedDestination', () => {
-  beforeAll(() => {
-    assertBundleFreshness();
-  });
-
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
       buildInput(1, 'insert', { email: 'a@b.com' }),

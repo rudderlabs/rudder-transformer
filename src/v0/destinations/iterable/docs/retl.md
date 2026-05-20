@@ -251,3 +251,6 @@ The Iterable destination supports RETL functionality through:
 - [Business Logic](businesslogic.md) - Event processing and mapping details
 - [Iterable Catalogs API](https://api.iterable.com/api/docs#catalogs) - Official API documentation
 - [Iterable Bulk Update API](https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems) - Bulk catalog operations
+
+
+> Note: Audience `record` syncing for Iterable static/suppression lists is implemented in the dedicated `iterable_audience` destination (`src/v0/destinations/iterable_audience`).

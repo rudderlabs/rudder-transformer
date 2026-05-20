@@ -25,6 +25,7 @@ const defaultFeaturesConfig: FeaturesConfig = {
     GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: true,
     HS: true,
     ITERABLE: true,
+    ITERABLE_AUDIENCE: true,
     KLAVIYO: true,
     KUSTOMER: true,
     MAILCHIMP: true,

@@ -13,6 +13,8 @@ import {
   RedditUserData,
   RedditProductType,
   EventProperties,
+  ACTION_SOURCE_VALUES,
+  ActionSource,
 } from './types';
 import userDataMapping from './data/userDataMapping.json';
 import {
@@ -32,16 +34,13 @@ import {
   hashSHA256,
 } from './utils';
 
-const ACTION_SOURCE_VALUES = ['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER'] as const;
-type ActionSource = (typeof ACTION_SOURCE_VALUES)[number];
-
 const getActionSource = (message: RudderMessage): ActionSource => {
   const integrationsObj = getIntegrationsObj(message, 'reddit');
   const rawActionSource = integrationsObj?.action_source;
   const overriddenActionSource =
     typeof rawActionSource === 'string' ? rawActionSource.toUpperCase() : rawActionSource;
   if (overriddenActionSource && ACTION_SOURCE_VALUES.includes(overriddenActionSource)) {
-    return overriddenActionSource as ActionSource;
+    return overriddenActionSource;
   }
   const channel = getValueFromMessage(message, 'channel');
   const os = getValueFromMessage(message, 'context.os.name');

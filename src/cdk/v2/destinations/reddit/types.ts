@@ -4,6 +4,9 @@ import { Destination, RouterTransformationRequestData, RudderMessage } from '../
 // All the types are based on the following documentation:
 // https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
 
+export const ACTION_SOURCE_VALUES = ['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER'] as const;
+export type ActionSource = (typeof ACTION_SOURCE_VALUES)[number];
+
 export const RedditDestinationConfigSchema = z
   .object({
     rudderAccountId: z.string(),

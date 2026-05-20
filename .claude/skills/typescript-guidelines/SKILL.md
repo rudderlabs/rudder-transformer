@@ -39,9 +39,9 @@ type Result = { valid: true; recordFields: string[] } | { valid: false; errors: 
 type Result = { valid: boolean; errors?: string[]; recordFields?: string[] };
 ```
 
-## Narrow Types at Wrapper Boundaries, Not at Call Sites
+## Cast at the Earliest Point Where the Type Is Known
 
-When wrapping an untyped boundary (parser output, `JSON.parse`, structured clone from a worker/isolate, IPC), narrow the return type at the wrapper — with a localized cast inside if needed — rather than returning `unknown` and forcing every caller to cast. The cast lives once, near where the shape is actually known.
+Place type assertions as close as possible to where the value's shape is determined. This applies at two levels: wrapper functions should narrow their return type so callers never cast, and within a function, cast individual values at the point of production rather than on an aggregate after collection.
 
 ```ts
 // Good — wrapper narrows; callers are type-safe
@@ -67,6 +67,23 @@ return chunks.map((chunk, i) => ({
   body: bodies[i] as Record<string, unknown>, // cast leaks into call site
   jobIds: chunk.jobIds,
 }));
+```
+
+Within a function, cast each value where it originates — not after aggregating into an array or object.
+
+```ts
+// Good — cast at the individual call site where the shape is known
+const bodies = await Promise.all(
+  chunks.map(
+    (records) =>
+      evaluateTemplate(template, { records, connection }) as Promise<Record<string, unknown>>,
+  ),
+);
+
+// Bad — cast on the collected aggregate
+const bodies = (await Promise.all(
+  chunks.map((records) => evaluateTemplate(template, { records, connection })),
+)) as Record<string, unknown>[];
 ```
 
 ## Prefer `unknown` Over `any` for Generic Containers

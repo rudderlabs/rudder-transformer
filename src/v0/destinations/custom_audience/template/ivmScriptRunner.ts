@@ -67,7 +67,7 @@ export class IvmScriptRunner {
     try {
       const result = await entry.context.evalClosure(expression, args, {
         arguments: { copy: true },
-        result: { copy: true },
+        result: { copy: true, promise: true },
         timeout: this.execTimeoutMs,
       });
       return result as T;
@@ -143,7 +143,7 @@ export class IvmScriptRunner {
 
 // Resolve relative to __dirname so the path is stable regardless of process.cwd().
 // Works under both ts-jest (src/) and compiled runtime (dist/).
-const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
+const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/templateEngineSandbox.bundle.js');
 
 export const templateSandboxRunner = new IvmScriptRunner({
   bundlePath: BUNDLE_PATH,

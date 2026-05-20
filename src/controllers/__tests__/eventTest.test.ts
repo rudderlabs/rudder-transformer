@@ -4,9 +4,9 @@ import bodyParser from 'koa-bodyparser';
 import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { applicationRoutes } from '../../routes';
-import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandbox';
+import { sandboxedParseTemplate } from '../../v0/destinations/custom_audience/template/templateSandboxClient';
 
-jest.mock('../../v0/destinations/custom_audience/template/templateSandbox');
+jest.mock('../../v0/destinations/custom_audience/template/templateSandboxClient');
 const mockParseTemplate = sandboxedParseTemplate as jest.MockedFunction<
   typeof sandboxedParseTemplate
 >;

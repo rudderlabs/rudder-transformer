@@ -6,35 +6,14 @@
  *   - Node must be started with --no-node-snapshot (isolated-vm requirement).
  *     The project's jest config already sets NODE_OPTIONS='--no-node-snapshot'.
  *   - The bundle must be up-to-date. Run `npm run build:custom-audience-sandbox` after
- *     any change to templateParser.ts or sandboxedTemplate.entry.ts.
+ *     any change to templateEngine.ts or templateEngineSandbox.ts.
  */
-import fs from 'fs';
-import path from 'path';
 import { InstrumentationError, PlatformError } from '@rudderstack/integrations-lib';
-import { sandboxedEvaluateTemplate, sandboxedParseTemplate } from './templateSandbox';
+import { sandboxedEvaluateTemplate, sandboxedParseTemplate } from './templateSandboxClient';
 import { templateSandboxRunner } from './ivmScriptRunner';
+import { assertBundleFreshness } from './testUtils';
 
-const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
-const ENTRY_SOURCE = path.resolve(__dirname, 'sandboxedTemplate.entry.ts');
-const PARSER_SOURCE = path.resolve(__dirname, 'templateParser.ts');
-
-export function assertBundleFreshness() {
-  if (!fs.existsSync(BUNDLE_PATH)) {
-    throw new Error(
-      `Bundle not found at ${BUNDLE_PATH}. Run \`npm run build:custom-audience-sandbox\` first.`,
-    );
-  }
-  const bundleMtime = fs.statSync(BUNDLE_PATH).mtimeMs;
-  for (const src of [ENTRY_SOURCE, PARSER_SOURCE]) {
-    if (fs.existsSync(src) && fs.statSync(src).mtimeMs > bundleMtime) {
-      throw new Error(
-        `${path.basename(src)} is newer than the bundle. Run \`npm run build:custom-audience-sandbox\` to rebuild.`,
-      );
-    }
-  }
-}
-
-describe('templateSandbox', () => {
+describe('templateSandboxClient', () => {
   beforeAll(() => {
     assertBundleFreshness();
   });
@@ -43,12 +22,12 @@ describe('templateSandbox', () => {
     const validCases = [
       {
         name: 'object iteration with two fields',
-        template: '{ "data": $.records.({ "email": .email, "phone": .phone_sha256 }) }',
+        template: '{ "data": [$$.records.{ "email": email, "phone": phone_sha256 }] }',
         expectedFields: ['email', 'phone_sha256'],
       },
       {
         name: 'array iteration',
-        template: '$.records.([.user_id, .email])',
+        template: '{ "data": [$$.records.[user_id, email]] }',
         expectedFields: ['email', 'user_id'],
       },
       {
@@ -61,18 +40,18 @@ describe('templateSandbox', () => {
     const invalidCases = [
       {
         name: 'spread operator',
-        template: '{ ...$.records }',
-        errorMatch: /spread_expr/,
+        template: '{ ...$$.records }',
+        errorMatch: /cannot be used/,
       },
       {
         name: 'bare identifier',
-        template: 'process.exit(1)',
-        errorMatch: /Function calls are not supported/,
+        template: 'process',
+        errorMatch: /Bare identifiers/,
       },
       {
         name: 'unparseable syntax',
         template: '{{{{',
-        errorMatch: /Unexpected end of template/,
+        errorMatch: /Expected ":"/,
       },
     ];
 
@@ -95,7 +74,7 @@ describe('templateSandbox', () => {
 
   describe('sandboxedEvaluateTemplate', () => {
     it('evaluates a template against multiple chunks in a single call', async () => {
-      const template = '{ "audienceId": $.connection.audienceId, "users": $.records }';
+      const template = '{ "audienceId": $$.connection.audienceId, "users": $$.records }';
       const chunks = [[{ email: 'a@b.com' }, { email: 'c@d.com' }], [{ email: 'e@f.com' }]];
 
       const bodies = await sandboxedEvaluateTemplate(
@@ -113,29 +92,16 @@ describe('templateSandbox', () => {
 
     it.each([
       {
-        name: 'single-element iteration returns object without [] wrapper',
-        template: '{ "data": $.records.({ "email": .email }) }',
-        records: [{ email: 'a@b.com' }],
-        expected: [{ data: { email: 'a@b.com' } }],
-      },
-      {
-        name: 'multi-element iteration without [] wrapper',
-        template: '{ "data": $.records.({ "email": .email }) }',
-        records: [{ email: 'a@b.com' }, { email: 'c@d.com' }],
-        expected: [{ data: [{ email: 'a@b.com' }, { email: 'c@d.com' }] }],
-      },
-      {
-        name: 'single-element iteration returns array when wrapped in []',
-        template: '{ "data": [$.records.({ "email": .email })] }',
+        name: '[...] wrapper guarantees array output for single-element records',
+        template: '{ "data": [$$.records.{ "email": email }] }',
         records: [{ email: 'a@b.com' }],
         expected: [{ data: [{ email: 'a@b.com' }] }],
       },
-      // TODO: fix once we migrate to JSONata — [] should be idempotent on arrays, not double-nest
       {
-        name: 'multi-element iteration double-nests when wrapped in []',
-        template: '{ "data": [$.records.({ "email": .email })] }',
+        name: '[...] wrapper is idempotent on arrays — no double-nesting',
+        template: '{ "data": [$$.records.{ "email": email }] }',
         records: [{ email: 'a@b.com' }, { email: 'c@d.com' }],
-        expected: [{ data: [[{ email: 'a@b.com' }, { email: 'c@d.com' }]] }],
+        expected: [{ data: [{ email: 'a@b.com' }, { email: 'c@d.com' }] }],
       },
     ])('$name', async ({ template, records, expected }) => {
       const bodies = await sandboxedEvaluateTemplate(template, [records], {}, 'ws-eval');
@@ -144,7 +110,7 @@ describe('templateSandbox', () => {
     });
 
     it('throws InstrumentationError when the template fails at runtime', async () => {
-      const template = '$.records[0].notARealMethod()';
+      const template = '$$.records[0].$notARealMethod()';
 
       await expect(
         sandboxedEvaluateTemplate(template, [[{ email: 'a@b.com' }]], {}, 'ws-eval'),
@@ -177,7 +143,7 @@ describe('templateSandbox', () => {
       },
     ])('structured clone: $name', async ({ records, expected }) => {
       const bodies = await sandboxedEvaluateTemplate(
-        '{ "data": $.records }',
+        '{ "data": $$.records }',
         [records],
         {},
         'ws-clone',
@@ -191,7 +157,7 @@ describe('templateSandbox', () => {
         .mockRejectedValueOnce(new Error('Script execution timed out.'));
 
       await expect(
-        sandboxedEvaluateTemplate('{ "users": $.records }', [[]], {}, 'ws-internal'),
+        sandboxedEvaluateTemplate('{ "users": $$.records }', [[]], {}, 'ws-internal'),
       ).rejects.toThrow(PlatformError);
 
       spy.mockRestore();

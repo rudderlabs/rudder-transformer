@@ -9,7 +9,7 @@ import type { BatchStrategy } from '../../../services/destination/nativeBatching
 import { chunkPayloads } from '../../../services/destination/nativeBatching/chunkPayloads';
 import type { Connection, Destination } from '../../../types/controlPlaneConfig';
 import { EVENT_TYPES } from '../../util/recordUtils';
-import { sandboxedEvaluateTemplate } from './template/templateSandbox';
+import { sandboxedEvaluateTemplate } from './template/templateSandboxClient';
 import {
   buildRequestHeaders,
   injectCustomMappings,

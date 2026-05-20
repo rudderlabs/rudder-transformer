@@ -12,4 +12,6 @@ export const ERROR_MESSAGES = {
   ALL_FIELDS_STRIPPED: 'All fields were stripped after processing; nothing to send',
   TEMPLATE_EVALUATION_FAILED: (reason: string) =>
     `Failed to evaluate requestBody template: ${reason}`,
+  ENDPOINT_RESOLUTION_FAILED: (placeholder: string) =>
+    `Unresolved placeholder in endpoint template: ${placeholder}`,
 };

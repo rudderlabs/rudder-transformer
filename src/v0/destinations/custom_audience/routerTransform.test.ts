@@ -5,7 +5,7 @@ import { processBatchedDestination } from '../../../services/destination/nativeB
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { AUTHENTICATION_TYPES } from './constants';
-import { assertBundleFreshness } from './template/templateSandbox.test';
+import { assertBundleFreshness } from './template/testUtils';
 import type {
   Action,
   ActionConfig,
@@ -16,18 +16,18 @@ import type {
 } from './types';
 
 const baseInsertAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'POST',
   requestBody:
-    '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email }) }',
+    '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email }] }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
 const baseDeleteAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'DELETE',
-  requestBody: '{ "audienceId": $.connection.audienceId, "users": $.records }',
+  requestBody: '{ "audienceId": $$.connection.audienceId, "users": $$.records }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
@@ -239,7 +239,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
 
   it('throws when requestBody template fails at runtime', async () => {
     const destination = buildDestination();
-    destination.Config.actions.insert!.requestBody = '$.records[0].notARealMethod()';
+    destination.Config.actions.insert!.requestBody = '$$.records[0].$notARealMethod()';
 
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
 

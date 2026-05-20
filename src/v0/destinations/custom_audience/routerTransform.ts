@@ -68,7 +68,7 @@ class CustomAudienceIntegration extends BatchDestination<
     const { message } = input;
     const actionConfig = lookupActionConfig(message.action, this.destination.Config);
     const fieldsWithCustomMappings = injectCustomMappings(
-      message.fields!,
+      message.identifiers!,
       this.connectionConfig.customMappings,
     );
     const record = processFields(
@@ -140,7 +140,7 @@ class CustomAudienceIntegration extends BatchDestination<
           .object({
             type: z.literal('record'),
             action: z.enum([EVENT_TYPES.INSERT, EVENT_TYPES.UPDATE, EVENT_TYPES.DELETE]),
-            fields: z.record(z.unknown()),
+            identifiers: z.record(z.unknown()),
           })
           .passthrough(),
       })

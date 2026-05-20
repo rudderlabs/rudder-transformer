@@ -41,25 +41,37 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'a@b.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'a@b.com' },
+              }),
               metadata: generateMetadata(1),
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'c@d.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'c@d.com' },
+              }),
               metadata: generateMetadata(2),
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({ action: 'update', identifiers: { email: 'e@f.com' } }),
+              message: generateRecordPayload({
+                action: 'update',
+                identifiers: { email: 'e@f.com' },
+              }),
               metadata: generateMetadata(3),
               destination,
               connection,
             },
             {
-              message: generateRecordPayload({ action: 'delete', identifiers: { email: 'g@h.com' } }),
+              message: generateRecordPayload({
+                action: 'delete',
+                identifiers: { email: 'g@h.com' },
+              }),
               metadata: generateMetadata(4),
               destination,
               connection,
@@ -167,7 +179,10 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'a@b.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'a@b.com' },
+              }),
               metadata: generateMetadata(1),
               destination: {
                 ...destination,
@@ -179,7 +194,10 @@ export const data: RouterTestData[] = [
               connection,
             },
             {
-              message: generateRecordPayload({ action: 'delete', identifiers: { email: 'g@h.com' } }),
+              message: generateRecordPayload({
+                action: 'delete',
+                identifiers: { email: 'g@h.com' },
+              }),
               metadata: generateMetadata(2),
               destination: {
                 ...destination,
@@ -262,7 +280,10 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'a@b.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'a@b.com' },
+              }),
               metadata: generateMetadata(1),
               destination,
               connection,
@@ -336,13 +357,19 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'a@b.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'a@b.com' },
+              }),
               metadata: generateMetadata(1),
               destination: customMappingsDestination,
               connection: customMappingsConnection,
             },
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'c@d.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'c@d.com' },
+              }),
               metadata: generateMetadata(2),
               destination: customMappingsDestination,
               connection: customMappingsConnection,
@@ -405,13 +432,19 @@ export const data: RouterTestData[] = [
         body: {
           input: [
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'a@b.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'a@b.com' },
+              }),
               metadata: generateMetadata(1),
               destination,
               connection: hashRequiredConnection,
             },
             {
-              message: generateRecordPayload({ action: 'insert', identifiers: { email: 'c@d.com' } }),
+              message: generateRecordPayload({
+                action: 'insert',
+                identifiers: { email: 'c@d.com' },
+              }),
               metadata: generateMetadata(2),
               destination,
               connection: hashRequiredConnection,

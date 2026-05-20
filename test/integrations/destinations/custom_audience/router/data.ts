@@ -110,7 +110,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     audienceId: 'aud-42',
-                    users: { email: 'e@f.com' },
+                    users: [{ email: 'e@f.com' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -134,7 +134,7 @@ export const data: RouterTestData[] = [
                 body: {
                   JSON: {
                     audienceId: 'aud-42',
-                    users: { email: 'g@h.com' },
+                    users: [{ email: 'g@h.com' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -210,7 +210,7 @@ export const data: RouterTestData[] = [
                 headers,
                 params: {},
                 body: {
-                  JSON: { audienceId: 'aud-42', users: { email: 'a@b.com' } },
+                  JSON: { audienceId: 'aud-42', users: [{ email: 'a@b.com' }] },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
@@ -296,7 +296,7 @@ export const data: RouterTestData[] = [
                 headers,
                 params: {},
                 body: {
-                  JSON: { audienceId: 'aud-42', users: { email: 'a@b.com' } },
+                  JSON: { audienceId: 'aud-42', users: [{ email: 'a@b.com' }] },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},

@@ -12,19 +12,19 @@ const destTypeInUpperCase = 'CUSTOM_AUDIENCE';
 const displayName = 'Custom Audience';
 
 const insertActionConfig: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'POST',
   requestBody:
-    '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email }) }',
+    '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email }] }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
 const deleteActionConfig: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'DELETE',
   requestBody:
-    '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email }) }',
+    '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email }] }',
   batchSize: 5,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
@@ -97,7 +97,7 @@ export const customMappingsDestination: CustomAudienceDestination = {
       insert: {
         ...insertActionConfig,
         requestBody:
-          '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email, "listType": .listType }) }',
+          '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email, "listType": listType }] }',
       },
     },
   },

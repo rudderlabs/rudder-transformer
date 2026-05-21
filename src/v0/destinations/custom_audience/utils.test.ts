@@ -25,7 +25,7 @@ const baseDestConfig: CustomAudienceDestConfig = {
   authenticationType: AUTHENTICATION_TYPES.NO_AUTH,
   actions: {
     insert: {
-      endpoint: '/audiences/${$.connection.audienceId}/members',
+      endpoint: '/audiences/{{connection.audienceId}}/members',
       method: 'POST',
       requestBody: '{ "users": $.records }',
       batchSize: 100,
@@ -39,7 +39,7 @@ const destinationMeta = { id: 'dest-1', type: 'CUSTOM_AUDIENCE', workspaceId: 'w
 describe('lookupActionConfig', () => {
   it('returns the action config when present', () => {
     const result = lookupActionConfig('insert', baseDestConfig);
-    expect(result.endpoint).toBe('/audiences/${$.connection.audienceId}/members');
+    expect(result.endpoint).toBe('/audiences/{{connection.audienceId}}/members');
   });
 
   it('throws InstrumentationError when action key is missing', () => {
@@ -51,7 +51,7 @@ describe('resolveEndpoint', () => {
   const cases = [
     {
       name: 'interpolates connection fields and prepends baseUrl',
-      endpoint: '/audiences/${$.connection.audienceId}/members',
+      endpoint: '/audiences/{{connection.audienceId}}/members',
       baseUrl: 'https://api.example.com',
       expected: 'https://api.example.com/audiences/aud-42/members',
     },
@@ -67,16 +67,26 @@ describe('resolveEndpoint', () => {
       baseUrl: 'https://api.example.com',
       expected: 'https://api.example.com/v1/users',
     },
+    {
+      name: 'leaves template without placeholders unchanged',
+      endpoint: '/static/path',
+      baseUrl: 'https://api.example.com',
+      expected: 'https://api.example.com/static/path',
+    },
   ];
 
   it.each(cases)('$name', ({ endpoint, baseUrl, expected }) => {
     expect(resolveEndpoint(endpoint, baseUrl, baseConnection)).toBe(expected);
   });
 
-  it('throws InstrumentationError when template fails', () => {
-    expect(() => resolveEndpoint('${ ', 'https://api.example.com', baseConnection)).toThrow(
-      InstrumentationError,
-    );
+  it('throws InstrumentationError when placeholder references a missing connection field', () => {
+    expect(() =>
+      resolveEndpoint(
+        '/audiences/{{connection.nonExistent}}/members',
+        'https://api.example.com',
+        baseConnection,
+      ),
+    ).toThrow(InstrumentationError);
   });
 });
 

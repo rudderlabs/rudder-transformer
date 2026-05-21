@@ -4,6 +4,9 @@ import { Destination, RouterTransformationRequestData, RudderMessage } from '../
 // All the types are based on the following documentation:
 // https://ads-api.reddit.com/docs/v3/operations/Post%20Conversion%20Events
 
+export const ACTION_SOURCE_VALUES = ['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER'] as const;
+export type ActionSource = (typeof ACTION_SOURCE_VALUES)[number];
+
 export const RedditDestinationConfigSchema = z
   .object({
     rudderAccountId: z.string(),
@@ -97,7 +100,8 @@ export const RedditEventTypeSchema = z.discriminatedUnion('tracking_type', [
 export const RedditConversionEventSchema = z.object({
   click_id: z.string().optional(),
   event_at: z.number(),
-  action_source: z.enum(['WEBSITE']),
+  action_source: z.enum(['WEBSITE', 'APP', 'PHYSICAL_STORE', 'OTHER']),
+  event_source_url: z.string().optional(),
   user: RedditUserDataSchema.optional(),
   type: RedditEventTypeSchema,
   metadata: RedditEventMetadataSchema.optional(),
@@ -105,6 +109,7 @@ export const RedditConversionEventSchema = z.object({
 
 export const RedditConversionEventsPayloadSchema = z.object({
   data: z.object({
+    partner: z.string().optional(),
     test_id: z.string().optional(),
     events: z.array(RedditConversionEventSchema),
   }),
@@ -157,4 +162,5 @@ export interface EventProperties {
   category?: string;
   price?: number;
   quantity?: number;
+  url?: string;
 }

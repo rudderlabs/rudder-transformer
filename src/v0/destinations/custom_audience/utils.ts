@@ -1,5 +1,4 @@
 import { InstrumentationError } from '@rudderstack/integrations-lib';
-import { JsonTemplateEngine, PathType } from '@rudderstack/json-template-engine';
 
 import { HashingType, processAudienceRecord, type AudienceField } from '../../util/audienceUtils';
 
@@ -26,30 +25,32 @@ export const lookupActionConfig = (
   return actionConfig;
 };
 
+// Replaces {{dotted.path}} placeholders with values from the connection object,
+// then prepends baseUrl.
+// e.g. "/audiences/{{connection.audienceId}}/members" with connection = { audienceId: "123" }
+//   → "/audiences/123/members" → "https://api.example.com/audiences/123/members"
 export const resolveEndpoint = (
   endpointTemplate: string,
   baseUrl: string,
   connection: CustomAudienceConnectionDestConfig,
 ): string => {
-  // Endpoint is a plain string with `${...}` placeholders (regex-validated upstream
-  // to allow only simple connection-field interpolation). Wrap in backticks so the
-  // template engine treats it as a string-interpolation expression.
-  //
-  // Evaluated in-process intentionally: there is no record data and no
-  // user-controlled template path. The user-controlled requestBody template
-  // runs inside isolated-vm via templateSandbox.
-  const wrapped = `\`${endpointTemplate}\``;
-  let resolved: string;
-  try {
-    resolved = String(
-      JsonTemplateEngine.createAsSync(wrapped, { defaultPathType: PathType.JSON }).evaluate({
-        connection,
-      }) ?? '',
+  // Match every {{...}} placeholder and walk the dotted path against { connection }
+  // to resolve the value. Throws if a referenced field doesn't exist.
+  const resolved = endpointTemplate.replace(/{{([\w.]+)}}/g, (_match, path: string) => {
+    const value = path.split('.').reduce<unknown>(
+      (obj, key) => {
+        if (obj != null && typeof obj === 'object') return (obj as Record<string, unknown>)[key];
+        return undefined;
+      },
+      { connection },
     );
-  } catch (err: unknown) {
-    const reason = err instanceof Error ? err.message : String(err);
-    throw new InstrumentationError(ERROR_MESSAGES.TEMPLATE_EVALUATION_FAILED(reason));
-  }
+    if (value === undefined || value === null) {
+      throw new InstrumentationError(ERROR_MESSAGES.ENDPOINT_RESOLUTION_FAILED(`{{${path}}}`));
+    }
+    return String(value);
+  });
+  // Normalize: strip trailing slash from base, ensure leading slash on path,
+  // then join them.
   const trimmedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
   const joinedPath = resolved.startsWith('/') || resolved === '' ? resolved : `/${resolved}`;
   return `${trimmedBase}${joinedPath}`;

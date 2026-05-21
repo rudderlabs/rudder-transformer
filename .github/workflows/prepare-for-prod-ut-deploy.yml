@@ -264,7 +264,7 @@ jobs:
             for f in "./$directory"/*; do
               [[ -f $f ]] || continue
 
-              enabled="$(yq e '.spec.user-transformer.enabled' $f)"
+              enabled="$(yq e '.spec.global.user-transformer.enabled' $f)"
               if [ "$enabled" == "true" ]; then
                 enabled_ut_customers+=( $f )
               fi

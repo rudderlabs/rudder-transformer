@@ -5,7 +5,6 @@ import { processBatchedDestination } from '../../../services/destination/nativeB
 import type { Metadata } from '../../../types/rudderEvents';
 import type { RouterTransformationRequestData } from '../../../types/destinationTransformation';
 import { AUTHENTICATION_TYPES } from './constants';
-import { assertBundleFreshness } from './template/templateSandbox.test';
 import type {
   Action,
   ActionConfig,
@@ -16,18 +15,18 @@ import type {
 } from './types';
 
 const baseInsertAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'POST',
   requestBody:
-    '{ "audienceId": $.connection.audienceId, "users": $.records.({ "email": .email }) }',
+    '{ "audienceId": $$.connection.audienceId, "users": [$$.records.{ "email": email }] }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
 
 const baseDeleteAction: ActionConfig = {
-  endpoint: '/audiences/${$.connection.audienceId}/members',
+  endpoint: '/audiences/{{connection.audienceId}}/members',
   method: 'DELETE',
-  requestBody: '{ "audienceId": $.connection.audienceId, "users": $.records }',
+  requestBody: '{ "audienceId": $$.connection.audienceId, "users": $$.records }',
   batchSize: 2,
   fields: [{ name: 'email', hashType: HashingType.SHA256, isRequired: true, isCustom: false }],
 };
@@ -84,7 +83,7 @@ const buildMetadata = (jobId: number): Metadata =>
 const buildInput = (
   jobId: number,
   action: Action,
-  fields: Record<string, unknown>,
+  identifiers: Record<string, unknown>,
   destination: CustomAudienceDestination = buildDestination(),
   connection: CustomAudienceConnection = buildConnection(),
 ): RouterTransformationRequestData =>
@@ -92,7 +91,7 @@ const buildInput = (
     message: {
       type: 'record',
       action,
-      fields,
+      identifiers,
       channel: 'sources',
       context: {},
       recordId: String(jobId),
@@ -103,10 +102,6 @@ const buildInput = (
   }) as unknown as RouterTransformationRequestData;
 
 describe('CustomAudienceIntegration via processBatchedDestination', () => {
-  beforeAll(() => {
-    assertBundleFreshness();
-  });
-
   it('groups events by action and chunks by batchSize', async () => {
     const inputs = [
       buildInput(1, 'insert', { email: 'a@b.com' }),
@@ -239,7 +234,7 @@ describe('CustomAudienceIntegration via processBatchedDestination', () => {
 
   it('throws when requestBody template fails at runtime', async () => {
     const destination = buildDestination();
-    destination.Config.actions.insert!.requestBody = '$.records[0].notARealMethod()';
+    destination.Config.actions.insert!.requestBody = '$$.records[0].$notARealMethod()';
 
     const inputs = [buildInput(1, 'insert', { email: 'a@b.com' }, destination)];
 

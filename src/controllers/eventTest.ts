@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { EventTesterService } from '../services/eventTest/eventTester';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../types';
-import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandbox';
+import { sandboxedParseTemplate } from '../v0/destinations/custom_audience/template/templateSandboxClient';
 
 const parseTemplateBodySchema = z.object({
   requestBody: z.string().min(1, 'requestBody must be a non-empty string'),

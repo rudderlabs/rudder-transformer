@@ -140,10 +140,10 @@ jobs:
         run: |
           cd helm-charts/shared-services/per-az/environment/staging
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_TAG_NAME\"" staging.yaml
           cd ../../../../config-be-rudder-transformer/environment/staging
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
-          yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" base.yaml
 
       - name: Create staging branch on remote
         if: steps.check-branch.outputs.exists == 'false'

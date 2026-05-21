@@ -24,7 +24,7 @@
     "lint:fix:json": "eslint --ext .json --fix .",
     "lint": "npm run format && npm run lint:fix",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "node --no-node-snapshot dist/src/index.js",
+    "start": "node dist/src/index.js",
     "start:dev": "nodemon",
     "build:start": "npm run build && npm run start",
     "build:ci": "tsc -p tsconfig.json && npm run build:custom-audience-sandbox",

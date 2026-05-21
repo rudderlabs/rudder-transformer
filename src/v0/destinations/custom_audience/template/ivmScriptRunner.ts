@@ -141,9 +141,12 @@ export class IvmScriptRunner {
 // comfortably inside the same envelope.
 // ---------------------------------------------------------------------------
 
-// Resolve relative to __dirname so the path is stable regardless of process.cwd().
-// Works under both ts-jest (src/) and compiled runtime (dist/).
-const BUNDLE_PATH = path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
+// Production runs from dist/src/…/template — 5 levels up reaches dist/.
+// Tests run from src/…/template via ts-jest — 5 levels up reaches <root>, needs dist/ prefix.
+const PRODUCTION_BUNDLE = path.resolve(__dirname, '../../../../../sandboxedTemplate.bundle.js');
+const BUNDLE_PATH = fs.existsSync(PRODUCTION_BUNDLE)
+  ? PRODUCTION_BUNDLE
+  : path.resolve(__dirname, '../../../../../dist/sandboxedTemplate.bundle.js');
 
 export const templateSandboxRunner = new IvmScriptRunner({
   bundlePath: BUNDLE_PATH,

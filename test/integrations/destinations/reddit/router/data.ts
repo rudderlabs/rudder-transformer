@@ -110,6 +110,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '1234',
                   revenue: 15,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                   products: [
                     {
                       product_id: '123',
@@ -147,9 +148,11 @@ const v3Data: RouterTestData[] = [
                   ...COMMON_BODY_STRUCTURE,
                   JSON: {
                     data: {
+                      partner: 'RUDDERSTACK',
                       events: [
                         {
                           action_source: 'WEBSITE',
+                          event_source_url: 'https://www.example.com/checkout?order=1234',
                           event_at: 1760346197562,
                           metadata: {
                             item_count: 2,
@@ -167,6 +170,7 @@ const v3Data: RouterTestData[] = [
                         },
                         {
                           action_source: 'WEBSITE',
+                          event_source_url: 'https://www.example.com/checkout?order=1234',
                           event_at: 1760346197562,
                           metadata: {
                             item_count: 2,
@@ -244,6 +248,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '1234',
                   revenue: 15,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                   products: [
                     {
                       product_id: '123',
@@ -280,6 +285,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '12345',
                   revenue: 150,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                   products: [
                     {
                       product_id: '123456',
@@ -316,6 +322,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '12346',
                   revenue: 1500,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                 },
               },
               destination: COMMON_DESTINATION,
@@ -340,9 +347,11 @@ const v3Data: RouterTestData[] = [
                     ...COMMON_BODY_STRUCTURE,
                     JSON: {
                       data: {
+                        partner: 'RUDDERSTACK',
                         events: [
                           {
                             action_source: 'WEBSITE',
+                            event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
                             metadata: {
                               item_count: 2,
@@ -360,6 +369,7 @@ const v3Data: RouterTestData[] = [
                           },
                           {
                             action_source: 'WEBSITE',
+                            event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
                             metadata: {
                               item_count: 2,
@@ -375,6 +385,7 @@ const v3Data: RouterTestData[] = [
                           },
                           {
                             action_source: 'WEBSITE',
+                            event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
                             metadata: {
                               item_count: 2,
@@ -407,9 +418,11 @@ const v3Data: RouterTestData[] = [
                     ...COMMON_BODY_STRUCTURE,
                     JSON: {
                       data: {
+                        partner: 'RUDDERSTACK',
                         events: [
                           {
                             action_source: 'WEBSITE',
+                            event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
                             metadata: {
                               item_count: 2,
@@ -425,6 +438,7 @@ const v3Data: RouterTestData[] = [
                           },
                           {
                             action_source: 'WEBSITE',
+                            event_source_url: 'https://www.example.com/checkout?order=1234',
                             event_at: 1760346197562,
                             metadata: {
                               item_count: 1,
@@ -532,6 +546,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '1234',
                   revenue: 15,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                   products: [
                     {
                       product_id: '123',
@@ -568,6 +583,7 @@ const v3Data: RouterTestData[] = [
                   order_id: '12345',
                   revenue: 150,
                   currency: 'USD',
+                  url: 'https://www.example.com/checkout?order=1234',
                   products: [
                     {
                       product_id: '123456',
@@ -605,9 +621,10 @@ const v3Data: RouterTestData[] = [
                   ...COMMON_BODY_STRUCTURE,
                   JSON: {
                     data: {
+                      partner: 'RUDDERSTACK',
                       events: [
                         {
-                          action_source: 'WEBSITE',
+                          action_source: 'APP',
                           event_at: 1760346197562,
                           metadata: {
                             item_count: 2,
@@ -659,9 +676,11 @@ const v3Data: RouterTestData[] = [
                   ...COMMON_BODY_STRUCTURE,
                   JSON: {
                     data: {
+                      partner: 'RUDDERSTACK',
                       events: [
                         {
                           action_source: 'WEBSITE',
+                          event_source_url: 'https://www.example.com/checkout?order=1234',
                           event_at: 1760346197562,
                           metadata: {
                             currency: 'USD',
@@ -679,6 +698,7 @@ const v3Data: RouterTestData[] = [
                         },
                         {
                           action_source: 'WEBSITE',
+                          event_source_url: 'https://www.example.com/checkout?order=1234',
                           event_at: 1760346197562,
                           metadata: {
                             item_count: 2,
@@ -714,6 +734,338 @@ const v3Data: RouterTestData[] = [
                   secret: {
                     accessToken: 'commonAccessToken',
                   },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'reddit',
+    description: 'action_source is auto-detected as APP when channel is mobile',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    id: 'v3-test-action-source-mobile',
+    scenario: 'Business',
+    successCriteria: 'Should set action_source to APP for mobile channel events',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                channel: 'mobile',
+                context: {
+                  traits: { email: 'testone@gmail.com' },
+                  userAgent: COMMON_USER_AGENT,
+                  ip: '54.100.200.255',
+                },
+                type: 'track',
+                originalTimestamp: '2025-10-13T09:03:17.562Z',
+                event: 'Order Completed',
+                userId: 'testuserId1',
+                properties: {
+                  order_id: '9001',
+                  revenue: 10,
+                  currency: 'USD',
+                  url: 'https://app.example.com/purchase',
+                  products: [{ product_id: '123', name: 'Monopoly', price: 10, quantity: 1 }],
+                },
+              },
+              destination: COMMON_DESTINATION,
+              metadata: generateMetadata(1),
+            },
+          ],
+          destType: 'reddit',
+        },
+        method: '',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  ...COMMON_BODY_STRUCTURE,
+                  JSON: {
+                    data: {
+                      partner: 'RUDDERSTACK',
+                      events: [
+                        {
+                          action_source: 'APP',
+                          event_at: 1760346197562,
+                          metadata: {
+                            item_count: 1,
+                            products: [
+                              { id: '123', name: 'Monopoly', item_price: 10, quantity: 1 },
+                            ],
+                            currency: 'USD',
+                            value: 10,
+                          },
+                          type: { tracking_type: 'PURCHASE' },
+                          user: { ...HASHED_USER_DATA.testUserOne, user_agent: COMMON_USER_AGENT },
+                        },
+                        {
+                          action_source: 'APP',
+                          event_at: 1760346197562,
+                          metadata: {
+                            item_count: 1,
+                            products: [
+                              { id: '123', name: 'Monopoly', item_price: 10, quantity: 1 },
+                            ],
+                          },
+                          type: { tracking_type: 'ADD_TO_WISHLIST' },
+                          user: { ...HASHED_USER_DATA.testUserOne, user_agent: COMMON_USER_AGENT },
+                        },
+                      ],
+                    },
+                  },
+                },
+                endpoint:
+                  'https://ads-api.reddit.com/api/v3/pixels/a2_fsddXXXfsfd/conversion_events',
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                ...COMMON_REQUEST_PROPS,
+              },
+              destination: COMMON_DESTINATION,
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: { accessToken: 'commonAccessToken' },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'reddit',
+    description: 'action_source is overridden via integrations object',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    id: 'v3-test-action-source-override',
+    scenario: 'Business',
+    successCriteria: 'Should use integrations.REDDIT.action_source when provided',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                context: {
+                  traits: { email: 'testone@gmail.com' },
+                  userAgent: COMMON_USER_AGENT,
+                  ip: '54.100.200.255',
+                },
+                integrations: {
+                  REDDIT: { action_source: 'PHYSICAL_STORE' },
+                },
+                type: 'track',
+                originalTimestamp: '2025-10-13T09:03:17.562Z',
+                event: 'Lead',
+                userId: 'testuserId1',
+                properties: {
+                  url: 'https://store.example.com/kiosk',
+                },
+              },
+              destination: {
+                ...COMMON_DESTINATION,
+                Config: {
+                  ...COMMON_DESTINATION.Config,
+                  eventsMapping: [
+                    ...COMMON_DESTINATION.Config.eventsMapping,
+                    { from: 'Lead', to: 'Lead' },
+                  ],
+                },
+              },
+              metadata: generateMetadata(1),
+            },
+          ],
+          destType: 'reddit',
+        },
+        method: '',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  ...COMMON_BODY_STRUCTURE,
+                  JSON: {
+                    data: {
+                      partner: 'RUDDERSTACK',
+                      events: [
+                        {
+                          action_source: 'PHYSICAL_STORE',
+                          event_at: 1760346197562,
+                          metadata: {
+                            item_count: 1,
+                            products: [{}],
+                          },
+                          type: { tracking_type: 'LEAD' },
+                          user: { ...HASHED_USER_DATA.testUserOne, user_agent: COMMON_USER_AGENT },
+                        },
+                      ],
+                    },
+                  },
+                },
+                endpoint:
+                  'https://ads-api.reddit.com/api/v3/pixels/a2_fsddXXXfsfd/conversion_events',
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                ...COMMON_REQUEST_PROPS,
+              },
+              destination: {
+                ...COMMON_DESTINATION,
+                Config: {
+                  ...COMMON_DESTINATION.Config,
+                  eventsMapping: [
+                    ...COMMON_DESTINATION.Config.eventsMapping,
+                    { from: 'Lead', to: 'Lead' },
+                  ],
+                },
+              },
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: { accessToken: 'commonAccessToken' },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+              ],
+              statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'reddit',
+    description: 'event_source_url falls back to context.page.url when properties.url is absent',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    id: 'v3-test-event-source-url-fallback',
+    scenario: 'Business',
+    successCriteria: 'Should populate event_source_url from context.page.url',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                context: {
+                  traits: { email: 'testone@gmail.com' },
+                  userAgent: COMMON_USER_AGENT,
+                  ip: '54.100.200.255',
+                  page: { url: 'https://www.example.com/product?ref=ad' },
+                },
+                type: 'track',
+                originalTimestamp: '2025-10-13T09:03:17.562Z',
+                event: 'product viewed',
+                userId: 'testuserId1',
+                properties: {
+                  product_id: '123',
+                  name: 'Monopoly',
+                  price: 14,
+                  quantity: 1,
+                },
+              },
+              destination: COMMON_DESTINATION,
+              metadata: generateMetadata(1),
+            },
+          ],
+          destType: 'reddit',
+        },
+        method: '',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: true,
+              batchedRequest: {
+                body: {
+                  ...COMMON_BODY_STRUCTURE,
+                  JSON: {
+                    data: {
+                      partner: 'RUDDERSTACK',
+                      events: [
+                        {
+                          action_source: 'WEBSITE',
+                          event_source_url: 'https://www.example.com/product?ref=ad',
+                          event_at: 1760346197562,
+                          metadata: {
+                            item_count: 1,
+                            products: [
+                              { id: '123', name: 'Monopoly', item_price: 14, quantity: 1 },
+                            ],
+                            value: 14,
+                          },
+                          type: { tracking_type: 'VIEW_CONTENT' },
+                          user: { ...HASHED_USER_DATA.testUserOne, user_agent: COMMON_USER_AGENT },
+                        },
+                      ],
+                    },
+                  },
+                },
+                endpoint:
+                  'https://ads-api.reddit.com/api/v3/pixels/a2_fsddXXXfsfd/conversion_events',
+                headers: {
+                  Authorization: 'Bearer commonAccessToken',
+                  'Content-Type': 'application/json',
+                },
+                ...COMMON_REQUEST_PROPS,
+              },
+              destination: COMMON_DESTINATION,
+              metadata: [
+                {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: { accessToken: 'commonAccessToken' },
                   sourceId: 'default-sourceId',
                   userId: 'default-userId',
                   workspaceId: 'default-workspaceId',

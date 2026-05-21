@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.133.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.133.0...v1.133.1) (2026-05-21)
+
+
+### Bug Fixes
+
+* **metrics:** metrics endpoint timing out ([#5221](https://github.com/rudderlabs/rudder-transformer/issues/5221)) ([bde455e](https://github.com/rudderlabs/rudder-transformer/commit/bde455e8ffca6820493cb8d9b5907811d9a01ec9))
+
 ## [1.133.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.132.1...v1.133.0) (2026-05-19)
 
 

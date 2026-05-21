@@ -1,4 +1,5 @@
 /* eslint-disable */
+const path = require('path');
 const cluster = require('cluster');
 const logger = require('../logger');
 const { Worker, isMainThread } = require('worker_threads');
@@ -157,7 +158,7 @@ class MetricsAggregator {
 
   createWorkerThread() {
     if (cluster.isPrimary) {
-      this.workerThread = new Worker('./src/util/worker.js');
+      this.workerThread = new Worker(path.resolve(__dirname, './worker.js'));
       logger.info(
         `[MetricsAggregator] Worker thread created with threadId ${this.workerThread.threadId}`,
       );
